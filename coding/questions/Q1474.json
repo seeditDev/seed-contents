@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1474",
+  "title": "Single Source Shortest Path",
+  "slug": "single-source-shortest-path",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an undirected weighted graph it has NNN vertices and MMM edges. \n\nYou are tasked to find the distance of the shortest path from vertex 111 to all the other vertices.\n\nNoteThe constraints of this problem are smaller than the original problem.\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i−thi-thi−th of these MMM lines contains three space-separated integers uiu_iui​, viv_ivi​ and wiw_iwi​ denoting there exists an edge between uiu_iui​ and viv_ivi​ with weight wiw_iwi​.\n\n\nOutput Format\nFor each test case, output on NNN space-separated integers. Where the ithi^{th}ith integer denotes the distance from vertex 111 to vertex iii.\n\n\nIf a vertex is not reachable, print -1 instead.",
+    "constraints": [
+      "1≤N≤1031 \\leq N \\leq 10^{3}1≤N≤103",
+      "2≤M≤min(103,N(N−1)2)2 \\leq M \\leq min(10^{3}, \\frac{N(N-1)}{2})2≤M≤min(103,2N(N−1)​)",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
+      "0≤wi≤1090 \\leq w_i \\leq 10^90≤wi​≤109",
+      "It is guaranteed that the input contains a simple graph with no self edges."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 4\n1 2 3\n2 3 5\n1 3 2\n3 4 1",
+        "output": "0 3 2 3 -1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 4\n1 2 3\n2 3 5\n1 3 2\n3 4 1",
+        "expectedOutput": "0 3 2 3 -1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\nconst int N = 1e5 + 1;\nconst long long INF = 1e18;\n\nlong long d[N];\nvector<pair<int,int>> adj[N];\nbool vis[N];\n\n\nvoid dijkstra(int source, int n) {\n    for(int i = 1; i <= n; i++) {\n        d[i] = INF, vis[i] = false;\n    }\n    d[source] = 0;\n\n    // n iteration to consider all the vertices\n    for(int i = 1; i <= n; i++) {\n        int v = -1;\n        long long cur = INF;\n\n        for(int j = 1; j <= n; j++) {\n\n            // Update if a closer node found\n            if(cur >= d[j] && vis[j] == 0) { \n                v = j;\n                cur = d[j];\n            }\n        }\n\n        vis[v] = 1;\n\n        for(auto edge: adj[v]) {\n            int u = edge.first;\n            int weight = edge.second;\n                \n            // Update the distance of the vertex\n            d[u] = min(d[u], weight + d[v]);\n        }\n    }       \n}\n\nint main() {\n    int n, m; \n    cin >> n >> m;\n\n    for(int i = 0; i < m; i++) {\n        int a, b, w;\n        cin >> a >> b >> w;\n\n        // Undirected edge\n        adj[a].push_back({b, w});\n        adj[b].push_back({a, w});\n    }\n\n    dijkstra(1, n);\n\n    // Print the distance\n    for(int i = 1; i <= n; i++) {\n        if(d[i] == INF) cout << \"-1 \";\n        else cout << d[i] << \" \";\n    }\n\n    return 0;\n}   ",
+      "Python3": "import heapq\n\nN = 10**5 + 1\nINF = 10**18\n\nd = [INF] * N\nadj = [[] for _ in range(N)]\nvis = [False] * N\n\n\ndef dijkstra(source, n):\n    global d, adj, vis\n    for i in range(1, n + 1):\n        d[i] = INF\n        vis[i] = False\n\n    d[source] = 0\n\n    for _ in range(1, n + 1):\n        v = -1\n        cur = INF\n\n        for j in range(1, n + 1):\n            if cur >= d[j] and not vis[j]:\n                v = j\n                cur = d[j]\n\n        vis[v] = True\n\n        for u, weight in adj[v]:\n            d[u] = min(d[u], weight + d[v])\n\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n\n    for _ in range(m):\n        a, b, w = map(int, input().split())\n\n        # Undirected edge\n        adj[a].append((b, w))\n        adj[b].append((a, w))\n\n    dijkstra(1, n)\n\n    # Print the distance\n    for i in range(1, n + 1):\n        if d[i] == INF:\n            print(\"-1\", end=\" \")\n        else:\n            print(d[i], end=\" \")\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n#include <stdbool.h>\n\n#define N 100001\n#define INF 1000000000000000000LL\n\nlong long *d;\nint **adj;\nint *adj_size;\nbool *vis;\n\nvoid add_edge(int u, int v, int weight) {\n    adj[u][adj_size[u]] = v;\n    adj[u][adj_size[u] + 1] = weight;\n    adj_size[u] += 2;\n}\n\nvoid dijkstra(int source, int n) {\n    for (int i = 1; i <= n; i++) {\n        d[i] = INF;\n        vis[i] = false;\n    }\n    d[source] = 0;\n\n    for (int i = 1; i <= n; i++) {\n        int v = -1;\n        long long cur = INF;\n\n        for (int j = 1; j <= n; j++) {\n            if (cur >= d[j] && !vis[j]) {\n                v = j;\n                cur = d[j];\n            }\n        }\n\n        if (v == -1) break;\n\n        vis[v] = true;\n\n        for (int k = 0; k < adj_size[v]; k += 2) {\n            int u = adj[v][k];\n            int weight = adj[v][k + 1];\n            if (d[u] > weight + d[v]) {\n                d[u] = weight + d[v];\n            }\n        }\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    // Allocate memory for the arrays\n    d = (long long *)malloc((n + 1) * sizeof(long long));\n    vis = (bool *)malloc((n + 1) * sizeof(bool));\n    adj_size = (int *)malloc((n + 1) * sizeof(int));\n    adj = (int **)malloc((n + 1) * sizeof(int *));\n    for (int i = 0; i <= n; i++) {\n        adj[i] = (int *)malloc(2 * (m + 1) * sizeof(int)); // Allocate enough space for edges\n        adj_size[i] = 0;\n    }\n\n    for (int i = 0; i < m; i++) {\n        int a, b, w;\n        scanf(\"%d %d %d\", &a, &b, &w);\n\n        // Undirected edge\n        add_edge(a, b, w);\n        add_edge(b, a, w);\n    }\n\n    dijkstra(1, n);\n\n    // Print the distance\n    for (int i = 1; i <= n; i++) {\n        if (d[i] == INF) printf(\"-1 \");\n        else printf(\"%lld \", d[i]);\n    }\n\n    // Free allocated memory\n    free(d);\n    free(vis);\n    free(adj_size);\n    for (int i = 0; i <= n; i++) {\n        free(adj[i]);\n    }\n    free(adj);\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass main {\n    static final int N = 100001;\n    static final long INF = 1000000000000000000L;\n    static long[] d = new long[N];\n    static List<Pair>[] adj = new ArrayList[N];\n    static boolean[] vis = new boolean[N];\n\n    static class Pair {\n        int node;\n        int weight;\n\n        Pair(int node, int weight) {\n            this.node = node;\n            this.weight = weight;\n        }\n    }\n\n    static void dijkstra(int source, int n) {\n        for (int i = 1; i <= n; i++) {\n            d[i] = INF;\n            vis[i] = false;\n        }\n        d[source] = 0;\n\n        // n iterations to consider all the vertices\n        for (int i = 1; i <= n; i++) {\n            int v = -1;\n            long cur = INF;\n\n            for (int j = 1; j <= n; j++) {\n\n                // Update if a closer node found\n                if (cur >= d[j] && !vis[j]) {\n                    v = j;\n                    cur = d[j];\n                }\n            }\n\n            vis[v] = true;\n\n            for (Pair edge : adj[v]) {\n                int u = edge.node;\n                int weight = edge.weight;\n\n                // Update the distance of the vertex\n                d[u] = Math.min(d[u], weight + d[v]);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        for (int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        for (int i = 0; i < m; i++) {\n            int a = scanner.nextInt();\n            int b = scanner.nextInt();\n            int w = scanner.nextInt();\n\n            // Undirected edge\n            adj[a].add(new Pair(b, w));\n            adj[b].add(new Pair(a, w));\n        }\n\n        dijkstra(1, n);\n\n        // Print the distance\n        for (int i = 1; i <= n; i++) {\n            if (d[i] == INF) {\n                System.out.print(\"-1 \");\n            } else {\n                System.out.print(d[i] + \" \");\n            }\n        }\n    }\n}"
+    }
+  }
+}

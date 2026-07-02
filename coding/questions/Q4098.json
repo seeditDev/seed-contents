@@ -1,0 +1,75 @@
+{
+  "questionId": "Q4098",
+  "title": "Draw Fixing",
+  "slug": "draw-fixing",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "Siruseri happens to have some of the best chess players in India and one of the most important events in the Siruseri sports calendar is the Annual Chess Challenge where teams from Siruseri and Navalur compete.\n\nThe event is held alternately at Siruseri and Navalur. This year the tournament is to be held at Sirseri and the Secretary of the Siruseri, who is up for re-election this year, would like to ensure a win for Siruseri. Since starting a war or accusing Navalur of possessing weapons of mass destruction is beyond his scope (and he also has a few more brain cells than the average leader of the free world) he decided to do something clever. Draw Fixing!!\n\nTo understand what he intended to do, we need to know how the Chess Challege match is organised. Both Siruseri and Navalur are required to send NNN players. Every player from both teams participates in exactly one game (and so exactly NNN games are played). The host is expected to draw lots to determine who plays who. Our secretary plans to fix this draw so that the pairings are exactly as he wants them to be.\n\nEach chess player has a ELO rating indicating how good he is. The higher the rating the better the player. The secretary knows the rating of each of the players in the Siruseri and Navalur teams and he would like to pair them up so that the number of pairs in which the Siruseri player has a higher ELO rating is maximised.\n\nFor example, suppose that NNN is 444 and the ratings of the players are as below:\n\n\n\nThen the secretary can arrange for Siruseri to have the higher rating in 333 out of 444 games. He can do this, for example, by pairing them as (111, 222), (222, 444), (333, 333) and (444, 111), where (iii, jjj) means Player iii from Siruseri plays Player jjj from Navalur. This is the best he can do as no player from Siruseri can beat Player 111 from Navalur.\n\nYour task is help the secretary to find a pairing that maximises the number of pairs with higher rating for Siruseri.\n\nInput:The first line of the input contains a single integer NNN, denoting the number of players in each team. The next NNN lines (lines 222 through N+1N+1N+1) list the ratings of the NNN players in the Siruseri team and the NNN following lines (lines N+2N+2N+2 through 2N+12N+12N+1) denote the ratings of the players in the Navalur team.\n\nOutput:The first line of the output is an integer XXX (0≤X≤N0 \\leq X \\leq N0≤X≤N) representing the number of pairs where the Siruseri player has a higher rating in the optimal pairing. This should be followed by NNN lines, each containing an integer nin_ini​ indicating the player chosen from the Navalur team to play against the ithi^{th}ith player from Siruseri.",
+    "constraints": [
+      "1≤N≤500001 \\leq N \\leq 500001≤N≤50000.",
+      "1≤1 \\leq1≤ all ratings in input ≤2000000\\leq 2000000≤2000000",
+      "In 50%50 \\%50% of the inputs 1≤N≤50001 \\leq N \\leq 50001≤N≤5000."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n1873\n2134\n1900\n1600\n2450\n1860\n1700\n2120",
+        "output": "3\n2\n4\n3\n1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n1873\n2134\n1900\n1600\n2450\n1860\n1700\n2120",
+        "expectedOutput": "3\n2\n4\n3\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nWe start by sorting both teams in increasing order. For the Navalur team we store the sorted players in a double‐ended queue (deque). Then, we process the Siruseri players (also in increasing order) one by one. For each Siruseri player:\n\n\n**If** his rating is greater than the rating of the Navalur player at the front of the deque (i.e. the weakest available Navalur), he can win that pairing. We then remove that Navalur player from the front and count this as a win.\n**Otherwise**, he cannot beat the weakest remaining Navalur opponent. In that case we “sacrifice” his chance by pairing him with the strongest available Navalur player (at the back of the deque) and remove that player.\nThis strategy is optimal because it always reserves the lower‐rated Navalur players for Siruseri players who can secure a win, while “wasting” the best Navalur players against those Siruseri players that cannot win any pairing.\n\n**Example Simulation (Based on the Sample):**\n\n\n**Navalur sorted:** (1700,  3), (1860,  2), (2120,  4), (2450,  1)(1700,\\;3),\\,(1860,\\;2),\\,(2120,\\;4),\\,(2450,\\;1)(1700,3),(1860,2),(2120,4),(2450,1)\n**Siruseri sorted:** (1600,  4), (1873,  1), (1900,  3), (2134,  2)(1600,\\;4),\\,(1873,\\;1),\\,(1900,\\;3),\\,(2134,\\;2)(1600,4),(1873,1),(1900,3),(2134,2)\n\nSiruseri player with 160016001600 (index 4) cannot beat 170017001700, so we pair him with the highest Navalur (2450,  1)(2450,\\;1)(2450,1).\nSiruseri player with 187318731873 (index 1) can beat 170017001700. Pair him with (1700,  3)(1700,\\;3)(1700,3).\nSiruseri player with 190019001900 (index 3) can beat 186018601860. Pair him with (1860,  2)(1860,\\;2)(1860,2).\nSiruseri player with 213421342134 (index 2) can beat 212021202120. Pair him with (2120,  4)(2120,\\;4)(2120,4).\n\n\nThis yields 333 winning pairings.\n\nBelow are the complete implementations in both C++ and Python.\n\n**Idea:**\n\nAnother way to achieve the optimal pairing is by using a balanced binary search tree. In C++ we can use a multiset, and in Python we can simulate it with a sorted list plus binary search.\n\nFor each Siruseri player (processed in increasing order of rating), we search for the Navalur player with the greatest rating that is still lower than the Siruseri player’s rating. This is done as follows:\n\n\nUse binary search (or multiset’s lower_bound) to locate the first Navalur player with a rating not less than the Siruseri player’s rating.\nIf there is at least one Navalur player with a lower rating, select the one just before that position to maximize win potential.\nOtherwise, if no such opponent exists (i.e. all remaining Navalur players are too strong), we “sacrifice” by pairing with the Navalur player with the highest rating.\nThis approach also guarantees that we achieve the maximum number of winning pairs.\n\n**Example Simulation (Based on the Sample):**\n\nUsing the same sorted orders as before:\n\n\nFor Siruseri player (1600,  4)(1600,\\;4)(1600,4), there is no opponent with rating less than 1600. We pair him with the highest available Navalur (2450,  1)(2450,\\;1)(2450,1).\nFor Siruseri (1873,  1)(1873,\\;1)(1873,1), the best available candidate is (1860,  2)(1860,\\;2)(1860,2).\nFor Siruseri (1900,  3)(1900,\\;3)(1900,3), the best candidate is (1700,  3)(1700,\\;3)(1700,3).\nFor Siruseri (2134,  2)(2134,\\;2)(2134,2), the only remaining opponent is (2120,  4)(2120,\\;4)(2120,4).\nAgain, we achieve 333 wins.\n\nBelow are the complete implementations in both C++ and Python.\n\n**C++ Code:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\n#include &lt;deque&gt;\nusing namespace std;\n  \nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n  \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;pair&lt;int,int&gt;&gt; sir(N), nav(N);\n    for (int i = 0; i &lt; N; i++){\n        int x;\n        cin &gt;&gt; x;\n        sir[i] = {x, i};\n    }\n    for (int i = 0; i &lt; N; i++){\n        int x;\n        cin &gt;&gt; x;\n        nav[i] = {x, i};\n    }\n  \n    sort(sir.begin(), sir.end());\n    sort(nav.begin(), nav.end());\n  \n    deque&lt;pair&lt;int,int&gt;&gt; dq;\n    for(auto &amp;p: nav)\n        dq.push_back(p);\n  \n    vector&lt;int&gt; ans(N, -1);\n    int wins = 0;\n    for(auto &amp;player: sir){\n        if(player.first &gt; dq.front().first){\n            ans[player.second] = dq.front().second;\n            dq.pop_front();\n            wins++;\n        }\n        else{\n            ans[player.second] = dq.back().second;\n            dq.pop_back();\n        }\n    }\n  \n    cout &lt;&lt; wins &lt;&lt; \"\\n\";\n    for (int i = 0; i &lt; N; i++){\n        cout &lt;&lt; ans[i] + 1 &lt;&lt; \"\\n\";\n    }\n  \n    return 0;\n}\n`**Python Code:**\n\n`def main():\n    import sys\n    from collections import deque\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    N = int(data[0])\n    sir = []\n    nav = []\n    idx = 1\n    for i in range(N):\n        sir.append((int(data[idx]), i))\n        idx += 1\n    for i in range(N):\n        nav.append((int(data[idx]), i))\n        idx += 1\n  \n    sir.sort()\n    nav.sort()\n  \n    dq = deque(nav)\n    ans = [-1] * N\n    wins = 0\n    for rating, i in sir:\n        if dq and rating &gt; dq[0][0]:\n            ans[i] = dq[0][1]\n            dq.popleft()\n            wins += 1\n        else:\n            ans[i] = dq[-1][1]\n            dq.pop()\n  \n    output = [str(wins)]\n    for x in ans:\n        output.append(str(x + 1))\n    sys.stdout.write(\"\\n\".join(output))\n  \nif __name__ == \"__main__\":\n    main()\n`**C++ Code:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\n#include &lt;set&gt;\nusing namespace std;\n  \nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n  \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;pair&lt;int,int&gt;&gt; sir(N), nav(N);\n    for (int i = 0; i &lt; N; i++){\n        int x;\n        cin &gt;&gt; x;\n        sir[i] = {x, i};\n    }\n    for (int i = 0; i &lt; N; i++){\n        int x;\n        cin &gt;&gt; x;\n        nav[i] = {x, i};\n    }\n  \n    sort(sir.begin(), sir.end());\n    multiset&lt;pair&lt;int,int&gt;&gt; navSet;\n    for(auto &amp;p: nav)\n        navSet.insert(p);\n  \n    vector&lt;int&gt; ans(N, -1);\n    int wins = 0;\n    for(auto &amp;p: sir){\n        int sRating = p.first, sIdx = p.second;\n        auto it = navSet.lower_bound({sRating, 0});\n        if(it != navSet.begin()){\n            it--;\n            ans[sIdx] = it-&gt;second;\n            navSet.erase(it);\n            wins++;\n        }\n        else{\n            auto lastIt = prev(navSet.end());\n            ans[sIdx] = lastIt-&gt;second;\n            navSet.erase(lastIt);\n        }\n    }\n  \n    cout &lt;&lt; wins &lt;&lt; \"\\n\";\n    for(auto &amp;x: ans)\n        cout &lt;&lt; x + 1 &lt;&lt; \"\\n\";\n  \n    return 0;\n}\n`**Python Code:**\n\n`def main():\n    import sys, bisect\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    N = int(data[0])\n    sir = []\n    nav = []\n    idx = 1\n    for i in range(N):\n        sir.append((int(data[idx]), i))\n        idx += 1\n    for i in range(N):\n        nav.append((int(data[idx]), i))\n        idx += 1\n  \n    sir.sort()\n    nav.sort()\n    ans = [-1] * N\n    wins = 0\n    list_nav = nav[:]  # using a list as our sorted container\n  \n    for rating, sIdx in sir:\n        pos = bisect.bisect_left(list_nav, (rating, -1))\n        if pos &gt; 0:\n            candidate = list_nav[pos - 1]\n            wins += 1\n            ans[sIdx] = candidate[1]\n            del list_nav[pos - 1]\n        else:\n            candidate = list_nav[-1]\n            ans[sIdx] = candidate[1]\n            del list_nav[-1]\n  \n    output = [str(wins)]\n    for x in ans:\n        output.append(str(x + 1))\n    sys.stdout.write(\"\\n\".join(output))\n  \nif __name__ == \"__main__\":\n    main()\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

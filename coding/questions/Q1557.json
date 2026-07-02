@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1557",
+  "title": "Sum of Beauty of All Substrings",
+  "slug": "sum-of-beauty-of-all-substrings",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a string **SSS** consisting of lowercase English letters.\n\nThe **beauty** of a substring is defined as the difference between the frequency of the **most frequent character** and the frequency of the **least frequent character** in that substring, considering **only characters that appear at least once**.\n\nYour task is to calculate the **sum of beauty** of all possible substrings of the given string **SSS**.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**beautySumbeautySumbeautySum**\n\n\n\n**Parameters:**\n\n\n\n**sss** (`string`)\nA string consisting of lowercase English letters.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **sum of beauty of all substrings** of the string.\n\n\n\nInput Format\nThe first line contains an integer **TTT** — the number of test cases.\n\n\nEach test case contains a single line with the string **SSS**.\n\n\n\n\nOutput Format\nFor each test case, print a single integer — the **sum of beauty of all substrings** of **SSS**.",
+    "constraints": [
+      "1≤T≤1001 \\le T \\le 1001≤T≤100",
+      "1≤∣S∣≤5001 \\le |S| \\le 5001≤∣S∣≤500",
+      "**SSS** consists of only lowercase English letters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\nabcab\nzzxyzz",
+        "output": "3\n12",
+        "explanation": "Explanation:\nFor abcab, substrings contributing non-zero beauty are bcab, abca, and abcab, giving a total beauty of 3.\nFor zzxyzz, the total beauty across all substrings is 12."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\nabcab\nzzxyzz",
+        "expectedOutput": "3\n12",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int beautySum(const string &s) {\n    int n = s.size();\n    int total = 0;\n\n    for (int i = 0; i < n; i++) {\n        int freq[26] = {0}; // frequency of characters\n        for (int j = i; j < n; j++) {\n            freq[s[j] - 'a']++; // update frequency\n            int maxFreq = 0, minFreq = INT_MAX;\n            for (int k = 0; k < 26; k++) {\n                if (freq[k] > 0) {\n                    maxFreq = max(maxFreq, freq[k]);\n                    minFreq = min(minFreq, freq[k]);\n                }\n            }\n            total += (maxFreq - minFreq); // add beauty of substring\n        }\n    }\n\n    return total;\n}\n",
+      "Python3": "def beauty_sum(s):\n    n = len(s)\n    total = 0\n\n    for i in range(n):\n        freq = [0] * 26\n        for j in range(i, n):\n            freq[ord(s[j]) - ord('a')] += 1\n            nonzero = [f for f in freq if f > 0]\n            total += max(nonzero) - min(nonzero)\n    return total\n\n",
+      "C": "int beautySum(char *s) {\n    int n = 0;\n    while (s[n] != '\\0') n++;   // faster than strlen repeatedly\n\n    int total = 0;\n\n    for (int i = 0; i < n; i++) {\n        int freq[26] = {0};\n        int distinct = 0;\n\n        for (int j = i; j < n; j++) {\n            int idx = s[j] - 'a';\n            if (freq[idx] == 0) distinct++;\n            freq[idx]++;\n\n            int maxFreq = 0;\n            int minFreq = n;   // max possible length\n\n            // only 26 chars, but fewer branches\n            for (int k = 0; k < 26; k++) {\n                if (freq[k]) {\n                    if (freq[k] > maxFreq) maxFreq = freq[k];\n                    if (freq[k] < minFreq) minFreq = freq[k];\n                }\n            }\n\n            total += (maxFreq - minFreq);\n        }\n    }\n\n    return total;\n}\n",
+      "Java": "static int beautySum(String s) {\n        int n = s.length();\n        int total = 0;\n\n        for (int i = 0; i < n; i++) {\n            int[] freq = new int[26]; // frequency array for characters\n            for (int j = i; j < n; j++) {\n                freq[s.charAt(j) - 'a']++; // update frequency\n                int max = 0;\n                int min = Integer.MAX_VALUE;\n                for (int k = 0; k < 26; k++) {\n                    if (freq[k] > 0) {\n                        max = Math.max(max, freq[k]);\n                        min = Math.min(min, freq[k]);\n                    }\n                }\n                total += (max - min); // add beauty for this substring\n            }\n        }\n\n        return total;\n    }",
+      "JavaScript": "function beautySum(s) {\n    const n = s.length;\n    let total = 0;\n\n    for (let i = 0; i < n; i++) {\n        const freq = new Array(26).fill(0);\n\n        for (let j = i; j < n; j++) {\n            const idx = s.charCodeAt(j) - 97;\n            freq[idx]++;\n\n            let maxFreq = 0;\n            let minFreq = n;\n\n            for (let k = 0; k < 26; k++) {\n                if (freq[k] > 0) {\n                    if (freq[k] > maxFreq) maxFreq = freq[k];\n                    if (freq[k] < minFreq) minFreq = freq[k];\n                }\n            }\n\n            total += (maxFreq - minFreq);\n        }\n    }\n\n    return total;\n}\n"
+    }
+  }
+}

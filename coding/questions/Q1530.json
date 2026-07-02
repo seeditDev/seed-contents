@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1530",
+  "title": "Book Allocation",
+  "slug": "book-allocation",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have **N books**, where the `i-th` book has `A[i]` pages. There are **M students**.\n\nYou need to distribute all books to the students with these rules:\n\n\nEach student must get **at least one book**.\nEach book can be given to **only one student**.\nThe books given to a student must be **next to each other** (contiguous).\nYour task is to distribute the books so that the **maximum pages any student gets is as small as possible**.\n\nIf it is not possible to distribute the books, print -1.\n\n\nInput Format\n\nFirst line: two integers **N** (number of books) and **M** (number of students).\nSecond line: **N** integers, where `A[i]` = pages in the `i-th` book.\n\n\nOutput Format\n\nPrint the minimum possible value of the **maximum pages** assigned to a student.\nIf distribution is not possible, print `-1`.",
+    "constraints": [
+      "1 ≤ N, M ≤ 10⁴",
+      "1 ≤ A[i] ≤ 10⁵"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 2\n12 34 67 90",
+        "output": "113",
+        "explanation": "Explanation:\nStudent 1: 12 + 34 + 67 = 113\nStudent 2: 90\nMaximum = 113"
+      },
+      {
+        "id": "sample_2",
+        "input": "5 4\n25 46 28 49 24",
+        "output": "71",
+        "explanation": "Explanation:\nStudent 1: 25 + 46 = 71\nStudent 2: 28\nStudent 3: 49\nStudent 4: 24\nMaximum = 71"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 2\n12 34 67 90",
+        "expectedOutput": "113",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5 4\n25 46 28 49 24",
+        "expectedOutput": "71",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Define the search space**:\n\n\n\n`low` = maximum pages of a single book (`max(A)``)\n\n\n\n\n`high` = sum of all book pages (`sum(A)`)\n\n\n\n**Define a function** `isPossible(limit)`\n\n\n\nCheck if we can allocate books such that no student reads more than limit pages.\n\n\n\n\nStart assigning books sequentially.\n\n\n\n\nKeep a running sum of pages for the current student.\n\n\n\n\nIf the sum exceeds `limit`, assign the next student.\n\n\n\n\nIf students required &gt; M, return False; else True.\n\n\n\n**Binary Search Logic**:\n\n\n\nWhile `low &lt;= high`:\n\n\n\n\nFind `mid = (low + high) / 2`\n\n\n\n\nIf `isPossible(mid)` is true, it means we can reduce pages → move left (`high = mid - 1`)\n\n\n\n\nElse move right (`low = mid + 1`)\n\n\n\n\n\nThe smallest valid `mid` is the answer.\n\nTime and Space Complexity**Time Complexity**: O(N × log(sum(A)))\n\n**Space Complexity**: O(1)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "long long allocateBooks(vector<long long>& books, int N, int M) {\n    if (M > N) return -1;\n\n    long long low = 0, high = 0;\n    for (auto pages : books) {\n        low = max(low, pages);\n        high += pages;\n    }\n\n    auto isPossible = [&](long long limit) {\n        int count = 1;\n        long long sum = 0;\n        for (auto p : books) {\n            if (p > limit) return false;\n            if (sum + p > limit) {\n                count++;\n                sum = p;\n                if (count > M) return false;\n            } else sum += p;\n        }\n        return true;\n    };\n\n    long long ans = -1;\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n        if (isPossible(mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else low = mid + 1;\n    }\n    return ans;\n}\n",
+      "Python3": "def allocate_books(books, N, M):\n    if M > N:\n        return -1\n\n    low, high = max(books), sum(books)\n\n    def is_possible(limit):\n        count, total = 1, 0\n        for b in books:\n            if b > limit:\n                return False\n            if total + b > limit:\n                count += 1\n                total = b\n                if count > M:\n                    return False\n            else:\n                total += b\n        return True\n\n    result = -1\n    while low <= high:\n        mid = (low + high) // 2\n        if is_possible(mid):\n            result = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n    return result\n",
+      "C": "int isPossible(long* books, int N, int M, long limit) {\n    int count = 1;\n    long sum = 0;\n    for (int i = 0; i < N; i++) {\n        if (books[i] > limit) return 0;\n        if (sum + books[i] > limit) {\n            count++;\n            sum = books[i];\n            if (count > M) return 0;\n        } else sum += books[i];\n    }\n    return 1;\n}\n\nlong allocateBooks(long* books, int N, int M) {\n    if (M > N) return -1;\n\n    long low = 0, high = 0;\n    for (int i = 0; i < N; i++) {\n        if (books[i] > low) low = books[i];\n        high += books[i];\n    }\n\n    long ans = -1;\n    while (low <= high) {\n        long mid = low + (high - low) / 2;\n        if (isPossible(books, N, M, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else low = mid + 1;\n    }\n    return ans;\n}\n",
+      "Java": "public static long allocateBooks(long[] books, int N, int M) {\n    if (M > N) return -1;\n\n    long low = 0, high = 0;\n    for (long b : books) {\n        low = Math.max(low, b);\n        high += b;\n    }\n\n    long result = -1;\n    while (low <= high) {\n        long mid = low + (high - low) / 2;\n        if (isPossible(books, N, M, mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return result;\n}\n\nprivate static boolean isPossible(long[] books, int N, int M, long limit) {\n    int count = 1;\n    long sum = 0;\n    for (int i = 0; i < N; i++) {\n        if (books[i] > limit) return false;\n        if (sum + books[i] > limit) {\n            count++;\n            sum = books[i];\n            if (count > M) return false;\n        } else {\n            sum += books[i];\n        }\n    }\n    return true;\n}\n",
+      "JavaScript": "function allocateBooks(books, N, M) {\n    if (M > N) return -1;\n\n    let low = Math.max(...books);\n    let high = books.reduce((a, b) => a + b, 0);\n\n    const isPossible = (limit) => {\n        let count = 1, sum = 0;\n        for (let b of books) {\n            if (b > limit) return false;\n            if (sum + b > limit) {\n                count++;\n                sum = b;\n                if (count > M) return false;\n            } else sum += b;\n        }\n        return true;\n    };\n\n    let result = -1;\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n        if (isPossible(mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return result;\n}\n"
+    }
+  }
+}

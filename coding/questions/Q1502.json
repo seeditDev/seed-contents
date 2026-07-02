@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1502",
+  "title": "Superstar Dishes",
+  "slug": "superstar-dishes",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef recently organised a **Grand Feast** where he served nnn **different dishes** to his friends.\n\nEach friend picked their favourite dish, and now Chef has a list of all the dishes chosen.\n\nChef is curious:\n\n\nWhich dishes were so popular that they were chosen by more than ⌊n/3⌋⌊n/3⌋⌊n/3⌋ friends? Print the dishes in increasing order of popularity of dish among the friends.\nCan you help Chef find these **superstar dishes**?\n\nFunction DeclarationFunction NamefindSuperstarDishesfindSuperstarDishesfindSuperstarDishes – This function finds all dishes that appear more than ⌊n/3⌋ times.\n\nParameters\naaa : An array representing the dishes chosen by friends.\nnnn : The number of dishes.\nReturn Value\nThis function **returns the array in ascending order**.\nConstraints\n1≤n≤5×1041 \\leq n \\leq 5 \\times 10^41≤n≤5×104\n−109≤a[i]≤109−10^9 \\leq a[i] \\leq 10^9−109≤a[i]≤109\nThe output may contain **at most two dishes** (by pigeonhole principle)\n\nInput Format\n\nThe first line of each test case contains a single integer nnn — the number of dishes.\nThe next line contains nnn space-separated integers a[i]a[i]a[i] — the dishes chosen by friends.\n\n\nOutput Format\n\nFor each test case, print on a new line all dishes that were chosen by **more than ⌊n/3⌋ friends**, in **increasing order**.\nIf no such dish exists, print nothing for that test case.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6\n2 2 1 1 1 2",
+        "output": "1 2",
+        "explanation": "Explanation:\nHere, n = 6, so [n/3] = 2.\n\nDish 1 appears 3 times -> more than 2\nDish 2 appears 3 times -> more than 2\nSo, both 1 and 2 are superstar dishes."
+      },
+      {
+        "id": "sample_2",
+        "input": "7\n5 5 5 1 2 3 4",
+        "output": "5",
+        "explanation": "Explanation:\nHere, n = 7, so [n/3] = 2.\n\nDish 5 appears 3 times -> more than 2.\nOther dishes (1,2,3,4) appear only once -> not more than 2.\nSo, the answer is 5."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6\n2 2 1 1 1 2",
+        "expectedOutput": "1 2",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "7\n5 5 5 1 2 3 4",
+        "expectedOutput": "5",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "vector<long long> findSuperstarDishes(vector<long long> &a, long long n) {\n    long long el1 = LLONG_MIN, el2 = LLONG_MIN;\n    long long cnt1 = 0, cnt2 = 0;\n    \n    // Phase 1: Voting\n    for(long long i = 0; i < n; i++){\n        if(a[i] == el1) cnt1++;\n        else if(a[i] == el2) cnt2++;\n        else if(cnt1 == 0){\n            cnt1 = 1;\n            el1 = a[i];\n        }\n        else if(cnt2 == 0){\n            cnt2 = 1;\n            el2 = a[i];\n        }\n        else {\n            cnt1--;\n            cnt2--;\n        }\n    }\n    \n    // Phase 2: Validation\n    cnt1 = 0; \n    cnt2 = 0;\n    \n    for(long long i = 0; i < n; i++){\n        if(a[i] == el1) cnt1++;\n        else if(a[i] == el2) cnt2++;\n    }\n    \n    // Collect valid candidates\n    vector<long long> ans;\n    if(cnt1 > n / 3) ans.push_back(el1);\n    if(cnt2 > n / 3) ans.push_back(el2);\n    \n    sort(ans.begin(), ans.end());\n    \n    return ans;\n}\n\n",
+      "Python3": "def findSuperstarDishes(a: List[int], n: int) -> List[int]:\n    el1, el2 = float('-inf'), float('-inf')\n    cnt1, cnt2 = 0, 0\n\n    # Phase 1: Voting\n    for i in range(n):\n        if a[i] == el1:\n            cnt1 += 1\n        elif a[i] == el2:\n            cnt2 += 1\n        elif cnt1 == 0:\n            el1 = a[i]\n            cnt1 = 1\n        elif cnt2 == 0:\n            el2 = a[i]\n            cnt2 = 1\n        else:\n            cnt1 -= 1\n            cnt2 -= 1\n\n    # Phase 2: Validation\n    cnt1, cnt2 = 0, 0\n    for i in range(n):\n        if a[i] == el1:\n            cnt1 += 1\n        elif a[i] == el2:\n            cnt2 += 1\n\n    ans: List[int] = []\n    if cnt1 > n // 3:\n        ans.append(el1)\n    if cnt2 > n // 3:\n        ans.append(el2)\n\n    ans.sort()\n    return ans",
+      "C": "long long* findSuperstarDishes(long long *a, int n, int *returnSize) {\n    long long el1 = LLONG_MIN, el2 = LLONG_MIN;\n    int cnt1 = 0, cnt2 = 0;\n\n    // Phase 1: Voting\n    for (int i = 0; i < n; i++) {\n        if (a[i] == el1) cnt1++;\n        else if (a[i] == el2) cnt2++;\n        else if (cnt1 == 0) {\n            el1 = a[i];\n            cnt1 = 1;\n        }\n        else if (cnt2 == 0) {\n            el2 = a[i];\n            cnt2 = 1;\n        }\n        else {\n            cnt1--;\n            cnt2--;\n        }\n    }\n\n    // Phase 2: Validation\n    cnt1 = 0;\n    cnt2 = 0;\n\n    for (int i = 0; i < n; i++) {\n        if (a[i] == el1) cnt1++;\n        else if (a[i] == el2) cnt2++;\n    }\n\n    // Allocate max possible size = 2\n    long long *ans = (long long*)malloc(2 * sizeof(long long));\n    *returnSize = 0;\n\n    if (cnt1 > n / 3) {\n        ans[(*returnSize)++] = el1;\n    }\n    if (cnt2 > n / 3) {\n        ans[(*returnSize)++] = el2;\n    }\n\n    // Sort (at most 2 elements)\n    if (*returnSize == 2 && ans[0] > ans[1]) {\n        long long temp = ans[0];\n        ans[0] = ans[1];\n        ans[1] = temp;\n    }\n\n    return ans;\n}",
+      "Java": "public static List<Long> findSuperstarDishes(List<Long> a, int n) {\n    long el1 = Long.MIN_VALUE, el2 = Long.MIN_VALUE;\n    int cnt1 = 0, cnt2 = 0;\n\n    // Phase 1: Voting\n    for (int i = 0; i < n; i++) {\n        long val = a.get(i);\n\n        if (val == el1) cnt1++;\n        else if (val == el2) cnt2++;\n        else if (cnt1 == 0) {\n            el1 = val;\n            cnt1 = 1;\n        }\n        else if (cnt2 == 0) {\n            el2 = val;\n            cnt2 = 1;\n        }\n        else {\n            cnt1--;\n            cnt2--;\n        }\n    }\n\n    // Phase 2: Validation\n    cnt1 = 0;\n    cnt2 = 0;\n\n    for (int i = 0; i < n; i++) {\n        long val = a.get(i);\n        if (val == el1) cnt1++;\n        else if (val == el2) cnt2++;\n    }\n\n    List<Long> ans = new ArrayList<>();\n    if (cnt1 > n / 3) ans.add(el1);\n    if (cnt2 > n / 3) ans.add(el2);\n\n    Collections.sort(ans);\n    return ans;\n}",
+      "JavaScript": "function findSuperstarDishes(a, n) {\n    let el1 = -Infinity, el2 = -Infinity;\n    let cnt1 = 0, cnt2 = 0;\n\n    // Phase 1: Voting\n    for (let i = 0; i < n; i++) {\n        if (a[i] === el1) cnt1++;\n        else if (a[i] === el2) cnt2++;\n        else if (cnt1 === 0) {\n            el1 = a[i];\n            cnt1 = 1;\n        }\n        else if (cnt2 === 0) {\n            el2 = a[i];\n            cnt2 = 1;\n        }\n        else {\n            cnt1--;\n            cnt2--;\n        }\n    }\n\n    // Phase 2: Validation\n    cnt1 = 0;\n    cnt2 = 0;\n\n    for (let i = 0; i < n; i++) {\n        if (a[i] === el1) cnt1++;\n        else if (a[i] === el2) cnt2++;\n    }\n\n    const ans = [];\n    if (cnt1 > Math.floor(n / 3)) ans.push(el1);\n    if (cnt2 > Math.floor(n / 3)) ans.push(el2);\n\n    ans.sort((a, b) => a - b);\n    return ans;\n}"
+    }
+  }
+}

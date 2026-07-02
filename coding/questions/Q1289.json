@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1289",
+  "title": "LCA of two nodes",
+  "slug": "lca-of-two-nodes",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, rooted at node **1**, and two nodes uuu and vvv, find the lowest common ancestor (LCA) of it. (**Note:** The lowest common ancestor of two nodes uuu and vvv is the lowest node that has both uuu and vvv as its descendants)\n\nFor example, in the following tree, the LCA of nodes 333 and 777 is node 111. Also the LCA of nodes 444 and 777 is 444.\n\n\n\n\nInput Format\n\nThe first line of the input contains three space separated integers NNN, uuu and vvv — the number of nodes, and two given nodes.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\n\nOutput on the single line, the LCA of nodes uuu and vvv.",
+    "constraints": [
+      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
+      "1≤u,v≤N1 \\leq u, v \\leq N1≤u,v≤N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7 3 7\n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "output": "1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7 3 7\n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "expectedOutput": "1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nconst int N = 1e5+1;\nconst int LG = 8;\nvector<int> adj[N];\nint level[N], ancestors[N][LG], n;\n    \nvoid dfs(int node, int parent = -1, int lvl = 0) {\n  level[node] = lvl;\n  ancestors[node][0] = parent;\n  for(int child: adj[node]) {\n    if(child != parent) {\n      dfs(child, node, lvl + 1);\n    }\n  }\n} \nvoid preprocess() {\n    for(int j = 1; j < LG; j++) {\n      for(int node = 1; node <= n; node++) {\n        int ancestor = ancestors[node][j - 1];\n        if(ancestor == -1)\n          ancestors[node][j] = -1;\n        else\n          ancestors[node][j] = ancestors[ancestor][j - 1];\n      }\n    }\n}\n\nint lca(int u, int v) {\n    if(level[u] <= level[v]) {\n      swap(u, v);\n    }\n    int k = level[u] - level[v];\n    for(int j = 0; j < LG; j++) {\n      if((k >> j) & 1){\n        u = ancestors[u][j];\n      }\n    }\n    if(u == v)\n      return v;\n \n    for(int j = LG - 1; j >= 0; j--) {\n      if(ancestors[u][j] != -1 && ancestors[u][j] != ancestors[v][j]) {\n        u = ancestors[u][j];\n        v = ancestors[v][j];\n      }\n    }\n    return ancestors[u][0];\n}\nint main() {\n    int u, v;\n    cin >> n >> u >> v;\n    for(int i = 1; i < n; i++){\n      int ui, vi;\n      cin >> ui >> vi;\n      adj[ui].push_back(vi);\n      adj[vi].push_back(ui);\n    }\n    \n    dfs(1);\n    preprocess();\n    cout << lca(u, v);\n    \n    return 0;\n}\n",
+      "Python3": "import sys\nfrom collections import defaultdict, deque\nimport math\n\n# Constants\nN = 100001\nLG = 17  # This should be enough for up to 100,000 nodes\n\n# Adjacency list and other data structures\nadj = defaultdict(list)\nlevel = [0] * N\nancestors = [[-1] * LG for _ in range(N)]\n\ndef dfs(node, parent, lvl):\n    level[node] = lvl\n    ancestors[node][0] = parent\n    \n    for child in adj[node]:\n        if child != parent:\n            dfs(child, node, lvl + 1)\n\ndef preprocess():\n    for j in range(1, LG):\n        for node in range(1, n + 1):\n            ancestor = ancestors[node][j - 1]\n            if ancestor == -1:\n                ancestors[node][j] = -1\n            else:\n                ancestors[node][j] = ancestors[ancestor][j - 1]\n\ndef lca(u, v):\n    if level[u] < level[v]:\n        u, v = v, u\n    \n    # Lift u to the same level as v\n    diff = level[u] - level[v]\n    for j in range(LG):\n        if (diff >> j) & 1:\n            u = ancestors[u][j]\n\n    if u == v:\n        return u\n\n    # Lift both u and v up until their parents match\n    for j in range(LG - 1, -1, -1):\n        if ancestors[u][j] != -1 and ancestors[u][j] != ancestors[v][j]:\n            u = ancestors[u][j]\n            v = ancestors[v][j]\n    \n    return ancestors[u][0]\n\ndef main():\n    input = sys.stdin.read\n    data = input().split()\n    \n    global n\n    index = 0\n    \n    n = int(data[index])\n    index += 1\n    u = int(data[index])\n    index += 1\n    v = int(data[index])\n    index += 1\n    \n    # Read edges\n    for _ in range(n - 1):\n        ui = int(data[index])\n        index += 1\n        vi = int(data[index])\n        index += 1\n        adj[ui].append(vi)\n        adj[vi].append(ui)\n    \n    # Perform DFS from node 1\n    dfs(1, -1, 0)\n    preprocess()\n    \n    # Output the LCA of u and v\n    print(lca(u, v))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define N 100001\n#define LG 17  // Increased to handle larger trees\n\nint *adj[N];    // Adjacency list using dynamic arrays\nint adj_size[N];   // Number of adjacent nodes for each node\nint level[N], ancestors[N][LG], n;\n\nvoid dfs(int node, int parent, int lvl) {\n    level[node] = lvl;\n    ancestors[node][0] = parent;\n\n    for(int i = 0; i < adj_size[node]; i++) {\n        int child = adj[node][i];\n        if(child != parent) {\n            dfs(child, node, lvl + 1);\n        }\n    }\n}\n\nvoid preprocess() {\n    for(int j = 1; j < LG; j++) {\n        for(int node = 1; node <= n; node++) {\n            int ancestor = ancestors[node][j - 1];\n            if(ancestor == -1) {\n                ancestors[node][j] = -1;\n            } else {\n                ancestors[node][j] = ancestors[ancestor][j - 1];\n            }\n        }\n    }\n}\n\nint lca(int u, int v) {\n    if(level[u] < level[v]) {\n        int temp = u;\n        u = v;\n        v = temp;\n    }\n\n    int k = level[u] - level[v];\n    for(int j = 0; j < LG; j++) {\n        if((k >> j) & 1) {\n            u = ancestors[u][j];\n        }\n    }\n\n    if(u == v)\n        return v;\n\n    for(int j = LG - 1; j >= 0; j--) {\n        if(ancestors[u][j] != -1 && ancestors[u][j] != ancestors[v][j]) {\n            u = ancestors[u][j];\n            v = ancestors[v][j];\n        }\n    }\n\n    return ancestors[u][0];\n}\n\nint main() {\n    int u, v;\n    scanf(\"%d %d %d\", &n, &u, &v);\n\n    // Allocate memory for the adjacency list\n    for(int i = 1; i <= n; i++) {\n        adj[i] = (int*)malloc(N * sizeof(int));  // Allocating space for each node\n        adj_size[i] = 0; // Initialize size of the adjacency list\n    }\n\n    // Input the tree edges\n    for(int i = 1; i < n; i++) {\n        int ui, vi;\n        scanf(\"%d %d\", &ui, &vi);\n        adj[ui][adj_size[ui]++] = vi;\n        adj[vi][adj_size[vi]++] = ui;\n    }\n\n    // Perform DFS from node 1\n    dfs(1, -1, 0);\n    preprocess();\n\n    // Calculate and output the LCA of u and v\n    printf(\"%d\\n\", lca(u, v));\n\n    // Free dynamically allocated memory\n    for(int i = 1; i <= n; i++) {\n        free(adj[i]);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.io.*;\n\nclass Codechef\n{\n    static final int N = 100001;\n    static final int LG = 17;\n    static ArrayList<Integer>[] adj = new ArrayList[N];\n    static int[] level = new int[N];\n    static int[][] ancestors = new int[N][LG];\n    static int n;\n\n    public static void main(String[] args) throws java.lang.Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n\n        n = Integer.parseInt(st.nextToken());\n        int u = Integer.parseInt(st.nextToken());\n        int v = Integer.parseInt(st.nextToken());\n\n        // Initialize adjacency list\n        for(int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        // Input the tree edges\n        for(int i = 1; i < n; i++) {\n            st = new StringTokenizer(br.readLine());\n            int ui = Integer.parseInt(st.nextToken());\n            int vi = Integer.parseInt(st.nextToken());\n            adj[ui].add(vi);\n            adj[vi].add(ui);\n        }\n\n        // Perform DFS from node 1\n        dfs(1, -1, 0);\n        preprocess();\n\n        // Calculate and output the LCA of u and v\n        System.out.println(lca(u, v));\n    }\n\n    static void dfs(int node, int parent, int lvl) {\n        level[node] = lvl;\n        ancestors[node][0] = parent;\n\n        for(int child : adj[node]) {\n            if(child != parent) {\n                dfs(child, node, lvl + 1);\n            }\n        }\n    }\n\n    static void preprocess() {\n        for(int j = 1; j < LG; j++) {\n            for(int node = 1; node <= n; node++) {\n                int ancestor = ancestors[node][j - 1];\n                if(ancestor == -1) {\n                    ancestors[node][j] = -1;\n                } else {\n                    ancestors[node][j] = ancestors[ancestor][j - 1];\n                }\n            }\n        }\n    }\n\n    static int lca(int u, int v) {\n        if(level[u] < level[v]) {\n            int temp = u;\n            u = v;\n            v = temp;\n        }\n\n        int k = level[u] - level[v];\n        for(int j = 0; j < LG; j++) {\n            if((k & (1 << j)) != 0) {\n                u = ancestors[u][j];\n            }\n        }\n\n        if(u == v)\n            return v;\n\n        for(int j = LG - 1; j >= 0; j--) {\n            if(ancestors[u][j] != -1 && ancestors[u][j] != ancestors[v][j]) {\n                u = ancestors[u][j];\n                v = ancestors[v][j];\n            }\n        }\n\n        return ancestors[u][0];\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst N = 100005;\nconst LG = 18; // Adjusted LG for JavaScript equivalent\n\nlet adj = Array.from({ length: N }, () => []);\nlet level = Array(N).fill(0);\nlet ancestors = Array.from({ length: N }, () => Array(LG).fill(-1));\nlet n;\n\nfunction dfs(node, parent = -1, lvl = 0) {\n    level[node] = lvl;\n    ancestors[node][0] = parent;\n    for (const child of adj[node]) {\n        if (child !== parent) {\n            dfs(child, node, lvl + 1);\n        }\n    }\n}\n\nfunction preprocess() {\n    for (let j = 1; j < LG; j++) {\n        for (let node = 1; node <= n; node++) {\n            let ancestor = ancestors[node][j - 1];\n            if (ancestor !== -1) {\n                ancestors[node][j] = ancestors[ancestor][j - 1];\n            }\n        }\n    }\n}\n\nfunction lca(u, v) {\n    if (level[u] < level[v]) {\n        [u, v] = [v, u]; // Swap u and v so that u is always deeper or at the same level as v\n    }\n\n    // Bring u and v to the same level\n    let diff = level[u] - level[v];\n    for (let j = 0; j < LG; j++) {\n        if ((diff >> j) & 1) {\n            u = ancestors[u][j];\n        }\n    }\n\n    if (u === v) {\n        return v;\n    }\n\n    // Move u and v up until they meet at the LCA\n    for (let j = LG - 1; j >= 0; j--) {\n        if (ancestors[u][j] !== -1 && ancestors[u][j] !== ancestors[v][j]) {\n            u = ancestors[u][j];\n            v = ancestors[v][j];\n        }\n    }\n\n    return ancestors[u][0];\n}\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let inputLines = [];\n    rl.on('line', (line) => {\n        inputLines.push(line.trim());\n    });\n\n    rl.on('close', () => {\n        let inputIndex = 0;\n        let firstLine = inputLines[inputIndex++].split(' ').map(Number);\n        n = firstLine[0]; // First number is the number of nodes\n\n        // Handle edge case of single node\n        if (n === 1) {\n            console.log(1);\n            return;\n        }\n\n        // Second and third numbers are u and v\n        let u = firstLine[1];\n        let v = firstLine[2];\n\n        for (let i = 1; i < n; i++) {\n            if (inputIndex >= inputLines.length) {\n                console.error('Input lines are less than expected');\n                return;\n            }\n            let [ui, vi] = inputLines[inputIndex++].split(' ').map(Number);\n            adj[ui].push(vi);\n            adj[vi].push(ui);\n        }\n\n        if (inputIndex !== inputLines.length) {\n            console.error('Input lines are more than expected');\n            return;\n        }\n\n        dfs(1);\n        preprocess();\n\n        // Find LCA of nodes u and v\n        console.log(lca(u, v));\n    });\n}\n\n// Run the main function\nmain();\n"
+    }
+  }
+}

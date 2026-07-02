@@ -1,0 +1,94 @@
+{
+  "questionId": "Q1351",
+  "title": "Distance to Nearest 0",
+  "slug": "distance-to-nearest-0",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given is a `N x M` binary matrix, for each cell find its distance from the nearest `0`.",
+    "constraints": [
+      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
+      "The elements of the matrix are either `0` or `1`.",
+      "There is at least one `0` in the matrix."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "",
+        "explanation": "Input Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the matrix.\nNext NNN lines containing MMM space separated integers, the elements of the matrix.\nOutput Format\n\nOutput NNN lines containing MMM space separated integers, the distance of each cell from nearest 0."
+      },
+      {
+        "id": "sample_2",
+        "input": "3 3\n0 1 1\n0 1 0\n1 1 1",
+        "output": "0 1 1\n0 1 0\n1 2 1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3 3\n0 1 1\n0 1 0\n1 1 1",
+        "expectedOutput": "0 1 1\n0 1 0\n1 2 1",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> directions = {0, 1, 0, -1, 0};\n\nvoid updateMatrix(vector<vector<int>>& matrix) {\n    int rows = matrix.size(), cols = matrix[0].size();\n    queue<pair<int, int>> to_process;\n    for (int row = 0; row < rows; ++row)\n        for (int col = 0; col < cols; ++col)\n            if (matrix[row][col] == 0) to_process.emplace(row, col);\n            else matrix[row][col] = -1;\n\n    while (!to_process.empty()) {\n        auto it = to_process.front(); \n        int row = it.first;\n        int col = it.second;\n        to_process.pop();\n        for (int i = 0; i < 4; ++i) {\n            int new_row = row + directions[i], new_col = col + directions[i+1];\n            if (new_row < 0 || new_row == rows || new_col < 0 || new_col == cols || matrix[new_row][new_col] != -1) continue;\n            matrix[new_row][new_col] = matrix[row][col] + 1;\n            to_process.emplace(new_row, new_col);\n        }\n    }\n}\n\nint main() {\n\n\n  int n, m;\n  cin >> n >> m;\n\n  assert(1 <= n && n <= 100);\n  assert(1 <= m && m <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (m));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cin >> mat[i][j];\n        int x = mat[i][j];\n        assert(x == 0 || x == 1);\n    }\n  } \n  \n  updateMatrix(mat);\n  \n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n       cout << mat[i][j] << ' ';\n    }\n    cout << endl;\n  } \n\n  return 0;\n} ",
+      "Python3": "from collections import deque\n\ndirections = [(0, 1), (1, 0), (0, -1), (-1, 0)]\n\ndef updateMatrix(matrix):\n    rows, cols = len(matrix), len(matrix[0])\n    queue = deque()\n\n    for row in range(rows):\n        for col in range(cols):\n            if matrix[row][col] == 0:\n                queue.append((row, col))\n            else:\n                matrix[row][col] = -1\n\n    while queue:\n        row, col = queue.popleft()\n\n        for dr, dc in directions:\n            new_row, new_col = row + dr, col + dc\n            if 0 <= new_row < rows and 0 <= new_col < cols and matrix[new_row][new_col] == -1:\n                matrix[new_row][new_col] = matrix[row][col] + 1\n                queue.append((new_row, new_col))\n\ndef main():\n    n, m = map(int, input().split())\n\n    assert 1 <= n <= 100\n    assert 1 <= m <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n\n    for row in mat:\n        for x in row:\n            assert x == 0 or x == 1\n\n    updateMatrix(mat)\n\n    for row in mat:\n        print(' '.join(map(str, row)))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <stdlib.h>\n#include <assert.h>\n\nint directions[] = {0, 1, 0, -1, 0};\n\nvoid updateMatrix(int matrix[][100], int numRows, int numCols) {\n    int rows = numRows, cols = numCols;\n    int queue[rows * cols][2];\n    int front = 0, rear = 0;\n\n    for (int row = 0; row < rows; ++row) {\n        for (int col = 0; col < cols; ++col) {\n            if (matrix[row][col] == 0) {\n                queue[rear][0] = row;\n                queue[rear++][1] = col;\n            } else {\n                matrix[row][col] = -1;\n            }\n        }\n    }\n\n    while (front != rear) {\n        int row = queue[front][0];\n        int col = queue[front][1];\n        front++;\n\n        for (int i = 0; i < 4; ++i) {\n            int new_row = row + directions[i], new_col = col + directions[i+1];\n            if (new_row < 0 || new_row == rows || new_col < 0 || new_col == cols || matrix[new_row][new_col] != -1) continue;\n            matrix[new_row][new_col] = matrix[row][col] + 1;\n            queue[rear][0] = new_row;\n            queue[rear++][1] = new_col;\n        }\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    assert(1 <= n && n <= 100);\n    assert(1 <= m && m <= 100);\n\n    int mat[100][100];\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            int val;\n            scanf(\"%d\", &val);\n            mat[i][j] = val;\n            int x = mat[i][j];\n            assert(x == 0 || x == 1);\n        }\n    }\n\n    updateMatrix(mat, n, m);\n    \n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            printf(\"%d \", mat[i][j]);\n        }\n        printf(\"\\n\");\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\npublic class Main {\n    static int[] directions = {0, 1, 0, -1, 0};\n\n    public static void updateMatrix(int[][] matrix) {\n        int rows = matrix.length;\n        int cols = matrix[0].length;\n        Queue<int[]> queue = new LinkedList<>();\n\n        for (int row = 0; row < rows; ++row) {\n            for (int col = 0; col < cols; ++col) {\n                if (matrix[row][col] == 0) {\n                    queue.add(new int[]{row, col});\n                } else {\n                    matrix[row][col] = -1;\n                }\n            }\n        }\n\n        while (!queue.isEmpty()) {\n            int[] cell = queue.poll();\n            int row = cell[0], col = cell[1];\n\n            for (int i = 0; i < 4; ++i) {\n                int new_row = row + directions[i], new_col = col + directions[i+1];\n                if (new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols && matrix[new_row][new_col] == -1) {\n                    matrix[new_row][new_col] = matrix[row][col] + 1;\n                    queue.add(new int[]{new_row, new_col});\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n                assert (mat[i][j] == 0 || mat[i][j] == 1);\n            }\n        }\n\n        updateMatrix(mat);\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                System.out.print(mat[i][j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "JavaScript": "function updateMatrix(matrix) {\n    const rows = matrix.length;\n    const cols = matrix[0].length;\n    const directions = [0, 1, 0, -1, 0];\n    const toProcess = [];\n    \n    for (let row = 0; row < rows; row++) {\n        for (let col = 0; col < cols; col++) {\n            if (matrix[row][col] === 0) {\n                toProcess.push([row, col]);\n            } else {\n                matrix[row][col] = -1;\n            }\n        }\n    }\n    while (toProcess.length > 0) {\n        const [row, col] = toProcess.shift();\n        for (let i = 0; i < 4; i++) {\n            const newRow = row + directions[i];\n            const newCol = col + directions[i + 1];\n            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && matrix[newRow][newCol] === -1) {\n                matrix[newRow][newCol] = matrix[row][col] + 1;\n                toProcess.push([newRow, newCol]);\n            }\n        }\n    }\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const [n, m] = input[0].split(' ').map(Number);\n\n    const matrix = [];\n    for (let i = 1; i <= n; i++) {\n        const row = input[i].split(' ').map(Number);\n        matrix.push(row);\n    }\n\n    updateMatrix(matrix);\n\n    for (const row of matrix) {\n        console.log(row.join(' '));\n    }\n});\n"
+    }
+  }
+}

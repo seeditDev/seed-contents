@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1579",
+  "title": "Linked List Increment",
+  "slug": "linked-list-increment",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given the head of a singly linked list with NNN nodes, representing a **positive integer number**.\n\nEach node in the linked list contains a **single digit (0–9)**, with the **first node representing the most significant digit**.\n\nYour task is to **add 1** to the number represented by the linked list and **return the updated linked list**.\n\nThere will be **no leading zeroes** in the given list (except if the number is `0` itself).\n\nFunction DeclarationFunction NameaddOneaddOneaddOne – This function adds 1 to the integer represented by a singly linked list.\n\nEach node contains a single digit (0–9), where the head node stores the most significant digit.\n\nParameters\nheadheadhead : A pointer to the head of the singly linked list representing the number.\nReturn Value\nReturns the head of the linked list after adding 1 to the number.\nIf adding 1 results in an extra digit (e.g., 999 → 1000), the function returns the new head containing the additional most significant digit.\nConstraints\n1≤N≤1051 \\leq N \\leq 10^51≤N≤105\n0≤Node.data≤90 \\leq \\text{Node.data} \\leq 90≤Node.data≤9\n\nInput Format\n\nThe first line contains an integer NNN — the number of nodes in the linked list.\nThe second line contains NNN space-separated integers representing the digits of the number (from most significant to least significant).\n\n\nOutput Format\n\nPrint all digits of the updated number in order, separated by spaces.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n5 6 7 8",
+        "output": "5 6 7 9",
+        "explanation": "Explanation:\nThe linked list represents the number 5678.\nAfter adding 1 -> 5679."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n2 3 9",
+        "output": "2 4 0",
+        "explanation": "Explanation:\n239 + 1 = 240."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n5 6 7 8",
+        "expectedOutput": "5 6 7 9",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3\n2 3 9",
+        "expectedOutput": "2 4 0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// Function to reverse a linked list\nNode* reverse(Node* head) {\n    Node* prev = nullptr;\n    Node* curr = head;\n    Node* next = nullptr;\n\n    while (curr != nullptr) {\n        next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}\n\n// Function to add one to the number represented by linked list\nNode* addOne(Node* head) {\n    // Step 1: Reverse list for easier addition\n    head = reverse(head);\n\n    Node* curr = head;\n    Node* prev = nullptr;\n    int carry = 1; // since we are adding 1\n\n    // Step 2: Traverse and add carry\n    while (curr != nullptr) {\n        int sum = curr->data + carry;\n        curr->data = sum % 10;\n        carry = sum / 10;\n        prev = curr;\n        curr = curr->next;\n    }\n\n    // Step 3: If carry remains, add new node\n    if (carry > 0) {\n        prev->next = new Node(carry);\n    }\n\n    // Step 4: Reverse again to restore original order\n    head = reverse(head);\n    return head;\n}\n",
+      "Python3": "# Function to reverse a linked list\ndef reverse(head):\n    prev = None\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev\n\n# Function to add one to the number represented by linked list\ndef addOne(head):\n    # Step 1: Reverse list for easy addition\n    head = reverse(head)\n\n    curr = head\n    carry = 1  # we are adding one\n    prev = None\n\n    # Step 2: Traverse and add carry\n    while curr:\n        total = curr.data + carry\n        curr.data = total % 10\n        carry = total // 10\n        prev = curr\n        curr = curr.next\n\n    # Step 3: If carry remains, add new node\n    if carry > 0:\n        prev.next = Node(carry)\n\n    # Step 4: Reverse again to restore order\n    head = reverse(head)\n    return head\n",
+      "C": "// Function to reverse the linked list\nstruct Node* reverse(struct Node* head) {\n    struct Node* prev = NULL;\n    struct Node* curr = head;\n    struct Node* next = NULL;\n\n    while (curr != NULL) {\n        next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}\n\n// Function to add 1 to the number represented by linked list\nstruct Node* addOne(struct Node* head) {\n    head = reverse(head);\n\n    struct Node* curr = head;\n    struct Node* prev = NULL;\n    int carry = 1;\n\n    while (curr != NULL) {\n        int sum = curr->data + carry;\n        curr->data = sum % 10;\n        carry = sum / 10;\n        prev = curr;\n        curr = curr->next;\n    }\n\n    if (carry > 0) {\n        prev->next = createNode(carry);\n    }\n\n    head = reverse(head);\n    return head;\n}\n",
+      "Java": "    // Function to reverse the linked list\n    public static Node reverse(Node head) {\n        Node prev = null, curr = head;\n        while (curr != null) {\n            Node next = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = next;\n        }\n        return prev;\n    }\n\n    // Function to add 1 to the number represented by linked list\n    public static Node addOne(Node head) {\n        head = reverse(head);\n\n        Node curr = head;\n        int carry = 1;\n        Node prev = null;\n\n        while (curr != null) {\n            int sum = curr.data + carry;\n            curr.data = sum % 10;\n            carry = sum / 10;\n            prev = curr;\n            curr = curr.next;\n        }\n\n        if (carry > 0) {\n            prev.next = new Node(carry);\n        }\n\n        return reverse(head);\n    }\n",
+      "JavaScript": "// Function to reverse a linked list\nfunction reverse(head) {\n    let prev = null;\n    let curr = head;\n    let next = null;\n\n    while (curr !== null) {\n        next = curr.next;\n        curr.next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}\n\n// Function to add one to the linked list number\nfunction addOne(head) {\n    head = reverse(head);\n    let curr = head;\n    let carry = 1; // we need to add one\n    let prev = null;\n\n    while (curr !== null) {\n        let sum = curr.data + carry;\n        curr.data = sum % 10;\n        carry = Math.floor(sum / 10);\n        prev = curr;\n        curr = curr.next;\n    }\n\n    if (carry > 0) {\n        prev.next = new Node(carry);\n    }\n\n    head = reverse(head);\n    return head;\n}\n"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "questionId": "Q1431",
+  "title": "Fractional Knapsack",
+  "slug": "fractional-knapsack",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given arrays of values and weights of items, and a knapsack capacity, find the maximum value achievable by selecting items (allowing fractional parts) such that total weight doesn't exceed capacity.\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains NNN and capacity\nSecond line contains NNN values\nThird line contains NNN weights\n\n\n\n\nOutput Format\n\nFor each test case, print maximum value possible, rounded to 6 decimal places.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "1≤capacity≤1091 \\leq capacity \\leq 10^91≤capacity≤109",
+      "1≤vali,wti≤1041 \\leq val_i, wt_i \\leq 10^41≤vali​,wti​≤104"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3 50\n60 100 120\n10 20 30\n2 50\n60 100\n10 20\n3 100\n10 20 30\n5 10 15",
+        "output": "240.000000\n160.000000\n60.000000",
+        "explanation": "Explanation:\nTest Case 1: Take first two items completely and third item partially ((120/30)*20 = 80). Total = 60 + 100 + 80 = 240 \nTest Case 2: Take both items completely. Total = 60 + 100 = 160 \nTest Case 3: All items can be taken completely as total weight (30) < capacity (100). Total = 10 + 20 + 30 = 60"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3 50\n60 100 120\n10 20 30\n2 50\n60 100\n10 20\n3 100\n10 20 30\n5 10 15",
+        "expectedOutput": "240.000000\n160.000000\n60.000000",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\ndouble getMaxValue(int n, vector<int>& val, vector<int>& wt, int capacity) {\n    vector<pair<double, int>> ratio(n);\n    \n    // Calculate value/weight ratio for each item\n    for(int i = 0; i < n; i++) {\n        ratio[i] = {(double)val[i]/wt[i], i};\n    }\n    \n    // Sort by ratio in descending order\n    sort(ratio.rbegin(), ratio.rend());\n    \n    double totalValue = 0.0;\n    int currentWeight = 0;\n    \n    // Process items in decreasing order of ratio\n    for(int i = 0; i < n; i++) {\n        int idx = ratio[i].second;\n        \n        if(currentWeight + wt[idx] <= capacity) {\n            currentWeight += wt[idx];\n            totalValue += val[idx];\n        }\n        else {\n            int remainingWeight = capacity - currentWeight;\n            totalValue += val[idx] * ((double)remainingWeight/wt[idx]);\n            break;\n        }\n    }\n    \n    return totalValue;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n, capacity;\n        cin >> n >> capacity;\n        \n        vector<int> val(n), wt(n);\n        \n        for(int i = 0; i < n; i++) cin >> val[i];\n        for(int i = 0; i < n; i++) cin >> wt[i];\n        \n        cout << fixed << setprecision(6) << getMaxValue(n, val, wt, capacity) << endl;\n    }\n    return 0;\n}"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1348",
+  "title": "Equal Rows and Columns",
+  "slug": "equal-rows-and-columns",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a `N x N` integer matrix, find the no. of pairs of row and column which are equal.\n\nFor eg. in the following matrix:\n\n\n\nNumber of equal pairs of row and columns is: **2** (Row 2 and column 2 are equal. Similarly, row 3 and column 3 are also equal)\n\n\nInput Format\n\nThe first line of input will contain a single integer NNN, denoting the no. of rows and columns in the matrix.\nNext NNN lines contains NNN space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line the no. of pairs of row and columns which are equal.",
+    "constraints": [
+      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
+      "The elements of the matrix are non-negative and won't exceed `1000`."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n9 0 0 3\n0 1 1 5\n0 1 1 5\n8 5 5 1",
+        "output": "4",
+        "explanation": "Explanation:\nRow 2 and column 2 are equal.\nRow 2 and column 3 are equal.\nRow 3 and column 2 are equal.\nRow 3 and column 3 are equal."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n9 0 0 3\n0 1 1 5\n0 1 1 5\n8 5 5 1",
+        "expectedOutput": "4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint equalPairs(vector<vector<int>>& mat) {\n    int ans = 0;\n    map<vector<int>, int> mp;\n\n    for (int i = 0; i < mat.size(); i++)\n        mp[mat[i]]++;\n    \n    for (int i = 0; i < mat[0].size(); i++) {\n        vector<int> v;\n        for (int j = 0; j < mat.size(); j++)\n            v.push_back(mat[j][i]);\n        ans += mp[v];\n    }\n\n    return ans;\n}\n\n\nint main() {\n  int n, m;\n  cin >> n;\n\n  assert(1 <= n && n <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (n));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < n; j++){\n        cin >> mat[i][j];\n    }\n  } \n  \n  cout << equalPairs(mat);\n\n\n  return 0;\n} ",
+      "Python3": "def equalPairs(mat):\n    ans = 0\n    mp = {}\n\n    for row in mat:\n        row_tuple = tuple(row)\n        mp[row_tuple] = mp.get(row_tuple, 0) + 1\n    \n    for i in range(len(mat[0])):\n        col_list = [mat[j][i] for j in range(len(mat))]\n        ans += mp.get(tuple(col_list), 0)\n\n    return ans\n\nif __name__ == \"__main__\":\n    n = int(input())\n    assert 1 <= n <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n\n    print(equalPairs(mat))\n",
+      "C": "#include <stdio.h>\n// exact same solution is not possible in C due to use of map data structure\nint equalPairs(int grid[][100], int gridSize, int gridColSize){\n    int ansCnt = 0;\n    int rLen = gridSize, cLen = gridColSize;\n    for(int i = 0; i < rLen; i++){\n        for(int j = 0; j < cLen; j++){\n            if(grid[i][0] == grid[0][j]){\n                ansCnt++;\n                for(int k = 0; k < rLen; k++)\n                {\n                    if(grid[i][k] != grid[k][j])\n                    {\n                        ansCnt--;\n                        break;\n                    }\n                }\n            }\n        }\n    }\n    return ansCnt;\n}\n\nint main() {\n    int n;\n\n    scanf(\"%d\", &n);\n\n    int grid[100][100];\n    \n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n; j++) {\n            scanf(\"%d\", &grid[i][j]);\n        }\n    }\n\n    int result = equalPairs(grid, n, n);\n    printf(\"%d\\n\", result);\n\n    return 0;\n}\n",
+      "Java": "import java.util.HashMap;\nimport java.util.Scanner;\n\npublic class Main {\n    public static int equalPairs(int[][] mat) {\n        int ans = 0;\n        HashMap<String, Integer> mp = new HashMap<>();\n\n        for (int i = 0; i < mat.length; i++) {\n            StringBuilder sb = new StringBuilder();\n            for (int j = 0; j < mat[i].length; j++) {\n                sb.append(mat[i][j]);\n                sb.append(\",\");\n            }\n            mp.put(sb.toString(), mp.getOrDefault(sb.toString(), 0) + 1);\n        }\n\n        for (int i = 0; i < mat[0].length; i++) {\n            StringBuilder sb = new StringBuilder();\n            for (int j = 0; j < mat.length; j++) {\n                sb.append(mat[j][i]);\n                sb.append(\",\");\n            }\n            ans += mp.getOrDefault(sb.toString(), 0);\n        }\n\n        return ans;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        assert (1 <= n && n <= 100);\n\n        int[][] mat = new int[n][n];\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                mat[i][j] = scanner.nextInt();\n            }\n        }\n\n        System.out.println(equalPairs(mat));\n    }\n}\n",
+      "JavaScript": "function equalPairs(mat) {\n    let ans = 0;\n    const mp = new Map();\n\n    for (const row of mat) {\n        const rowKey = row.join(','); \n        mp.set(rowKey, (mp.get(rowKey) || 0) + 1);\n    }\n    for (let i = 0; i < mat[0].length; i++) {\n        const column = [];\n        for (let j = 0; j < mat.length; j++) {\n            column.push(mat[j][i]);\n        }\n        const columnKey = column.join(','); \n        ans += mp.get(columnKey) || 0; \n    }\n\n    return ans;\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const n = parseInt(input[0]);\n    const mat = [];\n    for (let i = 1; i <= n; i++) {\n        mat.push(input[i].split(' ').map(Number));\n    }\n    \n    console.log(equalPairs(mat));\n});\n"
+    }
+  }
+}

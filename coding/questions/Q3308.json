@@ -1,0 +1,64 @@
+{
+  "questionId": "Q3308",
+  "title": "Special Sums",
+  "slug": "special-sums",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Indian National Olympiad in Informatics 2015\nIn this problem you are given two lists of N integers, a1,&nbsp;a2, ...,&nbsp;aN and b1,&nbsp;b2, ...&nbsp;bN. For any pair (i, j) with i, j ϵ {1, 2, ...,&nbsp;N}&nbsp;we define the segment from i to j, written as [i, j], to be i, i + 1, ...,&nbsp;j if i ≤ j and i, i + 1, ...,&nbsp;N, 1, 2, ...,j if i &gt; j. Thus if N = 5 then the [2, 4] = {2, 3, 4} and [4, 2] = {4, 5, 1, 2}.\n\n\nWith each segment [i, j] we associate a special sum SSum[i, j] as follows:\n\n\n\nSSum[i, i] = ai.\nIf i ≠&nbsp;j then,&nbsp;\n\n\n\nThe positions i and j contribute ai&nbsp;and aj, respectively, to the sum while every other position k in [i, j] contributes bk.\n\n\n\n\nSuppose N = 5 and that the two given sequences are as follows:\n\n\n\ni\n\n\n\n1\n\n\n\n2\n\n\n\n3\n\n\n\n4\n\n\n\n5\n\n\n\nai\n\n\n\n2\n\n\n\n3\n\n\n\n2\n\n\n\n3\n\n\n\n1\n\n\n\nbi\n\n\n\n3\n\n\n\n4\n\n\n\n4\n\n\n\n6\n\n\n\n3\n\n\n\n&nbsp;\n\n\nThen, SSum[1, 1] = 2, SSum[2, 4] = 3 + 4 + 3 = 10 and SSum[4, 2] = 3 + 3 + 3 + 3 = 12. Your aim is to compute the maximum value of SSum[i, j] over all segments [i, j]. In this example you can verify that this value is 18 (SSum[2, 1] = 18).\n\n\nInput format\n\nThe first line contains a single positive integer N.\n\n\nThis is followed by a line containing N integers giving the values of the ais and this is followed by a line containing N integers giving the values of the bis.\n\nOutput format\nA single integer in a single line giving the maximum possible special segment sum.\n\n\n**Note**: The final value may not fit in a 32 bit integer. Use variables of an appropriate type to store and manipulate this value (long long in C/C++, long in Java).\n\n\nTest DataYou may assume that -109 ≤ ai,&nbsp;bi ≤ 109.\n\nSubtask 1 (10 Marks) 1 ≤ N ≤ 3000.\nSubtask 2 (20 Marks) 1 ≤ N ≤ 106 and ai = bi for all 1 ≤ i ≤ N.\nSubtask 3 (30 Marks) 3 ≤ N ≤106. Further a1 = b1 = aN = bN = -109 and for each\n1 &lt; k &lt; N we have -999 ≤ ak,&nbsp;bk ≤ 999.\nSubtask 4 (40 Marks) 1 ≤ N ≤ 106.\n\nExample\n\nHere is the sample input and output corresponding to the example above:\n\n\n\n\n\nSample 1:\nInputOutput5\n2 3 2 3 1\n3 4 4 6 318\nExplanation:\n\nNote: Your program should not print anything other than what is specified in the output format. Please remove all diagnostic print statements before making your final submission. A program with extraneous output will be treated as incorrect!",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": []
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "We derive an O(N)O(N)O(N) solution by “unwrapping” the circle into a linear array of length 2N2N2N, and precomputing the prefix sum\nof the bbb values. For any segment with starting index iii (restricted to 0≤i≤N−10 \\le i \\le N-10≤i≤N−1) and ending index jjj in the\nextended array with the constraint that the segment length does not exceed NNN, the special sum becomes:\n\nSSum=(P[j+1]−P[i])+[(a[i]−b[i])+(a[j]−b[j])],SSum = \\bigl(P[j+1]-P[i]\\bigr) + \\bigl[(a[i]-b[i]) + (a[j]-b[j])\\bigr],SSum=(P[j+1]−P[i])+[(a[i]−b[i])+(a[j]−b[j])],where PPP is the prefix sum array for the extended bbb values. We define\n\nD[i]=(a[i]−b[i])−P[i],D[i] = (a[i]-b[i]) - P[i],D[i]=(a[i]−b[i])−P[i],so that for an endpoint jjj, the sum is\n\nSSum=P[j+1]+(a[j]−b[j])+D[i].SSum = P[j+1] + (a[j]-b[j]) + D[i].SSum=P[j+1]+(a[j]−b[j])+D[i].For each possible endpoint jjj, you want the best (largest) D[i]D[i]D[i] over all allowed starting indices iii in a sliding window.\nWe maintain these candidates using a deque so that the maximum D[i]D[i]D[i] in the current window can be obtained in O(1)O(1)O(1) time and\nupdate the answer accordingly. Remember also to compare with the case of a single element segment (i.e. simply a[i]a[i]a[i]). This\napproach works in O(N)O(N)O(N) time and is efficient enough for NNN up to 10610^6106.\n\nBelow you will find the complete code for this approach in both C++ and Python.\n\nHappy coding and best of luck with your DSA interviews!",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

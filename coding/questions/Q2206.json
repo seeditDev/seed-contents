@@ -1,0 +1,73 @@
+{
+  "questionId": "Q2206",
+  "title": "Soccer League",
+  "slug": "soccer-league",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "flow & matching",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Flow & Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "The new season of the Bytelandian Premier League (BPL) has started!\n\nIn the BPL, any two soccer teams play with each other exactly once. In each match, the winner earns 3 points and the loser earns no point. There is no draw (if the match is level after the two halves, two teams will take part in a penalty shootout to decide the winner).\n\nAt the end of the league, the winner is the team having the largest number of points. In case there are more than one team which has the largest number of points, these teams will be co-champions of the league.\n\nThe league has been running for some time. Now, the following problem has arisen: we would like to know if a specific team still has a chance of winning the league.",
+    "constraints": [],
+    "inputFormat": "The first line contains T (about 20), the number of test cases. Then T test cases follow. Each test case has the following form.\n\nThe first line of the test case contains a number N (1 &lt;= N &lt;= 140), the number of teams in the league.\n\nThe i-th line in the next N lines contains N numbers ai1, ai2, ..., ain. The number aij gives the status of the match between the i-th team and the j-th team:\n\naij = 1 if the i-th team wins,\naij = 0 if the i-th team loses,\naij = 2 if the match has not taken place yet.\nThe input data is such that if i!=j, then aij + aji = 1 or aij = aji = 2. Moreover, aii = 0 for all i.",
+    "outputFormat": "For each test case, print a binary string of length N, in which the i-th character is 1 if the i-th team still has a chance to be a champion of the league, and 0 otherwise.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3\n0 0 0 \n1 0 1 \n1 0 0 \n4\n0 1 1 0 \n0 0 2 0 \n0 2 0 0 \n1 1 1 0 \n5\n0 2 2 1 0 \n2 0 1 1 0 \n2 0 0 1 0 \n0 0 0 0 1 \n1 1 1 0 0",
+        "output": "010\n0001\n11001",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3\n0 0 0 \n1 0 1 \n1 0 0 \n4\n0 1 1 0 \n0 0 2 0 \n0 2 0 0 \n1 1 1 0 \n5\n0 2 2 1 0 \n2 0 1 1 0 \n2 0 0 1 0 \n0 0 0 0 1 \n1 1 1 0 0",
+        "expectedOutput": "010\n0001\n11001",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The problem is solved by analyzing the results of matches. The number of wins (`wins[i]`) and unplayed matches (`unplayed[i]`) for each team is tracked. The highest current score (`score`) is determined by iterating over the results of all matches. Then, it is checked whether adding the maximum potential points from unplayed matches allows a team to equal or surpass the current highest score. If a team cannot potentially achieve the highest score, it is marked as having no chance (0). Otherwise, it is marked as having a chance (1).\n\nThe logic also considers the scenario where unplayed matches between top teams might increase the score further if they directly impact the current leading teams’ wins. This ensures a thorough assessment of all possibilities for championship contention.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n\nusing namespace std;\n\nvoid league(char *matches, int n) {\n    int score = 0;\n    int wins[n] = {0};\n    int unplayed[n] = {0};\n    \n    for (int i = 0; i < n; ++i){\n        for (int j = 0; j < n; ++j) {\n            if (matches[i * n + j] == 1) {\n                ++wins[i];\n                if (score < wins[i]) score = wins[i];\n            }\n            else if (matches[i * n + j] == 2) ++unplayed[i];\n        }\n    }\n    for (int i = 0; i < n; ++i) {\n        if (wins[i] + unplayed[i] < score) continue;\n        for (int j = 0; j < n; ++j)\n            if (matches[i * n + j] == 2 && wins[i] == score && wins[j] == score) ++score;\n    }\n\n    for (int i = 0; i < n; ++i)\n        if (wins[i] + unplayed[i] < score) cout << '0';\n        else cout << '1';\n    cout << '\\n';\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int t, n;\n    cin >> t;\n    for (int i = 0; i < t; ++i) {\n        cin >> n;\n        char * matches = new char[n * n];\n        for (int x = 0; x < n; ++x)\n            for (int y = 0; y < n; ++y) {\n                cin >> matches[x * n + y];\n                matches[x * n + y] -= '0';\n            }\n        league(matches, n);\n    }\n\n    return 0;\n}"
+    }
+  }
+}

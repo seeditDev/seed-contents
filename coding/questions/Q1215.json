@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1215",
+  "title": "XOR and AND",
+  "slug": "xor-and-and",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Alice has an array AAA of length NNN. She is interested in finding the number of pairs (i,j)(i, j)(i,j) such that 1≤i&lt;j≤N1\\leq i \\lt j \\leq N1≤i&lt;j≤N and Ai⊕Aj&lt;Ai&amp;AjA_i \\oplus A_j \\lt A_i \\&amp; A_jAi​⊕Aj​&lt;Ai​&amp;Aj​.\n\n⊕\\oplus⊕ represents the Bitwise XOR operator.\n&amp;\\&amp;&amp; represents the Bitwise AND operator.\n\n\nInput Format\n\nThe first line of input will contain an integer TTT — number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of each test case contains an integer NNN, the length of the array AAA.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots , A_NA1​,A2​,…,AN​.\n\n\nOutput Format\nFor each test case, output the number of pairs (i,j)(i, j)(i,j) such that 1≤i&lt;j≤N1 \\leq i \\lt j \\leq N1≤i&lt;j≤N and Ai⊕Aj&lt;Ai&amp;AjA_i \\oplus A_j \\lt A_i \\&amp; A_jAi​⊕Aj​&lt;Ai​&amp;Aj​.",
+    "constraints": [
+      "1≤T≤1041 \\leq T \\leq 10^41≤T≤104",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "1≤Ai≤1091 \\leq A_i \\leq 10^91≤Ai​≤109",
+      "Sum of NNN over all test cases does not exceed 3⋅1053 \\cdot 10^53⋅105."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4\n1 1 2 3\n4\n1 2 3 4",
+        "output": "2\n1",
+        "explanation": "Explanation:\nTest case 111: The two pairs of indices satisfying the condition are (1,2)(1, 2)(1,2) and (3,4)(3, 4)(3,4), because\n\nA1⊕A2=0A_1 \\oplus A_2 = 0A1​⊕A2​=0 and A1&A2=1A_1 \\& A_2 = 1A1​&A2​=1\nA3⊕A4=1A_3 \\oplus A_4 = 1A3​⊕A4​=1 and A3&A4=2A_3 \\& A_4 = 2A3​&A4​=2\n\nTest case 222: The only pair of indices satisfying the condition is (2,3)(2, 3)(2,3)."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4\n1 1 2 3\n4\n1 2 3 4",
+        "expectedOutput": "2\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n#define ll long long int\nusing namespace std;\n \nint singificant_bit_position(int x)\n{\n    int pos = 0;\n    while (x != 0)\n    {\n        x /= 2;\n        ++pos;\n    }\n    return pos;\n}\n \nvoid mainSolve()\n{\n    int n;\n    cin >> n;\n    vector<ll> v(n);\n    for (int i = 0; i < n; i++)\n        cin >> v[i];\n \n    unordered_map<ll, ll> m;\n    for (int x : v)\n        ++m[singificant_bit_position(x)];\n \n    ll ans = 0;\n    for (auto it : m)\n    {\n        ans = (ans + (it.second * (it.second - 1ll)) / 2ll);\n    }\n    cout << ans << endl;\n}\n \nint main()\n{\n    int t;\n    cin >> t;\n    while (t--)\n    {\n        mainSolve();\n    }\n    return 0;\n}",
+      "Python3": "def significant_bit_position(x):\n    pos = 0\n    while x != 0:\n        x //= 2\n        pos += 1\n    return pos\n\ndef main_solve():\n    n = int(input())\n    v = list(map(int, input().split()))\n\n    # Using a dictionary to store counts of significant bit positions\n    bit_count = {}\n    for x in v:\n        pos = significant_bit_position(x)\n        bit_count[pos] = bit_count.get(pos, 0) + 1\n\n    # Calculate the answer based on the counts\n    ans = 0\n    for count in bit_count.values():\n        ans += (count * (count - 1)) // 2\n\n    print(ans)\n\n# Main input loop\nt = int(input())\nfor _ in range(t):\n    main_solve()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef long long ll;\n\n// Function to calculate the position of the most significant bit in `x`\nint significant_bit_position(int x) {\n    int pos = 0;\n    while (x != 0) {\n        x /= 2;\n        ++pos;\n    }\n    return pos;\n}\n\n// Main function to solve each test case\nvoid mainSolve() {\n    int n;\n    scanf(\"%d\", &n);\n    ll *v = (ll*)malloc(n * sizeof(ll));\n    \n    // Reading input values into the array\n    for (int i = 0; i < n; i++) {\n        scanf(\"%lld\", &v[i]);\n    }\n    \n    // Using an array to simulate an unordered_map for bit position frequencies\n    ll m[32] = {0}; // Initialize all positions to zero\n    for (int i = 0; i < n; i++) {\n        int pos = significant_bit_position(v[i]);\n        ++m[pos];\n    }\n    \n    // Calculating the answer\n    ll ans = 0;\n    for (int i = 0; i < 32; i++) {\n        if (m[i] > 1) {\n            ans += (m[i] * (m[i] - 1ll)) / 2ll;\n        }\n    }\n    printf(\"%lld\\n\", ans);\n    free(v); // Free allocated memory\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        mainSolve();\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner sc = new Scanner(System.in);\n        int t = sc.nextInt();\n        while (t-- > 0) {\n            mainSolve(sc);\n        }\n        sc.close();\n    }\n\n    public static int significantBitPosition(int x) {\n        int pos = 0;\n        while (x != 0) {\n            x /= 2;\n            ++pos;\n        }\n        return pos;\n    }\n\n    public static void mainSolve(Scanner sc) {\n        int n = sc.nextInt();\n        ArrayList<Long> v = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            v.add(sc.nextLong());\n        }\n\n        HashMap<Integer, Long> m = new HashMap<>();\n        for (long x : v) {\n            int pos = significantBitPosition((int) x);\n            m.put(pos, m.getOrDefault(pos, 0L) + 1);\n        }\n\n        long ans = 0;\n        for (Map.Entry<Integer, Long> entry : m.entrySet()) {\n            long count = entry.getValue();\n            ans += (count * (count - 1)) / 2;\n        }\n\n        System.out.println(ans);\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet inputLines = [];\nrl.on('line', (line) => {\n    inputLines.push(line.trim());\n});\n\nrl.on('close', () => {\n    // Helper function to find the position of the most significant bit\n    function significantBitPosition(x) {\n        let pos = 0;\n        while (x !== 0) {\n            x = Math.floor(x / 2);\n            pos++;\n        }\n        return pos;\n    }\n\n    let index = 0;\n    const T = parseInt(inputLines[index++], 10);\n\n    for (let t = 0; t < T; t++) {\n        const n = parseInt(inputLines[index++], 10);\n        const v = inputLines[index++].split(' ').map(Number);\n        \n        // Map to store frequency of significant bit positions\n        const bitPositionMap = new Map();\n\n        for (let x of v) {\n            const pos = significantBitPosition(x);\n            bitPositionMap.set(pos, (bitPositionMap.get(pos) || 0) + 1);\n        }\n\n        let ans = 0;\n        for (let count of bitPositionMap.values()) {\n            ans += (count * (count - 1)) / 2;\n        }\n\n        console.log(ans);\n    }\n});\n"
+    }
+  }
+}

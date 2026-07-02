@@ -1,0 +1,79 @@
+{
+  "questionId": "Q1623",
+  "title": "Search in Rotated Sorted Array",
+  "slug": "search-in-rotated-sorted-array",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a sorted array that has been rotated to the right by some number of steps. Your task is to find the index of a given element in this array.\n\nFor example, if a sorted array [1,2,3,4,5] is rotated by 2 positions, it becomes [4,5,1,2,3]. Despite being rotated, the array maintains some order that can be used to search efficiently.\n\n\nInput Format\n\nFirst line contains TTT - the number of test cases\nFor each test case:\n\nFirst line contains two space-separated integers NNN and KKK - size of array and element to find\nSecond line contains NNN space-separated integers A1,A2,...,ANA_1, A_2, ..., A_NA1​,A2​,...,AN​ - the rotated array elements\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer - the index of KKK in the array (0-based indexing), or -1 if KKK is not found",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤50001 \\leq N \\leq 50001≤N≤5000",
+      "0≤K≤1050 \\leq K \\leq 10^50≤K≤105",
+      "0≤Ai≤1050 \\leq A_i \\leq 10^50≤Ai​≤105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n5 2\n12 15 18 2 4\n4 3\n3 4 1 2\n6 6\n6 7 1 2 3 4\n5 5\n1 2 3 4 5",
+        "output": "3\n0\n0\n4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n5 2\n12 15 18 2 4\n4 3\n3 4 1 2\n6 6\n6 7 1 2 3 4\n5 5\n1 2 3 4 5",
+        "expectedOutput": "3\n0\n0\n4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Binary search function\nint binarySearch(vector<int> &arr, int lo, int hi, int x) {\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (arr[mid] == x) return mid;\n        if (arr[mid] < x) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return -1;\n}\n\n// Function to find pivot (index of the smallest element)\nint findPivot(vector<int> &arr, int lo, int hi) {\n    while (lo < hi) {\n        if (arr[lo] <= arr[hi]) return lo;\n        int mid = (lo + hi) / 2;\n        if (arr[mid] > arr[hi]) lo = mid + 1;\n        else hi = mid;\n    }\n    return lo;\n}\n\n// Function to search for the key in the rotated sorted array\nint search(vector<int> &arr, int key) {\n    int n = arr.size();\n    int pivot = findPivot(arr, 0, n - 1);\n\n    if (arr[pivot] == key) return pivot;\n    if (pivot == 0) return binarySearch(arr, 0, n - 1, key);\n    if (arr[0] <= key) return binarySearch(arr, 0, pivot - 1, key);\n    return binarySearch(arr, pivot, n - 1, key);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        vector<int> arr(N);\n        for (int i = 0; i < N; i++) cin >> arr[i];\n        cout << search(arr, K) << endl;\n    }\n    return 0;\n}\n",
+      "Python3": "def binary_search(arr, lo, hi, x):\n    while lo <= hi:\n        mid = lo + (hi - lo) // 2\n        if arr[mid] == x:\n            return mid\n        if arr[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\n\ndef find_pivot(arr, lo, hi):\n    while lo < hi:\n        if arr[lo] <= arr[hi]:\n            return lo\n        mid = (lo + hi) // 2\n        if arr[mid] > arr[hi]:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo\n\n\ndef search(arr, key):\n    n = len(arr)\n    pivot = find_pivot(arr, 0, n - 1)\n\n    if arr[pivot] == key:\n        return pivot\n    if pivot == 0:\n        return binary_search(arr, 0, n - 1, key)\n    if arr[0] <= key:\n        return binary_search(arr, 0, pivot - 1, key)\n    return binary_search(arr, pivot, n - 1, key)\n\n\n# Driver code\nT = int(input())\nfor _ in range(T):\n    N, K = map(int, input().split())\n    arr = list(map(int, input().split()))\n    print(search(arr, K))\n"
+    }
+  }
+}

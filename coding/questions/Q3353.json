@@ -1,0 +1,85 @@
+{
+  "questionId": "Q3353",
+  "title": "Simple Statistics",
+  "slug": "simple-statistics",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Sorting",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "sorting",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Sorting"
+    ]
+  },
+  "content": {
+    "problemStatement": "Sergey has made **N** measurements. Now, he wants to know the average value of the measurements made.\n\nIn order to make the average value a better representative of the measurements, before calculating the average, he wants first to remove the highest **K** and the lowest **K** measurements. After that, he will calculate the average value among the remaining **N - 2K** measurements.\n\nCould you help Sergey to find the average value he will get after these manipulations?",
+    "constraints": [
+      "**1** ≤ **T** ≤ **100**",
+      "**1** ≤ **N** ≤ **104**",
+      "**0** ≤ **2K** &lt; **N**",
+      "**-106** ≤ **Ai** ≤ **106**",
+      "Subtasks",
+      "Subtask #1 (50 points): **K = 0**",
+      "Subtask #2 (50 points): **no additional constraints**"
+    ],
+    "inputFormat": "The first line of the input contains an integer **T** denoting the number of test cases. The description of **T** test cases follows.\n\nThe first line of each test case contains two space-separated integers **N** and **K** denoting the number of measurements and the number of the greatest and the lowest values that will be removed.\n\nThe second line contains **N** space-separated integers **A1**, **A2**, ..., **AN** denoting the measurements.",
+    "outputFormat": "For each test case, output a single line containing the average value after removing **K** lowest and **K** greatest measurements.\n\nYour answer will be considered correct, in case it has absolute or relative error, not exceeding **10-6**.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n5 1\n2 9 -10 25 1\n5 0\n2 9 -10 25 1\n3 1\n1 1 1",
+        "output": "4.000000\n5.400000\n1.000000",
+        "explanation": "Explanation:\nExample case 1. After removing 1 greatest and 1 lowest measurement, we get the set {2, 9, 1}. The average value in this set is (2+9+1)/3=4.\nExample case 2. The average value in the set {2, 9, -10, 25, 1} is (2+9-10+25+1)/5=5.4.\nExample case 3. After removing the 1 largest and smallest measurements, Sergey will be left with only one measurement, i.e. 1. Average of this is 1 itself."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n5 1\n2 9 -10 25 1\n5 0\n2 9 -10 25 1\n3 1\n1 1 1",
+        "expectedOutput": "4.000000\n5.400000\n1.000000",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n, k;\n        cin >> n >> k;\n        \n        int a[n];\n        for (int i = 0; i < n; i++) {\n            cin >> a[i];\n        }\n\n        sort(a, a + n);\n\n        double sum = 0;\n        for (int i = k; i < n - k; i++) {\n            sum += a[i];\n        }\n\n        double average = sum / (n - 2 * k);\n        cout << fixed << setprecision(6) << average << endl;\n    }\n\n    return 0;\n}\n",
+      "Python3": "t = int(input())\nfor _ in range(t):\n    n, k = map(int, input().split())\n    a = list(map(int, input().split()))\n    a.sort()\n    \n    sum_val = sum(a[k:n-k])\n    average = sum_val / (n - 2 * k)\n    \n    print(f\"{average:.6f}\")\n",
+      "C": "#include <stdio.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n, k;\n        scanf(\"%d %d\", &n, &k);\n        int a[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &a[i]);\n        }\n        qsort(a, n, sizeof(int), compare);\n\n        double sum = 0;\n        for (int i = k; i < n - k; i++) {\n            sum += a[i];\n        }\n\n        double average = sum / (n - 2 * k);\n        printf(\"%.6f\\n\", average);\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n        while (t-- > 0) {\n            int n = scanner.nextInt();\n            int k = scanner.nextInt();\n            int[] a = new int[n];\n            for (int i = 0; i < n; i++) {\n                a[i] = scanner.nextInt();\n            }\n            Arrays.sort(a);\n            \n            double sum = 0;\n            for (int i = k; i < n - k; i++) {\n                sum += a[i];\n            }\n\n            double average = sum / (n - 2 * k);\n            System.out.printf(\"%.6f%n\", average);\n        }\n    }\n}\n",
+      "JavaScript": "function Simpstat(input) {\n    const lines = input.trim().split('\\n');\n    const T = parseInt(lines[0]);\n\n    let index = 1;\n    for (let t = 0; t < T; t++) {\n        const [N, K] = lines[index++].split(' ').map(Number);\n        const measurements = lines[index++].split(' ').map(Number);\n\n        measurements.sort((a, b) => a - b); // Sort measurements in ascending order\n\n        // Calculate the sum of remaining measurements after removing K lowest and K highest values\n        let sum = 0;\n        for (let i = K; i < N - K; i++) {\n            sum += measurements[i];\n        }\n\n        // Calculate the average of the remaining measurements\n        const average = sum / (N - 2 * K);\n        console.log(average.toFixed(6)); // Output the average value with 6 decimal places\n    }\n}\n\n// Set up input reading from standard input\nprocess.stdin.setEncoding('utf8');\nlet input = '';\nprocess.stdin.on('data', function(chunk) {\n    input += chunk;\n});\nprocess.stdin.on('end', function() {\n    Simpstat(input);\n});\n"
+    }
+  }
+}

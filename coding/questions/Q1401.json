@@ -1,0 +1,85 @@
+{
+  "questionId": "Q1401",
+  "title": "Special Substring",
+  "slug": "special-substring",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef gave you a string SSS of size NNN which contains only lowercase English letters  and asked you to find the length of the longest substring of the string which satisfies the following condition:\n\n\nEach character β\\betaβ should appear at most f(β)f(\\beta)f(β) times.\nHere f(β)f(\\beta)f(β) denotes the index of the character β\\betaβ in the alphabet series. For example f(′a′)f('a')f(′a′) = 111, f(′b′)f('b')f(′b′) = 222 and so on.\n\n**Note:** A substring of a string is a contiguous subsequence of that string.\n\n\nInput Format\n\nFirst-line will contain TTT - the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the size of the string.\nThe second line of every test case contains a string SSS of size NNN.\n\n\nOutput Format\nFor each testcase, output in a single line - the answer to the iii-th test case.",
+    "constraints": [
+      "1≤T≤25001 \\leq T \\leq 25001≤T≤2500",
+      "1≤N≤105,∑N≤5⋅1051 \\leq N \\leq 10^5, \\sum N \\leq 5\\cdot10^51≤N≤105,∑N≤5⋅105",
+      "The string contains only lowercase english letters",
+      "Subtasks",
+      "**Subtask #1:** 10 points : 1≤N≤102,∑N≤5⋅1021 \\leq N \\leq 10^2, \\sum N \\leq 5\\cdot10^21≤N≤102,∑N≤5⋅102",
+      "**Subtask #2:** 20 points : 1≤N≤103,∑N≤5⋅1031 \\leq N \\leq 10^3, \\sum N \\leq 5\\cdot10^31≤N≤103,∑N≤5⋅103",
+      "**Subtask #3:** 70 points : 1≤N≤105,∑N≤5⋅1051 \\leq N \\leq 10^5, \\sum N \\leq 5\\cdot10^51≤N≤105,∑N≤5⋅105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n6\njyjerm\n4\nabbb",
+        "output": "6\n3",
+        "explanation": "Explanation:\nTest Case 111: Every character appears less than its index in the English alphabet so we can consider the entire string.\n\n\nTest Case 222: We can consider 'b' at most 2 times, therefore, the answer is 333."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n6\njyjerm\n4\nabbb",
+        "expectedOutput": "6\n3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code uses the **sliding window** technique to find the longest valid **substring**. It maintains a frequency map to count occurrences of characters while expanding the right pointer. For each character added, it checks if any character exceeds its allowed frequency based on its position in the alphabet. If so, it adjusts the left pointer to shrink the window until the substring becomes valid again. At each valid state, it updates the **maximum** length found. This efficiently finds the longest substring meeting the character frequency condition.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int findMaxSubstring(string &s) {\n        int n = s.size();\n        int left = 0, right = 0;\n        map<char, int> mp;\n        int max_size = INT_MIN;\n        \n        while (right < n) {\n            mp[s[right]]++;\n            while (mp[s[right]] > s[right] - 'a' + 1) {\n                mp[s[left]]--;\n                left++;\n            }\n            max_size = max(max_size, right - left + 1);\n            right++;\n        }\n        return max_size;\n    }\n};\n",
+      "Python3": "class Solution:\n    def findMaxSubstring(self, s: str) -> int:\n        n = len(s)\n        left = 0\n        right = 0\n        mp = {}\n        max_size = float('-inf')\n        \n        while right < n:\n            mp[s[right]] = mp.get(s[right], 0) + 1\n            \n            while mp[s[right]] > (ord(s[right]) - ord('a') + 1):\n                mp[s[left]] -= 1\n                left += 1\n            \n            max_size = max(max_size, right - left + 1)\n            right += 1\n        \n        return max_size\n",
+      "C": "int findMaxSubstring(char *s) {\n    int n = strlen(s);\n    int left = 0, right = 0;\n    int mp[26] = {0};\n    int max_size = INT_MIN;\n\n    while (right < n) {\n        char ch = s[right];\n        mp[ch - 'a']++;\n\n        while (mp[ch - 'a'] > (ch - 'a' + 1)) {\n            char leftChar = s[left];\n            mp[leftChar - 'a']--;\n            left++;\n        }\n\n        int window_size = right - left + 1;\n        if (window_size > max_size)\n            max_size = window_size;\n\n        right++;\n    }\n\n    return max_size;\n}\n",
+      "Java": "class Solution {\n    public int findMaxSubstring(String s) {\n        int n = s.length();\n        int left = 0, right = 0;\n        Map<Character, Integer> mp = new HashMap<>();\n        int maxSize = Integer.MIN_VALUE;\n\n        while (right < n) {\n            char ch = s.charAt(right);\n            mp.put(ch, mp.getOrDefault(ch, 0) + 1);\n\n            while (mp.get(ch) > (ch - 'a' + 1)) {\n                char leftChar = s.charAt(left);\n                mp.put(leftChar, mp.get(leftChar) - 1);\n                left++;\n            }\n\n            maxSize = Math.max(maxSize, right - left + 1);\n            right++;\n        }\n\n        return maxSize;\n    }\n}\n",
+      "JavaScript": "class Solution {\n    findMaxSubstring(s) {\n        const n = s.length;\n        let left = 0, right = 0;\n        const mp = new Map();\n        let maxSize = -Infinity;\n\n        while (right < n) {\n            const ch = s[right];\n            mp.set(ch, (mp.get(ch) || 0) + 1);\n\n            while (mp.get(ch) > (ch.charCodeAt(0) - 'a'.charCodeAt(0) + 1)) {\n                const leftChar = s[left];\n                mp.set(leftChar, mp.get(leftChar) - 1);\n                left++;\n            }\n\n            maxSize = Math.max(maxSize, right - left + 1);\n            right++;\n        }\n\n        return maxSize;\n    }\n}\n"
+    }
+  }
+}

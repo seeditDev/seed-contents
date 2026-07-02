@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1584",
+  "title": "Find Pairs with Given Sum in Doubly Linked List",
+  "slug": "find-pairs-with-given-sum-in-doubly-linked-list",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a **sorted doubly linked list** of **distinct positive integers** and an integer **target**.\nYour task is to **find all pairs** `(a, b)` such that:\n\na+b==targeta + b == targeta+b==target  and  a&lt;ba &lt; ba&lt;b\n\nReturn or print all such pairs in ascending order of `a`.\n\nIf no pairs exist, print an empty list `[]`.\n\nFunction DeclarationFunction NamefindPairsfindPairsfindPairs – This function finds all pairs of values in a **sorted doubly linked list** such that:\n\n\nThe sum of the pair equals the given target\nThe pair satisfies a+b=targeta + b = \\text{target}a+b=target and a&lt;ba &lt; ba&lt;b\nParameters\nheadheadhead : A pointer to the head (first node) of the doubly linked list.\ntailtailtail : A pointer to the tail (last node) of the doubly linked list.\ntargettargettarget : The integer sum for which valid pairs must be found.\nReturn Value\nThis function does not return a value.\nIt prints all valid pairs in the format:\n\n`[a, b] [c, d] ...` in increasing order of `a`.\nIf no valid pairs exist, it prints `[]`.\nConstraints\n1≤N≤1051 \\leq N \\leq 10^51≤N≤105\n1≤Node.data≤1051 \\leq \\text{Node.data} \\leq 10^51≤Node.data≤105\n1≤target≤1051 \\leq \\text{target} \\leq 10^51≤target≤105\nThe doubly linked list is sorted in **strictly increasing order**.\nAll node values are **distinct**.\n\nInput Format\n\nThe first line contains an integer NNN — the number of nodes in the doubly linked list.\nThe second line contains NNN space-separated integers representing the node values in sorted order.\nThe third line contains an integer targettargettarget — the required sum.\n\n\nOutput Format\n\nPrint all valid pairs whose sum equals `target`, in the format:\n\n`[a, b] [c, d] ...`\nIf no such pairs exist, print `[]`.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7  \n1 2 4 5 6 8 9  \n7",
+        "output": "[1, 6] [2, 5]",
+        "explanation": "Explanation:\nThe pairs that sum up to 7 are (1,6) and (2,5)."
+      },
+      {
+        "id": "sample_2",
+        "input": "3  \n1 5 6  \n6",
+        "output": "[1, 5]",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7  \n1 2 4 5 6 8 9  \n7",
+        "expectedOutput": "[1, 6] [2, 5]",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3  \n1 5 6  \n6",
+        "expectedOutput": "[1, 5]",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "void findPairs(Node* head, Node* tail, int target) {\n    if (head == nullptr) {\n        cout << \"[]\";\n        return;\n    }\n\n    Node* left = head;\n    Node* right = tail;\n    bool found = false;\n\n    // Two-pointer search\n    while (left && right && left->data < right->data) {\n        int sum = left->data + right->data;\n\n        if (sum == target) {\n            cout << \"[\" << left->data << \", \" << right->data << \"] \";\n            found = true;\n            left = left->next;\n            right = right->prev;\n        }\n        else if (sum < target)\n            left = left->next;\n        else\n            right = right->prev;\n    }\n\n    if (!found)\n        cout << \"[]\";\n}\n",
+      "Python3": "def findPairs(head, tail, target):\n    if not head:\n        print(\"[]\")\n        return\n\n    left = head\n    right = tail\n    found = False\n    result = []\n\n    # Two-pointer approach\n    while left and right and left.data < right.data:\n        s = left.data + right.data\n        if s == target:\n            result.append(f\"[{left.data}, {right.data}]\")\n            found = True\n            left = left.next\n            right = right.prev\n        elif s < target:\n            left = left.next\n        else:\n            right = right.prev\n\n    if not found:\n        print(\"[]\")\n    else:\n        print(\" \".join(result))\n",
+      "C": "void findPairs(Node* head, Node* tail, int target) {\n    if (head == NULL) {\n        printf(\"[]\");\n        return;\n    }\n\n    Node* left = head;\n    Node* right = tail;\n    int found = 0;\n\n    while (left && right && left->data < right->data) {\n        int sum = left->data + right->data;\n\n        if (sum == target) {\n            printf(\"[%d, %d] \", left->data, right->data);\n            found = 1;\n            left = left->next;\n            right = right->prev;\n        }\n        else if (sum < target)\n            left = left->next;\n        else\n            right = right->prev;\n    }\n\n    if (!found)\n        printf(\"[]\");\n}\n",
+      "Java": "    public static void findPairs(Node head, int target, StringBuilder sb) {\n        if (head == null) {\n            sb.append(\"[]\");\n            return;\n        }\n\n        Node left = head;\n        Node right = head;\n\n        // Move right to end\n        while (right.next != null)\n            right = right.next;\n\n        boolean found = false;\n\n        // Two-pointer search\n        while (left != null && right != null && left.data < right.data) {\n            int sum = left.data + right.data;\n\n            if (sum == target) {\n                sb.append(\"[\").append(left.data).append(\", \").append(right.data).append(\"] \");\n                found = true;\n                left = left.next;\n                right = right.prev;\n            } \n            else if (sum < target)\n                left = left.next;\n            else\n                right = right.prev;\n        }\n\n        if (!found)\n            sb.append(\"[]\");\n    }\n",
+      "JavaScript": "function findPairs(head, tail, target) {\n  if (!head) {\n    console.log(\"[]\");\n    return;\n  }\n\n  let left = head;\n  let right = tail;\n  let found = false;\n  let result = [];\n\n  // Two-pointer approach\n  while (left && right && left.data < right.data) {\n    const sum = left.data + right.data;\n\n    if (sum === target) {\n      result.push(`[${left.data}, ${right.data}]`);\n      found = true;\n      left = left.next;\n      right = right.prev;\n    } \n    else if (sum < target) {\n      left = left.next;\n    } \n    else {\n      right = right.prev;\n    }\n  }\n\n  if (!found) console.log(\"[]\");\n  else console.log(result.join(\" \"));\n}\n"
+    }
+  }
+}

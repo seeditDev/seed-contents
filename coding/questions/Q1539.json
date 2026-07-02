@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1539",
+  "title": "Matrix Median",
+  "slug": "matrix-median",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a **row-wise sorted 2D matrix** of size N×MN \\times MN×M. Your task is to find the **median** of the matrix.\n\nThe **median** is the middle element after sorting all elements of the matrix in **non-decreasing order**. It is guaranteed that N×MN \\times MN×M is **odd**, so the median always exists.\n\nFunction DeclarationFunction NamefindMedianfindMedianfindMedian – This function finds the median of a row-wise sorted matrix.\n\nParameters\nmatrixmatrixmatrix : A 2D array of integers of size N×MN \\times MN×M, where each row is sorted in non-decreasing order.\nNNN : The number of rows in the matrix.\nMMM : The number of columns in the matrix.\nReturn Value\nReturns a single integer — the **median** of the matrix.\nConstraints\n1≤N,M≤1051 ≤ N, M ≤ 10^51≤N,M≤105\n1≤N×M≤1061 ≤ N \\times M ≤ 10^61≤N×M≤106\n1≤matrix[i][j]≤1091 \\leq matrix[i][j] \\leq 10^91≤matrix[i][j]≤109\nN×MN \\times MN×M is **odd**\nEach row of the matrix is sorted in non-decreasing order\n\nInput Format\nThe first line contains two space-separated integers NNN and MMM, denoting the number of rows and columns of the matrix.\n\n\nEach of the next NNN lines contains MMM space-separated integers, denoting the elements of the matrix.\n\n\n\nOutput Format\nPrint a single integer — the **median** of the matrix.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 3\n1 4 9\n2 5 6\n3 7 8",
+        "output": "5",
+        "explanation": "Explanation:\nIf we flatten and sort the matrix, we get:\n1 2 3 4 5 6 7 8 9\nThe middle element is 5, which is the median."
+      },
+      {
+        "id": "sample_2",
+        "input": "3 3\n10 20 30\n5 15 25\n1 2 3",
+        "output": "10",
+        "explanation": "Explanation:\nFlattened array: [10, 20, 30, 5, 15, 25, 1, 2, 3] -> sorted [1, 2, 3, 5, 10, 15, 20, 25, 30]. Median = 10."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 3\n1 4 9\n2 5 6\n3 7 8",
+        "expectedOutput": "5",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3 3\n10 20 30\n5 15 25\n1 2 3",
+        "expectedOutput": "10",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Find the minimum and maximum** elements:\n\n\n\n`min = smallest first element of rows`\n\n\n\n\n`max = largest last element of rows`\n\n\n\nUse **binary search** on the value range `[min, max]`:\n\n\n\nFor each mid-value:\n\n\n\n\nCount total elements ≤ mid in all rows (using binary search per row).\n\n\n\n\nIf the count is less than desired position `(N*M + 1)/2`, move right (`min = mid + 1`)\n\n\n\n\nOtherwise, move left (`max = mid`)\n\n\n\n\n\nWhen `min == max`, that is the **median**.\n\nComplexity Analysis**Time Complexity**:\nO(N × log M × log (MaxVal − MinVal))\n\n**Space Complexity**:\nO(1)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int findMedian(vector<vector<int>>& matrix, int N, int M) {\n    int minVal = INT_MAX, maxVal = INT_MIN;\n    for (int i = 0; i < N; ++i) {\n        minVal = min(minVal, matrix[i][0]);\n        maxVal = max(maxVal, matrix[i][M-1]);\n    }\n    int desired = (N * M + 1) / 2;\n    while (minVal < maxVal) {\n        int mid = minVal + (maxVal - minVal) / 2;\n        long long place = 0;\n        for (int i = 0; i < N; ++i)\n            place += upper_bound(matrix[i].begin(), matrix[i].end(), mid) - matrix[i].begin();\n        if (place < desired) minVal = mid + 1;\n        else maxVal = mid;\n    }\n    return minVal;\n}",
+      "Python3": "def findMedian(matrix, N, M):\n    min_val = min(row[0] for row in matrix)\n    max_val = max(row[-1] for row in matrix)\n    desired = (N * M + 1) // 2\n\n    while min_val < max_val:\n        mid = (min_val + max_val) // 2\n        place = 0\n        for row in matrix:\n            place += bisect.bisect_right(row, mid)\n        if place < desired:\n            min_val = mid + 1\n        else:\n            max_val = mid\n    return min_val",
+      "C": "int countSmallerOrEqual(int *row, int size, int mid) {\n    int low = 0, high = size - 1;\n    while (low <= high) {\n        int m = low + (high - low) / 2;\n        if (row[m] <= mid) low = m + 1;\n        else high = m - 1;\n    }\n    return low;\n}\n\nint findMedian(int **matrix, int N, int M) {\n    int minVal = INT_MAX, maxVal = INT_MIN;\n    for (int i = 0; i < N; ++i) {\n        if (M > 0) {\n            if (matrix[i][0] < minVal) minVal = matrix[i][0];\n            if (matrix[i][M - 1] > maxVal) maxVal = matrix[i][M - 1];\n        }\n    }\n\n    int desired = (N * M + 1) / 2;\n    while (minVal < maxVal) {\n        int mid = minVal + (maxVal - minVal) / 2;\n        long long place = 0;\n        for (int i = 0; i < N; ++i)\n            place += countSmallerOrEqual(matrix[i], M, mid);\n        if (place < desired) minVal = mid + 1;\n        else maxVal = mid;\n    }\n    return minVal;\n}\n\n",
+      "Java": "static int upperBound(int[] row, int val) {\n        int low = 0, high = row.length;\n        while (low < high) {\n            int mid = low + (high - low) / 2;\n            if (row[mid] <= val) low = mid + 1;\n            else high = mid;\n        }\n        return low;\n    }\n\n    static int findMedian(int[][] matrix, int N, int M) {\n        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;\n        for (int i = 0; i < N; i++) {\n            min = Math.min(min, matrix[i][0]);\n            max = Math.max(max, matrix[i][M-1]);\n        }\n        int desired = (N * M + 1) / 2;\n        while (min < max) {\n            int mid = min + (max - min) / 2;\n            long place = 0;\n            for (int i = 0; i < N; i++)\n                place += upperBound(matrix[i], mid);\n            if (place < desired) min = mid + 1;\n            else max = mid;\n        }\n        return min;\n    }",
+      "JavaScript": "// Function to count how many numbers in a sorted row are <= mid\nfunction countSmallerOrEqual(row, mid) {\n    let low = 0, high = row.length - 1;\n    while (low <= high) {\n        let m = Math.floor((low + high) / 2);\n        if (row[m] <= mid) {\n            low = m + 1;\n        } else {\n            high = m - 1;\n        }\n    }\n    return low;\n}\n\n// Function to find median of row-wise sorted matrix\nfunction findMedian(matrix, N, M) {\n    let minVal = Infinity;\n    let maxVal = -Infinity;\n\n    // Find the minimum element (first of each row)\n    // and maximum element (last of each row)\n    for (let i = 0; i < N; i++) {\n        minVal = Math.min(minVal, matrix[i][0]);\n        maxVal = Math.max(maxVal, matrix[i][M - 1]);\n    }\n\n    const desired = Math.floor((N * M + 1) / 2);\n\n    // Binary search on the value range\n    while (minVal < maxVal) {\n        const mid = Math.floor(minVal + (maxVal - minVal) / 2);\n        let place = 0;\n\n        for (let i = 0; i < N; i++) {\n            place += countSmallerOrEqual(matrix[i], mid);\n        }\n\n        if (place < desired) {\n            minVal = mid + 1;\n        } else {\n            maxVal = mid;\n        }\n    }\n\n    return minVal;\n}\n"
+    }
+  }
+}

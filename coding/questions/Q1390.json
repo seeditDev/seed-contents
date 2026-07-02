@@ -1,0 +1,83 @@
+{
+  "questionId": "Q1390",
+  "title": "Trapping Rainwater",
+  "slug": "trapping-rainwater",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array AAA with NNN non-negative integers. There are NNN bars arranged adjacent to each other, such that the height of the ithi^{th}ith bar is AiA_iAi​ units and the width of each bar is 111 unit.\n\nFind out the total amount of water the bars can trap after raining.\n\n**Note**: Use 64 bit integers.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN — the size of the array.\nThe next line contains NNN space-separated integers - the elements of the array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the total amount of water the bars can trap after raining.",
+    "constraints": [
+      "1≤T≤1041 \\leq T \\leq 10^41≤T≤104",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "0≤Ai≤1090 \\leq A_i \\leq 10^90≤Ai​≤109",
+      "The sum of NNN over all test cases does not exceed 2⋅1052\\cdot 10^52⋅105.",
+      "Subtasks",
+      "**Subtask 1 (30 points):** 1≤N≤30001 \\leq N \\leq 30001≤N≤3000",
+      "**Subtask 2 (70 points):** Original Constraints."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n4\n2 1 1 3\n4\n4 1 1 1\n2\n2 2\n5\n3 0 2 0 4",
+        "output": "2\n0\n0\n7",
+        "explanation": "Explanation:\nTest case 111: The arrangement of the bars looks like:\n\nThus, 222 units of water is trapped with the bars.\nTest case 222: The arrangement of the bars looks like:\n\nNo water can be trapped with the bars.\nTest case 333: The arrangement of the bars looks like:\n\nNo water can be trapped with the bars.\nTest case 444: The arrangement of the bars looks like:\n\nThus, 777 units of water is trapped with the bars."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n4\n2 1 1 3\n4\n4 1 1 1\n2\n2 2\n5\n3 0 2 0 4",
+        "expectedOutput": "2\n0\n0\n7",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n    // your code goes here\n    long long t;\n    cin >> t;\n\n    while (t--) {\n        long long n;\n        cin >> n;\n        long long a[n];\n        for (long long i = 0; i < n; i++) {\n            cin >> a[i];\n        }\n\n        long long left = 0, right = n - 1;\n        long long left_max = a[0], right_max = a[n - 1];\n        long long water = 0;\n\n        vector < long long > waterArray(n, 0);\n        while (left < right) {\n            left_max = max(a[left], left_max);\n            right_max = max(a[right], right_max);\n            if (left_max <= right_max) {\n                water += left_max - a[left];\n                left++;\n            }\n            else {\n                water += right_max - a[right];\n                right--;\n            }\n        }\n        cout << water << endl;\n    }\n    return 0;\n}\n",
+      "Python3": "T = int(input())\n\nfor _ in range(T):\n    N = int(input())\n    L = list(map(int,input().split()))\n    \n    # Find max element\n    max_el, max_ind = L[0], 0\n    for i in range(len(L)):\n        if L[i] > max_el:\n            max_el, max_ind = L[i], i \n            \n    water = 0\n    \n    # Forward pass\n    max_height = L[0]\n    for i in range(max_ind):\n        if L[i] > max_height:\n            max_height = L[i]\n        else:\n            water += max_height - L[i]\n        \n    # Backward pass\n    max_height = L[-1]\n    for i in range(N-1,max_ind,-1):\n        if L[i] > max_height:\n            max_height = L[i]\n        else:\n            water += max_height - L[i]\n        \n    print(water)\n",
+      "Java": "/* package codechef; // don't place package name! */\n\nimport java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\n/* Name of the class has to be \"Main\" only if the class is public. */\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        // your code goes here\n        Scanner sc = new Scanner(System.in);\n        \n        int t = sc.nextInt();\n        \n        while(t-- > 0 ){\n            int n = sc.nextInt();\n            \n            int a[] = new int[n];\n            \n            for (int i = 0 ; i < n ; i++ ) \n                a[i] = sc.nextInt();\n            \n            int left[] = new int[n];\n            \n            left[0] = a[0];\n            \n            for( int i = 1 ; i < n ; i++ ){\n                left[i] = Math.max( left[i-1] , a[i] );\n            }\n            \n            int right[] = new int[n];\n            \n            right[n-1] = a[n-1];\n            \n            for( int i = n-2 ; i >= 0 ; i-- ){\n                right[i] = Math.max( right[i+1] , a[i] );\n            }\n            \n            long ans = 0;\n            \n            for( int i = 0 ; i < n ; i++ ){\n                ans += Math.min( left[i] , right[i] ) - a[i];\n            }\n            \n            System.out.println( ans );\n            //2 2 2 3\n            //3 3 3 3\n            //0 1 1 0\n        }\n    }\n}\n"
+    }
+  }
+}

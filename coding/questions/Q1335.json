@@ -1,0 +1,79 @@
+{
+  "questionId": "Q1335",
+  "title": "Suffix Arrays",
+  "slug": "suffix-arrays",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "prefix sums & difference arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Prefix Sums & Difference Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "A suffix array is similar to prefix array. The only difference is that a suffix array works from right to left, while a prefix array works from left to right.\n\nSuffix array of [1, 2, 3, 4, 5] -&gt; [15, 14, 12, 9, 5]\n\nWe generally use prefix/suffix arrays to store the sum, but we can also use them to store some other operations like multiplication, GCD, OR, XOR, etc.\n\nSome algorithms required us to use both prefix and suffix operations of different types together.\n\nProblem\nFirst line contains an integer NNN, the length of an array.\nSecond line contains NNN elements A1, A2, A3, . . . ANNN\nFind the maximum GCD that can be obtained by removing one element from the array.",
+    "constraints": [
+      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
+      "1≤Ai≤1000001 \\leq Ai \\leq 1000001≤Ai≤100000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n4 3 2 6",
+        "output": "2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n4 3 2 6",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector < int > pre(n, 0), suf(n, 0);\n    vector < int > v1(n);\n    for (int i = 0; i < n; i++) {\n        cin >> v1[i];\n        if (i == 0) pre[i] = v1[i];\n        else pre[i] = __gcd(v1[i], pre[i - 1]);\n    }\n    for (int i = n - 1; i >= 0; i--) {\n        if (i == n - 1) suf[i] = v1[i];\n        else suf[i] = __gcd(v1[i], suf[i + 1]);\n    }\n    int fans = 0;\n    for (int i = 0; i < n; i++) {\n        if (i == 0) {\n            fans = max(fans, suf[i + 1]);\n        }\n        else if (i == n - 1) {\n            fans = max(fans, pre[i - 1]);\n        }\n        else {\n            fans = max(fans, __gcd(pre[i - 1], suf[i + 1]));\n        }\n    }\n    cout << fans << \"\\n\";\n\n    // your code goes here\n\n}",
+      "Python3": "from math import gcd\n\ndef main():\n    n = int(input())\n    pre = [0] * n\n    suf = [0] * n\n    v1 = list(map(int, input().split()))\n\n    for i in range(n):\n        pre[i] = v1[i] if i == 0 else gcd(v1[i], pre[i - 1])\n    \n    for i in range(n - 1, -1, -1):\n        suf[i] = v1[i] if i == n - 1 else gcd(v1[i], suf[i + 1])\n\n    fans = 0\n    for i in range(n):\n        if i == 0:\n            fans = max(fans, suf[i + 1])\n        elif i == n - 1:\n            fans = max(fans, pre[i - 1])\n        else:\n            fans = max(fans, gcd(pre[i - 1], suf[i + 1]))\n\n    print(fans)\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint gcd(int a, int b) {\n    while (b != 0) {\n        int temp = b;\n        b = a % b;\n        a = temp;\n    }\n    return a;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int *pre = (int *)malloc(n * sizeof(int));\n    int *suf = (int *)malloc(n * sizeof(int));\n    int *v1 = (int *)malloc(n * sizeof(int));\n\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &v1[i]);\n        if (i == 0) {\n            pre[i] = v1[i];\n        } else {\n            pre[i] = gcd(v1[i], pre[i - 1]);\n        }\n    }\n\n    for (int i = n - 1; i >= 0; i--) {\n        if (i == n - 1) {\n            suf[i] = v1[i];\n        } else {\n            suf[i] = gcd(v1[i], suf[i + 1]);\n        }\n    }\n\n    int fans = 0;\n    for (int i = 0; i < n; i++) {\n        if (i == 0) {\n            fans = (fans > suf[i + 1]) ? fans : suf[i + 1];\n        } else if (i == n - 1) {\n            fans = (fans > pre[i - 1]) ? fans : pre[i - 1];\n        } else {\n            int current_gcd = gcd(pre[i - 1], suf[i + 1]);\n            fans = (fans > current_gcd) ? fans : current_gcd;\n        }\n    }\n\n    printf(\"%d\\n\", fans);\n\n    free(pre);\n    free(suf);\n    free(v1);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int[] pre = new int[n];\n        int[] suf = new int[n];\n        int[] v1 = new int[n];\n\n        for (int i = 0; i < n; i++) {\n            v1[i] = scanner.nextInt();\n        }\n\n        for (int i = 0; i < n; i++) {\n            pre[i] = (i == 0) ? v1[i] : gcd(v1[i], pre[i - 1]);\n        }\n\n        for (int i = n - 1; i >= 0; i--) {\n            suf[i] = (i == n - 1) ? v1[i] : gcd(v1[i], suf[i + 1]);\n        }\n\n        int fans = 0;\n        for (int i = 0; i < n; i++) {\n            if (i == 0) {\n                fans = Math.max(fans, suf[i + 1]);\n            } else if (i == n - 1) {\n                fans = Math.max(fans, pre[i - 1]);\n            } else {\n                fans = Math.max(fans, gcd(pre[i - 1], suf[i + 1]));\n            }\n        }\n\n        System.out.println(fans);\n        scanner.close();\n    }\n\n    public static int gcd(int a, int b) {\n        return b == 0 ? a : gcd(b, a % b);\n    }\n}\n"
+    }
+  }
+}

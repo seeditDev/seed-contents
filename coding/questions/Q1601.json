@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1601",
+  "title": "Valid Parenthesis",
+  "slug": "valid-parenthesis",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "A string of parentheses is considered valid if each opening parenthesis has a matching closing parenthesis and the pairs are properly nested. In a valid parenthesis string, every opening bracket '(' must have a corresponding closing bracket ')' that occurs after the opening bracket, and there must not be any extra or unpaired brackets.\n\nHere are the rules for a string of parentheses to be valid:\n\n\n**Correct order**: Each closing parenthesis must correspond to the latest unmatched opening parenthesis.\n**Matching pairs**: For every opening parenthesis, there must be a closing parenthesis.\nLet's look at some examples:\n\n\n`\"()\"` - This is valid because the only pair of parentheses correctly matches and is in the right order.\n`\"()()\"` - This is also valid. There are two separate but correct matches.\n`\"(()())\"` - Valid as well, since the inner pair is nested within the outer pair and they all match up.\n`\"(())\"` - The inner pair is nested within the outer pair, with both pairs being correctly matched.\n`\")(\"` or `\"(\"` or `\")\"` - All invalid because they contain either unmatched or improperly ordered parentheses.\nThe goal is to determine if parentheses (and optionally other brackets like curly braces and square brackets) in an expression are properly balanced. \n\nCheck the sample test cases given below for expected input and output format.\n\nComplete the code in the IDE to solve this problem.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n((()))\n()()()\n(((())",
+        "output": "((())) : true\n()()() : true\n(((()) : false",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n((()))\n()()()\n(((())",
+        "expectedOutput": "((())) : true\n()()() : true\n(((()) : false",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define MAX_SIZE 101\nchar a[MAX_SIZE];\nint top = -1;\n\nvoid push(char ele){\n    if(top<=MAX_SIZE-1){\n        a[++top]=ele;\n    }\n    else{\n        cout<<\"Stack is full. Cannot push: \"<<ele<<\"\\n\";\n    }\n}\n\nchar pop(){\n    if(top>=0){\n        char ele = a[top];\n        top--;\n        return ele;\n    }\n    else{\n        cout<<\"Stack is empty. Cannot pop.\\n\";\n        return '-1';\n    }\n}\n\nbool isEmpty(){\n    return top==-1;\n}\n\nbool isFull(){\n    return top>=MAX_SIZE;\n}\n\nbool isMatchingPair(char open, char close) {\n    return (open == '(' && close == ')');\n}\n\nbool isBalanced(string expression) {\n    for (int i=0 ; i<expression.length() ; i++){\n        char c = expression[i];\n        if (c == '(') {\n            push(c);\n        } \n        else if (c == ')'){\n            if (isEmpty()){\n                return false;\n            }\n            char topChar = pop();\n            if (!isMatchingPair(topChar, c)) {\n                return false;\n            }\n        }\n    }\n    return isEmpty(); // Stack should be empty if expression is balanced\n}\n\nint main(){\n    int t;\n    cin>>t;\n\n    while(t--){\n        string str;\n        cin>>str;\n        int n = str.length();\n        cout<<str<<\" : \";\n        bool ans = isBalanced(str);\n        if(ans)\n            cout<<\"true\\n\";\n        else\n            cout<<\"false\\n\";\n    }\n    return 0;\n}",
+      "Python3": "# cook your dish here\nMAX_SIZE = 101\na = [''] * MAX_SIZE\ntop = -1\n\ndef push(ele):\n    global top\n    if top <= MAX_SIZE - 1:\n        top += 1\n        a[top] = ele\n    else:\n        print(f\"Stack is full. Cannot push: {ele}\")\n\ndef pop():\n    global top\n    if top >= 0:\n        ele = a[top]\n        top -= 1\n        return ele\n    else:\n        print(\"Stack is empty. Cannot pop.\")\n        return '-1'\n\ndef is_empty():\n    return top == -1\n\ndef is_full():\n    return top >= MAX_SIZE\n\ndef is_matching_pair(open_char, close_char):\n    return (open_char == '(' and close_char == ')')\n\ndef is_balanced(expression):\n    for i in range(len(expression)):\n        c = expression[i]\n        if c == '(':\n            push(c)\n        elif c == ')':\n            if is_empty():\n                return False\n            top_char = pop()\n            if not is_matching_pair(top_char, c):\n                return False\n    return is_empty()  # Stack should be empty if expression is balanced\n\ndef main():\n    t = int(input())\n\n    while t > 0:\n        expression = input()\n        print(f\"{expression} : {str(is_balanced(expression)).lower()}\")\n        t -= 1\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n\n#define MAX_SIZE 101\nchar a[MAX_SIZE];\nint top = -1;\n\nvoid push(char ele){\n    if(top <= MAX_SIZE - 1){\n        a[++top] = ele;\n    }\n    else{\n        printf(\"Stack is full. Cannot push: %c\\n\", ele);\n    }\n}\n\nchar pop(){\n    if(top >= 0){\n        char ele = a[top];\n        top--;\n        return ele;\n    }\n    else{\n        printf(\"Stack is empty. Cannot pop.\\n\");\n        return '\\0'; // Use '\\0' to indicate null character instead of '-1'\n    }\n}\n\nbool isEmpty(){\n    return top == -1;\n}\n\nbool isFull(){\n    return top >= MAX_SIZE - 1;\n}\n\nbool isMatchingPair(char open, char close) {\n    return (open == '(' && close == ')');\n}\n\nbool isBalanced(char expression[]) {\n    int length = strlen(expression);\n    for (int i = 0; i < length; i++){\n        char c = expression[i];\n        if (c == '(') {\n            push(c);\n        } \n        else if (c == ')'){\n            if (isEmpty()){\n                return false;\n            }\n            char topChar = pop();\n            if (!isMatchingPair(topChar, c)) {\n                return false;\n            }\n        }\n    }\n    return isEmpty(); // Stack should be empty if expression is balanced\n}\n\nint main(){\n    int t;\n    scanf(\"%d\", &t);\n\n    while(t--){\n        char str[MAX_SIZE];\n        scanf(\"%s\", str);\n        printf(\"%s : \", str);\n        bool ans = isBalanced(str);\n        if(ans)\n            printf(\"true\\n\");\n        else\n            printf(\"false\\n\");\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\nclass BalancedParentheses {\n    static final int MAX_SIZE = 101;\n    static char[] a = new char[MAX_SIZE];\n    static int top = -1;\n\n    static void push(char ele) {\n        if (top <= MAX_SIZE - 1) {\n            a[++top] = ele;\n        } else {\n            System.out.println(\"Stack is full. Cannot push: \" + ele);\n        }\n    }\n\n    static char pop() {\n        if (top >= 0) {\n            char ele = a[top];\n            top--;\n            return ele;\n        } else {\n            System.out.println(\"Stack is empty. Cannot pop.\");\n            return '-';\n        }\n    }\n\n    static boolean isEmpty() {\n        return top == -1;\n    }\n\n    static boolean isFull() {\n        return top >= MAX_SIZE;\n    }\n\n    static boolean isMatchingPair(char open, char close) {\n        return (open == '(' && close == ')');\n    }\n\n    static boolean isBalanced(String expression) {\n        for (int i = 0; i < expression.length(); i++) {\n            char c = expression.charAt(i);\n            if (c == '(') {\n                push(c);\n            } else if (c == ')') {\n                if (isEmpty()) {\n                    return false;\n                }\n                char topChar = pop();\n                if (!isMatchingPair(topChar, c)) {\n                    return false;\n                }\n            }\n        }\n        return isEmpty(); // Stack should be empty if expression is balanced\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            String str = scanner.next();\n            System.out.println(str + \" : \" + isBalanced(str));\n        }\n    }\n}\n",
+      "JavaScript": "/*\nclass Stack {\n    constructor(maxSize = 101) {\n        this.items = new Array(maxSize);\n        this.top = -1;\n        this.maxSize = maxSize;\n    }\n}\n*/\n\nfunction isMatchingPair(open, close) {\n    return open === '(' && close === ')';\n}\n\nfunction isBalanced(expression) {\n    let stack = new Stack(expression.length);\n\n    for (let i = 0; i < expression.length; i++) {\n        let char = expression[i];\n\n        if (char === '(') {\n            stack.push(char);\n        } else if (char === ')') {\n            if (stack.isEmpty() || !isMatchingPair(stack.pop(), char)) {\n                return false;\n            }\n        }\n    }\n\n    return stack.isEmpty();\n}\n\n"
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1368",
+  "title": "Mountain Peak",
+  "slug": "mountain-peak",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a list of integers heightsheightsheights representing the heights of NNN mountain peaks. For each peak, you need to find the height of the next higher peak that comes after it in the list. If there is no higher peak after a given peak, return −1-1−1 for that peak.\n\n\nInput Format\n\nThe first line contains one integer nnn, the size of the list of integers.                                                                                                               - Next line contains nnn integers heights[0],heights[1]...heights[n]heights[0],heights[1]...heights[n]heights[0],heights[1]...heights[n], representing the peaks .\n\n\nOutput Format\n\nFor each peak, print the next higher peak that comes after it in the list. If there is no higher peak for a peak than print −1-1−1.",
+    "constraints": [
+      "1≤n≤1000001 \\leq n \\leq 1000001≤n≤100000",
+      "0≤heights[i]≤10000000 \\leq heights[i] \\leq 10000000≤heights[i]≤1000000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n1 2",
+        "output": "2 -1",
+        "explanation": "Explanation:\nThe next greater element for 1 is 2 and for 2 there is no next greater element so for 2 it will be -1."
+      },
+      {
+        "id": "sample_2",
+        "input": "4\n6 5 3 6",
+        "output": "-1 6 6 -1",
+        "explanation": "Explanation:\nFor the first 6 there is no element greater than 6 on its right so the peak for the first 6 is -1. For 5 , 6 is the next peak as it is on the right side and is greater than 5. For the next element 3 , 6 is the peak as it is on the right side and is greater than 3, for the last 6 , no peak is there on the right side so -1 is there."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n1 2",
+        "expectedOutput": "2 -1",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4\n6 5 3 6",
+        "expectedOutput": "-1 6 6 -1",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "This problem can be efficiently solved using a stack-based approach, which allows us to traverse the list of peaks once and determine the next higher peak for each element in linear time.\n\nThe main idea is to iterate through the list of peaks while maintaining a stack to keep track of the indices of peaks for which we are yet to find a higher peak. As we move through the list, we compare the current peak’s height with the heights of the peaks stored in the stack. If the current peak is higher than the peak at the index stored at the top of the stack, we have found the next higher peak for that index, so we update the result and pop the index from the stack. We continue this process until we’ve processed all peaks. Peaks that never find a higher peak after them will retain the default value of `-1` in the result.",
+    "timeComplexity": "The solution runs in O(N) time, where N is the number of peaks, since each element is pushed and popped from the stack at most once.",
+    "spaceComplexity": "The space complexity is O(N) for the stack and the result vector.",
+    "code": {
+      "C++": "#include <vector>\n#include <stack>\n#include <iostream>\n\nusing namespace std;\n\nvector<int> next_higher_peak(vector<int>& heights) {\n    int n = heights.size();  // Get the number of peaks\n    vector<int> result(n, -1);  // Initialize result vector with -1\n    stack<int> st;  // Stack to keep track of indices\n\n    for (int i = 0; i < n; ++i) {\n        // While the stack is not empty and the current peak is higher than the peak at the index stored at the top of the stack\n        while (!st.empty() && heights[i] > heights[st.top()]) {\n            int idx = st.top();  // Get the index from the top of the stack\n            st.pop();  // Remove the index from the stack\n            result[idx] = heights[i];  // Update the result for that index with the current peak\n        }\n        st.push(i);  // Push the current index onto the stack\n    }\n\n    return result;  // Return the result vector\n}\n\nint main() {\n    int n;\n    \n    cin >> n;  // Read the number of peaks from the user\n\n    vector<int> heights(n);\n   \n    for (int i = 0; i < n; ++i) {\n        cin >> heights[i];  // Read each peak height from the user\n    }\n\n    vector<int> result = next_higher_peak(heights);  // Call the function to get the result\n\n    // Print result\n    \n    for (int height : result) {\n        cout << height << \" \";  // Output each element in the result vector\n    }\n    cout << endl;\n\n    return 0;\n}\n",
+      "Python3": "def next_higher_peak(heights):\n    n = len(heights)\n    result = [-1] * n\n    st = []\n\n    for i in range(n):\n        while st and heights[i] > heights[st[-1]]:\n            idx = st.pop()\n            result[idx] = heights[i]\n        st.append(i)\n\n    return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    heights = list(map(int, input().split()))\n\n    result = next_higher_peak(heights)\n\n    for height in result:\n        print(height, end=\" \")\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Function to find the next higher peak for each element in heights\nint* next_higher_peak(int* heights, int n) {\n    \n    int* result = (int*)malloc(n * sizeof(int));\n    int* stack = (int*)malloc(n * sizeof(int));\n    int top = -1;  // Initialize stack top\n\n    // Initialize result array with -1\n    for (int i = 0; i < n; ++i) {\n        result[i] = -1;\n    }\n\n    // Traverse through each element in heights\n    for (int i = 0; i < n; ++i) {\n        // Pop elements from stack while stack is not empty and current element is greater than the element at stack top\n        while (top != -1 && heights[i] > heights[stack[top]]) {\n            int idx = stack[top--];\n            result[idx] = heights[i];\n        }\n        // Push current element index to stack\n        stack[++top] = i;\n    }\n\n    // Free allocated memory for stack\n    free(stack);\n\n    return result;\n}\n\nint main() {\n    int n;\n    // Take the size of the heights array as input\n    scanf(\"%d\", &n);\n    \n    int* heights = (int*)malloc(n * sizeof(int));\n\n    // Take the heights array elements as input\n    for (int i = 0; i < n; ++i) {\n        scanf(\"%d\", &heights[i]);\n    }\n\n    // Get the next higher peaks\n    int* result = next_higher_peak(heights, n);\n\n    // Print the result\n    for (int i = 0; i < n; ++i) {\n        printf(\"%d \", result[i]);\n    }\n\n    // Free allocated memory for heights and result arrays\n    free(heights);\n    free(result);\n\n    return 0;\n}",
+      "Java": "import java.util.*;\n\npublic class Main {\n    public static int[] nextHigherPeak(int[] heights) {\n        int n = heights.length;\n        int[] result = new int[n];\n        Arrays.fill(result, -1);\n        Stack<Integer> st = new Stack<>();\n\n        for (int i = 0; i < n; ++i) {\n            while (!st.isEmpty() && heights[i] > heights[st.peek()]) {\n                int idx = st.pop();\n                result[idx] = heights[i];\n            }\n            st.push(i);\n        }\n\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] heights = new int[n];\n\n        for (int i = 0; i < n; ++i) {\n            heights[i] = sc.nextInt();\n        }\n\n        int[] result = nextHigherPeak(heights);\n\n        for (int height : result) {\n            System.out.print(height + \" \");\n        }\n        System.out.println();\n    }\n}",
+      "JavaScript": "function nextHigherPeak(heights) {\n    const n = heights.length;\n    const result = new Array(n).fill(-1); \n    const stack = [];  // Stack to keep track of indices\n\n    for (let i = 0; i < n; i++) {\n        while (stack.length > 0 && heights[i] > heights[stack[stack.length - 1]]) {\n            const idx = stack.pop();  // Get and remove the index from the stack\n            result[idx] = heights[i];  // Update the result for that index with the current peak\n        }\n        stack.push(i);  // Push the current index onto the stack\n    }\n    return result;  \n}\n"
+    }
+  }
+}

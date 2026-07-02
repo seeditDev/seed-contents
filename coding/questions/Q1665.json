@@ -1,0 +1,103 @@
+{
+  "questionId": "Q1665",
+  "title": "Chef Generates Letter Combinations",
+  "slug": "chef-generates-letter-combinations",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has found an old phone keypad and wants to explore all the possible letter combinations that can be generated from a given string of digits. \n\nEach digit from 0 to 9 maps to a set of letters just like on a traditional telephone keypad\n\n0: \"\" \n\n1: \"\" \n\n2: \"abc\" \n\n3: \"def\" \n\n4: \"ghi\" \n\n5: \"jkl\" \n\n6: \"mno\" \n\n7: \"pqrs\" \n\n8: \"tuv\" \n\n9: \"wxyz\"\n\nChef wants to generate every possible string by replacing each digit with one of its corresponding letters.\n\nHelp Chef by writing a function that takes the input digits inputDigitsinputDigitsinputDigits and returns all possible letter combinations that the number could represent. If Chef provides an empty string, then no combinations should be returned.\n\nFunction DeclarationFunction NamegetLetterCombinationsgetLetterCombinationsgetLetterCombinations - This function generates all possible letter combinations that the input digits could represent on a phone keypad.\n\nParameters\ninputDigitsinputDigitsinputDigits : A string containing digits from 000 to 999 inclusive. Each digit maps to a set of letters as on a traditional phone keypad.\nReturn Value\nReturns a string containing all possible letter combinations.\nEach string in the array represents one valid letter combination.\nThe output vector is empty if inputDigitsinputDigitsinputDigits is empty.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤∣inputDigits∣≤41 \\leq |\\text{inputDigits}| \\leq 41≤∣inputDigits∣≤4\nEach character in `inputDigits` is a digit in the range [′0′,′9′]['0', '9'][′0′,′9′].\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nEach test case consists of a single line containing the string inputDigitsinputDigitsinputDigits.\n\n\nOutput Format\n\nFor each test case, print all possible letter combinations that the input digits could represent.\nPrint the combinations separated by spaces in any order.\nIf there are no combinations, print an empty line.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n2\n23\n234",
+        "output": "a b c\nad ae af bd be bf cd ce cf\nadg adh adi aeg aeh aei afg afh afi bdg bdh bdi beg beh bei bfg bfh bfi cdg cdh cdi ceg ceh cei cfg cfh cfi",
+        "explanation": "Explanation:\nFor input \"2\": digit '2' maps to letters a, b, c; output all single letters.\nFor input \"23\": digit '2' -> a,b,c and '3' -> d,e,f; combine each letter of '2' with each of '3'.\nFor input \"234\": digits map to '2'-> a,b,c, '3' -> d,e,f, '4' -> g,h,i; output all combinations picking one letter from each digit in order."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n79\n9",
+        "output": "pw px py pz qw qx qy qz rw rx ry rz sw sx sy sz\nw x y z",
+        "explanation": "Explanation:\nt=1: Digits \"79\" map to \"pqrs\" and \"wxyz\". Output is all combinations of letters from these two sets in order.\nt=2: Digit \"9\" maps to \"wxyz\". Output is each letter alone as single combinations."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n8",
+        "output": "t u v",
+        "explanation": "Explanation:\nFor input digit '8', the corresponding letters on a phone keypad are 't', 'u', and 'v'. Hence, the output is \"t u v\"."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n2\n23\n234",
+        "expectedOutput": "a b c\nad ae af bd be bf cd ce cf\nadg adh adi aeg aeh aei afg afh afi bdg bdh bdi beg beh bei bfg bfh bfi cdg cdh cdi ceg ceh cei cfg cfh cfi",
+        "weight": 33
+      },
+      {
+        "id": "tc_2",
+        "input": "2\n79\n9",
+        "expectedOutput": "pw px py pz qw qx qy qz rw rx ry rz sw sx sy sz\nw x y z",
+        "weight": 33
+      },
+      {
+        "id": "tc_3",
+        "input": "1\n8",
+        "expectedOutput": "t u v",
+        "weight": 34
+      }
+    ],
+    "totalTestCases": 3,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      33,
+      33,
+      34
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    vector<string> getLetterCombinations(string inputDigits) {\n        if (inputDigits.empty()) return {};\n\n        vector<string> keypad = {\n            \"\", \"\", \"abc\", \"def\", \"ghi\", \"jkl\",\n            \"mno\", \"pqrs\", \"tuv\", \"wxyz\"\n        };\n\n        vector<string> result;\n        string current;\n\n        function<void(int)> backtrack = [&](int index) {\n            if (index == inputDigits.size()) {\n                result.push_back(current);\n                return;\n            }\n\n            int digit = inputDigits[index] - '0';\n            for (char c : keypad[digit]) {\n                current.push_back(c);\n                backtrack(index + 1);\n                current.pop_back();\n            }\n        };\n\n        backtrack(0);\n        return result;\n    }\n};\n",
+      "Python3": "class Solution:\n    def getLetterCombinations(self, inputDigits: str):\n        if not inputDigits:\n            return []\n        \n        keypad = {\n            '2': \"abc\", '3': \"def\", '4': \"ghi\", '5': \"jkl\",\n            '6': \"mno\", '7': \"pqrs\", '8': \"tuv\", '9': \"wxyz\"\n        }\n\n        result = []\n        current = []\n\n        def backtrack(index):\n            if index == len(inputDigits):\n                result.append(\"\".join(current))\n                return\n            \n            for ch in keypad[inputDigits[index]]:\n                current.append(ch)\n                backtrack(index + 1)\n                current.pop()\n        \n        backtrack(0)\n        return result\n",
+      "C": "char *keypad[] = {\n    \"\", \"\", \"abc\", \"def\", \"ghi\", \"jkl\",\n    \"mno\", \"pqrs\", \"tuv\", \"wxyz\"\n};\n\nchar current[10];\n\nvoid getLetterCombinations(char digits[], char result[][10], int *resIndex) {\n    int n = strlen(digits);\n    *resIndex = 0;\n\n    if (n == 0) return;\n\n    // Nested recursive function\n    void backtrack(int index) {\n        if (index == n) {\n            strcpy(result[(*resIndex)++], current);\n            return;\n        }\n\n        char *letters = keypad[digits[index] - '0'];\n        for (int i = 0; letters[i] != '\\0'; i++) {\n            current[index] = letters[i];\n            backtrack(index + 1);\n        }\n    }\n\n    backtrack(0);\n}",
+      "Java": "class Solution {\n    private static final String[] keypad = {\n        \"\", \"\", \"abc\", \"def\", \"ghi\", \"jkl\",\n        \"mno\", \"pqrs\", \"tuv\", \"wxyz\"\n    };\n\n    public List<String> getLetterCombinations(String inputDigits) {\n        List<String> result = new ArrayList<>();\n\n        if (inputDigits.length() == 0)\n            return result;\n\n        backtrack(0, inputDigits, new StringBuilder(), result);\n        return result;\n    }\n\n    private void backtrack(int index, String digits, StringBuilder current, List<String> result) {\n        if (index == digits.length()) {\n            result.add(current.toString());\n            return;\n        }\n\n        String letters = keypad[digits.charAt(index) - '0'];\n        for (char c : letters.toCharArray()) {\n            current.append(c);\n            backtrack(index + 1, digits, current, result);\n            current.deleteCharAt(current.length() - 1);\n        }\n    }\n}\n",
+      "JavaScript": "class Solution {\n    constructor() {\n        this.keypad = [\n            \"\", \"\", \"abc\", \"def\", \"ghi\", \"jkl\",\n            \"mno\", \"pqrs\", \"tuv\", \"wxyz\"\n        ];\n    }\n\n    getLetterCombinations(inputDigits) {\n        if (inputDigits.length === 0) return [];\n\n        const result = [];\n        let current = [];\n\n        const backtrack = (index) => {\n            if (index === inputDigits.length) {\n                result.push(current.join(''));\n                return;\n            }\n\n            const letters = this.keypad[inputDigits[index] - '0'];\n            for (let ch of letters) {\n                current.push(ch);\n                backtrack(index + 1);\n                current.pop();\n            }\n        };\n\n        backtrack(0);\n        return result;\n    }\n}\n"
+    }
+  }
+}

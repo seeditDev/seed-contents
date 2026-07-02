@@ -1,0 +1,71 @@
+{
+  "questionId": "Q1709",
+  "title": "Chef Counts Square Submatrices",
+  "slug": "chef-counts-square-submatrices",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a binary grid of size M×NM \\times NM×N filled with zeros and ones. Chef is interested in finding \"perfect\" square regions within this grid.\n\nA **square submatrix** is a contiguous square-shaped section of the grid. Chef wants to count how many such square submatrices consist **entirely of ones**.\n\nHelp Chef find the total count of all such square submatrices (of any size 1×1,2×2,…1 \\times 1, 2 \\times 2, \\dots1×1,2×2,…) that contain only 111s.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncountSquareSubmatricescountSquareSubmatricescountSquareSubmatrices\n\n\n\n**Parameters**\n\n\n\nmatrixmatrixmatrix: A 2D list/vector of integers representing the binary grid (000s and 111s).\n\n\n\n**Return Value**\n\n\n\nReturns an integerintegerinteger representing the total count of square submatrices composed entirely of ones.\n\n\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤M,N≤3001 \\leq M, N \\leq 3001≤M,N≤300\nmatrix[i][j]∈{0,1}matrix[i][j] \\in \\{0, 1\\}matrix[i][j]∈{0,1}\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains two integers MMM and NNN — the dimensions of the matrix.\nThe next MMM lines contain NNN space-separated integers (000 or 111) representing each row.\n\n\nOutput Format\nFor each test case, print a single integer — the total number of square submatrices within Chef's binary matrix that contain only ones.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "0 1 1 1\n1 1 1 1\n0 1 1 1",
+        "output": "1 0 1\n1 1 0\n1 1 0",
+        "explanation": "Explanation:"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "0 1 1 1\n1 1 1 1\n0 1 1 1",
+        "expectedOutput": "1 0 1\n1 1 0\n1 1 0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea**\r\nThe simplest way to solve this is to treat every cell (i,j)(i, j)(i,j) in the matrix as a potential **top-left corner** of a square.\n\n\nFor each cell (i,j)(i, j)(i,j), we iterate through all possible side lengths kkk, where 1≤k≤min⁡(M−i,N−j)1 \\le k \\le \\min(M-i, N-j)1≤k≤min(M−i,N−j).\nFor each side length kkk, we perform a check to see if every single cell within the k×kk \\times kk×k region contains a 111.\nIf the entire region consists of 111s, we increment our total count.\n**Time Complexity**\n\n\nTwo nested loops to pick the corner: O(M×N)O(M \\times N)O(M×N)\nOne loop for the side length kkk: O(min⁡(M,N))O(\\min(M, N))O(min(M,N))\nTwo nested loops to verify the k×kk \\times kk×k area: O(k2)O(k^2)O(k2)\n**Total Time Complexity:** Approximately O(M×N×min⁡(M,N)3)O(M \\times N \\times \\min(M, N)^3)O(M×N×min(M,N)3), which simplifies to O(N5)O(N^5)O(N5) for a square matrix.\nFor a 300×300300 \\times 300300×300 matrix, 3005300^53005 operations are far beyond the computational limit, leading to a **Time Limit Exceeded (TLE)** error.\n\n**Idea**\r\nTo avoid redundant calculations, we use **Dynamic Programming**. We define a 2D DP table where dp[i][j]dp[i][j]dp[i][j] represents the side length of the largest square submatrix whose bottom-right corner is at cell (i,j)(i, j)(i,j).\n\nIf matrix[i][j]==1matrix[i][j] == 1matrix[i][j]==1, that cell can extend square submatrices formed by its neighbors. The size of the square ending at (i,j)(i, j)(i,j) is limited by the minimum size of the squares ending at its three immediate neighbors:\n\n\n**Top:** (i−1,j)(i-1, j)(i−1,j)\n**Left:** (i,j−1)(i, j-1)(i,j−1)\n**Top-Left:** (i−1,j−1)(i-1, j-1)(i−1,j−1)\n**The Recurrence Relation:**\r\ndp[i][j]=min⁡(dp[i−1][j],dp[i][j−1],dp[i−1][j−1])+1dp[i][j] = \\min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1dp[i][j]=min(dp[i−1][j],dp[i][j−1],dp[i−1][j−1])+1\n\n**\n**Key Insight:** The value of dp[i][j]dp[i][j]dp[i][j] is not just the maximum side length; it also represents the **exact number of square submatrices** that end at that specific cell.\r\nExample: If dp[i][j]=3dp[i][j] = 3dp[i][j]=3, it means there is one 1×11 \\times 11×1, one 2×22 \\times 22×2, and one 3×33 \\times 33×3 square ending at (i,j)(i, j)(i,j), contributing 333 to the total count.\n\n\n**Algorithm Steps**\n\n\nInitialize a DP table of size M×NM \\times NM×N with zeros.\nIterate through each cell (i,j)(i, j)(i,j) of the matrix:\n\nIf matrix[i][j]==0matrix[i][j] == 0matrix[i][j]==0, then dp[i][j]=0dp[i][j] = 0dp[i][j]=0.\nIf matrix[i][j]==1matrix[i][j] == 1matrix[i][j]==1:\n\nIf the cell is in the first row (i=0i=0i=0) or first column (j=0j=0j=0), dp[i][j]=1dp[i][j] = 1dp[i][j]=1.\nOtherwise, apply the recurrence formula.\n\n\n\n\nKeep a running sum of all dp[i][j]dp[i][j]dp[i][j] values in a variable `totalSquares`.\n**Time Complexity**\r\nWe visit each cell exactly once.\n\n\n**Total Time Complexity:** O(M×N)O(M \\times N)O(M×N).\r\nFor 300×300300 \\times 300300×300, this results in 90,00090,00090,000 operations, which easily passes within the time limit.\n**Space Complexity**\n\n\n**Space Complexity:** O(M×N)O(M \\times N)O(M×N) for storing the DP table.\r\n(Note: This can be further optimized to O(N)O(N)O(N) space since we only ever need the previous row's data).",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

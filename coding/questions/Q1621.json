@@ -1,0 +1,83 @@
+{
+  "questionId": "Q1621",
+  "title": "Hail XOR",
+  "slug": "hail-xor",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a sequence A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ and you have to perform the following operation exactly XXX times:\n\n\nChoose two integers iii and jjj such that 1≤i&lt;j≤N1 \\le i \\lt j \\le N1≤i&lt;j≤N.\nChoose a non-negative integer ppp.\nChange AiA_iAi​ to Ai⊕2pA_i \\oplus 2^pAi​⊕2p, and change AjA_jAj​ to Aj⊕2pA_j \\oplus 2^pAj​⊕2p, where ⊕\\oplus⊕ denotes bitwise XOR.\nFind the lexicographically smallest sequence which can be obtained by performing this operation exactly XXX times.\n\nA sequence B1,B2,…,BNB_1, B_2, \\ldots, B_NB1​,B2​,…,BN​ is said to be lexicographically smaller than a sequence C1,C2,…,CNC_1, C_2, \\ldots, C_NC1​,C2​,…,CN​ if there is an index iii such that Bi&lt;CiB_i \\lt C_iBi​&lt;Ci​ and for each valid j&lt;ij \\lt ij&lt;i, Bj=CjB_j = C_jBj​=Cj​.",
+    "constraints": [
+      "1≤T≤101 \\le T \\le 101≤T≤10",
+      "2≤N≤1052 \\le N \\le 10^52≤N≤105",
+      "1≤X≤1091 \\le X \\le 10^91≤X≤109",
+      "1≤Ai≤1091 \\le A_i \\le 10^91≤Ai​≤109 for each valid iii",
+      "Subtasks**Subtask #1 (30 points):** N≤100N \\le 100N≤100"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and XXX.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​.",
+    "outputFormat": "For each test case, print a single line containing NNN space-separated integers ― the lexicographically smallest obtainable sequence.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n3 3\n2 2 3",
+        "output": "0 0 3",
+        "explanation": "Explanation:\nExample case 1: The original sequence is (2,2,3)(2, 2, 3)(2,2,3). Consider the following three operations:\n\nChoose i=1i = 1i=1, j=2j = 2j=2 and p=1p = 1p=1. Then, A1A_1A1​ changes from 222 to 2⊕21=02 \\oplus 2^1 = 02⊕21=0 and similarly, A2A_2A2​ changes from 222 to 2⊕21=02 \\oplus 2^1 = 02⊕21=0. Now the sequence is (0,0,3)(0, 0, 3)(0,0,3).\nNext, choose i=1i = 1i=1, j=2j = 2j=2 and p=1p = 1p=1. Then, A1A_1A1​ changes to 0⊕21=20 \\oplus 2^1 = 20⊕21=2 and A2A_2A2​ changes to 0⊕21=20 \\oplus 2^1 = 20⊕21=2. The sequence is (2,2,3)(2, 2, 3)(2,2,3).\nNext, again choose i=1i = 1i=1, j=2j = 2j=2 and p=1p = 1p=1. Then, A1A_1A1​ changes to 2⊕21=02 \\oplus 2^1 = 02⊕21=0 and A2A_2A2​ changes to 2⊕21=02 \\oplus 2^1 = 02⊕21=0. The sequence is (0,0,3)(0, 0, 3)(0,0,3) again.\n\nWe can check that after exactly 3 operations, this is the lexicographically smallest sequence we can obtain."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n3 3\n2 2 3",
+        "expectedOutput": "0 0 3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "class Solution {\npublic:\n    vector<int> process(int N, int X, vector<int> a) {\n\n        vector<vector<int>> bit_locs(31);\n        vector<int> ptr(31, 0);\n\n        for (int i = 0; i < N; i++) {\n            for (int j = 30; j >= 0; j--) {\n                if ((1 << j) & a[i])\n                    bit_locs[j].push_back(i);\n            }\n        }\n\n        int operations = 0;\n\n        for (int i = 0; i < N - 1; i++) {\n            if (operations == X)\n                break;\n\n            for (int j = 30; j >= 0; j--) {\n                if (operations == X)\n                    break;\n\n                if ((1 << j) & a[i]) {\n                    if (ptr[j] + 1 < (int)bit_locs[j].size()) {\n                        a[i] ^= (1 << j);\n                        a[bit_locs[j][ptr[j] + 1]] ^= (1 << j);\n                        ptr[j] += 2;\n                    } else {\n                        a[i] ^= (1 << j);\n                        a[N - 1] ^= (1 << j);\n                    }\n                    operations++;\n                }\n            }\n        }\n\n        int Y = X - operations;\n\n        if (N == 2 && Y % 2 == 1) {\n            a[N - 1] ^= 1;\n            a[N - 2] ^= 1;\n        }\n\n        return a;\n    }\n};\n",
+      "Python3": "class Solution:\n    def solve_case(self, n, x, a):\n        # Precompute bit locations\n        bit_locs = [[] for _ in range(31)]\n        ptr = [0] * 31\n\n        for i in range(n):\n            v = a[i]\n            for j in range(30, -1, -1):\n                if v & (1 << j):\n                    bit_locs[j].append(i)\n\n        operations = 0\n\n        for i in range(n - 1):\n            if operations == x:\n                break\n\n            for j in range(30, -1, -1):\n                if operations == x:\n                    break\n\n                if a[i] & (1 << j):\n                    # If there is another element with this bit available\n                    if ptr[j] + 1 < len(bit_locs[j]):\n                        a[i] ^= (1 << j)\n                        a[bit_locs[j][ptr[j] + 1]] ^= (1 << j)\n                        ptr[j] += 2\n                    else:\n                        # Use last element\n                        a[i] ^= (1 << j)\n                        a[n - 1] ^= (1 << j)\n\n                    operations += 1\n\n        # Extra case for n = 2\n        y = x - operations\n        if n == 2 and (y % 2) == 1:\n            a[0] ^= 1\n            a[1] ^= 1\n\n        return a\n",
+      "C": "void solveCase(int n, int x, int *a) {\n\n    int *bit_locs[31];\n    int sizes[31] = {0};\n    int ptr[31] = {0};\n\n    // allocate memory\n    for (int i = 0; i < 31; i++)\n        bit_locs[i] = (int*)malloc(n * sizeof(int));\n\n    // precompute bit locations\n    for (int i = 0; i < n; i++) {\n        int v = a[i];\n        for (int j = 30; j >= 0; j--) {\n            if (v & (1 << j)) {\n                bit_locs[j][sizes[j]++] = i;\n            }\n        }\n    }\n\n    int operations = 0;\n\n    for (int i = 0; i < n - 1; i++) {\n        if (operations == x) break;\n\n        for (int j = 30; j >= 0; j--) {\n            if (operations == x) break;\n\n            if (a[i] & (1 << j)) {\n                if (ptr[j] + 1 < sizes[j]) {\n                    a[i] ^= (1 << j);\n                    a[bit_locs[j][ptr[j] + 1]] ^= (1 << j);\n                    ptr[j] += 2;\n                } else {\n                    a[i] ^= (1 << j);\n                    a[n - 1] ^= (1 << j);\n                }\n                operations++;\n            }\n        }\n    }\n\n    int y = x - operations;\n\n    // special case for n = 2\n    if (n == 2 && (y % 2 == 1)) {\n        a[0] ^= 1;\n        a[1] ^= 1;\n    }\n\n    // free memory\n    for (int i = 0; i < 31; i++)\n        free(bit_locs[i]);\n}\n",
+      "Java": "class Solution {\n\n    public int[] solveCase(int n, int x, int[] a) {\n\n        ArrayList<Integer>[] bit_locs = new ArrayList[31];\n        for (int i = 0; i < 31; i++) bit_locs[i] = new ArrayList<>();\n\n        int[] ptr = new int[31];\n\n        // Precompute bit locations\n        for (int i = 0; i < n; i++) {\n            int v = a[i];\n            for (int j = 30; j >= 0; j--) {\n                if ((v & (1 << j)) != 0)\n                    bit_locs[j].add(i);\n            }\n        }\n\n        int operations = 0;\n\n        for (int i = 0; i < n - 1; i++) {\n            if (operations == x) break;\n\n            for (int j = 30; j >= 0; j--) {\n                if (operations == x) break;\n\n                if ((a[i] & (1 << j)) != 0) {\n\n                    if (ptr[j] + 1 < bit_locs[j].size()) {\n                        // Flip with next index having same set bit\n                        a[i] ^= (1 << j);\n                        a[bit_locs[j].get(ptr[j] + 1)] ^= (1 << j);\n                        ptr[j] += 2;\n                    } else {\n                        // Use last element\n                        a[i] ^= (1 << j);\n                        a[n - 1] ^= (1 << j);\n                    }\n\n                    operations++;\n                }\n            }\n        }\n\n        int y = x - operations;\n\n        // Special case for n = 2\n        if (n == 2 && (y % 2 == 1)) {\n            a[0] ^= 1;\n            a[1] ^= 1;\n        }\n\n        return a;\n    }\n}\n",
+      "JavaScript": "class Solution {\n    solveCase(n, x, a) {\n        // bit_locs[j] = list of indices where j-th bit is set\n        const bit_locs = Array.from({ length: 31 }, () => []);\n        const ptr = Array(31).fill(0);\n\n        // Precompute positions of each bit\n        for (let i = 0; i < n; i++) {\n            let v = a[i];\n            for (let j = 30; j >= 0; j--) {\n                if (v & (1 << j)) bit_locs[j].push(i);\n            }\n        }\n\n        let operations = 0;\n\n        for (let i = 0; i < n - 1; i++) {\n            if (operations === x) break;\n\n            for (let j = 30; j >= 0; j--) {\n                if (operations === x) break;\n\n                if (a[i] & (1 << j)) {\n                    if (ptr[j] + 1 < bit_locs[j].length) {\n                        // flip with next matching bit index\n                        a[i] ^= (1 << j);\n                        a[bit_locs[j][ptr[j] + 1]] ^= (1 << j);\n                        ptr[j] += 2;\n                    } else {\n                        // flip with last element\n                        a[i] ^= (1 << j);\n                        a[n - 1] ^= (1 << j);\n                    }\n                    operations++;\n                }\n            }\n        }\n\n        let remaining = x - operations;\n\n        // Special rule when n = 2\n        if (n === 2 && (remaining % 2 === 1)) {\n            a[0] ^= 1;\n            a[1] ^= 1;\n        }\n\n        return a;\n    }\n}\n"
+    }
+  }
+}

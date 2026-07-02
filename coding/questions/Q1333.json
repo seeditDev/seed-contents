@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1333",
+  "title": "Find Course Schedule",
+  "slug": "find-course-schedule",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have to complete N courses. There are M requirements of the form \"course a has to be completed before course b\". Find an order in which you can complete the courses.\n\n\nInput Format\n\nThe first line consists of two space separated integers, `N` and `M`, representing the number of courses and number of requirements.\nCourses are numbered from `1` to `N`.\nThe subsequent `M` lines describe the requirements, each containing two integers, `a` and `b`, describing the requirements of the form course `a` has to be completed before course `b`.\n\n\nOutput Format\n\nOutput `N` space separated integers, describing the order of `N` courses which should be taken in order to complete all of them.\nIf it's not possible to complete all the courses, output -1.",
+    "constraints": [
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "0≤M≤2×1050 \\leq M \\leq 2 \\times 10^50≤M≤2×105",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
+      "ui≠viu_i \\neq v_iui​=vi​"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6 6\n1 2\n1 3\n2 4\n3 5\n5 6\n6 3",
+        "output": "-1",
+        "explanation": "Explanation:\nCourses 3, 5, and 6 are dependent on each other; hence, it is not possible to complete all the courses."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6 6\n1 2\n1 3\n2 4\n3 5\n5 6\n6 3",
+        "expectedOutput": "-1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nvector<int> adj[200005];\nint indegree[200005];\nvoid findOrder(int n) {\n    queue<int> q;\n    for (int i = 1; i <= n; i++) {\n        if (indegree[i] == 0) {\n            q.push(i);\n        }\n    }\n    vector<int> courseOrder;\n    while (!q.empty()) {\n        int node = q.front();\n        q.pop();\n        courseOrder.push_back(node);\n        for (auto v : adj[node]) {\n            indegree[v]--;\n            if (indegree[v] == 0) \n                q.push(v);\n        }\n    }\n\n    if (courseOrder.size() == n) {\n        for(int course: courseOrder)\n            cout << course << ' ';\n        return;\n    }\n    cout << -1;\n}\n\n\nint main() {\n   ios_base::sync_with_stdio(false);\n   cin.tie(0);\n \n   int n, m;\n   cin >> n >> m;\n   for(int i = 1; i <= n; i++){\n      indegree[i] = 0;\n   }\n   for(int i = 0; i < m; i++) {\n      int a, b;\n      cin >> a >> b;\n      adj[a].push_back(b);\n      indegree[b]++;\n   }\n\n   findOrder(n);\n\n return 0;\n}",
+      "Python3": "from collections import deque, defaultdict\n\ndef find_order(n, adj, indegree):\n    q = deque()\n    course_order = []\n\n    # Add nodes with zero indegree to the queue\n    for i in range(1, n + 1):\n        if indegree[i] == 0:\n            q.append(i)\n    \n    while q:\n        node = q.popleft()\n        course_order.append(node)\n        \n        for v in adj[node]:\n            indegree[v] -= 1\n            if indegree[v] == 0:\n                q.append(v)\n    \n    if len(course_order) == n:\n        print(' '.join(map(str, course_order)))\n    else:\n        print(-1)\n\ndef main():\n    import sys\n    input = sys.stdin.read\n    data = input().split()\n    \n    index = 0\n    n = int(data[index])\n    index += 1\n    m = int(data[index])\n    index += 1\n    \n    # Initialize adjacency list and indegree array\n    adj = defaultdict(list)\n    indegree = [0] * (n + 1)\n    \n    for _ in range(m):\n        a = int(data[index])\n        index += 1\n        b = int(data[index])\n        index += 1\n        adj[a].append(b)\n        indegree[b] += 1\n\n    find_order(n, adj, indegree)\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX 200005\n\ntypedef struct Node {\n    int vertex;\n    struct Node* next;\n} Node;\n\nNode* adj[MAX]; // Adjacency list\nint indegree[MAX]; // Array to store the indegree of nodes\nint queue[MAX]; // Queue for BFS\nint front = 0, rear = 0; // Queue pointers\nint courseOrder[MAX]; // Array to store topological order\n\n// Function to create a new node in adjacency list\nNode* createNode(int v) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->vertex = v;\n    newNode->next = NULL;\n    return newNode;\n}\n\nvoid enqueue(int node) {\n    queue[rear++] = node;\n}\n\nint dequeue() {\n    return queue[front++];\n}\n\nint isEmpty() {\n    return front == rear;\n}\n\nvoid findOrder(int n) {\n    int i, node;\n    \n    // Enqueue all nodes with indegree 0\n    for (i = 1; i <= n; i++) {\n        if (indegree[i] == 0) {\n            enqueue(i);\n        }\n    }\n\n    int courseIndex = 0;\n    \n    // Perform BFS\n    while (!isEmpty()) {\n        node = dequeue();\n        courseOrder[courseIndex++] = node;\n\n        // Visit all neighbors of the dequeued node\n        Node* temp = adj[node];\n        while (temp != NULL) {\n            int v = temp->vertex;\n            indegree[v]--;\n            if (indegree[v] == 0) {\n                enqueue(v);\n            }\n            temp = temp->next;\n        }\n    }\n\n    // Check if topological sort is possible\n    if (courseIndex == n) {\n        for (i = 0; i < courseIndex; i++) {\n            printf(\"%d \", courseOrder[i]);\n        }\n        printf(\"\\n\");\n    } else {\n        printf(\"-1\\n\"); // Cycle detected or incomplete order\n    }\n}\n\nint main() {\n    int n, m, a, b;\n    scanf(\"%d %d\", &n, &m);\n\n    // Initialize adjacency list and indegree array\n    for (int i = 1; i <= n; i++) {\n        adj[i] = NULL;\n        indegree[i] = 0;\n    }\n\n    // Read the edges\n    for (int i = 0; i < m; i++) {\n        scanf(\"%d %d\", &a, &b);\n        \n        // Add edge a -> b in the adjacency list\n        Node* newNode = createNode(b);\n        newNode->next = adj[a];\n        adj[a] = newNode;\n\n        // Increment indegree of node b\n        indegree[b]++;\n    }\n\n    // Perform topological sort\n    findOrder(n);\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass Codechef {\n    \n    // Maximum number of nodes\n    private static final int MAX = 200005;\n    \n    // Adjacency list representation for the graph\n    private static ArrayList<Integer>[] adj = new ArrayList[MAX];\n    \n    // Array to store the indegree of each node\n    private static int[] indegree = new int[MAX];\n    \n    // Static block to initialize the adjacency list\n    static {\n        for (int i = 0; i < MAX; i++) {\n            adj[i] = new ArrayList<>();\n        }\n    }\n    \n    /**\n     * Function to find and print the topological order of nodes\n     * using Kahn's algorithm for topological sorting.\n     * @param n Number of nodes in the graph.\n     */\n    public static void findOrder(int n) {\n        // Queue to manage nodes with indegree 0\n        Queue<Integer> q = new LinkedList<>();\n        \n        // Enqueue all nodes with indegree 0 (starting points)\n        for (int i = 1; i <= n; i++) {\n            if (indegree[i] == 0) {\n                q.add(i);\n            }\n        }\n        \n        // List to store the result of the topological order\n        List<Integer> courseOrder = new ArrayList<>();\n        \n        // Process nodes in the queue\n        while (!q.isEmpty()) {\n            int node = q.poll(); // Get the node from the front of the queue\n            courseOrder.add(node); // Add node to the topological order\n            \n            // Decrease the indegree of all adjacent nodes\n            for (int v : adj[node]) {\n                indegree[v]--;\n                // If the indegree of an adjacent node becomes 0, enqueue it\n                if (indegree[v] == 0) {\n                    q.add(v);\n                }\n            }\n        }\n        \n        // Print the result\n        // If we processed all nodes, print the topological order\n        if (courseOrder.size() == n) {\n            for (int course : courseOrder) {\n                System.out.print(course + \" \");\n            }\n        } else {\n            // If the topological order doesn't include all nodes, print -1 (cycle detected)\n            System.out.print(-1);\n        }\n    }\n    \n    public static void main(String[] args) {\n        // Scanner for reading input\n        Scanner sc = new Scanner(System.in);\n        \n        // Read number of nodes and edges\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        \n        // Initialize indegree array\n        Arrays.fill(indegree, 0);\n        \n        // Read edges and populate the adjacency list\n        for (int i = 0; i < m; i++) {\n            int a = sc.nextInt();\n            int b = sc.nextInt();\n            adj[a].add(b); // Add edge from a to b\n            indegree[b]++; // Increase indegree of node b\n        }\n        \n        // Find and print the topological order\n        findOrder(n);\n        \n        // Close the scanner\n        sc.close();\n    }\n}\n"
+    }
+  }
+}

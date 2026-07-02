@@ -1,0 +1,80 @@
+{
+  "questionId": "Q3122",
+  "title": "Cops and the Thief Devu",
+  "slug": "cops-and-the-thief-devu",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "ad-hoc & implementation",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ]
+  },
+  "content": {
+    "problemStatement": "There are 100 houses located on a **straight line**. The first house is numbered 1 and the last one is numbered 100. Some **M** houses out of these 100 are occupied by cops.\n\nThief Devu has just stolen PeePee's bag and is looking for a house to hide in.\n\nPeePee uses fast 4G Internet and sends the message to all the cops that a thief named Devu has just stolen her bag and ran into some house.\n\nDevu knows that the cops run at a maximum speed of **x** houses per minute in a straight line and they will search for a maximum of **y** minutes. Devu wants to know how many houses are safe for him to escape from the cops. Help him in getting this information.",
+    "constraints": [
+      "1 ≤ **T** ≤ 104",
+      "1 ≤ **x, y, M** ≤ 10"
+    ],
+    "inputFormat": "First line contains **T**, the number of test cases to follow.\n\nFirst line of each test case contains 3 space separated integers: **M**, **x** and **y**.\n\nFor each test case, the second line contains **M** space separated integers which represent the house numbers where the cops are residing.",
+    "outputFormat": "For each test case, output a single line containing the number of houses which are safe to hide from cops.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4 7 8\n12 52 56 8\n2 10 2\n21 75\n2 5 8\n10 51",
+        "output": "0\n18\n9",
+        "explanation": "Explanation:\nTest case 111: Based on the speed, each cop can cover 565656 houses on each side. These houses are:\n\nCop in house 121212 can cover houses 111 to 111111 if he travels left and houses 131313 to 686868 if he travels right. Thus, this cop can cover houses numbered 111 to 686868.\nCop in house 525252 can cover houses 111 to 515151 if he travels left and houses 535353 to 100100100 if he travels right. Thus, this cop can cover houses numbered 111 to 100100100.\nCop in house 565656 can cover houses 111 to 555555 if he travels left and houses 575757 to 100100100 if he travels right. Thus, this cop can cover houses numbered 111 to 100100100.\nCop in house 888 can cover houses 111 to 777 if he travels left and houses 999 to 646464 if he travels right. Thus, this cop can cover houses numbered 111 to 646464.\n\nThus, there is no house which is not covered by any of the cops.\nTest case 222: Based on the speed, each cop can cover 202020 houses on each side. These houses are:\n\nCop in house 212121 can cover houses 111 to 202020 if he travels left and houses 222222 to 414141 if he travels right. Thus, this cop can cover houses numbered 111 to 414141.\nCop in house 757575 can cover houses 555555 to 747474 if he travels left and houses 767676 to 959595 if he travels right. Thus, this cop can cover houses numbered 555555 to 959595.\n\nThus, the safe houses are house number 424242 to 545454 and 969696 to 100100100. There are 181818 safe houses."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4 7 8\n12 52 56 8\n2 10 2\n21 75\n2 5 8\n10 51",
+        "expectedOutput": "0\n18\n9",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int t;\n    cin>>t;\n    \n    while (t--) {\n        int M, x, y;\n        cin >> M >> x >> y;\n\n        vector<int> copHouses(M); \n        for (int i = 0; i < M; i++) {\n            cin >> copHouses[i];\n        }\n\n        vector<bool> safeHouses(100, true); \n        for (int i = 0; i < M; i++) {\n            int copHouse = copHouses[i];\n            int startHouse = max(1, copHouse - x * y); \n            int endHouse = min(100, copHouse + x * y); \n            for (int j = startHouse; j <= endHouse; j++) {\n                safeHouses[j - 1] = false; \n            }\n        }\n\n        int countSafeHouses = 0;\n        for (int i = 0; i < 100; i++) {\n            if (safeHouses[i]) {\n                countSafeHouses++;\n            }\n        }\n\n        cout << countSafeHouses << endl;\n    }\n\n    return 0;\n}\n",
+      "Python3": "def count_safe_houses():\n    t = int(input())\n    \n    for _ in range(t):\n        M, x, y = map(int, input().split())\n        copHouses = list(map(int, input().split()))\n\n        safeHouses = [True] * 100 \n        for copHouse in copHouses:\n            startHouse = max(1, copHouse - x * y)\n            endHouse = min(100, copHouse + x * y)\n            for j in range(startHouse, endHouse + 1):\n                safeHouses[j - 1] = False \n\n        countSafeHouses = sum(safeHouses)\n        print(countSafeHouses)\n\ncount_safe_houses()\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int M, x, y;\n        scanf(\"%d %d %d\", &M, &x, &y);\n\n        int copHouses[11]; \n        for (int i = 0; i < M; i++) {\n            scanf(\"%d\", &copHouses[i]);\n        }\n\n        bool safeHouses[100]; \n        for (int i = 0; i < 100; i++) {\n            safeHouses[i] = true; \n        }\n\n        for (int i = 0; i < M; i++) {\n            int copHouse = copHouses[i];\n            int startHouse = copHouse - (x * y);\n            int endHouse = copHouse + (x * y);\n\n            if (startHouse < 1) {\n                startHouse = 1; \n            }\n            if (endHouse > 100) {\n                endHouse = 100; \n            }\n\n            for (int j = startHouse; j <= endHouse; j++) {\n                safeHouses[j - 1] = false; \n            }\n        }\n\n        int countSafeHouses = 0;\n        for (int i = 0; i < 100; i++) {\n            if (safeHouses[i]) {\n                countSafeHouses++;\n            }\n        }\n\n        printf(\"%d\\n\", countSafeHouses);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n        \n        while (t-- > 0) {\n            int M = scanner.nextInt();\n            int x = scanner.nextInt();\n            int y = scanner.nextInt();\n\n            int[] copHouses = new int[M];\n            for (int i = 0; i < M; i++) {\n                copHouses[i] = scanner.nextInt();\n            }\n\n            boolean[] safeHouses = new boolean[100]; \n            for (int i = 0; i < 100; i++) {\n                safeHouses[i] = true; \n            }\n\n            for (int copHouse : copHouses) {\n                int startHouse = Math.max(1, copHouse - x * y);\n                int endHouse = Math.min(100, copHouse + x * y);\n                for (int j = startHouse; j <= endHouse; j++) {\n                    safeHouses[j - 1] = false; \n                }\n            }\n\n            int countSafeHouses = 0;\n            for (boolean isSafe : safeHouses) {\n                if (isSafe) {\n                    countSafeHouses++;\n                }\n            }\n\n            System.out.println(countSafeHouses);\n        }\n        \n        scanner.close();\n    }\n}\n",
+      "JavaScript": "function Cops(input) {\n    const lines = input.trim().split('\\n');\n    const T = parseInt(lines[0]); // Number of test cases\n\n    let index = 1; // Index to iterate through test cases\n\n    // Iterate through each test case\n    for (let t = 0; t < T; t++) {\n        const [M, x, y] = lines[index++].split(' ').map(Number); // Number of cops, speed of cops, and search time\n        const copHouses = lines[index++].split(' ').map(Number); // Houses where cops are residing\n\n        // Initialize an array to mark safe houses\n        const safeHouses = new Array(100).fill(true);\n\n        // Mark houses where cops can reach within y minutes\n        for (let i = 0; i < M; i++) {\n            const copHouse = copHouses[i];\n            const startHouse = Math.max(1, copHouse - x * y);\n            const endHouse = Math.min(100, copHouse + x * y);\n            for (let j = startHouse; j <= endHouse; j++) {\n                safeHouses[j - 1] = false; // Houses are 0-indexed\n            }\n        }\n\n        // Count safe houses\n        let countSafeHouses = 0;\n        for (let i = 0; i < 100; i++) {\n            if (safeHouses[i]) {\n                countSafeHouses++;\n            }\n        }\n\n        console.log(countSafeHouses); // Output the number of safe houses\n    }\n}\n\nprocess.stdin.setEncoding('utf8');\nlet input = '';\nprocess.stdin.on('data', function(chunk) {\n    input += chunk;\n});\n\nprocess.stdin.on('end', function() {\n    Cops(input);\n});\n"
+    }
+  }
+}

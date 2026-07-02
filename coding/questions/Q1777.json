@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1777",
+  "title": "Chef Finds Next Greater Element",
+  "slug": "chef-finds-next-greater-element",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has two lists of integers:\n\n\n**subsetNumbers**: a smaller list of numbers that we are interested in.\n**fullNumbers**: a larger list that contains all numbers of **subsetNumbers**, possibly along with other numbers.\nFor each number in **subsetNumbers**, Chef wants to find the **next strictly greater number** in **fullNumbers** that appears **to the right** of that number.\n\n\nIf a greater number exists to the right, return that number.\nIf there is no greater number to the right, return −1-1−1.\nHelp Chef solve this problem efficiently so he can quickly find the next strictly greater elements for his numbers!\n\nFunction Declaration\n\n**Function Name**\n\n\n\nfindNextGreaterElementfindNextGreaterElementfindNextGreaterElement\n\n\n\n**Parameters**\n\n\n\nsubsetNumberssubsetNumberssubsetNumbers: list of integers\nfullNumbersfullNumbersfullNumbers: list of integers\n\n\n\n**Return Value**\n\n\n\nA list of integers containing the next greater element for each number in subsetNumberssubsetNumberssubsetNumbers or −1-1−1 if none exists.\nThe output order corresponds to the order of subsetNumberssubsetNumberssubsetNumbers.\n\n\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤M≤N≤10001 \\leq M \\leq N \\leq 10001≤M≤N≤1000\n0≤subsetNumbers[i],fullNumbers[i]≤1040 \\leq subsetNumbers[i], fullNumbers[i] \\leq 10^40≤subsetNumbers[i],fullNumbers[i]≤104\nAll integers in subsetNumberssubsetNumberssubsetNumbers and fullNumbersfullNumbersfullNumbers are unique.\nEvery integer in subsetNumberssubsetNumberssubsetNumbers appears in fullNumbersfullNumbersfullNumbers.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer MMM — the size of subsetNumberssubsetNumberssubsetNumbers.\nThe second line contains MMM integers representing subsetNumberssubsetNumberssubsetNumbers.\nThe third line contains an integer NNN — the size of fullNumbersfullNumbersfullNumbers.\nThe fourth line contains NNN distinct integers representing fullNumbersfullNumbersfullNumbers.\n\n\n\n\nOutput Format\n\nFor each test case, print MMM integers in a single line.\nEach integer is the next greater element in fullNumbersfullNumbersfullNumbers for the corresponding number in subsetNumberssubsetNumberssubsetNumbers, or −1-1−1 if it does not exist.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n5\n10 3 6 1 9\n7\n3 10 1 6 9 5 7",
+        "output": "-1 10 9 6 -1",
+        "explanation": "Explanation:\n101010:Numbers after 101010 in fullNumbersfullNumbersfullNumbers are [1, 6, 9, 5, 7]. None are greater, so the result is −1-1−1\n333: Numbers after 333 are [10, 1, 6, 9, 5, 7]. The first greater number is 101010\n666: Numbers after 666 are [9, 5, 7]. The first greater number is 999\n111: Numbers after 111 are [6, 9, 5, 7]. The first greater number is 666\n999: Numbers after 999 are [5, 7]. None are greater, so the result is −1-1−1"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n5\n10 3 6 1 9\n7\n3 10 1 6 9 5 7",
+        "expectedOutput": "-1 10 9 6 -1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(M×N)O(M \\times N)O(M×N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "vector<int> findNextGreaterElement(vector<int>& subsetNumbers, vector<int>& fullNumbers) {\n    unordered_map<int,int> nextGreaterMap;\n    stack<int> st;\n    for (int num : fullNumbers) {\n        while (!st.empty() && st.top() < num) {\n            nextGreaterMap[st.top()] = num;\n            st.pop();\n        }\n        st.push(num);\n    }\n    while (!st.empty()) {\n        nextGreaterMap[st.top()] = -1;\n        st.pop();\n    }\n    vector<int> result;\n    result.reserve(subsetNumbers.size());\n    for (int num : subsetNumbers) {\n        result.push_back(nextGreaterMap[num]);\n    }\n    return result;\n}",
+      "Python3": "def findNextGreaterElement(subsetNumbers, fullNumbers):\n    stack = []\n    nextGreater = {}\n    for num in fullNumbers:\n        while stack and stack[-1] < num:\n            nextGreater[stack.pop()] = num\n        stack.append(num)\n    return [nextGreater.get(num, -1) for num in subsetNumbers]",
+      "C": "int* findNextGreaterElement(int* subsetNumbers, int subsetNumbersLength, int* fullNumbers, int fullNumbersLength, int* resultLength) {\n    int *stack = (int*)malloc(fullNumbersLength * sizeof(int));\n    int top = -1;\n    int *map = (int*)malloc(10001 * sizeof(int));\n    for (int i = 0; i <= 10000; i++) map[i] = -1;\n    for (int i = fullNumbersLength - 1; i >= 0; i--) {\n        while (top >= 0 && stack[top] <= fullNumbers[i]) top--;\n        map[fullNumbers[i]] = top < 0 ? -1 : stack[top];\n        stack[++top] = fullNumbers[i];\n    }\n    int *ans = (int*)malloc(subsetNumbersLength * sizeof(int));\n    for (int i = 0; i < subsetNumbersLength; i++) ans[i] = map[subsetNumbers[i]];\n    free(stack);\n    free(map);\n    *resultLength = subsetNumbersLength;\n    return ans;\n}",
+      "Java": "    public int[] findNextGreaterElement(int[] subsetNumbers, int[] fullNumbers) {\n        int n = fullNumbers.length;\n        java.util.Map<Integer, Integer> nextGreaterMap = new java.util.HashMap<>();\n        java.util.Deque<Integer> stack = new java.util.ArrayDeque<>();\n        for (int num : fullNumbers) {\n            while (!stack.isEmpty() && stack.peek() < num) {\n                nextGreaterMap.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        while (!stack.isEmpty()) {\n            nextGreaterMap.put(stack.pop(), -1);\n        }\n        int[] result = new int[subsetNumbers.length];\n        for (int i = 0; i < subsetNumbers.length; i++) {\n            result[i] = nextGreaterMap.get(subsetNumbers[i]);\n        }\n        return result;\n    }\n",
+      "JavaScript": "function findNextGreaterElement(subsetNumbers, fullNumbers) {\n  const stack = [];\n  const nextGreaterMap = new Map();\n  for (let num of fullNumbers) {\n    while (stack.length && stack[stack.length - 1] < num) {\n      nextGreaterMap.set(stack.pop(), num);\n    }\n    stack.push(num);\n  }\n  while (stack.length) {\n    nextGreaterMap.set(stack.pop(), -1);\n  }\n  return subsetNumbers.map(num => nextGreaterMap.get(num));\n}\n"
+    }
+  }
+}

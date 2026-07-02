@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1159",
+  "title": "Transform the Expression",
+  "slug": "transform-the-expression",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Transform the algebraic expression with brackets into RPN form. \n\n\n\nYou can assume that for the test cases below only single letters will be used, brackets [] will not be used and each expression has only one RPN form (no expressions like a*b*c)\n\n\n\nInput Format\n\nThe first line contains t, the number of test cases (less then 100).\nFollowed by t lines, containing an expression to be translated to RPN form, where the length of the expression is less then 400.\n\n\nOutput Format\nThe expressions in RPN form, one per line.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n(a+(b*c))\n((a+b)*(z+x))\n((a+t)*((b+(a+c))^(c+d)))",
+        "output": "abc*+\nab+zx+*\nat+bac++cd+^*",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n(a+(b*c))\n((a+b)*(z+x))\n((a+t)*((b+(a+c))^(c+d)))",
+        "expectedOutput": "abc*+\nab+zx+*\nat+bac++cd+^*",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code uses a **stack** to manage operators and parentheses. Whenever a lowercase letter is encountered, it is added to the result directly. For opening parentheses, they are pushed onto the **stack**, while for closing parentheses, the code pops elements from the **stack** until it finds the corresponding opening parenthesis.\n\nSince the problem specifies only single-letter variables and does not mention operators, the code effectively ignores operator handling beyond managing parentheses. This logic ensures that the output follows RPN format.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    \n    int t;\n    cin >> t;\n    while (t--) {\n        string expression;\n        cin >> expression;\n        string result;\n        stack < char > my_stack;\n        for (int i = 0; i < expression.length(); i++)\n        {\n            if (expression[i] >= 'a' && expression[i] <= 'z') {\n                result += expression[i];\n            }\n            else if (expression[i] == '(') {              \n                my_stack.push(expression[i]); \n            } \n            else if (expression[i] == ')') \n            { \n                while (my_stack.top() != '(') \n                { \n                    result += my_stack.top(); \n                    my_stack.pop(); \n                }\n                my_stack.pop();\n            }\n            else\n                my_stack.push(expression[i]);\n        }\n        cout << result << endl;\n    }\n\n    return 0;\n}",
+      "Python3": "def infix_to_postfix(expression):\n    result = []\n    my_stack = []\n    \n    for char in expression:\n        if 'a' <= char <= 'z':  # Check if the character is a lowercase letter\n            result.append(char)\n        elif char == '(':  # If character is '(', push it onto the stack\n            my_stack.append(char)\n        elif char == ')':  # If character is ')'\n            while my_stack and my_stack[-1] != '(':  # Pop until '(' is found\n                result.append(my_stack.pop())\n            if my_stack:  # Pop the '(' from the stack\n                my_stack.pop()\n        else:  # If the character is an operator\n            my_stack.append(char)\n    \n    # Pop all the operators from the stack\n    while my_stack:\n        result.append(my_stack.pop())\n    \n    return ''.join(result)\n\ndef main():\n    t = int(input())\n    for _ in range(t):\n        expression = input()\n        print(infix_to_postfix(expression))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h> \n#define MAX 1000 \n\nstruct Stack {\n    int top;\n    char items[MAX];\n};\n\nvoid initStack(struct Stack *s) {\n    s->top = -1;\n}\n\nvoid push(struct Stack *s, char value) {\n    if (s->top < MAX - 1) {\n        s->items[++(s->top)] = value;\n    }\n}\n\nchar pop(struct Stack *s) {\n    if (s->top != -1) {\n        return s->items[(s->top)--];\n    }\n    return '\\0';  \n}\n\nchar peek(struct Stack *s) {\n    if (s->top != -1) {\n        return s->items[s->top];\n    }\n    return '\\0'; \n}\nint isEmpty(struct Stack *s) {\n    return s->top == -1;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t); \n\n    while (t--) {\n        char expression[MAX], result[MAX];\n        scanf(\"%s\", expression); \n\n        struct Stack my_stack;\n        initStack(&my_stack); \n\n        int result_index = 0;\n        int length = strlen(expression); \n\n        for (int i = 0; i < length; i++) {\n            if (isalpha(expression[i])) {\n                result[result_index++] = expression[i];\n            }\n            else if (expression[i] == '(') {\n                push(&my_stack, expression[i]); \n            }\n            else if (expression[i] == ')') {\n                while (peek(&my_stack) != '(') {\n                    result[result_index++] = pop(&my_stack);\n                }\n                pop(&my_stack); \n            }\n            else {\n                push(&my_stack, expression[i]); \n            }\n        }\n        result[result_index] = '\\0';\n        printf(\"%s\\n\", result);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n        scanner.nextLine(); // Consume the newline character after the integer input\n        while (t-- > 0) {\n            String expression = scanner.nextLine();\n            StringBuilder result = new StringBuilder();\n            Stack<Character> myStack = new Stack<>();\n            \n            for (int i = 0; i < expression.length(); i++) {\n                char currentChar = expression.charAt(i);\n                if (currentChar >= 'a' && currentChar <= 'z') {\n                    result.append(currentChar);\n                } else if (currentChar == '(') {\n                    myStack.push(currentChar);\n                } else if (currentChar == ')') {\n                    while (myStack.peek() != '(') {\n                        result.append(myStack.pop());\n                    }\n                    myStack.pop(); // Pop the '(' from the stack\n                } else {\n                    myStack.push(currentChar);\n                }\n            }\n            System.out.println(result.toString());\n        }\n        scanner.close(); // Close the scanner to prevent resource leaks\n    }\n}\n",
+      "JavaScript": "function main() {\n    const t = parseInt(inputLines[0]);\n    for (let i = 1; i <= t; i++) {\n        const expression = inputLines[i];\n        let result = '';\n        const myStack = [];\n        for (let j = 0; j < expression.length; j++) {\n            if (expression[j] >= 'a' && expression[j] <= 'z') {\n                result += expression[j];\n            } else if (expression[j] === '(') {\n                myStack.push(expression[j]);\n            } else if (expression[j] === ')') {\n                while (myStack.length && myStack[myStack.length - 1] !== '(') {\n                    result += myStack.pop();\n                }\n                if (myStack.length) {\n                    myStack.pop(); // pop the '('\n                }\n            } else {\n                myStack.push(expression[j]);\n            }\n        }\n        console.log(result);\n    }\n}\n"
+    }
+  }
+}

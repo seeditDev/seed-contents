@@ -1,0 +1,86 @@
+{
+  "questionId": "Q2463",
+  "title": "Little Elephant and Movies",
+  "slug": "little-elephant-and-movies",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Little Elephant from Zoo of Lviv likes to watch movies.\n\nThere are **N** different movies (numbered from **0** to **N − 1**) he wants to watch in some order. Of course, he will watch each movie exactly once. The priority of **i**th movie is **Pi**.\n\nA watching of a movie is called exciting if and only if one of the following two conditions holds:\n\n\nThis is the first watching.\nThe priority of this movie is strictly greater than the maximal priority of the movies watched so far.\nLet us call the number of exciting watchings the excitingness of the order.\n\nHelp him to find the number of different watching orders whose excitingness does not exceed **K**. Since the answer can be large, print it modulo **1000000007 (109+7)**.",
+    "constraints": [
+      "**1 ≤ T ≤ 10**",
+      "**1 ≤ K ≤ N ≤ 200**",
+      "**1 ≤ Pi ≤ 200**",
+      "Example**Input:**",
+      "2",
+      "3 1",
+      "3 1 2",
+      "4 3",
+      "1 2 2 3",
+      "**Output:**",
+      "2",
+      "24",
+      "ExplanationIn the first case, there are two boring watching orders whose excitingness not greater than **K=1**: **[3, 1, 2]**, **[3, 2, 1]**. Both watching orders have one exciting watching: the first watching.",
+      "In the second case, every watching order has at most **3** excitingness."
+    ],
+    "inputFormat": "The first line of input contains an integer **T**, denoting the number of test cases. Then **T** test cases follow.\n\nThe first line of each test case contains two space-separated integers **N** and **K**. The next line contains **N** space-separated integers **P1**, **P2**, ..., **PN**.",
+    "outputFormat": "For each test case, print the number of different watching orders having at most **K** excitingness modulo **1000000007 (109+7)**.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "Input:\n2\n3 1\n3 1 2\n4 3\n1 2 2 3\nOutput:\r\n2\r\n24",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "Input:\n2\n3 1\n3 1 2\n4 3\n1 2 2 3\nOutput:\r\n2\r\n24",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "First, we split the element of the array into classes, where the elements in each class have the same value. For array A = {4, 5, 3, 8, 6, 3, 4, 11}, there will be 6 such classes: {3, 3}, {4, 4}, {5}, {6}, {8}, {11}.\n\nNext, we start with an empty multiset and add theses classes into the set in decreasing order of value. At any point we maintain the number of permutations of the multiset which have exactly r steps in their PM function, for all r &lt;= k. We store this value in numPerm[r], and update it as we insert new classes.\n\nSuppose at some point the size of the multiset is m, and we add a new class which has n copies of the same element, then the values in the numPerm can be updated according to the formulae derived in the previous section. More formally,\n\nnumPerm[r + 1] += numPerm[r] * n * (m + 1) * (m + 2) * … * (m + n - 1)\n\nnumPerm[r] *= m * (m + 1) * (m + 2) * … * (m + n - 1)\n\nSince the term (m + 1) * (m + 2) * … * (m + n - 1) is the same for all r, we can compute it once, and reuse it. The following code shows how to update the numPerm, when a new class is inserted.\n\n// m is the size of existing multiset, and\n// n copies of the new element are being inserted,\n// which is smaller than all elements of the current multiset.\nvoid update(int &amp;m, int n) {\n    int t = 1;\n    for (int i = m + 1; i &lt; m + n; ++i)\n        t *= i;\n`for (int r = k - 1; r &amp;gt;= 0; --r) {\n    numPerm[r + 1] += t * numPerm[r] * n;\n    numPerm[r] *= t * m;\n}\n\n// update the size of the multiset.\nm += n;\n`\n}\n\n\n\n\nFinally, the answer is (numPerm[1] + numPerm[2] + … + numPerm[k]).",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

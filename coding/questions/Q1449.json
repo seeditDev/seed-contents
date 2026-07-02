@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1449",
+  "title": "Nodes at Kth Level",
+  "slug": "nodes-at-kth-level",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, rooted at node **1**, and a positive integer **K**. Print all the nodes at the level **K** from root node in sorted order.\n\nFor example, in the following tree, root node `1` is at level `0`. Similarly, nodes `2` and `4` are at level `1` from the root. Similarly, nodes 5, 3, 6 and 7 are at level 2 from the root node.\n\n\n\n\nInput Format\n\nThe first line of the input contains two space-separated integers NNN and KKK— the number of vertices and level at which we need to find the nodes.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\nOutput on the single line, the space separated nodes (in sorted order) which are present at the **Kth** level from root node **1**,",
+    "constraints": [
+      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
+      "0≤K≤maxLevelInTree0 \\leq K \\leq maxLevelInTree 0≤K≤maxLevelInTree"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8 2\n1 2\n1 3\n3 4\n3 5\n3 6\n2 7 \n2 8",
+        "output": "4 5 6 7 8",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8 2\n1 2\n1 3\n3 4\n3 5\n3 6\n2 7 \n2 8",
+        "expectedOutput": "4 5 6 7 8",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nvector<int> adj[100002];\nvector<int> nodes_at_level_k;\nvoid dfs(int u, int par, int k, int level){\n    if(level == k){\n        nodes_at_level_k.push_back(u);\n    }\n    for(int v: adj[u]){\n        if(v == par) continue;\n        dfs(v, u, k, level + 1);\n    }\n}\nint main() {\n    // your code goes here\n    int n, k;\n    cin >> n >> k;\n    assert(k >= 0 && k < n);\n    for(int i = 1; i < n; i++){\n        int u, v;\n        cin >> u >> v;\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n    \n    dfs(1, 0, k, 0);\n    sort(nodes_at_level_k.begin(), nodes_at_level_k.end());\n    for(int node: nodes_at_level_k)\n      cout << node << \" \";\n      \n    return 0;\n} \n",
+      "Python3": "class Codechef:\n    \n    adj = [[] for _ in range(100001)]\n    nodes_at_level_k = []\n\n    @staticmethod\n    def dfs(u, parent, k, level):\n        if level == k:\n            Codechef.nodes_at_level_k.append(u)\n        for v in Codechef.adj[u]:\n            if v != parent:\n                Codechef.dfs(v, u, k, level + 1)\n\n    @staticmethod\n    def main():\n        import sys\n        input = sys.stdin.read\n        data = input().split()\n        \n        index = 0\n        n = int(data[index])\n        k = int(data[index + 1])\n        index += 2\n        \n        if k < 0 or k >= n:\n            print(f\"Invalid value for k: {k}\", file=sys.stderr)\n            return\n        \n        # Initialize adjacency list\n        for i in range(1, n):\n            u = int(data[index])\n            v = int(data[index + 1])\n            if u >= len(Codechef.adj) or v >= len(Codechef.adj):\n                print(f\"Node index out of bounds: u = {u}, v = {v}\", file=sys.stderr)\n                return\n            Codechef.adj[u].append(v)\n            Codechef.adj[v].append(u)\n            index += 2\n\n        Codechef.dfs(1, 0, k, 0)\n        Codechef.nodes_at_level_k.sort()\n\n        print(' '.join(map(str, Codechef.nodes_at_level_k)))\n\nif __name__ == \"__main__\":\n    Codechef.main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_NODES 100002\n\ntypedef struct Node {\n    int vertex;\n    struct Node* next;\n} Node;\n\nNode* adj[MAX_NODES];\nint* nodes_at_level_k;\nint nodes_count;\n\nvoid add_edge(int u, int v) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->vertex = v;\n    newNode->next = adj[u];\n    adj[u] = newNode;\n}\n\nvoid dfs(int u, int par, int k, int level) {\n    if (level == k) {\n        nodes_at_level_k[nodes_count++] = u;\n    }\n    Node* current = adj[u];\n    while (current != NULL) {\n        int v = current->vertex;\n        if (v != par) {\n            dfs(v, u, k, level + 1);\n        }\n        current = current->next;\n    }\n}\n\nint cmpfunc(const void* a, const void* b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n\n    // Input validation\n    if (k < 0 || k >= n) {\n        return 1; // Invalid input, exit the program\n    }\n\n    // Initialize adjacency list\n    for (int i = 0; i <= n; i++) {\n        adj[i] = NULL;\n    }\n\n    // Initialize nodes_at_level_k\n    nodes_at_level_k = (int*)malloc(n * sizeof(int));\n    nodes_count = 0;\n\n    // Read edges and build adjacency list\n    for (int i = 1; i < n; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        add_edge(u, v);\n        add_edge(v, u);\n    }\n\n    // Start DFS from node 1\n    dfs(1, 0, k, 0);\n\n    // Sort the nodes at level k\n    qsort(nodes_at_level_k, nodes_count, sizeof(int), cmpfunc);\n\n    // Print the nodes at level k\n    for (int i = 0; i < nodes_count; i++) {\n        printf(\"%d \", nodes_at_level_k[i]);\n    }\n    printf(\"\\n\");\n\n    // Free the allocated memory\n    free(nodes_at_level_k);\n    for (int i = 0; i <= n; i++) {\n        Node* current = adj[i];\n        while (current != NULL) {\n            Node* temp = current;\n            current = current->next;\n            free(temp);\n        }\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.ArrayList;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Scanner;\n\nclass Codechef {\n\n    static List<Integer>[] adj = new ArrayList[100001];\n    static List<Integer> nodesAtLevelK = new ArrayList<>();\n\n    public static void dfs(int u, int par, int k, int level) {\n        if (level == k) {\n            nodesAtLevelK.add(u);\n        }\n        for (int v : adj[u]) {\n            if (v != par) {\n                dfs(v, u, k, level + 1);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int k = sc.nextInt();\n\n        if (k < 0 || k >= n) {\n            System.err.println(\"Invalid value for k: \" + k);\n            return;\n        }\n\n        // Initialize adjacency list\n        for (int i = 0; i < adj.length; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        for (int i = 1; i < n; i++) {\n            int u = sc.nextInt();\n            int v = sc.nextInt();\n            if (u >= adj.length || v >= adj.length) {\n                System.err.println(\"Node index out of bounds: u = \" + u + \", v = \" + v);\n                return;\n            }\n            adj[u].add(v);\n            adj[v].add(u);\n        }\n\n        dfs(1, 0, k, 0);\n        Collections.sort(nodesAtLevelK);\n\n        for (int node : nodesAtLevelK) {\n            System.out.print(node + \" \");\n        }\n        System.out.println();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst adj = [];\nconst nodesAtLevelK = [];\n\nfunction dfs(u, par, k, level) {\n    if (level === k) {\n        nodesAtLevelK.push(u);\n    }\n    for (let v of adj[u]) {\n        if (v === par) continue;\n        dfs(v, u, k, level + 1);\n    }\n}\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let n = 0, k = 0;\n    let edgeCount = 0;\n\n    rl.on('line', (line) => {\n        if (n === 0) {\n            [n, k] = line.trim().split(' ').map(Number);\n            for (let i = 0; i <= n; i++) {\n                adj.push([]);\n            }\n        } else {\n            const [u, v] = line.trim().split(' ').map(Number);\n            adj[u].push(v);\n            adj[v].push(u);\n            edgeCount++;\n            if (edgeCount === n - 1) {\n                rl.close();\n            }\n        }\n    });\n\n    rl.on('close', () => {\n        dfs(1, 0, k, 0);\n        nodesAtLevelK.sort((a, b) => a - b);\n        console.log(nodesAtLevelK.join(' '));\n        process.exit(0);\n    });\n}\n\n// Run the main function\nmain();\n"
+    }
+  }
+}

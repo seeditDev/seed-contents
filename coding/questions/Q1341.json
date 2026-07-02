@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1341",
+  "title": "Sort Matrix Diagonally",
+  "slug": "sort-matrix-diagonally",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "matrices",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Matrices"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a `N x M` matrix, sort its elements diagonally.\nFor eg. see the following matrix and its diagonal sorting:\n\n\n\n\nInput Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the input matrix.\nNext NNN lines contains MMM space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput NNN lines, each containing MMM space separated integers, the elements of diagonally sorted matrix.",
+    "constraints": [
+      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
+      "The elements of the matrix are non-negative and won't exceed 100010001000."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 3\n3 1 5\n8 2 1\n4 6 0",
+        "output": "0 1 5\n6 2 1\n4 8 3",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 3\n3 1 5\n8 2 1\n4 6 0",
+        "expectedOutput": "0 1 5\n6 2 1\n4 8 3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<vector<int>> diagonalSort(vector<vector<int>>& mat) {\n    int row = mat.size(), col = mat[0].size();\n    map<int, priority_queue<int, vector<int>, greater<int>>> d;\n    for(int i = 0; i < row; i++){\n        for(int j = 0; j < col; j++){\n            d[i - j].push(mat[i][j]);\n        }\n    }\n    for(int i = 0; i < row; i++){\n        for(int j=0; j < col; j++){\n            mat[i][j] = d[i - j].top();\n            d[i - j].pop();\n        }\n    }\n    return mat;\n}\n\nint main() {\n  int n, m;\n  cin >> n >> m;\n\n  assert(1 <= n && n <= 100);\n  assert(1 <= m && m <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (m));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cin >> mat[i][j];\n    }\n  }\n  mat = diagonalSort(mat);\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cout << mat[i][j] << \" \";\n    }\n    cout << endl;\n  }\n  return 0;\n} ",
+      "Python3": "def diagonalSort(mat):\n    row, col = len(mat), len(mat[0])\n    d = {}\n    for i in range(row):\n        for j in range(col):\n            if i - j not in d:\n                d[i - j] = []\n            d[i - j].append(mat[i][j])\n    \n    for key in d:\n        d[key].sort()\n    \n    for i in range(row):\n        for j in range(col):\n            mat[i][j] = d[i - j].pop(0)\n    \n    return mat\n\nn, m = map(int, input().split())\nassert 1 <= n <= 100\nassert 1 <= m <= 100\n\nmat = [list(map(int, input().split())) for _ in range(n)]\nmat = diagonalSort(mat)\n\nfor row in mat:\n    print(*row)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint comparator(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nvoid sortDiagonal(int mat[100][100], int n, int m, int startRow, int startCol) {\n    int i = startRow, j = startCol;\n    int temp[100], index = 0;\n\n    // Collect elements along the diagonal\n    while (i < n && j < m) {\n        temp[index++] = mat[i][j];\n        i++;\n        j++;\n    }\n\n    // Sort the diagonal\n    qsort(temp, index, sizeof(int), comparator);\n\n    // Place sorted elements back into the matrix\n    i = startRow;\n    j = startCol;\n    index = 0;\n    while (i < n && j < m) {\n        mat[i][j] = temp[index++];\n        i++;\n        j++;\n    }\n}\n\nvoid diagonalSort(int mat[100][100], int n, int m) {\n    // Sort each diagonal starting from first row\n    for (int col = 0; col < m; col++) {\n        sortDiagonal(mat, n, m, 0, col);\n    }\n\n    // Sort each diagonal starting from first column (excluding the main diagonal)\n    for (int row = 1; row < n; row++) {\n        sortDiagonal(mat, n, m, row, 0);\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    int mat[100][100];\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            scanf(\"%d\", &mat[i][j]);\n        }\n    }\n\n    diagonalSort(mat, n, m);\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            printf(\"%d \", mat[i][j]);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\nimport java.util.HashMap;\nimport java.util.PriorityQueue;\n\npublic class Main {\n    public static int[][] diagonalSort(int[][] mat) {\n        int row = mat.length, col = mat[0].length;\n        HashMap<Integer, PriorityQueue<Integer>> d = new HashMap<>();\n        \n        for (int i = 0; i < row; i++) {\n            for (int j = 0; j < col; j++) {\n                int key = i - j;\n                if (!d.containsKey(key)) {\n                    d.put(key, new PriorityQueue<>());\n                }\n                d.get(key).offer(mat[i][j]);\n            }\n        }\n        \n        for (int i = 0; i < row; i++) {\n            for (int j = 0; j < col; j++) {\n                int key = i - j;\n                mat[i][j] = d.get(key).poll();\n            }\n        }\n        \n        return mat;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n            }\n        }\n\n        mat = diagonalSort(mat);\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                System.out.print(mat[i][j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n  input.push(line.trim());\n});\n\nrl.on('close', () => {\n  const [n, m] = input[0].split(' ').map(Number);\n\n  let mat = [];\n  for (let i = 1; i <= n; i++) {\n    mat.push(input[i].split(' ').map(Number));\n  }\n\n  function diagonalSort(mat) {\n    const diagonals = {};\n\n    // Collect elements along each diagonal\n    for (let i = 0; i < n; i++) {\n      for (let j = 0; j < m; j++) {\n        if (!diagonals[i - j]) diagonals[i - j] = [];\n        diagonals[i - j].push(mat[i][j]);\n      }\n    }\n\n    // Sort each diagonal\n    for (const key in diagonals) {\n      diagonals[key].sort((a, b) => a - b);\n    }\n\n    // Place sorted elements back into the matrix\n    for (let i = 0; i < n; i++) {\n      for (let j = 0; j < m; j++) {\n        mat[i][j] = diagonals[i - j].shift();\n      }\n    }\n\n    return mat;\n  }\n\n  mat = diagonalSort(mat);\n\n  // Output the sorted matrix\n  mat.forEach(row => console.log(row.join(' ')));\n});\n"
+    }
+  }
+}

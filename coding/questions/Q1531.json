@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1531",
+  "title": "Split Array with Minimum Largest Sum",
+  "slug": "split-array-with-minimum-largest-sum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array of integers numsnumsnums of size NNN and an integer KKK. Your task is to split the array into **exactly K non-empty contiguous subarrays** such that the **largest sum** among these subarrays is minimized.\n\nReturn the minimized largest sum.\n\nFunction DeclarationFunction NamesplitArraysplitArraysplitArray – This function splits an array into KKK contiguous subarrays and minimizes the maximum subarray sum.\n\nParameters\nnumsnumsnums : An array of non-negative integers\nKKK : The number of non-empty contiguous subarrays to split the array into\nReturn ValueReturns a single integer — the **minimum possible value of the largest subarray sum** after splitting\n\nConstraints\n1≤N≤10001 \\leq N \\leq 10001≤N≤1000\n0≤nums[i]≤1060 \\leq nums[i] \\leq 10^60≤nums[i]≤106\n1≤K≤min(50,N)1 \\leq K \\leq min(50, N)1≤K≤min(50,N)\nThe array must be split into **exactly K subarrays**\nEach subarray must be **non-empty**\nThe input and output formats provided below are only for testing with custom inputs. You only need to complete the core logic function.\n\n\nInput Format\n\nThe first line contains two integers NNN and KKK — the size of the array and the number of subarrays\nThe second line contains NNN space-separated integers nums[0],nums[1],...,nums[N−1]nums[0], nums[1], ..., nums[N-1]nums[0],nums[1],...,nums[N−1] — the elements of the array\n\n\nOutput Format\nPrint a single integer: the **minimum possible value of the largest sum** among the KKK subarrays",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6 3\n1 4 4 2 6 3",
+        "output": "9",
+        "explanation": "Explanation:\nOne possible split: [1,4,4], [2,6], [3].\nThe sums are 9, 8, 3. The maximum sum is 9, which is the minimized largest sum."
+      },
+      {
+        "id": "sample_2",
+        "input": "8 4\n2 3 5 7 1 4 2 6",
+        "output": "10",
+        "explanation": "Explanation:\nOne possible split: [2,3,5], [7], [1,4,2], [6].\nThe sums are 10, 7, 7, 6. The maximum sum is 10, which is the minimized largest sum."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6 3\n1 4 4 2 6 3",
+        "expectedOutput": "9",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "8 4\n2 3 5 7 1 4 2 6",
+        "expectedOutput": "10",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "long long splitArray(vector<int>& nums, int k) {\n    long long low = 0;\n    long long high = 0;\n\n    for (int num : nums) {\n        low = max(low, (long long)num);\n        high += num;\n    }\n\n    long long result = high;\n\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n\n        if (canSplit(nums, k, mid)) {\n            result = mid;\n            high = mid - 1; // try smaller maximum\n        } else {\n            low = mid + 1;  // need larger maximum\n        }\n    }\n\n    return result;\n}\n\n// Optional helper function\nbool canSplit(vector<int>& nums, int k, long long mid) {\n    int count = 1;\n    long long sum = 0;\n\n    for (int num : nums) {\n        if (sum + num > mid) {\n            count++;\n            sum = num;\n            if (count > k) return false;\n        } else {\n            sum += num;\n        }\n    }\n    return true;\n}\n// ---------------------------------------------------\n",
+      "Python3": "def is_valid_split(nums, k, max_sum):\n   \n    count = 1\n    total = 0\n    for num in nums:\n        if total + num > max_sum:\n            count += 1\n            total = num\n            if count > k:\n                return False\n        else:\n            total += num\n    return True\n\n\ndef split_array(nums, k):\n  \n    low = max(nums)       # at least the largest element\n    high = sum(nums)      # at most the total sum\n    result = high\n\n    while low <= high:\n        mid = (low + high) // 2\n        if is_valid_split(nums, k, mid):\n            result = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n\n    return result\n\n",
+      "C": "long long splitArray(int* nums, int N, int K) {\n    long long low = 0;\n    long long high = 0;\n\n    for (int i = 0; i < N; i++) {\n        if (nums[i] > low) low = nums[i];\n        high += nums[i];\n    }\n\n    long long result = high;\n\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n        if (canSplit(nums, N, K, mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n\n    return result;\n}\n\nint canSplit(int* nums, int N, int K, long long mid) {\n    int count = 1;\n    long long sum = 0;\n\n    for (int i = 0; i < N; i++) {\n        if (sum + nums[i] > mid) {\n            count++;\n            sum = nums[i];\n            if (count > K) return 0;\n        } else {\n            sum += nums[i];\n        }\n    }\n\n    return 1;\n}",
+      "Java": " class Solution {\n public long splitArray(int[] nums,int K) {\n        long low = 0;\n        long high = 0;\n\n        for (int num : nums) {\n            low = Math.max(low, num);\n            high += num;\n        }\n\n        long result = high;\n\n        while (low <= high) {\n            long mid = low + (high - low) / 2;\n            if (canSplit(nums, K, mid)) {\n                result = mid;\n                high = mid - 1;\n            } else {\n                low = mid + 1;\n            }\n        }\n\n        return result;\n    }\n\n    static boolean canSplit(int[] nums, int k, long mid) {\n        int count = 1;\n        long sum = 0;\n\n        for (int num : nums) {\n            if (sum + num > mid) {\n                count++;\n                sum = num;\n                if (count > k) return false;\n            } else {\n                sum += num;\n            }\n        }\n        return true;\n    }\n }",
+      "JavaScript": "// Function to check if we can split into <= k subarrays with max sum <= mid\nfunction isValidSplit(nums, k, maxSum) {\n    let count = 1;\n    let total = 0;\n\n    for (let num of nums) {\n        if (total + num > maxSum) {\n            count++;\n            total = num;\n            if (count > k) return false;\n        } else {\n            total += num;\n        }\n    }\n    return true;\n}\n\n// Main function: binary search for minimized largest sum\nfunction splitArray(nums, k) {\n    let low = Math.max(...nums);\n    let high = nums.reduce((a, b) => a + b, 0);\n    let result = high;\n\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n        if (isValidSplit(nums, k, mid)) {\n            result = mid;\n            high = mid - 1; // try smaller max\n        } else {\n            low = mid + 1;  // need bigger max\n        }\n    }\n\n    return result;\n}\n\n"
+    }
+  }
+}

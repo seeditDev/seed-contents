@@ -1,0 +1,93 @@
+{
+  "questionId": "Q2084",
+  "title": "Longest Common Subsequence",
+  "slug": "longest-common-subsequence",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given two strings SSS and TTT. \n\nFind the length of the largest string KKK such that is is a subsequence of both SSS and TTT.\n\n\nInput Format\n\nFirst line of the input contains the string SSS.\nSecond line of the input contains the string TTT.\n\n\nOutput Format\nFor each test case, output on a new line the maximum size of the subsequence that is common in SSS and TTT.",
+    "constraints": [
+      "1≤∣S∣≤10001 \\leq |S| \\leq 10001≤∣S∣≤1000",
+      "1≤∣T∣≤10001 \\leq |T| \\leq 10001≤∣T∣≤1000",
+      "SSS and TTT are made up of lower case english characters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "code\nchef",
+        "output": "2",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "abc\ndef",
+        "output": "0",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "code\nchef",
+        "expectedOutput": "2",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "abc\ndef",
+        "expectedOutput": "0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s, t;\n    cin >> s >> t;\n\n    int n = s.size();\n    int m = t.size();\n\n    int dp[n + 1][m + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base cases\n        dp[i][0] = 0;\n        dp[0][i] = 0;\n    }\n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= m; j++) {\n            // Dp transitions\n            dp[i][j] = max({dp[i - 1][j], dp[i][j - 1], (s[i - 1] == t[j - 1]) + dp[i - 1][j - 1]});\n        }\n    }\n\n    cout << dp[n][m] << \"\\n\";\n    return 0;\n}",
+      "Python3": "if __name__ == \"__main__\":\n    s = input()\n    t = input()\n\n    n = len(s)\n    m = len(t)\n\n    dp = [[0] * (m + 1) for _ in range(n + 1)]\n\n    for i in range(n + 1):\n        # Base cases\n        dp[i][0] = 0\n    for j in range(m + 1):\n        # Base cases\n        dp[0][j] = 0\n\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            # DP transitions\n            dp[i][j] = max(dp[i - 1][j], dp[i][j - 1], (s[i - 1] == t[j - 1]) + dp[i - 1][j - 1])\n\n    print(dp[n][m])\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint main() {\n    char s[1000+1], t[1000+1];\n    scanf(\"%s %s\", s, t);\n\n    int n = strlen(s);\n    int m = strlen(t);\n\n    int dp[1000 + 1][1000 + 1];\n\n    for (int i = 0; i <= n; i++) {\n        // Base cases\n        dp[i][0] = 0;\n        dp[0][i] = 0;\n    }\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= m; j++) {\n            // Dp transitions\n            dp[i][j] = max(dp[i - 1][j], max(dp[i][j - 1], (s[i - 1] == t[j - 1]) + dp[i - 1][j - 1]));\n        }\n    }\n\n    printf(\"%d\\n\", dp[n][m]);\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        String t = sc.next();\n\n        int n = s.length();\n        int m = t.length();\n\n        int[][] dp = new int[n + 1][m + 1];\n\n        for (int i = 0; i <= n; i++) {\n            // Base cases\n            dp[i][0] = 0;\n        }\n        for (int i = 0; i <= m; i++) {\n            // Base cases\n            dp[0][i] = 0;\n        }\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= m; j++) {\n                // Dp transitions\n                int check = 0;\n                if(s.charAt(i - 1) == t.charAt(j - 1)) {\n                    check = 1;\n                }\n                dp[i][j] = Math.max(Math.max(dp[i - 1][j], dp[i][j - 1]), check + dp[i - 1][j - 1]);\n            }\n        }\n\n        System.out.println(dp[n][m]);\n    }\n}\n"
+    }
+  }
+}

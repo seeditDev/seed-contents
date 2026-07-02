@@ -1,0 +1,82 @@
+{
+  "questionId": "Q3656",
+  "title": "Snake Eating",
+  "slug": "snake-eating",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "The Chef has acquired a vicious bunch of snakes, and these snakes are ever hungry and end up eating each other. In particular, each snake i has a length **Li**, whose initial value is given to you. A snake can eat any other snake which is not longer than itself. That is, snake i can eat snake j (i ≠ j), if **Li** ≥ **Lj**. And when a snake eats another snake, its length increases by 1. That is, **Li** increases by 1. A snake can eat multiple other snakes.\n\nThe Chef doesn't care about snakes eating each other. All he wants is to have as many snakes as possible, which are at least some particular lengths long. You are given **Q** values: **K1, K2, .., KQ**. Treat each of them independently and output the answer for each. That is, for each **Ki**, assume that you start out from the beginning with all the snakes alive and the lengths as the initial values given in the input, and find out the maximum number of snakes you can get whose length is at least **Ki**.",
+    "constraints": [
+      "1 ≤ **T** ≤ 5",
+      "1 ≤ **N, Q** ≤ 105",
+      "1 ≤ **Li** ≤ 109",
+      "1 ≤ **Ki** ≤ 109",
+      "Explanation"
+    ],
+    "inputFormat": "The first line contains an integer **T**, which is the number of testcases. The description of each testcase follows.\nThe first line of each testcase contains two integers: **N** and **Q**, which denote the number of snakes initially, and the number of queries, respectively.\nThe second line contains **N** space separated integers: **L1, L2, .., LN**, the initial lengths of the snakes.\nThe i-th of the next **Q** lines contains a single integer, **Ki**.",
+    "outputFormat": "For each testcase, output **Q** lines, the i-th of which should have a single integer: The maximum number of snakes the Chef can get which are of length at least **Ki**.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5 2\n21 9 5 8 10\n10\n15\n5 1\n1 2 3 4 5\n100",
+        "output": "3\n1\n0",
+        "explanation": "Explanation:\nIn the first testcase, first query, the second snake (length 9) can eat the fourth snake (length 8), and hence make its length 10. Now, there are four snakes left, and their lengths are {21, 10, 5, 10}. So, we have three snakes with length ? 10: Two snakes of length 10 and one snake of length 21. This is the best you can do.\nIn the second query, no matter what happens, you cannot get more than one snake of length ? 15.\nIn the second testcase, no matter what happens, you cannot get any snake of length ? 100. Hence the answer is 0."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5 2\n21 9 5 8 10\n10\n15\n5 1\n1 2 3 4 5\n100",
+        "expectedOutput": "3\n1\n0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n\n#include <vector>\n\n#include <algorithm>\n\nusing namespace std;\ntypedef long long int ll;\n\nll t, n, q, a[100009], x, ans[100009];\nvector < pair < ll, ll >> qr;\n\nint main() {\n    cin >> t;\n    while (t--) {\n        qr.clear();\n        cin >> n >> q;\n        for (int i = 1; i < n + 1; i++)\n            cin >> a[i];\n        for (int i = 0; i < q; i++) {\n            cin >> x;\n            qr.push_back(make_pair(x, i));\n        }\n        sort(a + 1, a + n + 1);\n        sort(qr.begin(), qr.end());\n        ll cur = 0;\n        ll prev = 0, presum = 0;\n        for (int i = 1;; i++) {\n            ll fir = qr[cur].first;\n            while (a[i] < fir && i < n + 1) {\n                presum += (fir - a[i]);\n                i++;\n            }\n            i--;\n            while (presum > prev) {\n                prev++;\n                presum -= (fir - a[prev]);\n            }\n            ans[qr[cur].second] = n - prev;\n            if (cur == q - 1)\n                break;\n            presum = presum + (i - prev) * (qr[cur + 1].first - fir);\n            cur++;\n        }\n        for (int i = 0; i < q; i++)\n            cout << ans[i] << \"\\n\";\n    }\n}",
+      "Python3": "import bisect as bs\n\nT = int(input())\nwhile T:\n    T -= 1\n    N, Q = map(int, input().split())\n    L = list(map(int, input().split()))\n    L.sort()\n    sum=[0] * N\n    for j in range(1, N):\n        sum[j] = sum[j - 1] + L[j]\n    for i in range(Q):\n        K = int(input())\n        pos = bs.bisect_left(L, K)\n        l = 0 \n        r = pos\n        while l < r:\n            m = (l + r) // 2\n            need = K * (pos -m ) - (sum[pos - 1] - sum[m - 1])\n            if(need <= m):\n                r = m\n            else:\n                l = m + 1\n        print(N - r)        ",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef long long int ll;\n\nll t, n, q, a[100009], x, ans[100009];\nstruct Pair {\n    ll first;\n    ll second;\n};\n\nstruct Pair qr[100009];\n\nint comparePairs(const void *a, const void *b) {\n    struct Pair *pairA = (struct Pair *)a;\n    struct Pair *pairB = (struct Pair *)b;\n    return (pairA->first > pairB->first) - (pairA->first < pairB->first);\n}\n\nint compareLL(const void *a, const void *b) {\n    return (*(ll *)a > *(ll *)b) - (*(ll *)a < *(ll *)b);\n}\n\nint main() {\n    scanf(\"%lld\", &t);\n    while (t--) {\n        ll cur = 0;\n        ll prev = 0, presum = 0;\n\n        scanf(\"%lld %lld\", &n, &q);\n        for (ll i = 1; i <= n; i++)\n            scanf(\"%lld\", &a[i]);\n        for (ll i = 0; i < q; i++) {\n            scanf(\"%lld\", &x);\n            qr[i].first = x;\n            qr[i].second = i;\n        }\n\n        qsort(a + 1, n, sizeof(ll), compareLL);\n        qsort(qr, q, sizeof(struct Pair), comparePairs);\n\n        for (ll i = 1; ; i++) {\n            ll fir = qr[cur].first;\n            while (a[i] < fir && i < n + 1) {\n                presum += (fir - a[i]);\n                i++;\n            }\n            i--;\n            while (presum > prev) {\n                prev++;\n                presum -= (fir - a[prev]);\n            }\n            ans[qr[cur].second] = n - prev;\n\n            if (cur == q - 1)\n                break;\n\n            presum += (i - prev) * (qr[cur + 1].first - fir);\n            cur++;\n        }\n\n        for (ll i = 0; i < q; i++)\n            printf(\"%lld\\n\", ans[i]);\n    }\n    return 0;\n}\n",
+      "Java": "/* package codechef; // don't place package name! */\n\nimport java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\n/* Name of the class has to be \"Main\" only if the class is public. */\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner in= new Scanner(System.in);\n        int t=in.nextInt();\n        while(t!=0){\n            ArrayList<Pair> qr = new ArrayList<>();\n            int n=in.nextInt();\n            int q=in.nextInt();\n            int[] a=new int[100009];\n            int[] ans=new int[100009];\n\n            for(int i=1;i<n+1;i++) {\n                a[i]=in.nextInt();\n            }\n\n            for (int i=0;i<q;i++) {\n                int x=in.nextInt();\n                qr.add(new Pair(x,i));\n            }\n\n            Arrays.sort(a,1,n+1);\n            Collections.sort(qr);\n\n            int cur=0;\n            int prev=0;\n            int presum=0;\n            int i;\n            for (i=1; ;i++) {\n                int fir=qr.get(cur).first;\n                while(a[i]<fir && i<n+1) {\n                    presum+=(fir-a[i]);\n                    i++;\n                }\n                i--;\n                while(presum>prev) {\n                    prev++;\n                    presum-=(fir-a[prev]);\n                }\n                ans[qr.get(cur).second]=n-prev;\n                if(cur==q-1) {\n                    break;\n                }\n                presum=presum+(i-prev)*(qr.get(cur+1).first-fir);\n                cur++;\n            }\n\n            for (int j=0;j<q;j++) {\n                System.out.println(ans[j]);\n            }\n             t--;\n        }\n    }\n    static class Pair implements Comparable<Pair> {\n        int first;\n        int second;\n        \n        Pair(int first,int second) {\n            this.first=first;\n            this.second=second;\n        }\n        public int compareTo(Pair p) {\n            return Integer.compare(this.first,p.first);\n        }\n        // your code goes here\n    }\n}"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1739",
+  "title": "Chef Parses Boolean Expression",
+  "slug": "chef-parses-boolean-expression",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has discovered a magical boolean expression language that evaluates to either **true** or **false**.\n\n\nA boolean expression can be a literal `'t'` (true) or `'f'` (false).\nExpressions may use logical operators **NOT (`!`)**, **AND (`&amp;`)**, and **OR (`|`)**.\nOperators can be applied to one or more **nested sub-expressions**.\nSub-expressions are enclosed in parentheses and separated by commas.\nThe expression follows a **strict and valid syntax**.\nChef wants to evaluate a given boolean expression and determine its final result.\n\nYour task is to parse the expression correctly and return whether it evaluates to **true** or **false**.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\nevaluateBooleanExpressionevaluateBooleanExpressionevaluateBooleanExpression\n\n\n\n**Parameters:**\n\n\n\nbooleanExpressionbooleanExpressionbooleanExpression (`Text`)\n\n\nA string representing a valid boolean expression composed of literals `'t'`, `'f'`, and operators `'!'`, `'&amp;'`, `'|'` with nested parentheses.\n\n\nReturn Value\nReturns a **boolValueboolValueboolValue** indicating the evaluated result of the expression.\nReturns `true` if the expression evaluates to true; otherwise, returns `false`.\nConstraints\n1≤length&nbsp;of&nbsp;inputExpression≤2×1041 \\leq \\text{length of } inputExpression \\leq 2 \\times 10^41≤length&nbsp;of&nbsp;inputExpression≤2×104\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n\nThe expression contains only the characters '(' , ')', '!', '&amp;', '|', 't', 'f', and ','\nInput Format\nThe first line contains a single integer **TTT** — the number of test cases.\nEach of the next **TTT** lines contains a single string **inputExpressioninputExpressioninputExpression** representing the boolean expression to evaluate.\nOutput Format\nFor each test case, print a single line containing the boolean result of the evaluated expression.\nPrint `true` if the expression evaluates to true; otherwise, print `false`.\nThe system evaluates the expression via native Boolean logic, internally mapping the final truth value to a binary integer (111 for true, 000 for false) for output.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n&(t,f)\n|(f,!(f))\n!(&(t,t,f))\n|(&(t,t),!(f),f)",
+        "output": "0\n1\n1\n1",
+        "explanation": "Explanation:\n&(t,f)\nAND of true and false evaluates to false.\n\n\n|(f,!(f))\nNOT of false evaluates to true;\nOR of false and true evaluates to true.\n\n\n!(&(t,t,f))\nAND of true, true, and false evaluates to false;\nNOT of false evaluates to true.\n\n\n|(&(t,t),!(f),f)\nAND of true and true evaluates to true;\nNOT of false evaluates to true;\nOR of true, true, and false evaluates to true."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n&(t,f)\n|(f,!(f))\n!(&(t,t,f))\n|(&(t,t),!(f),f)",
+        "expectedOutput": "0\n1\n1\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "This approach uses a **Linear Scan**. We treat the expression like a series of instructions.\n\n\n**Pushing:** We push every character (operators and literals) onto the stack until we hit a \"completion signal\" (the closing parenthesis `)`).\n**Popping (Evaluation):** The `)` tells us we have finished an inner sub-expression. We pop elements off the stack until we find the operator that started this section.\n**Simplification:** We calculate the result of that specific operator and push the result back onto the stack so it can be used by the \"parent\" expression.",
+    "timeComplexity": "O(N2)O(N^2)O(N2). In each step, we might scan the whole string and create a new string. If there are nested layers, we do scans of length.",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "bool evaluateBooleanExpression(string expression) {\n    stack<char> s;\n    for (char c : expression) {\n        if (c == ',') continue;\n        if (c != ')') {\n            s.push(c);\n        } else {\n            vector<char> seen;\n            while (s.top() != '(') {\n                seen.push_back(s.top());\n                s.pop();\n            }\n            s.pop(); // remove '('\n            char op = s.top();\n            s.pop(); // remove operator\n\n            if (op == '!') {\n                s.push(seen[0] == 't' ? 'f' : 't');\n            } else if (op == '&') {\n                bool res = true;\n                for (char val : seen) if (val == 'f') res = false;\n                s.push(res ? 't' : 'f');\n            } else if (op == '|') {\n                bool res = false;\n                for (char val : seen) if (val == 't') res = true;\n                s.push(res ? 't' : 'f');\n            }\n        }\n    }\n    return s.top() == 't';\n}",
+      "Python3": "def evaluateBooleanExpression(expression):\n    stack = []\n    for char in expression:\n        if char == ',': continue\n        if char != ')':\n            stack.append(char)\n        else:\n            seen = []\n            while stack[-1] != '(':\n                seen.append(stack.pop())\n            stack.pop() # remove (\n            op = stack.pop()\n            if op == '!':\n                stack.append('t' if seen[0] == 'f' else 'f')\n            elif op == '&':\n                stack.append('f' if 'f' in seen else 't')\n            elif op == '|':\n                stack.append('t' if 't' in seen else 'f')\n    return stack[0] == 't'",
+      "C": "bool evaluateBooleanExpression(char* booleanExpression) {\n\n    char stack[20005];\n    int top = -1;\n    for (int i = 0; booleanExpression[i] != '\\0'; i++) {\n        if (booleanExpression[i] == ',') continue;\n        if (booleanExpression[i] != ')') {\n            stack[++top] = booleanExpression[i];\n        } else {\n            bool hasT = false, hasF = false;\n            while (stack[top] != '(') {\n                if (stack[top] == 't') hasT = true;\n                if (stack[top] == 'f') hasF = true;\n                top--;\n            }\n            top--; // remove '('\n            char op = stack[top--];\n            if (op == '!') stack[++top] = hasT ? 'f' : 't';\n            else if (op == '&') stack[++top] = hasF ? 'f' : 't';\n            else if (op == '|') stack[++top] = hasT ? 't' : 'f';\n        }\n    }\n    return stack[top] == 't';\n}",
+      "Java": "class Codechef {\n    public boolean booleanExpression(String expression) {\n        Stack<Character> stack = new Stack<>();\n\n        for (char c : expression.toCharArray()) {\n            if (c == ',') continue;\n\n            if (c != ')') {\n                stack.push(c);\n            } else {\n                // Collect elements inside the parentheses\n                boolean hasTrue = false;\n                boolean hasFalse = false;\n\n                while (stack.peek() != '(') {\n                    char top = stack.pop();\n                    if (top == 't') hasTrue = true;\n                    if (top == 'f') hasFalse = true;\n                }\n\n                stack.pop(); // Remove '('\n                char op = stack.pop(); // Get operator (!, &, |)\n\n                // Apply logic\n                if (op == '!') {\n                    stack.push(hasTrue ? 'f' : 't');\n                } else if (op == '&') {\n                    stack.push(hasFalse ? 'f' : 't');\n                } else if (op == '|') {\n                    stack.push(hasTrue ? 't' : 'f');\n                }\n            }\n        }\n        return stack.pop() == 't';\n    }\n}",
+      "JavaScript": "function evaluateBooleanExpression(expression) {\n    const stack = [];\n\n    for (const char of expression) {\n        if (char === ',') continue;\n\n        if (char !== ')') {\n            stack.push(char);\n        } else {\n            let hasTrue = false;\n            let hasFalse = false;\n\n            // Pop elements until we find the start of the current expression '('\n            while (stack.length > 0 && stack[stack.length - 1] !== '(') {\n                const val = stack.pop();\n                // Check for either the string literal 't'/'f' or the boolean true/false\n                if (val === 't' || val === true) hasTrue = true;\n                if (val === 'f' || val === false) hasFalse = true;\n            }\n\n            stack.pop(); // Remove '('\n            const operator = stack.pop(); // The operator character (!, &, |)\n\n            let res;\n            if (operator === '!') {\n                res = !hasTrue; // Native Boolean NOT\n            } else if (operator === '&') {\n                res = !hasFalse; // Native AND logic (True if no false exists)\n            } else if (operator === '|') {\n                res = hasTrue; // Native OR logic (True if at least one true exists)\n            }\n            \n            // Push the proper Boolean result back onto the stack\n            stack.push(res);\n        }\n    }\n\n    // Convert the final stack element to a primitive Boolean\n    const final = stack[0];\n    return final === 't' ? true : final === 'f' ? false : final;\n}"
+    }
+  }
+}

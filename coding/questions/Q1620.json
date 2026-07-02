@@ -1,0 +1,84 @@
+{
+  "questionId": "Q1620",
+  "title": "Chef and String",
+  "slug": "chef-and-string",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "There are NNN students standing in a row and numbered 111 through NNN from left to right. You are given a string SSS with length NNN, where for each valid iii, the iii-th character of SSS is 'x' if the iii-th student is a girl or 'y' if this student is a boy. Students standing next to each other in the row are friends.\n\nThe students are asked to form pairs for a dance competition. Each pair must consist of a boy and a girl. Two students can only form a pair if they are friends. Each student can only be part of at most one pair. What is the maximum number of pairs that can be formed?",
+    "constraints": [
+      "1≤T≤1001 \\le T \\le 1001≤T≤100",
+      "1≤N≤1051 \\le N \\le 10^51≤N≤105",
+      "∣S∣=N|S| = N∣S∣=N",
+      "SSS contains only characters 'x' and 'y'",
+      "the sum of NNN over all test cases does not exceed 3⋅1053 \\cdot 10^53⋅105",
+      "Subtasks"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first and only line of each test case contains a single string SSS.",
+    "outputFormat": "For each test case, print a single line containing one integer ― the maximum number of pairs.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\nxy\nxyxxy\nyy",
+        "output": "1\n2\n0",
+        "explanation": "Explanation:\nExample case 1: There is only one possible pair: (first student, second student).\nExample case 2: One of the ways to form two pairs is: (first student, second student) and (fourth student, fifth student).\nAnother way to form two pairs is: (second student, third student) and (fourth student, fifth student)."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\nxy\nxyxxy\nyy",
+        "expectedOutput": "1\n2\n0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int findMaximumPairs(const string &students) {\n        int totalStudents = students.size();\n        vector<int> dp(totalStudents);\n\n        dp[0] = 0;\n\n        for (int i = 1; i < totalStudents; i++) {\n            if (students[i] == students[i - 1]) {\n                dp[i] = dp[i - 1];\n            } else {\n                dp[i] = max(dp[i - 1], (i >= 2 ? dp[i - 2] + 1 : 1));\n            }\n        }\n        return dp[totalStudents - 1];\n    }\n};\n",
+      "Python3": "class Solution:\n    def findMaximumPairs(self, students: str) -> int:\n        total_students = len(students)\n        if total_students == 0:\n            return 0\n        \n        dp = [0] * total_students\n\n        for i in range(1, total_students):\n            if students[i] == students[i - 1]:\n                dp[i] = dp[i - 1]\n            else:\n                dp[i] = max(dp[i - 1], (dp[i - 2] + 1) if i >= 2 else 1)\n\n        return dp[total_students - 1]\n",
+      "C": "int findMaximumPairs(Solution *sol, char students[]) {\n    int totalStudents = strlen(students);\n\n    sol->dp[0] = 0;\n\n    for (int i = 1; i < totalStudents; i++) {\n        if (students[i] == students[i - 1]) {\n            sol->dp[i] = sol->dp[i - 1];\n        } else {\n            sol->dp[i] = (i >= 2) ? sol->dp[i - 2] + 1 : 1;\n            if (sol->dp[i - 1] > sol->dp[i]) {\n                sol->dp[i] = sol->dp[i - 1];\n            }\n        }\n    }\n\n    return sol->dp[totalStudents - 1];\n}\n",
+      "Java": "class Solution {\n    public int findMaximumPairs(String s) {\n        int c = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (i > 0) {\n                if ((s.charAt(i) == 'x' && s.charAt(i - 1) == 'y') ||\n                    (s.charAt(i) == 'y' && s.charAt(i - 1) == 'x')) {\n                    c++;\n                    i++; // skip next character\n                }\n            }\n        }\n        return c;\n    }\n}\n",
+      "JavaScript": "class Solution {\n    findMaximumPairs(s) {\n        let c = 0;\n        for (let i = 0; i < s.length; i++) {\n            if (i > 0) {\n                if (\n                    (s[i] === 'x' && s[i - 1] === 'y') ||\n                    (s[i] === 'y' && s[i - 1] === 'x')\n                ) {\n                    c++;\n                    i++; // skip next character\n                }\n            }\n        }\n        return c;\n    }\n}\n"
+    }
+  }
+}

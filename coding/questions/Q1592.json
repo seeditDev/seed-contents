@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1592",
+  "title": "Reverse a Stack",
+  "slug": "reverse-a-stack",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "recursion",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a stack of integers ststst. Your task is to **reverse the elements of the stack using recursion only**.\n\nYou are **not allowed to use** any loop constructs (`for`, `while`, etc.) or any additional data structures (like arrays, queues, or linked lists).\n\nYou must modify the given stack **in-place** so that the elements are reversed.\n\nYou may only use standard stack operations:\n\n\n`push()`\n`pop()`\n`top()` / `peek()`\n`isEmpty()`\nFunction DeclarationFunction NamereverseStackreverseStackreverseStack – This function reverses the elements of a stack using recursion only, without using loops or any additional data structures.\n\nParameters\nststst : A reference to a stack of integers that needs to be reversed in-place.\nReturn Value\nThis function does not return anything.\nThe given stack is modified in-place so that its elements are reversed.\nConstraints\n1≤N≤1001 \\leq N \\leq 1001≤N≤100\nStack contains only integers\nNo loop constructs (for, while, etc.) are allowed\nNo extra data structures (arrays, queues, linked lists, etc.) are allowed\nOnly standard stack operations are permitted:\n\n`push()`\n`pop()`\n`top()` / `peek()`\n`isEmpty()`\n\n\nAuxiliary space complexity: O(N)O(N)O(N) (due to recursion stack)\n\nInput Format\n\nThe first line contains an integer NNN — the number of elements in the stack.\nThe second line contains NNN space-separated integers representing the stack elements **from bottom to top**.\n\n\nOutput Format\n\nPrint the elements of the reversed stack in a single line.\nElements should be printed **from bottom to top**, separated by spaces.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n5 9 1",
+        "output": "1 9 5",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "6\n2 4 6 8 10 12",
+        "output": "12 10 8 6 4 2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n5 9 1",
+        "expectedOutput": "1 9 5",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "6\n2 4 6 8 10 12",
+        "expectedOutput": "12 10 8 6 4 2",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Reversing a stack **without loops** requires two key recursive operations:\n\n**1. Remove everything from the stack recursively**.\n\nThis naturally moves from top → bottom.\n\n**2. Insert each removed element back at the bottom of the stack**.\n\nThis reconstructs the stack in reversed order.\n\nTo achieve this, we use two recursive functions:\n\n\n`reverseStack()` → removes the top element, reverses rest of stack\n`insertAtBottom()` → inserts a value at the bottom of the stack using recursion\nTogether they create the reversal effect.\n\nStep-by-Step Explanation**Step 1: Reverse the stack**\n\n\nPop the top element.\nRecursively reverse the remaining stack.\nInsert the popped element at the bottom.\n**Step 2: Insert at Bottom**\n\n\n\nIf the stack is empty, push the element.\n\n\n\n\nOtherwise:\n\n\n\nPop the top.\nRecursively call insertAtBottom().\nPush the saved top back.\n\n\nThis ensures each removed element returns at the bottom, producing the reversed order.\n\nExample WalkthroughStack:\n\nBottom → [5, 9, 1] → Top\n\nreverseStack() steps:\n\nPop `1`, reverse `[5, 9]`\n\nPop `9`, reverse `[5]`\n\nPop `5`, reverse `[]`\n\nInsert `5` at bottom → `[5]`\n\nInsert `9` at bottom → `[9, 5]`\n\nInsert `1` at bottom → `[1, 9, 5]`\n\nTime Complexity**O(N²)**\n\n\n\nEach reverseStack() call triggers an insertAtBottom() call.\n\n\n\n\ninsertAtBottom() may recursively traverse up to N elements.\n\n\n\n**O(N)** Space (recursion)\n\nNo extra data structures — only the call stack.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// function\nvoid insertAtBottom(stack<int> &st, int x) {\n    if (st.empty()) {\n        st.push(x);\n        return;\n    }\n    int top = st.top();\n    st.pop();\n    insertAtBottom(st, x);\n    st.push(top);\n}\n\nvoid reverseStack(stack<int> &st) {\n    if (st.empty())\n        return;\n    int top = st.top();\n    st.pop();\n    reverseStack(st);\n    insertAtBottom(st, top);\n}",
+      "Python3": "def insert_at_bottom(stack, x):\n    if not stack:\n        stack.append(x)\n        return\n    top = stack.pop()\n    insert_at_bottom(stack, x)\n    stack.append(top)\n\ndef reverse_stack(stack):\n    if not stack:\n        return\n    top = stack.pop()\n    reverse_stack(stack)\n    insert_at_bottom(stack, top)\n",
+      "C": "void push(int x) {\n    if (top < MAX - 1)\n        stack[++top] = x;\n}\n\nint pop() {\n    if (top >= 0)\n        return stack[top--];\n    return -1;\n}\n\nint isEmpty() {\n    return top == -1;\n}\n\nvoid insertAtBottom(int x) {\n    if (isEmpty()) {\n        push(x);\n        return;\n    }\n    int temp = pop();\n    insertAtBottom(x);\n    push(temp);\n}\n\nvoid reverseStack() {\n    if (isEmpty())\n        return;\n    int temp = pop();\n    reverseStack();\n    insertAtBottom(temp);\n}",
+      "Java": "    static void insertAtBottom(Stack<Integer> stack, int x) {\n        if (stack.isEmpty()) {\n            stack.push(x);\n            return;\n        }\n        int top = stack.pop();\n        insertAtBottom(stack, x);\n        stack.push(top);\n    }\n\n    static void reverseStack(Stack<Integer> stack) {\n        if (stack.isEmpty()) {\n            return;\n        }\n        int top = stack.pop();\n        reverseStack(stack);\n        insertAtBottom(stack, top);\n    }\n",
+      "JavaScript": "function insertAtBottom(stack, x) {\n  if (stack.length === 0) {\n    stack.push(x);\n    return;\n  }\n  const top = stack.pop();\n  insertAtBottom(stack, x);\n  stack.push(top);\n}\n\nfunction reverseStack(stack) {\n  if (stack.length === 0) return;\n  const top = stack.pop();\n  reverseStack(stack);\n  insertAtBottom(stack, top);\n}"
+    }
+  }
+}

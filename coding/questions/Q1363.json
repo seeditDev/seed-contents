@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1363",
+  "title": "Count max Subarray",
+  "slug": "count-max-subarray",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an array arr[]arr[]arr[] of NNN integers and an integer KKK. The task is to find the number of subarray with a maximum value equal to KKK.\n\n\nInput Format\n\nThe first line contains two integers NNN , KKK - the size of `arr` and the maximum value that should be in the\nsubarray.\nThe second line contains nnn integers arr[1],arr[2],…,arr[n]arr[1],arr[2],…,arr[n]arr[1],arr[2],…,arr[n] — the elements of arrarrarr.\n\n\nOutput Format\nPrint the number of subarrays having KKK as the maximum value.",
+    "constraints": [
+      "1≤N,K≤100001 \\leq N,K \\leq 100001≤N,K≤10000",
+      "0≤arr[i]≤100000 \\leq arr[i] \\leq 100000≤arr[i]≤10000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 3\n2 1 3 4",
+        "output": "3",
+        "explanation": "Explanation:\nThere are 3 subarrays in which the maximum element is 3, they are [2,1,3], [1,3], [3]."
+      },
+      {
+        "id": "sample_2",
+        "input": "3 1\n1 2 1",
+        "output": "2",
+        "explanation": "Explanation:\nThere are 2 subarrays in which the maximum element is 1, they are [1], [1]."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 3\n2 1 3 4",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3 1\n1 2 1",
+        "expectedOutput": "2",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To achieve this, we use a helper function `totalSubarrays` that counts all subarrays where the maximum element is not greater than a given value `K`. This function works as follows:\n\n\n**Iterating through the array:** We traverse the array and identify sequences of consecutive elements that are all less than or equal to `K`.\n**Counting valid subarrays:** For each such sequence, we calculate the number of subarrays that can be formed. If a sequence has `count` elements, the number of subarrays is given by the formula `count * (count + 1) / 2`. This formula derives from the fact that a sequence of `n` elements can form `1 + 2 + ... + n = n * (n + 1) / 2` subarrays.\nUsing this function, we calculate two values:\n\n\n`count1`: The total number of subarrays where the maximum element is less than or equal to `K-1`.\n`count2`: The total number of subarrays where the maximum element is less than or equal to `K`.\nFinally, the difference `count2 - count1` gives us the number of subarrays where the maximum element is exactly `K`.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\n// Function to count the subarrays where the maximum element is not greater than K\nint totalSubarrays(int arr[], int N, int K) {\n    int ans = 0, i = 0;\n\n    while (i < N) {\n        // If arr[i] > K, arr[i] cannot be part of any valid subarray.\n        if (arr[i] > K) {\n            i++;\n            continue;\n        }\n\n        int count = 0;\n        // Count the number of consecutive elements that are <= K.\n        while (i < N && arr[i] <= K) {\n            i++;\n            count++;\n        }\n\n        // Add the number of subarrays that can be formed from 'count' consecutive elements.\n        ans += ((count * (count + 1)) / 2);\n    }\n\n    return ans;\n}\n\n// Function to count the subarrays where the maximum element is exactly K\nint countSubarrays(int arr[], int N, int K) {\n    // Count subarrays where the maximum element is <= K-1.\n    int count1 = totalSubarrays(arr, N, K - 1);\n\n    // Count subarrays where the maximum element is <= K.\n    int count2 = totalSubarrays(arr, N, K);\n\n    // The number of subarrays where the maximum element is exactly K.\n    int ans = count2 - count1;\n\n    return ans;\n}\n\n/* Alternate solution using monotonic stack \n   int countSubarraysWithMaxK(const vector<int>& arr, int K) {\n    int n = arr.size();\n    vector<int> nextGreater(n, n); // Next greater element index\n    vector<int> prevGreater(n, -1); // Previous greater element index\n    stack<int> s;\n\n    // Find next greater elements for each position\n    for (int i = 0; i < n; ++i) {\n        while (!s.empty() && arr[s.top()] < arr[i]) {\n            nextGreater[s.top()] = i;\n            s.pop();\n        }\n        s.push(i);\n    }\n\n    // Clear the stack for the next loop\n    while (!s.empty()) {\n        s.pop();\n    }\n\n    // Find previous greater elements for each position\n    for (int i = n - 1; i >= 0; --i) {\n        while (!s.empty() && arr[s.top()] <= arr[i]) {\n            prevGreater[s.top()] = i;\n            s.pop();\n        }\n        s.push(i);\n    }\n\n    // Count the number of subarrays where the maximum value is K\n    int count = 0;\n    for (int i = 0; i < n; ++i) {\n        if (arr[i] == K) {\n            int left = i - prevGreater[i];\n            int right = nextGreater[i] - i;\n            count += left * right;\n        }\n    }\n\n    return count;\n}\n\n*/\n\nint main() {\n    int N, K;\n    cin >> N;\n    cin >> K;\n    int arr[N];\n    for (int i = 0; i < N; i++) {\n        cin >> arr[i];\n    }\n    cout << countSubarrays(arr, N, K) << endl;\n    return 0;\n}",
+      "Python3": "def totalSubarrays(arr, N, K):\n    ans = 0\n    i = 0\n\n    while i < N:\n        if arr[i] > K:\n            i += 1\n            continue\n\n        count = 0\n        while i < N and arr[i] <= K:\n            i += 1\n            count += 1\n\n        ans += (count * (count + 1)) // 2\n\n    return ans\n\ndef countSubarrays(arr, N, K):\n    count1 = totalSubarrays(arr, N, K - 1)\n    count2 = totalSubarrays(arr, N, K)\n    ans = count2 - count1\n    return ans\n\nif __name__ == \"__main__\":\n    N, K = list(map(int, input().split()))\n    arr = list(map(int, input().split()))\n    print(countSubarrays(arr, N, K))",
+      "C": "#include <stdio.h>\n\nint totalSubarrays(int arr[], int N, int K) {\n    int ans = 0, i = 0;\n\n    while (i < N) {\n        // If arr[i] > K, it cannot be part of any subarray\n        if (arr[i] > K) {\n            i++;\n            continue;\n        }\n\n        int count = 0;\n        // Count elements where arr[i] is not greater than K\n        while (i < N && arr[i] <= K) {\n            i++;\n            count++;\n        }\n\n        // Summation of all possible subarrays\n        ans += (count * (count + 1)) / 2;\n    }\n\n    return ans;\n}\n\nint countSubarrays(int arr[], int N, int K) {\n    // Count subarrays with max <= K - 1\n    int count1 = totalSubarrays(arr, N, K - 1);\n\n    // Count subarrays with max >= K + 1\n    int count2 = totalSubarrays(arr, N, K);\n\n    // Count subarrays with max = K\n    int ans = count2 - count1;\n\n    return ans;\n}\n\nint main() {\n    int N, K;\n\n    scanf(\"%d\", &N);\n\n    scanf(\"%d\", &K);\n\n    int arr[N];\n\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    int count = countSubarrays(arr, N, K);\n\n    printf(\"%d\", count);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n\n    public static int totalSubarrays(int[] arr, int N, int K) {\n        int ans = 0, i = 0;\n\n        while (i < N) {\n            // If arr[i] > K, it cannot be part of any subarray\n            if (arr[i] > K) {\n                i++;\n                continue;\n            }\n\n            int count = 0;\n            // Count elements where arr[i] is not greater than K\n            while (i < N && arr[i] <= K) {\n                i++;\n                count++;\n            }\n\n            // Summation of all possible subarrays\n            ans += (count * (count + 1)) / 2;\n        }\n\n        return ans;\n    }\n\n    public static int countSubarrays(int[] arr, int N, int K) {\n        // Count subarrays with max <= K - 1\n        int count1 = totalSubarrays(arr, N, K - 1);\n\n        // Count subarrays with max >= K + 1\n        int count2 = totalSubarrays(arr, N, K);\n\n        // Count subarrays with max = K\n        int ans = count2 - count1;\n\n        return ans;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int N = scanner.nextInt();\n\n        int K = scanner.nextInt();\n\n        int[] arr = new int[N];\n\n        for (int i = 0; i < N; i++) {\n            arr[i] = scanner.nextInt();\n        }\n\n        // Calculate and store the count\n        int count = countSubarrays(arr, N, K);\n        System.out.println(count);\n\n        // Close scanner (optional)\n        scanner.close();\n    }\n}",
+      "JavaScript": "function totalSubarrays(arr, N, K) {\n    let ans = 0;\n    let i = 0;\n\n    while (i < N) {\n        if (arr[i] > K) {\n            i++;\n            continue;\n        }\n\n        let count = 0;\n        while (i < N && arr[i] <= K) {\n            i++;\n            count++;\n        }\n\n        ans += (count * (count + 1)) / 2;\n    }\n\n    return ans;\n}\n\nfunction countSubarrays(arr, N, K) {\n    const count1 = totalSubarrays(arr, N, K - 1);\n    const count2 = totalSubarrays(arr, N, K);\n    return count2 - count1;\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet inputLines = [];\n\nrl.on('line', (line) => {\n    inputLines.push(line);\n});\n\nrl.on('close', () => {\n    // First line contains N and K\n    const [N, K] = inputLines[0].split(' ').map(Number);\n\n    // Second line contains the array elements\n    const arr = inputLines[1].split(' ').map(Number);\n\n    console.log(countSubarrays(arr, N, K));\n});\n"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "questionId": "Q4115",
+  "title": "Whats the Rank",
+  "slug": "whats-the-rank",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "data structures",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Data Structures"
+    ]
+  },
+  "content": {
+    "problemStatement": "This is one more story about our old friend, the Despotic King. Once every year, it was customary for the king to give audience to the rich merchants of his country in a large hall. On that day, the merchants were ushered in to meet the king one by one and after paying their respects to the king they were seated in the auditorium.\n\nIt was the job of the minister to introduce each merchant, as he arrived, to the others in the hall. He would announce his name and his wealth. However, our quirky king demanded that in addition, he should also announce the rank of the merchant among all those in the hall (at the time of his arrival) in terms of his wealth.\n\nFor example, let us suppose that the wealth of the 6 merchants who met the king (in the order in which they arrived) is given by the sequence\n\n78246840398978 \\quad 24 \\quad 68 \\quad 40 \\quad 39 \\quad 89782468403989\n\nThen, clearly the first merchant is the richest in the hall when he enters it (since there are no others in the hall) and so his rank is 111. Since 24&lt;7824 &lt; 7824&lt;78 the rank of the second merchant when he enters the hall is 222. The rank of the third merchant is also 222 since 24&lt;68&lt;7824 &lt; 68 &lt; 7824&lt;68&lt;78. The rank of the fourth merchant is 333 since 24&lt;40&lt;68&lt;7824 &lt; 40 &lt; 68 &lt; 7824&lt;40&lt;68&lt;78, the rank of the fifth merchant is 444 since 24&lt;39&lt;40&lt;68&lt;7824 &lt; 39 &lt; 40 &lt; 68 &lt; 7824&lt;39&lt;40&lt;68&lt;78 and finally the rank of the sixth merchant is 111 since 24&lt;39&lt;40&lt;68&lt;78&lt;8924 &lt; 39 &lt; 40 &lt; 68 &lt; 78 &lt; 8924&lt;39&lt;40&lt;68&lt;78&lt;89. The sequence of ranks announced by the minister would thus be:\n\n1223411 \\quad 2 \\quad 2 \\quad 3 \\quad 4 \\quad 1122341\n\nYour task is to write a program that takes as input a sequence of distinct positive integers indicating the wealth of the merchants in the order in which they visit the king and outputs the sequence of ranks announced by the minister.\n\nInput:The first line contains a single integer NNN indicating the number of merchants. The next NNN lines (line 2,...,N+12,...,N+12,...,N+1) describe the wealth of these NNN merchants. Line i+1i+1i+1 contains a single positive integer indicating the wealth of the ithi^{th}ith merchant to enter the hall.\n\nOutput:Your output should consist of NNN lines. Line iii should be the rank announced when the ithi^{th}ith minister enters the hall.",
+    "constraints": [
+      "1≤N≤450001 \\leq N \\leq 450001≤N≤45000.",
+      "No two merchants have the same wealth.",
+      "You may also assume that in 30%30 \\%30% of of the inputs 1≤N≤80001 \\leq N \\leq 80001≤N≤8000."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6\n78\n24\n68\n40\n39\n89",
+        "output": "1\n2\n2\n3\n4\n1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6\n78\n24\n68\n40\n39\n89",
+        "expectedOutput": "1\n2\n2\n3\n4\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nA more efficient way is to use a Binary Indexed Tree (or Fenwick Tree) to answer “range-sum” queries quickly. We first perform coordinate compression on the wealth values so that they fall within a small range. Then, while processing each merchant, we:\n\n\nConvert his wealth to its compressed index.\nQuery the BIT to count how many merchants already in the hall have wealth greater than the current merchant.\nDetermine the rank as this count plus one.\nFinally, update the BIT to include the current merchant.\n**Complexity:**\n\nWith coordinate compression and BIT, each update and query takes O(log⁡N)O(\\log N)O(logN) time, so the overall complexity becomes O(Nlog⁡N)O(N \\log N)O(NlogN) which is efficient for the given constraints.\n\n**C++ Implementation:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nstruct Fenw {\n    int n;\n    vector&lt;int&gt; fenw;\n    Fenw(int n): n(n) {\n        fenw.assign(n + 1, 0);\n    }\n    void update(int i, int delta) {\n        for (; i &lt;= n; i += i &amp; -i)\n            fenw[i] += delta;\n    }\n    int query(int i) {\n        int sum = 0;\n        for (; i &gt; 0; i -= i &amp; -i)\n            sum += fenw[i];\n        return sum;\n    }\n};\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N;\n    cin &gt;&gt; N;\n    vector&lt;int&gt; wealth(N);\n    for (int i = 0; i &lt; N; i++) {\n        cin &gt;&gt; wealth[i];\n    }\n    // Coordinate compression\n    vector&lt;int&gt; sorted_wealth = wealth;\n    sort(sorted_wealth.begin(), sorted_wealth.end());\n    auto getIndex = [&amp;](int x) -&gt; int {\n        return int(lower_bound(sorted_wealth.begin(), sorted_wealth.end(), x) - sorted_wealth.begin()) + 1;\n    };\n    int compSize = sorted_wealth.size();\n    Fenw fenw(compSize);\n    \n    for (int i = 0; i &lt; N; i++) {\n        int pos = getIndex(wealth[i]);\n        int greater = fenw.query(compSize) - fenw.query(pos);\n        int rank = greater + 1;\n        cout &lt;&lt; rank &lt;&lt; \"\\n\";\n        fenw.update(pos, 1);\n    }\n    return 0;\n}\n`**Python Implementation:**\n\n`def update(bit, i, delta, n):\n    while i &lt;= n:\n        bit[i] += delta\n        i += i &amp; -i\n\ndef query(bit, i):\n    s = 0\n    while i:\n        s += bit[i]\n        i -= i &amp; -i\n    return s\n\nN = int(input().strip())\nwealth = [int(input().strip()) for _ in range(N)]\n\n# Coordinate compression\nsorted_wealth = sorted(wealth)\ncomp = {v: i + 1 for i, v in enumerate(sorted_wealth)}\nn_comp = len(sorted_wealth)\nbit = [0] * (n_comp + 1)\n\nfor w in wealth:\n    pos = comp[w]\n    greater = query(bit, n_comp) - query(bit, pos)\n    rank = greater + 1\n    print(rank)\n    update(bit, pos, 1, n_comp)\n`**Idea:**\n\nWe can simulate a balanced binary search tree by maintaining a sorted list. In this approach, we use binary search (via `upper_bound` in C++ or the `bisect` module in Python) to determine the insertion position of the current merchant’s wealth in the sorted order. The number of merchants with greater wealth is the difference between the current length of the list and the insertion index. The rank is computed as this count plus one. After determining the rank, we insert the merchant’s wealth into the list in the correct position.\n\n**Complexity:**\n\nFinding the insertion position using binary search takes O(log⁡N)O(\\log N)O(logN) time, but inserting into a sorted list takes O(N)O(N)O(N) time, so the worst-case complexity is O(N2)O(N^2)O(N2). This approach is straightforward and works well when the input size is moderate.\n\n**C++ Implementation:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N;\n    cin &gt;&gt; N;\n    vector&lt;int&gt; sortedList;\n    for (int i = 0; i &lt; N; i++){\n        int w;\n        cin &gt;&gt; w;\n        // Use upper_bound to find the insertion position in the sorted list (ascending order).\n        auto it = upper_bound(sortedList.begin(), sortedList.end(), w);\n        int pos = it - sortedList.begin();\n        int count_greater = sortedList.size() - pos;\n        int rank = count_greater + 1;\n        cout &lt;&lt; rank &lt;&lt; \"\\n\";\n        sortedList.insert(it, w);\n    }\n    return 0;\n}\n`**Python Implementation:**\n\n`import bisect\n\nN = int(input().strip())\nsorted_list = []\nfor _ in range(N):\n    w = int(input().strip())\n    pos = bisect.bisect_right(sorted_list, w)\n    count_greater = len(sorted_list) - pos\n    rank = count_greater + 1\n    print(rank)\n    bisect.insort_right(sorted_list, w)\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "questionId": "Q3681",
+  "title": "IPC Trainers",
+  "slug": "ipc-trainers",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "During the Indian Programming Camp (IPC), there are **N** trainers. The camp runs for **D** days. Each day, there can be at most one lecture. The i-th trainer arrives on day **D**i and then stays till the end of the camp. He also wants to teach exactly **T**i lectures. For each lecture that a trainer was not able to teach, he will feel sad and his sadness level will be increased by **Si**.\n\nYou are the main organizer of the contest. You want to find minimum total sadness of the trainers.",
+    "constraints": [
+      "1 ≤ **T** ≤ 10",
+      "1 ≤ **N, D** ≤ 105",
+      "1 ≤  **D**i,  **T**i ≤ D",
+      "1 ≤  **S**i ≤ 105",
+      "Subtasks**Subtask #1 (40 points)**",
+      "1 ≤ **T** ≤ 10",
+      "1 ≤ **N, D** ≤ 103",
+      "1 ≤  **D**i,  **T**i ≤ D",
+      "1 ≤  **S**i ≤ 103",
+      "**Subtask #2 (60 points)**",
+      "Original constraints"
+    ],
+    "inputFormat": "The first line of the input contains an integer **T**, denoting the number of testcases.\n\nFor each test case, the first line contains two space separated integers, **N, D**.\n\nThe i-th of the next **N** lines will contain three space separated integers: **D**i, **T**i, **S**i respectively.",
+    "outputFormat": "For each test case, output a single integer corresponding to the minimum total sadness of the trainers achievable.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n2 3\n1 2 300\n2 2 100\n2 3\n1 1 100\n2 2 300\n2 3\n3 2 150\n1 1 200",
+        "output": "100\n0\n150",
+        "explanation": "Explanation:\nExample case 1. Both the first and second trainer want to take exactly two lectures. The first trainer arrives on the 1st day and the second trainer arrives on the 2nd day. Consider a schedule where the first trainer takes the first two lectures, and the second trainer takes the last lecture on the day 3. This way the second trainer will take only one lecture but wanted to take two. Thus, his sadness will be 100. The first trainer took all the lectures that he wanted to take (ie. two lectures). Thus the total sadness is 100 + 0 = 100. You can check that no other way of assigning trainers to the days will give a better answer than this.\nExample case 2. In this case, the trainers can all take all their ideal number of lectures.\nExample case 3. In this case, the first trainer arrives on day 3 and wants to take two lectures. This is not possible as he can take at most one lecture on day 3 and the camp ends on day 3. The second trainer wants to take only one lecture which he can take on any one of the 1st or 2nd days. You can see that in one of the first or second days, no lecture will be held."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n2 3\n1 2 300\n2 2 100\n2 3\n1 1 100\n2 2 300\n2 3\n3 2 150\n1 1 200",
+        "expectedOutput": "100\n0\n150",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int MaxN = 1e5 + 10;\n\nint days[MaxN], trials[MaxN], score[MaxN];\n\nvoid solve() {\n    int numParticipants, maxDays;\n    cin >> numParticipants >> maxDays;\n\n    vector<pair<int, int>> participants;\n    long long totalScore = 0;\n\n    for (int i = 0; i < numParticipants; ++i) {\n        cin >> days[i] >> trials[i] >> score[i];\n        participants.push_back({score[i], i});\n        totalScore += 1LL * score[i] * trials[i];\n    }\n    \n    sort(participants.rbegin(), participants.rend());\n\n    set<int> availableDays;\n    for (int i = 1; i <= maxDays; ++i) {\n        availableDays.insert(i);\n    }\n\n    for (auto &participant : participants) {\n        int participantIndex = participant.second;\n        while (trials[participantIndex] > 0) {\n            auto it = availableDays.lower_bound(days[participantIndex]);\n            if (it == availableDays.end()) {\n                break;\n            }\n            availableDays.erase(it);\n            totalScore -= score[participantIndex];\n            trials[participantIndex]--;\n        }\n    }\n\n    cout << totalScore << '\\n';\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    int t;\n    cin>>t;\n    assert(t >= 1 && t <= 10);\n\n    while (t--) {\n        solve();\n    }\n\n    return 0;\n}\n",
+      "Python3": "import sys\nimport bisect\n\ndef solve():\n    num_participants, max_days = map(int, input().split())\n    \n    days = [0] * (num_participants)\n    trials = [0] * (num_participants)\n    score = [0] * (num_participants)\n    participants = []\n    total_score = 0\n\n    for i in range(num_participants):\n        days[i], trials[i], score[i] = map(int, input().split())\n        participants.append((score[i], i))\n        total_score += score[i] * trials[i]\n    \n    participants.sort(reverse=True, key=lambda x: x[0])\n\n    available_days = list(range(1, max_days + 1))\n\n    for score_val, participant_index in participants:\n        while trials[participant_index] > 0:\n            pos = bisect.bisect_left(available_days, days[participant_index])\n            if pos == len(available_days):\n                break\n            available_days.pop(pos)\n            total_score -= score[participant_index]\n            trials[participant_index] -= 1\n\n    print(total_score)\n\n\ndef main():\n    input = sys.stdin.read\n    data = input().splitlines()\n    t = int(data[0])\n    assert 1 <= t <= 10\n    \n    idx = 1\n    for _ in range(t):\n        num_participants, max_days = map(int, data[idx].split())\n        participants_info = data[idx+1: idx+1+num_participants]\n        \n        days, trials, score = [], [], []\n        total_score = 0\n        participants = []\n\n        for i in range(num_participants):\n            d, tr, sc = map(int, participants_info[i].split())\n            days.append(d)\n            trials.append(tr)\n            score.append(sc)\n            participants.append((sc, i))\n            total_score += sc * tr\n\n        participants.sort(reverse=True, key=lambda x: x[0])\n\n        available_days = list(range(1, max_days + 1))\n\n        for score_val, participant_index in participants:\n            while trials[participant_index] > 0:\n                pos = bisect.bisect_left(available_days, days[participant_index])\n                if pos == len(available_days):\n                    break\n                available_days.pop(pos)\n                total_score -= score[participant_index]\n                trials[participant_index] -= 1\n\n        print(total_score)\n        idx += num_participants + 1\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {\n    int arrivalDay;\n    int totalLectures;\n    int sadness;\n} Trainer;\n\n// Function to compare trainers by arrival day for sorting\nint compareTrainers(const void* a, const void* b) {\n    return ((Trainer*)a)->arrivalDay - ((Trainer*)b)->arrivalDay;\n}\n\n// Max heap to store trainers based on sadness per untaught lecture\ntypedef struct {\n    Trainer* trainers;\n    int size;\n    int capacity;\n} MaxHeap;\n\n// Function to create a max heap\nMaxHeap* createMaxHeap(int capacity) {\n    MaxHeap* heap = (MaxHeap*)malloc(sizeof(MaxHeap));\n    heap->capacity = capacity;\n    heap->size = 0;\n    heap->trainers = (Trainer*)malloc(capacity * sizeof(Trainer));\n    return heap;\n}\n\n// Function to swap two trainers\nvoid swap(Trainer* a, Trainer* b) {\n    Trainer temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\n// Function to heapify up\nvoid heapifyUp(MaxHeap* heap, int index) {\n    while (index > 0) {\n        int parent = (index - 1) / 2;\n        if (heap->trainers[index].sadness > heap->trainers[parent].sadness) {\n            swap(&heap->trainers[index], &heap->trainers[parent]);\n            index = parent;\n        } else {\n            break;\n        }\n    }\n}\n\n// Function to insert a trainer into the max heap\nvoid insert(MaxHeap* heap, Trainer trainer) {\n    if (heap->size == heap->capacity) {\n        heap->capacity *= 2;\n        heap->trainers = (Trainer*)realloc(heap->trainers, heap->capacity * sizeof(Trainer));\n    }\n    heap->trainers[heap->size] = trainer;\n    heap->size++;\n    heapifyUp(heap, heap->size - 1);\n}\n\n// Function to extract the maximum trainer (the one with the highest sadness)\nTrainer extractMax(MaxHeap* heap) {\n    Trainer maxTrainer = heap->trainers[0];\n    heap->trainers[0] = heap->trainers[heap->size - 1];\n    heap->size--;\n    // We need to heapify down from the root now\n    int index = 0;\n    while (index < heap->size) {\n        int left = 2 * index + 1;\n        int right = 2 * index + 2;\n        int largest = index;\n\n        if (left < heap->size && heap->trainers[left].sadness > heap->trainers[largest].sadness) {\n            largest = left;\n        }\n        if (right < heap->size && heap->trainers[right].sadness > heap->trainers[largest].sadness) {\n            largest = right;\n        }\n        if (largest != index) {\n            swap(&heap->trainers[index], &heap->trainers[largest]);\n            index = largest;\n        } else {\n            break;\n        }\n    }\n    return maxTrainer;\n}\n\n// Function to check if the heap is empty\nint isEmpty(MaxHeap* heap) {\n    return heap->size == 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n\n    while (T--) {\n        int N, D;\n        scanf(\"%d %d\", &N, &D);\n\n        Trainer* trainers = (Trainer*)malloc(N * sizeof(Trainer));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d %d\", &trainers[i].arrivalDay, &trainers[i].totalLectures, &trainers[i].sadness);\n        }\n\n        // Sort trainers by their arrival day\n        qsort(trainers, N, sizeof(Trainer), compareTrainers);\n\n        MaxHeap* maxHeap = createMaxHeap(N);\n        long long totalSadness = 0;\n        int currentTrainerIndex = 0;\n\n        for (int day = 1; day <= D; day++) {\n            // Add trainers available on this day to the heap\n            while (currentTrainerIndex < N && trainers[currentTrainerIndex].arrivalDay <= day) {\n                insert(maxHeap, trainers[currentTrainerIndex]);\n                currentTrainerIndex++;\n            }\n\n            // If there's a trainer available, let them teach a lecture\n            if (!isEmpty(maxHeap)) {\n                Trainer top = extractMax(maxHeap);\n                top.totalLectures--; // Reduce the remaining lectures by 1\n                // If they still have lectures left, put them back into the heap\n                if (top.totalLectures > 0) {\n                    insert(maxHeap, top);\n                }\n            }\n        }\n\n        // Calculate remaining sadness\n        while (!isEmpty(maxHeap)) {\n            Trainer top = extractMax(maxHeap);\n            totalSadness += (long long)top.totalLectures * top.sadness; // sadness per lecture * remaining lectures\n        }\n\n        printf(\"%lld\\n\", totalSadness);\n        free(maxHeap->trainers);\n        free(maxHeap);\n        free(trainers);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    static final int MaxN = (int)1e5 + 10;\n\n    static int[] days = new int[MaxN];\n    static int[] trials = new int[MaxN];\n    static int[] score = new int[MaxN];\n\n    public static void solve(Scanner sc) {\n        int numParticipants = sc.nextInt();\n        int maxDays = sc.nextInt();\n\n        List<Pair> participants = new ArrayList<>();\n        long totalScore = 0;\n\n        for (int i = 0; i < numParticipants; ++i) {\n            days[i] = sc.nextInt();\n            trials[i] = sc.nextInt();\n            score[i] = sc.nextInt();\n            participants.add(new Pair(score[i], i));\n            totalScore += (long) score[i] * trials[i];\n        }\n\n        participants.sort((a, b) -> Integer.compare(b.score, a.score)); // Sort in descending order by score\n\n        TreeSet<Integer> availableDays = new TreeSet<>();\n        for (int i = 1; i <= maxDays; ++i) {\n            availableDays.add(i);\n        }\n\n        for (Pair participant : participants) {\n            int participantIndex = participant.index;\n            while (trials[participantIndex] > 0) {\n                Integer it = availableDays.ceiling(days[participantIndex]);\n                if (it == null) {\n                    break;\n                }\n                availableDays.remove(it);\n                totalScore -= score[participantIndex];\n                trials[participantIndex]--;\n            }\n        }\n\n        System.out.println(totalScore);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int t = sc.nextInt();\n        assert t >= 1 && t <= 10;\n\n        while (t-- > 0) {\n            solve(sc);\n        }\n\n        sc.close();\n    }\n\n    static class Pair {\n        int score;\n        int index;\n\n        Pair(int score, int index) {\n            this.score = score;\n            this.index = index;\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nconst MaxN = 1e5 + 10;\nconst days = new Array(MaxN).fill(0);\nconst trials = new Array(MaxN).fill(0);\nconst score = new Array(MaxN).fill(0);\n\nfunction solve(numParticipants, maxDays, input) {\n    const participants = [];\n    let totalScore = BigInt(0);\n\n    for (let i = 0; i < numParticipants; ++i) {\n        days[i] = input[i][0];\n        trials[i] = input[i][1];\n        score[i] = input[i][2];\n        participants.push([score[i], i]);\n        totalScore += BigInt(score[i]) * BigInt(trials[i]);\n    }\n    \n    participants.sort((a, b) => b[0] - a[0]);\n\n    const availableDays = new Set();\n    for (let i = 1; i <= maxDays; ++i) {\n        availableDays.add(i);\n    }\n\n    for (const [participantScore, participantIndex] of participants) {\n        while (trials[participantIndex] > 0) {\n            const day = Array.from(availableDays).find(d => d >= days[participantIndex]);\n            if (day === undefined) {\n                break;\n            }\n            availableDays.delete(day);\n            totalScore -= BigInt(score[participantIndex]);\n            trials[participantIndex]--;\n        }\n    }\n\n    console.log(totalScore.toString());\n}\n\nlet inputLines = [];\nlet currentLine = 0;\n\nrl.on('line', (line) => {\n    inputLines.push(line.trim());\n});\n\nrl.on('close', () => {\n    const t = parseInt(inputLines[currentLine++]);\n    \n    for (let testCase = 0; testCase < t; testCase++) {\n        const [numParticipants, maxDays] = inputLines[currentLine++].split(' ').map(Number);\n        const input = [];\n        \n        for (let i = 0; i < numParticipants; i++) {\n            input.push(inputLines[currentLine++].split(' ').map(Number));\n        }\n        \n        solve(numParticipants, maxDays, input);\n    }\n});\n"
+    }
+  }
+}

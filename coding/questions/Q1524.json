@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1524",
+  "title": "Truck Driver Problem",
+  "slug": "truck-driver-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "A logistics company needs to deliver goods across several cities within daysdaysdays days.\n\nThe ithi^\\text{th}ith container has a weight of weights[i]weights[i]weights[i]. Each day, a truck is loaded with containers **in the given order**. The truck has a maximum load capacity, and it cannot carry more than that in one trip.\n\nYour task is to determine the **minimum truck capacity** required so that **all containers are delivered within daysdaysdays days**.\n\nFunction DeclarationFunction NameshipWithinDaysshipWithinDaysshipWithinDays – This function determines the minimum truck capacity required to deliver all containers within the given number of days.\n\nParameters\nweightsweightsweights : An array representing the weights of the containers, in delivery order.\ndaysdaysdays : The number of days within which all containers must be delivered.\nReturn Value\nReturns a single integer — the **minimum truck capacity** needed.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤days≤weights.length≤5×1041 \\leq days \\leq weights.length \\leq 5 × 10^41≤days≤weights.length≤5×104\n1≤weights[i]≤5001 \\leq weights[i] \\leq 5001≤weights[i]≤500\nContainers must be shipped **in order**\nEach container must be shipped **entirely in one day**\n\nInput Format\n\nThe first line contains the number of test cases T\nFor each test case:\n\nThe first line contains two integers — NNN and daysdaysdays, where NNN is the number of containers.\nThe second line contains NNN space-separated integers representing the container weights.\n\n\n\n\nOutput Format\n\nPrint a single integer — the **minimum truck capacity** required.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n7 4\n5 8 3 2 7 4 6",
+        "output": "11",
+        "explanation": "Explanation:\nIf the truck capacity is 11:\n\nDay 1: 5, 8 →\\rightarrow→ cannot take both (sum is 13, which exceeds the capacity of 11), so only 5 goes.\nDay 2: 8, 3 →\\rightarrow→ total 11\nDay 3: 2, 7 →\\rightarrow→ total 9\nDay 4: 4, 6 →\\rightarrow→ total 10\nThus, all containers are delivered in 4 days.\nIf the capacity were smaller (like 10), it would require more than 4 days."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n7 4\n5 8 3 2 7 4 6",
+        "expectedOutput": "11",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(nlog⁡S)\\mathcal{O}(n \\log S)O(nlogS).",
+    "spaceComplexity": "O(1)\\mathcal{O}(1)O(1) additional memory. We only use a few basic variables for counting.",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int shipWithinDays(vector<int>& weights, int days) {\n        if (weights.empty()) return 0;\n\n        int maxWeight = *max_element(weights.begin(), weights.end());\n        long long totalWeight = accumulate(weights.begin(), weights.end(), 0LL);\n        long long left = maxWeight, right = totalWeight;\n\n        while (left < right) {\n            long long mid = (left + right) / 2;\n            int daysNeeded = 1, currWeight = 0;\n\n            for (int w : weights) {\n                if (currWeight + w > mid) {\n                    daysNeeded++;\n                    currWeight = 0;\n                    if (daysNeeded > days) break;\n                }\n                currWeight += w;\n            }\n\n            if (daysNeeded > days) {\n                left = mid + 1;\n            } else {\n                right = mid;\n            }\n        }\n        return (int)left;\n    }\n};",
+      "Python3": "class Solution:\n    def shipWithinDays(self, weights: List[int], days: int) -> int:\n        if not weights:\n            return 0\n\n        maxWeight = max(weights)\n        totalWeight = sum(weights)\n        left, right = maxWeight, totalWeight\n\n        while left < right:\n            mid = (left + right) // 2\n            daysNeeded, currWeight = 1, 0\n            for weight in weights:\n                if currWeight + weight > mid:\n                    daysNeeded += 1\n                    currWeight = 0\n                    if daysNeeded > days:\n                        break\n                currWeight += weight\n\n            if daysNeeded > days:\n                left = mid + 1\n            else:\n                right = mid\n        return left\n",
+      "C": "long long needed_days(int *weights, int n, long long cap) {\n    long long cur = 0;\n    long long days = 1; // start with day 1\n    for (int i = 0; i < n; ++i) {\n        if (cur + weights[i] <= cap) {\n            cur += weights[i];\n        } else {\n            days++;\n            cur = weights[i];\n        }\n    }\n    return days;\n}\n\n\nint shipWithinDays(int *weights, int n, int days) {\n    long long lo = 0, hi = 0;\n    for (int i = 0; i < n; ++i) {\n        if (weights[i] > lo) lo = weights[i]; // at least the heaviest package\n        hi += weights[i];                     // at most sum of all packages\n    }\n\n    long long ans = hi;\n    long long L = lo, R = hi;\n    while (L <= R) {\n        long long mid = L + (R - L) / 2;\n        long long need = needed_days(weights, n, mid);\n        if (need <= days) {\n            ans = mid;\n            R = mid - 1;\n        } else {\n            L = mid + 1;\n        }\n    }\n    return (int)ans;\n}\n",
+      "Java": "class ShipCapacity {\n    public int shipWithinDays(int[] weights, int days) {\n        long lo = 0, hi = 0;\n        for (int w : weights) {\n            lo = Math.max(lo, w); // at least the heaviest package\n            hi += w;              // at most sum of all weights\n        }\n\n        long ans = hi;\n        long L = lo, R = hi;\n        while (L <= R) {\n            long mid = L + (R - L) / 2;\n            if (neededDays(weights, mid) <= days) {\n                ans = mid;\n                R = mid - 1;\n            } else {\n                L = mid + 1;\n            }\n        }\n        return (int) ans;\n    }\n\n    private int neededDays(int[] weights, long cap) {\n        long cur = 0;\n        int d = 1;\n        for (int w : weights) {\n            if (cur + w <= cap) {\n                cur += w;\n            } else {\n                d++;\n                cur = w;\n            }\n        }\n        return d;\n    }\n}\n",
+      "JavaScript": "function neededDays(weights, cap) {\n  let cur = 0;\n  let days = 1;\n  for (let w of weights) {\n    if (cur + w <= cap) {\n      cur += w;\n    } else {\n      days++;\n      cur = w;\n    }\n  }\n  return days;\n}\n\n\nfunction shipWithinDays(weights, days) {\n  let lo = 0;\n  let hi = 0;\n  for (let w of weights) {\n    lo = Math.max(lo, w); // at least the heaviest package\n    hi += w;              // at most sum of all weights\n  }\n\n  let ans = hi;\n  let L = lo, R = hi;\n  while (L <= R) {\n    const mid = Math.floor((L + R) / 2);\n    const need = neededDays(weights, mid);\n    if (need <= days) {\n      ans = mid;\n      R = mid - 1;\n    } else {\n      L = mid + 1;\n    }\n  }\n  return ans;\n}\n"
+    }
+  }
+}

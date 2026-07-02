@@ -1,0 +1,85 @@
+{
+  "questionId": "Q1836",
+  "title": "Trapping rain water",
+  "slug": "trapping-rain-water",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef owns a swimming pool with width NNN meters which contains NNN continuous walls with height hih_ihi​ (possible zero) and width 111 meter each.\n\nWhen it rains heavily, water is stored in the swimming pool in the form of sections (check Figure 1). Chef is busy calling his friends for a party. So, you need to determine the maximum water stored in **a section** among all the sections after a heavy rain.\n\nFigure 1 :\n\n\n\nThis swimming pool has 3 sections :\n\n\nSection 2 has the maximum water i.e 10 units.\nSection 1 has 9 units of water.\nSection 3 contains 2 units of water.\nSo, the answer would be 10 units (maximum of all the sections)\n\n\nInput Format\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nFirst line of each testcase contains an integer NNN - number of walls AAA.\nSecond line contains N space separated integers h1,h2,.....,hNh_1, h_2, ....., h_Nh1​,h2​,.....,hN​\n\n\nOutput Format\nFor each testcase, output one integer in a single line - Maximum water stored among all sections.",
+    "constraints": [
+      "1≤T≤103 1 \\leq T \\leq 10^31≤T≤103",
+      "2≤N≤105 2 \\leq N \\leq 10^52≤N≤105",
+      "0≤hi≤1060 \\leq h_i \\leq 10^6 0≤hi​≤106",
+      "Sum of NNN over all test cases will not exceed 10510^5105",
+      "Subtasks",
+      "30 points : 2≤N≤500,∑Ni≤5002 \\leq N \\leq 500, \\sum N_i \\leq 5002≤N≤500,∑Ni​≤500",
+      "70 points : Original Constraints"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4\n5 0 2 6\n6\n3 1 4 0 3 5",
+        "output": "8\n5",
+        "explanation": "Explanation:\nTest Case 1 : 5 0 2 6\nThis forms a single continuous pool bounded by walls of height 5 and 6.\n\nWater Level: 5 (determined by the shorter wall).\nVolume: (5−0)+(5−2)=5+3=(5 - 0) + (5 - 2) = 5 + 3 =(5−0)+(5−2)=5+3= 8.\n\nTest Case 2 : 3 1 4 0 3 5\nThe wall of height 4 splits this into two separate sections.\n\nLeft Section: Between walls 3 and 4.\n\nWater Level: 3.\nVolume: 3−1=3 - 1 =3−1= 2.\n\n\nRight Section: Between walls 4 and 5.\n\nWater Level: 4.\nVolume: (4−0)+(4−3)=4+1=(4 - 0) + (4 - 3) = 4 + 1 =(4−0)+(4−3)=4+1= 5.\n\n\n\nResult: The maximum between the two sections (2 vs 5) is 5."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4\n5 0 2 6\n6\n3 1 4 0 3 5",
+        "expectedOutput": "8\n5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "\n#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n \nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    \n    int T;\n    cin >> T;\n    while(T--){\n        int N;\n        cin >> N;\n        vector<long long> h(N);\n        for(int i = 0; i < N; i++){\n            cin >> h[i];\n        }\n \n        vector<long long> leftMax(N), rightMax(N);\n        leftMax[0] = h[0];\n        for(int i = 1; i < N; i++){\n            leftMax[i] = max(leftMax[i - 1], h[i]);\n        }\n \n        rightMax[N - 1] = h[N - 1];\n        for(int i = N - 2; i >= 0; i--){\n            rightMax[i] = max(rightMax[i + 1], h[i]);\n        }\n \n        vector<long long> water(N, 0);\n        for(int i = 0; i < N; i++){\n            long long minHeight = min(leftMax[i], rightMax[i]);\n            if(minHeight > h[i])\n                water[i] = minHeight - h[i];\n            else\n                water[i] = 0;\n        }\n \n        long long maxSection = 0, currentSection = 0;\n        for(int i = 0; i < N; i++){\n            if(water[i] > 0)\n                currentSection += water[i];\n            else {\n                maxSection = max(maxSection, currentSection);\n                currentSection = 0;\n            }\n        }\n        maxSection = max(maxSection, currentSection);\n \n        cout << maxSection << \"\\n\";\n    }\n    return 0;\n}\n",
+      "Python3": "T = int(input())\ndef max_vol(H):\n    if len(H) < 3:\n        return 0\n    max_height = 0\n    cur_vol = 0\n    max_vol = 0\n    for h in H:\n        if h >= max_height:\n            max_height = h \n            max_vol = max(max_vol, cur_vol)\n            cur_vol = 0 \n        else:\n            cur_vol += max_height - h\n    return max_vol\nfor t in range(T):\n    N = int(input())\n    H = list(map(int,input().split()))\n    h_max = max(H)\n    h_max_ind = H.index(h_max)\n    H_left = H[:h_max_ind+1]\n    H_right = H[h_max_ind:]\n    H_right.reverse()\n    max_left = max_vol(H_left)\n    max_right = max_vol(H_right)\n    print(max(max_left, max_right))",
+      "C": "#include <stdio.h>\n\nint max(int a,int b){\n    if(a>b)\n    return a;\n    else\n    return b;\n}\n\nint min(int a,int b){\n    if(a<b)\n    return a;\n    else\n    return b;\n}\n\nint main(void) {\n    int t;\n    scanf(\"%d\",&t);\n    while(t--)\n    {\n        int n,x,maxi=0,sum=0,value;\n        scanf(\"%d\",&n);\n        \n        int arr[n],left[n],right[n];\n        for(int i=0;i<n;i++)\n        {\n            scanf(\"%d\",&arr[i]);\n        }\n        \n        left[0]=arr[0];\n        for(int i=1;i<n;i++)\n        {\n            left[i]=max(left[i-1],arr[i]);\n        }\n        \n        right[n-1]=arr[n-1];\n        for(int i=n-2;i>=0;i--)\n        {\n            right[i]=max(right[i+1],arr[i]);\n        }\n        \n        for(int i=0;i<n;i++)\n        {\n            value=min(left[i],right[i]);\n            x=value-arr[i];\n            \n            if(x!=0)\n            {\n                sum+=x;\n            }\n            else \n            {\n                if(sum>maxi)\n                {\n                    maxi=sum;\n                }\n                sum=0;\n            }\n        }\n      printf(\"%d\\n\",maxi);  \n    }\n    return 0;\n}\n\n",
+      "Java": "\nimport java.io.BufferedReader;\nimport java.io.InputStreamReader;\nimport java.io.IOException;\nimport java.util.StringTokenizer;\n \npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        int t = Integer.parseInt(reader.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while(t-- > 0) {\n            int n = Integer.parseInt(reader.readLine().trim());\n            int[] heights = new int[n];\n            StringTokenizer st = new StringTokenizer(reader.readLine());\n            for (int i = 0; i < n; i++) {\n                heights[i] = Integer.parseInt(st.nextToken());\n            }\n            \n            int[] leftMax = new int[n];\n            int[] rightMax = new int[n];\n            \n            leftMax[0] = heights[0];\n            for (int i = 1; i < n; i++) {\n                leftMax[i] = Math.max(leftMax[i-1], heights[i]);\n            }\n            \n            rightMax[n-1] = heights[n-1];\n            for (int i = n-2; i >= 0; i--) {\n                rightMax[i] = Math.max(rightMax[i+1], heights[i]);\n            }\n            \n            // Compute water trapped at each position\n            int[] water = new int[n];\n            for (int i = 0; i < n; i++) {\n                int trapped = Math.min(leftMax[i], rightMax[i]) - heights[i];\n                water[i] = (trapped > 0) ? trapped : 0;\n            }\n            \n            // Find maximum sum of contiguous positive water cells (one section)\n            long maxSection = 0;\n            long currentSum = 0;\n            for (int i = 0; i < n; i++) {\n                if(water[i] > 0) {\n                    currentSum += water[i];\n                } else {\n                    if(currentSum > maxSection) {\n                        maxSection = currentSum;\n                    }\n                    currentSum = 0;\n                }\n            }\n            if(currentSum > maxSection) {\n                maxSection = currentSum;\n            }\n            \n            sb.append(maxSection).append(\"\\n\");\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "JavaScript": "\nfunction maxWaterInSection(n, heights) {\n    // Compute left max array\n    let leftMax = new Array(n);\n    leftMax[0] = heights[0];\n    for (let i = 1; i < n; i++) {\n        leftMax[i] = Math.max(leftMax[i - 1], heights[i]);\n    }\n    // Compute right max array\n    let rightMax = new Array(n);\n    rightMax[n - 1] = heights[n - 1];\n    for (let i = n - 2; i >= 0; i--) {\n        rightMax[i] = Math.max(rightMax[i + 1], heights[i]);\n    }\n    // Calculate water trapped at each index\n    let water = new Array(n).fill(0);\n    for (let i = 0; i < n; i++) {\n        let waterLevel = Math.min(leftMax[i], rightMax[i]);\n        if (waterLevel > heights[i]) {\n            water[i] = waterLevel - heights[i];\n        }\n    }\n    // Find maximum contiguous section sum of water\n    let maxSection = 0, currentSection = 0;\n    for (let i = 0; i < n; i++) {\n        if (water[i] > 0) {\n            currentSection += water[i];\n        } else {\n            maxSection = Math.max(maxSection, currentSection);\n            currentSection = 0;\n        }\n    }\n    maxSection = Math.max(maxSection, currentSection);\n    return maxSection;\n}\n"
+    }
+  }
+}

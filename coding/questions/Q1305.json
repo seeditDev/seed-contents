@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1305",
+  "title": "Construct Binary Tree",
+  "slug": "construct-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Construct and return a binary tree using two integer arrays, `preorder` and `inorder`. The `preorder` array represents the preorder traversal of the binary tree, while the `inorder` array represents the inorder traversal of the same tree.\n\n**Example:** \n\n`Preorder` array: [1, 2, 3, 4, 5] \n\n`Inorder` array: [2, 1, 4, 3, 5]\n\nThe constructed tree\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nThe next line contains NNN space separated integers, the preorder array.\nThe next line contains NNN space separated integers, the inorder array.\n\n\nOutput Format\nComplete the given function in the IDE which returns the root of the constructed binary tree.\nOutput will be `Well Done!` if the tree is constructed correctly, otherwise Runtime errors.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤preorderi≤1000001 \\leq preorder_i \\leq 1000001≤preorderi​≤100000",
+      "1≤inorderi≤1000001 \\leq inorder_i \\leq 1000001≤inorderi​≤100000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "preorder",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "preorder",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    Node* constructBinaryTree(vector<int> &preorder, vector<int> &inorder) {\n       int rootIdx = 0;\n       return build(preorder, inorder, rootIdx, 0, inorder.size() - 1);\n    }\n    \n    Node* build(vector<int>& preorder, vector<int>& inorder, int& rootIdx, int left, int right) {\n        if (left > right) return NULL;\n        int pivot = left;  // find the root from inorder\n        while(inorder[pivot] != preorder[rootIdx]) {\n          pivot++;\n        }\n        \n        rootIdx++;\n        Node* newNode = new Node(inorder[pivot]);\n        newNode->left = build(preorder, inorder, rootIdx, left, pivot - 1);\n        newNode->right = build(preorder, inorder, rootIdx, pivot + 1, right);\n        return newNode;\n    }\n};",
+      "Python3": "class Solution:\n    def construct_binary_tree(self, preorder, inorder):\n        root_idx = [0]  # Use list to allow modification within nested function\n        return self.build(preorder, inorder, root_idx, 0, len(inorder) - 1)\n    \n    def build(self, preorder, inorder, root_idx, left, right):\n        if left > right:\n            return None\n        pivot = left  # Find the root from inorder\n        while inorder[pivot] != preorder[root_idx[0]]:\n            pivot += 1\n        \n        root_val = inorder[pivot]\n        root_idx[0] += 1\n        new_node = Node(root_val)\n        new_node.left = self.build(preorder, inorder, root_idx, left, pivot - 1)\n        new_node.right = self.build(preorder, inorder, root_idx, pivot + 1, right)\n        return new_node\n",
+      "C": "Node* newNode(int val) {\n    Node* node = (Node*)malloc(sizeof(Node));\n    node->val = val;\n    node->left = node->right = NULL;\n    return node;\n}\n\nNode* build(int* preorder, int* inorder, int* rootIdx, int left, int right, int n) {\n    if (left > right) return NULL;\n    int pivot = left;\n    while (pivot <= right && inorder[pivot] != preorder[*rootIdx]) {\n        pivot++;\n    }\n\n    if (pivot > right) {\n        // Invalid tree configuration\n        exit(1);\n    }\n\n    int rootVal = inorder[pivot];\n    (*rootIdx)++;\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->val = rootVal;\n    newNode->left = build(preorder, inorder, rootIdx, left, pivot - 1, n);\n    newNode->right = build(preorder, inorder, rootIdx, pivot + 1, right, n);\n    return newNode;\n}\n",
+      "Java": "class Solution {\n    public Node constructBinaryTree(List<Integer> preorder, List<Integer> inorder) {\n        int[] rootIdx = {0};  // Since Java doesn't have reference parameters, we use an array to mimic pass-by-reference\n        return build(preorder, inorder, rootIdx, 0, inorder.size() - 1);\n    }\n    \n    private Node build(List<Integer> preorder, List<Integer> inorder, int[] rootIdx, int left, int right) {\n        if (left > right) return null;\n        int pivot = left;\n        \n        // Find the root in the inorder list\n        while (!inorder.get(pivot).equals(preorder.get(rootIdx[0]))) {\n            pivot++;\n        }\n        \n        rootIdx[0]++;\n        Node newNode = new Node(inorder.get(pivot));\n        newNode.left = build(preorder, inorder, rootIdx, left, pivot - 1);\n        newNode.right = build(preorder, inorder, rootIdx, pivot + 1, right);\n        \n        return newNode;\n    }\n}",
+      "JavaScript": "/*\nclass TreeNode {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction buildTreeHelper(preorder, inorder) {\n    if (preorder.length === 0 || inorder.length === 0) return null;\n\n    const rootValue = preorder[0];\n    const root = new TreeNode(rootValue);\n\n    const rootIndexInOrder = inorder.indexOf(rootValue);\n\n    const leftInorder = inorder.slice(0, rootIndexInOrder);\n    const rightInorder = inorder.slice(rootIndexInOrder + 1);\n\n    const leftPreorder = preorder.slice(1, 1 + leftInorder.length);\n    const rightPreorder = preorder.slice(1 + leftInorder.length);\n\n    root.left = buildTreeHelper(leftPreorder, leftInorder);\n    root.right = buildTreeHelper(rightPreorder, rightInorder);\n\n    return root;\n}\n"
+    }
+  }
+}

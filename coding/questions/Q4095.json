@@ -1,0 +1,86 @@
+{
+  "questionId": "Q4095",
+  "title": "Permutation Cycles",
+  "slug": "permutation-cycles",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "We consider permutations of the numbers 1,...,N1,..., N1,...,N for some NNN. By permutation we mean a rearrangment of the number 1,...,N1,...,N1,...,N. For example\n\n245176382 \\quad 4 \\quad 5 \\quad 1 \\quad 7 \\quad 6 \\quad 3 \\quad 824517638\nis a permutation of 1,2,...,81,2,...,81,2,...,8. Of course,\n\n123456781 \\quad 2 \\quad 3 \\quad 4 \\quad 5 \\quad 6 \\quad 7 \\quad 812345678\n\nis also a permutation of 1,2,...,81,2,...,81,2,...,8.\n\nWe can \"walk around\" a permutation in a interesting way and here is how it is done for the permutation above:\n\nStart at position 111. At position 111 we have 222 and so we go to position 222. Here we find 444 and so we go to position 444. Here we find 111, which is a position that we have already visited. This completes the first part of our walk and we denote this walk by  (111 222 444 111). Such a walk is called a cycle. An interesting property of such walks, that you may take for granted, is that the position we revisit will always be the one we started from!\n\nWe continue our walk by jumping to first unvisited position, in this case position 333 and continue in the same manner. This time we find 555 at position 333 and so we go to position 555 and find 777 and we go to position 777 and find 333 and thus we get the cycle (333 555 777 333). Next we start at position 666 and get (666 666), and finally we start at position 888 and get the cycle (888 888). We have exhausted all the positions. Our walk through this permutation consists of 444 cycles.\n\nOne can carry out this walk through any permutation and obtain a set of cycles as the result. Your task is to print out the cycles that result from walking through a given permutation.\n\nInput:The first line of the input is a positive integer NNN indicating the length of the permutation. The next line contains NNN integers and is a permutation of 1,2,...,N1,2,...,N1,2,...,N.\n\nOutput:The first line of the output must contain a single integer kkk denoting the number of cycles in the permutation. Line 222 should describe the first cycle, line 333 the second cycle and so on and line k+1k+1k+1 should describe the kthk^{th}kth cycle.",
+    "constraints": [
+      "1≤N≤10001 \\leq N \\leq 10001≤N≤1000."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8\n2 4 5 1 7 6 3 8",
+        "output": "4\n1 2 4 1\n3 5 7 3\n6 6\n8 8",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "8\n1 2 3 4 5 6 7 8",
+        "output": "8\n1 1\n2 2\n3 3\n4 4\n5 5\n6 6\n7 7\n8 8",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8\n2 4 5 1 7 6 3 8",
+        "expectedOutput": "4\n1 2 4 1\n3 5 7 3\n6 6\n8 8",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "8\n1 2 3 4 5 6 7 8",
+        "expectedOutput": "8\n1 1\n2 2\n3 3\n4 4\n5 5\n6 6\n7 7\n8 8",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Overview:**\n\nIn this approach, we simulate the walk through the permutation using an iterative method. We maintain an array called `visited` to mark the indices that have already been processed. For every index iii from 111 to NNN, if it is not visited, we start traversing from iii. We repeatedly move to the position indicated by the current number until we come back to the starting index. Finally, we store the cycle (repeating the first index to signify closure) and continue with the next unvisited index.\n\n**Why It Works:**\n\n\n**Correctness:** Since every position points to exactly one other position (a property of permutations), starting at any unvisited position and following the chain will eventually lead back to the starting position.\n**Efficiency:** The algorithm runs in O(N)O(N)O(N) time, as each index is visited exactly once.\n**Code Implementations:**\n\nBelow is the C++ and Python implementation for the iterative approach.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;int&gt; perm(N + 1);\n    for (int i = 1; i &lt;= N; i++) {\n        cin &gt;&gt; perm[i];\n    }\n    \n    vector&lt;bool&gt; visited(N + 1, false);\n    vector&lt;vector&lt;int&gt;&gt; cycles;\n    \n    for (int i = 1; i &lt;= N; i++) {\n        if (!visited[i]) {\n            vector&lt;int&gt; cycle;\n            int current = i;\n            while (true) {\n                cycle.push_back(current);\n                visited[current] = true;\n                int next = perm[current];\n                if (visited[next])\n                    break;\n                current = next;\n            }\n            // Append the starting element to complete the cycle.\n            cycle.push_back(cycle[0]);\n            cycles.push_back(cycle);\n        }\n    }\n    \n    cout &lt;&lt; cycles.size() &lt;&lt; \"\\n\";\n    for (auto &amp;cycle : cycles) {\n        for (int x : cycle) {\n            cout &lt;&lt; x &lt;&lt; \" \";\n        }\n        cout &lt;&lt; \"\\n\";\n    }\n    return 0;\n}\n``def main():\n    import sys\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    perm = [0] * (n + 1)\n    for i in range(n):\n        perm[i + 1] = int(data[i + 1])\n        \n    visited = [False] * (n + 1)\n    cycles = []\n    \n    for i in range(1, n + 1):\n        if not visited[i]:\n            cycle = []\n            current = i\n            while True:\n                cycle.append(current)\n                visited[current] = True\n                next_num = perm[current]\n                if visited[next_num]:\n                    break\n                current = next_num\n            # Append starting element to complete the cycle.\n            cycle.append(cycle[0])\n            cycles.append(cycle)\n    \n    output_lines = [str(len(cycles))]\n    for cycle in cycles:\n        output_lines.append(\" \".join(map(str, cycle)))\n    sys.stdout.write(\"\\n\".join(output_lines))\n\nif __name__ == \"__main__\":\n    main()\n`**Overview:**\n\nIn this approach, we interpret the permutation as a directed graph where each node (position) has an edge to the node given by the value at that position. We then use recursive DFS to traverse the graph starting from an unvisited node until we circle back to the start. This recursion naturally records the cycle as it unwinds.\n\n**Why It Works:**\n\n\n**Clarity:** The recursive approach elegantly captures the notion of traversing a path until a cycle is detected.\n**Similarity:** Although similar to the iterative simulation, recursion can sometimes lead to simpler and more readable code for beginners.\n**Code Implementations:**\n\nBelow is the C++ and Python implementation for the recursive DFS approach.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nvoid dfs(int current, int start, const vector&lt;int&gt;&amp; perm, vector&lt;bool&gt;&amp; visited, vector&lt;int&gt;&amp; cycle) {\n    cycle.push_back(current);\n    visited[current] = true;\n    int next = perm[current];\n    if (next == start) {\n        cycle.push_back(start);\n        return;\n    }\n    if (!visited[next]) {\n        dfs(next, start, perm, visited, cycle);\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;int&gt; perm(N + 1);\n    for (int i = 1; i &lt;= N; i++) {\n        cin &gt;&gt; perm[i];\n    }\n    \n    vector&lt;bool&gt; visited(N + 1, false);\n    vector&lt;vector&lt;int&gt;&gt; cycles;\n    \n    for (int i = 1; i &lt;= N; i++) {\n        if (!visited[i]) {\n            vector&lt;int&gt; cycle;\n            dfs(i, i, perm, visited, cycle);\n            cycles.push_back(cycle);\n        }\n    }\n    \n    cout &lt;&lt; cycles.size() &lt;&lt; \"\\n\";\n    for (auto &amp;cycle : cycles) {\n        for (int x : cycle) {\n            cout &lt;&lt; x &lt;&lt; \" \";\n        }\n        cout &lt;&lt; \"\\n\";\n    }\n    return 0;\n}\n``def dfs(current, start, perm, visited, cycle):\n    cycle.append(current)\n    visited[current] = True\n    next_node = perm[current]\n    if next_node == start:\n        cycle.append(start)\n        return\n    if not visited[next_node]:\n        dfs(next_node, start, perm, visited, cycle)\n\ndef main():\n    import sys\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    n = int(data[0])\n    perm = [0] * (n + 1)\n    for i in range(n):\n        perm[i + 1] = int(data[i + 1])\n    \n    visited = [False] * (n + 1)\n    cycles = []\n    \n    for i in range(1, n + 1):\n        if not visited[i]:\n            cycle = []\n            dfs(i, i, perm, visited, cycle)\n            cycles.append(cycle)\n    \n    output_lines = [str(len(cycles))]\n    for cycle in cycles:\n        output_lines.append(\" \".join(map(str, cycle)))\n    sys.stdout.write(\"\\n\".join(output_lines))\n\nif __name__ == \"__main__\":\n    main()\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

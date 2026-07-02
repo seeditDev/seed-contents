@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1669",
+  "title": "Chef Solves Word Break",
+  "slug": "chef-solves-word-break",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Strings",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "strings & pattern matching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Strings & Pattern Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a string of lowercase English letters inputStringinputStringinputString and a list of dictionary words dictionaryWordsdictionaryWordsdictionaryWords. \n\nChef wants to determine if it is possible to segment the entire string into a sequence of one or more words from the dictionary. The same dictionary word can be used multiple times in the segmentation. Help Chef decide whether such a segmentation exists.\n\nFunction DeclarationFunction NamecanSegmentStringcanSegmentStringcanSegmentString - This function determines whether the given text string can be segmented into a sequence of one or more dictionary words.\n\nParameters\ninputStringinputStringinputString : The text string to be segmented. It consists of lowercase English letters.\ndictionaryWordsdictionaryWordsdictionaryWords : A reference to a array containing the list of valid dictionary words. Each word consists of lowercase English letters.\nReturn Value\nReturns a boolean indicating if the segmentation is possible.\ntruetruetrue means the string can be segmented into dictionary words; falsefalsefalse means it cannot.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤∣inputString∣≤3001 \\leq |inputString| \\leq 3001≤∣inputString∣≤300\n1≤∣dictionaryWords∣≤10001 \\leq |\\text{dictionaryWords}| \\leq 10001≤∣dictionaryWords∣≤1000\n1≤∣dictionaryWords[i]∣≤201 \\leq |\\text{dictionaryWords}[i]| \\leq 201≤∣dictionaryWords[i]∣≤20 for each valid iii\nAll characters in `inputString` and `dictionaryWords[i]` are lowercase English letters.\nAll strings in `dictionaryWords` are unique.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "Input Format\n\nThe first line contains an integer TTT, the number of test cases.\nFor each test case:\n\nThe second line contains the string inputStringinputStringinputString that Chef wants to segment.\nThe next line contains all the dictionary words.\n\n\n\n\nOutput Format\nFor each test case, print a single line containing 1 if Chef can segment the string into dictionary words, or 0 otherwise. Help Chef by providing the correct answer for each test case.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\ncatsdo\n[\"cats\", \"dog\", \"sand\", \"and\"]\npineapplepen\n[\"apple\", \"pen\", \"pineapple\"]",
+        "output": "0\n1",
+        "explanation": "Explanation:\nT1: \"catsdo\" cannot be segmented into any combination of \"cats\", \"dog\", \"sand\", or \"and\".\nT2: \"pineapplepen\" can be segmented as \"pineapple\" + \"pen\"."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\ncatsdo\n[\"cats\", \"dog\", \"sand\", \"and\"]\npineapplepen\n[\"apple\", \"pen\", \"pineapple\"]",
+        "expectedOutput": "0\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(n²) when dictionary lookup is optimized (hash set or word-length bound)",
+    "spaceComplexity": "O(n) for memoization + recursion stack",
+    "code": {
+      "C++": "class Solution {\npublic:\n    bool canSegmentString(string inputString, vector<string>& dictionaryWords) {\n        unordered_set<string> dict(dictionaryWords.begin(), dictionaryWords.end());\n        int n = inputString.size();\n\n        vector<bool> dp(n + 1, false);\n        dp[0] = true;  // empty string is segmentable\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 0; j < i; j++) {\n                if (dp[j] && dict.count(inputString.substr(j, i - j))) {\n                    dp[i] = true;\n                    break;\n                }\n            }\n        }\n        return dp[n];\n    }\n};",
+      "Python3": "class Solution:\n    def canSegmentString(self, inputString, dictionaryWords):\n        word_set = set(dictionaryWords)\n        n = len(inputString)\n\n        dp = [False] * (n + 1)\n        dp[0] = True  # empty string is valid\n\n        for i in range(1, n + 1):\n            for j in range(i):\n                if dp[j] and inputString[j:i] in word_set:\n                    dp[i] = True\n                    break\n\n        return dp[n]",
+      "C": "#define MAX_LEN 305\n\nint isInDictionary(char *s, int l, int r, char dict[][MAX_WORD], int dictSize) {\n    char temp[MAX_WORD];\n    int len = r - l;\n\n    for (int i = 0; i < dictSize; i++) {\n        if ((int)strlen(dict[i]) == len) {\n            strncpy(temp, s + l, len);\n            temp[len] = '\\0';\n            if (strcmp(temp, dict[i]) == 0)\n                return 1;\n        }\n    }\n    return 0;\n}\n\n/* Core Solution Function */\nint canSegmentString(char *inputString, char dict[][MAX_WORD], int dictSize) {\n    int n = strlen(inputString);\n    int dp[MAX_LEN] = {0};\n\n    dp[0] = 1; // empty string\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            if (dp[j] && isInDictionary(inputString, j, i, dict, dictSize)) {\n                dp[i] = 1;\n                break;\n            }\n        }\n    }\n    return dp[n];\n}",
+      "Java": "class Solution {\n\n    public boolean canSegmentString(String inputString, List<String> dictionaryWords) {\n        Set<String> dict = new HashSet<>(dictionaryWords);\n        int n = inputString.length();\n\n        boolean[] dp = new boolean[n + 1];\n        dp[0] = true; // empty string is segmentable\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 0; j < i; j++) {\n                if (dp[j] && dict.contains(inputString.substring(j, i))) {\n                    dp[i] = true;\n                    break;\n                }\n            }\n        }\n        return dp[n];\n    }\n}",
+      "JavaScript": "class Solution {\n    canSegmentString(inputString, dictionaryWords) {\n        const dict = new Set(dictionaryWords);\n        const n = inputString.length;\n\n        const dp = new Array(n + 1).fill(false);\n        dp[0] = true; // empty string\n\n        for (let i = 1; i <= n; i++) {\n            for (let j = 0; j < i; j++) {\n                if (dp[j] && dict.has(inputString.substring(j, i))) {\n                    dp[i] = true;\n                    break;\n                }\n            }\n        }\n        return dp[n];\n    }\n}"
+    }
+  }
+}

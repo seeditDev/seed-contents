@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1465",
+  "title": "Subset Sum Problem",
+  "slug": "subset-sum-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have NNN positive integers, ithi^{th}ith of them being AiA_iAi​ and an positive integer XXX. \n\nYou need to answer if you can pick a subset of these elements such that the sum of the subset is equal to xxx.\n\nHintJust like the 0/1 knapsack problem, we have to pick or not pick the integers, but instead of maximising the value, we need to check if we can make the required sum or not.\n\n\nInput Format\n\nThe first line contains a two integers NNN and XXX, denoting the length of array AAA and the target sum value.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ — denoting the array AAA.\n\n\nOutput Format\nOutput `YES` if you can pick a subset with sum equal to XXX, otherwise output `NO`.",
+    "constraints": [
+      "2≤N≤1032 \\leq N \\leq 10^32≤N≤103",
+      "0≤X≤1030 \\leq X \\leq 10^30≤X≤103",
+      "1≤Ai≤1031 \\leq A_i \\leq 10^31≤Ai​≤103"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 5\n1 1 4 9 1",
+        "output": "YES",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "4 8\n1 1 4 9 1",
+        "output": "NO",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 5\n1 1 4 9 1",
+        "expectedOutput": "YES",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4 8\n1 1 4 9 1",
+        "expectedOutput": "NO",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int n, x;\n    cin >> n >> x;\n\n    int A[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        cin >> A[i];\n    }   \n\n    // We will use 2-d array to store the solution \n    int dp[n + 1][x + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base case, can make sum = 0 alwaus\n        dp[i][0] = 1; \n    }\n    for(int j = 1; j <= x; j++) {\n        // Base case, can never make any sum with no elements\n        dp[0][j] = 0; \n    }   \n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= x; j++) {\n            if(j >= A[i]) {\n                // Either can be true\n                dp[i][j] = dp[i - 1][j] | dp[i - 1][j - A[i]];\n            }\n            else {\n                dp[i][j] = dp[i - 1][j];\n            }\n        }\n    }\n\n    if(dp[n][x]) {\n        cout << \"YES\\n\";\n    }\n    else {\n        cout << \"NO\\n\";\n    }\n\n    return 0;\n}",
+      "Python3": "def subset_sum_exists(n, x, A):\n    dp = [[0] * (x + 1) for _ in range(n + 1)]\n\n    for i in range(n + 1):\n        # Base case: can make sum = 0 always\n        dp[i][0] = 1\n\n    for j in range(1, x + 1):\n        # Base case: can never make any sum with no elements\n        dp[0][j] = 0\n\n    for i in range(1, n + 1):\n        for j in range(1, x + 1):\n            if j >= A[i]:\n                # Either can be true\n                dp[i][j] = dp[i - 1][j] or dp[i - 1][j - A[i]]\n            else:\n                dp[i][j] = dp[i - 1][j]\n\n    return \"YES\" if dp[n][x] else \"NO\"\n\nif __name__ == \"__main__\":\n    n, x = map(int, input().split())\n    A = [0] + list(map(int, input().split()))  # Using one-based indexing\n\n    result = subset_sum_exists(n, x, A)\n    print(result)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int n, x;\n    scanf(\"%d %d\", &n, &x);\n\n    int A[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n\n    // We will use a 2-d array to store the solution\n    int dp[n + 1][x + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base case, can make sum = 0 always\n        dp[i][0] = 1;\n    }\n    for(int j = 1; j <= x; j++) {\n        // Base case, can never make any sum with no elements\n        dp[0][j] = 0;\n    }\n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= x; j++) {\n            if(j >= A[i]) {\n                // Either can be true\n                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - A[i]];\n            } else {\n                dp[i][j] = dp[i - 1][j];\n            }\n        }\n    }\n\n    if(dp[n][x]) {\n        printf(\"YES\\n\");\n    } else {\n        printf(\"NO\\n\");\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int x = sc.nextInt();\n\n        int[] A = new int[n + 1];\n\n        // Using one-based indexing\n        for (int i = 1; i <= n; i++) {\n            A[i] = sc.nextInt();\n        }\n\n        // We will use a 2D array to store the solution\n        int[][] dp = new int[n + 1][x + 1];\n\n        for (int i = 0; i <= n; i++) {\n            // Base case: can make sum = 0 always\n            dp[i][0] = 1;\n        }\n        for (int j = 1; j <= x; j++) {\n            // Base case: can never make any sum with no elements\n            dp[0][j] = 0;\n        }\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= x; j++) {\n                if (j >= A[i]) {\n                    // Either can be true\n                    dp[i][j] = dp[i - 1][j] | dp[i - 1][j - A[i]];\n                } else {\n                    dp[i][j] = dp[i - 1][j];\n                }\n            }\n        }\n\n        if (dp[n][x] == 1) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}\n"
+    }
+  }
+}

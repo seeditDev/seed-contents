@@ -1,0 +1,78 @@
+{
+  "questionId": "Q1418",
+  "title": "Lowest Common Ancestor in Binary Tree",
+  "slug": "lowest-common-ancestor-in-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree and two node values n1n1n1 and n2n2n2, find their lowest common ancestor (LCA). The LCA is defined as the deepest node in the tree that is an ancestor of both nodes.\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains NNN, the number of nodes in the binary tree\nSecond line contains NNN space-separated integers representing the level-order traversal of the tree (null nodes represented by -1)\nThird line contains two integers n1n1n1 and n2n2n2\n\n\n\n\nOutput Format\n\nFor each test case, print the value of the lowest common ancestor node.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "1≤nodevalue≤1051 \\leq node value \\leq 10^51≤nodevalue≤105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n7\n1 2 3 4 5 6 7\n5 6\n5\n1 2 3 4 5\n4 5\n3\n1 2 3\n2 3",
+        "output": "1\n2\n1",
+        "explanation": "Explanation:\nTest Case 1:\n\nLCA of 5 and 6 is 1\n\nTest Case 2:\n\nLCA of 4 and 5 is 2\n\nTest Case 3:\n\nLCA of 2 and 3 is 1"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n7\n1 2 3 4 5 6 7\n5 6\n5\n1 2 3 4 5\n4 5\n3\n1 2 3\n2 3",
+        "expectedOutput": "1\n2\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int data;\n    Node* left;\n    Node* right;\n    Node(int x) {\n        data = x;\n        left = right = NULL;\n    }\n};\n\nbool findNode(Node* root, int key) {\n    if (root == NULL) return false;\n    if (root->data == key) return true;\n    return findNode(root->left, key) || findNode(root->right, key);\n}\n\nNode* findLCA(Node* root, int n1, int n2) {\n    if (root == NULL) return NULL;\n    \n    if (root->data == n1 || root->data == n2)\n        return root;\n    \n    Node* leftLCA = findLCA(root->left, n1, n2);\n    Node* rightLCA = findLCA(root->right, n1, n2);\n    \n    if (leftLCA && rightLCA) return root;\n    \n    return (leftLCA != NULL) ? leftLCA : rightLCA;\n}\n\nNode* buildTree(vector<int>& arr) {\n    if (arr.empty() || arr[0] == -1) return NULL;\n    \n    queue<Node*> q;\n    Node* root = new Node(arr[0]);\n    q.push(root);\n    \n    for(int i = 1; i < arr.size(); i += 2) {\n        Node* current = q.front();\n        q.pop();\n        \n        if (i < arr.size() && arr[i] != -1) {\n            current->left = new Node(arr[i]);\n            q.push(current->left);\n        }\n        \n        if (i+1 < arr.size() && arr[i+1] != -1) {\n            current->right = new Node(arr[i+1]);\n            q.push(current->right);\n        }\n    }\n    return root;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n;\n        cin >> n;\n        \n        vector<int> arr(n);\n        for(int i = 0; i < n; i++) {\n            cin >> arr[i];\n        }\n        \n        int n1, n2;\n        cin >> n1 >> n2;\n        \n        Node* root = buildTree(arr);\n        \n        if (!findNode(root, n1) || !findNode(root, n2)) {\n            cout << \"-1\" << endl;\n            continue;\n        }\n        \n        Node* lca = findLCA(root, n1, n2);\n        cout << lca->data << endl;\n    }\n    return 0;\n}",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *left, *right;\n} Node;\n\ntypedef struct QNode {\n    Node* node;\n    struct QNode* next;\n} QNode;\n\ntypedef struct {\n    QNode *front, *rear;\n} Queue;\n\nvoid q_init(Queue* q){ q->front = q->rear = NULL; }\nint q_empty(Queue* q){ return q->front == NULL; }\nvoid q_push(Queue* q, Node* n){\n    QNode* x = (QNode*)malloc(sizeof(QNode));\n    x->node = n; x->next = NULL;\n    if(q->rear) q->rear->next = x; else q->front = x;\n    q->rear = x;\n}\nNode* q_pop(Queue* q){\n    if(q_empty(q)) return NULL;\n    QNode* x = q->front;\n    Node* n = x->node;\n    q->front = x->next;\n    if(!q->front) q->rear = NULL;\n    free(x);\n    return n;\n}\n\nNode* newNode(int v){\n    Node* n = (Node*)malloc(sizeof(Node));\n    n->data = v; n->left = n->right = NULL;\n    return n;\n}\n\nint findNode(Node* root, int key){\n    if(!root) return 0;\n    if(root->data == key) return 1;\n    return findNode(root->left, key) || findNode(root->right, key);\n}\n\nNode* findLCA(Node* root, int n1, int n2){\n    if(!root) return NULL;\n    if(root->data == n1 || root->data == n2) return root;\n    Node* L = findLCA(root->left, n1, n2);\n    Node* R = findLCA(root->right, n1, n2);\n    if(L && R) return root;\n    return L ? L : R;\n}\n\nNode* buildTreeFromArray(int* arr, int n){\n    if(n==0 || arr[0]==-1) return NULL;\n    Queue q; q_init(&q);\n    Node* root = newNode(arr[0]);\n    q_push(&q, root);\n    int i = 1;\n    while(i < n && !q_empty(&q)){\n        Node* cur = q_pop(&q);\n        if(i < n && arr[i] != -1){\n            cur->left = newNode(arr[i]);\n            q_push(&q, cur->left);\n        }\n        i++;\n        if(i < n && arr[i] != -1){\n            cur->right = newNode(arr[i]);\n            q_push(&q, cur->right);\n        }\n        i++;\n    }\n    while(!q_empty(&q)) q_pop(&q);\n    return root;\n}\n\nvoid freeTree(Node* r){\n    if(!r) return;\n    freeTree(r->left);\n    freeTree(r->right);\n    free(r);\n}\n\nint main(void){\n    int t;\n    if(scanf(\"%d\",&t)!=1) return 0;\n    while(t--){\n        int n;\n        if(scanf(\"%d\",&n)!=1) return 0;\n        int* arr = (int*)malloc(sizeof(int)*n);\n        for(int i=0;i<n;i++) scanf(\"%d\",&arr[i]);\n        int n1,n2; scanf(\"%d %d\",&n1,&n2);\n\n        Node* root = buildTreeFromArray(arr, n);\n\n        if(!findNode(root, n1) || !findNode(root, n2)){\n            printf(\"-1\\n\");\n            freeTree(root);\n            free(arr);\n            continue;\n        }\n\n        Node* lca = findLCA(root, n1, n2);\n        if(lca) printf(\"%d\\n\", lca->data);\n        else printf(\"-1\\n\");\n\n        freeTree(root);\n        free(arr);\n    }\n    return 0;\n}\n"
+    }
+  }
+}

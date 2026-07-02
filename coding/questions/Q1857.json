@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1857",
+  "title": "Cycle in a linked list",
+  "slug": "cycle-in-a-linked-list",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "Cycle in a Linked List  (5 Marks)You are given a linked list **A** of size **N**.\n\nReturn the node where the cycle begins in the linked list.\n\nIf there is no cycle, return **None**.\n\n\nInput Format\n\nThe first line contains an integer **T**, the number of test cases.\nFor each test case:\n\nThe first line contains an integer **N**, the length of the linked list.\nThe second line contains **N** space-separated integers\n\n`A1 A2 A3 ... AN` representing the values of the linked list nodes.\nThe third line contains an integer **pos**, denoting the index (0-based) of the node where the cycle starts.\n\nIf `pos = -1`, it means there is no cycle.\n\n\n\n\n\n\nOutput Format\n\nFor each test case:\n\nPrint the value of the node where the cycle begins.\nIf there is no cycle, print `NULL`.",
+    "constraints": [
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 10^5",
+      "-10^9 ≤ Ai ≤ 10^9",
+      "-1 ≤ pos &lt; N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n3 2 0 -4 8\n1",
+        "output": "2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n3 2 0 -4 8\n1",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "\n/*\nstruct Node\n{\n    int data;\n    struct Node *next;\n    Node(int x) {\n        data = x;\n        next = NULL;\n    }\n\n*/\nclass Solution\n{\n    public:\n    Node* detectCycle(Node* head)\n    {\n        if (head == NULL || head->next == NULL)\n            return NULL;\n        \n        Node* slow = head;\n        Node* fast = head;\n        Node* entry = head;\n        \n        while (fast->next && fast->next->next) {\n            slow = slow->next;\n            fast = fast->next->next;\n            \n            if (slow == fast) {\n                while (slow != entry) {\n                    slow = slow->next;\n                    entry = entry->next;\n                }\n                return entry;\n            }\n        }\n        \n        return NULL;\n    }\n};\n",
+      "Python3": "\nclass Solution:\n    def detectCycle(self, head):\n        if not head:\n            return None\n        slow = head\n        fast = head\n        cycle_found = False\n        \n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n            if slow == fast:\n                cycle_found = True\n                break\n        \n        if not cycle_found:\n            return None\n        \n        slow = head\n        while slow != fast:\n            slow = slow.next\n            fast = fast.next\n        return slow\n",
+      "C": "typedef struct Node NODE;\nNODE *detectCycle(NODE *head){\n    if(!head || !head->next){\n        return NULL;\n    }\n    NODE *slow = head;\n    NODE *fast = head;\n    \n    while(fast && fast->next){\n        slow = slow->next;\n        fast = fast->next->next;\n        if(slow==fast){\n            break; //cycle delected\n        }\n    }\n    if(!fast || !fast->next){\n        return NULL;\n    }\n    slow=head;\n    while(slow!=fast){\n        slow = slow->next;\n        fast= fast->next;\n    }\n    return slow;\n\n}",
+      "Java": "\nclass Solution {\n    public static Node detectCycle(Node head) {\n        if (head == null || head.next == null) {\n            return null;\n        }\n        \n        Node slow = head;\n        Node fast = head;\n        boolean hasCycle = false;\n        \n        // Detect cycle using Floyd's cycle-finding algorithm\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            \n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        \n        // If no cycle is found, return null\n        if (!hasCycle) {\n            return null;\n        }\n        \n        // Find the start of the cycle\n        slow = head;\n        while (slow != fast) {\n            slow = slow.next;\n            fast = fast.next;\n        }\n        \n        return slow;\n    }\n}\n",
+      "JavaScript": "\nfunction detectCycle(head) {\n    if (!head || !head.next) return null;\n    let slow = head, fast = head;\n    // First phase: determine whether a cycle exists\n    while (fast && fast.next) {\n        slow = slow.next;\n        fast = fast.next.next;\n        if (slow === fast) break;\n    }\n    // No cycle detected\n    if (!fast || !fast.next) return null;\n    // Second phase: find the start of the cycle\n    slow = head;\n    while (slow !== fast) {\n        slow = slow.next;\n        fast = fast.next;\n    }\n    return slow;\n}\n\nfunction solve(input) {\n    let lines = input.trim().split('\\n');\n    let t = parseInt(lines[0].trim());\n    let results = [];\n    let index = 1;\n    for (let i = 0; i < t; i++) {\n        let n = parseInt(lines[index++].trim());\n        let values = lines[index++].trim().split(' ').map(Number);\n        let cyclePos = parseInt(lines[index++].trim()); // 1-indexed; if 0 then no cycle\n        if (n === 0) {\n            results.push(\"0\");\n            continue;\n        }\n        // Build linked list\n        let head = new ListNode(values[0]);\n        let current = head;\n        let nodes = [head]; // store nodes for cycle connection\n        for (let j = 1; j < n; j++) {\n            let newNode = new ListNode(values[j]);\n            current.next = newNode;\n            current = newNode;\n            nodes.push(newNode);\n        }\n        // Create cycle if cyclePos is not 0\n        if (cyclePos !== 0) {\n            // cyclePos is 1-indexed\n            let cycleNode = nodes[cyclePos - 1];\n            current.next = cycleNode;\n        }\n        // Detect cycle starting node\n        let cycleStart = detectCycle(head);\n        results.push(cycleStart ? cycleStart.val : \"0\");\n    }\n    console.log(results.join(\"\\n\"));\n}\n"
+    }
+  }
+}

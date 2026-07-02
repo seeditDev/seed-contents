@@ -1,0 +1,83 @@
+{
+  "questionId": "Q2080",
+  "title": "Kth Largest Node in BST",
+  "slug": "kth-largest-node-in-bst",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary search tree and an integer KKK, find the KKKth largest node in it.\n\nFor eg., if K = 3, the answer would be 5 for the following BST:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and KKK — the number of nodes in the binary search tree, and the value of KKK.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on a single line - the KKKth largest node in the given BST.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct.",
+      "1≤K≤N1 \\leq K \\leq N1≤K≤N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7 3\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
+        "output": "5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7 3\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
+        "expectedOutput": "5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nvoid inOrder(Node* root, vector<int> &nodes){\n    if(root == NULL)\n      return;\n    inOrder(root -> left, nodes);\n    nodes.push_back(root->val);\n    inOrder(root -> right, nodes);\n}\n\nclass Solution {\n  public:\n    int kthLargestNode(Node* root, int k) {\n        vector<int> nodes;\n        inOrder(root, nodes);\n        return nodes[(int)nodes.size() - k];\n    }\n};",
+      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\ndef in_order(root, nodes):\n    if root is None:\n        return\n    in_order(root.left, nodes)\n    nodes.append(root.val)\n    in_order(root.right, nodes)\n\nclass Solution:\n    def kth_largest_node(self, root, k):\n        nodes = []\n        in_order(root, nodes)\n        if k > len(nodes):\n            raise ValueError(\"k is out of bounds\")\n        return nodes[-k]\n",
+      "C": "// #include <stdio.h>\n// #include <stdlib.h>\n// #include <stdbool.h>\n\n// #define MAX_NODES 1000\n\n// typedef struct Node {\n//     int val;\n//     struct Node* left;\n//     struct Node* right;\n// } Node;\n\n// Node* newNode(int val) {\n//     Node* node = (Node*)malloc(sizeof(Node));\n//     node->val = val;\n//     node->left = NULL;\n//     node->right = NULL;\n//     return node;\n// }\n\nvoid inOrder(Node* root, int* nodes, int* index) {\n    if (root == NULL)\n        return;\n    inOrder(root->left, nodes, index);\n    nodes[(*index)++] = root->val;\n    inOrder(root->right, nodes, index);\n}\n\nint kthLargestNode(Node* root, int k) {\n    int nodes[MAX_NODES];\n    int index = 0;\n    inOrder(root, nodes, &index);\n    if (k > index) {\n        printf(\"Invalid k\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return nodes[index - k];\n}\n",
+      "Java": "// import java.util.*;\n\n// class Node {\n//     int val;\n//     Node left, right;\n\n//     Node(int val) {\n//         this.val = val;\n//         left = right = null;\n//     }\n// }\nclass Solution {\n    public int kthLargestNode(Node root, int k) {\n        List<Integer> nodes = new ArrayList<>();\n        inOrder(root, nodes);\n        if (k > nodes.size()) {\n            throw new IllegalArgumentException(\"k is out of bounds\");\n        }\n        return nodes.get(nodes.size() - k);\n    }\n\n    private void inOrder(Node root, List<Integer> nodes) {\n        if (root == null) return;\n        inOrder(root.left, nodes);\n        nodes.add(root.val);\n        inOrder(root.right, nodes);\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction findKthLargest(root, K) {\n    let count = 0;\n    let result = null;\n\n    function reverseInOrder(node) {\n        if (node === null || count >= K) return;\n\n        reverseInOrder(node.right);\n\n        count++;\n        if (count === K) {\n            result = node.val;\n            return;\n        }\n\n        reverseInOrder(node.left);\n    }\n\n    reverseInOrder(root);\n    return result;\n}\n\n"
+    }
+  }
+}

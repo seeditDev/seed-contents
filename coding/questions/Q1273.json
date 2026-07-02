@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1273",
+  "title": "Find Number of Occurrences",
+  "slug": "find-number-of-occurrences",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a sorted array containing NNN integers and a number targettargettarget. Complete the given function to find the number of occurrences of target in the given array.\n\n**Note: You need to solve this problem in O(log(n)) complexity.**\n\n\nInput Format\n\nThe first line contains an integer `n` (1 &lt;= n &lt;= 10^5), the size of the array.\nThe second line contains `n` space-separated integers representing the sorted array elements.\nThe third line contains an integer `target` for which the occurrences need to be found.\n\n\nOutput Format\n\nReturn the number of occurrences of the target value in the array.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8\n1 2 3 5 5 5 7 8\n5",
+        "output": "3",
+        "explanation": "Explanation:\nIn this case, the target is 5, and the array is {1, 2, 3, 5, 5, 5, 7, 8}. The number of occurrences of 5 is 3."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8\n1 2 3 5 5 5 7 8\n5",
+        "expectedOutput": "3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To find the number of occurrences of a target in a sorted array in `O(log n)` time, we can make use of binary search. We’ll break this task into two parts:\n\n\n**Find the first occurrence** of the target using binary search.\n**Find the last occurrence** of the target using binary search.\nOnce we know both the first and last occurrence indices, the number of occurrences of the target is simply the difference between these indices plus one.\n\n**Steps:**\n\n\n**For First Occurrence**:\n\nPerform a binary search to find the first index where the target appears.\nKeep track of the index and move towards the left half to ensure it is the first occurrence.\n\n\n**For Last Occurrence**:\n\nSimilarly, perform a binary search to find the last index where the target appears.\nMove towards the right half to ensure it is the last occurrence.\n\n\n**Calculate Occurrences**: Once the first and last occurrence indices are known, the number of occurrences is `last_occurrence - first_occurrence + 1`. If the target is not found, return `0`.",
+    "timeComplexity": "O(log n) Using Binary search",
+    "spaceComplexity": "O(1) No extra space needed.",
+    "code": {
+      "C++": "int firstOccurence(const int arr[], int n, int target){\n    int left = 0, right = n;\n    while(right-left>1){\n        int middle = (right + left)/2;\n        if(arr[middle]>=target) right = middle;\n        else left = middle;\n    }\n    return right;\n}\nint lastOccurence(const int arr[], int n, int target){\n    int left = 0, right = n;\n    while(right-left>1){\n        int middle = (right + left)/2;\n        if(arr[middle]>target) right = middle;\n        else left = middle;\n    }\n    return left;\n}\nint countOccurrences(const int arr[], int n, int target) {\n    return lastOccurence(arr, n, target) - firstOccurence(arr, n, target)+1;\n}\n",
+      "Python3": "def first_occurrence(arr, n, target):\n    left, right = 0, n\n    while right - left > 1:\n        middle = (right + left) // 2\n        if arr[middle] >= target:\n            right = middle\n        else:\n            left = middle\n    return right\n\ndef last_occurrence(arr, n, target):\n    left, right = 0, n\n    while right - left > 1:\n        middle = (right + left) // 2\n        if arr[middle] > target:\n            right = middle\n        else:\n            left = middle\n    return left\n\ndef count_occurrences(arr, n, target):\n    return last_occurrence(arr, n, target) - first_occurrence(arr, n, target) + 1\n",
+      "C": "int firstOccurrence(const int arr[], int n, int target) {\n    int left = 0, right = n;\n    while (right - left > 1) {\n        int middle = (right + left) / 2;\n        if (arr[middle] >= target) right = middle;\n        else left = middle;\n    }\n    return right;\n}\n\nint lastOccurrence(const int arr[], int n, int target) {\n    int left = 0, right = n;\n    while (right - left > 1) {\n        int middle = (right + left) / 2;\n        if (arr[middle] > target) right = middle;\n        else left = middle;\n    }\n    return left;\n}\n\nint countOccurrences(const int arr[], int n, int target) {\n    return lastOccurrence(arr, n, target) - firstOccurrence(arr, n, target) + 1;\n}",
+      "Java": "public static int firstOccurrence(int[] arr, int n, int target) {\n    int left = 0, right = n;\n    while (right - left > 1) {\n        int middle = (right + left) / 2;\n        if (arr[middle] >= target) right = middle;\n        else left = middle;\n    }\n    return right;\n}\n\npublic static int lastOccurrence(int[] arr, int n, int target) {\n    int left = 0, right = n;\n    while (right - left > 1) {\n        int middle = (right + left) / 2;\n        if (arr[middle] > target) right = middle;\n        else left = middle;\n    }\n    return left;\n}\npublic static int countOccurrences(int[] arr, int n, int target) {\n    return lastOccurrence(arr, n, target) - firstOccurrence(arr, n, target) + 1;\n}",
+      "JavaScript": "function firstOccurrence(arr, n, target) {\n    let left = 0, right = n - 1;\n    while (left <= right) {\n        let middle = Math.floor((right + left) / 2);\n        if (arr[middle] >= target) right = middle - 1;\n        else left = middle + 1;\n    }\n    return left;\n}\n\nfunction lastOccurrence(arr, n, target) {\n    let left = 0, right = n - 1;\n    while (left <= right) {\n        let middle = Math.floor((right + left) / 2);\n        if (arr[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    return right;\n}\n\nfunction countOccurrences(arr, n, target) {\n    let first = firstOccurrence(arr, n, target);\n    let last = lastOccurrence(arr, n, target);\n    if (first <= last && arr[first] == target && arr[last] == target) {\n        return last - first + 1;\n    }\n    return 0;\n}"
+    }
+  }
+}

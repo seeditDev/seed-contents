@@ -1,0 +1,83 @@
+{
+  "questionId": "Q1628",
+  "title": "Subarray with k distinct number",
+  "slug": "subarray-with-k-distinct-number",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an integer array arrarrarr and an integer kkk. Your task is to find the number of contiguous subarrays in arrarrarr that contain **exactly k distinct integers**.\n\nA subarray is defined as a continuous and non-empty sequence of elements within the array.\n\nFunction DeclarationFunction NamesubarraysWithKDistinctsubarraysWithKDistinctsubarraysWithKDistinct – This function computes the number of contiguous subarrays that contain exactly **k distinct integers**.\n\nParameters\narrarrarr : A list/array of integers of length nnn, representing the input sequence.\nkkk : An integer representing the required number of distinct elements.\nReturn ValueReturns an integer: The total number of contiguous subarrays that contain exactly **k distinct integers**. If there are no such **good arrays** then return 000 value.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤n≤2⋅1041 \\leq n \\leq 2 \\cdot 10^41≤n≤2⋅104",
+      "1≤k≤n1 \\leq k \\leq n1≤k≤n",
+      "1≤nums[i]≤n1 \\leq nums[i] \\leq n1≤nums[i]≤n for each 1≤i≤n1 \\leq i \\leq n1≤i≤n",
+      "The sum of nnn over all test cases won't exceed 2⋅1052 \\cdot 10^52⋅105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "Input Format\n\n\nThe first line contains an integer TTT, the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains two integers: nnn (the size of the array) and kkk.\nThe second line contains nnn integers representing the array elements.\n\n\n\n\nOutput Format\nFor each test case, output a single integer — the number of good subarrays.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5 2\n4 5 4 5 1\n4 3\n1 2 2 3",
+        "output": "7\n1",
+        "explanation": "Explanation:\nTest case 1: Array [4, 5, 4, 5, 1]\nGood subarrays with exactly 2 distinct integers are:\n[4,5], [5,4], [4,5], [5,1], [4,5,4], [5,4,5], [4,5,4,5] -> 7 subarrays\n\n\nTest case 2: Array [1, 2, 2, 3]\nGood subarrays with exactly 3 distinct integers are:\n[1,2,2,3] -> 1 subarrays"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5 2\n4 5 4 5 1\n4 3\n1 2 2 3",
+        "expectedOutput": "7\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Understanding the problem**\n\n\n\nA subarray is a contiguous portion of the array.\nA \"good subarray\" contains exactly `k` distinct integers.\nThe brute-force approach would be to generate all subarrays and count distinct elements, but this is too slow for large arrays.\n\n\n\n**Observation**\n\n\n\nCounting subarrays with **exactly k distinct integers** can be expressed as:\nexactlyK=atMostK(k)−atMostK(k−1)\\text{exactlyK} = \\text{atMostK}(k) - \\text{atMostK}(k-1)exactlyK=atMostK(k)−atMostK(k−1)\nHere, `atMostK(x)` counts the number of subarrays with **at most x distinct integers**.\n\n\n\n**Sliding Window Technique**\n\n\n\nUse two pointers (`left` and `right`) to maintain a sliding window.\nMaintain a frequency map (or array) of numbers inside the window.\nExpand the window to the right. If adding a new number exceeds the allowed distinct count, shrink the window from the left until the count is valid.\nAt each step, add the number of subarrays ending at the current right pointer to the result.\n\n\n\n**Efficiency**\n\n\n\nBoth `atMostK(k)` and `atMostK(k-1)` can be computed in **O(n)** using the sliding window.\nThis makes the overall approach **O(n)** per test case.\nMemory usage depends on the number of distinct elements in the array. A frequency array or map is used.\n\n\nSteps\nDefine a helper function `atMostK(nums, k)` to count subarrays with at most `k` distinct integers.\nCompute the answer as:\nanswer=atMostK(k)−atMostK(k−1)\\text{answer} = \\text{atMostK}(k) - \\text{atMostK}(k-1)answer=atMostK(k)−atMostK(k−1)\nHandle multiple test cases by reading input arrays and `k` values.\nReturn or print the answer for each test case.\nKey Points\nUsing **atMostK subtraction** avoids enumerating all subarrays.\nThe sliding window approach ensures that each element is processed at most twice (once when added, once when removed), resulting in linear time complexity.\nThis technique works efficiently even for large arrays and large numbers of test cases.\nExampleArray: `[1, 2, 1, 2, 3]`, `k = 2`\n\n\nCount subarrays with at most 2 distinct: `[1]`, `[1,2]`, `[2]`, `[2,1]`, `[1,2]`, `[2,3]`, `[1,2,1]`, `[2,1,2]`, `[1,2,1,2]` → 12 subarrays.\nCount subarrays with at most 1 distinct: `[1]`, `[2]`, `[1]`, `[2]`, `[3]` → 5 subarrays.\nSubarrays with exactly 2 distinct: `12 - 5 = 7` → `[1,2]`, `[2,1]`, `[1,2]`, `[2,3]`, `[1,2,1]`, `[2,1,2]`, `[1,2,1,2]`.\nThis approach generalizes to any array size and value constraints efficiently.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int atMostK(vector<int>& nums, int k) {\n        unordered_map<int, int> count;\n        int left = 0, res = 0;\n        for (int right = 0; right < nums.size(); right++) {\n            if (count[nums[right]] == 0) k--;\n            count[nums[right]]++;\n            while (k < 0) {\n                count[nums[left]]--;\n                if (count[nums[left]] == 0) k++;\n                left++;\n            }\n            res += right - left + 1;\n        }\n        return res;\n    }\n    \n    int subarraysWithKDistinct(vector<int>& nums, int k) {\n        return atMostK(nums, k) - atMostK(nums, k - 1);\n    }\n};\n",
+      "Python3": "class Solution:\n    def atMostK(self, nums, k):\n        count = defaultdict(int)\n        left = res = 0\n        for right in range(len(nums)):\n            if count[nums[right]] == 0:\n                k -= 1\n            count[nums[right]] += 1\n            while k < 0:\n                count[nums[left]] -= 1\n                if count[nums[left]] == 0:\n                    k += 1\n                left += 1\n            res += right - left + 1\n        return res\n\n    def subarraysWithKDistinct(self, nums, k):\n        return self.atMostK(nums, k) - self.atMostK(nums, k - 1)\n",
+      "C": "int atMostK(int* nums, int n, int k, int maxNum) {\n    int* count = (int*)calloc(maxNum + 1, sizeof(int));\n    int left = 0, res = 0;\n    for (int right = 0; right < n; right++) {\n        if (count[nums[right]] == 0) k--;\n        count[nums[right]]++;\n        while (k < 0) {\n            count[nums[left]]--;\n            if (count[nums[left]] == 0) k++;\n            left++;\n        }\n        res += right - left + 1;\n    }\n    free(count);\n    return res;\n}\n\nint subarraysWithKDistinct(int* nums, int n, int k, int maxNum) {\n    return atMostK(nums, n, k, maxNum) - atMostK(nums, n, k - 1, maxNum);\n}\n",
+      "Java": "class Solution {\n    private int atMostK(int[] nums, int k) {\n        Map<Integer, Integer> count = new HashMap<>();\n        int left = 0, res = 0;\n        for (int right = 0; right < nums.length; right++) {\n            count.put(nums[right], count.getOrDefault(nums[right], 0) + 1);\n            if (count.get(nums[right]) == 1) k--;\n            while (k < 0) {\n                count.put(nums[left], count.get(nums[left]) - 1);\n                if (count.get(nums[left]) == 0) k++;\n                left++;\n            }\n            res += right - left + 1;\n        }\n        return res;\n    }\n\n    public int subarraysWithKDistinct(int[] nums, int k) {\n        return atMostK(nums, k) - atMostK(nums, k - 1);\n    }\n}\n",
+      "JavaScript": "class Solution {\n    atMostK(nums, k) {\n        const count = new Map();\n        let left = 0, res = 0;\n        for (let right = 0; right < nums.length; right++) {\n            count.set(nums[right], (count.get(nums[right]) || 0) + 1);\n            if (count.get(nums[right]) === 1) k--;\n            while (k < 0) {\n                count.set(nums[left], count.get(nums[left]) - 1);\n                if (count.get(nums[left]) === 0) k++;\n                left++;\n            }\n            res += right - left + 1;\n        }\n        return res;\n    }\n\n    subarraysWithKDistinct(nums, k) {\n        return this.atMostK(nums, k) - this.atMostK(nums, k - 1);\n    }\n}\n"
+    }
+  }
+}

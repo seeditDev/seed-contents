@@ -1,0 +1,76 @@
+{
+  "questionId": "Q1406",
+  "title": "Union of Sorted Arrays",
+  "slug": "union-of-sorted-arrays",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given two sorted arrays, arr1arr1arr1 and arr2arr2arr2. Your task is to find the union of these two arrays. The union includes all distinct elements from both arrays in ascending order.\n\nWrite a function that returns the union of arr1arr1arr1 and arr2arr2arr2 in a single sorted array.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input:\n\nThe first line contains two integers NNN and MMM, denoting the size of the two arrays.\nThe next two lines denotes the two arrays arr1arr1arr1 and arr2arr2arr2 of size NNN and MMM respectively.\n\n\n\n\nOutput Format\nFor each test case, output a sorted array containing the distinct elements from both arr1arr1arr1 and arr2arr2arr2.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N,M≤1051 \\leq N, M \\leq 10^51≤N,M≤105",
+      "1≤arr1[i],arr2[i]≤1091 \\leq arr1[i], arr2[i] \\leq 10^91≤arr1[i],arr2[i]≤109",
+      "Both the arrays are sorted in ascending order."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5 4\n1 3 4 5 7\n2 3 5 10\n3 2\n11 12 13 \n14 25",
+        "output": "1 2 3 4 5 7 10\n11 12 13 14 25",
+        "explanation": "Explanation:\nTest Case 1: It returns all the distinct elements in sorted order.\nTest Case 2: All the elements are distinct, so it returns the array in sorted order."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5 4\n1 3 4 5 7\n2 3 5 10\n3 2\n11 12 13 \n14 25",
+        "expectedOutput": "1 2 3 4 5 7 10\n11 12 13 14 25",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nSince both arrays are sorted, we can maintain two pointers, iii and jjj, to traverse arr1arr1arr1 and arr2arr2arr2, respectively. At each step, compare the elements:\n\n\nIf arr1[i]≤arr2[j]arr1[i] \\leq arr2[j]arr1[i]≤arr2[j], add arr1[i]arr1[i]arr1[i] to the union (if it is not already present) and advance pointer iii.\nOtherwise, add arr2[j]arr2[j]arr2[j] to the union (if it is not already present) and move pointer jjj.\nAfter one pointer reaches the end of its array, append the remaining elements from the other array, ensuring no duplicates are added.\n**Time Complexity:**\n\nThe two-pointer technique runs in O(n+m)O(n + m)O(n+m) time because each element is processed at most once.\n\n**Code Implementation:**\n\nBelow are the implementations in both C++ and Python.\n\n**C++ Code (Approach 1):**\n\n`#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nvector&lt;int&gt; findUnion(int n, int m, vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {\n    int i = 0, j = 0;\n    vector&lt;int&gt; Union;\n    while (i &lt; n &amp;&amp; j &lt; m) {\n        if (arr1[i] &lt;= arr2[j]) {\n            if (Union.empty() || Union.back() != arr1[i])\n                Union.push_back(arr1[i]);\n            i++;\n        } else {\n            if (Union.empty() || Union.back() != arr2[j])\n                Union.push_back(arr2[j]);\n            j++;\n        }\n    }\n    while (i &lt; n) {\n        if (Union.empty() || Union.back() != arr1[i])\n            Union.push_back(arr1[i]);\n        i++;\n    }\n    while (j &lt; m) {\n        if (Union.empty() || Union.back() != arr2[j])\n            Union.push_back(arr2[j]);\n        j++;\n    }\n    return Union;\n}\n\nint main() {\n    int t;\n    cin &gt;&gt; t;\n\n    while (t--) {\n        int n, m;\n        cin &gt;&gt; n &gt;&gt; m;\n        vector&lt;int&gt; arr1(n), arr2(m);\n\n        for (int i = 0; i &lt; n; i++) {\n            cin &gt;&gt; arr1[i];\n        }\n\n        for (int i = 0; i &lt; m; i++) {\n            cin &gt;&gt; arr2[i];\n        }\n\n        vector&lt;int&gt; result = findUnion(n, m, arr1, arr2);\n\n        for (auto &amp; val : result) {\n            cout &lt;&lt; val &lt;&lt; \" \";\n        }\n        cout &lt;&lt; endl;\n    }\n\n    return 0;\n}\n`**Python Code (Approach 1):**\n\n`def find_union(n, m, arr1, arr2):\n    i, j = 0, 0\n    union_list = []\n    while i &lt; n and j &lt; m:\n        if arr1[i] &lt;= arr2[j]:\n            if not union_list or union_list[-1] != arr1[i]:\n                union_list.append(arr1[i])\n            i += 1\n        else:\n            if not union_list or union_list[-1] != arr2[j]:\n                union_list.append(arr2[j])\n            j += 1\n    while i &lt; n:\n        if not union_list or union_list[-1] != arr1[i]:\n            union_list.append(arr1[i])\n        i += 1\n    while j &lt; m:\n        if not union_list or union_list[-1] != arr2[j]:\n            union_list.append(arr2[j])\n        j += 1\n    return union_list\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n, m = map(int, input().split())\n        arr1 = list(map(int, input().split()))\n        arr2 = list(map(int, input().split()))\n\n        result = find_union(n, m, arr1, arr2)\n        print(\" \".join(map(str, result)))\n`**Idea:**\n\nAnother straightforward method involves using a set to automatically manage duplicate elements.\n\n\nInsert all elements from both arrays into a set.\nIn C++, the `set` data structure stores elements in sorted order by default. In Python, after using set union, we simply sort the resulting set to return the union in ascending order.\n**Time Complexity:**\n\n\n**C++:** Insertion operations take O(log⁡n)O(\\log n)O(logn) time per element, resulting in O((n+m)log⁡(n+m))O((n+m) \\log(n+m))O((n+m)log(n+m)) overall.\n**Python:** Set insertion is O(1)O(1)O(1) on average, but sorting the set takes O((n+m)log⁡(n+m))O((n+m)\\log(n+m))O((n+m)log(n+m)).\n**Code Implementation:**\n\nBelow are the code implementations for this approach.\n\n**C++ Code (Approach 2):**\n\n`#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nvector&lt;int&gt; findUnion(int n, int m, vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {\n    set&lt;int&gt; s;\n    for (int i = 0; i &lt; n; i++) {\n        s.insert(arr1[i]);\n    }\n    for (int j = 0; j &lt; m; j++) {\n        s.insert(arr2[j]);\n    }\n    vector&lt;int&gt; Union(s.begin(), s.end());\n    return Union;\n}\n\nint main() {\n    int t;\n    cin &gt;&gt; t;\n\n    while (t--) {\n        int n, m;\n        cin &gt;&gt; n &gt;&gt; m;\n        vector&lt;int&gt; arr1(n), arr2(m);\n\n        for (int i = 0; i &lt; n; i++) {\n            cin &gt;&gt; arr1[i];\n        }\n\n        for (int i = 0; i &lt; m; i++) {\n            cin &gt;&gt; arr2[i];\n        }\n\n        vector&lt;int&gt; result = findUnion(n, m, arr1, arr2);\n\n        for (auto &amp; val : result) {\n            cout &lt;&lt; val &lt;&lt; \" \";\n        }\n        cout &lt;&lt; endl;\n    }\n\n    return 0;\n}\n`**Python Code (Approach 2):**\n\n`def find_union(n, m, arr1, arr2):\n    union_set = set(arr1)\n    union_set.update(arr2)\n    return sorted(list(union_set))\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n, m = map(int, input().split())\n        arr1 = list(map(int, input().split()))\n        arr2 = list(map(int, input().split()))\n\n        result = find_union(n, m, arr1, arr2)\n        print(\" \".join(map(str, result)))\n`ConclusionBoth approaches effectively solve the problem:\n\n\n**Approach 1** (Two Pointer Technique) is optimal with a linear time complexity of O(n+m)O(n+m)O(n+m), making it ideal when the arrays are already sorted.\n**Approach 2** (Using a Set) offers a simpler solution by leveraging built-in data structures to handle uniqueness automatically, though it may incur additional log factors due to ordering.\nChoose the approach that best fits the context of your problem and constraints. For competitive programming where performance is key, the two-pointer technique is often the preferred solution.\n\nHappy coding!",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

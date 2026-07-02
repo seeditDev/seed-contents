@@ -1,0 +1,73 @@
+{
+  "questionId": "Q1884",
+  "title": "Coding Problem",
+  "slug": "coding-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "concurrency",
+      "programming languages"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Concurrency"
+    ]
+  },
+  "content": {
+    "problemStatement": "Write a Java program that uses multithreading to calculate the sum of elements in an array of size 9 concurrently. The program should divide the array into three segments, and each thread should calculate the sum of a segment. Finally, the main thread should combine the individual sums to calculate the total sum of the array.\n\n**Requirements:**\n\n\n\nCreate an array of integers with 9 elements containing the values [1, 2, 3, 4, 5, 6, 7, 8, 9].\n\n\n\n\nDivide the array into three segments, with each segment containing three elements.\n\n\n\n\nCreate a separate thread for each segment to calculate the sum of that segment concurrently.\n\n\n\n\nAfter all threads have completed, combine the individual segment sums to calculate the total sum of the array.\n\n\n\n\nDisplay the individual segment sums and the total sum.\n\n\n\nThis program divides the array into three segments and calculates the sum of each segment concurrently using separate threads. It then combines the segment sums to calculate the total sum of the array and displays the results.\n\nTaskComplete the `calculateSegmentSum` function to use multithreading to calculate the sum of elements in an array concurrently.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "Segment 0 Sum: 6\nSegment 1 Sum: 15\nSegment 2 Sum: 24\nTotal Sum: 45",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "Segment 0 Sum: 6\nSegment 1 Sum: 15\nSegment 2 Sum: 24\nTotal Sum: 45",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "Java": "import java.util.ArrayList;\nimport java.util.List;\n\nclass Codechef {\n    public static final int ARRAY_SIZE = 9;\n    public static final int NUM_SEGMENTS = 3;\n    \n    // Object for synchronization\n    private static final Object lock = new Object();\n\n    // Function to calculate the sum of a segment\n    static void calculateSegmentSum(List<Integer> array, int segmentId, int[] segmentSum) {\n        int start = segmentId * (ARRAY_SIZE / NUM_SEGMENTS);\n        int end = (segmentId + 1) * (ARRAY_SIZE / NUM_SEGMENTS);\n\n        segmentSum[segmentId] = 0;\n\n        for (int i = start; i < end; ++i) {\n            segmentSum[segmentId] += array.get(i);\n        }\n    }\n\n    public static void main(String[] args) {\n        List<Integer> array = new ArrayList<>();\n        for (int i = 1; i <= 9 ; ++i) {\n            array.add(i);\n        }\n\n        // Threads list stores all the threads\n        List<Thread> threads = new ArrayList<>();\n\n        // SegmentSums array stores the sum of each segment\n        int[] segmentSums = new int[NUM_SEGMENTS];\n\n        // Create threads to calculate segment sums\n        for (int i = 0; i < NUM_SEGMENTS; ++i) {\n            final int segmentId = i;\n            threads.add(new Thread(() -> calculateSegmentSum(array, segmentId, segmentSums)));\n        }\n\n        // Start all threads\n        for (Thread thread : threads) {\n            thread.start();\n        }\n\n        // Wait for all threads to finish\n        for (Thread thread : threads) {\n            try {\n                thread.join();\n            } catch (InterruptedException e) {\n                e.printStackTrace();\n            }\n        }\n\n        // Calculate the total sum by combining segment sums\n        int totalSum = 0;\n        for (int segmentSum : segmentSums) {\n            totalSum += segmentSum;\n        }\n\n        // Display individual segment sums and the total sum\n        for (int i = 0; i < NUM_SEGMENTS; ++i) {\n            System.out.println(\"Segment \" + i + \" Sum: \" + segmentSums[i]);\n        }\n        System.out.println(\"Total Sum: \" + totalSum);\n    }\n}\n"
+    }
+  }
+}

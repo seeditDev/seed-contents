@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1874",
+  "title": "Build Your Own ArrayList",
+  "slug": "build-your-own-arraylist",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "standard library & collections",
+      "programming languages"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Standard Library & Collections"
+    ]
+  },
+  "content": {
+    "problemStatement": "You're working on a lightweight Java library where you cannot use built-in collections like `ArrayList`. Your task is to **implement your own version of an ArrayList** class that supports basic operations such as adding elements, retrieving elements by index, getting the size, and printing all elements.\n\nThis challenge is designed to test your understanding of **dynamic arrays, internal resizing, and OOP concepts**, all of which are foundational to understanding how the **Java Collections Framework** works under the hood.\n\nYour custom `MyArrayList` class should support the following methods:\n\n\n`void add(int element)` – Adds an element to the end of the list.\n`int get(int index)` – Returns the element at the given index.\n`int size()` – Returns the number of elements in the list.\n`void print()` – Prints all elements in the list space-separated on a single line.\nInternally, use a fixed-size array and **resize it** when needed (just like how `ArrayList` does it).\n\n\nInput Format\n\nFirst line: An integer `Q` – the number of operations.\nNext `Q` lines: Each line represents an operation in one of the following formats:\n\n`add X`\n`get X`\n`size`\n`print`\n\n\n\nAssume that inputs to `get` are always within bounds.\n\n\n\nOutput Format\n\nFor each `get` operation, output the value at that index.\nFor `size`, print the current size.\nFor `print`, output all elements on a single line, space-separated.",
+    "constraints": [
+      "1 &lt;= length of T &lt;= 10^4",
+      "Text contains only lowercase and uppercase letters and spaces."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7\nadd 10\nadd 20\nadd 30\nget 1\nsize\nadd 40\nprint",
+        "output": "20\n3\n10 20 30 40",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7\nadd 10\nadd 20\nadd 30\nget 1\nsize\nadd 40\nprint",
+        "expectedOutput": "20\n3\n10 20 30 40",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    \n    vector<pair<int, int>> pairs(n);\n    \n    for (int i = 0; i < n; ++i) {\n        cin >> pairs[i].first >> pairs[i].second;\n    }\n    \n    for (int i = 0; i < n; ++i) {\n        if ((pairs[i].first + pairs[i].second) % k == 0) {\n            cout << \"(\" << pairs[i].first << \", \" << pairs[i].second << \")\" << endl;\n        }\n    }\n    \n    return 0;\n}\n",
+      "Python3": "def main():\n    n, k = map(int, input().split())\n    \n    pairs = []\n    \n    for _ in range(n):\n        first, second = map(int, input().split())\n        pairs.append((first, second))\n    \n    for first, second in pairs:\n        if (first + second) % k == 0:\n            print(f\"({first}, {second})\")\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    \n    int pairs[n][2];\n    \n    for (int i = 0; i < n; ++i) {\n        scanf(\"%d %d\", &pairs[i][0], &pairs[i][1]);\n    }\n    \n    for (int i = 0; i < n; ++i) {\n        if ((pairs[i][0] + pairs[i][1]) % k == 0) {\n            printf(\"(%d, %d)\\n\", pairs[i][0], pairs[i][1]);\n        }\n    }\n    \n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass MyArrayList {\n    private int[] data;\n    private int size;\n\n    public MyArrayList() {\n        data = new int[2]; // start small\n        size = 0;\n    }\n\n    public void add(int value) {\n        if (size == data.length) {\n            resize();\n        }\n        data[size++] = value;\n    }\n\n    public int get(int index) {\n        return data[index];\n    }\n\n    public int size() {\n        return size;\n    }\n\n    public void print() {\n        for (int i = 0; i < size; i++) {\n            System.out.print(data[i]);\n            if (i < size - 1) System.out.print(\" \");\n        }\n        System.out.println();\n    }\n\n    private void resize() {\n        int[] newData = new int[data.length * 2];\n        for (int i = 0; i < data.length; i++) {\n            newData[i] = data[i];\n        }\n        data = newData;\n    }\n}\n\nclass Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        MyArrayList list = new MyArrayList();\n        int q = sc.nextInt();\n        sc.nextLine();\n\n        for (int i = 0; i < q; i++) {\n            String line = sc.nextLine();\n            if (line.startsWith(\"add\")) {\n                int val = Integer.parseInt(line.split(\" \")[1]);\n                list.add(val);\n            } else if (line.startsWith(\"get\")) {\n                int idx = Integer.parseInt(line.split(\" \")[1]);\n                System.out.println(list.get(idx));\n            } else if (line.equals(\"size\")) {\n                System.out.println(list.size());\n            } else if (line.equals(\"print\")) {\n                list.print();\n            }\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let inputLines = [];\n    \n    rl.on('line', (line) => {\n        inputLines.push(line);\n        if (inputLines.length === parseInt(inputLines[0].split(' ')[0]) + 1) {\n            rl.close();\n        }\n    });\n\n    rl.on('close', () => {\n        // Extract the number of pairs and the divisor k\n        let [n, k] = inputLines[0].split(' ').map(Number);\n        let pairs = inputLines.slice(1);\n        \n        // Iterate through pairs to find and print those whose sum is divisible by k\n        pairs.forEach(pairLine => {\n            let [a, b] = pairLine.split(' ').map(Number);\n            if ((a + b) % k === 0) {\n                console.log(`(${a}, ${b})`);\n            }\n        });\n    });\n}\n\nmain();\n"
+    }
+  }
+}

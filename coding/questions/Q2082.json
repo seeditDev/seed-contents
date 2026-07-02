@@ -1,0 +1,93 @@
+{
+  "questionId": "Q2082",
+  "title": "Length of Longest Palindrome",
+  "slug": "length-of-longest-palindrome",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a string sss which consists of lowercase latin letters, return the length of the **longest palindrome** that can be built with those letters.\n\n\nInput Format\n\nThe first and only line of input contains the string `s`.\n\n\nOutput Format\n\nOutput on a single line, the length of the longest palindrome that can be format using the letters of `s`.",
+    "constraints": [
+      "1≤s.length≤1051 \\leq s.length \\leq 10^51≤s.length≤105",
+      "s consists of lowercase English letters only."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "bbd",
+        "output": "3",
+        "explanation": "Explanation:\nLongest palindromic string: bdb"
+      },
+      {
+        "id": "sample_2",
+        "input": "aabdcd",
+        "output": "5",
+        "explanation": "Explanation:\nLongest possible palindromic strings: adbda, adcda, dabad, dacad"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "bbd",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "aabdcd",
+        "expectedOutput": "5",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Understand Palindrome Properties**: A palindrome reads the same forwards and backward. In a palindrome, characters must appear in pairs, except for one character that can appear in the center.\n\n\n\n\n**Count Character Frequencies**: Use a hash map (or unordered map) to count the occurrences of each character in the string.\n\n\n\n\n**Calculate Maximum Palindrome Length**:\n\n\n\n\nKeep track of the total length of the palindrome.\nCheck if there’s at least one character with an odd count.\nFor each character count:\n\nIf the count is even, add it directly to the total length.\nIf the count is odd, add the largest even part of it (i.e., `count - 1`) to the total length and mark that an odd count has been found.\n\n\n\n**Handle Center Character**: If there is at least one character with an odd frequency, add `1` to the total length to account for the center character of the palindrome.",
+    "timeComplexity": "O(N), where N is the length of the string (for counting characters).",
+    "spaceComplexity": "O(1), as the maximum number of unique characters is constant (26 lowercase letters).",
+    "code": {
+      "C++": "int longest_palindrome_length(const string& s) {\n    unordered_map<char, int> freq;\n    for (char ch : s) {\n        freq[ch]++;\n    }\n    \n    int length = 0;\n    bool odd_found = false;\n    \n    for (const auto& pair : freq) {\n        if (pair.second % 2 == 0) {\n            length += pair.second;\n        } else {\n            length += pair.second - 1;\n            odd_found = true;\n        }\n    }\n    if (odd_found) {\n        length += 1;\n    }\n    \n    return length;\n}",
+      "Python3": "def longest_palindrome_length(s: str) -> int:\n    from collections import Counter\n    \n    # Count frequency of each character\n    freq = Counter(s)\n    \n    length = 0\n    odd_found = False\n    \n    for count in freq.values():\n        if count % 2 == 0:\n            length += count\n        else:\n            length += count - 1\n            odd_found = True\n    \n    if odd_found:\n        length += 1\n    \n    return length",
+      "C": "int longest_palindrome_length(const char* s) {\n    int freq[256] = {0}; // Array to store frequency of all possible ASCII characters\n    int length = 0;\n    int odd_found = 0;\n    \n    // Calculate the frequency of each character\n    for (int i = 0; s[i] != '\\0'; i++) {\n        freq[(unsigned char)s[i]]++;\n    }\n    \n    // Compute the longest palindrome length\n    for (int i = 0; i < 256; i++) {\n        if (freq[i] % 2 == 0) {\n            length += freq[i];\n        } else {\n            length += freq[i] - 1;\n            odd_found = 1;\n        }\n    }\n    \n    // If there's an odd frequency character, add 1 to the length\n    if (odd_found) {\n        length += 1;\n    }\n    \n    return length;\n}\n",
+      "Java": "public static int longestPalindromeLength(String s) {\n    Map<Character, Integer> freq = new HashMap<>();\n    for (char ch : s.toCharArray()) {\n        freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n    }\n    \n    int length = 0;\n    boolean oddFound = false;\n    for (int count : freq.values()) {\n        if (count % 2 == 0) {\n            length += count;\n        } else {\n            length += count - 1;\n            oddFound = true;\n        }\n    }\n    if (oddFound) {\n        length += 1;\n    }\n    return length;\n}\n",
+      "JavaScript": "function longestPalindromeLength(s){\n    const freq = new Map();\n    let length = 0;\n    let oddFound = false;\n\n    // Count frequency of each character\n    for (const char of s) {\n        freq.set(char, (freq.get(char) || 0) + 1);\n    }\n\n    // Calculate the longest palindrome length\n    for (const count of freq.values()) {\n        if (count % 2 === 0) {\n            length += count;\n        } else {\n            length += count - 1;\n            oddFound = true;\n        }\n    }\n\n    // Add 1 if there's an odd frequency character\n    if (oddFound) {\n        length += 1;\n    }\n\n    return length;\n}\n"
+    }
+  }
+}

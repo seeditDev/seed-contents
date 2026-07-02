@@ -1,0 +1,76 @@
+{
+  "questionId": "Q1405",
+  "title": "Longest Common Prefix",
+  "slug": "longest-common-prefix",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Strings",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "strings & pattern matching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Strings & Pattern Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a list of strings strstrstr. Your task is to find the longest common prefix among all the strings in the list. If there is no common prefix, return −1-1−1.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input:\n\nThe first line contains an integer N, the number of strings.\nThe next line contain a string array str.\n\n\n\n\nOutput Format\nFor each test case, output the longest common prefix. If there is no common prefix, output −1-1−1.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
+      "1≤∣str∣≤1001 \\leq |str| \\leq 1001≤∣str∣≤100",
+      "All strings consist of lowercase alphabetical characters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n3\nflower flow flight\n2\ndog racecar",
+        "output": "fl\n-1",
+        "explanation": "Explanation:\nTest Case 1: the longest common prefix is \"fl\".\nTest Case 2: there is no common prefix, so the output -1."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n3\nflower flow flight\n2\ndog racecar",
+        "expectedOutput": "fl\n-1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nSort the array of strings. Once sorted, the first and last strings will be the most dissimilar in the array. Thus, the longest common prefix for the entire list must be the common prefix between these two strings.\n\n**Steps:**\n\n\nSort the list of strings.\nCompare the characters of the first and last string until the characters differ.\nThe substring from the beginning up to the point of difference is the longest common prefix.\nIf no common characters are found, output −1-1−1.\n**Complexity:**\n\n\nSorting takes approximately O(nlog⁡n)O(n \\log n)O(nlogn) (with nnn strings), and comparing the first and last strings takes O(m)O(m)O(m), where mmm is the length of the shortest string among the two.\n**Example:**\n\nFor the input `[\"flower\", \"flow\", \"flight\"]`, sorting gives `[\"flight\", \"flow\", \"flower\"]`. Comparing `\"flight\"` and `\"flower\"` yields `\"fl\"` as the common prefix.\n\n**C++ Implementation:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nstring findPrefix(vector&lt;string&gt;&amp; str) {\n    sort(str.begin(), str.end());\n    string ans = \"\";\n    int n = str.size();\n    string first = str[0], last = str[n - 1];\n    for (int i = 0; i &lt; min(first.size(), last.size()); i++) {\n        if (first[i] != last[i]) {\n            return ans.empty() ? \"-1\" : ans;\n        }\n        ans += first[i];\n    }\n    return ans.empty() ? \"-1\" : ans;\n}\n\nint main() {\n    int t;\n    cin &gt;&gt; t;\n    while (t--) {\n        int n;\n        cin &gt;&gt; n;\n        vector&lt;string&gt; str(n);\n        for (int i = 0; i &lt; n; i++) {\n            cin &gt;&gt; str[i];\n        }\n        cout &lt;&lt; findPrefix(str) &lt;&lt; endl;\n    }\n    return 0;\n}\n`**Python Implementation:**\n\n`def longest_common_prefix(strs):\n    if not strs:\n        return \"-1\"\n    strs.sort()\n    first, last = strs[0], strs[-1]\n    i = 0\n    while i &lt; len(first) and i &lt; len(last) and first[i] == last[i]:\n        i += 1\n    prefix = first[:i]\n    return prefix if prefix != \"\" else \"-1\"\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n = int(input())\n        strs = input().split()\n        print(longest_common_prefix(strs))\n`**Idea:**\n\nWith vertical scanning, we examine the characters at each position (column) across all strings. For each character position:\n\n\nCompare the character in the first string with those in the other strings.\nIf all strings have the same character, continue to the next position.\nAs soon as a mismatch is detected (or a string ends), return the substring from the beginning to that position.\n**Complexity:**\n\n\nThe worst-case time complexity is O(n×m)O(n \\times m)O(n×m), where nnn is the number of strings and mmm is the length of the common prefix.\n**C++ Implementation:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nstring longestCommonPrefix(vector&lt;string&gt;&amp; strs) {\n    if (strs.empty()) return \"-1\";\n    for (int i = 0; i &lt; strs[0].size(); i++) {\n        char c = strs[0][i];\n        for (int j = 1; j &lt; strs.size(); j++) {\n            if (i &gt;= strs[j].size() || strs[j][i] != c)\n                return i == 0 ? \"-1\" : strs[0].substr(0, i);\n        }\n    }\n    return strs[0] == \"\" ? \"-1\" : strs[0];\n}\n\nint main() {\n    int t;\n    cin &gt;&gt; t;\n    while (t--) {\n        int n;\n        cin &gt;&gt; n;\n        vector&lt;string&gt; strs(n);\n        for (int i = 0; i &lt; n; i++) {\n            cin &gt;&gt; strs[i];\n        }\n        cout &lt;&lt; longestCommonPrefix(strs) &lt;&lt; endl;\n    }\n    return 0;\n}\n`**Python Implementation:**\n\n`def longest_common_prefix(strs):\n    if not strs:\n        return \"-1\"\n    for i in range(len(strs[0])):\n        char = strs[0][i]\n        for s in strs[1:]:\n            if i &gt;= len(s) or s[i] != char:\n                return strs[0][:i] if i &gt; 0 else \"-1\"\n    return strs[0] if strs[0] != \"\" else \"-1\"\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n = int(input())\n        strs = input().split()\n        print(longest_common_prefix(strs))\n`**Idea:**\n\nThis approach divides the list of strings into two halves, finds the longest common prefix for each half recursively, and then merges the results by determining the common prefix of the two halves.\n\n**Steps:**\n\n\nIf the list contains only one string, that string is the common prefix.\nDivide the list into two halves.\nRecursively compute the LCP for both halves.\nFind the common prefix between the two halves using a helper function.\n**Complexity:**\n\n\nAlthough the worst-case time complexity is similar to vertical scanning (O(n×m)O(n \\times m)O(n×m)), the divide and conquer approach makes use of recursion and provides a different perspective on solving the problem.\n**C++ Implementation:**\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nstring commonPrefix(const string&amp; left, const string&amp; right) {\n    int minLen = min(left.size(), right.size());\n    for (int i = 0; i &lt; minLen; i++) {\n        if (left[i] != right[i])\n            return left.substr(0, i);\n    }\n    return left.substr(0, minLen);\n}\n\nstring longestCommonPrefixUtil(vector&lt;string&gt;&amp; strs, int l, int r) {\n    if (l == r)\n        return strs[l];\n    else {\n        int mid = (l + r) / 2;\n        string lcpLeft = longestCommonPrefixUtil(strs, l, mid);\n        string lcpRight = longestCommonPrefixUtil(strs, mid + 1, r);\n        return commonPrefix(lcpLeft, lcpRight);\n    }\n}\n\nint main() {\n    int t;\n    cin &gt;&gt; t;\n    while (t--) {\n        int n;\n        cin &gt;&gt; n;\n        vector&lt;string&gt; strs(n);\n        for (int i = 0; i &lt; n; i++) {\n            cin &gt;&gt; strs[i];\n        }\n        string result = longestCommonPrefixUtil(strs, 0, n - 1);\n        cout &lt;&lt; (result == \"\" ? \"-1\" : result) &lt;&lt; endl;\n    }\n    return 0;\n}\n`**Python Implementation:**\n\n`def common_prefix(left, right):\n    min_len = min(len(left), len(right))\n    for i in range(min_len):\n        if left[i] != right[i]:\n            return left[:i]\n    return left[:min_len]\n\ndef longest_common_prefix_divide(strs, l, r):\n    if l == r:\n        return strs[l]\n    else:\n        mid = (l + r) // 2\n        lcp_left = longest_common_prefix_divide(strs, l, mid)\n        lcp_right = longest_common_prefix_divide(strs, mid + 1, r)\n        return common_prefix(lcp_left, lcp_right)\n\ndef longest_common_prefix(strs):\n    if not strs:\n        return \"-1\"\n    prefix = longest_common_prefix_divide(strs, 0, len(strs) - 1)\n    return prefix if prefix != \"\" else \"-1\"\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n = int(input())\n        strs = input().split()\n        print(longest_common_prefix(strs))\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

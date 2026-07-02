@@ -1,0 +1,102 @@
+{
+  "questionId": "Q1626",
+  "title": "Consecutive Card Grouping",
+  "slug": "consecutive-card-grouping",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "heaps & priority queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Heaps & Priority Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given several test cases.\nIn each test case, you have a list of integers representing cards handhandhand. Your task is to determine if it's possible to arrange all the cards into groups such that:\n\n\nEach group contains exactly **groupSize** cards.\nThe cards in every group must form a sequence of **consecutive integers**.\nNOTE:Reordering of the array is allowed.\n\nFunction DeclarationFunction NamecanGroupcanGroupcanGroup – This function checks whether a given set of cards can be rearranged into groups of a fixed size such that every group consists of **consecutive integers**.\n\nParameters\nhandhandhand : An array of integers representing the values written on the cards.\ngroupSizegroupSizegroupSize : An integer representing the required number of cards in each group.\nReturn Value\nReturns `\"true\"` if it is possible to divide all cards into groups of size groupSizegroupSizegroupSize such that each group forms a sequence of consecutive integers.\nReturns `\"false\"` otherwise.",
+    "constraints": [
+      "1≤T≤10001 \\leq T \\leq 10001≤T≤1000",
+      "1≤N≤1041 \\leq N \\leq 10^41≤N≤104",
+      "0≤ai≤1090 \\leq a_i \\leq 10^90≤ai​≤109",
+      "1≤groupSize≤N1 \\leq groupSize \\leq N1≤groupSize≤N",
+      "Input Format",
+      "The first line contains an integer TTT — the number of test cases.",
+      "For each test case:",
+      "The first line contains two integers NNN and groupSizegroupSizegroupSize — the number of cards and the required group size.",
+      "The second line contains NNN space-separated integers representing the card values.",
+      "Output Format",
+      "For each test case, output `\"YES\"` if the cards can be grouped as required, otherwise output `\"NO\"`."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n9 3\n5 6 7 10 6 7 8 11 12",
+        "output": "YES",
+        "explanation": "Explanation:\nThe cards can be grouped as:\n\n[5, 6, 7]\n[6, 7, 8]\n[10, 11, 12]\nAll groups have size 3 and contain consecutive numbers."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5 2\n4 5 6 7 9",
+        "output": "NO",
+        "explanation": "Explanation:\nYou cannot divide these cards into groups of 2 consecutive numbers because the value 9 cannot be paired with any other number to form a consecutive pair. This means that the array size should be divisible by groupSize."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n9 3\n5 6 7 10 6 7 8 11 12",
+        "expectedOutput": "YES",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n5 2\n4 5 6 7 9",
+        "expectedOutput": "NO",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "A natural approach is **greedy**:\n\n\nCount the frequency of each card.\nAlways start forming a group from the **smallest available card**.\nFor each group starting at `x`, check if the next `groupSize - 1` consecutive cards exist in sufficient quantity.\nSubtract the used counts from the frequency map.\nRepeat until all cards are used or a group cannot be formed.\nThis works because:\n\n\nProcessing cards in increasing order ensures that smaller cards do not block the formation of consecutive groups later.\nUsing frequency counts ensures that duplicates are handled properly.\n\n\n**Ordered Map / TreeMap / SortedMap**\n\n\n\nKeep a frequency map of the cards.\nAccess the smallest remaining card via the map’s first element.\nForm groups greedily.\nTime Complexity: O(N log N), where N is the number of cards.\n\n\n\n**Min-Heap (Priority Queue)**\n\n\n\nMaintain a min-heap of all unique cards.\nAlways extract the smallest card to form a group.\nDecrease the count of each used card and remove exhausted cards from the heap.\nTime Complexity: O(N log N), efficient for large inputs.\n\n\n\n**Sorting + Frequency Array**\n\n\n\nSort the array.\nCount frequencies of each unique value.\nIterate through sorted unique values to form groups.\nBinary search or map can be used to locate consecutive values.\nTime Complexity: O(N log N) for sorting + O(N log N) for lookup if using binary search.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    bool canGroup(vector<int>& hand, int groupSize) {\n        int n = hand.size();\n        if (n % groupSize != 0) return false;\n\n        unordered_map<int, int> freq;\n        for (int x : hand) freq[x]++;\n\n        \n        priority_queue<int, vector<int>, greater<int>> minHeap;\n        for (auto &p : freq) minHeap.push(p.first);\n\n        while (!minHeap.empty()) {\n            int start = minHeap.top();  \n\n            \n            for (int card = start; card < start + groupSize; card++) {\n\n                if (freq[card] == 0)\n                    return false;  \n\n                freq[card]--;\n\n                \n                if (freq[card] == 0) {\n                    if (card != minHeap.top())\n                        return false;  \n\n                    minHeap.pop();  \n                }\n            }\n        }\n\n        return true;\n    }\n};\n",
+      "Python3": "class Solution:\n    def canGroup(self, hand, groupSize):\n        n = len(hand)\n        if n % groupSize != 0:\n            return False\n\n        freq = Counter(hand)\n        minHeap = list(freq.keys())\n        heapq.heapify(minHeap)\n\n        while minHeap:\n            start = minHeap[0]\n            for card in range(start, start + groupSize):\n                if freq[card] == 0:\n                    return False\n                freq[card] -= 1\n                if freq[card] == 0:\n                    if card != minHeap[0]:\n                        return False\n                    heapq.heappop(minHeap)\n        return True\n",
+      "C": "// typedef long long ll;\n\ntypedef struct {\n    ll *a;\n    int size;\n} MinHeap;\n\nvoid heap_swap(ll *a, ll *b) {\n    ll t = *a; *a = *b; *b = t;\n}\n\nvoid heap_up(MinHeap *h, int i) {\n    while (i > 0) {\n        int p = (i - 1) / 2;\n        if (h->a[p] <= h->a[i]) break;\n        heap_swap(&h->a[p], &h->a[i]);\n        i = p;\n    }\n}\n\nvoid heap_down(MinHeap *h, int i) {\n    int n = h->size;\n    while (1) {\n        int l = 2*i + 1, r = 2*i + 2, m = i;\n        if (l < n && h->a[l] < h->a[m]) m = l;\n        if (r < n && h->a[r] < h->a[m]) m = r;\n        if (m == i) break;\n        heap_swap(&h->a[m], &h->a[i]);\n        i = m;\n    }\n}\n\nll heap_top(MinHeap *h) {\n    return h->a[0];\n}\n\nvoid heap_pop(MinHeap *h) {\n    h->a[0] = h->a[h->size - 1];\n    h->size--;\n    heap_down(h, 0);\n}\n\nint cmp_ll(const void *a, const void *b) {\n    ll x = *(ll*)a, y = *(ll*)b;\n    return (x > y) - (x < y);\n}\n\nint canGroup(ll *hand, int N, int groupSize) {\n    qsort(hand, N, sizeof(ll), cmp_ll);\n\n    ll *vals = malloc(N * sizeof(ll));\n    int *cnt = malloc(N * sizeof(int));\n    int m = 0;\n\n    vals[0] = hand[0];\n    cnt[0] = 1;\n    m = 1;\n\n    for (int i = 1; i < N; i++) {\n        if (hand[i] == vals[m-1]) cnt[m-1]++;\n        else {\n            vals[m] = hand[i];\n            cnt[m] = 1;\n            m++;\n        }\n    }\n\n    MinHeap h;\n    h.a = malloc(m * sizeof(ll));\n    h.size = m;\n    for (int i = 0; i < m; i++) h.a[i] = vals[i];\n    for (int i = m/2; i >= 0; i--) heap_down(&h, i);\n\n    while (h.size) {\n        ll start = heap_top(&h);\n        for (int k = 0; k < groupSize; k++) {\n            ll need = start + k;\n\n            int pos = -1, l = 0, r = m - 1;\n            while (l <= r) {\n                int mid = (l + r) / 2;\n                if (vals[mid] == need) { pos = mid; break; }\n                if (vals[mid] < need) l = mid + 1;\n                else r = mid - 1;\n            }\n            if (pos == -1 || cnt[pos] == 0) {\n                free(vals); free(cnt); free(h.a);\n                return 0;\n            }\n\n            cnt[pos]--;\n            if (cnt[pos] == 0) {\n                if (need != heap_top(&h)) {\n                    free(vals); free(cnt); free(h.a);\n                    return 0;\n                }\n                heap_pop(&h);\n            }\n        }\n    }\n\n    free(vals);\n    free(cnt);\n    free(h.a);\n    return 1;\n}\n",
+      "Java": "class Solution {\n    public boolean canGroup(int[] hand, int groupSize) {\n        int n = hand.length;\n        if (n % groupSize != 0) return false;\n\n        Map<Integer, Integer> freq = new HashMap<>();\n        for (int x : hand) freq.put(x, freq.getOrDefault(x, 0) + 1);\n\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>(freq.keySet());\n\n        while (!minHeap.isEmpty()) {\n            int start = minHeap.peek();\n            for (int card = start; card < start + groupSize; card++) {\n                if (!freq.containsKey(card) || freq.get(card) == 0) return false;\n                freq.put(card, freq.get(card) - 1);\n                if (freq.get(card) == 0) {\n                    if (card != minHeap.peek()) return false;\n                    minHeap.poll();\n                }\n            }\n        }\n        return true;\n    }\n}\n",
+      "JavaScript": "class MinHeap {\n    constructor(arr = []) {\n        this.heap = arr;\n        this.build();\n    }\n    build() {\n        for (let i = Math.floor(this.heap.length / 2); i >= 0; i--) this.down(i);\n    }\n    push(x) {\n        this.heap.push(x);\n        this.up(this.heap.length - 1);\n    }\n    pop() {\n        if (this.heap.length === 1) return this.heap.pop();\n        const top = this.heap[0];\n        this.heap[0] = this.heap.pop();\n        this.down(0);\n        return top;\n    }\n    peek() {\n        return this.heap[0];\n    }\n    size() {\n        return this.heap.length;\n    }\n    up(i) {\n        while (i > 0) {\n            const p = Math.floor((i - 1) / 2);\n            if (this.heap[p] <= this.heap[i]) break;\n            [this.heap[p], this.heap[i]] = [this.heap[i], this.heap[p]];\n            i = p;\n        }\n    }\n    down(i) {\n        const n = this.heap.length;\n        while (true) {\n            let l = 2 * i + 1, r = 2 * i + 2, s = i;\n            if (l < n && this.heap[l] < this.heap[s]) s = l;\n            if (r < n && this.heap[r] < this.heap[s]) s = r;\n            if (s === i) break;\n            [this.heap[s], this.heap[i]] = [this.heap[i], this.heap[s]];\n            i = s;\n        }\n    }\n}\n\nclass Solution {\n    canGroup(hand, groupSize) {\n        const n = hand.length;\n        if (n % groupSize !== 0) return false;\n\n        const freq = new Map();\n        for (const x of hand) freq.set(x, (freq.get(x) || 0) + 1);\n\n        const heap = new MinHeap(Array.from(freq.keys()));\n\n        while (heap.size()) {\n            const start = heap.peek();\n            for (let card = start; card < start + groupSize; card++) {\n                if (!freq.has(card) || freq.get(card) === 0) return false;\n                freq.set(card, freq.get(card) - 1);\n                if (freq.get(card) === 0) {\n                    if (card !== heap.peek()) return false;\n                    heap.pop();\n                }\n            }\n        }\n        return true;\n    }\n}\n"
+    }
+  }
+}

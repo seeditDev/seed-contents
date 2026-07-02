@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1578",
+  "title": "Sort a Linked List of 0s, 1s, and 2s",
+  "slug": "sort-a-linked-list-of-0s-1s-and-2s",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given the head of a singly linked list consisting of nodes containing only the integers 000, 111, or 222. \n\nYour task is to sort the linked list such that all 000s come first, followed by all 111s, and then all 222s.\n\nYou must perform the sorting **in-place** — that is, by rearranging the links between existing nodes, not by creating any new nodes.\n\nFunction DeclarationFunction NamesortListsortListsortList – This function sorts a linked list containing only 000s, 111s, and 222s.\n\nParameters\nheadheadhead : A pointer to the head of the singly linked list.\nReturn Value\nReturns a pointer to the **head of the sorted linked list**.\nIf the list is empty, return NULLNULLNULL.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n0≤N≤1050 \\leq N \\leq 10^50≤N≤105\n0≤Node.data≤20 \\leq Node.data \\leq 20≤Node.data≤2\nSum&nbsp;of&nbsp;N&nbsp;over&nbsp;all&nbsp;test&nbsp;cases≤105\\text{Sum of } N \\text{ over all test cases} \\leq 10^5Sum&nbsp;of&nbsp;N&nbsp;over&nbsp;all&nbsp;test&nbsp;cases≤105\n\nInput Format\n\n\nThe first line contains an integer TTT — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains an integer NNN — the number of nodes.\nThe second line contains NNN space-separated integers representing the node values (000, 111, or 222).\n\n\n\n\nOutput Format\n\n\nFor each test case:\n\n\n\nPrint the sorted linked list in a single line (space-separated).\nIf the linked list is empty, print `-1`.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n7\n2 1 0 1 2 0 1\n0\n5\n2 2 0 1 0",
+        "output": "0 0 1 1 1 2 2\n-1\n0 0 1 2 2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n7\n2 1 0 1 2 0 1\n0\n5\n2 2 0 1 0",
+        "expectedOutput": "0 0 1 1 1 2 2\n-1\n0 0 1 2 2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/* Structure of Node\nstruct Node {\n    int data;\n    Node* next;\n    Node(int x) : data(x), next(NULL) {}\n};\n*/\n\nNode* sortList(Node* head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n\n    // Dummy heads for 3 sub-lists\n    Node* zeroHead = new Node(-1);\n    Node* oneHead  = new Node(-1);\n    Node* twoHead  = new Node(-1);\n\n    Node* zero = zeroHead;\n    Node* one  = oneHead;\n    Node* two  = twoHead;\n\n    Node* curr = head;\n    while (curr != NULL) {\n        if (curr->data == 0) {\n            zero->next = curr;\n            zero = zero->next;\n        }\n        else if (curr->data == 1) {\n            one->next = curr;\n            one = one->next;\n        }\n        else { // curr->data == 2\n            two->next = curr;\n            two = two->next;\n        }\n        curr = curr->next;\n    }\n\n    // Connect 0s → 1s → 2s\n    zero->next = (oneHead->next != NULL) ? oneHead->next : twoHead->next;\n    one->next = twoHead->next;\n    two->next = NULL;\n\n    Node* newHead = zeroHead->next;\n\n    // Delete dummy nodes to avoid memory leak\n    delete zeroHead;\n    delete oneHead;\n    delete twoHead;\n\n    return newHead;\n}\n",
+      "Python3": "def sortList(head):\n    if head is None or head.next is None:\n        return head\n\n    zeroHead = Node(-1)\n    oneHead = Node(-1)\n    twoHead = Node(-1)\n\n    zero = zeroHead\n    one = oneHead\n    two = twoHead\n\n    curr = head\n    while curr:\n        if curr.data == 0:\n            zero.next = curr\n            zero = zero.next\n        elif curr.data == 1:\n            one.next = curr\n            one = one.next\n        else:\n            two.next = curr\n            two = two.next\n        curr = curr.next\n\n    zero.next = oneHead.next if oneHead.next else twoHead.next\n    one.next = twoHead.next\n    two.next = None\n\n    return zeroHead.next",
+      "C": "// Function to sort the linked list of 0s, 1s, and 2s (in-place)\nstruct Node* sortList(struct Node* head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n\n    struct Node* zeroHead = createNode(-1);\n    struct Node* oneHead  = createNode(-1);\n    struct Node* twoHead  = createNode(-1);\n\n    struct Node* zero = zeroHead;\n    struct Node* one  = oneHead;\n    struct Node* two  = twoHead;\n\n    struct Node* curr = head;\n    while (curr != NULL) {\n        if (curr->data == 0) {\n            zero->next = curr;\n            zero = zero->next;\n        } else if (curr->data == 1) {\n            one->next = curr;\n            one = one->next;\n        } else {\n            two->next = curr;\n            two = two->next;\n        }\n        curr = curr->next;\n    }\n\n    // Connect 0s → 1s → 2s\n    zero->next = (oneHead->next != NULL) ? oneHead->next : twoHead->next;\n    one->next = twoHead->next;\n    two->next = NULL;\n\n    struct Node* newHead = zeroHead->next;\n\n    free(zeroHead);\n    free(oneHead);\n    free(twoHead);\n\n    return newHead;\n}\n\n",
+      "Java": "    // Function to sort the linked list of 0s, 1s, and 2s\n    public static Node sortList(Node head) {\n        if (head == null || head.next == null) return head;\n\n        Node zeroHead = new Node(-1);\n        Node oneHead = new Node(-1);\n        Node twoHead = new Node(-1);\n\n        Node zero = zeroHead, one = oneHead, two = twoHead;\n        Node curr = head;\n\n        while (curr != null) {\n            if (curr.data == 0) {\n                zero.next = curr;\n                zero = zero.next;\n            } else if (curr.data == 1) {\n                one.next = curr;\n                one = one.next;\n            } else {\n                two.next = curr;\n                two = two.next;\n            }\n            curr = curr.next;\n        }\n\n        // Connect lists: 0s -> 1s -> 2s\n        zero.next = (oneHead.next != null) ? oneHead.next : twoHead.next;\n        one.next = twoHead.next;\n        two.next = null;\n\n        return zeroHead.next;\n    }\n",
+      "JavaScript": "function sortList(head) {\n    if (!head || !head.next) return head;\n\n    let zeroHead = new Node(-1);\n    let oneHead = new Node(-1);\n    let twoHead = new Node(-1);\n\n    let zero = zeroHead,\n        one = oneHead,\n        two = twoHead;\n\n    let curr = head;\n    while (curr) {\n        if (curr.data === 0) {\n            zero.next = curr;\n            zero = zero.next;\n        } else if (curr.data === 1) {\n            one.next = curr;\n            one = one.next;\n        } else {\n            two.next = curr;\n            two = two.next;\n        }\n        curr = curr.next;\n    }\n\n    zero.next = oneHead.next ? oneHead.next : twoHead.next;\n    one.next = twoHead.next;\n    two.next = null;\n\n    return zeroHead.next;\n}"
+    }
+  }
+}

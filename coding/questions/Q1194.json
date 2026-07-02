@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1194",
+  "title": "XOR N-bonacci Sequence",
+  "slug": "xor-n-bonacci-sequence",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Vietnamese and Bengali as well.\n\nAn NNN-bonacci sequence is an infinite sequence F1,F2,…F_1, F_2, \\ldotsF1​,F2​,… such that for each integer i&gt;Ni \\gt Ni&gt;N, FiF_iFi​ is calculated as f(Fi−1,Fi−2,…,Fi−N)f(F_{i-1}, F_{i-2}, \\ldots, F_{i-N})f(Fi−1​,Fi−2​,…,Fi−N​), where fff is some function. A XOR NNN-bonacci sequence is an NNN-bonacci sequence for which f(Fi−1,Fi−2,…,Fi−N)=Fi−1⊕Fi−2⊕…⊕Fi−Nf(F_{i-1}, F_{i-2}, \\ldots, F_{i-N}) = F_{i-1} \\oplus F_{i−2} \\oplus \\ldots \\oplus F_{i−N}f(Fi−1​,Fi−2​,…,Fi−N​)=Fi−1​⊕Fi−2​⊕…⊕Fi−N​, where ⊕\\oplus⊕ denotes the bitwise XOR operation.\n\nRecently, Chef has found an interesting sequence S1,S2,…S_1, S_2, \\ldotsS1​,S2​,…, which is obtained from prefix XORs of a XOR NNN-bonacci sequence F1,F2,…F_1, F_2, \\ldotsF1​,F2​,…. Formally, for each positive integer iii, Si=F1⊕F2⊕…⊕FiS_i = F_1 \\oplus F_2 \\oplus \\ldots \\oplus F_iSi​=F1​⊕F2​⊕…⊕Fi​. You are given the first NNN elements of the sequence FFF, which uniquely determine the entire sequence SSS.\n\nYou should answer QQQ queries. In each query, you are given an index kkk and you should calculate SkS_kSk​. It is guaranteed that in each query, SkS_kSk​ does not exceed 105010^{50}1050.",
+    "constraints": [
+      "1≤N,Q≤1051 \\le N, Q \\le 10^51≤N,Q≤105",
+      "0≤Fi≤1090 \\le F_i \\le 10^90≤Fi​≤109 for each iii such that 1≤i≤N1 \\le i \\le N1≤i≤N",
+      "1≤k≤1091 \\le k \\le 10^91≤k≤109"
+    ],
+    "inputFormat": "The first line of the input contains two space-separated integers NNN and QQQ.\nThe second line contains NNN space-separated integers F1,F2,…,FNF_1, F_2, \\ldots, F_NF1​,F2​,…,FN​.\nThe following QQQ lines describe queries. Each of these lines contains a single integer kkk.",
+    "outputFormat": "For each query, print a single line containing one integer SkS_kSk​.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 4\n0 1 2\n7\n2\n5\n1000000000",
+        "output": "3\n1\n0\n0",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 4\n0 1 2\n7\n2\n5\n1000000000",
+        "expectedOutput": "3\n1\n0\n0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nvoid solve() {\n    int N, Q;\n    cin >> N >> Q;\n\n    vector < int > F(N);\n    // Read the elements of the sequence\n    for (int i = 0; i < N; i++) {\n        cin >> F[i];\n    }\n\n    // Calculate Total XOR\n    int totalXor = 0;\n    for (int i = 0; i < N; i++) {\n        totalXor ^= F[i];\n    }\n\n    // Initialize S values\n    vector < int > S(N + 2);\n    S[0] = 0; // S_0 = 0\n    for (int i = 1; i <= N; i++) {\n        S[i] = S[i - 1] ^ F[i - 1];\n    }\n    S[N + 1] = totalXor; // S_(N+1) = Total XOR\n\n    // Process each query\n    for (int i = 0; i < Q; i++) {\n        int k;\n        cin >> k; // Read the query value k\n        // Output S_k mod (N + 1)\n        cout << S[k % (N + 1)] << endl;\n    }\n}\n\nint main() {\n    solve(); // Call the solve method\n    return 0;\n}",
+      "Python3": "def solve():\n    N, Q = map(int, input().split())  # Read N and Q\n\n    F = list(map(int, input().split()))  # Read the elements of the sequence\n\n    # Calculate Total XOR\n    total_xor = 0\n    for num in F:\n        total_xor ^= num\n\n    # Initialize S values\n    S = [0] * (N + 2)\n    S[0] = 0  # S_0 = 0\n    for i in range(1, N + 1):\n        S[i] = S[i - 1] ^ F[i - 1]\n    S[N + 1] = total_xor  # S_(N+1) = Total XOR\n\n    # Process each query\n    for _ in range(Q):\n        k = int(input())  # Read the query value k\n        # Output S_k mod (N + 1)\n        print(S[k % (N + 1)])\n\nif __name__ == \"__main__\":\n    solve()  # Call the solve method\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid solve() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q); // Read N and Q\n\n    int *F = (int *)malloc(N * sizeof(int)); // Dynamic array for input sequence\n    // Read the elements of the sequence\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &F[i]);\n    }\n\n    // Calculate Total XOR\n    int totalXor = 0;\n    for (int i = 0; i < N; i++) {\n        totalXor ^= F[i];\n    }\n\n    // Initialize S values\n    int *S = (int *)malloc((N + 2) * sizeof(int)); // Dynamic array for S values\n    S[0] = 0; // S_0 = 0\n    for (int i = 1; i <= N; i++) {\n        S[i] = S[i - 1] ^ F[i - 1];\n    }\n    S[N + 1] = totalXor; // S_(N+1) = Total XOR\n\n    // Process each query\n    for (int i = 0; i < Q; i++) {\n        int k;\n        scanf(\"%d\", &k); // Read the query value k\n        // Output S_k mod (N + 1)\n        printf(\"%d\\n\", S[k % (N + 1)]);\n    }\n\n    // Free dynamically allocated memory\n    free(F);\n    free(S);\n}\n\nint main() {\n    solve(); // Call the solve method\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n\n        // Read N and Q\n        st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken());\n        int Q = Integer.parseInt(st.nextToken());\n\n        // Read the elements of the sequence\n        int[] F = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) {\n            F[i] = Integer.parseInt(st.nextToken());\n        }\n\n        // Calculate Total XOR\n        int totalXor = 0;\n        for (int i = 0; i < N; i++) {\n            totalXor ^= F[i];\n        }\n\n        // Initialize S values\n        int[] S = new int[N + 2];\n        S[0] = 0; // S_0 = 0\n        for (int i = 1; i <= N; i++) {\n            S[i] = S[i - 1] ^ F[i - 1];\n        }\n        S[N + 1] = totalXor; // S_(N+1) = Total XOR\n\n        // Process each query\n        for (int i = 0; i < Q; i++) {\n            int k = Integer.parseInt(br.readLine()); // Read the query value k\n            // Output S_k mod (N + 1)\n            System.out.println(S[k % (N + 1)]);\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nfunction solve(N, Q, F, queries) {\n    // Calculate Total XOR\n    let totalXor = 0;\n    for (let i = 0; i < N; i++) {\n        totalXor ^= F[i];\n    }\n\n    // Initialize S values\n    const S = new Array(N + 2).fill(0);\n    for (let i = 1; i <= N; i++) {\n        S[i] = S[i - 1] ^ F[i - 1];\n    }\n    S[N + 1] = totalXor; // S_(N+1) = Total XOR\n\n    // Process each query\n    const results = queries.map(k => S[k % (N + 1)]);\n    console.log(results.join('\\n'));\n}\n\nfunction main() {\n    let input = '';\n    rl.on('line', line => {\n        input += line + '\\n';\n    });\n\n    rl.on('close', () => {\n        const data = input.trim().split('\\n');\n        const [N, Q] = data[0].split(' ').map(Number);\n        const F = data[1].split(' ').map(Number);\n        const queries = data.slice(2).map(Number);\n\n        solve(N, Q, F, queries); // Call the solve function with parsed input\n    });\n}\n\nmain(); // Start the program\n"
+    }
+  }
+}

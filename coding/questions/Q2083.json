@@ -1,0 +1,78 @@
+{
+  "questionId": "Q2083",
+  "title": "Detect Loop in Linked List",
+  "slug": "detect-loop-in-linked-list",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a singly linked list, determine if it contains a cycle/loop. A loop exists when the last node's next pointer points to any previous node in the list instead of NULL.\n\nNote: Update the `detectLoop` with your solution\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains NNN, the number of nodes\nSecond line contains NNN integers denoting the values of the nodes\nThird line contains pos, the position (1-based) where the last node connects to (0 if no loop)\n\n\n\n\nOutput Format\n\nFor each test case, print \"YES\" if a loop exists, \"NO\" otherwise.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1041 \\leq N \\leq 10^41≤N≤104",
+      "1≤nodevalue≤1031 \\leq node value \\leq 10^31≤nodevalue≤103",
+      "0≤pos≤N0 \\leq pos \\leq N0≤pos≤N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3\n1 3 4\n2\n4\n1 8 3 4\n0\n4\n1 2 3 4\n1",
+        "output": "YES\nNO\nYES",
+        "explanation": "Explanation:\nTest case 1:\n\nLast node points to second node (3), forming a loop\n\nTest case 2:\n\nLast node points to NULL, no loop exists\n\nTest case 3:\n\nLast node points to first node (1), forming a loop"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3\n1 3 4\n2\n4\n1 8 3 4\n0\n4\n1 2 3 4\n1",
+        "expectedOutput": "YES\nNO\nYES",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int data;\n    Node* next;\n    Node(int x) {\n        data = x;\n        next = NULL;\n    }\n};\n\nbool detectLoop(Node* head) {\n    if (head == NULL || head->next == NULL)\n        return false;\n        \n    Node *slow = head, *fast = head;\n    \n    while (fast != NULL && fast->next != NULL) {\n        slow = slow->next;\n        fast = fast->next->next;\n        \n        if (slow == fast)\n            return true;\n    }\n    return false;\n}\n\n// Helper function to create linked list with loop\nNode* createList(vector<int>& arr, int pos) {\n    if (arr.empty()) return NULL;\n    \n    Node* head = new Node(arr[0]);\n    Node* curr = head;\n    Node* loop_node = (pos == 1) ? head : NULL;\n    \n    for(int i = 1; i < arr.size(); i++) {\n        curr->next = new Node(arr[i]);\n        curr = curr->next;\n        if (i + 1 == pos) loop_node = curr;\n    }\n    \n    if (pos != 0) curr->next = loop_node;\n    return head;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n;\n        cin >> n;\n        \n        vector<int> arr(n);\n        for(int i = 0; i < n; i++) {\n            cin >> arr[i];\n        }\n        \n        int pos;\n        cin >> pos;\n        \n        Node* head = createList(arr, pos);\n        cout << (detectLoop(head) ? \"YES\" : \"NO\") << endl;\n    }\n    return 0;\n}"
+    }
+  }
+}

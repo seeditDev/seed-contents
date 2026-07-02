@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1424",
+  "title": "Largest Rectangle in Histogram",
+  "slug": "largest-rectangle-in-histogram",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an array of integers representing heights of bars in a histogram, find the area of the largest rectangle that can be formed by these bars. Each bar has width 1.\n\n\nInput Format\n\nFirst line contains T, number of test cases\nEach test case contains two lines of input\n\nFirst line contains N, number of bars\nSecond line contains N space-separated integers representing heights of bars\n\n\n\n\nOutput Format\n\nFor each test case, print the area of the largest possible rectangle.",
+    "constraints": [
+      "1≤T≤101 \\leq T \\leq 101≤T≤10",
+      "1≤N≤1061 \\leq N \\leq 10^61≤N≤106",
+      "0≤heightsi≤1090 \\leq heights_i \\leq 10^90≤heightsi​≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n6\n2 1 5 6 2 3\n4\n2 2 2 2",
+        "output": "10\n8",
+        "explanation": "Explanation:\nTest Case 1: \nLargest rectangle has height=2 and width=5 (area=10)\nTest Case 2: \nLargest rectangle uses all bars with height=2 (area=8)"
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n3\n1 2 1\n5\n1 2 3 4 5",
+        "output": "3\n9",
+        "explanation": "Explanation:\nTest Case 1: Rectangle of height 1 and width 3 \nTest Case 2: Rectangle of height 3 and width 3"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n6\n2 1 5 6 2 3\n4\n2 2 2 2",
+        "expectedOutput": "10\n8",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "2\n3\n1 2 1\n5\n1 2 3 4 5",
+        "expectedOutput": "3\n9",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long largestRectangle(vector<int>& heights) {\n    stack<int> stack;\n    stack.push(-1);\n    int max_area = 0;\n\n    for (int i = 0; i < heights.size(); i++) {\n        while (stack.top() != -1 && heights[i] <= heights[stack.top()]) {\n            int height = heights[stack.top()];\n            stack.pop();\n            int width = i - stack.top() - 1;\n            max_area = max(max_area, height * width);\n        }\n        stack.push(i);\n    }\n\n    while (stack.top() != -1) {\n        int height = heights[stack.top()];\n        stack.pop();\n        int width = heights.size() - stack.top() - 1;\n        max_area = max(max_area, height * width);\n    }\n\n    return max_area;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n;\n        cin >> n;\n        \n        vector<int> heights(n);\n        for(int i = 0; i < n; i++) {\n            cin >> heights[i];\n        }\n        \n        cout << largestRectangle(heights) << endl;\n    }\n    \n    return 0;\n}"
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "questionId": "Q1544",
+  "title": "Longest Palindromic Subsequence",
+  "slug": "longest-palindromic-subsequence",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a string S.\n\n\nFind the length of the longest palindromic subsequence of the string.\nA subsequence is a sequence that appears in the same relative order but not necessarily contiguous.\n**For example, if S = codechef, the answer is 3, because cec is a palindromic subsequence, and no longer palindromic subsequence exists.**\n\n\nInput Format\n\nThe first and only line of the input contains a single string SSS.\n\n\nOutput Format\nOutput the length of the largest palindromic subsequence of SSS.",
+    "constraints": [
+      "1≤∣S∣≤10001 \\leq |S| \\leq 10001≤∣S∣≤1000",
+      "SSS is made of lower case english characters"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "codechef",
+        "output": "3",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "codechefcode",
+        "output": "5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "codechef",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "codechefcode",
+        "expectedOutput": "5",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s, t;\n    cin >> s;\n\n    t = s;\n    reverse(t.begin(), t.end());\n\n    /*\n    Length of the longest palindromic subsequence will be \n    the Longest common subsequnce of a string with \n    reverse of itself\n    */\n\n    int n = s.size();\n    int m = t.size();\n\n    int dp[n + 1][m + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base cases\n        dp[i][0] = 0;\n        dp[0][i] = 0;\n    }\n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= m; j++) {\n            // Dp transitions\n            dp[i][j] = max({dp[i - 1][j], dp[i][j - 1], (s[i - 1] == t[j - 1]) + dp[i - 1][j - 1]});\n        }\n    }\n\n    cout << dp[n][m] << \"\\n\";\n    return 0;\n}",
+      "Python3": "if __name__ == \"__main__\":\n    s = input()\n\n    t = s[::-1]\n\n    \"\"\"\n    Length of the longest palindromic subsequence will be\n    the Longest common subsequence of a string with\n    reverse of itself\n    \"\"\"\n\n    n = len(s)\n    m = len(t)\n\n    dp = [[0] * (m + 1) for _ in range(n + 1)]\n\n    for i in range(n + 1):\n        # Base cases\n        dp[i][0] = 0\n    for j in range(m + 1):\n        # Base cases\n        dp[0][j] = 0\n\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            # DP transitions\n            dp[i][j] = max(dp[i - 1][j], dp[i][j - 1], (s[i - 1] == t[j - 1]) + dp[i - 1][j - 1])\n\n    print(dp[n][m])\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint main() {\n    char s[1001], t[1001];  // Assuming the maximum length of the string is 1000\n    scanf(\"%s\", s);\n\n    int n = strlen(s);\n\n    // Create the reversed string t\n    for(int i = 0; i < n; i++) {\n        t[i] = s[n - 1 - i];\n    }\n    t[n] = '\\0';  // Null-terminate the reversed string\n\n    // Length of the longest palindromic subsequence will be \n    // the Longest common subsequence of a string with \n    // reverse of itself\n\n    int dp[n + 1][n + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base cases\n        dp[i][0] = 0;\n        dp[0][i] = 0;\n    }\n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= n; j++) {\n            // Dp transitions\n            if (s[i - 1] == t[j - 1]) {\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            } else {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    printf(\"%d\\n\", dp[n][n]);\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n\n        String t = new StringBuilder(s).reverse().toString();\n\n        /*\n        Length of the longest palindromic subsequence will be \n        the Longest common subsequence of a string with \n        the reverse of itself\n        */\n\n        int n = s.length();\n        int m = t.length();\n\n        int[][] dp = new int[n + 1][m + 1];\n\n        for (int i = 0; i <= n; i++) {\n            // Base cases\n            dp[i][0] = 0;\n        }\n        for (int i = 0; i <= m; i++) {\n            // Base cases\n            dp[0][i] = 0;\n        }\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= m; j++) {\n                // Dp transitions\n                int check = 0;\n                if(s.charAt(i - 1) == t.charAt(j - 1)) {\n                    check = 1;\n                }\n                dp[i][j] = Math.max(Math.max(dp[i - 1][j], dp[i][j - 1]), check + dp[i - 1][j - 1]);\n            }\n        }\n\n        System.out.println(dp[n][m]);\n    }\n}\n"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1604",
+  "title": "Subsequence Sum K",
+  "slug": "subsequence-sum-k",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array numsnumsnums of integers and an integer kkk.\n\nYour task is to determine whether there exists **any subsequence** of numsnumsnums whose sum of elements is exactly equal to kkk.\n\nIf such a subsequence exists, print **\"Yes\"**, otherwise print **\"No\"**.\n\nA **subsequence** is formed by choosing **some elements from the array while keeping their original order**, but **not necessarily taking all elements**.\n\n\nYou can **pick or skip any element**\nThe **order of elements must remain the same**\nThe picked elements do **not need to be contiguous**\nExample:\n\nFor the array\n`[2, 4, 6, 8, 10]`\n\nSome valid subsequences are:\n\n\n`[2]`\n`[4, 10]`\n`[2, 6, 10]`\n`[6, 8]`\n`[]` (empty subsequence)\nAn **invalid subsequence** would be:\n\n\n`[10, 4]` (order is changed)\nFunction DeclarationFunction NameexistsSubsequenceexistsSubsequenceexistsSubsequence – This function checks whether there exists any subsequence of the given array whose sum of elements is exactly equal to kkk.\n\nParameters\nnumsnumsnums : A reference to an array of integers.\nnnn : An integer representing the size of array numsnumsnums.\nkkk : An integer representing the target sum.\nReturn Value\nReturns truetruetrue if there exists at least one subsequence of numsnumsnums whose sum is exactly equal to kkk.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤n≤201 \\leq n \\leq 201≤n≤20\n1≤nums[i]≤1001 \\leq nums[i] \\leq 1001≤nums[i]≤100\n1≤k≤20001 \\leq k \\leq 20001≤k≤2000\nThe input and output formats provided below are only for testing with custom inputs. You only need to complete the core logic function.\n\n\nInput Format\n\nThe first line contains an integer nnn — the size of the array.\nThe second line contains nnn space-separated integers representing the elements of the array numsnumsnums.\nThe third line contains an integer kkk — the target sum.\n\n\nOutput Format\n\nPrint **\"Yes\"** if there exists a subsequence whose sum is equal to kkk.\nOtherwise, print **\"No\"**.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n2 4 6 8 10\n14",
+        "output": "Yes",
+        "explanation": "Explanation:\nThe subsequence [4, 10] or [6, 8] gives a sum equal to 14."
+      },
+      {
+        "id": "sample_2",
+        "input": "4\n3 5 7 9\n6",
+        "output": "No",
+        "explanation": "Explanation:\nNo subsequence of [3, 5, 7, 9] adds up to 6."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n2 4 6 8 10\n14",
+        "expectedOutput": "Yes",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4\n3 5 7 9\n6",
+        "expectedOutput": "No",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "bool helper(int index, int currentSum, vector<int>& nums, int k) {\n    // If target sum is reached\n    if (currentSum == k) return true;\n\n    // If end of array is reached or sum exceeds k\n    if (index == nums.size() || currentSum > k) return false;\n\n    // Include current element\n    if (helper(index + 1, currentSum + nums[index], nums, k))\n        return true;\n\n    // Exclude current element\n    if (helper(index + 1, currentSum, nums, k))\n        return true;\n\n    return false;\n}\n\nbool existsSubsequence(vector<int>& nums, int n, int k) {\n    return helper(0, 0, nums, k);\n}",
+      "Python3": "def existsSubsequence(nums, n, k):\n    n = len(nums)\n\n    def helper(index, current_sum):\n        # If target sum is reached\n        if current_sum == k:\n            return True\n\n        # If end of array is reached or sum exceeds k\n        if index == n or current_sum > k:\n            return False\n\n        # Include current element\n        if helper(index + 1, current_sum + nums[index]):\n            return True\n\n        # Exclude current element\n        if helper(index + 1, current_sum):\n            return True\n\n        return False\n\n    return helper(0, 0)",
+      "C": "int helper(int index, int currentSum, int nums[], int n, int k) {\n    // If target sum is reached\n    if (currentSum == k) {\n        return 1;\n    }\n\n    // If end of array is reached or sum exceeds k\n    if (index == n || currentSum > k) {\n        return 0;\n    }\n\n    // Include current element\n    if (helper(index + 1, currentSum + nums[index], nums, n, k)) {\n        return 1;\n    }\n\n    // Exclude current element\n    if (helper(index + 1, currentSum, nums, n, k)) {\n        return 1;\n    }\n\n    return 0;\n}\n\nint existsSubsequence(int nums[], int n, int k) {\n    return helper(0, 0, nums, n, k);\n}",
+      "Java": "class Solution {\n    private static boolean helper(int index, int currentSum, int[] nums, int k) {\n        // If target sum is reached\n        if (currentSum == k) {\n            return true;\n        }\n\n        // If end of array is reached or sum exceeds k\n        if (index == nums.length || currentSum > k) {\n            return false;\n        }\n\n        // Include current element\n        if (helper(index + 1, currentSum + nums[index], nums, k)) {\n            return true;\n        }\n\n        // Exclude current element\n        if (helper(index + 1, currentSum, nums, k)) {\n            return true;\n        }\n\n        return false;\n    }\n\n    public  boolean existsSubsequence(int[] nums, int n, int k) {\n        return helper(0, 0, nums, k);\n    }\n}",
+      "JavaScript": "function existsSubsequence(nums, n, k) {\n\n    function helper(index, currentSum) {\n        // If target sum is reached\n        if (currentSum === k) {\n            return true;\n        }\n\n        // If end of array is reached or sum exceeds k\n        if (index === n || currentSum > k) {\n            return false;\n        }\n\n        // Include current element\n        if (helper(index + 1, currentSum + nums[index])) {\n            return true;\n        }\n\n        // Exclude current element\n        if (helper(index + 1, currentSum)) {\n            return true;\n        }\n\n        return false;\n    }\n\n    return helper(0, 0);\n}"
+    }
+  }
+}

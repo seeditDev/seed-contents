@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1304",
+  "title": "Top view of the Binary Tree",
+  "slug": "top-view-of-the-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, print the top view of the tree. The top view of a binary tree is the set of nodes visible when the tree is viewed from the top. It is defined as the nodes visible from the top along the vertical line passing through the leftmost node to rightmost node of the tree.\n\nExamples:\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nPrint on the single line, KKK (if there are KKK nodes visible from the top) space separated node values - the top view nodes of the given binary tree from left to right.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
+        "output": "6 2 1 3 5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
+        "expectedOutput": "6 2 1 3 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    void topView(Node* root) {\n        if(!root) \n          return;\n        map<int,int> v;\n        queue<pair<Node*,int>> q;\n        q.push({root,0});\n \n        while(!q.empty()) { \n            Node *t = q.front().first;\n            int vh = q.front().second;\n            q.pop();\n            \n             // if this column index already has a \n            //node we dont need to change it \n            if(v[vh] == 0) \n              v[vh] = t->val;   \n            \n            if(t->left) \n              q.push({t->left, vh - 1});\n            if(t->right) \n              q.push({t->right, vh + 1});\n\n        }\n        \n      // all the nodes in the map are the nodes which are \n      // encountered first in the verical traversal so  gives us the top view of the tree\n\n        for(auto &x: v) \n          cout << x.second << \" \";   \n    }\n};",
+      "Python3": "class Solution:\n    @staticmethod\n    def topView(root):\n        if not root:\n            return\n        \n        # Map to store the top view of the tree\n        top_view = {}\n        # Queue for level order traversal\n        queue = deque([(root, 0)])\n        \n        while queue:\n            node, hd = queue.popleft()\n            \n            if hd not in top_view:\n                top_view[hd] = node.val\n            \n            if node.left:\n                queue.append((node.left, hd - 1))\n            if node.right:\n                queue.append((node.right, hd + 1))\n        \n        # Printing top view\n        for key in sorted(top_view.keys()):\n            print(top_view[key], end=\" \")\n",
+      "C": "void topView(Node* root) {\n    if (!root)\n        return;\n\n    int map[2000] = {0}; // Initialize map with 0s\n    char visited[2000] = {0}; // Array to track visited horizontal distances\n\n    Node* queue[10000];\n    int horizontalDistance[10000];\n    int front = 0, rear = 0;\n\n    queue[rear] = root;\n    horizontalDistance[rear++] = 1000; // Centered at 1000\n\n    int minIndex = 1000, maxIndex = 1000;\n\n    while (front < rear) {\n        Node* node = queue[front];\n        int hd = horizontalDistance[front++];\n        \n        if (!visited[hd]) { // Only set the value if it hasn't been visited\n            visited[hd] = 1;\n            map[hd] = node->val;\n            if (hd < minIndex) minIndex = hd;\n            if (hd > maxIndex) maxIndex = hd;\n        }\n\n        if (node->left) {\n            queue[rear] = node->left;\n            horizontalDistance[rear++] = hd - 1;\n        }\n        if (node->right) {\n            queue[rear] = node->right;\n            horizontalDistance[rear++] = hd + 1;\n        }\n    }\n\n    for (int i = minIndex; i <= maxIndex; i++) {\n        if (visited[i]) {\n            printf(\"%d \", map[i]);\n        }\n    }\n    printf(\"\\n\");\n}\n",
+      "Java": "class Solution {\n    public static void topView(Node root) {\n        if (root == null)\n            return;\n\n        Map<Integer, Integer> map = new TreeMap<>();\n        Queue<Map.Entry<Node, Integer>> queue = new LinkedList<>();\n        queue.add(new AbstractMap.SimpleEntry<>(root, 0));\n\n        while (!queue.isEmpty()) {\n            Map.Entry<Node, Integer> entry = queue.poll();\n            Node node = entry.getKey();\n            int hd = entry.getValue();\n\n            if (!map.containsKey(hd)) {\n                map.put(hd, node.val);\n            }\n\n            if (node.left != null) {\n                queue.add(new AbstractMap.SimpleEntry<>(node.left, hd - 1));\n            }\n            if (node.right != null) {\n                queue.add(new AbstractMap.SimpleEntry<>(node.right, hd + 1));\n            }\n        }\n\n        for (Integer value : map.values()) {\n            System.out.print(value + \" \");\n        }\n    }\n}\n",
+      "JavaScript": "/*\nclass TreeNode {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction topView(root) {\n    if (!root) return [];\n\n    const map = new Map();\n    const queue = [{ node: root, hd: 0 }];\n    let minHd = 0;\n    let maxHd = 0;\n\n    while (queue.length > 0) {\n        const { node, hd } = queue.shift();\n\n        if (!map.has(hd)) {\n            map.set(hd, node.value);\n        }\n\n        if (node.left) queue.push({ node: node.left, hd: hd - 1 });\n        if (node.right) queue.push({ node: node.right, hd: hd + 1 });\n\n        if (hd < minHd) minHd = hd;\n        if (hd > maxHd) maxHd = hd;\n    }\n\n    const result = [];\n    for (let i = minHd; i <= maxHd; i++) {\n        if (map.has(i)) {\n            result.push(map.get(i));\n        }\n    }\n\n    return result;\n}\n\n"
+    }
+  }
+}

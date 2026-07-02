@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1359",
+  "title": "All Possible Subsets",
+  "slug": "all-possible-subsets",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an Array and you have to output all possible subsets of that array.\n\nFor Example:\nLet the array Arr = [1, 2, 3], It's possible subsets include:\n\n\n{}\n{1}\n{2}\n{3}\n{1, 2}\n{2, 3}\n{1, 3}\n{1, 2, 3}\n**Note** - Print the subsets in sorted order.\n\n\nInput Format\n\nThe first line of input will contain a single integer NNN, denoting the number of integers in the array.\nThe second line contains NNN integers.\n\n\nOutput Format\nOutput All the possible subsets of the given array.",
+    "constraints": [
+      "1≤N≤101 \\leq N \\leq 101≤N≤10",
+      "1≤Ai≤1051 \\leq A_i \\leq 10^51≤Ai​≤105",
+      "There are no duplicate values in the array."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n1 2 3",
+        "output": "1\n1 2\n1 2 3\n1 3\n2\n2 3\n3",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n1 2 3",
+        "expectedOutput": "1\n1 2\n1 2 3\n1 3\n2\n2 3\n3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Recursive Function**: The `allPossibleSubsets` function takes the current index, the original array, the current subset being built, and a reference to all subsets found so far.\n**Base Case**: If the `index` reaches the size of the array, the current subset is added to the list of all subsets.\n**Recursive Cases**:\n\nFirst, it explores the case where the current element is not included.\nThen, it includes the current element in the subset and recursively explores further.\nAfter including the element, it backtracks by removing the last added element to ensure the next iteration starts with the correct state.\n\n\n**Backtracking**: The use of backtracking ensures that we explore all combinations without skipping any potential subsets.\n**Sorting**: After generating all subsets, we sort them to maintain the required order in the output.",
+    "timeComplexity": "The time complexity is O(2^N) because there are 2^N possible subsets for an array of size N. Each subset takes O(N) time to copy into the result.",
+    "spaceComplexity": "The space complexity is O(N) for the recursive call stack at maximum depth and O(2^N) for storing the subsets in the result. Thus, the overall space complexity is O(N+2^N).",
+    "code": {
+      "C++": "class Solution {\npublic:\n    // Recursive helper function\n    vector<vector<int>> generateSubsets(vector<int>& arr, int index) {\n        if (index == arr.size()) {\n            return {{}};\n        }\n\n        // Get subsets for the rest of the array\n        vector<vector<int>> subsets = generateSubsets(arr, index + 1);\n        vector<vector<int>> newSubsets;\n\n        for (auto subset : subsets) {\n            newSubsets.push_back(subset); // Without current element\n            subset.push_back(arr[index]); // Include current element\n            newSubsets.push_back(subset);\n        }\n\n        return newSubsets;\n    }\n\n    vector<vector<int>> getAllSubsets(vector<int>& arr) {\n        vector<vector<int>> subsets = generateSubsets(arr, 0);\n\n        for (auto& subset : subsets) {\n            sort(subset.begin(), subset.end());\n        }\n\n        sort(subsets.begin(), subsets.end());\n        return subsets;\n    }\n};\n",
+      "Python3": "class Solution:\n    def getAllSubsets(self, arr):\n        all_subsets = []\n\n        # Generate subsets of all sizes\n        for r in range(len(arr) + 1):\n            for combo in combinations(arr, r):\n                all_subsets.append(list(combo))\n\n        # Sort elements in each subset\n        for subset in all_subsets:\n            subset.sort()\n\n        # Sort all subsets\n        all_subsets.sort()\n        return all_subsets\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Sorts individual elements (already in your code)\nint compareInt(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\n// NEW: Sorts the subsets against each other in dictionary (lexicographical) order\nint compareSubsets(const void *a, const void *b) {\n    // Cast the void pointers to int pointers (representing our subsets)\n    int *subsetA = *(int**)a;\n    int *subsetB = *(int**)b;\n    \n    int i = 0;\n    // Compare element by element until one subset ends (hits the -1 sentinel)\n    while (subsetA[i] != -1 && subsetB[i] != -1) {\n        if (subsetA[i] != subsetB[i]) {\n            return subsetA[i] - subsetB[i];\n        }\n        i++;\n    }\n    \n    // If they are identical up to this point, the shorter subset should come first\n    if (subsetA[i] == -1 && subsetB[i] == -1) return 0;\n    if (subsetA[i] == -1) return -1;\n    return 1;\n}\n\nint** getAllSubsets(int *arr, int n, int *totalCount) {\n    int total = 1 << n;\n    *totalCount = total;\n    int **allSubsets = malloc(total * sizeof(int*));\n\n    for (int mask = 0; mask < total; mask++) {\n        int *subset = malloc((n + 1) * sizeof(int)); // +1 for sentinel -1\n        int k = 0;\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) subset[k++] = arr[i];\n        }\n        \n        // Sort the individual subset\n        qsort(subset, k, sizeof(int), compareInt);\n        subset[k] = -1; // sentinel\n        allSubsets[mask] = subset;\n    }\n    \n    // FIX: Sort the entire array of subsets lexicographically before returning\n    qsort(allSubsets, total, sizeof(int*), compareSubsets);\n\n    return allSubsets;\n}",
+      "Java": "class Solution {\n\n    // Recursive function to generate subsets\n    private List<List<Integer>> generateSubsets(int[] arr, int index) {\n        if (index == arr.length) {\n            List<List<Integer>> base = new ArrayList<>();\n            base.add(new ArrayList<>()); // Empty subset\n            return base;\n        }\n\n        List<List<Integer>> subsets = generateSubsets(arr, index + 1);\n        List<List<Integer>> newSubsets = new ArrayList<>();\n\n        for (List<Integer> subset : subsets) {\n            newSubsets.add(new ArrayList<>(subset)); // Without current element\n\n            List<Integer> withCurrent = new ArrayList<>(subset);\n            withCurrent.add(arr[index]); // Include current element\n            newSubsets.add(withCurrent);\n        }\n\n        return newSubsets;\n    }\n\n    public List<List<Integer>> getAllSubsets(int[] arr) {\n        List<List<Integer>> subsets = generateSubsets(arr, 0);\n\n        for (List<Integer> subset : subsets) {\n            Collections.sort(subset);\n        }\n\n        subsets.sort((a, b) -> {\n            int minLen = Math.min(a.size(), b.size());\n            for (int i = 0; i < minLen; i++) {\n                if (!a.get(i).equals(b.get(i))) {\n                    return a.get(i) - b.get(i);\n                }\n            }\n            return a.size() - b.size();\n        });\n\n        return subsets;\n    }\n}\n",
+      "JavaScript": "class Solution {\n    // Recursive helper function\n    generateSubsets(arr, index) {\n        if (index === arr.length) {\n            return [[]]; // Base case: empty subset\n        }\n\n        const subsets = this.generateSubsets(arr, index + 1);\n        const newSubsets = [];\n\n        for (const subset of subsets) {\n            newSubsets.push([...subset]); // Without current element\n            newSubsets.push([...subset, arr[index]]); // Include current element\n        }\n\n        return newSubsets;\n    }\n\n    getAllSubsets(arr) {\n        let subsets = this.generateSubsets(arr, 0);\n\n        subsets = subsets.map(subset => subset.sort((a, b) => a - b));\n\n        subsets.sort((a, b) => {\n            const minLen = Math.min(a.length, b.length);\n            for (let i = 0; i < minLen; i++) {\n                if (a[i] !== b[i]) return a[i] - b[i];\n            }\n            return a.length - b.length;\n        });\n\n        return subsets;\n    }\n}\n"
+    }
+  }
+}

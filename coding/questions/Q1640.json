@@ -1,0 +1,89 @@
+{
+  "questionId": "Q1640",
+  "title": "Largest Y",
+  "slug": "largest-y",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array AAA consisting of NNN non-negative integers.\n\nIt is guaranteed that AAA contains **at least two distinct** elements.\n\nYou are also given a non-negative integer XXX.\n\nFor each YYY (0≤Y≤X)(0 \\leq Y \\leq X)(0≤Y≤X), we create an array BBB of size NNN such that Bi=Ai∣YB_i = A_i | YBi​=Ai​∣Y, where ∣|∣ denotes the bitwise OR operation.\n\nFind the **largest** integer Y(Y≤X)Y(Y \\leq X)Y(Y≤X) such that the array BBB contains **at least two distinct** elements.\n\n**Function Description:**You are given a function named **`maximizeXor`** that you must complete.\n\nThe function has the following parameters:\n\n\n**`a`** – a vector of `N` non-negative integers\n**`x`** – a non-negative integer representing the upper bound for `Y`\nThe function must **return this maximum valid value of `Y`**.\n\nThe input and output formats given below are only if you want to test using custom inputs.",
+    "constraints": [
+      "1≤T≤1051 \\leq T \\leq 10^51≤T≤105",
+      "2≤N≤1052 \\leq N \\leq 10^52≤N≤105",
+      "0≤Ai,X&lt;2300 \\leq A_i, X \\lt 2^{30}0≤Ai​,X&lt;230",
+      "The sum of NNN over all test cases won't exceed 2⋅1052 \\cdot 10^52⋅105.",
+      "Input Format",
+      "The first line of input contains a single integer TTT, denoting the number of test cases.",
+      "Each test case consists of two lines of input.",
+      "The first line of each test case contains two integers NNN and XXX — the length of the array AAA and maximum value of YYY allowed.",
+      "The second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1,A_2,\\ldots,A_NA1​,A2​,…,AN​,  representing the array AAA.",
+      "Output Format",
+      "For each test case, output on a new line, the largest YYY satisfying the condition."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3 5\n1 1 2\n5 10\n4 5 2 3 5\n3 3\n1 1 3",
+        "output": "5\n10\n1",
+        "explanation": "Explanation:\nTest case 111: For Y=5Y = 5Y=5, B=[1∣5,1∣5,2∣5]=[5,5,7]B = [1|5, 1|5, 2|5] = [5, 5, 7]B=[1∣5,1∣5,2∣5]=[5,5,7], which has 222 distinct elements.\nThus, this is the largest value of YYY.\nTest case 222: For Y=10Y = 10Y=10, B=[4∣10,5∣10,2∣10,3∣10,5∣10]=[14,15,10,11,15]B = [4|10, 5|10, 2|10, 3|10, 5|10] = [14, 15, 10, 11, 15]B=[4∣10,5∣10,2∣10,3∣10,5∣10]=[14,15,10,11,15], which has 444 distinct elements.\nThus, this is the largest value of YYY.\nTest case 333: For Y=1Y = 1Y=1, B=[1∣1,1∣1,3∣1]=[1,1,3]B = [1|1, 1|1, 3|1] = [1, 1, 3]B=[1∣1,1∣1,3∣1]=[1,1,3], which has 222 distinct elements.\nFor Y=2Y = 2Y=2, B=[1∣2,1∣2,3∣2]=[3,3,3]B = [1|2, 1|2, 3|2] = [3, 3, 3]B=[1∣2,1∣2,3∣2]=[3,3,3], which has 111 distinct element only."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3 5\n1 1 2\n5 10\n4 5 2 3 5\n3 3\n1 1 3",
+        "expectedOutput": "5\n10\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int maximizeXor(vector<int>& a, int x) {\n        int n = a.size();\n        int ans = 0;\n\n        for (int b = 0; b < 30; ++b) {\n            int ct = 0;\n\n            for (int y : a) {\n                if ((y >> b) & 1) ct++;\n            }\n\n            if (ct == 0 || ct == n) continue;\n\n            int cur = 0;\n            for (int bit = 29; bit >= 0; --bit) {\n                if (bit == b) continue;           \n                if (cur + (1 << bit) > x) continue; \n                cur += (1 << bit);\n            }\n\n            ans = max(ans, cur);\n        }\n\n        return ans;\n    }\n};\n",
+      "Python3": "class Solution:\n    def maximizeXor(self, a, x):\n        n = len(a)\n        ans = 0\n\n        for b in range(30):\n            ct = sum(1 for y in a if (y >> b) & 1)\n\n            if ct == 0 or ct == n:\n                continue\n\n            cur = 0\n            for bit in reversed(range(30)):\n                if bit == b:\n                    continue\n                if cur + (1 << bit) > x:\n                    continue\n                cur += (1 << bit)\n\n            ans = max(ans, cur)\n\n        return ans",
+      "C": "int maximizeXor(int a[], int n, int x) {\n    int ans = 0;\n\n    for (int b = 0; b < 30; b++) {\n        int ct = 0;\n\n        for (int i = 0; i < n; i++) {\n            if ((a[i] >> b) & 1) ct++;\n        }\n\n        if (ct == 0 || ct == n) continue;\n\n        int cur = 0;\n        for (int bit = 29; bit >= 0; bit--) {\n            if (bit == b) continue;            \n            if (cur + (1 << bit) > x) continue;\n            cur += (1 << bit);\n        }\n\n        if (cur > ans) ans = cur;\n    }\n\n    return ans;\n}\n",
+      "Java": "class Solution {\n    public int maximizeXor(int[] a, int x) {\n        int n = a.length;\n        int ans = 0;\n\n        for (int b = 0; b < 30; b++) {\n            int ct = 0;\n\n            for (int y : a) {\n                if (((y >> b) & 1) == 1) ct++;\n            }\n\n            if (ct == 0 || ct == n) continue;\n\n            int cur = 0;\n            for (int bit = 29; bit >= 0; bit--) {\n                if (bit == b) continue;            \n                if (cur + (1 << bit) > x) continue;\n                cur += (1 << bit);\n            }\n\n            ans = Math.max(ans, cur);\n        }\n\n        return ans;\n    }\n}",
+      "JavaScript": "class Solution {\n    maximizeXor(a, x) {\n        let n = a.length;\n        let ans = 0;\n\n        for (let b = 0; b < 30; b++) {\n            let ct = 0;\n\n            for (let y of a) {\n                if ((y >> b) & 1) ct++;\n            }\n\n            if (ct === 0 || ct === n) continue;\n\n            let cur = 0;\n            for (let bit = 29; bit >= 0; bit--) {\n                if (bit === b) continue;            \n                if (cur + (1 << bit) > x) continue; \n                cur += (1 << bit);\n            }\n\n            ans = Math.max(ans, cur);\n        }\n\n        return ans;\n    }\n}"
+    }
+  }
+}

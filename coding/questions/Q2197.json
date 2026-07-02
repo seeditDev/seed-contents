@@ -1,0 +1,73 @@
+{
+  "questionId": "Q2197",
+  "title": "Maze of Digits",
+  "slug": "maze-of-digits",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Johnny, a third year computer science student of Byteland University, is rushing with his AI assignment project which is due tomorrow evening. In this project, he has to build a Lego NXT robot which is able to navigate in a maze. Johnny calls his robot WallB (because he likes the movie \"WallE\" very much).\n\nThe maze is an MxN rectangular grid. There are digits 0..9 and obstacles placed at some intersections. Starting at some intersection, in each step, WallB can move to one of the four intersections adjacent to its current position. However, WallB cannot step into an obstacle.\n\n\nA maze intersection with a handwritten digit\n\n\nJohnny needs to program WallB to be able to do the following tasks. First, WallB has to traverse through all reachable intersections of the maze and recognize the digits written at the intersections. Johnny has already finished this part of the assignment since he is very good at image recognition algorithms.\n\n\nWallB needs to scan and recognize all the reachable digits.\n\n\nThe second part of the assignment is harder. Prof. Q will announce a number X. Based on the map of the maze obtained in the first part, Johnny needs to program WallB to find a shortest path that passes through digits which sum up to X.\n\nTo be more precise, suppose in his route, WallB passes through the digits d1, d2, ..., dk in order; then we should have d1 + d2 + ... + dk = X. WallB could pass through a digit more than once.\n\nJohnny gets stuck in this second part of the assignment. Could you write a program to help him?",
+    "constraints": [],
+    "inputFormat": "The first line contains t, the number of test cases (about 25). Then t test cases follow. Each test case has the following form:\n\nThe first line contains two integers M, N (0 &lt;= M, N &lt;= 100) representing the size of the maze.\nEach line in the next M+1 lines contains N+1 characters describing the structure of the maze. Each character represents an intersection and could be one of:'.': empty intersection\n'#': obstacle\n'0'..'9': digits\n'*': starting position of WallB\n\nThe last line contains the number X announced by Prof. Q (1 &lt;= X &lt;= 100).\nSuccessive test cases are separated by blank lines. \nThe number of digits in a maze is at most 100.",
+    "outputFormat": "For each test case, print the minimum number of steps that WallB needs to travel to visit the digits that sum up to X. If there is no way for WallB to complete the task, print the number -1.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n2 3\n1.#2\n#..#\n*.#.\n3\n2 3\n2.#2\n#..#\n*.#.\n5\n2 3\n2.#2\n#.3#\n*.#.\n5",
+        "output": "8\n-1\n6",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n2 3\n1.#2\n#..#\n*.#.\n3\n2 3\n2.#2\n#..#\n*.#.\n5\n2 3\n2.#2\n#.3#\n*.#.\n5",
+        "expectedOutput": "8\n-1\n6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "We use `Breadth-First Search` (BFS) to explore the maze, starting from the first digit. The robot can move `up`, `down`, `left`, or `right`, and we track the sum of digits and steps taken. We stop exploring paths where the sum exceeds X. If the sum matches X, we return the number of steps. The visited array prevents revisiting cells with the same sum. BFS ensures the shortest path is found because it explores level by level.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#ifndef ONLINE_JUDGE\n#include \"./library/debug.cpp\"\n#else\n#define debug(x...)\n#define newline()\n#endif\n\n#define int long long\nusing pii = pair<int, int>;\nusing vi = vector<int>;\nusing vvi = vector<vi>;\nusing vpii = vector<pii>;\nusing vvpii = vector<vector<pii>>;\nusing vb = vector<bool>;\nusing vvb = vector<vb>;\n#define popcount(a) __builtin_popcountll(a)\nconst int mod = 1e9 + 7;\n#define all(a) a.begin(), a.end()\nconst char endline = '\\n';\nint next_int()\n{\n    int x;\n    cin >> x;\n    return x;\n}\nint inv(int i, int m) { return i <= 1 ? i : m - (long long)(m / i) * inv(m % i, m) % m; }\n\nstruct Solution\n{\n    void solve()\n    {\n        int m, n;\n        cin >> m >> n;\n        vector<string> vs(m + 1);\n        for (auto &s : vs)\n            cin >> s;\n        int x;\n        cin >> x;\n\n        //////////////\n        m++, n++;\n        int a = -1, b = -1;\n        for (int i = 0; i < m && a == -1; i++)\n        {\n            for (int j = 0; j < n; j++)\n            {\n                if (vs[i][j] == '*')\n                {\n                    a = i;\n                    b = j;\n                    break;\n                }\n            }\n        }\n\n        vector<vvb> visited(m, vvb(n, vb(x + 1, false)));\n        queue<tuple<int, int, int, int>> q; // (i, j, current_sum, steps)\n        q.push({a, b, 0, 0});\n        while (q.empty() == false)\n        {\n            auto [i, j, current_sum, steps] = q.front();\n            q.pop();\n\n            if (i < 0 || i >= m || j < 0 || j >= n || vs[i][j] == '#' || visited[i][j][current_sum])\n                continue;\n\n            visited[i][j][current_sum] = true;\n            if (vs[i][j] >= '0' && vs[i][j] <= '9')\n                current_sum += vs[i][j] - '0';\n\n            if (current_sum > x)\n                continue;\n            if (current_sum == x)\n            {\n                cout << steps << endline;\n                return;\n            }\n\n            q.push({i - 1, j, current_sum, steps + 1});\n            q.push({i + 1, j, current_sum, steps + 1});\n            q.push({i, j - 1, current_sum, steps + 1});\n            q.push({i, j + 1, current_sum, steps + 1});\n        }\n        cout << -1 << endline;\n    }\n};\n\nsigned main()\n{\n    #ifndef ONLINE_JUDGE\n        freopen(\"input.txt\", \"r\", stdin);\n        freopen(\"output.txt\", \"w\", stdout);\n        freopen(\"error.txt\", \"w\", stderr);\n    #endif\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int t = 1;\n    cin >> t;\n\n    for (int case_no = 1; case_no <= t; case_no++)\n    {\n        debug(case_no);\n        Solution ob;\n        ob.solve();\n        newline();\n    }\n    return 0;\n}"
+    }
+  }
+}

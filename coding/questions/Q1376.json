@@ -1,0 +1,91 @@
+{
+  "questionId": "Q1376",
+  "title": "Check Square",
+  "slug": "check-square",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a positive integer ccc, decide whether it can be represented as sum of two square numbers that is **c = a2 + b2** or not, where a and b are two non-negative integers and a≤ba \\leq ba≤b.\n\n\nInput Format\nFirst line contains positive integers ccc.\n\n\n\nOutput Format\nPrint **true** if it can be represented, else print **false**.",
+    "constraints": [
+      "1≤c≤1091 \\leq c \\leq 10^91≤c≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "25",
+        "output": "true",
+        "explanation": "Explanation:\n25 can be represented in form of 32 + 42 = 9+16=25."
+      },
+      {
+        "id": "sample_2",
+        "input": "15",
+        "output": "false",
+        "explanation": "Explanation:\n15 can not be represented as the sum of two square numbers."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "25",
+        "expectedOutput": "true",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "15",
+        "expectedOutput": "false",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "This problem can be solved using a two-pointer technique. The idea is based on the observation that if `c = a^2 + b^2`, then `a` and `b` must satisfy the equation for some values between `0` and the square root of `c`.\n\n\n\n**Two-Pointer Technique**:\n\n\n\nInitialize two pointers:\n\n`left` starts at `0` (corresponding to `a`).\n`right` starts at `sqrt(c)` (corresponding to `b`).\n\n\nThe goal is to find if there exists a pair `(a, b)` such that `a^2 + b^2 = c`.\n\n\n\n**Iterative Search**:\n\n\n\nCalculate the sum `sum = left^2 + right^2`.\nCompare `sum` with `c`:\n\nIf `sum == c`, return `true` because we have found the values `a` and `b`.\nIf `sum &lt; c`, increment the `left` pointer to increase the sum.\nIf `sum &gt; c`, decrement the `right` pointer to decrease the sum.\n\n\nContinue this process until `left` exceeds `right`.\n\n\n\n**Return Result**:\n\n\n\nIf no such pair is found by the time `left` exceeds `right`, return `false`.",
+    "timeComplexity": "The time complexity of this solution is O(sqrt(c)). This is because the maximum number of iterations is determined by the value of sqrt(c), as both pointers move towards each other.",
+    "spaceComplexity": "The space complexity is O(1), as the solution only uses a few extra variables for computation.",
+    "code": {
+      "C++": "#include <iostream>\n#include <cmath>\n\nusing namespace std;\n\nbool judgeSquareSum(long long int c) {\n    int rtc = sqrt(c);\n    int left = 1;\n    int right = rtc;\n    while(left<right){\n        int sum = left*left + right*right;\n        if(sum > c) right--;\n        else if(sum < c)left++;\n        else return true;\n    }\n    return false;\n}\n\nint main() {\n    long long int c;\n    cin >> c;\n\n    if (judgeSquareSum(c)) {\n        cout << \"true\" << endl;\n    } else {\n        cout << \"false\" << endl;\n    }\n    return 0;\n}\n",
+      "Python3": "def check_square_sum(c):\n    left = 0\n    right = int(c ** 0.5)\n\n    while left <= right:\n        _sum = left * left + right * right\n        if _sum == c:\n            return True\n        elif _sum < c:\n            left += 1\n        else:\n            right -= 1\n\n    return False\n\nif __name__ == \"__main__\":\n    c = int(input())\n    if check_square_sum(c):\n        print(\"true\")\n    else:\n        print(\"false\")\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <math.h>\n\nbool checkSquareSum(long long int c) {\n    long long left = 0;\n    long long right = (long long) sqrt(c);\n\n    while (left <= right) {\n        long long sum = left * left + right * right;\n        if (sum == c) {\n            return true;\n        } else if (sum < c) {\n            left++;\n        } else {\n            right--;\n        }\n    }\n\n    return false;\n}\n\nint main() {\n    long long int c;\n    scanf(\"%lld\", &c);\n\n    if (checkSquareSum(c)) {\n        printf(\"true\\n\");\n    } else {\n        printf(\"false\\n\");\n    }\n\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static boolean checkSquareSum(long c) {\n        long left = 0;\n        long right = (long) Math.sqrt(c);\n\n        while (left <= right) {\n            long sum = left * left + right * right;\n            if (sum == c) {\n                return true;\n            } else if (sum < c) {\n                left++;\n            } else {\n                right--;\n            }\n        }\n\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        long c = scanner.nextLong();\n\n        if (checkSquareSum(c)) {\n            System.out.println(\"true\");\n        } else {\n            System.out.println(\"false\");\n        }\n    }\n}\n"
+    }
+  }
+}

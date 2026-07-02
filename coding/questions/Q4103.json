@@ -1,0 +1,84 @@
+{
+  "questionId": "Q4103",
+  "title": "The Great Escape",
+  "slug": "the-great-escape",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Heroes in Indian movies are capable of superhuman feats. For example, they can jump between buildings, jump onto and from running trains, catch bullets with their hands and teeth and so on. A perceptive follower of such movies would have noticed that there are limits to what even the superheroes can do. For example, if the hero could directly jump to his ultimate destination, that would reduce the action sequence to nothing and thus make the movie quite boring. So he typically labours through a series of superhuman steps to reach his ultimate destination.\n\nIn this problem, our hero has to save his wife/mother/child/dog/... held captive by the nasty villain on the top floor of a tall building in the centre of Bombay/Bangkok/Kuala Lumpur/.... Our hero is on top of a (different) building. In order to make the action \"interesting\" the director has decided that the hero can only jump between buildings that are \"close\" to each other. The director decides which pairs of buildings are close enough and which are not.\n\nGiven the list of buildings, the identity of the building where the hero begins his search, the identity of the building where the captive (wife/mother/child/dog...) is held, and the set of pairs of buildings that the hero can jump across, your aim is determine whether it is possible for the hero to reach the captive. And, if he can reach the captive he would like to do so with minimum number of jumps.\n\nHere is an example. There are 555 buildings, numbered 1,2,...,51,2,...,51,2,...,5, the hero stands on building 111 and the captive is on building 444. The director has decided that buildings 111 and 333, 222 and 3,13, 13,1 and 2,32, 32,3 and 555 and 444 and 555 are close enough for the hero to jump across. The hero can save the captive by jumping from 111 to 333 and then from 333 to 555 and finally from 555 to 444. (Note that if iii and jjj are close then the hero can jump from iii to jjj as well as from jjj to iii.). In this example, the hero could have also reached 444 by jumping from 111 to 2,22, 22,2 to 3,33, 33,3 to 555 and finally from 555 to 444. The first route uses 333 jumps while the second one uses 444 jumps. You can verify that 333 jumps is the best possible.\n\nIf the director decides that the only pairs of buildings that are close enough are 111 and 333, 111 and 222 and 444 and 555, then the hero would not be able to reach building 444 to save the captive.\n\n###Input:\n\nThe first line of the input contains two integers NNN and MMM. NNN is the number of buildings: we assume that our buildings are numbered 1,2,...,N1,2,...,N1,2,...,N. MMM is the number of pairs of buildings that the director lists as being close enough to jump from one to the other. Each of the next MMM lines, lines 2,...,M+12,...,M+12,...,M+1, contains a pair of integers representing a pair of buildings that are close. Line i+1i+1i+1 contains integers AiA_iAi​ and BiB_iBi​, 1≤Ai≤N1 \\leq A_i \\leq N1≤Ai​≤N and 1≤Bi≤N1 \\leq B_i \\leq N1≤Bi​≤N, indicating that buildings AiA_iAi​ and BiB_iBi​ are close enough. The last line, line M+2M+2M+2 contains a pair of integers SSS and TTT, where SSS is the building from which the Hero starts his search and TTT is the building where the captive is held.\n\n###Output:\n\nIf the hero cannot reach the captive print 000. If the hero can reach the captive print out a single integer indicating the number of jumps in the shortest route (in terms of the number of jumps) to reach the captive.\n\n###Constraints:\n\n\n1≤N≤35001 \\leq N \\leq 35001≤N≤3500.\n1≤M≤10000001 \\leq M \\leq 10000001≤M≤1000000.\nIn at least 50%50 \\%50% of the inputs 1≤N≤10001 \\leq N \\leq 10001≤N≤1000 and 1≤M≤2000001 \\leq M \\leq 2000001≤M≤200000.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 5\n1 3\n2 3\n1 2\n3 5\n4 5\n1 4",
+        "output": "3",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "5 3\n1 3\n1 2\n4 5\n1 4",
+        "output": "0",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 5\n1 3\n2 3\n1 2\n3 5\n4 5\n1 4",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5 3\n1 3\n1 2\n4 5\n1 4",
+        "expectedOutput": "0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;queue&gt;\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    \n    int N, M;\n    cin &gt;&gt; N &gt;&gt; M;\n    \n    // Build the undirected graph using an adjacency list.\n    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);\n    for (int i = 0; i &lt; M; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    \n    int S, T;\n    cin &gt;&gt; S &gt;&gt; T;\n    \n    // BFS initialization.\n    vector&lt;int&gt; dist(N + 1, -1);\n    queue&lt;int&gt; q;\n    dist[S] = 0;\n    q.push(S);\n    \n    // Standard BFS loop.\n    while (!q.empty()) {\n        int curr = q.front();\n        q.pop();\n        \n        // Stop if target is reached.\n        if (curr == T) {\n            cout &lt;&lt; dist[T] &lt;&lt; \"\\n\";\n            return 0;\n        }\n        \n        for (int neighbor : graph[curr]) {\n            if (dist[neighbor] == -1) {\n                dist[neighbor] = dist[curr] + 1;\n                q.push(neighbor);\n            }\n        }\n    }\n    \n    // If the target is unreachable.\n    cout &lt;&lt; 0 &lt;&lt; \"\\n\";\n    return 0;\n}\n``import sys\nimport collections\n\ndef main():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    it = iter(input_data)\n    N = int(next(it))\n    M = int(next(it))\n    \n    # Build the graph.\n    graph = [[] for _ in range(N + 1)]\n    for _ in range(M):\n        u = int(next(it))\n        v = int(next(it))\n        graph[u].append(v)\n        graph[v].append(u)\n    \n    S = int(next(it))\n    T = int(next(it))\n    \n    # Initialize distances.\n    dist = [-1] * (N + 1)\n    dist[S] = 0\n    dq = collections.deque([S])\n    \n    # Perform BFS.\n    while dq:\n        cur = dq.popleft()\n        if cur == T:\n            print(dist[T])\n            return\n        for neighbor in graph[cur]:\n            if dist[neighbor] == -1:\n                dist[neighbor] = dist[cur] + 1\n                dq.append(neighbor)\n    print(0)\n\nif __name__ == '__main__':\n    main()\n``#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;queue&gt;\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    \n    int N, M;\n    cin &gt;&gt; N &gt;&gt; M;\n    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);\n    \n    for (int i = 0; i &lt; M; i++){\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    \n    int S, T;\n    cin &gt;&gt; S &gt;&gt; T;\n    \n    if (S == T) {\n        cout &lt;&lt; 0 &lt;&lt; \"\\n\";\n        return 0;\n    }\n    \n    // Initialize distances for both searches.\n    vector&lt;int&gt; distS(N + 1, -1), distT(N + 1, -1);\n    queue&lt;int&gt; qs, qt;\n    \n    distS[S] = 0;\n    qs.push(S);\n    distT[T] = 0;\n    qt.push(T);\n    \n    int answer = -1;\n    bool found = false;\n    \n    while (!qs.empty() &amp;&amp; !qt.empty() &amp;&amp; !found) {\n        // Expand from the smaller frontier.\n        if (qs.size() &lt;= qt.size()) {\n            int size = qs.size();\n            for (int i = 0; i &lt; size; i++) {\n                int u = qs.front();\n                qs.pop();\n                for (int v : graph[u]) {\n                    if (distS[v] == -1) {\n                        distS[v] = distS[u] + 1;\n                        qs.push(v);\n                        if (distT[v] != -1) {\n                            answer = distS[v] + distT[v];\n                            found = true;\n                            break;\n                        }\n                    }\n                }\n                if (found) break;\n            }\n        } else {\n            int size = qt.size();\n            for (int i = 0; i &lt; size; i++) {\n                int u = qt.front();\n                qt.pop();\n                for (int v : graph[u]) {\n                    if (distT[v] == -1) {\n                        distT[v] = distT[u] + 1;\n                        qt.push(v);\n                        if (distS[v] != -1) {\n                            answer = distS[v] + distT[v];\n                            found = true;\n                            break;\n                        }\n                    }\n                }\n                if (found) break;\n            }\n        }\n    }\n    \n    cout &lt;&lt; (answer == -1 ? 0 : answer) &lt;&lt; \"\\n\";\n    return 0;\n}\n``import sys\nimport collections\n\ndef bidirectional_bfs(graph, S, T):\n    if S == T:\n        return 0\n    n = len(graph) - 1\n    distS = [-1] * (n + 1)\n    distT = [-1] * (n + 1)\n    qs = collections.deque([S])\n    qt = collections.deque([T])\n    distS[S] = 0\n    distT[T] = 0\n    \n    while qs and qt:\n        if len(qs) &lt;= len(qt):\n            for _ in range(len(qs)):\n                u = qs.popleft()\n                for v in graph[u]:\n                    if distS[v] == -1:\n                        distS[v] = distS[u] + 1\n                        qs.append(v)\n                        if distT[v] != -1:\n                            return distS[v] + distT[v]\n        else:\n            for _ in range(len(qt)):\n                u = qt.popleft()\n                for v in graph[u]:\n                    if distT[v] == -1:\n                        distT[v] = distT[u] + 1\n                        qt.append(v)\n                        if distS[v] != -1:\n                            return distS[v] + distT[v]\n    return 0\n\ndef main():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    it = iter(data)\n    N = int(next(it))\n    M = int(next(it))\n    \n    # Build the graph.\n    graph = [[] for _ in range(N + 1)]\n    for _ in range(M):\n        u = int(next(it))\n        v = int(next(it))\n        graph[u].append(v)\n        graph[v].append(u)\n    \n    S = int(next(it))\n    T = int(next(it))\n    \n    result = bidirectional_bfs(graph, S, T)\n    print(result)\n\nif __name__ == '__main__':\n    main()\n`Both approaches are effective for solving the problem. The standard BFS is straightforward and works well on many inputs, while the bidirectional BFS can offer efficiency improvements for larger graphs. Choose the approach that best suits your specific context and performance needs.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

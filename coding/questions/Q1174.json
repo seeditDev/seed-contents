@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1174",
+  "title": "Chef and Rainbow Array",
+  "slug": "chef-and-rainbow-array",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef likes all arrays equally. But he likes some arrays more equally than others. In particular, he loves Rainbow Arrays. \n\nAn array is Rainbow if it has the following structure:\n\nFirst **a1** elements equal **1**. \nNext **a2** elements equal **2**. \nNext **a3** elements equal **3**. \nNext **a4** elements equal **4**. \nNext **a5** elements equal **5**. \nNext **a6** elements equal **6**. \nNext **a7** elements equal **7**. \nNext **a6** elements equal **6**. \nNext **a5** elements equal **5**. \nNext **a4** elements equal **4**. \nNext **a3** elements equal **3**. \nNext **a2** elements equal **2**. \nNext **a1** elements equal **1**. \n**ai** can be any non-zero positive integer.\nThere are no other elements in array. \n\nHelp Chef in finding out if the given array is a Rainbow Array or not.",
+    "constraints": [
+      "1 ≤ **T** ≤ 100",
+      "7 ≤ **N** ≤ 100",
+      "1 ≤ **Ai** ≤ 10",
+      "Subtasks**Subtask 1** (100 points) : Original constraints"
+    ],
+    "inputFormat": "The first line of the input contains an integer **T** denoting the number of test cases.\nThe first line of each test case contains an integer **N**, denoting the number of elements in the given array. \nThe second line contains **N** space-separated integers **A1**, **A2**, ..., **AN** denoting the elements of array.",
+    "outputFormat": "For each test case, output a line containing \"yes\" or \"no\" (without quotes) corresponding to the case if the array is rainbow array or not.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n19\n1 2 3 4 4 5 6 6 6 7 6 6 6 5 4 4 3 2 1\n14\n1 2 3 4 5 6 7 6 5 4 3 2 1 1\n13\n1 2 3 4 5 6 8 6 5 4 3 2 1",
+        "output": "yes\nno\nno",
+        "explanation": "Explanation:\nThe first example satisfies all the conditions. \nThe second example has 1 element of value 1 at the beginning and 2 elements of value 1 at the end. \nThe third one has no elements with value 7 after elements with value 6."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n19\n1 2 3 4 4 5 6 6 6 7 6 6 6 5 4 4 3 2 1\n14\n1 2 3 4 5 6 7 6 5 4 3 2 1 1\n13\n1 2 3 4 5 6 8 6 5 4 3 2 1",
+        "expectedOutput": "yes\nno\nno",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\n\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int arr[200], n;\n        cin >> n;\n        for (int j = 1; j <= n; j++) cin >> arr[j];\n        int it1 = 1, it2 = n, number = 0;\n        bool sol = 1;\n        while (number < 6) {\n            ++number;\n            if (arr[it1] != number || arr[it2] != number) {\n                sol = 0;\n                break;\n            }\n            int r1 = 0, r2 = 0;\n            while (it1 <= n && arr[it1] == number) ++r1, ++it1;\n            while (it2 > 0 && arr[it2] == number) ++r2, --it2;\n            if (r1 != r2) {\n                sol = 0;\n                break;\n            }\n        }\n\n        if (number == 6 && it1 <= it2) {\n            ++number;\n            for (int j = it1; j <= it2; j++)\n                if (arr[j] != 7)\n                    sol = 0;\n        }\n        else sol = 0;\n        \n        if (sol) puts(\"yes\");\n        else puts(\"no\");\n    }\n}",
+      "Python3": "T = int(input())\nfor _ in range(T):\n    arr = [0] * 200\n    n = int(input())\n    arr[1:n + 1] = list(map(int, input().split()))\n    \n    it1, it2 = 1, n\n    number = 0\n    sol = True\n    \n    while number < 6:\n        number += 1\n        if arr[it1] != number or arr[it2] != number:\n            sol = False\n            break\n        \n        r1, r2 = 0, 0\n        while it1 <= n and arr[it1] == number:\n            r1 += 1\n            it1 += 1\n        while it2 > 0 and arr[it2] == number:\n            r2 += 1\n            it2 -= 1\n        if r1 != r2:\n            sol = False\n            break\n\n    if number == 6 and it1 <= it2:\n        number += 1\n        for j in range(it1, it2 + 1):\n            if arr[j] != 7:\n                sol = False\n                break\n    else:\n        sol = False\n    \n    print(\"yes\" if sol else \"no\")\n",
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int arr[200], n;\n        scanf(\"%d\", &n);\n        for (int j = 1; j <= n; j++) scanf(\"%d\", &arr[j]);\n        \n        int it1 = 1, it2 = n, number = 0;\n        int sol = 1;\n        \n        while (number < 6) {\n            ++number;\n            if (arr[it1] != number || arr[it2] != number) {\n                sol = 0;\n                break;\n            }\n            \n            int r1 = 0, r2 = 0;\n            while (it1 <= n && arr[it1] == number) {\n                ++r1;\n                ++it1;\n            }\n            while (it2 > 0 && arr[it2] == number) {\n                ++r2;\n                --it2;\n            }\n            if (r1 != r2) {\n                sol = 0;\n                break;\n            }\n        }\n\n        if (number == 6 && it1 <= it2) {\n            ++number;\n            for (int j = it1; j <= it2; j++) {\n                if (arr[j] != 7) {\n                    sol = 0;\n                    break;\n                }\n            }\n        } else {\n            sol = 0;\n        }\n\n        if (sol) printf(\"yes\\n\");\n        else printf(\"no\\n\");\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    public static void main (String[] args) throws java.lang.Exception {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        \n        while (T-- > 0) {\n            int n = sc.nextInt();\n            int[] arr = new int[200];\n            for (int j = 1; j <= n; j++) {\n                arr[j] = sc.nextInt();\n            }\n\n            int it1 = 1, it2 = n, number = 0;\n            boolean sol = true;\n\n            while (number < 6) {\n                ++number;\n                if (arr[it1] != number || arr[it2] != number) {\n                    sol = false;\n                    break;\n                }\n                int r1 = 0, r2 = 0;\n                while (it1 <= n && arr[it1] == number) {\n                    ++r1;\n                    ++it1;\n                }\n                while (it2 > 0 && arr[it2] == number) {\n                    ++r2;\n                    --it2;\n                }\n                if (r1 != r2) {\n                    sol = false;\n                    break;\n                }\n            }\n\n            if (number == 6 && it1 <= it2) {\n                ++number;\n                for (int j = it1; j <= it2; j++) {\n                    if (arr[j] != 7) {\n                        sol = false;\n                        break;\n                    }\n                }\n            } else {\n                sol = false;\n            }\n            \n            if (sol) {\n                System.out.println(\"yes\");\n            } else {\n                System.out.println(\"no\");\n            }\n        }\n        sc.close();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => input.push(line)).on('close', () => {\n    const T = parseInt(input[0], 10);\n    let index = 1;\n    \n    for (let t = 0; t < T; t++) {\n        let arr = new Array(200).fill(0);\n        const n = parseInt(input[index++], 10);\n        const numbers = input[index++].split(' ').map(Number);\n        arr = arr.fill(0).map((val, i) => (i <= n ? numbers[i - 1] : val));\n        \n        let it1 = 1, it2 = n;\n        let number = 0;\n        let sol = true;\n        \n        while (number < 6) {\n            number += 1;\n            if (arr[it1] !== number || arr[it2] !== number) {\n                sol = false;\n                break;\n            }\n            \n            let r1 = 0, r2 = 0;\n            while (it1 <= n && arr[it1] === number) {\n                r1 += 1;\n                it1 += 1;\n            }\n            while (it2 > 0 && arr[it2] === number) {\n                r2 += 1;\n                it2 -= 1;\n            }\n            if (r1 !== r2) {\n                sol = false;\n                break;\n            }\n        }\n        \n        if (number === 6 && it1 <= it2) {\n            number += 1;\n            for (let j = it1; j <= it2; j++) {\n                if (arr[j] !== 7) {\n                    sol = false;\n                    break;\n                }\n            }\n        } else {\n            sol = false;\n        }\n        \n        console.log(sol ? \"yes\" : \"no\");\n    }\n});\n"
+    }
+  }
+}

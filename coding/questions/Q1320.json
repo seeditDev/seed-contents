@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1320",
+  "title": "Practice - Josephus Problem",
+  "slug": "practice-josephus-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "You need to solve the famous Josephus problem using circular linked list in this section.\n\nThere are `N` people standing in a circle like 1-&gt;2-&gt;3...-&gt;N-&gt;1 and there is a knife. Whoever has the knife kills the person next to them and hands over the knife, i.e., if `2` has the knife in 1-&gt;2-&gt;3-&gt;1 then `2` kills `3` and hands over the knife to `1`. This process continues until there is only one person left, i.e., there is no one left to kill. This last person is deemed as the winner. Initially the knife is with person `1`.\n\nFor a given `N`, you need to determine the winner.\n\nNote - You are given a circular linked list containing elements from `1` to `N` with head initially at `1`. In the `solution` function, you need to output a single integer denoting the winner.\n\n**Do not make changes anywhere except the solveJosephus() function.**\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. The description of the test cases follows.\nThe first and only line of each test case contains a single integer NNN, denoting the number of people\n\n\nOutput Format\nFor each test case, output on a new line the winner of that game.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5\n4",
+        "output": "3\n1",
+        "explanation": "Explanation:\nFor n=5, the moves are as followed (the person in bracket holds the knife):\n(1)->2->3->4->5->1   (1 kills 2 and hands knife to 3)\n1->(3)->4->5->1   (3 kills 4 and hands knife to 5)\n1->3->(5)->1   (5 kills 1 and hands knife to 3)\n(3)->5   (3 kills 5 and is the only person left)\nTherefore, 3 is the winner."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5\n4",
+        "expectedOutput": "3\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The key idea of this solution is to use a **circular linked list** to efficiently simulate the process of eliminating every second person until one person remains.\n\n\n\n**Node Structure**:\n\n\n\nA `Node` contains:\n\n**value**: The data of the node, representing a person.\n**next**: A pointer to the next node in the circular list.\n\n\n\n\n\n**LinkedList Class**:\n\n\n\n**head**: A pointer to the first node in the list.\n**tail**: A pointer to the last node in the list.\n\n\n\n**insertAtEnd(int value)**:\n\n\n\nThis function adds a new node to the end of the circular linked list.\nIf the list is empty, the new node becomes the head.\nIf the list already has elements, the new node is added after the tail, and then the tail pointer is updated to the new node.\nThe `next` pointer of the new tail is set to point back to the head, making the list circular.\n\n\n\n**solveJosephus()**:\n\n\n\nThis function simulates the elimination process.\nIt continuously removes every second person until only one remains.\nThe loop runs until there is only one node left in the list.\nIt updates the `head` if the eliminated node is the current head and returns the value of the last remaining node.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\nusing namespace std;\n\nclass Node {\n    public:\n    int value;\n    Node* next;\n    \n    // Constructor to initialize the node with a given value\n    Node(int val): value(val), next(nullptr) {}\n};\n\nclass LinkedList {\n    public:\n    Node* head;\n    Node* tail;\n\n    void insertAtEnd(int value) {\n        Node* newNode = new Node(value);\n        \n        if (head == NULL) {\n            head = newNode;\n        } else {\n            tail -> next = newNode;\n        }\n        \n        // Set newNode as the tail \n        tail = newNode;\n        \n        // Set next of tail to head\n        tail -> next = head;\n    }\n    \n    int solveJosephus() {\n        Node* current = head;\n        \n        // This condition will be true when there is only one element left in the list\n        while (current -> next != current) {\n            Node* knifePass = current -> next -> next;\n            if (current -> next == head) {\n                // We kill the current.next person, therefore if that is the head of the list, then the head needs to be updated to its next element\n                head = knifePass;\n            }\n            \n            // Killing the next person (Removing the pointer pointing to that node)\n            current -> next = knifePass;\n            \n            // Passing the knife\n            current = current -> next;\n        }\n        return current -> value;\n    }\n\n};\n\nint main() {\n    int t, n;\n    cin >> t;\n    \n    while (t--) {\n        cin >> n;\n        \n        LinkedList* list = new LinkedList();\n        for (int i = 1; i <= n; i++) {\n            list -> insertAtEnd(i);    \n        }\n        cout << list -> solveJosephus() << '\\n'; \n    }\n}\n    ",
+      "Python3": "class Node:\n    def __init__(self, val):\n        self.value = val\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def insertAtEnd(self, value):\n        new_node = Node(value)\n\n        if self.head is None:\n            self.head = new_node\n        else:\n            self.tail.next = new_node\n\n        self.tail = new_node\n        self.tail.next = self.head\n\n    def solveJosephus(self):\n        current = self.head\n\n        while current.next != current:\n            knife_pass = current.next.next\n            if current.next == self.head:\n                self.head = knife_pass\n\n            current.next = knife_pass\n            current = current.next\n        return current.value\n\nif __name__ == \"__main__\":\n    t = int(input())\n\n    for _ in range(t):\n        n = int(input())\n\n        ll = LinkedList()\n        for i in range(1, n + 1):\n            ll.insertAtEnd(i)\n        print(ll.solveJosephus())\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Node {\n    int value;\n    struct Node* next;\n};\n\nstruct LinkedList {\n    struct Node* head;\n    struct Node* tail;\n};\n\nvoid insertAtEnd(struct LinkedList* list, int value) {\n    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));\n    newNode->value = value;\n    newNode->next = NULL;\n\n    if (list->head == NULL) {\n        list->head = newNode;\n    } else {\n        list->tail->next = newNode;\n    }\n\n    list->tail = newNode;\n    list->tail->next = list->head;\n}\n\nint solveJosephus(struct LinkedList* list) {\n    struct Node* current = list->head;\n\n    while (current->next != current) {\n        struct Node* knifePass = current->next->next;\n        if (current->next == list->head) {\n            list->head = knifePass;\n        }\n\n        current->next = knifePass;\n        current = current->next;\n    }\n    return current->value;\n}\n\nint main() {\n    int t, n;\n    scanf(\"%d\", &t);\n    \n    while (t--) {\n        scanf(\"%d\", &n);\n        \n        struct LinkedList* list = (struct LinkedList*)malloc(sizeof(struct LinkedList));\n        list->head = NULL;\n        list->tail = NULL;\n        \n        for (int i = 1; i <= n; i++) {\n            insertAtEnd(list, i);\n        }\n        printf(\"%d\\n\", solveJosephus(list)); \n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\nclass Node {\n    int value;\n    Node next;\n\n    Node(int val) {\n        value = val;\n        next = null;\n    }\n}\n\nclass LinkedList {\n    Node head;\n    Node tail;\n\n    void insertAtEnd(int value) {\n        Node newNode = new Node(value);\n\n        if (head == null) {\n            head = newNode;\n        } else {\n            tail.next = newNode;\n        }\n\n        tail = newNode;\n        tail.next = head;\n    }\n\n    int solveJosephus() {\n        Node current = head;\n\n        while (current.next != current) {\n            Node knifePass = current.next.next;\n            if (current.next == head) {\n                head = knifePass;\n            }\n\n            current.next = knifePass;\n            current = current.next;\n        }\n        return current.value;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            int n = scanner.nextInt();\n\n            LinkedList list = new LinkedList();\n            for (int i = 1; i <= n; i++) {\n                list.insertAtEnd(i);\n            }\n            System.out.println(list.solveJosephus());\n        }\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.next = null;\n    }\n}\n\nclass LinkedList {\n    constructor() {\n        this.head = null;\n        this.tail = null;\n    }\n}\n*/\nLinkedList.prototype.solveJosephus = function(){\n    //Your code goes here\n    let current = this.head;\n    while (current.next !== current) {\n        const knifePass = current.next.next;\n        if (current.next === this.head) {\n            this.head = knifePass;\n        }\n        current.next = knifePass;\n        current = current.next;\n    }\n    return current.value;\n}"
+    }
+  }
+}

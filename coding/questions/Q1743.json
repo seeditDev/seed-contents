@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1743",
+  "title": "Chef Builds Supersequence",
+  "slug": "chef-builds-supersequence",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has two strings and wants to merge them into a single string such that **both strings appear as subsequences** of the result.\n\nChef wants the final string to be **as short as possible** while preserving the relative order of characters from both strings.\n\nA string **AAA** is a subsequence of string **BBB** if **AAA** can be obtained by deleting zero or more characters from **BBB** without changing the order of the remaining characters.\n\nIf multiple shortest common supersequences exist, **Chef is satisfied with any one of them**.\n\nYour task is to help Chef construct this **shortest common supersequence**.\n\nFunction Declaration\n\n**Function Name**\n\n\n\nfindShortestCommonSupersequencefindShortestCommonSupersequencefindShortestCommonSupersequence\n\n\n\n**Parameters**\n\n\n\n\nfirstStringfirstStringfirstString (`String`)\nThe first input string consisting only of lowercase English letters.\n\n\n\n\nsecondStringsecondStringsecondString (`String`)\nThe second input string consisting only of lowercase English letters.\n\n\n\n\n\n\n**Return Value**\n\n\n\nReturns a `String` representing the **shortest common supersequence** of **firstStringfirstStringfirstString** and **secondStringsecondStringsecondString**.\n\n\nConstraints\n1≤T≤1051 \\le T \\le 10^51≤T≤105\n1≤∣firstString∣,∣secondString∣≤10001 \\le |firstString|, |secondString| \\le 10001≤∣firstString∣,∣secondString∣≤1000\nBoth **firstStringfirstStringfirstString** and **secondStringsecondStringsecondString** contain only lowercase English letters.\nInput Format\n\nThe first line contains a single integer **TTT** — the number of test cases.\n\n\n\n\nEach test case consists of:\n\n\n\nFirst line containing the string **firstStringfirstStringfirstString**\nSecond line containing the string **secondStringsecondStringsecondString**\n\n\nOutput Format\nFor each test case, print a single line containing the **shortest common supersequence** of **firstStringfirstStringfirstString** and **secondStringsecondStringsecondString**.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\nabc\nac\nxyz\nzyx\naabbcc\nabcabc",
+        "output": "abc\nxyzyx\naabbcabc",
+        "explanation": "Explanation:\nTest Case 1 :\nInput strings: \"abc\" and \"ac\"\nThe shortest common supersequence is \"abc\", since \"ac\" already appears as a subsequence of it.\nTest Case 2 :\nInput strings: \"xyz\" and \"zyx\"\nOne possible shortest common supersequence is \"xyzyx\", obtained by adding the final \"x\" to preserve the order of both strings.\nTest Case 3 :\nInput strings: \"aabbcc\" and \"abcabc\"\nThis string contains:\n\n\"aabbcc\" as a subsequence (using a a b b c _ c)\n\"abcabc\" as a subsequence (using a _ b _ c a b c)\n\nHence, a valid shortest common supersequence for this test case is \"aabbcabc\"."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\nabc\nac\nxyz\nzyx\naabbcc\nabcabc",
+        "expectedOutput": "abc\nxyzyx\naabbcabc",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(m×n)O(m \\times n)O(m×n) .",
+    "spaceComplexity": "O(m×n)O(m \\times n)O(m×n) .",
+    "code": {
+      "C++": "string findShortestCommonSupersequence(string str1, string str2) {\n        int n = str1.length();\n        int m = str2.length();\n        \n        // Step 1: Build LCS Table\n        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));\n        \n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= m; j++) {\n                if (str1[i - 1] == str2[j - 1]) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        \n        // Step 2: Backtrack\n        string res = \"\";\n        int i = n, j = m;\n        \n        while (i > 0 && j > 0) {\n            if (str1[i - 1] == str2[j - 1]) {\n                res += str1[i - 1];\n                i--; j--;\n            } else if (dp[i - 1][j] > dp[i][j - 1]) {\n                res += str1[i - 1];\n                i--;\n            } else {\n                res += str2[j - 1];\n                j--;\n            }\n        }\n        \n        while (i > 0) { res += str1[i - 1]; i--; }\n        while (j > 0) { res += str2[j - 1]; j--; }\n        \n        reverse(res.begin(), res.end());\n        return res;\n    }",
+      "Python3": "def findShortestCommonSupersequence(str1, str2):\n    n, m = len(str1), len(str2)\n    \n    # Step 1: Build LCS Table\n    dp = [[0] * (m + 1) for _ in range(n + 1)]\n    \n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            if str1[i - 1] == str2[j - 1]:\n                dp[i][j] = 1 + dp[i - 1][j - 1]\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n    \n    # Step 2: Backtrack\n    res = []\n    i, j = n, m\n    \n    while i > 0 and j > 0:\n        if str1[i - 1] == str2[j - 1]:\n            res.append(str1[i - 1])\n            i -= 1\n            j -= 1\n        elif dp[i - 1][j] > dp[i][j - 1]:\n            res.append(str1[i - 1])\n            i -= 1\n        else:\n            res.append(str2[j - 1])\n            j -= 1\n            \n    # Add leftovers\n    while i > 0:\n        res.append(str1[i - 1])\n        i -= 1\n    while j > 0:\n        res.append(str2[j - 1])\n        j -= 1\n        \n    return \"\".join(res[::-1])",
+      "C": "int max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\n// Function to reverse the result string in place\nvoid reverseString(char* str) {\n    int len = strlen(str);\n    for (int i = 0; i < len / 2; i++) {\n        char temp = str[i];\n        str[i] = str[len - i - 1];\n        str[len - i - 1] = temp;\n    }\n}\n\nchar* findShortestCommonSupersequence(char* str1, char* str2) {\n    int n = strlen(str1);\n    int m = strlen(str2);\n    \n    // Step 1: DP Table\n    // Dynamic allocation for large constraints (heap memory)\n    int** dp = (int**)malloc((n + 1) * sizeof(int*));\n    for (int i = 0; i <= n; i++)\n        dp[i] = (int*)malloc((m + 1) * sizeof(int));\n        \n    for (int i = 0; i <= n; i++) {\n        for (int j = 0; j <= m; j++) {\n            if (i == 0 || j == 0)\n                dp[i][j] = 0;\n            else if (str1[i - 1] == str2[j - 1])\n                dp[i][j] = 1 + dp[i - 1][j - 1];\n            else\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n    }\n    \n    // Step 2: Backtrack\n    // Max possible length is n + m\n    char* res = (char*)malloc((n + m + 1) * sizeof(char));\n    int index = 0;\n    int i = n, j = m;\n    \n    while (i > 0 && j > 0) {\n        if (str1[i - 1] == str2[j - 1]) {\n            res[index++] = str1[i - 1];\n            i--; j--;\n        } else if (dp[i - 1][j] > dp[i][j - 1]) {\n            res[index++] = str1[i - 1];\n            i--;\n        } else {\n            res[index++] = str2[j - 1];\n            j--;\n        }\n    }\n    \n    while (i > 0) { res[index++] = str1[i - 1]; i--; }\n    while (j > 0) { res[index++] = str2[j - 1]; j--; }\n    res[index] = '\\0';\n    \n    // Cleanup DP table\n    for(int k=0; k<=n; k++) free(dp[k]);\n    free(dp);\n\n    reverseString(res);\n    return res;\n}",
+      "Java": "class Codechef {\n    public static String findShortestCommonSupersequence(String str1, String str2) {\n        int n = str1.length();\n        int m = str2.length();\n        \n        int[][] dp = new int[n + 1][m + 1];\n        \n        // Step 1: Fill LCS DP Table\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= m; j++) {\n                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        \n        // Step 2: Construct String by Backtracking\n        StringBuilder sb = new StringBuilder();\n        int i = n, j = m;\n        \n        while (i > 0 && j > 0) {\n            if (str1.charAt(i - 1) == str2.charAt(j - 1)) {\n                sb.append(str1.charAt(i - 1));\n                i--; j--;\n            } else if (dp[i - 1][j] > dp[i][j - 1]) {\n                sb.append(str1.charAt(i - 1));\n                i--;\n            } else {\n                sb.append(str2.charAt(j - 1));\n                j--;\n            }\n        }\n        \n        while (i > 0) { sb.append(str1.charAt(i - 1)); i--; }\n        while (j > 0) { sb.append(str2.charAt(j - 1)); j--; }\n        \n        return sb.reverse().toString();\n    }\n}",
+      "JavaScript": "/**\n * @param {string} str1\n * @param {string} str2\n * @return {string}\n */\nfunction findShortestCommonSupersequence(str1, str2) {\n    let n = str1.length;\n    let m = str2.length;\n    \n    // Step 1: DP Table initialization\n    let dp = Array(n + 1).fill(0).map(() => Array(m + 1).fill(0));\n    \n    for (let i = 1; i <= n; i++) {\n        for (let j = 1; j <= m; j++) {\n            if (str1[i - 1] === str2[j - 1]) {\n                dp[i][j] = 1 + dp[i - 1][j - 1];\n            } else {\n                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n    \n    // Step 2: Backtrack logic\n    let res = [];\n    let i = n, j = m;\n    \n    while (i > 0 && j > 0) {\n        if (str1[i - 1] === str2[j - 1]) {\n            res.push(str1[i - 1]);\n            i--; j--;\n        } else if (dp[i - 1][j] > dp[i][j - 1]) {\n            res.push(str1[i - 1]);\n            i--;\n        } else {\n            res.push(str2[j - 1]);\n            j--;\n        }\n    }\n    \n    while (i > 0) { res.push(str1[i - 1]); i--; }\n    while (j > 0) { res.push(str2[j - 1]); j--; }\n    \n    return res.reverse().join('');\n}"
+    }
+  }
+}

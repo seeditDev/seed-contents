@@ -1,0 +1,92 @@
+{
+  "questionId": "Q1852",
+  "title": "Chef and Digit Jumps",
+  "slug": "chef-and-digit-jumps",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef loves games! But he likes to invent his own. Now he plays game \"Digit Jump\". Chef has a sequence of digits S1,S2,…,SNS_{1}, S_{2}, \\ldots , S_{N}S1​,S2​,…,SN​. He is staying in the first digit S1S_{1}S1​ and wants to reach the last digit SNS_{N}SN​ in the minimal number of jumps.\n\nWhile staying in some index iii Chef can jump into i−1i - 1i−1 and i+1i + 1i+1, but he can't jump out from sequence. Or he can jump into any digit with the same value SiS_iSi​.\n\nHelp Chef to find the minimal number of jumps he need to reach digit SNS_{N}SN​ from digit S1S_1S1​.&nbsp;\n\n\nInput Format\nInput contains a single line consist of string SSS of length NNN - the sequence of digits.\n\n\n\nOutput Format\nIn a single line print single integer - the minimal number of jumps he needs.",
+    "constraints": [
+      "1≤N≤1051\\leq N \\leq 10^51≤N≤105",
+      "Each symbol of SSS is a digit from 000 to 999."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "01234567890",
+        "output": "1",
+        "explanation": "Explanation:\nTest Case 1: Chef can directly jump from the first digit (it is 000) to the last (as it is also 000)."
+      },
+      {
+        "id": "sample_2",
+        "input": "012134444444443",
+        "output": "4",
+        "explanation": "Explanation:\nTest Case 2: Chef should follow the following path: 1−2−4−5−151 - 2 - 4 - 5 - 151−2−4−5−15."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "01234567890",
+        "expectedOutput": "1",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "012134444444443",
+        "expectedOutput": "4",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\n/*\nMake a adjacency list from one digit to all the places\nSince all the edges has cost = 1, run bfs from 1\nStore the cost and print\nClear the adjacency list as we will not visit same digit twice\n*/\n\n\nconst int N = 1e5 + 10;\nconst int INF = 1e9;\n\nvector<int> adj[10];\nvector<int> vis(N, 0);\nvector<int> d(N, INF);\n\nint n;\nstring s;\n\nvoid bfs(int v) { \n    queue<int> q;\n    q.push(v);\n\n    d[v] = 0;\n\n    while(!q.empty()) { \n        int u = q.front();\n        q.pop();\n\n        if(vis[u]) { \n            continue;\n        }\n\n        vis[u] = 1; \n\n        for(auto x: adj[s[u] - '0']) {\n            q.push(x);\n            d[x] = min(d[x], d[u] + 1);\n        }   \n        adj[s[u] - '0'].clear();\n        if(u + 1 <= n - 1) { // Edge from index: i to i + 1\n            q.push(u + 1);\n            d[u + 1] = min(d[u + 1], d[u] + 1);\n        }\n        if(u - 1 >= 0) { // Edge from index: i to i - 1\n            q.push(u - 1);\n            d[u - 1] = min(d[u - 1], d[u] + 1);\n        }\n    }   \n}\n\nint main() {\n    cin >> s;\n    n = s.size();\n\n    for(int i = 0; i < n; i++) {\n        adj[s[i] - '0'].push_back(i); // adjacency list from digit\n    }\n\n    bfs(0);\n\n    cout << d[n - 1] << \"\\n\";\n    return 0;\n}   ",
+      "Python3": "from collections import deque\n\nN = 10 ** 5 + 10\nINF = 10 ** 9\n\nadj = [[] for _ in range(10)]\nvis = [0] * N\nd = [INF] * N\n\ndef bfs(v):\n    q = deque()\n    q.append(v)\n\n    d[v] = 0\n\n    while q:\n        u = q.popleft()\n\n        if vis[u]:\n            continue\n\n        vis[u] = 1\n\n        for x in adj[int(s[u])]:\n            q.append(x)\n            d[x] = min(d[x], d[u] + 1)\n\n        adj[int(s[u])].clear()\n\n        if u + 1 <= n - 1:\n            q.append(u + 1)\n            d[u + 1] = min(d[u + 1], d[u] + 1)\n\n        if u - 1 >= 0:\n            q.append(u - 1)\n            d[u - 1] = min(d[u - 1], d[u] + 1)\n\nif __name__ == \"__main__\":\n    s = input().strip()\n    n = len(s)\n\n    for i in range(n):\n        adj[int(s[i])].append(i)\n\n    bfs(0)\n\n    print(d[n - 1])\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <string.h>\n#include <limits.h>\n\n#define N 100010\n#define INF 1000000000\n\nint adj[10][N]; // Adjacency list for each digit, with a large enough size\nint adj_size[10]; // Size of each adjacency list\nbool vis[N];\nint d[N];\nchar s[N];\nint n;\n\nvoid bfs(int v) {\n    int queue[N];\n    int front = 0, back = 0;\n\n    queue[back++] = v;\n    d[v] = 0;\n\n    while (front < back) {\n        int u = queue[front++];\n\n        if (vis[u]) {\n            continue;\n        }\n\n        vis[u] = true;\n\n        int digit = s[u] - '0';\n\n        // Traverse all adjacent nodes for the digit\n        for (int i = 0; i < adj_size[digit]; i++) {\n            int x = adj[digit][i];\n            if (d[x] > d[u] + 1) {\n                queue[back++] = x;\n                d[x] = d[u] + 1;\n            }\n        }\n        adj_size[digit] = 0; // Clear the adjacency list for the digit\n\n        // Traverse adjacent nodes by index\n        if (u + 1 < n) {\n            if (d[u + 1] > d[u] + 1) {\n                queue[back++] = u + 1;\n                d[u + 1] = d[u] + 1;\n            }\n        }\n        if (u - 1 >= 0) {\n            if (d[u - 1] > d[u] + 1) {\n                queue[back++] = u - 1;\n                d[u - 1] = d[u] + 1;\n            }\n        }\n    }\n}\n\nint main() {\n    if (scanf(\"%s\", s) != 1) {\n        fprintf(stderr, \"Failed to read input string\\n\");\n        return 1;\n    }\n    n = strlen(s);\n\n    for (int i = 0; i < n; i++) {\n        int digit = s[i] - '0';\n        if (digit >= 0 && digit < 10) {\n            adj[digit][adj_size[digit]++] = i; // Add index i to the adjacency list of the digit\n        }\n    }\n\n    for (int i = 0; i < n; i++) {\n        d[i] = INF;\n        vis[i] = false;\n    }\n\n    bfs(0);\n\n    if (d[n - 1] == INF) {\n        printf(\"-1\\n\");\n    } else {\n        printf(\"%d\\n\", d[n - 1]);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\n/*\nMake a adjacency list from one digit to all the places\nSince all the edges has cost = 1, run bfs from 1\nStore the cost and print\nClear the adjacency list as we will not visit same digit twice\n*/\n\n\nclass main {\n    static int N = 100010;\n    static int INF = 1000000000;\n    static ArrayList<Integer>[] adj = new ArrayList[10];\n    static int[] vis = new int[N];\n    static int[] d = new int[N];\n    static int n;\n    static String s;\n\n    public static void bfs(int v) {\n        Queue<Integer> q = new LinkedList<>();\n        q.add(v);\n\n        d[v] = 0;\n\n        while (!q.isEmpty()) {\n            int u = q.poll();\n\n            if (vis[u] != 0) {\n                continue;\n            }\n\n            vis[u] = 1;\n\n            for (int x : adj[s.charAt(u) - '0']) {\n                q.add(x);\n                d[x] = Math.min(d[x], d[u] + 1);\n            }\n\n            adj[s.charAt(u) - '0'].clear();\n\n            if (u + 1 <= n - 1) {\n                q.add(u + 1);\n                d[u + 1] = Math.min(d[u + 1], d[u] + 1);\n            }\n            if (u - 1 >= 0) {\n                q.add(u - 1);\n                d[u - 1] = Math.min(d[u - 1], d[u] + 1);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        s = scanner.next();\n        n = s.length();\n\n        for (int i = 0; i < 10; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        for (int i = 0; i < n; i++) {\n            adj[s.charAt(i) - '0'].add(i);\n        }\n\n        for (int i = 0; i < n; i++) {\n            d[i] = INF;\n        }\n\n        bfs(0);\n\n        System.out.println(d[n - 1]);\n    }\n}\n"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1690",
+  "title": "Next Greater Element",
+  "slug": "next-greater-element",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array of N integers.\nFor each element in the array, find the next greater element to its right.\n\nThe Next Greater Element (NGE) for an element x is the first element to the right of x that is strictly greater than x.\n\nIf no such element exists, output -1 for that position.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 \n4 5 2 25",
+        "output": "5 25 25 -1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 \n4 5 2 25",
+        "expectedOutput": "5 25 25 -1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    vector<int> arr(n);\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    stack<int> stack;\n\n    // Initialize the NGE array\n    int nge[n];\n\n    // Iterating the array from right to left\n    for (int i = n - 1; i >= 0; i--) {\n\n        // Pop till the top element is smaller than current\n        while (!stack.empty() && stack.top() < arr[i]) {\n            stack.pop();\n        }\n\n        if (!stack.empty()) {\n            nge[i] = stack.top();\n        } else {\n            nge[i] = -1;\n        }\n\n        // Push the current element to stack\n        stack.push(arr[i]);\n    }\n\n    // Print the NGE array\n    for (int i = 0; i < n; i++) {\n        cout << nge[i] << \" \";\n    }\n    cout << endl;\n}\n",
+      "Python3": "n = int(input())\narr = list(map(int, input().split()))\nstack = []\n\n# Initialize the NGE array\nnge = [-1] * n\n\n# Iterating the array from right to left\nfor i in range(n-1, -1, -1):\n    \n    # Pop till the top element is smaller than current\n    while stack and stack[-1] < arr[i]:\n        stack.pop()\n    \n    if stack:\n        nge[i] = stack[-1]\n    else:\n        nge[i] = -1\n    \n    # Push the current element to stack\n    stack.append(arr[i])\n    \nprint(*nge)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Stack {\n    int top;\n    unsigned capacity;\n    int* array;\n};\n\nstruct Stack* createStack(unsigned capacity) {\n    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));\n    stack->capacity = capacity;\n    stack->top = -1;\n    stack->array = (int*)malloc(stack->capacity * sizeof(int));\n    return stack;\n}\n\nint isEmpty(struct Stack* stack) {\n    return stack->top == -1;\n}\n\nint isFull(struct Stack* stack) {\n    return stack->top == stack->capacity - 1;\n}\n\nvoid push(struct Stack* stack, int item) {\n    if (isFull(stack))\n        return;\n    stack->array[++stack->top] = item;\n}\n\nint pop(struct Stack* stack) {\n    if (isEmpty(stack))\n        return -1;\n    return stack->array[stack->top--];\n}\n\nint peek(struct Stack* stack) {\n    if (isEmpty(stack))\n        return -1;\n    return stack->array[stack->top];\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int* arr = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    struct Stack* stack = createStack(n);\n\n    // Initialize the NGE array\n    int* nge = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        nge[i] = -1;\n    }\n\n    // Iterating the array from right to left\n    for (int i = n - 1; i >= 0; i--) {\n        // Pop till the top element is smaller than current\n        while (!isEmpty(stack) && peek(stack) < arr[i]) {\n            pop(stack);\n        }\n\n        if (!isEmpty(stack)) {\n            nge[i] = peek(stack);\n        }\n\n        // Push the current element to stack\n        push(stack, arr[i]);\n    }\n\n    // Print the NGE array\n    for (int i = 0; i < n; i++) {\n        printf(\"%d \", nge[i]);\n    }\n    printf(\"\\n\");\n\n    free(arr);\n    free(stack->array);\n    free(stack);\n    free(nge);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\nimport java.util.Stack;\n\nclass NextGreaterElement {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int[] arr = new int[n];\n\n        for (int i = 0; i < n; i++) {\n            arr[i] = scanner.nextInt();\n        }\n\n        Stack<Integer> stack = new Stack<>();\n        int[] nge = new int[n];\n\n        // Iterating the array from right to left\n        for (int i = n - 1; i >= 0; i--) {\n            \n            // Pop till the top element is smaller than current\n            while (!stack.isEmpty() && stack.peek() < arr[i]) {\n                stack.pop();\n            }\n\n            nge[i] = stack.isEmpty() ? -1 : stack.peek();\n            \n            // Push the current element to stack\n            stack.push(arr[i]);\n        }\n\n        for (int i = 0; i < n; i++) {\n            System.out.print(nge[i] + \" \");\n        }\n\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "\nfunction getNextGreaterElements(arr) {\n    let n = arr.length;\n    let stack = [];\n    let nge = new Array(n).fill(-1);\n\n    // Iterating the array from right to left\n    for (let i = n - 1; i >= 0; i--) {\n        // Pop till the top element is smaller than current\n        while (stack.length && stack[stack.length - 1] <= arr[i]) {\n            stack.pop();\n        }\n\n        if (stack.length) {\n            nge[i] = stack[stack.length - 1];\n        } else {\n            nge[i] = -1;\n        }\n    \n        // Push the current element to stack\n        stack.push(arr[i]);\n    }\n\n    return nge;\n}\n\n"
+    }
+  }
+}

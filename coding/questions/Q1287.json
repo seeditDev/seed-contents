@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1287",
+  "title": "Tree Path Sum",
+  "slug": "tree-path-sum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an undirected connected tree with NNN nodes, numbered from 111 to NNN, and rooted at node 111, along with an integer target_sumtarget\\_sumtarget_sum. \n\nCheck if there exists a path from root to any leaf whose sum is equal to target_sumtarget\\_sumtarget_sum. Path sum is the addition of the values of nodes which are in that particular path.\n\nFor example, if target_sumtarget\\_sumtarget_sum is 9, then in the following tree, there is a path 1−&gt;2−&gt;61 -&gt; 2 -&gt; 61−&gt;2−&gt;6 whose sum is 9.\n\nFunction DeclarationFunction Namesolutionsolutionsolution – This function determines whether there exists a root-to-leaf path in the given tree such that the sum of node values along that path equals target_sumtarget\\_sumtarget_sum.\n\nParameters\n\nnnn: The number of nodes in the tree (nodes are numbered from 1 to n).\n\n\n\n\ntarget_sumtarget\\_sumtarget_sum: The required sum of a valid root-to-leaf path.\n\n\n\n\nadjadjadj: An adjacency list representing the tree.\n\n\n\nadj[i]adj[i]adj[i] contains the list of nodes directly connected to node iii.\nThe tree is undirected and rooted at node 1.\n\n\nReturn Value\nReturns truetruetrue if there exists at least one path from the root (node 1) to any leaf such that the sum of node values in that path equals target_sumtarget\\_sumtarget_sum.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000\n1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N\n1≤target_sum≤N(N+1)21 \\leq target\\_sum \\leq \\frac{N(N+1)}{2}1≤target_sum≤2N(N+1)​\n\nInput Format\n\nThe first line of the input contains two space separated integer NNN and target_sumtarget\\_sumtarget_sum — the number of vertices and the target sum which needs to be checked.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\nOutput YESYESYES if tree has root to leaf path sum equal to given target_sumtarget\\_sumtarget_sum or NONONO otherwise.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7 9\n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "output": "YES",
+        "explanation": "Explanation:\nRefer to the image provided above for explanations of this sample test."
+      },
+      {
+        "id": "sample_2",
+        "input": "6 4\n1 2\n1 3\n2 4\n2 6\n3 5",
+        "output": "NO",
+        "explanation": "Explanation:\nThere is no path that can achieve this target sum."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7 9\n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "expectedOutput": "YES",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "6 4\n1 2\n1 3\n2 4\n2 6\n3 5",
+        "expectedOutput": "NO",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    void dfs(int node, int par, long long s, int target_sum,\n             vector<vector<int>> &adj, vector<int> &degree, bool &check) {\n        s += node;\n\n        for (int v : adj[node]) {\n            if (v != par) dfs(v, node, s, target_sum, adj, degree, check);\n        }\n\n        if (par != -1 && degree[node] == 1) {\n            if (s == target_sum) check = true;\n        }\n    }\n\n    bool solution(int n, int target_sum, vector<vector<int>> &adj) {\n        if (n == 1) return target_sum == 1;\n\n        vector<int> degree(n + 1, 0);\n        for (int i = 1; i <= n; i++) {\n            degree[i] = adj[i].size();\n        }\n\n        bool check = false;\n        dfs(1, -1, 0, target_sum, adj, degree, check);\n        return check;\n    }\n};",
+      "Python3": "class Solution:\n\n    def dfs(self, node, parent, s, target_sum, adj, degree, check):\n        s += node\n\n        for v in adj[node]:\n            if v != parent:\n                self.dfs(v, node, s, target_sum, adj, degree, check)\n\n        if parent != -1 and degree[node] == 1:\n            if s == target_sum:\n                check[0] = True\n\n    def solution(self, n, target_sum, adj):\n        if n == 1:\n            return target_sum == 1\n\n        degree = [0] * (n + 1)\n        for i in range(1, n + 1):\n            degree[i] = len(adj[i])\n\n        check = [False]  \n        self.dfs(1, -1, 0, target_sum, adj, degree, check)\n        return check[0]",
+      "C": "void dfs(Solution* sol, int node, int parent, long long s,\n         int target_sum,\n         int** adj, int* adjSize,\n         int* degree,\n         int* check)\n{\n    s += node;\n\n    for (int i = 0; i < adjSize[node]; i++) {\n        int v = adj[node][i];\n        if (v != parent) {\n            dfs(sol, v, node, s, target_sum, adj, adjSize, degree, check);\n        }\n    }\n\n    if (parent != -1 && degree[node] == 1) {\n        if (s == target_sum) *check = 1;\n    }\n}\n\nint solution(Solution* sol, int n, int target_sum,\n             int** adj, int* adjSize)\n{\n    int* degree = (int*)calloc(n + 1, sizeof(int));\n\n    for (int i = 1; i <= n; i++) {\n        degree[i] = adjSize[i];\n    }\n\n    if (n == 1) {\n        free(degree);\n        return target_sum == 1;\n    }\n\n    int check = 0;\n\n    dfs(sol, 1, -1, 0, target_sum, adj, adjSize, degree, &check);\n\n    free(degree);\n    return check;\n}",
+      "Java": "class Solution {\n\n    void dfs(int node, int parent, long s, int target_sum,\n             List<List<Integer>> adj, int[] degree, boolean[] check) {\n\n        s += node;\n\n        for (int v : adj.get(node)) {\n            if (v != parent) {\n                dfs(v, node, s, target_sum, adj, degree, check);\n            }\n        }\n\n        if (parent != -1 && degree[node] == 1) {\n            if (s == target_sum) check[0] = true;\n        }\n    }\n\n    boolean solution(int n, int target_sum, List<List<Integer>> adj) {\n        if (n == 1) return target_sum == 1;\n\n        int[] degree = new int[n + 1];\n        for (int i = 1; i <= n; i++) {\n            degree[i] = adj.get(i).size();\n        }\n\n        boolean[] check = new boolean[1];\n        dfs(1, -1, 0L, target_sum, adj, degree, check);\n        return check[0];\n    }\n}",
+      "JavaScript": "class Solution {\n\n    dfs(node, parent, s, target_sum, adj, degree, check) {\n        s += node;\n\n        for (const v of adj[node]) {\n            if (v !== parent) {\n                this.dfs(v, node, s, target_sum, adj, degree, check);\n            }\n        }\n\n        if (parent !== -1 && degree[node] === 1) {\n            if (s === target_sum) check.value = true;\n        }\n    }\n\n    solution(n, target_sum, adj) {\n        if (n === 1) return target_sum === 1;\n\n        const degree = new Array(n + 1).fill(0);\n        for (let i = 1; i <= n; i++) {\n            degree[i] = adj[i].length;\n        }\n\n        const check = { value: false };\n        this.dfs(1, -1, 0, target_sum, adj, degree, check);\n        return check.value;\n    }\n}"
+    }
+  }
+}

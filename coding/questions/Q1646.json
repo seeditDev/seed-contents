@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1646",
+  "title": "Chef Removes Overlapping Intervals",
+  "slug": "chef-removes-overlapping-intervals",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a list of intervals intervalListintervalListintervalList, where each interval is represented by a start and an end point.  \n\nChef wants to remove the minimum number of intervals so that no two remaining intervals overlap. \n\nHelp Chef find the minimum count of intervals that must be removed to achieve this.\n\nNote:An interval is represented as **[start, end]**, where `start &lt; end`.\n\nTwo intervals are considered **non-overlapping** if they share **any common point**.\nIntervals that touch at endpoints (e.g. `[1,2]` and `[2,3]`) are considered **non-overlapping**.\n\nThe task is to remove the **minimum number of intervals** so that no two remaining intervals overlap. This is equivalent to selecting the **maximum number of non-overlapping intervals**, where an interval can be selected only if its `start` is **greater** than or **equal** to the `end` of the previously selected interval.\n\nFunction DeclarationFunction NamefindMinimumRemovalsfindMinimumRemovalsfindMinimumRemovals — This function determines the minimum number of intervals to remove to eliminate all overlaps in a given list of intervals.\n\nParameters\nintervalListintervalListintervalList: A reference to a vector containing intervals, where each interval is represented as a vector of two integers [start,end][start, end][start,end].\nThe intervals represent ranges with integer start and end points.\nIntervals may overlap or touch at endpoints.\nReturn Value\nReturns an integer representing the minimum count of intervals that must be removed to ensure no intervals overlap.\nConstraints\n1≤intervalList.size()≤1051 \\leq \\text{intervalList.size()} \\leq 10^51≤intervalList.size()≤105\nEach interval has exactly two integers: startstartstart and endendend\n−5×104≤starti&lt;endi≤5×104-5 \\times 10^4 \\leq \\text{start}_i &lt; \\text{end}_i \\leq 5 \\times 10^4−5×104≤starti​&lt;endi​≤5×104\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nEach test case consists of:\n\nThe first line contains an integer NNN — the number of intervals Chef has.\nThe next NNN lines each contain two integers startistart_istarti​ and endiend_iendi​ describing the intervals.\n\n\n\n\nOutput Format\n\nFor each test case, print a single line containing one integer — the minimum number of intervals Chef must remove so that no intervals overlap.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3\n[0 1]\n[3 4]\n[1 2]\n3\n[1 2]\n[1 3]\n[1 4]\n3\n[1 2]\n[1 4]\n[2 4]",
+        "output": "0\n2\n1",
+        "explanation": "Explanation:\nFirst test case: no need to remove any intervals as all are non overlapping. [0 1] [1 2] [3 4]\n\n\nSecond test case: we can choose any one of the intervals only as all of them are overlapping thus we have to remove any 2 intervals.\n\n\nThird test case: we have to remove [1 4] as it is overlapping the whole interval but by removing it we can have non-overlapping interval: [1 2][2 4]."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3\n[0 1]\n[3 4]\n[1 2]\n3\n[1 2]\n[1 3]\n[1 4]\n3\n[1 2]\n[1 4]\n[2 4]",
+        "expectedOutput": "0\n2\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int findMinimumRemovals(vector<vector<int>>& intervalList) {\n        if (intervalList.empty()) return 0;\n\n        // Sort intervals by end time\n        sort(intervalList.begin(), intervalList.end(), [](const vector<int>& a, const vector<int>& b) {\n            return a[1] < b[1];\n        });\n\n        int count = 0;\n        int end = intervalList[0][1];\n\n        for (int i = 1; i < (int)intervalList.size(); i++) {\n            if (intervalList[i][0] < end) count++;\n            else end = intervalList[i][1];\n        }\n\n        return count;\n    }\n};\n",
+      "Python3": "class Solution:\n    def findMinimumRemovals(self, intervalList):\n        if not intervalList:\n            return 0\n\n        # Sort by ending time\n        intervalList.sort(key=lambda x: x[1])\n\n        removals = 0\n        end = intervalList[0][1]\n\n        for i in range(1, len(intervalList)):\n            if intervalList[i][0] < end:\n                # Overlap → remove\n                removals += 1\n            else:\n                # No overlap → update end\n                end = intervalList[i][1]\n\n        return removals",
+      "C": "int cmp(const void *a, const void *b) {\n    Interval *x = (Interval *)a;\n    Interval *y = (Interval *)b;\n    return x->end - y->end;\n}\n\nint findMinimumRemovals(Interval *intervals, int n) {\n    if (n == 0) return 0;\n\n    qsort(intervals, n, sizeof(Interval), cmp);\n\n    int removals = 0;\n    int end = intervals[0].end;\n\n    for (int i = 1; i < n; i++) {\n        if (intervals[i].start < end) {\n            // Overlap: remove interval\n            removals++;\n        } else {\n            // No overlap: keep interval & update\n            end = intervals[i].end;\n        }\n    }\n\n    return removals;\n}\n",
+      "Java": "class Solution {\n    public int findMinimumRemovals(List<int[]> intervalList) {\n        if (intervalList.isEmpty()) return 0;\n\n        // Sort by end time\n        intervalList.sort((a, b) -> Integer.compare(a[1], b[1]));\n\n        int removals = 0;\n        int end = intervalList.get(0)[1];\n\n        for (int i = 1; i < intervalList.size(); i++) {\n            if (intervalList.get(i)[0] < end) {\n                // Overlapping → remove\n                removals++;\n            } else {\n                // No overlap → update end\n                end = intervalList.get(i)[1];\n            }\n        }\n\n        return removals;\n    }\n}",
+      "JavaScript": "class Solution {\n    findMinimumRemovals(intervalList) {\n        if (intervalList.length === 0) return 0;\n\n        // Sort by end time\n        intervalList.sort((a, b) => a[1] - b[1]);\n\n        let removals = 0;\n        let end = intervalList[0][1];\n\n        for (let i = 1; i < intervalList.length; i++) {\n            if (intervalList[i][0] < end) {\n                // Overlap → remove\n                removals++;\n            } else {\n                // No overlap → update end\n                end = intervalList[i][1];\n            }\n        }\n\n        return removals;\n    }\n}"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1428",
+  "title": "N Stacks in Single Array",
+  "slug": "n-stacks-in-single-array",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Design a data structure that implements NNN stacks using a single array of size SSS. The structure should support push and pop operations for any of the NNN stacks.\n\nThe data structure should support two operations:\n\n\npush(X, M): Push element XXX into stack MMM\npop(M): Pop top element from stack MMM\n\nInput Format\n\n\nFirst line contains three integers NNN, SSS, and QQQ\n\n\n\nNNN: number of stacks\nSSS: size of array\nQQQ: number of queries\n\n\n\nNext QQQ lines contain queries of two types:\n\n\n\nType1Type 1Type1: push XXX into stack MMM\nType2Type 2Type2: pop from stack MMM\n\n\n\n\nOutput Format\n\nFor each query:\n\nType1Type 1Type1: Print \"TrueTrueTrue\" if push successful, \"FalseFalseFalse\" otherwise\nType2Type 2Type2: Print popped element, or -1 if stack empty",
+    "constraints": [
+      "1≤N≤S≤10001 \\leq N \\leq S \\leq 10001≤N≤S≤1000",
+      "1≤Q≤1051 \\leq Q \\leq 10^51≤Q≤105",
+      "1≤X≤1051 \\leq X \\leq 10^51≤X≤105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 6 5\n1 10 1\n1 20 1\n1 30 2\n2 1\n2 2",
+        "output": "True\nTrue\nTrue\n20\n30",
+        "explanation": "Explanation:\nPush 10 to stack 1: [10]\nPush 20 to stack 1: [10, 20]\nPush 30 to stack 2: [30]\nPop from stack 1: returns 20\nPop from stack 2: returns 30"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 6 5\n1 10 1\n1 20 1\n1 30 2\n2 1\n2 2",
+        "expectedOutput": "True\nTrue\nTrue\n20\n30",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass NStacks {\nprivate:\n    vector<int> arr;           // main array for N stacks\n    vector<int> top;           // top indices for each stack\n    vector<int> next;          // next free position for each entry\n    int free;                  // next free position in array\n    \npublic:\n    NStacks(int N, int S) {\n        arr.resize(S);\n        top.resize(N, -1);     // initialize tops as -1\n        next.resize(S);\n        \n        // Initialize all spaces as free\n        for(int i = 0; i < S-1; i++)\n            next[i] = i + 1;\n        next[S-1] = -1;        // last entry points to -1\n        \n        free = 0;              // initialize free position\n    }\n    \n    bool push(int X, int M) {\n        // Check if we have free space\n        if(free == -1) return false;\n        \n        // Get free index\n        int i = free;\n        \n        // Update free by pointing to next free index\n        free = next[i];\n        \n        // Insert element into array\n        arr[i] = X;\n        \n        // Update next of current index to point to previous top\n        next[i] = top[M-1];\n        \n        // Update top of stack\n        top[M-1] = i;\n        \n        return true;\n    }\n    \n    int pop(int M) {\n        // Check if stack is empty\n        if(top[M-1] == -1) return -1;\n        \n        // Get top index\n        int i = top[M-1];\n        \n        // Update top to point to next element\n        top[M-1] = next[i];\n        \n        // Add the popped index to free list\n        next[i] = free;\n        free = i;\n        \n        return arr[i];\n    }\n};\n\nint main() {\n    int N, S, Q;\n    cin >> N >> S >> Q;\n    \n    NStacks stacks(N, S);\n    \n    while(Q--) {\n        int type;\n        cin >> type;\n        \n        if(type == 1) {\n            int X, M;\n            cin >> X >> M;\n            cout << (stacks.push(X, M) ? \"True\" : \"False\") << endl;\n        } else {\n            int M;\n            cin >> M;\n            cout << stacks.pop(M) << endl;\n        }\n    }\n    \n    return 0;\n}"
+    }
+  }
+}

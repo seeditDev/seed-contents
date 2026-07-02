@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1318",
+  "title": "Insertion in Doubly Linked List",
+  "slug": "insertion-in-doubly-linked-list",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "In this section, we will learn how to do the insertion operation in a doubly linked list.\n\nLet's suppose you need to insert a node `newNode` between node `A` and node `B`, the pointers we need to update are:\n\n\nnext pointer of `A`\nprev pointer of `B`\nnext and prev pointer of `newNode`\nComplete the function **insertAtIndex(int index, int value)** where `index` denotes that you need to insert a new node after the `index-1`th element, i.e., at the `index`th position.\n\nNote: In case of `index`, 0-based indexing is used, i.e., for **insertAtIndex(0, k)** node with value `k` is to be inserted in the beginning.\n\nVideo Explanation",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 2 99\n1 2 3 4 5",
+        "output": "1 2 99 3 4 5",
+        "explanation": "Explanation:\nOriginal linkedlist if lenght 5: 1 2 3 4 5 \nInserting 99 at the index 2 results in linkedlist: 1 2 99 3 4 5"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 2 99\n1 2 3 4 5",
+        "expectedOutput": "1 2 99 3 4 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The key idea of this solution is to **insert a new node at a specific index** in a doubly linked list. Depending on the position, the new node will either:\n\nHere’s how the approach works:\n\n\n\n**Inserting at Index 0 (Head)**:\n\n\n\n\nIf the index is `0`, the new node will become the new **head**.\n\n\n\n\nThe existing head node will shift, and the new node will be linked to it by updating the pointers.\n\n\n\n\n\n\n**Inserting at Other Positions**:\n\n\n\n\nFirst, we traverse the list to find the node after which we need to insert (the node at `index - 1`).\n\n\n\n\nOnce located, we update the **next** and **prev** pointers of the surrounding nodes to insert the new node.\n\n\n\n\nThis ensures that the new node is properly linked between its neighbors.\n\n\n\n\n\n\n**printValues()**:\n\n\n\nThis function prints all the values in the linked list, starting from the head and moving to the tail.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class LinkedList {\n    public:\n    Node* head;\n    Node* tail;\n\n    void insertAtIndex(int index, int value) {\n        Node* newNode = new Node(value);\n        \n        if (index == 0) {\n            // To insert at head, make this new node the head\n            newNode -> next = head;\n            if (head != NULL) {\n                head -> prev = newNode;\n            }\n            head = newNode;\n        } else {\n            // To insert at any other position\n            // Find the nodes between which we want to insert\n            // By traversing from head to index - 1 position\n            Node *iter = head;\n            for (int i = 0; i < index - 1; i++) {\n                iter = iter -> next;\n            }\n            \n            Node *A = iter;\n            Node *B = iter -> next;\n            \n            // Update pointers to insert newNode between A and B\n            A -> next = newNode;\n            if (B != NULL) {\n                B -> prev = newNode;\n            }\n            \n            newNode -> next = B;\n            newNode -> prev = A;\n        }\n    }\n    \n    void printValues() {\n        if (head == NULL) {\n            return;\n        } else {\n            Node* current = head;\n            while (current != NULL) {\n                cout << current -> value << ' ';\n                current = current -> next;\n            }\n            cout << '\\n';\n        }\n    }\n\n};",
+      "Python3": "class LinkedList:\n    def __init__(self):\n        self.head = None\n\n    def insert_at_index(self, index, value):\n        new_node = Node(value)\n\n        if index == 0:\n            new_node.next = self.head\n            if self.head is not None:\n                self.head.prev = new_node\n            self.head = new_node\n        else:\n            iter_node = self.head\n            for _ in range(index - 1):\n                iter_node = iter_node.next\n\n            A = iter_node\n            B = iter_node.next\n\n            A.next = new_node\n            if B is not None:\n                B.prev = new_node\n\n            new_node.next = B\n            new_node.prev = A\n\n    def print_values(self):\n        current = self.head\n        while current is not None:\n            print(current.value, end=' ')\n            current = current.next\n        print()",
+      "C": "// Function to insert a node at a specific index\nvoid insertAtIndex(LinkedList* list, int index, int value) {\n    Node* newNode = createNode(value);\n\n    if (index == 0) {\n        newNode->next = list->head;\n        if (list->head != NULL) {\n            list->head->prev = newNode;\n        }\n        list->head = newNode;\n    } else {\n        Node* iter = list->head;\n        for (int i = 0; i < index - 1; i++) {\n            iter = iter->next;\n        }\n\n        Node* A = iter;\n        Node* B = iter->next;\n\n        A->next = newNode;\n        if (B != NULL) {\n            B->prev = newNode;\n        }\n\n        newNode->next = B;\n        newNode->prev = A;\n    }\n}\n",
+      "Java": " class LinkedList {\n    Node head;\n\n    public void insertAtIndex(int index, int value) {\n        Node newNode = new Node(value);\n\n        if (index == 0) {\n            newNode.next = head;\n            if (head != null) {\n                head.prev = newNode;\n            }\n            head = newNode;\n        } else {\n            Node iter = head;\n            for (int i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n\n            Node A = iter;\n            Node B = iter.next;\n\n            A.next = newNode;\n            if (B != null) {\n                B.prev = newNode;\n            }\n\n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n\n    public void printValues() {\n        Node current = head;\n        while (current != null) {\n            System.out.print(current.value + \" \");\n            current = current.next;\n        }\n        System.out.println();\n    }\n}",
+      "JavaScript": "class LinkedList {\n    constructor() {\n        this.head = null;\n        this.tail = null;\n    }\n\n    insertAtIndex(index, value) {\n        let newNode = new Node(value);\n\n        if (index === 0) {\n            // Insert at head\n            newNode.next = this.head;\n            if (this.head !== null) {\n                this.head.prev = newNode;\n            }\n            this.head = newNode;\n        } else {\n            // Insert at any other position\n            let iter = this.head;\n            for (let i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n\n            let A = iter;\n            let B = iter.next;\n\n            // Update pointers to insert newNode between A and B\n            A.next = newNode;\n            if (B !== null) {\n                B.prev = newNode;\n            }\n\n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n\n    printValues() {\n        if (this.head === null) {\n            return;\n        } else {\n            let current = this.head;\n            let values = [];\n            while (current !== null) {\n                values.push(current.value);\n                current = current.next;\n            }\n            console.log(values.join(' '));\n        }\n    }\n}"
+    }
+  }
+}

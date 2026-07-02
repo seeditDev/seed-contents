@@ -1,0 +1,71 @@
+{
+  "questionId": "Q1708",
+  "title": "Chef Calculates Coin Change",
+  "slug": "chef-calculates-coin-change",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a collection of coins of different denominations coinDenominationscoinDenominationscoinDenominations and wants to pay an exact total amount using as few coins as possible totalAmounttotalAmounttotalAmount. Given the denominations of the coins Chef has, help Chef find the minimum number of coins needed to make up the total amount. \n\nChef can use any coin denomination an infinite number of times. If it is impossible for Chef to form the total amount with the available denominations, help Chef by returning −1-1−1.\n\nFunction DeclarationFunction NamefindMinCoinsfindMinCoinsfindMinCoins - This function calculates the minimum number of coins needed to make up a given total amount using specified coin denominations.\n\nParameters\ncoinDenominationscoinDenominationscoinDenominations: A vector of integers representing the available coin denominations.\ntotalAmounttotalAmounttotalAmount : The target amount for which we need to find the minimum number of coins.\nReturn Value\nReturns an integer representing the minimum number of coins required to make up the totalAmounttotalAmounttotalAmount.\nReturns −1-1−1 if it is not possible to form the amount with the given denominations.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤length&nbsp;of&nbsp;coinDenominations≤121 \\leq \\text{length of } coinDenominations \\leq 121≤length&nbsp;of&nbsp;coinDenominations≤12\n1≤coinDenominations[i]≤231−11 \\leq coinDenominations[i] \\leq 2^{31} - 11≤coinDenominations[i]≤231−1\n0≤totalAmount≤1040 \\leq totalAmount \\leq 10^40≤totalAmount≤104\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nEach test case consists of two lines:\n\nThe first line contains comma-separated integers — the coin denominations.\nThe second line contains a single integer totalAmounttotalAmounttotalAmount — the total amount Chef wants to form.\n\n\n\n\nOutput Format\n\nFor each test case, print a single line containing the minimum number of coins Chef needs to make up the totalAmounttotalAmounttotalAmount.\nIf Chef cannot form the amount with the given coin denominations, print −1-1−1.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n[1, 2]\n1\n[1, 3]\n2\n[1, 2, 5]\n10",
+        "output": "1\n2\n2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n[1, 2]\n1\n[1, 3]\n2\n[1, 2, 5]\n10",
+        "expectedOutput": "1\n2\n2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:** For each coin, we have two choices:\n\n\nUse this coin (if it doesn't exceed the remaining amount)\nSkip this coin\n**Pseudocode:**\n\n`function minCoins(coins, amount, index):\n    // Base cases\n    if amount == 0:\n        return 0\n    if index == len(coins) or amount &lt; 0:\n        return INFINITY\n    \n    // Option 1: Don't use current coin\n    exclude = minCoins(coins, amount, index + 1)\n    \n    // Option 2: Use current coin\n    include = INFINITY\n    if coins[index] &lt;= amount:\n        include = 1 + minCoins(coins, amount - coins[index], index)\n    \n    return min(include, exclude)\n`**Complexity:**\n\n\nTime: O(2^(n*totalAmount)) - Exponential\nSpace: O(n + totalAmount) - Recursion stack\n**Why it's inefficient:** Many subproblems are recalculated multiple times.\n\n**Idea:** Store results of subproblems to avoid recalculation. Instead of iterating through coins as a dimension, we treat it as:\n\n\nminCoins(amount) = minimum coins to form `amount`\nFor each amount, try subtracting each coin and take the minimum.\n\n**Pseudocode:**\n\n`function minCoins(coins, amount, memo):\n    if amount == 0:\n        return 0\n    if amount in memo:\n        return memo[amount]\n    \n    result = INFINITY\n    for coin in coins:\n        if coin &lt;= amount:\n            result = min(result, 1 + minCoins(coins, amount - coin, memo))\n    \n    memo[amount] = result\n    return result\n`**Complexity:**\n\n\nTime: O(n × m) where n = number of coins, m = amount\nSpace: O(m) - Memoization table\n**Why it works:** Each unique subproblem (amount) is solved only once.\n\n**Idea:** Use a 1D DP array where `dp[i]` = minimum coins needed to form amount `i`.\n\n**Initialization:**\n\n\n`dp[0] = 0` (0 coins needed to form amount 0)\n`dp[i] = INFINITY` for all i &gt; 0 (initially impossible)\n**Transition:**\n\n`For each amount i from 1 to totalAmount:\n    For each coin in coins:\n        if coin &lt;= i:\n            dp[i] = min(dp[i], 1 + dp[i - coin])\n`**Final Answer:**\n\n\nIf `dp[totalAmount]` is still INFINITY, return -1\nOtherwise, return `dp[totalAmount]`\n**Pseudocode:**\n\n`function findMinCoins(coins, totalAmount):\n    dp = array of size (totalAmount + 1)\n    dp[0] = 0\n    \n    for i from 1 to totalAmount:\n        dp[i] = INFINITY\n    \n    for amount from 1 to totalAmount:\n        for coin in coins:\n            if coin &lt;= amount:\n                dp[amount] = min(dp[amount], 1 + dp[amount - coin])\n    \n    if dp[totalAmount] == INFINITY:\n        return -1\n    return dp[totalAmount]\n`**Complexity:**\n\n\nTime: O(n × m) where n = number of coins, m = amount\nSpace: O(m) - DP array\n**Why it's optimal:**\n\n\nLinear time iteration through all amounts\nEach amount-coin pair evaluated once\nNo recursion overhead or function call stack\nWalkthrough Examples",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

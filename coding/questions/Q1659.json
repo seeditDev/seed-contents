@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1659",
+  "title": "Chef Builds Subsets",
+  "slug": "chef-builds-subsets",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a list of unique integers inputNumbersinputNumbersinputNumbers and wants to explore all possible subsets of this list, including the empty subset. Chef aims to generate the complete power set without any duplicates, regardless of the order in which the subsets appear. \n\nHelp Chef by writing a function that returns all these subsets for the given list of integers.\n\nFunction DeclarationFunction NamefindSubsetsfindSubsetsfindSubsets - This function generates all possible subsets (the power set) of a given list of integers.\n\nParameters\ninputNumbersinputNumbersinputNumbers: A reference to an array containing the input integers. The array may be empty and contains distinct integers.\nReturn Value\nReturns an array of arrays representing all unique subsets of the input numbers.\nEach inner array is a subset of the input.\nThe output includes the empty subset and all other subsets in any order.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤N≤101 \\leq N \\leq 101≤N≤10\n−10≤inputNumbers[i]≤10-10 \\leq \\text{inputNumbers}[i] \\leq 10−10≤inputNumbers[i]≤10\nAll elements in inputNumbersinputNumbersinputNumbers are unique.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN — the size of Chef's number array.\nThe second line contains NNN space-separated integers representing Chef's number array.\n\n\n\n\nOutput Format\n\nFor each test case, print all subsets of the given array.\nEach subset should be printed on a separate line with its elements separated by spaces.\nPrint the empty subset as an empty brackets.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n2\n4 7\n4\n-1 0 1 2",
+        "output": "[]\n[4]\n[7]\n[4 7]\n[]\n[-1]\n[0]\n[-1 0]\n[1]\n[-1 1]\n[0 1]\n[-1 0 1]\n[2]\n[-1 2]\n[0 2]\n[-1 0 2]\n[1 2]\n[-1 1 2]\n[0 1 2]\n[-1 0 1 2]",
+        "explanation": "Explanation:\nFor the first test case with elements [4, 7], the complete power set is generated.\nThis includes:\n\nThe empty subset: []\nAll single-element subsets: [4], [7]\nThe full subset containing all elements: [4, 7]\nTogether forming the full set of combinations:\n[], [4], [7], [4,7]\n\n\n\nFor the second test case with elements [-1, 0, 1, 2], every possible subset is generated:\n\nThe empty subset\nAll 4 single-element subsets\nAll 6 two-element combinations\nAll 4 three-element combinations\nThe full four-element subset: [-1, 0, 1, 2]\nEnsuring the output includes all 2? = 16 subsets, covering the power set completely."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n2\n4 7\n4\n-1 0 1 2",
+        "expectedOutput": "[]\n[4]\n[7]\n[4 7]\n[]\n[-1]\n[0]\n[-1 0]\n[1]\n[-1 1]\n[0 1]\n[-1 0 1]\n[2]\n[-1 2]\n[0 2]\n[-1 0 2]\n[1 2]\n[-1 1 2]\n[0 1 2]\n[-1 0 1 2]",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "You iterate over 2^N bitmasks, and for each bitmask, you check up to N bits → O(N × 2^N).",
+    "spaceComplexity": "You store all subsets → O(N × 2^N).",
+    "code": {
+      "C++": "vector<vector<int>> findSubsets(vector<int>& inputNumbers) {\n    int n = inputNumbers.size();\n    int total = 1 << n;\n    vector<vector<int>> subsets;\n\n    for (int mask = 0; mask < total; mask++) {\n        vector<int> subset;\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) {\n                subset.push_back(inputNumbers[i]);\n            }\n        }\n        subsets.push_back(subset);\n    }\n\n    return subsets;\n}",
+      "Python3": "def find_subsets(inputNumbers):\n    n = len(inputNumbers)\n    total = 1 << n\n    subsets = []\n\n    for mask in range(total):\n        subset = []\n        for i in range(n):\n            if mask & (1 << i):\n                subset.append(inputNumbers[i])\n        subsets.append(subset)\n\n    return subsets",
+      "C": "SubsetResult findSubsets(int *inputNumbers, int n) {\n    int total = 1 << n;\n\n    SubsetResult result;\n    result.count = total;\n    result.subsets = (Subset *)malloc(total * sizeof(Subset));\n\n    for (int mask = 0; mask < total; mask++) {\n        int size = 0;\n\n        // Count elements in current subset\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) {\n                size++;\n            }\n        }\n\n        result.subsets[mask].size = size;\n        result.subsets[mask].data = (int *)malloc(size * sizeof(int));\n\n        int idx = 0;\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) {\n                result.subsets[mask].data[idx++] = inputNumbers[i];\n            }\n        }\n    }\n\n    return result;\n}",
+      "Java": "    static List<List<Integer>> findSubsets(int[] inputNumbers) {\n        int n = inputNumbers.length;\n        int total = 1 << n;\n        List<List<Integer>> result = new ArrayList<>();\n\n        for (int mask = 0; mask < total; mask++) {\n            List<Integer> subset = new ArrayList<>();\n            for (int i = 0; i < n; i++) {\n                if ((mask & (1 << i)) != 0) subset.add(inputNumbers[i]);\n            }\n            result.add(subset);\n        }\n        return result;\n    }\n",
+      "JavaScript": "function findSubsets(inputNumbers) {\n    const n = inputNumbers.length;\n    const total = 1 << n;\n    const subsets = [];\n\n    for (let mask = 0; mask < total; mask++) {\n        const subset = [];\n        for (let i = 0; i < n; i++) {\n            if (mask & (1 << i)) subset.push(inputNumbers[i]);\n        }\n        subsets.push(subset);\n    }\n\n    return subsets;\n}\n"
+    }
+  }
+}

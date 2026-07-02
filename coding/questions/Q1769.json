@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1769",
+  "title": "Chef Solves Asteroid Collision",
+  "slug": "chef-solves-asteroid-collision",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef is observing **asteroidListasteroidListasteroidList**, a sequence of asteroids moving through space.\n\nEach asteroid has:\n\n\n**Size** → given by its absolute value\n**Direction** → positive (moving right), negative (moving left)\nWhen two asteroids moving toward each other collide:\n\n\nThe **smaller** one explodes\nIf they are **equal**, both are destroyed\nAsteroids moving in the **same direction** never collide\nChef wants to know the **final surviving asteroids** after all possible collisions.\n\nYour task is to simulate these interactions and determine the final state.\n\nFunction Declaration\n\n**Function Name**\n\n\n\nresolveAsteroidCollisionsresolveAsteroidCollisionsresolveAsteroidCollisions\n\n\n\n**Parameters**\n\n\n\nasteroidListasteroidListasteroidList: A list of integers where each value represents an asteroid.\n\n\n\n**Return Value**\n\n\n\nReturns a list of integers representing the asteroids that survive after all collisions.\nThe order reflects their left-to-right positions.\n\n\nConstraints\n1≤T≤1051 \\le T \\le 10^51≤T≤105\n2≤N≤1042 \\le N \\le 10^42≤N≤104\n−1000≤asteroidList[i]≤1000-1000 \\le asteroidList[i] \\le 1000−1000≤asteroidList[i]≤1000\nasteroidList[i]≠0asteroidList[i] \\neq 0asteroidList[i]=0\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN — the number of asteroids.\nThe second line contains NNN space-separated integers representing the asteroidListasteroidListasteroidList.\n\n\nOutput Format\nFor each test case, print a single line containing the asteroids remaining after all collisions.\nThe asteroids should be printed in order from left to right.\nEach asteroid should be printed with its sign and size as in the input format.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n3\n4 3 -5\n5\n10 -10 5 -5 20\n6\n1 2 3 -4 -3 -2\n7\n8 9 -10 11 -12 13 -14",
+        "output": "-5\n20\n-4 -3 -2\n-10 -12 -14",
+        "explanation": "Explanation:\nTest Case 1:\n4 and 3 move right; -5 comes left and destroys both:  Output: -5\nTest Case 2:\n10 meets -10 and both explode; 5 meets -5 and both explode; 20 remains:  Output: 20\nTest Case 3:\n1, 2, 3 move right; -4 comes left and destroys all three; -4, -3, -2 stay:  Output: -4 -3 -2\nTest Case 4:\n-10 destroys 9 and 8; -12 destroys 11; -14 destroys 13:  Output: -10 -12 -14"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n3\n4 3 -5\n5\n10 -10 5 -5 20\n6\n1 2 3 -4 -3 -2\n7\n8 9 -10 11 -12 13 -14",
+        "expectedOutput": "-5\n20\n-4 -3 -2\n-10 -12 -14",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Works for small lists.\nFor large inputs (N up to 10⁴, T up to 10⁵), it is too **slow**.\nNeeds an **optimized approach**.\nOptimal Approach (Stack-Based)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "vector<int> resolveAsteroidCollisions(vector<int>& asteroidList) {\n    stack<int> st;\n\n    for (int a : asteroidList) {\n        bool alive = true;\n\n        while (alive && a < 0 && !st.empty() && st.top() > 0) {\n            if (st.top() < -a) {\n                st.pop();\n            } else if (st.top() == -a) {\n                st.pop();\n                alive = false;\n            } else {\n                alive = false;\n            }\n        }\n\n        if (alive) st.push(a);\n    }\n\n    vector<int> result;\n    while (!st.empty()) {\n        result.push_back(st.top());\n        st.pop();\n    }\n    reverse(result.begin(), result.end());\n\n    return result;\n}\n",
+      "Python3": "def resolveAsteroidCollisions(asteroidList):\n    stack=[]\n    for a in asteroidList:\n        while stack and a<0<stack[-1]:\n            if stack[-1]<-a:\n                stack.pop()\n                continue\n            elif stack[-1]==-a:\n                stack.pop()\n            break\n        else:\n            stack.append(a)\n    return stack",
+      "C": "#include <stdlib.h>\n\n/**\n * Note: The returned array must be malloced, assume caller calls free().\n * returnSize is used to let the caller know the size of the returned array.\n */\nint* resolveAsteroidCollisions(int* asteroidList, int size, int* returnSize) {\n    // Allocate maximum possible size for the stack (if no collisions happen)\n    int* stack = (int*)malloc(size * sizeof(int));\n    int top = -1;\n    \n    for (int i = 0; i < size; i++) {\n        int val = asteroidList[i];\n        int survived = 1; // Flag to track if the current asteroid survives\n        \n        // While current asteroid moves Left (-) and top of stack moves Right (+)\n        while (val < 0 && top >= 0 && stack[top] > 0) {\n            if (stack[top] < -val) {\n                // Stack's asteroid is smaller, it explodes.\n                // Current left-moving asteroid continues checking.\n                top--; \n            } else if (stack[top] == -val) {\n                // Both are the same size, both explode.\n                top--; \n                survived = 0; \n                break; \n            } else {\n                // Stack's asteroid is larger, current left-moving one explodes.\n                survived = 0; \n                break;\n            }\n        }\n        \n        // If it survived all potential collisions, add it to the stack\n        if (survived) {\n            stack[++top] = val;\n        }\n    }\n    \n    // Set the size of the resulting array for the judge/caller\n    *returnSize = top + 1;\n    \n    return stack;\n}",
+      "Java": "    public int[] resolveAsteroidCollisions(int[] asteroidList) {\n        int n = asteroidList.length, index = 0;\n        int[] stack = new int[n];\n        for (int asteroid : asteroidList) {\n            boolean alive = true;\n            while (alive && index > 0 && stack[index - 1] > 0 && asteroid < 0) {\n                if (stack[index - 1] < -asteroid) {\n                    index--;\n                } else if (stack[index - 1] == -asteroid) {\n                    index--;\n                    alive = false;\n                } else {\n                    alive = false;\n                }\n            }\n            if (alive) stack[index++] = asteroid;\n        }\n        int[] result = new int[index];\n        System.arraycopy(stack, 0, result, 0, index);\n        return result;\n    }\n",
+      "JavaScript": "function resolveAsteroidCollisions(asteroidList) {\n  const stack = [];\n  for (const asteroid of asteroidList) {\n    let destroyed = false;\n    while (\n      stack.length &&\n      asteroid < 0 &&\n      stack[stack.length - 1] > 0\n    ) {\n      const top = stack[stack.length - 1];\n      if (top < -asteroid) {\n        stack.pop();\n        continue;\n      } else if (top === -asteroid) {\n        stack.pop();\n      }\n      destroyed = true;\n      break;\n    }\n    if (!destroyed) stack.push(asteroid);\n  }\n  return stack;\n}\n"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1190",
+  "title": "Binary Shuffle",
+  "slug": "binary-shuffle",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has two integers AAA and BBB. He can perform the following operation on AAA an arbitrary number of times (including zero):\n\n\nwrite AAA as a binary number with an arbitrary number of leading zeroes (possibly without any)\nshuffle the binary digits of AAA in an arbitrary way, obtaining a number sss\nreplace AAA by s+1s+1s+1\nChef is wondering about the minimum number of operations he has to perform on AAA in order to obtain BBB. Compute this number or determine that it is impossible.",
+    "constraints": [
+      "1≤T≤1051 \\le T \\le 10^51≤T≤105",
+      "0≤A,B≤10180 \\le A, B \\le 10^{18}0≤A,B≤1018",
+      "Subtasks**Subtask #1 (20 points):** A,B≤27A, B \\le 2^7A,B≤27"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first and only line of each test case contains two space-separated integers AAA and BBB.",
+    "outputFormat": "For each test case, print a single line containing one integer — the minimum number of operations or −1-1−1 if it is impossible to obtain BBB from AAA.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n2 4\n1 5",
+        "output": "2\n1",
+        "explanation": "Explanation:\nExample case 1: One optimal solution is to not shuffle anything, so Chef just adds 111 twice.\nExample case 2: We can obtain 555 from 111 in one operation."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n2 4\n1 5",
+        "expectedOutput": "2\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code idea is to determine how many operations are needed to transform A into B based on their binary representations. It first checks if A is equal to B. If they are equal, the answer is 0, meaning no operations are needed.\n\nNext, the code handles special cases:\n\n\n\nIf B=0, it’s impossible to reach 0 from any positive A (since the operations will always yield at least 1), so the answer is -1.\n\n\n\n\nIf B=1:\n\n\n\nIf A=0, one operation is required to reach 1 by transforming 0 to 1.\nIf  A \\neq 0, it’s impossible to reach 1 from any non-zero A, resulting in an answer of -1.\n\n\nFor other values of B, the code counts the number of set bits (1s) in both A and B−1 (using the `__builtin_popcountll` function). Let aa be the count of 1s in A, and bb be the count of 1s in B−1.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\n#define int long long int\n\nusing namespace std;\n\nvoid solve()\n{\n    int a, b;\n    cin >> a >> b;\n\n    if (a == b)\n    {\n        cout << 0 << endl;\n        return;\n    }\n\n    if (b == 0)\n    {\n        cout << -1 << endl;\n        return;\n    }\n\n    if (b == 1)\n    {\n        if (a == 0) {\n            cout << 1 << endl;\n        }\n        else {\n            cout << -1 << endl;\n        }\n        return;\n    }\n\n\n\n    int aa = __builtin_popcountll(a);\n    int bb = __builtin_popcountll(b - 1);\n\n\n\n    if (aa > bb)\n    {\n        cout << 2 << endl;\n    }\n    else\n    {\n        cout << bb - aa + 1 << endl;\n    }\n}\n\nint32_t main()\n{\n\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    cout.tie(NULL);\n\n    int t = 1;\n    cin >> t;\n\n    while (t--)\n    {\n        solve();\n    }\n\n    return 0;\n}",
+      "Python3": "import sys\ninput = sys.stdin.read\n\ndef solve(a, b):\n    if a == b:\n        return 0\n    if b == 0:\n        return -1\n    if b == 1:\n        return 1 if a == 0 else -1\n\n    aa = bin(a).count('1')\n    bb = bin(b - 1).count('1')\n\n    if aa > bb:\n        return 2\n    else:\n        return bb - aa + 1\n\ndef main():\n    data = input().split()\n    t = int(data[0])\n    results = []\n    idx = 1\n    for _ in range(t):\n        a = int(data[idx])\n        b = int(data[idx + 1])\n        results.append(solve(a, b))\n        idx += 2\n\n    # Print all results at once to optimize I/O\n    sys.stdout.write(\"\\n\".join(map(str, results)) + \"\\n\")\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdint.h>\n\nint popcountll(int64_t x) {\n    int count = 0;\n    while (x) {\n        count += x & 1;\n        x >>= 1;\n    }\n    return count;\n}\n\nvoid solve() {\n    int64_t a, b;\n    scanf(\"%lld %lld\", &a, &b);\n\n    if (a == b) {\n        printf(\"0\\n\");\n        return;\n    }\n\n    if (b == 0) {\n        printf(\"-1\\n\");\n        return;\n    }\n\n    if (b == 1) {\n        if (a == 0) {\n            printf(\"1\\n\");\n        } else {\n            printf(\"-1\\n\");\n        }\n        return;\n    }\n\n    int aa = popcountll(a);\n    int bb = popcountll(b - 1);\n\n    if (aa > bb) {\n        printf(\"2\\n\");\n    } else {\n        printf(\"%d\\n\", bb - aa + 1);\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        solve();\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.io.*;\n\nclass Codechef {\n\n    public static void main(String[] args) throws java.lang.Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int t = Integer.parseInt(br.readLine().trim());\n        \n        while (t-- > 0) {\n            String[] input = br.readLine().trim().split(\" \");\n            long a = Long.parseLong(input[0]);\n            long b = Long.parseLong(input[1]);\n            solve(a, b);\n        }\n    }\n\n    static void solve(long a, long b) {\n        if (a == b) {\n            System.out.println(0);\n            return;\n        }\n\n        if (b == 0) {\n            System.out.println(-1);\n            return;\n        }\n\n        if (b == 1) {\n            if (a == 0) {\n                System.out.println(1);\n            } else {\n                System.out.println(-1);\n            }\n            return;\n        }\n\n        int aa = Long.bitCount(a);\n        int bb = Long.bitCount(b - 1);\n\n        if (aa > bb) {\n            System.out.println(2);\n        } else {\n            System.out.println(bb - aa + 1);\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require(\"readline\");\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on(\"line\", (line) => {\n    input.push(line);\n});\n\nrl.on(\"close\", () => {\n    let T = parseInt(input[0]);\n    let results = [];\n\n    function countSetBits(n) {\n        let count = 0n;\n        while (n > 0n) {\n            count += (n & 1n);\n            n >>= 1n;\n        }\n        return count;\n    }\n\n    for (let i = 1; i <= T; i++) {\n        let [a, b] = input[i].split(\" \").map(BigInt);\n\n        if (a === b) {\n            results.push(0);\n            continue;\n        }\n\n        if (b === 0n) {\n            results.push(-1);\n            continue;\n        }\n\n        if (b === 1n) {\n            results.push(a === 0n ? 1 : -1);\n            continue;\n        }\n\n        let aa = countSetBits(a);\n        let bb = countSetBits(b - 1n);\n\n        if (aa > bb) {\n            results.push(2);\n        } else {\n            results.push(Number(bb - aa + 1n));\n        }\n    }\n\n    console.log(results.join(\"\\n\"));\n});\n"
+    }
+  }
+}

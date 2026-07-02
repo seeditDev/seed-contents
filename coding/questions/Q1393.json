@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1393",
+  "title": "Aggressive Cows",
+  "slug": "aggressive-cows",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "Farmer John has built a new long barn, with NNN stalls. The stalls are located along a straight line at positions x1...xNx_1 ... x_Nx1​...xN​.\n\nHis CCC cows don't like this barn layout and become aggressive towards each other once put into a stall. To prevent the cows from hurting each other, Farmer John wants to assign the cows to stalls, such that the minimum distance between any two of them is as large as possible. What is the largest minimum distance?\n\nTake some time to think about how you can use predicate binary search to solve this problem and then continue reading.\n\nThis problem can be broken into two parts.\n\n\nCheck if keeping a certain distance ddd he can assign a stall to each cow.\nFind the minimum ddd so that he can assign a stall to each cow.\nLet's first focus on the first part of the problem.\n\nTaskYou are given a function checkcheckcheck with the array of positions of stalls, the size of the array nnn, the number of cows ccc, and a distance ddd. You have to return a boolean value denoting if all the cows can be assigned a stall such that the minimum distance between them is ddd or not. The array passed in the checkcheckcheck function is **sorted**.",
+    "constraints": [
+      "2≤N≤1052 \\leq N \\leq 10^52≤N≤105",
+      "2≤C≤N2 \\leq C \\leq N2≤C≤N",
+      "0≤xi≤1090 \\leq x_i \\leq 10^90≤xi​≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 3\n1 2 4 8 9",
+        "output": "3",
+        "explanation": "Explanation:\nWe can place three cows in the stalls at positions x = 1, x = 4, and x = 9, ensuring that the maximum gap between them is 3."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 3\n1 2 4 8 9",
+        "expectedOutput": "3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The **`check`** function is a key part of solving this problem. Its purpose is to determine if it’s possible to place **C cows** in the stalls such that the minimum distance between any two cows is at least a given distance d.\n\n\n**Place the First Cow**: Start by placing the first cow in the first stall (position `arr[0]`). This ensures we leave the largest possible space for the remaining cows.\n**Track Remaining Cows**:\n\nWe initialize a count for the remaining cows (`cows = c - 1`) since we’ve already placed the first cow.\nWe also keep track of the position of the last placed cow (`prev = arr[0]`).\n\n\n**Place the Rest of the Cows**:\n\nIterate through the stalls, starting from the second one.\nFor each stall, check if it’s at least `d` distance away from the last placed cow.\nIf it is, place a cow there and update `prev` to the current stall’s position.\nDecrease the `cows` count after placing a cow.\n\n\n**Check if All Cows Are Placed**:\n\nIf all cows are placed successfully (i.e., `cows == 0`), return `true`, meaning it’s possible to place the cows with at least `d` distance between them.\n\n\n**If Not All Cows Are Placed**:\n\nIf the loop finishes and we haven’t placed all cows, return `false`, meaning it’s not possible to place the cows with that distance.",
+    "timeComplexity": "O(N) We are iterating through the array once.",
+    "spaceComplexity": "O(1) We have not used extra space.",
+    "code": {
+      "C++": "bool check(int arr[], int d, int n, int c)\n{\n    //Complete this function to check if c cows can be arranged into n stalls with d distance\n    int cows = c;\n    cows--;\n    int prev = arr[0];\n    \n    for(int i=1; i<n; i++) {\n        if(arr[i] - prev >= d) {\n            cows--;\n            prev=arr[i];\n        }\n        if (cows==0) return true;\n    }\n    return false;\n}\n",
+      "Python3": "def check(arr, d, n, c):\n    c -= 1\n    prev = arr[0]\n    \n    for i in range(1, n):\n        if arr[i] - prev >= d:\n            c -= 1\n            prev = arr[i]\n        if c == 0:\n            return True\n    return False\n\n",
+      "C": "int check(int arr[], int d, int n, int c)\n{\n    int cows = c;\n    cows--;\n\n    int prev = arr[0];\n\n    for (int i = 1; i < n; i++)\n    {\n        if (arr[i] - prev >= d)\n        {\n            cows--;\n            prev = arr[i];\n        }\n\n        if (cows == 0)\n            return 1;   \n    }\n\n    return 0;\n}",
+      "Java": "public static boolean check(int[] arr, int d, int n, int c) {\n    c--;\n    int prev = arr[0];\n    for (int i = 1; i < n; i++) {\n        if (arr[i] - prev >= d) {\n            c--;\n            prev = arr[i];\n        }\n        if (c == 0) return true;\n    }\n    return false;\n}"
+    }
+  }
+}

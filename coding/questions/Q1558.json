@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1558",
+  "title": "Reverse Words in a String",
+  "slug": "reverse-words-in-a-string",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a string sss consisting of English letters, digits, and spaces `' '`.\n\nYour task is to **reverse the order of the words** in the string.\n\nA word is defined as a sequence of non-space characters.\n\nThe words in sss are separated by one or more spaces.\n\nYou must:\n\n\n\nReturn the words in **reverse order**, separated by a **single space**.\n\n\n\n\nRemove any **leading**, **trailing**, or **multiple spaces** between words.\n\n\n\nFunction DeclarationFunction NamereverseWordsreverseWordsreverseWords – This function reverses the order of words in a given string while removing extra spaces.\n\nParameters\nsss : A reference to a string consisting of English letters (uppercase and lowercase), digits, and spaces.\nReturn Value\nReturns a string where:\n\nThe order of words is reversed.\nWords are separated by a single space.\nLeading, trailing, and multiple spaces are removed.\n\n\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤∣s∣≤1041 \\leq |s| \\leq 10^41≤∣s∣≤104\nThe string contains English letters (uppercase and lowercase), digits, and spaces.\nThere is at least one word in the string.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nEach of the next TTT lines contains a string sss.\n\n\nOutput Format\n\nFor each test case, print a single line containing the string with words in reverse order, separated by a single space.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\ncodechef is awesome\n  java   and   python  \n123 test case\n   learn   data   structures",
+        "output": "awesome is codechef\npython and java\ncase test 123\nstructures data learn",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "1\nRoses are red",
+        "output": "red are Roses",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\ncodechef is awesome\n  java   and   python  \n123 test case\n   learn   data   structures",
+        "expectedOutput": "awesome is codechef\npython and java\ncase test 123\nstructures data learn",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\nRoses are red",
+        "expectedOutput": "red are Roses",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To reverse the words properly, we must:\n\n\n**Split** the string into words — ignoring multiple spaces.\n**Reverse** the list of words.\n**Join** them back together with a **single space**.\nStep-by-Step Explanation**Step 1: Trim spaces**\n\n\nRemove leading and trailing spaces since they don’t contribute to words.\n**Step 2: Split into words**\n\n\nBreak the string into a list of words by splitting using one or more spaces.\n**Step 3: Reverse the list**\n\n\nReverse the order of the words array/list.\n**Step 4: Join words**\n\n-Join the reversed words with a single space `\" \"`.\n\nTime Complexity\n**O(N)** – Traversing the entire string once.\n**O(N)** space for storing the words.\nTotal: **O(N)** time and **O(N)** space.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "string reverseWords(const string &s) {\n    istringstream iss(s); // split by whitespace\n    vector<string> words;\n    string word;\n\n    while (iss >> word) { // automatically skips multiple spaces\n        words.push_back(word);\n    }\n\n    reverse(words.begin(), words.end());\n\n    string res;\n    for (size_t i = 0; i < words.size(); i++) {\n        res += words[i];\n        if (i != words.size() - 1) res += \" \";\n    }\n\n    return res;\n}\n\n",
+      "Python3": "def reverse_words(s: str) -> str:\n    n = len(s)\n    i = 0\n    words = []\n    \n    # Skip leading spaces\n    while i < n and s[i] == ' ':\n        i += 1\n    \n    while i < n:\n        word = ''\n        # Collect a word\n        while i < n and s[i] != ' ':\n            word += s[i]\n            i += 1\n        if word:\n            words.append(word)\n        # Skip spaces between words\n        while i < n and s[i] == ' ':\n            i += 1\n    \n    # Join words in reverse order\n    result = ''\n    for j in range(len(words) - 1, -1, -1):\n        result += words[j]\n        if j != 0:\n            result += ' '\n    \n    return result",
+      "C": "void reverseWords(char *line) {\n    // remove trailing newline\n    int len = strlen(line);\n    if (len > 0 && line[len - 1] == '\\n')\n        line[len - 1] = '\\0';\n\n    char *words[MAX_WORDS];\n    int count = 0;\n\n    // split by spaces/tabs\n    char *token = strtok(line, \" \\t\");\n    while (token != NULL) {\n        words[count++] = token;\n        token = strtok(NULL, \" \\t\");\n    }\n\n    // print reversed words\n    for (int i = count - 1; i >= 0; i--) {\n        printf(\"%s\", words[i]);\n        if (i > 0) printf(\" \");\n    }\n    printf(\"\\n\");\n}\n",
+      "Java": " public static String reverseWords(String s) {\n        // Trim leading/trailing spaces\n        s = s.trim();\n\n        // Split words by one or more spaces\n        String[] words = s.split(\"\\\\s+\");\n\n        // Reverse order\n        StringBuilder sb = new StringBuilder();\n        for (int i = words.length - 1; i >= 0; i--) {\n            sb.append(words[i]);\n            if (i > 0) sb.append(\" \");\n        }\n\n        return sb.toString();\n    }",
+      "JavaScript": "function reverseWords(s) {\n    let n = s.length;\n    let i = 0;\n    const words = [];\n\n    // Skip leading spaces\n    while (i < n && s[i] === ' ') i++;\n\n    while (i < n) {\n        let word = '';\n\n        // Collect a word\n        while (i < n && s[i] !== ' ') {\n            word += s[i];\n            i++;\n        }\n\n        if (word.length > 0) words.push(word);\n\n        // Skip spaces between words\n        while (i < n && s[i] === ' ') i++;\n    }\n\n    // Join words in reverse order\n    let result = '';\n    for (let j = words.length - 1; j >= 0; j--) {\n        result += words[j];\n        if (j !== 0) result += ' ';\n    }\n\n    return result;\n}"
+    }
+  }
+}

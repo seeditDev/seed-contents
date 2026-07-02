@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1692",
+  "title": "Chef Finds Maximum XOR",
+  "slug": "chef-finds-maximum-xor",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a list of integers and wants to find the maximum XOR value that can be obtained by XORing any two integers from this list. \n\nChef is curious to know the highest possible XOR result between any pair of elements, including the possibility of XORing an element with itself. Help Chef determine this maximum XOR value for multiple test cases.\n\nFunction DeclarationFunction NamefindMaxXorValuefindMaxXorValuefindMaxXorValue - This function calculates the maximum XOR value obtainable by XORing any two integers in the given list.\n\nParameters\nnumbersnumbersnumbers : A reference to a vector containing integers.\nRepresents the list of integers to evaluate.\nEach integer can range within typical 32-bit signed integer limits.\nReturn Value\nReturns a number representing the maximum XOR value found between any two elements in numbersnumbersnumbers.\nThe output is a single integer value indicating the highest XOR result possible.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105 where TTT is the number of test cases.\n1≤N≤2×1051 \\leq N \\leq 2 \\times 10^51≤N≤2×105 where NNN is the size of the integer list for each test case.\n0≤numbers[i]≤231−10 \\leq \\text{numbers}[i] \\leq 2^{31} - 10≤numbers[i]≤231−1 for each element in the integer list.\nThe sum of NNN over all test cases does not exceed 2×1052 \\times 10^52×105.\n\nInput Format\n\nThe first line contains a single integer TTT, the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN, the size of Chef's integer list.\nThe second line contains NNN space-separated integers representing Chef's integer list.\n\n\n\n\nOutput Format\n\nFor each test case, print a single line containing one integer — the maximum XOR value that Chef can obtain by XORing any two integers from the given list.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5\n0 1 2 3 4\n6\n8 1 2 12 7 6",
+        "output": "7\n15",
+        "explanation": "Explanation:\nFor the first test case, the maximum XOR is 7, obtained by XORing 3 and 4 (3 ^ 4 = 7).\nFor the second test case, the maximum XOR is 15, obtained by XORing 8 and 7 (8 ^ 7 = 15)."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n8\n1023 512 256 128 64 32 16 8",
+        "output": "1023",
+        "explanation": "Explanation:\nFor the array [1023, 512, 256, 128, 64, 32, 16, 8], the maximum XOR is found by XORing 1023 and 0 (or any smaller number that differs in all bits), resulting in 1023.\nNo other pair produces a higher XOR value than 1023 here."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5\n0 1 2 3 4\n6\n8 1 2 12 7 6",
+        "expectedOutput": "7\n15",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n8\n1023 512 256 128 64 32 16 8",
+        "expectedOutput": "1023",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int maxxor(vector<int>& a) {\n    int ans = 0, mask = 0;\n    for (int i = 31; i >= 0; i--) {\n        mask |= (1 << i);\n        unordered_set<int> s;\n        for (int x : a) s.insert(x & mask);\n        int t = ans | (1 << i);\n        for (int x : s) if (s.count(x ^ t)) { ans = t; break; }\n    }\n    return ans;\n}",
+      "Python3": "def maxxor(a):\n    ans = 0\n    mask = 0\n    for i in range(31, -1, -1):\n        mask |= 1 << i\n        s = {x & mask for x in a}\n        t = ans | (1 << i)\n        for x in s:\n            if (x ^ t) in s:\n                ans = t\n                break\n    return ans",
+      "C": "int cmp(const void *a, const void *b) { return (*(int*)a - *(int*)b); }\n\nint maxxor(int *a, int n) {\n    int ans = 0, mask = 0;\n    for (int i = 31; i >= 0; i--) {\n        mask |= 1 << i;\n        int sz = n, t = ans | (1 << i), ok = 0;\n        int *b = malloc(sz * sizeof(int));\n        for (int j = 0; j < n; j++) b[j] = a[j] & mask;\n        qsort(b, sz, sizeof(int), cmp);\n        for (int j = 0; j < sz; j++) {\n            int x = b[j] ^ t;\n            int *f = bsearch(&x, b, sz, sizeof(int), cmp);\n            if (f) { ans = t; ok = 1; break; }\n        }\n        free(b);\n    }\n    return ans;\n}",
+      "Java": "\n\n    static int maxxor(int[] a) {\n        long ans = 0, mask = 0;\n\n        for (int i = 31; i >= 0; i--) {\n            mask |= (1L << i);\n            HashSet<Long> s = new HashSet<>();\n\n            for (int x : a)\n                s.add((long)x & mask);\n\n            long candidate = ans | (1L << i);\n\n            for (long x : s) {\n                if (s.contains(x ^ candidate)) {\n                    ans = candidate;\n                    break;\n                }\n            }\n        }\n\n        return (int) ans;\n    }\n\n",
+      "JavaScript": "\n\nfunction maxxor(a) {\n    let ans = 0, mask = 0;\n    for (let i = 31; i >= 0; i--) {\n        mask |= 1 << i;\n        const s = new Set(a.map(x => x & mask));\n        const t = ans | (1 << i);\n        for (const x of s) {\n            if (s.has(x ^ t)) { ans = t; break; }\n        }\n    }\n    return ans;\n}\n\n\n"
+    }
+  }
+}

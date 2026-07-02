@@ -1,0 +1,81 @@
+{
+  "questionId": "Q2849",
+  "title": "Chef and Reversing",
+  "slug": "chef-and-reversing",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Sometimes mysteries happen. Chef found a directed graph with **N** vertices and **M** edges in his kitchen! \n\nThe evening was boring and chef has nothing else to do, so to entertain himself, Chef thought about a question \"What is the minimum number of edges he needs to reverse in order to have at least one path from vertex **1** to vertex **N**, where the vertices are numbered from **1** to **N**.",
+    "constraints": [
+      "**1 ≤ N, M ≤ 100000 = 105**",
+      "**1 ≤ Xi, Yi ≤ N**",
+      "There can be multiple edges connecting the same pair of vertices, There can be self loops too i.e. ** Xi = Yi**"
+    ],
+    "inputFormat": "Each test file contains only one test case.\n\nThe first line of the input contains two space separated integers **N** and **M**, denoting the number of vertices and the number of edges in the graph respectively. The **i**th line of the next **M** lines contains two space separated integers **Xi** and **Yi**, denoting that the **i**th edge connects vertices from **Xi** to **Yi**.",
+    "outputFormat": "In a single line, print the minimum number of edges we need to revert. If there is no way of having at least one path from **1** to **N**, print **-1**.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7 7\n1 2 \n3 2\n3 4\n7 4\n6 2\n5 6\n7 5",
+        "output": "2",
+        "explanation": "Explanation:\nWe can consider two paths from 1 to 7:\n 1-2-3-4-7 \n 1-2-6-5-7 \nIn the first one we need to revert edges (3-2), (7-4). In the second one - (6-2), (5-6), (7-5). So the answer is  min(2, 3) = 2."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7 7\n1 2 \n3 2\n3 4\n7 4\n6 2\n5 6\n7 5",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\n/*\nCost of a straight edge is 0\nCost of a reverse edge is 1\nRun 0/1 bfs to compute the answer\n*/\n\n\nconst int N = 2e5 + 1;\nconst int INF = 1e9;\n\nvector<pair<int,int>> adj[N]; \nvector<bool> vis(N, 0); \nint d[N];\n\nvoid bfs(int v) { \n    deque<int> q;\n    q.push_back(v);\n\n    d[v] = 0;\n\n    while(!q.empty()) { \n        int u = q.front();\n        q.pop_front();\n\n        if(vis[u]) { \n            continue;\n        }\n\n        vis[u] = 1; \n\n        for(auto x: adj[u]) {\n            int node = x.first;\n            int weight = x.second;\n\n            if(weight == 0) {\n                q.push_front(node);\n                d[node] = min(d[node], d[u]);\n            }\n            else {\n                q.push_back(node);\n                d[node] = min(d[node], d[u] + 1);\n            }\n        }\n    }   \n}\n\nint main() {\n    int n, m; cin >> n >> m;\n    for(int i = 1; i <= n; i++) d[i] = INF;\n    for(int i = 0; i < m; i++) {\n        int x, y; cin >> x >> y;\n        adj[x].push_back({y, 0});\n        adj[y].push_back({x, 1});\n    }\n    bfs(1);\n\n    if(d[n] == INF) {\n        cout << \"-1\";\n    }\n    else {\n        cout << d[n];\n    }\n    return 0;\n}   ",
+      "Python3": "from collections import deque\n\nN = 200001\nINF = 1000000000\n\nadj = [[] for _ in range(N)]\nvis = [False] * N\nd = [INF] * N\n\nclass Pair:\n    def __init__(self, node, weight):\n        self.node = node\n        self.weight = weight\n\ndef bfs(v):\n    q = deque()\n    q.append(v)\n    d[v] = 0\n\n    while q:\n        u = q.popleft()\n\n        if vis[u]:\n            continue\n\n        vis[u] = True\n\n        for x in adj[u]:\n            node, weight = x.node, x.weight\n\n            if weight == 0:\n                q.appendleft(node)\n                d[node] = min(d[node], d[u])\n            else:\n                q.append(node)\n                d[node] = min(d[node], d[u] + 1)\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n\n    for i in range(1, n + 1):\n        adj[i] = []\n\n    for _ in range(m):\n        x, y = map(int, input().split())\n        adj[x].append(Pair(y, 0))\n        adj[y].append(Pair(x, 1))\n\n    bfs(1)\n\n    if d[n] == INF:\n        print(\"-1\")\n    else:\n        print(d[n])\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n#include <stdbool.h>\n\n#define N 200001\n#define INF 1000000000\n\ntypedef struct {\n    int node;\n    int weight;\n} Pair;\n\ntypedef struct Node {\n    Pair pair;\n    struct Node *next;\n} Node;\n\nvoid add_edge(Node* adj[], int u, int v, int weight) {\n    Node *new_node = (Node *)malloc(sizeof(Node));\n    new_node->pair.node = v;\n    new_node->pair.weight = weight;\n    new_node->next = adj[u];\n    adj[u] = new_node;\n}\n\nvoid bfs(int v, Node* adj[], bool vis[], int d[], int n) {\n    int deque[N];\n    int front = N / 2;\n    int back = N / 2;\n    deque[back++] = v;\n    d[v] = 0;\n\n    while (front < back) {\n        int u = deque[front++];\n\n        if (vis[u]) {\n            continue;\n        }\n\n        vis[u] = true;\n\n        Node *ptr = adj[u];\n        while (ptr != NULL) {\n            int node = ptr->pair.node;\n            int weight = ptr->pair.weight;\n\n            if (weight == 0) {\n                deque[--front] = node;\n                if (d[node] > d[u]) {\n                    d[node] = d[u];\n                }\n            } else {\n                deque[back++] = node;\n                if (d[node] > d[u] + 1) {\n                    d[node] = d[u] + 1;\n                }\n            }\n            ptr = ptr->next;\n        }\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    Node* adj[N];\n    bool vis[N];\n    int d[N];\n\n    for (int i = 1; i <= n; i++) {\n        adj[i] = NULL;\n        d[i] = INF;\n        vis[i] = false;\n    }\n\n    for (int i = 0; i < m; i++) {\n        int x, y;\n        scanf(\"%d %d\", &x, &y);\n        add_edge(adj, x, y, 0);\n        add_edge(adj, y, x, 1);\n    }\n\n    bfs(1, adj, vis, d, n);\n\n    if (d[n] == INF) {\n        printf(\"-1\\n\");\n    } else {\n        printf(\"%d\\n\", d[n]);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\n/*\nCost of a straight edge is 0\nCost of a reverse edge is 1\nRun 0/1 bfs to compute the answer\n*/\n\nclass main {\n    static int N = 200001;\n    static int INF = 1000000000;\n    static List<Pair>[] adj = new ArrayList[N];\n    static boolean[] vis = new boolean[N];\n    static int[] d = new int[N];\n\n    static class Pair {\n        int node;\n        int weight;\n\n        Pair(int node, int weight) {\n            this.node = node;\n            this.weight = weight;\n        }\n    }\n\n    public static void bfs(int v) {\n        Deque<Integer> q = new ArrayDeque<>();\n        q.add(v);\n        d[v] = 0;\n\n        while (!q.isEmpty()) {\n            int u = q.poll();\n\n            if (vis[u]) {\n                continue;\n            }\n\n            vis[u] = true;\n\n            for (Pair x : adj[u]) {\n                int node = x.node;\n                int weight = x.weight;\n\n                if (weight == 0) {\n                    q.offerFirst(node);\n                    d[node] = Math.min(d[node], d[u]);\n                } else {\n                    q.offerLast(node);\n                    d[node] = Math.min(d[node], d[u] + 1);\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        for (int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n            d[i] = INF;\n        }\n\n        for (int i = 0; i < m; i++) {\n            int x = scanner.nextInt();\n            int y = scanner.nextInt();\n            adj[x].add(new Pair(y, 0));\n            adj[y].add(new Pair(x, 1));\n        }\n\n        bfs(1);\n\n        if (d[n] == INF) {\n            System.out.println(\"-1\");\n        } else {\n            System.out.println(d[n]);\n        }\n    }\n}",
+      "JavaScript": "import java.util.*;\n\n/*\nCost of a straight edge is 0\nCost of a reverse edge is 1\nRun 0/1 bfs to compute the answer\n*/\n\nclass main {\n    static int N = 200001;\n    static int INF = 1000000000;\n    static List<Pair>[] adj = new ArrayList[N];\n    static boolean[] vis = new boolean[N];\n    static int[] d = new int[N];\n\n    static class Pair {\n        int node;\n        int weight;\n\n        Pair(int node, int weight) {\n            this.node = node;\n            this.weight = weight;\n        }\n    }\n\n    public static void bfs(int v) {\n        Deque<Integer> q = new ArrayDeque<>();\n        q.add(v);\n        d[v] = 0;\n\n        while (!q.isEmpty()) {\n            int u = q.poll();\n\n            if (vis[u]) {\n                continue;\n            }\n\n            vis[u] = true;\n\n            for (Pair x : adj[u]) {\n                int node = x.node;\n                int weight = x.weight;\n\n                if (weight == 0) {\n                    q.offerFirst(node);\n                    d[node] = Math.min(d[node], d[u]);\n                } else {\n                    q.offerLast(node);\n                    d[node] = Math.min(d[node], d[u] + 1);\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        for (int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n            d[i] = INF;\n        }\n\n        for (int i = 0; i < m; i++) {\n            int x = scanner.nextInt();\n            int y = scanner.nextInt();\n            adj[x].add(new Pair(y, 0));\n            adj[y].add(new Pair(x, 1));\n        }\n\n        bfs(1);\n\n        if (d[n] == INF) {\n            System.out.println(\"-1\");\n        } else {\n            System.out.println(d[n]);\n        }\n    }\n}"
+    }
+  }
+}

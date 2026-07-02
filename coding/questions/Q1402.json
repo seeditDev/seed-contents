@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1402",
+  "title": "Finding the Subarray with Minimum Sum of Size K",
+  "slug": "finding-the-subarray-with-minimum-sum-of-size-k",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array of integers and you need to find a subarray of size KKK that has the minimum sum in all the subarray of size KKK.\n\n\nInput Format\n\nThe first line contains two integers NNN and KKK, representing the size of the array and the size of the subarray, respectively.\nThe second line contains NNN space-separated integers representing the elements of the array.\n\n\nOutput Format\nOutput a single integer representing the minimum sum of a subarray of size KKK.",
+    "constraints": [
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "1≤K≤N1 \\leq K \\leq N1≤K≤N",
+      "0≤∣A[i]∣≤1090 \\leq |A[i]| \\leq 10^90≤∣A[i]∣≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10 3\n1 2 3 4 5 6 7 8 9 10",
+        "output": "6",
+        "explanation": "Explanation:\nThe subarray with the minimum sum of size 3 is [1, 2, 3], and the sum is 6."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 2\n4 3 2 1 5",
+        "output": "3",
+        "explanation": "Explanation:\nThe subarray with the minimum sum of size 2 is [1, 2], and the sum is 3."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10 3\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5 2\n4 3 2 1 5",
+        "expectedOutput": "3",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code idea is to use a sliding window technique to efficiently calculate the sum of each subarray of size **K**. Initially, we compute the sum of the first **K** elements of the array. This sum is stored as the minimum sum found so far. We then slide the window one element at a time; for each step, we add the next element in the array and subtract the element that is no longer in the window (the leftmost element). This allows us to update the sum in constant time, making the process efficient. Throughout this sliding process, we continuously check and update the minimum sum whenever we calculate a new sum. Finally, we return the **minimum sum** found.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long findMinSumSubarray(int n, int k, vector<int>& arr) {\n    long long sum = 0;\n\n    // Calculate the sum of the first 'k' elements\n    for (int i = 0; i < k; i++) {\n        sum += arr[i];\n    }\n\n    long long minsum = sum;\n    int left = 0, right = k;\n\n    // Slide the window over the array\n    while (right < n) {\n        sum += arr[right] - arr[left]; // Update sum by adding the next element and removing the leftmost element\n        right++;\n        left++;\n        minsum = min(minsum, sum); // Update the minimum sum found\n    }\n    \n    return minsum;\n}\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    vector<int> arr(n);\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n    cout << findMinSumSubarray(n, k, arr) << endl;\n    return 0;\n}\n",
+      "Python3": "def findMinSumSubarray(n, k, arr):\n    current_sum = sum(arr[:k])\n    min_sum = current_sum\n\n    for i in range(k, n):\n        current_sum += arr[i] - arr[i - k]\n        if current_sum < min_sum:\n            min_sum = current_sum\n\n    return min_sum\n\nif __name__ == \"__main__\":\n    n, k = map(int, input().split())\n    arr = list(map(int, input().split()))\n    print(findMinSumSubarray(n, k, arr))",
+      "C": "#include <stdio.h>\n#include <limits.h>\n\nlong long findMinSumSubarray(int n, int k, int* arr) {\n    long long current_sum = 0;\n    for (int i = 0; i < k; i++) {\n        current_sum += arr[i];\n    }\n    long long min_sum = current_sum;\n\n    for (int i = k; i < n; i++) {\n        current_sum += arr[i] - arr[i - k];\n        if (current_sum < min_sum) {\n            min_sum = current_sum;\n        }\n    }\n    return min_sum;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    printf(\"%lld\\n\", findMinSumSubarray(n, k, arr));\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static long findMinSumSubarray(int n, int k, int[] arr) {\n        long current_sum = 0;\n        for (int i = 0; i < k; i++) {\n            current_sum += arr[i];\n        }\n        long min_sum = current_sum;\n\n        for (int i = k; i < n; i++) {\n            current_sum += arr[i] - arr[i - k];\n            if (current_sum < min_sum) {\n                min_sum = current_sum;\n            }\n        }\n        return min_sum;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            arr[i] = scanner.nextInt();\n        }\n        scanner.close();\n        System.out.println(findMinSumSubarray(n, k, arr));\n    }\n}"
+    }
+  }
+}

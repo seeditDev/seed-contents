@@ -1,0 +1,88 @@
+{
+  "questionId": "Q4093",
+  "title": "Speculating on Buffaloes",
+  "slug": "speculating-on-buffaloes",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Ramu was a lazy farmer. He had inherited a fairly large farm and a nice house from his father. Ramu leased out the farm land to others and earned a rather handsome income. His father used to keep a buffalo at home and sell its milk but the buffalo died a few days after his father did.\n\nRamu too wanted to make some money from buffaloes, but in a quite a different way. He decided that his future lay in speculating on buffaloes. In the market in his village, buffaloes were bought and sold everyday. The price fluctuated over the year, but on any single day the price was always the same.\n\nHe decided that he would buy buffaloes when the price was low and sell them when the price was high and, in the process, accummulate great wealth. Unfortunately his house had space for just one buffalo and so he could own at most one buffalo at any time.\n\nBefore he entered the buffalo market, he decided to examine to examine the variation in the price of buffaloes over the last few days and determine the maximum profit he could have made. Suppose, the price of a buffalo over the last 101010 days varied as\n\n101281111101215131010\\quad  12\\quad  8\\quad  11\\quad  11\\quad  10\\quad  12\\quad  15\\quad  13\\quad  101012811111012151310\n\nRamu is a lazy fellow and he reckoned that he would have been willing to visit the market at most 555 times (each time to either buy or sell a buffalo) over the last 101010 days. Given this, the maximum profit he could have made is 999 rupees. To achieve this, he buys a buffalo on day 111, sells it on day 222, buys one more on day 333 and sells it on day 888. If he was a little less lazy and was willing to visit the market 666 times, then he could have made more money. He could have bought on day 111, sold on day 222, bought on day 333, sold on day 444, bought on day 666 and sold on day 888 to make a profit of 101010 rupees.\n\nYour task is help Ramu calculate the maximum amount he can earn by speculating on buffaloes, given a history of daily buffalo prices over a period and a limit on how many times Ramu is willing to go to the market during this period.\n\nInput:\nThe first line of the input contains two integers NNN and KKK, where NNN is the number of days for which the price data is available and KKK is the maximum number of times that Ramu is willing to visit the cattle market.\nThe next NNN lines (line 2,3,...,N+12, 3,...,N+12,3,...,N+1) contain a single positive integer each. The integer on line i+1i+1i+1, 1≤i≤N1 \\leq i \\leq N1≤i≤N, indicates the price of a buffalo on day iii.\nOutput:A single nonnegative integer indicating that maximum amount of profit that Ramu can make if he were to make at most KKK trips to the market.",
+    "constraints": [
+      "1≤N≤4001 \\leq N \\leq 4001≤N≤400.",
+      "1≤K≤4001 \\leq K \\leq 4001≤K≤400.",
+      "0≤0 \\leq0≤ price of a buffalo on any day ≤1000\\leq 1000≤1000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10 5\n10\n12\n8\n11\n11\n10\n12\n15\n13\n10",
+        "output": "9",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "10 6\n10\n12\n8\n11\n11\n10\n12\n15\n13\n10",
+        "output": "10",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10 5\n10\n12\n8\n11\n11\n10\n12\n15\n13\n10",
+        "expectedOutput": "9",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "10 6\n10\n12\n8\n11\n11\n10\n12\n15\n13\n10",
+        "expectedOutput": "10",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n \nint main(){\n    int N, K;\n    cin &gt;&gt; N &gt;&gt; K;\n    vector&lt;int&gt; price(N);\n    for (int i = 0; i &lt; N; i++){\n        cin &gt;&gt; price[i];\n    }\n    \n    // Use a large negative number as -infinity.\n    int negInf = -1000000000;\n    // dp[m][s]: maximum profit having used 'm' trips (market visits) and with state s,\n    // s = 0 (not holding) or s = 1 (holding).\n    vector&lt;vector&lt;int&gt;&gt; dp(K+1, vector&lt;int&gt;(2, negInf));\n    dp[0][0] = 0; // starting with no buffalo and no trips used.\n    \n    for (int i = 0; i &lt; N; i++){\n        vector&lt;vector&lt;int&gt;&gt; new_dp = dp; // Copy current state for the next day.\n        for (int m = 0; m &lt;= K; m++){\n            // If not holding, then try to buy if possible.\n            if(m &lt; K &amp;&amp; dp[m][0] != negInf){\n                new_dp[m+1][1] = max(new_dp[m+1][1], dp[m][0] - price[i]);\n            }\n            // If holding, then try to sell if possible.\n            if(m &lt; K &amp;&amp; dp[m][1] != negInf){\n                new_dp[m+1][0] = max(new_dp[m+1][0], dp[m][1] + price[i]);\n            }\n            // Doing nothing is already handled by copying dp to new_dp.\n        }\n        dp = new_dp;\n    }\n    \n    int ans = 0;\n    for (int m = 0; m &lt;= K; m++){\n        ans = max(ans, dp[m][0]);\n    }\n    cout &lt;&lt; ans &lt;&lt; \"\\n\";\n    return 0;\n}\n``def main():\n    import sys\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    it = iter(data)\n    N = int(next(it))\n    K = int(next(it))\n    prices = [int(next(it)) for _ in range(N)]\n    \n    negInf = -10**9\n    # dp[m][s]: m trips used, s = 0 (not holding), s = 1 (holding)\n    dp = [[negInf] * 2 for _ in range(K+1)]\n    dp[0][0] = 0\n    \n    for price in prices:\n        new_dp = [row[:] for row in dp]  # Deep copy for the next day.\n        for m in range(K+1):\n            # Try buying if not holding and if there is a move left.\n            if m &lt; K and dp[m][0] != negInf:\n                new_dp[m+1][1] = max(new_dp[m+1][1], dp[m][0] - price)\n            # Try selling if holding and if there is a move left.\n            if m &lt; K and dp[m][1] != negInf:\n                new_dp[m+1][0] = max(new_dp[m+1][0], dp[m][1] + price)\n        dp = new_dp\n    \n    ans = 0\n    for m in range(K+1):\n        ans = max(ans, dp[m][0])\n    print(ans)\n\nif __name__ == \"__main__\":\n    main()\n`Approach 2: Optimized 1D DP using Parity of Moves`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n \nint main(){\n    int N, K;\n    cin &gt;&gt; N &gt;&gt; K;\n    vector&lt;int&gt; price(N);\n    for (int i = 0; i &lt; N; i++){\n        cin &gt;&gt; price[i];\n    }\n    \n    int negInf = -1000000000;\n    // dp[j]: maximum profit after j market visits.\n    // Even j means not holding (sell state), odd j means holding (buy state).\n    vector&lt;int&gt; dp(K+1, negInf);\n    dp[0] = 0;\n    \n    for (int p : price) {\n        for (int j = K; j &gt;= 1; j--){\n            if(j % 2 == 1){  // Buy state: update by buying today.\n                dp[j] = max(dp[j], dp[j-1] - p);\n            } else {         // Sell state: update by selling today.\n                dp[j] = max(dp[j], dp[j-1] + p);\n            }\n        }\n    }\n    \n    int ans = 0;\n    // Only consider even j (not holding any buffalo) for the final answer.\n    for (int j = 0; j &lt;= K; j += 2){\n        ans = max(ans, dp[j]);\n    }\n    cout &lt;&lt; ans &lt;&lt; \"\\n\";\n    return 0;\n}\n``def main():\n    import sys\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    it = iter(data)\n    N = int(next(it))\n    K = int(next(it))\n    prices = [int(next(it)) for _ in range(N)]\n    \n    negInf = -10**9\n    # dp[j]: maximum profit after j moves.\n    dp = [negInf] * (K + 1)\n    dp[0] = 0\n    \n    for p in prices:\n        for j in range(K, 0, -1):\n            if j % 2 == 1:  # In odd indices we're in the \"buy\" state.\n                dp[j] = max(dp[j], dp[j-1] - p)\n            else:  # In even indices we're in the \"sell\" state.\n                dp[j] = max(dp[j], dp[j-1] + p)\n    \n    ans = 0\n    # Only even indices (sell states) are considered for the final result.\n    for j in range(0, K+1, 2):\n        ans = max(ans, dp[j])\n    print(ans)\n\nif __name__ == '__main__':\n    main()\n`Both approaches solve the problem within the given constraints.\n\n\n**Approach 1 (3D DP)** is intuitive because it directly models the decision on each day, keeping track of the number of moves and the state (holding or not holding).\n**Approach 2 (Optimized 1D DP)** exploits the alternating nature of operations. It reduces the space usage by maintaining only one array and updating it in reverse order.\nUnderstanding these methods will help you make design decisions in similar problems and gain insights into different ways to optimize DP solutions.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

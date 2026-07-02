@@ -1,0 +1,96 @@
+{
+  "questionId": "Q1772",
+  "title": "Chef Builds Stack",
+  "slug": "chef-builds-stack",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef wants to implement a stack that follows the **Last-In-First-Out (LIFO)** principle using only **two queues**.\n\n**Queues** support operations such as **push to back**, **pop or peek from front**, **size**, and **isEmpty**.\n\nChef needs to design a stack using only queue operations such that it behaves **exactly like a normal stack**.\n\nClass DescriptionChef will implement a class named **StackUsingQueuesStackUsingQueuesStackUsingQueues**.\n\nThe class supports the following operations:\n\n\n**push(x)push(x)push(x)**\n\nPushes the element **xxx** onto the **top of the stack**.\n**pop()pop()pop()**\n\nRemoves and returns the **top element** of the stack.\n**top()top()top()**\n\nReturns the **top element** of the stack **without removing it**.\n**empty()empty()empty()**\n\nReturns **true** if the stack is empty, otherwise returns **false**.",
+    "constraints": [
+      "**1≤T≤1051 \\le T \\le 10^51≤T≤105** — number of test cases",
+      "For each test case: At most **100100100 operations** will be performed.",
+      "For each push operation: **1≤x≤1091 \\le x \\le 10^91≤x≤109**",
+      "All **pop()pop()pop()** and **top()top()top()** operations are guaranteed to be valid.",
+      "Input Format",
+      "The first line contains a single integer **TTT** — the number of test cases.",
+      "For each test case:",
+      "A sequence of operations is performed on the stack.",
+      "Each operation is one of the following:",
+      "**push xxx**",
+      "**pop**",
+      "**top**",
+      "**empty**",
+      "Output Format",
+      "For each operation that produces a result, print the output on a new line.",
+      "For **pop()pop()pop()** and **top()top()top()**, print the integer value.",
+      "For **empty()empty()empty()**, print **true** if the stack is empty, otherwise print **false**.",
+      "For push(x)push(x)push(x), print **None**."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4\npush 1\npush 2\npop\ntop\n3\npush 9\npop\nempty",
+        "output": "None\nNone\n2\n1\nNone\n9\ntrue",
+        "explanation": "Explanation:\nFor Test Case 1:\n\npush 1: Stack becomes [1], output None\npush 2: Stack becomes [1, 2], output None\npop: Stack becomes [1], output 2\ntop: Stack remains [1], output 1\n\nFor Test Case 2:\n\npush 9: Stack becomes [9], output None\npop: Stack becomes [] (empty), output 9\nempty: Stack is empty, output true"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4\npush 1\npush 2\npop\ntop\n3\npush 9\npop\nempty",
+        "expectedOutput": "None\nNone\n2\n1\nNone\n9\ntrue",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class StackUsingQueues {\n    queue<int> q1, q2;\n\npublic:\n    void push(int x) {\n        q2.push(x);\n        while (!q1.empty()) {\n            q2.push(q1.front());\n            q1.pop();\n        }\n        swap(q1, q2);\n    }\n\n    int pop() {\n        int val = q1.front();\n        q1.pop();\n        return val;\n    }\n\n    int top() {\n        return q1.front();\n    }\n\n    bool empty() {\n        return q1.empty();\n    }\n};\n",
+      "Python3": "class StackUsingQueues:\n    def __init__(self):\n        self.q1 = deque()\n        self.q2 = deque()\n\n    def push(self, x):\n        self.q2.append(x)\n        while self.q1:\n            self.q2.append(self.q1.popleft())\n        self.q1, self.q2 = self.q2, self.q1\n\n    def pop(self):\n        return self.q1.popleft()\n\n    def top(self):\n        return self.q1[0]\n\n    def empty(self):\n        return not self.q1\n",
+      "C": "typedef struct {\n    int *q1, *q2;\n    int s1, e1, s2, e2;\n} StackUsingQueues;\n\nStackUsingQueues* createStack() {\n    StackUsingQueues* st = malloc(sizeof(StackUsingQueues));\n    st->q1 = NULL; st->q2 = NULL;\n    st->s1 = st->e1 = st->s2 = st->e2 = 0;\n    return st;\n}\n\nvoid push(StackUsingQueues* st, int x) {\n    st->q2 = realloc(st->q2, sizeof(int) * (st->e2 + 1));\n    st->q2[st->e2++] = x;\n\n    while (st->s1 < st->e1) {\n        st->q2 = realloc(st->q2, sizeof(int) * (st->e2 + 1));\n        st->q2[st->e2++] = st->q1[st->s1++];\n    }\n\n    int *tmpQ = st->q1; st->q1 = st->q2; st->q2 = tmpQ;\n    int ts = st->s1; st->s1 = st->s2; st->s2 = ts;\n    int te = st->e1; st->e1 = st->e2; st->e2 = te;\n}\n\nint pop(StackUsingQueues* st) {\n    return st->q1[st->s1++];\n}\n\nint top(StackUsingQueues* st) {\n    return st->q1[st->s1];\n}\n\nbool empty(StackUsingQueues* st) {\n    return st->s1 == st->e1;\n}\n",
+      "Java": "class StackUsingQueues {\n    Queue<Integer> q1 = new LinkedList<>();\n    Queue<Integer> q2 = new LinkedList<>();\n\n    public void push(int x) {\n        q2.add(x);\n        while (!q1.isEmpty()) {\n            q2.add(q1.poll());\n        }\n        Queue<Integer> temp = q1;\n        q1 = q2;\n        q2 = temp;\n    }\n\n    public int pop() {\n        return q1.poll();\n    }\n\n    public int top() {\n        return q1.peek();\n    }\n\n    public boolean empty() {\n        return q1.isEmpty();\n    }\n}\n",
+      "JavaScript": "class StackUsingQueues {\n    constructor() {\n        this.q1 = [];\n        this.q2 = [];\n    }\n\n    push(x) {\n        this.q2.push(x);\n        while (this.q1.length > 0) {\n            this.q2.push(this.q1.shift());\n        }\n        [this.q1, this.q2] = [this.q2, this.q1];\n    }\n\n    pop() {\n        return this.q1.shift();\n    }\n\n    top() {\n        return this.q1[0];\n    }\n\n    empty() {\n        return this.q1.length === 0;\n    }\n}\n"
+    }
+  }
+}

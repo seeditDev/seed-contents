@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1781",
+  "title": "Cat climb",
+  "slug": "cat-climb",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "A cat wants to climb across a series of **n rooftop platforms**. You are given an integer array **heights**, where heights[i]heights[i]heights[i] represents the height of the i-th rooftop. The cat can jump from rooftop iii to any rooftop jjj such that i&lt;j≤i+ki &lt; j \\leq i + ki&lt;j≤i+k.\n\nThe energy required to jump from rooftop iii to rooftop jjj is:\n\n∣heights[i]−heights[j]∣|heights[i] - heights[j]|∣heights[i]−heights[j]∣\n\nYour task is to compute the **minimum total energy** the cat needs to reach from **rooftop 0** to **rooftop n-1**.\n\nThe cat is initially at step 0.Function DeclarationFunction NameminimumEnergyToReachLastRooftopminimumEnergyToReachLastRooftopminimumEnergyToReachLastRooftop – This function calculates the minimum energy required for the cat to travel from the first rooftop to the last rooftop by making jumps of at most distance kkk.\n\nParameters\nnnn : The number of rooftops.\nkkk : The maximum distance (number of rooftops ahead) the cat can jump in a single move.\nheightsheightsheights : An array of integers where heights[i]heights[i]heights[i] represents the height of the ithi^\\text{th}ith rooftop.\nReturn Value\nReturns a number representing the minimum energy required for the cat to reach rooftop n−1n-1n−1 from rooftop 000.\nConstraints\n1≤T≤5001 \\leq T \\leq 5001≤T≤500\n1≤n≤1041 \\leq n \\leq 10^41≤n≤104\n1≤k≤101 \\leq k \\leq 101≤k≤10\n0≤heights[i]≤1040 \\leq heights[i] \\leq 10^40≤heights[i]≤104\n\nInput Format\n\n\nThe first line contains a single integer TTT — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains two integers:\nnnn — number of rooftops\nkkk — maximum jump distance\nThe second line contains nnn integers representing the array heightsheightsheights.\n\n\n\n\nOutput Format\nFor each test case, print a single integer — the **minimum energy** required for the cat to reach the final rooftop.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5 2\n10 5 20 0 15\n5 3\n15 4 1 14 15",
+        "output": "15\n2",
+        "explanation": "Explanation:\nTest Case 1\nCat jumps: \n0 -> 2 (cost = |10 ? 20| = 10) \n2 -> 4 (cost = |20 ? 15| = 5) \nTotal = 15\nTest Case 2\nBest jumps: \n0 -> 3 (cost = |15 ? 14| = 1) \n3 -> 4 (cost = |14 ? 15| = 1) \nTotal = 2"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5 2\n10 5 20 0 15\n5 3\n15 4 1 14 15",
+        "expectedOutput": "15\n2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int minimumEnergyToReachLastRooftop(int n, int k, vector<int>& heights) {\n        vector<int> dp(n, INT_MAX);\n        dp[0] = 0;\n\n        for (int i = 1; i < n; i++) {\n            for (int j = 1; j <= k; j++) {\n                if (i - j >= 0) {\n                    dp[i] = min(dp[i], dp[i - j] + abs(heights[i] - heights[i - j]));\n                }\n            }\n        }\n\n        return dp[n - 1];\n    }\n};\n",
+      "Python3": "class Solution:\n    def minimumEnergyToReachLastRooftop(self, n, k, heights):\n        dp = [float('inf')] * n\n        dp[0] = 0\n\n        for i in range(1, n):\n            for j in range(1, k + 1):\n                if i - j >= 0:\n                    dp[i] = min(dp[i], dp[i - j] + abs(heights[i] - heights[i - j]))\n\n        return dp[-1]",
+      "C": "int minimumEnergyToReachLastRooftop(int n, int k, int heights[]) {\n    int *dp = (int *)malloc(n * sizeof(int));\n\n    for (int i = 0; i < n; i++)\n        dp[i] = INT_MAX;\n\n    dp[0] = 0;\n\n    for (int i = 1; i < n; i++) {\n        for (int j = 1; j <= k; j++) {\n            if (i - j >= 0) {\n                int energy = dp[i - j] + abs(heights[i] - heights[i - j]);\n                if (energy < dp[i]) {\n                    dp[i] = energy;\n                }\n            }\n        }\n    }\n\n    int result = dp[n - 1];\n    free(dp);\n    return result;\n}\n",
+      "Java": "class Solution {\n    public int minimumEnergyToReachLastRooftop(int n, int k, int[] heights) {\n        int[] dp = new int[n];\n        Arrays.fill(dp, Integer.MAX_VALUE);\n        dp[0] = 0;\n\n        for (int i = 1; i < n; i++) {\n            for (int j = 1; j <= k; j++) {\n                if (i - j >= 0) {\n                    dp[i] = Math.min(dp[i], dp[i - j] + Math.abs(heights[i] - heights[i - j]));\n                }\n            }\n        }\n\n        return dp[n - 1];\n    }\n}\n",
+      "JavaScript": "class Solution {\n    minimumEnergyToReachLastRooftop(n, k, heights) {\n        const dp = new Array(n).fill(Infinity);\n        dp[0] = 0;\n\n        for (let i = 1; i < n; i++) {\n            for (let j = 1; j <= k; j++) {\n                if (i - j >= 0) {\n                    dp[i] = Math.min(dp[i], dp[i - j] + Math.abs(heights[i] - heights[i - j]));\n                }\n            }\n        }\n\n        return dp[n - 1];\n    }\n}\n"
+    }
+  }
+}

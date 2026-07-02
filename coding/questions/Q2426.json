@@ -1,0 +1,83 @@
+{
+  "questionId": "Q2426",
+  "title": "Home Delivery",
+  "slug": "home-delivery",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has decided to start home delivery from his restaurant. He hopes that he will get a lot of orders for delivery, however there is a concern. He doesn't have enough work forces for all the deliveries.  For this he has came up with an idea - he will group together all those orders which have to be delivered in nearby areas. \nIn particular, he has identified certain bidirectional roads which he calls as fast roads. They are short and usually traffic free, so the fast travel is possible along these roads. His plan is that he will send orders to locations **A** and **B** together if and only if it is possible to travel between **A** and **B** using only fast roads. Your task is, given the configuration of fast roads, identify which orders are to be sent together.",
+    "constraints": [
+      "1 ≤ **T** ≤ 100",
+      "1 ≤ **N** ≤ 100",
+      "1 ≤ **M** ≤ 1000",
+      "0 ≤ **A, B, X, Y** ≤ **N-1**",
+      "1 ≤ **Q** ≤ 3000",
+      "Warning!**There are large input and output files in this problem. Make sure you use fast enough I/O methods.**"
+    ],
+    "inputFormat": "First line of input contains an integer **T**, the number of test cases. Then **T** test cases follow. First line of each test case contains two space separated integers **N** and **M**, denoting number of locations and the number of fast roads. Then **M** lines follow each containing two space separated integers **A** and **B**, denoting that there is a fast road between locations **A** and **B**. Assume that locations are indexed by numbers from 0 to **N-1**. \n\n\n\nNext line contains an integer **Q** denoting the number of queries. Each of the next **Q** lines contain two integers **X** and **Y**. For each query you have to find out if orders meant for locations **X** and **Y** are to be sent together or not.\n\n\n\nNote that there might be multiple fast roads between same pair of locations, also there might be a fast road that links a location to itself.",
+    "outputFormat": "For each test case print **Q** lines - one for each query. Output \"YO\" if the orders are to be \ndelivered together and \"NO\" otherwise (quotes for clarity).",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n4 2\n0 1\n1 2\n3\n0 2\n0 3\n2 1",
+        "output": "YO\nNO\nYO",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n4 2\n0 1\n1 2\n3\n0 2\n0 3\n2 1",
+        "expectedOutput": "YO\nNO\nYO",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\nconst int N = 101;\nvector<int> adj[N];\nint vis[N];\n\nint color[N];\n\nvoid dfs(int v, int col) {\n    if(vis[v]) \n        return;\n\n    vis[v] = 1;\n    color[v] = col;\n\n    for(auto x: adj[v]) {\n        dfs(x, col);\n    }\n}\n\n\nint main() {\n    int t; \n    cin >> t;\n\n    while(t--) {\n        int n, m; \n        cin >> n >> m;\n\n        // Resetting the adjacency list, color and visited array\n        for(int i = 0; i <= n; i++) {\n            adj[i].clear();\n            color[i] = 0;\n            vis[i] = 0;\n        }   \n\n        for(int i = 1; i <= m; i++) {\n            int x, y; \n            cin >> x >> y;\n            adj[x].push_back(y);\n            adj[y].push_back(x);\n        }   \n\n        int current = 1;\n        for(int i = 0; i < n; i++) {\n            if(!vis[i]) {\n\n                // Color all the nodes connected with i \n                // with the same color\n                dfs(i, current);\n\n                current++;\n            }\n        }\n\n        /*  \n        Two connected place will now have same color\n        */  \n\n        int q; cin >> q;\n        while(q--) {\n            int x, y; \n            cin >> x >> y;\n\n            // Output YES if both nodes have the same color\n            if(color[x] == color[y]) {\n                cout << \"YO\\n\";\n            }\n            else {\n                cout << \"NO\\n\";\n            }\n        }\n    }\n}",
+      "Python3": "N = 101\nadj = [[] for _ in range(N)]\nvis = [0] * N\ncolor = [0] * N\n\ndef dfs(v, col):\n    if vis[v]:\n        return\n    \n    vis[v] = 1\n    color[v] = col\n\n    for x in adj[v]:\n        dfs(x, col)\n\nif __name__ == \"__main__\":\n    t = int(input())\n\n    for _ in range(t):\n        n, m = map(int, input().split())\n\n        # Resetting the adjacency list, color, and visited array\n        adj = [[] for _ in range(n + 1)]\n        color = [0] * (n + 1)\n        vis = [0] * (n + 1)\n\n        for _ in range(m):\n            x, y = map(int, input().split())\n            adj[x].append(y)\n            adj[y].append(x)\n\n        current = 1\n        for i in range(n):\n            if not vis[i]:\n                # Color all the nodes connected with i \n                # with the same color\n                dfs(i, current)\n                current += 1\n\n        q = int(input())\n        for _ in range(q):\n            x, y = map(int, input().split())\n\n            # Output YES if both nodes have the same color\n            if color[x] == color[y]:\n                print(\"YO\")\n            else:\n                print(\"NO\")\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define N 101\n\n// Structure for adjacency list node\nstruct Node {\n    int vertex;\n    struct Node* next;\n};\n\n// Array of adjacency lists\nstruct Node* adj[N];\n\n// Array to keep track of visited nodes\nint vis[N];\n\n// Array to keep track of node colors\nint color[N];\n\n// Function to create a new adjacency list node\nstruct Node* createNode(int v) {\n    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));\n    newNode->vertex = v;\n    newNode->next = NULL;\n    return newNode;\n}\n\n// Function to add an edge to an undirected graph\nvoid addEdge(int src, int dest) {\n    struct Node* newNode = createNode(dest);\n    newNode->next = adj[src];\n    adj[src] = newNode;\n\n    newNode = createNode(src);\n    newNode->next = adj[dest];\n    adj[dest] = newNode;\n}\n\n// Depth First Search function\nvoid dfs(int v, int col) {\n    if (vis[v]) {\n        return; // If the node is already visited, do not process it\n    }\n    vis[v] = 1; // Mark the node as visited\n    color[v] = col; // Color the node\n\n    struct Node* temp = adj[v];\n    while (temp) {\n        int u = temp->vertex;\n        dfs(u, col);\n        temp = temp->next;\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n\n        // Resetting the adjacency list, color, and visited array\n        for (int i = 0; i <= n; i++) {\n            struct Node* temp = adj[i];\n            while (temp) {\n                struct Node* next = temp->next;\n                free(temp);\n                temp = next;\n            }\n            adj[i] = NULL;\n            color[i] = 0;\n            vis[i] = 0;\n        }\n\n        for (int i = 1; i <= m; i++) {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n            addEdge(x, y);\n        }\n\n        int current = 1;\n        for (int i = 0; i < n; i++) {\n            if (!vis[i]) {\n                // Color all the nodes connected with i\n                // with the same color\n                dfs(i, current);\n                current++;\n            }\n        }\n\n        // Two connected places will now have the same color\n\n        int q;\n        scanf(\"%d\", &q);\n        while (q--) {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n\n            // Output \"YO\" if both nodes have the same color\n            if (color[x] == color[y]) {\n                printf(\"YO\\n\");\n            } else {\n                printf(\"NO\\n\");\n            }\n        }\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass main {\n    static int N = 101;\n    static List<Integer>[] adj = new ArrayList[N];\n    static int[] vis = new int[N];\n    static int[] color = new int[N];\n\n    public static void dfs(int v, int col) {\n        if (vis[v] == 1)\n            return;\n\n        vis[v] = 1;\n        color[v] = col;\n\n        for (int x : adj[v]) {\n            dfs(x, col);\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt(); \n\n        while (t-- > 0) {\n            int n = scanner.nextInt(); \n            int m = scanner.nextInt(); \n\n            for (int i = 0; i <= n; i++) {\n                adj[i] = new ArrayList<>();\n                color[i] = 0;\n                vis[i] = 0;\n            }\n\n            // Creating the graph\n            for (int i = 1; i <= m; i++) {\n                int x = scanner.nextInt();\n                int y = scanner.nextInt();\n                adj[x].add(y);\n                adj[y].add(x);\n            }\n\n            int current = 1;\n            for (int i = 0; i < n; i++) {\n                if (vis[i] == 0) {\n                    // Color all the connected nodes with the same color\n                    dfs(i, current);\n                    current++;\n                }\n            }\n\n            int q = scanner.nextInt(); \n\n            // Checking if nodes have the same color\n            while (q-- > 0) {\n                int x = scanner.nextInt();\n                int y = scanner.nextInt();\n\n                if (color[x] == color[y]) {\n                    System.out.println(\"YO\");\n                } else {\n                    System.out.println(\"NO\");\n                }\n            }\n        }\n    }\n}\n"
+    }
+  }
+}

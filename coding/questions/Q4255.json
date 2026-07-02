@@ -1,0 +1,82 @@
+{
+  "questionId": "Q4255",
+  "title": "Find Best Path",
+  "slug": "find-best-path",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a directed graph with NNN vertices (numbered 111 through NNN) and MMM weighted edges. For each vertex of the graph, find the minimum cost of a walk that passes through this vertex, or determine that the minimum does not exist, i.e. for any integer mmm, there is a walk with cost smaller than mmm.\n\n**Notes:**\n\n\nA walk in a directed graph is a sequence of vertices v1,v2,…,vKv_1, v_2, \\ldots, v_Kv1​,v2​,…,vK​ for some positive integer KKK, and an associated (possibly empty) sequence of edges e1,e2,…,eK−1e_1, e_2, \\ldots, e_{K-1}e1​,e2​,…,eK−1​ such that for each valid iii, edge eie_iei​ goes from vertex viv_ivi​ to vertex vi+1v_{i+1}vi+1​.\nThe cost of a walk is the sum of weights of edges e1,e2,…,eK−1e_1, e_2, \\ldots, e_{K-1}e1​,e2​,…,eK−1​; if K=1K = 1K=1, the cost is 000.\nA walk passes through vertex uuu if uuu belongs to the sequence v1,v2,…,vKv_1, v_2, \\ldots, v_Kv1​,v2​,…,vK​.",
+    "constraints": [
+      "1≤T≤501 \\le T \\le 501≤T≤50",
+      "1≤N,M≤1,0001 \\le N, M \\le 1,0001≤N,M≤1,000",
+      "∣w∣≤106|w| \\le 10^6∣w∣≤106",
+      "Subtasks**Subtask #1 (30 points):** 1≤N,M≤1001 \\le N, M \\le 1001≤N,M≤100"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and MMM.\nEach of the next MMM lines contains three space-separated integers uuu, vvv and www describing an edge from vertex uuu to vertex vvv with weight www.",
+    "outputFormat": "For each test case, print NNN lines. For each valid iii, if the minimum cost of a walk through vertex iii does not exist, the iii-th of these lines should contain the string `\"INF\"`. Otherwise, it should contain a single integer — the minimum cost.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n7 7\n1 3 2\n5 1 -4\n2 5 3\n2 6 2\n3 5 1\n4 6 -3\n7 4 -3",
+        "output": "INF\nINF\nINF\n-6\nINF\n-6\n-6",
+        "explanation": "Explanation:\nExample case 1: The graph is depicted below."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n7 7\n1 3 2\n5 1 -4\n2 5 3\n2 6 2\n3 5 1\n4 6 -3\n7 4 -3",
+        "expectedOutput": "INF\nINF\nINF\n-6\nINF\n-6\n-6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <cstring>\nusing namespace std;\n\nconst long long INF = 1e15;\nconst int MAXN = 1100;\nconst int MAXM = 1100;\n\nint n, m;\n\n// Edge representation\nstruct Edge {\n    int u, v;\n    long long w;\n};\n\nEdge edges[MAXM];\n\n// Distance arrays\nlong long st[MAXN], en[MAXN], ans[MAXN];\n\n\n// Relax edges\nvoid relax(bool detectNegativeCycle) {\n    for (int i = 0; i < m; i++) {\n        int u = edges[i].u;\n        int v = edges[i].v;\n        long long w = edges[i].w;\n\n        if (detectNegativeCycle) {\n            // Detect negative cycle effect\n            if (st[u] > w + st[v])\n                st[u] = -INF;\n\n            if (en[v] > w + en[u])\n                en[v] = -INF;\n        } else {\n            // Standard relaxation\n            st[u] = min(st[u], w + st[v]);\n            en[v] = min(en[v], w + en[u]);\n        }\n    }\n}\n\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int t;\n    cin >> t;\n\n    while (t--) {\n        cin >> n >> m;\n\n        // Initialize arrays\n        for (int i = 0; i < n; i++) {\n            st[i] = 0;\n            en[i] = 0;\n        }\n\n        // Read edges\n        for (int i = 0; i < m; i++) {\n            cin >> edges[i].u >> edges[i].v >> edges[i].w;\n            edges[i].u--;  // convert to 0-based\n            edges[i].v--;\n        }\n\n        // Run relaxation (Bellman-Ford style)\n        for (int i = 0; i < 2 * n; i++) {\n            relax(false);\n        }\n\n        // Store answers\n        for (int i = 0; i < n; i++) {\n            ans[i] = st[i] + en[i];\n        }\n\n        // Detect negative cycles\n        for (int i = 0; i < 2 * n; i++) {\n            relax(true);\n        }\n\n        // Output results\n        for (int i = 0; i < n; i++) {\n            if (ans[i] == st[i] + en[i]) {\n                cout << ans[i] << '\\n';\n            } else {\n                cout << \"INF\\n\";\n            }\n        }\n    }\n\n    return 0;\n}",
+      "Python3": "import sys\ninput = sys.stdin.readline\n\nINF = 10**15\n\ndef solve():\n    t = int(input())\n    for _ in range(t):\n        n, m = map(int, input().split())\n\n        st = [0] * n\n        en = [0] * n\n\n        edges = []\n        for _ in range(m):\n            u, v, w = map(int, input().split())\n            edges.append((u - 1, v - 1, w))\n\n        # -------- Phase 1: Normal relaxation --------\n        for _ in range(2 * n):\n            updated = False\n            for u, v, w in edges:\n                if st[u] > w + st[v]:\n                    st[u] = w + st[v]\n                    updated = True\n                if en[v] > w + en[u]:\n                    en[v] = w + en[u]\n                    updated = True\n            if not updated:\n                break\n\n        ans = [st[i] + en[i] for i in range(n)]\n\n        # -------- Phase 2: Negative cycle propagation --------\n        for _ in range(2 * n):\n            updated = False\n            for u, v, w in edges:\n                if st[u] > w + st[v]:\n                    if st[u] != -INF:\n                        st[u] = -INF\n                        updated = True\n                if en[v] > w + en[u]:\n                    if en[v] != -INF:\n                        en[v] = -INF\n                        updated = True\n            if not updated:\n                break\n\n        # -------- Output --------\n        for i in range(n):\n            if ans[i] == st[i] + en[i]:\n                print(ans[i])\n            else:\n                print(\"INF\")\n\n\nif __name__ == \"__main__\":\n    solve()",
+      "C": "#include <stdio.h>\n\n#define MAXN 1100\n#define MAXM 1100\n#define INF 1000000000000000LL  // 1e15\n\ntypedef long long ll;\n\ntypedef struct {\n    int u, v;\n    ll w;\n} Edge;\n\nEdge edges[MAXM];\n\nll st[MAXN], en[MAXN], ans[MAXN];\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n\n        // Initialize arrays\n        for (int i = 0; i < n; i++) {\n            st[i] = 0;\n            en[i] = 0;\n        }\n\n        // Read edges\n        for (int i = 0; i < m; i++) {\n            scanf(\"%d %d %lld\", &edges[i].u, &edges[i].v, &edges[i].w);\n            edges[i].u--;  // convert to 0-based\n            edges[i].v--;\n        }\n\n        // -------- Phase 1: Normal relaxation --------\n        for (int iter = 0; iter < 2 * n; iter++) {\n            int updated = 0;\n\n            for (int i = 0; i < m; i++) {\n                int u = edges[i].u;\n                int v = edges[i].v;\n                ll w = edges[i].w;\n\n                if (st[u] > w + st[v]) {\n                    st[u] = w + st[v];\n                    updated = 1;\n                }\n                if (en[v] > w + en[u]) {\n                    en[v] = w + en[u];\n                    updated = 1;\n                }\n            }\n\n            if (!updated) break;\n        }\n\n        // Store answers\n        for (int i = 0; i < n; i++) {\n            ans[i] = st[i] + en[i];\n        }\n\n        // -------- Phase 2: Negative cycle propagation --------\n        for (int iter = 0; iter < 2 * n; iter++) {\n            int updated = 0;\n\n            for (int i = 0; i < m; i++) {\n                int u = edges[i].u;\n                int v = edges[i].v;\n                ll w = edges[i].w;\n\n                if (st[u] > w + st[v]) {\n                    if (st[u] != -INF) {\n                        st[u] = -INF;\n                        updated = 1;\n                    }\n                }\n\n                if (en[v] > w + en[u]) {\n                    if (en[v] != -INF) {\n                        en[v] = -INF;\n                        updated = 1;\n                    }\n                }\n            }\n\n            if (!updated) break;\n        }\n\n        // -------- Output --------\n        for (int i = 0; i < n; i++) {\n            if (ans[i] == st[i] + en[i]) {\n                printf(\"%lld\\n\", ans[i]);\n            } else {\n                printf(\"INF\\n\");\n            }\n        }\n    }\n\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n\n    static final long INF = (long)1e15;\n\n    static class Edge {\n        int u, v;\n        long w;\n\n        Edge(int u, int v, long w) {\n            this.u = u;\n            this.v = v;\n            this.w = w;\n        }\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder output = new StringBuilder();\n\n        int t = Integer.parseInt(br.readLine().trim());\n\n        while (t-- > 0) {\n            String[] nm = br.readLine().split(\" \");\n            int n = Integer.parseInt(nm[0]);\n            int m = Integer.parseInt(nm[1]);\n\n            long[] st = new long[n];\n            long[] en = new long[n];\n\n            Edge[] edges = new Edge[m];\n\n            for (int i = 0; i < m; i++) {\n                String[] line = br.readLine().split(\" \");\n                int u = Integer.parseInt(line[0]) - 1;\n                int v = Integer.parseInt(line[1]) - 1;\n                long w = Long.parseLong(line[2]);\n                edges[i] = new Edge(u, v, w);\n            }\n\n            // -------- Phase 1: Normal relaxation --------\n            for (int iter = 0; iter < 2 * n; iter++) {\n                boolean updated = false;\n\n                for (Edge e : edges) {\n                    int u = e.u, v = e.v;\n                    long w = e.w;\n\n                    if (st[u] > w + st[v]) {\n                        st[u] = w + st[v];\n                        updated = true;\n                    }\n                    if (en[v] > w + en[u]) {\n                        en[v] = w + en[u];\n                        updated = true;\n                    }\n                }\n\n                if (!updated) break;\n            }\n\n            long[] ans = new long[n];\n            for (int i = 0; i < n; i++) {\n                ans[i] = st[i] + en[i];\n            }\n\n            // -------- Phase 2: Negative cycle propagation --------\n            for (int iter = 0; iter < 2 * n; iter++) {\n                boolean updated = false;\n\n                for (Edge e : edges) {\n                    int u = e.u, v = e.v;\n                    long w = e.w;\n\n                    if (st[u] > w + st[v]) {\n                        if (st[u] != -INF) {\n                            st[u] = -INF;\n                            updated = true;\n                        }\n                    }\n\n                    if (en[v] > w + en[u]) {\n                        if (en[v] != -INF) {\n                            en[v] = -INF;\n                            updated = true;\n                        }\n                    }\n                }\n\n                if (!updated) break;\n            }\n\n            // -------- Output --------\n            for (int i = 0; i < n; i++) {\n                if (ans[i] == st[i] + en[i]) {\n                    output.append(ans[i]).append('\\n');\n                } else {\n                    output.append(\"INF\\n\");\n                }\n            }\n        }\n\n        System.out.print(output);\n    }\n}",
+      "JavaScript": "'use strict';\n\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\n\nlet idx = 0;\nconst INF = 1e15;\n\nfunction solve() {\n    let t = input[idx++];\n\n    let output = [];\n\n    while (t--) {\n        let n = input[idx++], m = input[idx++];\n\n        let st = new Array(n).fill(0);\n        let en = new Array(n).fill(0);\n\n        let edges = [];\n        for (let i = 0; i < m; i++) {\n            let u = input[idx++] - 1;\n            let v = input[idx++] - 1;\n            let w = input[idx++];\n            edges.push([u, v, w]);\n        }\n\n        // -------- Phase 1: Normal relaxation --------\n        for (let iter = 0; iter < 2 * n; iter++) {\n            let updated = false;\n\n            for (let i = 0; i < m; i++) {\n                let [u, v, w] = edges[i];\n\n                if (st[u] > w + st[v]) {\n                    st[u] = w + st[v];\n                    updated = true;\n                }\n                if (en[v] > w + en[u]) {\n                    en[v] = w + en[u];\n                    updated = true;\n                }\n            }\n\n            if (!updated) break;\n        }\n\n        let ans = new Array(n);\n        for (let i = 0; i < n; i++) {\n            ans[i] = st[i] + en[i];\n        }\n\n        // -------- Phase 2: Negative cycle propagation --------\n        for (let iter = 0; iter < 2 * n; iter++) {\n            let updated = false;\n\n            for (let i = 0; i < m; i++) {\n                let [u, v, w] = edges[i];\n\n                if (st[u] > w + st[v]) {\n                    if (st[u] !== -INF) {\n                        st[u] = -INF;\n                        updated = true;\n                    }\n                }\n\n                if (en[v] > w + en[u]) {\n                    if (en[v] !== -INF) {\n                        en[v] = -INF;\n                        updated = true;\n                    }\n                }\n            }\n\n            if (!updated) break;\n        }\n\n        // -------- Output --------\n        for (let i = 0; i < n; i++) {\n            if (ans[i] === st[i] + en[i]) {\n                output.push(String(ans[i]));\n            } else {\n                output.push(\"INF\");\n            }\n        }\n    }\n\n    console.log(output.join('\\n'));\n}\n\nsolve();"
+    }
+  }
+}

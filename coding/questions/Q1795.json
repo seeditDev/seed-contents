@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1795",
+  "title": "Subset with target sum",
+  "slug": "subset-with-target-sum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array of positive integers and a target value.\nYour task is to determine whether it is possible to select **any subset** of the given array such that the **sum of the chosen elements is exactly equal to the target**.\n\nEach element in the array can be used **at most once**, and the subset does **not need to be contiguous**.\n\nFunction DeclarationFunction NameisSubsetSumisSubsetSumisSubsetSum – This function checks whether there exists a subset of the given array whose elements sum up exactly to the given target value.\n\nParameters\nnnn : The number of elements in the array.\narrarrarr : An array of integers representing the elements available.\ntargettargettarget : The target sum to be achieved using a subset of the array.\nReturn Value\nReturns truetruetrue if there exists at least one subset whose sum equals targettargettarget.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤T≤10 1 \\leq T \\leq 101≤T≤10\n1≤n≤1001 \\leq n \\leq 1001≤n≤100\n1≤arr[i]≤1001 \\leq arr[i] \\leq 1001≤arr[i]≤100\n0≤target≤50000 \\leq target \\leq 50000≤target≤5000\n\nInput Format\n\n\nThe first line contains a single integer TTT — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains two integers nnn and targettargettarget, the size of the array and target sum.\nThe second line contains nnn space-separated integers representing the array arrarrarr.\n\n\n\n\nOutput Format\n\n\nFor each test case, print truetruetrue if a subset with sum equal to targettargettarget exists, otherwise print falsefalsefalse.\n\n\n\n\nThe input and output formats given below are only if you want to test using custom inputs.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n4 9\n3 8 4 5",
+        "output": "true",
+        "explanation": "Explanation:\nA subset {4,5} exists whose sum is 9."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 4\n1 6 10",
+        "output": "false",
+        "explanation": "Explanation:\nNo subset of the array adds up to 4."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n4 9\n3 8 4 5",
+        "expectedOutput": "true",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n3 4\n1 6 10",
+        "expectedOutput": "false",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "It avoids exponential enumeration of subsets.\nIt guarantees correctness by exploring all achievable sums incrementally.\nIt respects the constraint that each element can be used only once.",
+    "timeComplexity": "O(n × target)",
+    "spaceComplexity": "O(target)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    bool isSubsetSum(int n, vector<int>& arr, int target) {\n        vector<bool> dp(target + 1, false);\n        dp[0] = true;  // Empty subset has sum 0\n\n        for (int i = 0; i < n; i++) {\n            int val = arr[i];\n            for (int s = target; s >= val; s--) {\n                if (dp[s - val]) {\n                    dp[s] = true;\n                }\n            }\n        }\n\n        return dp[target];\n    }\n};",
+      "Python3": "class Solution:\n    def isSubsetSum(self, n, arr, target):\n        dp = [False] * (target + 1)\n        dp[0] = True  # Empty subset sum\n\n        for val in arr:\n            for s in range(target, val - 1, -1):\n                if dp[s - val]:\n                    dp[s] = True\n\n        return dp[target]",
+      "C": "int isSubsetSum(int n, int* arr, int target) {\n    int* dp = (int*)calloc(target + 1, sizeof(int));\n    if (!dp) return 0;\n\n    dp[0] = 1;  // Empty subset sum\n\n    for (int i = 0; i < n; i++) {\n        int val = arr[i];\n        for (int s = target; s >= val; s--) {\n            if (dp[s - val]) {\n                dp[s] = 1;\n            }\n        }\n    }\n\n    int result = dp[target];\n    free(dp);\n    return result;\n}",
+      "Java": "class Solution {\n\n    public boolean isSubsetSum(int n, int[] arr, int target) {\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true; // Empty subset sum\n\n        for (int i = 0; i < n; i++) {\n            int val = arr[i];\n            for (int s = target; s >= val; s--) {\n                if (dp[s - val]) {\n                    dp[s] = true;\n                }\n            }\n        }\n\n        return dp[target];\n    }\n}",
+      "JavaScript": "class Solution {\n    isSubsetSum(n, arr, target) {\n        const dp = new Array(target + 1).fill(false);\n        dp[0] = true; // Empty subset sum\n\n        for (let i = 0; i < n; i++) {\n            const val = arr[i];\n            for (let s = target; s >= val; s--) {\n                if (dp[s - val]) {\n                    dp[s] = true;\n                }\n            }\n        }\n\n        return dp[target];\n    }\n}"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1288",
+  "title": "Diameter of the tree",
+  "slug": "diameter-of-the-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, and rooted at node **1**, find the length of the diameter of the tree (**Note:** Diameter of a tree is the longest path between any two nodes. There can be more than one diameter of a tree with the same length).\n\nFor example, in the following tree, length of the tree's diameter is 4. (one of the diameters is 5-2-1-4-7)\n\n\n\n\nInput Format\n\nThe first line of the input contains a single intege NNN — the number of nodes.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\n\nOutput on the single line, the length of the diameter of given tree.",
+    "constraints": [
+      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7 \n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "output": "4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7 \n1 2\n1 4\n2 5\n2 3\n2 6\n4 7",
+        "expectedOutput": "4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int N = 1e5+1;\nvector<int> adj[N];\nint dist[N];\n \nvoid dfs(int node, int par, int d) {\n   dist[node] = d;\n   for(int v : adj[node]) {\n     if(v != par) {\n        dfs(v, node, d + 1);\n     }\n   }\n}\n \nint main() { \n \n  int n, x, y;\n  cin >> n;\n  \n  for(int i = 1; i < n; i++) {\n     cin >> x >> y;\n     adj[x].push_back(y);\n     adj[y].push_back(x);\n  }\n \n \n  dfs(1, 0, 0);\n  int start_node, maxdist = -1;\n \n  for(int i = 1; i <= n; i++) {\n     if(dist[i] > maxdist) {\n         maxdist = dist[i];\n         start_node = i;\n     }\n  }\n \n  dfs(start_node, 0, 0);\n  maxdist = 0;\n  \n  for(int i = 1; i <= n; i++) {\n    maxdist = max(maxdist, dist[i]);\n  }\n  cout << maxdist;\n\n  return 0;\n} \n",
+      "Python3": "import sys\nfrom collections import defaultdict, deque\n\ndef dfs(node, parent, depth, dist, adj):\n    dist[node] = depth\n    for v in adj[node]:\n        if v != parent:\n            dfs(v, node, depth + 1, dist, adj)\n\ndef main():\n    input = sys.stdin.read\n    data = input().split()\n    \n    n = int(data[0])\n    edges = list(map(int, data[1:]))\n    \n    # Initialize adjacency list and distance dictionary\n    adj = defaultdict(list)\n    dist = [-1] * (n + 1)\n    \n    # Read edges and build adjacency list\n    for i in range(0, len(edges), 2):\n        x = edges[i]\n        y = edges[i + 1]\n        adj[x].append(y)\n        adj[y].append(x)\n    \n    # Perform DFS from node 1\n    dfs(1, -1, 0, dist, adj)\n    \n    start_node = 1\n    max_dist = -1\n    \n    # Find the farthest node from node 1\n    for i in range(1, n + 1):\n        if dist[i] > max_dist:\n            max_dist = dist[i]\n            start_node = i\n    \n    # Perform DFS from the farthest node found\n    dist = [-1] * (n + 1)  # Reset distances\n    dfs(start_node, -1, 0, dist, adj)\n    \n    max_dist = max(dist[1:])  # Find the maximum distance\n    \n    # Print the result\n    print(max_dist)\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_NODES 100001\n\n// Use a dynamic adjacency list\nint **adj;\nint *degree;\nint *dist;\n\nvoid dfs(int node, int par, int d) {\n    dist[node] = d;\n    for (int i = 0; i < degree[node]; i++) {\n        int v = adj[node][i];\n        if (v != par) {\n            dfs(v, node, d + 1);\n        }\n    }\n}\n\nint main() {\n    int n, x, y;\n    \n    // Read number of nodes\n    if (scanf(\"%d\", &n) != 1 || n < 1 || n > MAX_NODES - 1) {\n        fprintf(stderr, \"Invalid number of nodes.\\n\");\n        return 1;\n    }\n    \n    // Allocate memory\n    adj = (int **)malloc((n + 1) * sizeof(int *));\n    degree = (int *)malloc((n + 1) * sizeof(int));\n    dist = (int *)malloc((n + 1) * sizeof(int));\n\n    if (!adj || !degree || !dist) {\n        fprintf(stderr, \"Memory allocation failed.\\n\");\n        return 1;\n    }\n\n    for (int i = 1; i <= n; i++) {\n        adj[i] = (int *)malloc(n * sizeof(int)); // Allocate enough space for the maximum possible degree\n        degree[i] = 0;\n    }\n\n    // Read edges and build adjacency list\n    for (int i = 1; i < n; i++) {\n        if (scanf(\"%d %d\", &x, &y) != 2 || x < 1 || x > n || y < 1 || y > n) {\n            fprintf(stderr, \"Invalid edge input.\\n\");\n            return 1;\n        }\n        adj[x][degree[x]++] = y;\n        adj[y][degree[y]++] = x;\n    }\n\n    // Perform DFS from node 1\n    dfs(1, -1, 0);\n\n    int start_node = 1, maxdist = -1;\n\n    // Find the farthest node from node 1\n    for (int i = 1; i <= n; i++) {\n        if (dist[i] > maxdist) {\n            maxdist = dist[i];\n            start_node = i;\n        }\n    }\n\n    // Perform DFS from the farthest node found\n    dfs(start_node, -1, 0);\n    maxdist = 0;\n\n    // Find the maximum distance\n    for (int i = 1; i <= n; i++) {\n        if (dist[i] > maxdist) {\n            maxdist = dist[i];\n        }\n    }\n\n    // Print the result\n    printf(\"%d\\n\", maxdist);\n\n    // Free allocated memory\n    for (int i = 1; i <= n; i++) {\n        free(adj[i]);\n    }\n    free(adj);\n    free(degree);\n    free(dist);\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    \n    static final int MAX_NODES = 100001;\n    static ArrayList<Integer>[] adj;\n    static int[] dist;\n    \n    static void dfs(int node, int parent, int depth) {\n        dist[node] = depth;\n        for (int v : adj[node]) {\n            if (v != parent) {\n                dfs(v, node, depth + 1);\n            }\n        }\n    }\n    \n    public static void main(String[] args) throws java.lang.Exception {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        \n        // Initialize adjacency list and distance array\n        adj = new ArrayList[n + 1];\n        dist = new int[n + 1];\n        for (int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n        }\n        \n        // Read edges and build adjacency list\n        for (int i = 1; i < n; i++) {\n            int x = scanner.nextInt();\n            int y = scanner.nextInt();\n            adj[x].add(y);\n            adj[y].add(x);\n        }\n        \n        // Perform DFS from node 1\n        dfs(1, -1, 0);\n        \n        int startNode = 1;\n        int maxDist = -1;\n        \n        // Find the farthest node from node 1\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] > maxDist) {\n                maxDist = dist[i];\n                startNode = i;\n            }\n        }\n        \n        // Perform DFS from the farthest node found\n        dfs(startNode, -1, 0);\n        maxDist = 0;\n        \n        // Find the maximum distance\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] > maxDist) {\n                maxDist = dist[i];\n            }\n        }\n        \n        // Print the result\n        System.out.println(maxDist);\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst N = 100001; \nlet adj = Array.from({ length: N }, () => []);\nlet dist = Array(N).fill(0);\n\nfunction dfs(node, par, d) {\n    dist[node] = d;\n    for (const v of adj[node]) {\n        if (v !== par) {\n            dfs(v, node, d + 1);\n        }\n    }\n}\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let n = 0;\n    rl.on('line', (line) => {\n        if (n === 0) {\n            n = parseInt(line.trim());\n        } else {\n            const [x, y] = line.trim().split(' ').map(Number);\n            adj[x].push(y);\n            adj[y].push(x);\n        }\n    });\n\n    rl.on('close', () => {\n        dfs(1, 0, 0);\n\n        let startNode = 1;\n        let maxDist = -1;\n\n        for (let i = 1; i <= n; i++) {\n            if (dist[i] > maxDist) {\n                maxDist = dist[i];\n                startNode = i;\n            }\n        }\n\n        dist.fill(0);\n        dfs(startNode, 0, 0);\n\n        let diameter = 0;\n        for (let i = 1; i <= n; i++) {\n            diameter = Math.max(diameter, dist[i]);\n        }\n\n        console.log(diameter);\n        process.exit(0);\n    });\n}\n\nmain();\n"
+    }
+  }
+}

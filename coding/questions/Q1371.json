@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1371",
+  "title": "Subarray with 0, 1, 2",
+  "slug": "subarray-with-0-1-2",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array arrarrarr consisting of only the integers 000, 111, and 222. Your task is to find the number of contiguous subarrays that contain at least one occurrence of each integer (0, 1, and 2).\n\n\nInput Format\n\nThe first line contains one integer nnn, the size of the array.                                                                                                               - Next line contains nnn integers arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n], representing the elements of the array.\n\n\nOutput Format\n\nPrint the count of all subarrays that contains at least one occurrence of each integer (0,1,2)(0, 1, \n 2)(0,1,2).",
+    "constraints": [
+      "1≤n≤1051 \\leq n \\leq 10^51≤n≤105",
+      "0≤arr[i]≤20 \\leq arr[i] \\leq 20≤arr[i]≤2"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n0 1 2 0",
+        "output": "3",
+        "explanation": "Explanation:\nThe subarrays are:\n[0, 1, 2], [0, 1, 2, 0], [1, 2, 0]\nEach subarray contains at least one 0, 1, 2."
+      },
+      {
+        "id": "sample_2",
+        "input": "4\n1 2 1 2",
+        "output": "0",
+        "explanation": "Explanation:\nThere is no subarray such that each contains all three elements. so the answer is 0."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n0 1 2 0",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4\n1 2 1 2",
+        "expectedOutput": "0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To solve this problem, we can use the sliding window (two-pointer) technique in combination with a hashmap (or unordered_map) to efficiently count the number of valid subarrays that include at least one `0`, `1`, and `2`. The key idea is to maintain a window that expands to include more elements and contracts when it has included at least one of each of the required numbers.",
+    "timeComplexity": "The algorithm runs in O(N) time, where N is the length of the array. This is because each element is processed at most twice—once by the j pointer and once by the i pointer.",
+    "spaceComplexity": "The space complexity is O(1) in terms of the number of distinct elements (since countMap only stores counts for 0, 1, and 2).",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countSubarrays(vector < long long > & a) {\n    // Write your code here\n    int count[3] = {0, 0, 0};\n    long long subcount = 0;\n    int back=0;\n    int n=a.size();\n    for(int front=0; front<n; front++) {\n        count[a[front]]++;\n        while(min({count[0], count[1],count[2]}) != 0) {\n            subcount += n-front;\n            count[a[back]]--;\n            back++;\n        }\n    }\n    return subcount;\n}\n\nint main() {\n    long long n;\n    cin >> n;\n\n    vector < long long > arr(n);\n    for (long long i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    cout << countSubarrays(arr) << endl;\n\n    return 0;\n}",
+      "Python3": "from collections import defaultdict\n\ndef count_subarrays(arr):\n    n = len(arr)\n    count_map = defaultdict(int)\n    i = 0\n    j = 0\n    count = 0\n\n    while j < n:\n        count_map[arr[j]] += 1\n        \n        while len(count_map) == 3:\n            count += (n - j)\n            count_map[arr[i]] -= 1\n            if count_map[arr[i]] == 0:\n                del count_map[arr[i]]\n            i += 1\n        j += 1\n\n    return count\n\ndef main():\n    n = int(input())\n    arr = list(map(int, input().strip().split()))[:n]\n    print(count_subarrays(arr))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long countSubarrays(int* arr, int n) {\n    int countMap[3] = {0}; \n    int i = 0, j = 0;\n    long long count = 0, distinctCount = 0;\n\n    while (j < n) {\n        if (countMap[arr[j]] == 0) {\n            distinctCount++;\n        }\n        countMap[arr[j]]++;\n\n        while (distinctCount == 3) {\n            count += (n - j);\n            countMap[arr[i]]--;\n            if (countMap[arr[i]] == 0) {\n                distinctCount--;\n            }\n            i++;\n        }\n        j++;\n    }\n\n    return count;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int* arr = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"%lld\\n\", countSubarrays(arr, n));\n\n    free(arr);\n    return 0;\n}",
+      "Java": "import java.util.HashMap;\nimport java.util.Map;\nimport java.util.Scanner;\n\npublic class Main {\n\n    public static long countSubarrays(long[] arr) {\n        long n = arr.length;\n        Map<Long, Long> countMap = new HashMap<>();\n        long i = 0, j = 0;\n        long count = 0;\n\n        while (j < n) {\n            countMap.put(arr[(int)j], countMap.getOrDefault(arr[(int)j], 0L) + 1);\n\n            while (countMap.size() == 3) {\n                count += (n - j);\n                countMap.put(arr[(int)i], countMap.get(arr[(int)i]) - 1);\n                if (countMap.get(arr[(int)i]) == 0) {\n                    countMap.remove(arr[(int)i]);\n                }\n                i++;\n            }\n            j++;\n        }\n\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        long n = scanner.nextLong();\n\n        long[] arr = new long[(int)n];\n        for (long i = 0; i < n; i++) {\n            arr[(int)i] = scanner.nextLong();\n        }\n\n        System.out.println(countSubarrays(arr));\n\n        scanner.close();\n    }\n}",
+      "JavaScript": "function countSubarrays(arr) {\n    // Initialize count for three distinct values (0, 1, 2)\n    const count = [0, 0, 0];\n    let subcount = 0;\n    let back = 0;\n    const n = arr.length;\n\n    for (let front = 0; front < n; front++) {\n        // Increment the count for the current element\n        count[arr[front]]++;\n\n        // While there is at least one of each element (0, 1, 2)\n        while (Math.min(...count) > 0) {\n            // Increment the subcount by the number of valid subarrays\n            subcount += n - front;\n\n            // Decrease the count of the element at the back pointer\n            count[arr[back]]--;\n            back++;\n        }\n    }\n\n    return subcount;\n}\n\n// Main function to read input and invoke the countSubarrays function\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nrl.on('line', (line) => {\n    const n = parseInt(line.trim(), 10);\n    \n    rl.on('line', (line) => {\n        const arr = line.trim().split(' ').map(Number);\n        console.log(countSubarrays(arr));\n        rl.close();\n    });\n});\n"
+    }
+  }
+}

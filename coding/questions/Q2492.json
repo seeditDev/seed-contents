@@ -1,0 +1,82 @@
+{
+  "questionId": "Q2492",
+  "title": "Little Elephant and Lemonade",
+  "slug": "little-elephant-and-lemonade",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "data structures",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Data Structures"
+    ]
+  },
+  "content": {
+    "problemStatement": "Little Elephant likes lemonade.\n\n\nWhen Little Elephant visits any room, he finds the bottle of the lemonade in that room that contains the greatest number of litres of lemonade and drinks it all.\n\n\nThere are **n** rooms (numbered from **0** to **n-1**), each contains **Ci** bottles. Each bottle has a volume (in litres). The first room visited by Little Elephant was **P0-th**, the second - **P1-th**, ..., the **m-th** - **Pm-1-th** room. Note that Little Elephant may visit a room more than once.\n\n\nFind for Little Elephant the total volume of lemonade he has drunk.",
+    "constraints": [
+      "1 &lt;= **T** &lt;= 10",
+      "1 &lt;= **n, Ci** &lt;= 100",
+      "1 &lt;= **m** &lt;= 10^4",
+      "0 &lt;= **Pi** &lt; n",
+      "1 &lt;= **Vi** &lt;= 10^5"
+    ],
+    "inputFormat": "First line of the input contains single integer **T** - the number of test cases. **T** test cases follow. First line of each test case contains pair of integers **n** and **m**. Second line contains **m** integers separated by a single space - array **P**. Next **n** lines describe bottles in each room in such format: **Ci V0 V1 ... VCi-1**, where **V** is the list of volumes (in liters) of all bottles in **i-th** room.",
+    "outputFormat": "In **T** lines print **T** integers - the answers for the corresponding test cases.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n3 3\n0 2 1\n3 1 2 3\n1 7\n2 4 7\n4 7\n0 1 3 0 1 0 0\n1 7\n3 9 4 5\n7 1 2 3 4 5 6 7\n1 1",
+        "output": "17\n22",
+        "explanation": "Explanation:\nTest Case 1: n = 3, m = 3. The elephant visits rooms in the sequence [0, 2, 1].\n\nFirst, he visits room 0. The available bottles have volumes [1, 2, 3]. He chooses the greatest volume, which is 3, and drinks it.\nNext, he visits room 2. The available bottles have volumes [4, 7]. He chooses the greatest volume, which is 7, and drinks it.\nFinally, he visits room 1. There is only one bottle available with a volume of 7. He drinks it.\nThe total volume of lemonade drunk is 3 + 7 + 7 = 17."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n3 3\n0 2 1\n3 1 2 3\n1 7\n2 4 7\n4 7\n0 1 3 0 1 0 0\n1 7\n3 9 4 5\n7 1 2 3 4 5 6 7\n1 1",
+        "expectedOutput": "17\n22",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "There is a faster solution though.\n\n**Sort the bottles in each room by volume**. This takes **O(n2 log n)** time.\n\nNow, we must pick as many bottles from each room as the number of times we visit that room.** We can iterate over the list of rooms visited and store how many times each room is visited**.\n\nFrom this much pre processing, we can now find the answer by adding the volumes of as many bottles from each room.\n\nThe complexity of this solution is **O(m + n + n2 log n)**.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\ntypedef long long ll;\ntypedef vector < ll > vl;\n\n// Function to solve the problem for each test case\nvoid solve() {\n    ll numRooms, numVisits;\n    cin >> numRooms >> numVisits;\n\n    // Array to hold the room visit sequence\n    vector < int > visitOrder(numVisits);\n    for (int i = 0; i < numVisits; i++) {\n        cin >> visitOrder[i];\n    }\n\n    // Vector of vectors to hold the volumes of lemonade bottles in each room\n    vector < vl > rooms(numRooms);\n    for (int i = 0; i < numRooms; i++) {\n        int numBottles;\n        cin >> numBottles;\n        vl volumes(numBottles);\n\n        for (int j = 0; j < numBottles; j++) {\n            cin >> volumes[j];\n        }\n\n        // Sort the volumes in descending order for easy access to the largest\n        sort(volumes.begin(), volumes.end(), greater < ll > ());\n        rooms[i] = volumes;\n    }\n\n    ll totalLemonade = 0; // Total volume of lemonade drunk\n    for (int i = 0; i < numVisits; i++) {\n        int roomIndex = visitOrder[i];\n\n        // Check if the room has any bottles left\n        if (!rooms[roomIndex].empty()) {\n            totalLemonade += rooms[roomIndex][0]; // Drink the largest bottle\n            rooms[roomIndex].erase(rooms[roomIndex].begin()); // Remove the drunk bottle\n        }\n    }\n\n    cout << totalLemonade << endl; // Output the total volume drunk for this test case\n}\n\nint main() {\n    ios::sync_with_stdio(0);\n    cin.tie(0);\n\n    ll testCases;\n    cin >> testCases;\n    while (testCases--) {\n        solve(); // Solve each test case\n    }\n\n    return 0;\n}",
+      "Python3": "# Function to solve the problem\ndef solve(visit_order, rooms):\n    total_drunk = 0  # Initialize the total volume of lemonade drunk\n    for room_index in visit_order:  # Iterate through each room index in visit_order\n        if not rooms[room_index]:  # Check if the list of volumes in the room is empty\n            continue  # No contribution to total if the room is empty\n        else:\n            max_volume = max(rooms[room_index])  # Find the maximum volume in the room\n            total_drunk += max_volume  # Add the maximum volume to total_drunk\n            rooms[room_index].remove(max_volume)  # Remove the drunk bottle from the room\n    return total_drunk  # Return the total volume of lemonade drunk\n\n# Main execution to read input and call the solve function\ndef main():\n    test_cases = int(input())  # Read number of test cases\n    for _ in range(test_cases):\n        n, m = map(int, input().split())  # Read number of rooms (n) and visits (m)\n        visit_order = list(map(int, input().split()))  # Read the list of room visit orders\n        rooms = []  # Initialize the list of rooms\n        \n        for _ in range(n):  # Read n rooms\n            # Read the bottles in each room, excluding the first element (the count)\n            room_data = list(map(int, input().split()))[1:]\n            rooms.append(room_data)  # Append the room's bottles to the rooms list\n        \n        # Call the solve function and print the result for this test case\n        print(solve(visit_order, rooms))  \n\n# Entry point of the program\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n\n#include <stdlib.h>\n\ntypedef long long ll;\n\n// Function to compare two long long integers (for sorting)\nint compare(const void * a,\n    const void * b) {\n    return ( * (ll * ) b - * (ll * ) a); // Sorting in descending order\n}\n\n// Function to solve the problem for each test case\nvoid solve() {\n    ll numRooms, numVisits;\n    scanf(\"%lld %lld\", & numRooms, & numVisits); // Read number of rooms and visits\n\n    // Array to hold the room visit sequence\n    int * visitOrder = (int * ) malloc(numVisits * sizeof(int));\n    for (ll i = 0; i < numVisits; i++) {\n        scanf(\"%d\", & visitOrder[i]); // Read the visit order\n    }\n\n    // Array of pointers to hold the volumes of lemonade bottles in each room\n    ll ** rooms = (ll ** ) malloc(numRooms * sizeof(ll * ));\n    int * bottleCounts = (int * ) malloc(numRooms * sizeof(int)); // To keep track of bottle counts\n\n    for (ll i = 0; i < numRooms; i++) {\n        scanf(\"%d\", & bottleCounts[i]); // Read the number of bottles\n        rooms[i] = (ll * ) malloc(bottleCounts[i] * sizeof(ll)); // Allocate memory for bottles\n\n        for (int j = 0; j < bottleCounts[i]; j++) {\n            scanf(\"%lld\", & rooms[i][j]); // Read bottle volumes\n        }\n\n        // Sort the volumes in descending order\n        qsort(rooms[i], bottleCounts[i], sizeof(ll), compare);\n    }\n\n    ll totalLemonade = 0; // Total volume of lemonade drunk\n    for (ll i = 0; i < numVisits; i++) {\n        int roomIndex = visitOrder[i]; // Get the room index\n\n        // Check if the room has any bottles left\n        if (bottleCounts[roomIndex] > 0) {\n            totalLemonade += rooms[roomIndex][0]; // Drink the largest bottle\n            // Shift all bottles to remove the drunk bottle\n            for (int k = 1; k < bottleCounts[roomIndex]; k++) {\n                rooms[roomIndex][k - 1] = rooms[roomIndex][k]; // Shift volumes\n            }\n            bottleCounts[roomIndex]--; // Decrease the bottle count\n        }\n    }\n\n    printf(\"%lld\\n\", totalLemonade); // Output the total volume drunk for this test case\n\n    // Free allocated memory\n    for (ll i = 0; i < numRooms; i++) {\n        free(rooms[i]);\n    }\n    free(rooms);\n    free(visitOrder);\n    free(bottleCounts);\n}\n\nint main() {\n    ll testCases;\n    scanf(\"%lld\", & testCases); // Read number of test cases\n    while (testCases--) {\n        solve(); // Solve each test case\n    }\n    return 0;\n}",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass LittleElephantAndLemonade\n{\n    public static void main(String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n        int testCases = scanner.nextInt(); // Number of test cases\n        while (testCases-- > 0) {\n            int numRooms = scanner.nextInt(); // Number of rooms\n            int numVisits = scanner.nextInt(); // Number of visits\n\n            int[] roomVisits = new int[numVisits]; // Array for room visits\n            for (int i = 0; i < numVisits; i++) {\n                roomVisits[i] = scanner.nextInt(); // Read room visit\n            }\n\n            int[][] bottlesInRooms = new int[numRooms][]; // Array of bottles in each room\n            for (int i = 0; i < numRooms; i++) {\n                int numBottles = scanner.nextInt(); // Number of bottles in room i\n                bottlesInRooms[i] = new int[numBottles]; // Initialize bottles array\n                for (int j = 0; j < numBottles; j++) {\n                    bottlesInRooms[i][j] = scanner.nextInt(); // Read volumes of bottles\n                }\n                Arrays.sort(bottlesInRooms[i]); // Sort bottles in ascending order\n            }\n\n            int totalLemonadeVolume = 0; // Total volume of lemonade drunk\n            for (int i = 0; i < numVisits; i++) {\n                int visitedRoom = roomVisits[i]; // Room being visited\n                if (bottlesInRooms[visitedRoom].length > 0) {\n                    int maxLemonadeVolume = bottlesInRooms[visitedRoom][bottlesInRooms[visitedRoom].length - 1]; // Maximum volume in the room\n                    totalLemonadeVolume += maxLemonadeVolume; // Add to total volume\n                    bottlesInRooms[visitedRoom] = Arrays.copyOf(bottlesInRooms[visitedRoom], bottlesInRooms[visitedRoom].length - 1); // Remove the bottle\n                }\n            }\n            System.out.println(totalLemonadeVolume); // Output the total volume for the test case\n        }\n        scanner.close(); // Close the scanner\n    }\n}"
+    }
+  }
+}

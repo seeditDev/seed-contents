@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1162",
+  "title": "Cleaning Up",
+  "slug": "cleaning-up",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Searching",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "searching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Searching"
+    ]
+  },
+  "content": {
+    "problemStatement": "After a long and successful day of preparing food for the banquet, it is time to clean up. There is a list of n jobs to do before the kitchen can be closed for the night. These jobs are indexed from 1 to n.\n\n\n\nMost of the cooks have already left and only the Chef and his assistant are left to clean up. Thankfully, some of the cooks took care of some of the jobs before they left so only a subset of the n jobs remain. The Chef and his assistant divide up the remaining jobs in the following manner. The Chef takes the unfinished job with least index, the assistant takes the unfinished job with the second least index, the Chef takes the unfinished job with the third least index, etc. That is, if the unfinished jobs were listed in increasing order of their index then the Chef would take every other one starting with the first job in the list and the assistant would take every other one starting with the second job on in the list.\n\n\n\nThe cooks logged which jobs they finished before they left. Unfortunately, these jobs were not recorded in any particular order. Given an unsorted list\n of finished jobs, you are to determine which jobs the Chef must complete and which jobs his assitant must complete before closing the kitchen for the \nevening.",
+    "constraints": [],
+    "inputFormat": "The first line contains a single integer T ≤ 50 indicating the number of test cases to follow. Each test case consists of two lines. The first line contains two numbers n,m satisfying 1 ≤ m ≤ n ≤ 1000. Here, n is the total number of jobs that must be completed before closing and m is the number of jobs that have already been completed. The second line contains a list of m distinct integers between 1 and n. These are the indices of the jobs that have already been completed. Consecutive integers are separated by a single space.",
+    "outputFormat": "The output for each test case consists of two lines. The first line is a list of the indices of the jobs assigned to the Chef. The second line is a list of the indices of the jobs assigned to his assistant. Both lists must appear in increasing order of indices and consecutive integers should be separated by a single space. If either the Chef or the assistant is not assigned any jobs, then their corresponding line should be blank -1.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n6 3\n2 4 1\n3 2\n3 2\n8 2\n3 8",
+        "output": "3 6\n5\n1\n-1\n1 4 6\n2 5 7",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n6 3\n2 4 1\n3 2\n3 2\n8 2\n3 8",
+        "expectedOutput": "3 6\n5\n1\n-1\n1 4 6\n2 5 7",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int t; \n    cin >> t;\n\n    while (t--) {\n        int n, m;\n        cin >> n >> m;\n\n        vector<int> completed_jobs(m);\n        for (int i = 0; i < m; i++) {\n            cin >> completed_jobs[i];\n        }\n        vector<int> remaining_jobs(n + 1, 1);\n        for (int job : completed_jobs) {\n            remaining_jobs[job] = 0;\n        }\n\n        // Collect the remaining jobs\n        vector<int> unfinished_jobs;\n        for (int i = 1; i <= n; i++) {\n            if (remaining_jobs[i] == 1) {\n                unfinished_jobs.push_back(i);\n            }\n        }\n\n        // Assign jobs to Chef and Assistant\n        vector<int> chef_jobs;\n        vector<int> assistant_jobs;\n\n        for (int i = 0; i < unfinished_jobs.size(); i++) {\n            if (i % 2 == 0) {\n                chef_jobs.push_back(unfinished_jobs[i]); // Chef takes the job\n            } else {\n                assistant_jobs.push_back(unfinished_jobs[i]); // Assistant takes the job\n            }\n        }\n        if (!chef_jobs.empty()) {\n            for (int job : chef_jobs) {\n                cout << job << \" \";\n            }\n            cout << endl;\n        } else {\n            cout << \"-1\" << endl; // If Chef has no jobs\n        }\n\n        if (!assistant_jobs.empty()) {\n            for (int job : assistant_jobs) {\n                cout << job << \" \";\n            }\n            cout << endl;\n        } else {\n            cout << \"-1\" << endl; // If Assistant has no jobs\n        }\n    }\n\n    return 0;\n}\n",
+      "Python3": "t = int(input())\nfor _ in range(t):\n    n, m = map(int, input().split())\n    completed_jobs = list(map(int, input().split()))\n\n    # Create a list to mark completed jobs\n    remaining_jobs = [1] * (n + 1)\n\n    # Mark completed jobs\n    for job in completed_jobs:\n        remaining_jobs[job] = 0\n\n    # Collect the remaining jobs\n    unfinished_jobs = []\n    for i in range(1, n + 1):\n        if remaining_jobs[i] == 1:\n            unfinished_jobs.append(i)\n\n    # Assign jobs to Chef and Assistant\n    chef_jobs = []\n    assistant_jobs = []\n\n    for i in range(len(unfinished_jobs)):\n        if i % 2 == 0:\n            chef_jobs.append(unfinished_jobs[i])\n        else:\n            assistant_jobs.append(unfinished_jobs[i])\n\n    # Print results for Chef\n    if chef_jobs:\n        print(\" \".join(map(str, chef_jobs)))\n    else:\n        print(\"-1\")\n\n    # Print results for Assistant\n    if assistant_jobs:\n        print(\" \".join(map(str, assistant_jobs)))\n    else:\n        print(\"-1\")\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int t; \n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int n, m; \n        scanf(\"%d %d\", &n, &m);\n\n        int *completed_jobs = (int *)malloc(m * sizeof(int));\n        for (int i = 0; i < m; i++) {\n            scanf(\"%d\", &completed_jobs[i]);\n        }\n\n        int *remaining_jobs = (int *)calloc(n + 1, sizeof(int));\n        for (int i = 1; i <= n; i++) {\n            remaining_jobs[i] = 1; \n        }\n\n        for (int i = 0; i < m; i++) {\n            remaining_jobs[completed_jobs[i]] = 0; \n        }\n\n        int *unfinished_jobs = (int *)malloc(n * sizeof(int));\n        int unfinished_count = 0;\n        for (int i = 1; i <= n; i++) {\n            if (remaining_jobs[i] == 1) {\n                unfinished_jobs[unfinished_count++] = i; \n            }\n        }\n\n        // Chef's jobs\n        if (unfinished_count > 0) {\n            for (int i = 0; i < unfinished_count; i += 2) {\n                printf(\"%d \", unfinished_jobs[i]); \n            }\n            printf(\"\\n\"); \n        } else {\n            printf(\"-1\\n\"); \n        }\n\n        // Assistant's jobs\n        if (unfinished_count > 1) {\n            for (int i = 1; i < unfinished_count; i += 2) {\n                printf(\"%d \", unfinished_jobs[i]); \n            }\n            printf(\"\\n\"); \n        } else {\n            printf(\"-1\\n\"); \n        }\n\n        free(completed_jobs);\n        free(remaining_jobs);\n        free(unfinished_jobs);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt(); // Number of test cases\n\n        while (t-- > 0) {\n            int n = scanner.nextInt(); // Total jobs\n            int m = scanner.nextInt(); // Completed jobs\n\n            // Input completed jobs\n            int[] completedJobs = new int[m];\n            for (int i = 0; i < m; i++) {\n                completedJobs[i] = scanner.nextInt();\n            }\n\n            // Create a list to mark completed jobs\n            boolean[] remainingJobs = new boolean[n + 1];\n            Arrays.fill(remainingJobs, true); // All jobs initially marked as unfinished\n\n            // Mark completed jobs\n            for (int job : completedJobs) {\n                remainingJobs[job] = false;\n            }\n\n            // Collect the remaining jobs\n            List<Integer> unfinishedJobs = new ArrayList<>();\n            for (int i = 1; i <= n; i++) {\n                if (remainingJobs[i]) {\n                    unfinishedJobs.add(i);\n                }\n            }\n\n            // Assign jobs to Chef and Assistant\n            List<Integer> chefJobs = new ArrayList<>();\n            List<Integer> assistantJobs = new ArrayList<>();\n\n            for (int i = 0; i < unfinishedJobs.size(); i++) {\n                if (i % 2 == 0) {\n                    chefJobs.add(unfinishedJobs.get(i)); // Chef takes the job\n                } else {\n                    assistantJobs.add(unfinishedJobs.get(i)); // Assistant takes the job\n                }\n            }\n\n            // Print results for Chef\n            if (!chefJobs.isEmpty()) {\n                for (int job : chefJobs) {\n                    System.out.print(job + \" \");\n                }\n                System.out.println(); // New line after printing Chef's jobs\n            } else {\n                System.out.println(\"-1\"); // If Chef has no jobs\n            }\n\n            // Print results for Assistant\n            if (!assistantJobs.isEmpty()) {\n                for (int job : assistantJobs) {\n                    System.out.print(job + \" \");\n                }\n                System.out.println(); // New line after printing Assistant's jobs\n            } else {\n                System.out.println(\"-1\"); // If Assistant has no jobs\n            }\n        }\n\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nfunction jobAssignment(t, testCases) {\n    let results = [];\n\n    for (let i = 0; i < t; i++) {\n        const [n, m] = testCases[i][0]; // Total jobs and completed jobs\n        const completedJobs = testCases[i][1]; // Completed jobs\n\n        // Create an array to mark completed jobs\n        const remainingJobs = new Array(n + 1).fill(true); // All jobs initially marked as unfinished\n\n        // Mark completed jobs\n        for (let job of completedJobs) {\n            remainingJobs[job] = false;\n        }\n\n        // Collect the remaining jobs\n        const unfinishedJobs = [];\n        for (let j = 1; j <= n; j++) {\n            if (remainingJobs[j]) {\n                unfinishedJobs.push(j);\n            }\n        }\n\n        // Assign jobs to Chef and Assistant\n        const chefJobs = [];\n        const assistantJobs = [];\n\n        for (let j = 0; j < unfinishedJobs.length; j++) {\n            if (j % 2 === 0) {\n                chefJobs.push(unfinishedJobs[j]); // Chef takes the job\n            } else {\n                assistantJobs.push(unfinishedJobs[j]); // Assistant takes the job\n            }\n        }\n\n        // Collect results for Chef\n        if (chefJobs.length > 0) {\n            results.push(chefJobs.join(\" \")); // Print Chef's jobs\n        } else {\n            results.push(\"-1\"); // If Chef has no jobs\n        }\n\n        // Collect results for Assistant\n        if (assistantJobs.length > 0) {\n            results.push(assistantJobs.join(\" \")); // Print Assistant's jobs\n        } else {\n            results.push(\"-1\"); // If Assistant has no jobs\n        }\n    }\n\n    // Output results\n    console.log(results.join(\"\\n\"));\n}\n\n// Read input from the user\nconst input = [];\nrl.on('line', (line) => {\n    input.push(line);\n}).on('close', () => {\n    const t = parseInt(input[0]);\n    const testCases = [];\n\n    for (let i = 1; i < input.length; i += 2) {\n        const [n, m] = input[i].split(' ').map(Number);\n        const completedJobs = input[i + 1].split(' ').map(Number);\n        testCases.push([[n, m], completedJobs]);\n    }\n\n    jobAssignment(t, testCases);\n});\n"
+    }
+  }
+}

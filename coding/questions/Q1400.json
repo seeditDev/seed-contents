@@ -1,0 +1,103 @@
+{
+  "questionId": "Q1400",
+  "title": "Longest Substring Without Repeating Characters",
+  "slug": "longest-substring-without-repeating-characters",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a string SSS of length NNN, you have to output the length of the **longest substring** of SSS with **non-repeating characters**.\n\nA **substring** is a contiguous sequence of characters within the string.\nThe substring must not contain any character that appears more than once.\n\n**Example:**\n\n`S = \"abcabcbb\"`\n\n\nLongest substring without repeating characters: `\"abc\"`\nOutput: `3`\nFunction DeclarationFunction NamelongestUniqueSubstringlongestUniqueSubstringlongestUniqueSubstring – This function computes the length of the longest contiguous substring of a given string that contains no repeating characters.\n\nParameters\nSSS : A string of length NNN consisting of characters (typically lowercase English letters, but the logic is character-agnostic).\nReturn Value\nReturns an integer representing the **maximum length** of a substring of SSS such that **each character appears at most once** in that substring.\nConstraints\n2≤N≤1052 \\leq N \\leq 10^52≤N≤105\nSSS contains valid characters (no restriction on character set unless specified)\nThe solution should be efficient enough to handle large input sizes\n\nInput Format\n\nThe first and only line of input contains a single string SSS.\n\n\nOutput Format\n\nOutput the length of the longest substring with no repeating characters.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "abcabcbb",
+        "output": "3",
+        "explanation": "Explanation:\nThe answer is \"abc\" with length 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "bbbb",
+        "output": "1",
+        "explanation": ""
+      },
+      {
+        "id": "sample_3",
+        "input": "abcccdefg",
+        "output": "5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "abcabcbb",
+        "expectedOutput": "3",
+        "weight": 33
+      },
+      {
+        "id": "tc_2",
+        "input": "bbbb",
+        "expectedOutput": "1",
+        "weight": 33
+      },
+      {
+        "id": "tc_3",
+        "input": "abcccdefg",
+        "expectedOutput": "5",
+        "weight": 34
+      }
+    ],
+    "totalTestCases": 3,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      33,
+      33,
+      34
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code uses a sliding window with two pointers, **left** and **right**, to find the longest substring without repeating characters. Moving **right** over each character, we track character counts in a frequency map. When a duplicate is found (frequency &gt; 1), **left** is moved forward to shrink the window until all characters are unique. After each adjustment, the window length is calculated, updating **longest** if this length is the largest so far. This continues until all characters are scanned, with **longest** holding the maximum length of a substring without repeats.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int longestUniqueSubstring(string s) {\n        unordered_map<char, int> freq;\n        int left = 0;\n        int longest = 0;\n\n        for (int right = 0; right < s.length(); right++) {\n            freq[s[right]]++;\n\n            while (freq[s[right]] > 1) {\n                freq[s[left]]--;\n                left++;\n            }\n\n            longest = max(longest, right - left + 1);\n        }\n\n        return longest;\n    }\n};",
+      "Python3": "class Solution:\n    def longestUniqueSubstring(self, s: str) -> int:\n        freq = {}\n        left = 0\n        longest = 0\n\n        for right in range(len(s)):\n            freq[s[right]] = freq.get(s[right], 0) + 1\n\n            while freq[s[right]] > 1:\n                freq[s[left]] -= 1\n                left += 1\n\n            longest = max(longest, right - left + 1)\n\n        return longest\n",
+      "C": "int longestUniqueSubstring(char *s) {\n    int freq[256] = {0};   // frequency of ASCII characters\n    int left = 0;\n    int longest = 0;\n    int n = strlen(s);\n\n    for (int right = 0; right < n; right++) {\n        freq[(unsigned char)s[right]]++;\n\n        while (freq[(unsigned char)s[right]] > 1) {\n            freq[(unsigned char)s[left]]--;\n            left++;\n        }\n\n        int currentLength = right - left + 1;\n        if (currentLength > longest) {\n            longest = currentLength;\n        }\n    }\n\n    return longest;\n}",
+      "Java": "class Solution {\n    public int longestUniqueSubstring(String s) {\n        Map<Character, Integer> freq = new HashMap<>();\n        int left = 0;\n        int longest = 0;\n\n        for (int right = 0; right < s.length(); right++) {\n            char ch = s.charAt(right);\n            freq.put(ch, freq.getOrDefault(ch, 0) + 1);\n\n            while (freq.get(ch) > 1) {\n                char leftChar = s.charAt(left);\n                freq.put(leftChar, freq.get(leftChar) - 1);\n                left++;\n            }\n\n            longest = Math.max(longest, right - left + 1);\n        }\n\n        return longest;\n    }\n}",
+      "JavaScript": "class Solution {\n    longestUniqueSubstring(s) {\n        const freq = {};\n        let left = 0;\n        let longest = 0;\n\n        for (let right = 0; right < s.length; right++) {\n            const ch = s[right];\n            freq[ch] = (freq[ch] || 0) + 1;\n\n            while (freq[ch] > 1) {\n                freq[s[left]]--;\n                left++;\n            }\n\n            longest = Math.max(longest, right - left + 1);\n        }\n\n        return longest;\n    }\n}"
+    }
+  }
+}

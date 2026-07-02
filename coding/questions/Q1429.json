@@ -1,0 +1,79 @@
+{
+  "questionId": "Q1429",
+  "title": "Chocolate Division",
+  "slug": "chocolate-division",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have a chocolate bar divided into NNN chunks, where each chunk has a sweetness value. You need to share this chocolate with KKK friends by making KKK cuts, resulting in K+1K+1K+1 pieces. Each piece must contain consecutive chunks. You'll eat the piece with the minimum total sweetness and give the rest to your friends. Your task is to find the maximum possible sweetness you can get for your piece.\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains two integers NNN and KKK (1≤N≤104,1≤K≤N−11 ≤ N ≤ 10^4, 1 ≤ K ≤ N-11≤N≤104,1≤K≤N−1)\nSecond line contains NNN integers representing the sweetness of each chunk (1≤sweetness[i]≤1051 ≤ sweetness[i] ≤ 10^51≤sweetness[i]≤105)\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer representing the maximum possible minimum sweetness you can get.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1041 \\leq N \\leq 10^41≤N≤104",
+      "1≤K≤N1 \\leq K \\leq N1≤K≤N",
+      "1≤sweetnessi≤1051 \\leq sweetness_i \\leq 10^51≤sweetnessi​≤105",
+      "SumofNacrossalltestcases≤105Sum of N across all test cases \\leq 10^5SumofNacrossalltestcases≤105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n9 5\n1 2 3 4 5 6 7 8 9\n9 8\n5 6 7 8 9 1 2 3 4\n9 2\n1 2 2 1 2 2 1 2 2",
+        "output": "6\n1\n5",
+        "explanation": "Explanation:\nTest Case 1: Optimal division is [1,2,3], [4,5], [6], [7], [8], [9]. You get minimum piece of 6. \nTest Case 2: Only one way to divide into 9 pieces, minimum is 1. \nTest Case 3: Optimal division is [1,2,2], [1,2,2], [1,2,2]. You get minimum piece of 5."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n9 5\n1 2 3 4 5 6 7 8 9\n9 8\n5 6 7 8 9 1 2 3 4\n9 2\n1 2 2 1 2 2 1 2 2",
+        "expectedOutput": "6\n1\n5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool canDivide(vector<int>& sweetness, int k, int minSweet) {\n    int count = 0;\n    int currentSum = 0;\n    \n    for(int s : sweetness) {\n        currentSum += s;\n        if(currentSum >= minSweet) {\n            count++;\n            currentSum = 0;\n        }\n    }\n    return count >= k + 1;\n}\n\nint maxMinSweetness(vector<int>& sweetness, int k) {\n    int left = 1;\n    int right = accumulate(sweetness.begin(), sweetness.end(), 0);\n    int result = 0;\n    \n    while(left <= right) {\n        int mid = left + (right - left) / 2;\n        if(canDivide(sweetness, k, mid)) {\n            result = mid;\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    return result;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n, k;\n        cin >> n >> k;\n        \n        vector<int> sweetness(n);\n        for(int i = 0; i < n; i++) {\n            cin >> sweetness[i];\n        }\n        \n        cout << maxMinSweetness(sweetness, k) << endl;\n    }\n    return 0;\n}"
+    }
+  }
+}

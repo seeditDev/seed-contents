@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1343",
+  "title": "Set Matrix Zeroes",
+  "slug": "set-matrix-zeroes",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "matrices",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Matrices"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an `N x M` integer matrix, if an element is `0`, set its entire row and column to `0`s.\n\n**Note:** You **don’t need to repeat the process for new 0s that are formed** during the operation.\n\nSee the following example:\n\n\n\nFunction DeclarationFunction NamesetZeroessetZeroessetZeroes – This function modifies the given matrix such that if any cell contains `0`, its entire row and column are set to `0`.\n\nParameters\nmatmatmat : A reference to a 2D integer matrix of size N×MN \\times MN×M.\nReturn Value\nThis function does **not** return anything.\nThe matrix matmatmat is modified **in-place** according to the rules.\nConstraints\n1≤N,M≤10001 \\leq N, M \\leq 10001≤N,M≤1000\n0≤mat[i][j]≤10000 \\leq mat[i][j] \\leq 10000≤mat[i][j]≤1000\n\nInput Format\n\nThe first line contains two integers NNN and MMM — the number of rows and columns in the matrix.\nThe next NNN lines each contain MMM space-separated integers representing the matrix elements.\n\n\nOutput Format\n\nOutput the modified matrix of size N×MN \\times MN×M.\nEach row should be printed on a new line with space-separated integers.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 3\n4 6 0\n8 2 1\n3 1 5",
+        "output": "0 0 0\n8 2 0\n3 1 0",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 3\n4 6 0\n8 2 1\n3 1 5",
+        "expectedOutput": "0 0 0\n8 2 0\n3 1 0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "void setZeroes(vector<vector<int>> &mat) {\n    int n = mat.size();\n    int m = mat[0].size();\n    bool firstColZero = false;\n\n    // First pass: mark rows and columns\n    for (int i = 0; i < n; i++) {\n        if (mat[i][0] == 0) firstColZero = true;\n        for (int j = 1; j < m; j++) {\n            if (mat[i][j] == 0) {\n                mat[i][0] = 0; // mark row\n                mat[0][j] = 0; // mark column\n            }\n        }\n    }\n\n    // Second pass: set zeros using markers (bottom-up)\n    for (int i = n - 1; i >= 0; i--) {\n        for (int j = m - 1; j >= 1; j--) {\n            if (mat[i][0] == 0 || mat[0][j] == 0) {\n                mat[i][j] = 0;\n            }\n        }\n        if (firstColZero) {\n            mat[i][0] = 0;\n        }\n    }\n}\n",
+      "Python3": "def setZeroes(mat):\n    n = len(mat)\n    m = len(mat[0])\n    first_col_zero = False\n\n    # First pass: mark rows and columns\n    for i in range(n):\n        if mat[i][0] == 0:\n            first_col_zero = True\n        for j in range(1, m):\n            if mat[i][j] == 0:\n                mat[i][0] = 0  # mark row\n                mat[0][j] = 0  # mark column\n\n    # Second pass: set zeros using markers (bottom-up)\n    for i in reversed(range(n)):\n        for j in reversed(range(1, m)):\n            if mat[i][0] == 0 or mat[0][j] == 0:\n                mat[i][j] = 0\n        if first_col_zero:\n            mat[i][0] = 0\n",
+      "C": "void setZeroes(int n, int m, int mat[n][m]) {\n    int firstColZero = 0;\n\n    // First pass: use first row and first column as markers\n    for (int i = 0; i < n; i++) {\n        if (mat[i][0] == 0) firstColZero = 1;\n        for (int j = 1; j < m; j++) {\n            if (mat[i][j] == 0) {\n                mat[i][0] = 0;  // mark row\n                mat[0][j] = 0;  // mark column\n            }\n        }\n    }\n\n    // Second pass: set zeros using markers (bottom-up)\n    for (int i = n - 1; i >= 0; i--) {\n        for (int j = m - 1; j >= 1; j--) {\n            if (mat[i][0] == 0 || mat[0][j] == 0) {\n                mat[i][j] = 0;\n            }\n        }\n        if (firstColZero) {\n            mat[i][0] = 0;  // set first column zero if needed\n        }\n    }\n}\n",
+      "Java": " public static void setZeroes(int[][] mat) {\n        int rows = mat.length;\n        int cols = mat[0].length;\n        boolean firstColZero = false;  // track if first column needs zero\n\n        // First pass: mark rows and columns\n        for (int i = 0; i < rows; i++) {\n            if (mat[i][0] == 0) firstColZero = true;\n            for (int j = 1; j < cols; j++) {\n                if (mat[i][j] == 0) {\n                    mat[i][0] = 0;  // mark row\n                    mat[0][j] = 0;  // mark column\n                }\n            }\n        }\n\n        // Second pass: set zeros using marks\n        for (int i = rows - 1; i >= 0; i--) {\n            for (int j = cols - 1; j >= 1; j--) {\n                if (mat[i][0] == 0 || mat[0][j] == 0) {\n                    mat[i][j] = 0;\n                }\n            }\n            if (firstColZero) {\n                mat[i][0] = 0;\n            }\n        }\n    }",
+      "JavaScript": "function setZeroes(mat) {\n    const rows = mat.length;\n    const cols = mat[0].length;\n    let firstColZero = false;\n\n    // First pass: mark rows and columns\n    for (let i = 0; i < rows; i++) {\n        if (mat[i][0] === 0) firstColZero = true;\n        for (let j = 1; j < cols; j++) {\n            if (mat[i][j] === 0) {\n                mat[i][0] = 0; // mark row\n                mat[0][j] = 0; // mark column\n            }\n        }\n    }\n\n    // Second pass: set zeros using marks\n    for (let i = rows - 1; i >= 0; i--) {\n        for (let j = cols - 1; j >= 1; j--) {\n            if (mat[i][0] === 0 || mat[0][j] === 0) {\n                mat[i][j] = 0;\n            }\n        }\n        if (firstColZero) {\n            mat[i][0] = 0;\n        }\n    }\n}"
+    }
+  }
+}

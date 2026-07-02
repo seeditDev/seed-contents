@@ -1,0 +1,75 @@
+{
+  "questionId": "Q2169",
+  "title": "The White Knight",
+  "slug": "the-white-knight",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a chessboard of size NxN. There is a white knight and several black pawns located on the board. The knight can move similarly to the normal knight in the game of chess; however it can only move towards the right of the board (see the below figure).\n\n\n\nThe mission of the knight is to capture as many black pawns as possible. Its journey ends when it moves to the rightmost column of the board.\n\nCompute the maximum number of black pawns the white knight can capture.",
+    "constraints": [],
+    "inputFormat": "The first line contains t, the number of test cases (about 10). Then t test cases follow.\n\nEach test case has the following form:\n\nThe first line contains N, the size of the chessboard (4 ≤ N ≤ 1000).\nThen N lines follow, each line containing N characters which may be '.', 'K' or 'P', corresponding to the empty cell, the white knight, and the black pawn, respectively. There is exactly one 'K' character in the whole of the board.",
+    "outputFormat": "For each test case, print in a single line the maximum number of black pawns that can be captured.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n5\nK....\n..P..\n.P...\n...P.\n.....",
+        "output": "2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n5\nK....\n..P..\n.P...\n...P.\n.....",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code uses a recursive function with memoization to compute the maximum number of pawns that the knight can capture starting from its initial position. It checks each valid knight move (`up-left`, `down-left`, `up-right`, and `down-right`) and accumulates the count of pawns captured (`'P'`) while ensuring the knight remains within the grid boundaries. The `dp` table stores previously computed results to optimize performance and avoid redundant calculations.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int MAX_SIZE = 1001; // Define the maximum size of the grid\n\n// Global variables for the grid and memoization table\nchar grid[MAX_SIZE][MAX_SIZE];\nint dp[MAX_SIZE][MAX_SIZE];\nint n; // Size of the grid\n\n// Function to solve the problem using memoization\nint solve(int i, int j) {\n    // Base case: If the position is out of bounds, return 0\n    if (i < 1 || j < 1 || i > n || j > n) {\n        return 0;\n    }\n    // If the solution is already computed, return the stored value\n    if (dp[i][j] != -1) {\n        return dp[i][j];\n    }\n    // Calculate the maximum number of 'P' cells that can be collected\n    // by moving the knight in different directions\n    dp[i][j] = (grid[i][j] == 'P' ? 1 : 0) + max({\n        solve(i - 1, j + 2), // Move up-left\n        solve(i + 1, j + 2), // Move down-left\n        solve(i - 2, j + 1), // Move up-right\n        solve(i + 2, j + 1)  // Move down-right\n    });\n\n    return dp[i][j];\n}\n\nint main() {\n    int t; // Number of test cases\n    cin >> t;\n\n    // Process each test case\n    while (t--) {\n        cin >> n; // Read the size of the grid\n\n        int start_i = -1, start_j = -1; // Coordinates of the knight\n\n        // Read the grid and initialize the dp array\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                cin >> grid[i][j]; // Input each cell\n                dp[i][j] = -1; // Initialize dp table with -1 (unvisited)\n                // Find the starting position of the knight ('K')\n                if (grid[i][j] == 'K') {\n                    start_i = i;\n                    start_j = j;\n                }\n            }\n        }\n\n        // Call solve from the knight's starting position and output the result\n        cout << solve(start_i, start_j) << endl;\n    }\n\n    return 0;\n}\n",
+      "Python3": "def solve(i, j, n, grid, dp):\n    # Base case: If the position is out of bounds, return 0\n    if i < 1 or j < 1 or i > n or j > n:\n        return 0\n    \n    # If the solution is already computed, return the stored value\n    if dp[i][j] != -1:\n        return dp[i][j]\n    \n    # Calculate the maximum number of 'P' cells that can be collected\n    # by moving the knight in different directions\n    dp[i][j] = (1 if grid[i][j] == 'P' else 0) + max(\n        solve(i - 1, j + 2, n, grid, dp), # Move up-left\n        solve(i + 1, j + 2, n, grid, dp), # Move down-left\n        solve(i - 2, j + 1, n, grid, dp), # Move up-right\n        solve(i + 2, j + 1, n, grid, dp)   # Move down-right\n    )\n    \n    return dp[i][j]\n\ndef main():\n    a = int(input())  # Number of test cases\n    for _ in range(a):\n        n = int(input())  # Size of the grid\n        grid = [[''] * (n + 1) for _ in range(n + 1)]\n        dp = [[-1] * (n + 1) for _ in range(n + 1)]\n        \n        start_i, start_j = -1, -1  # Coordinates of the knight\n        \n        # Read the grid and find the knight's starting position\n        for i in range(1, n + 1):\n            row = input()\n            for j in range(1, n + 1):\n                grid[i][j] = row[j - 1]  # Fill the grid\n                # Find the starting position of the knight ('K')\n                if grid[i][j] == 'K':\n                    start_i, start_j = i, j\n        \n        # Call solve from the knight's starting position and output the result\n        print(solve(start_i, start_j, n, grid, dp))\n\n# Start the main function\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n\n#define MAX_SIZE 1001 // Define the maximum size of the grid\n\n// Global variables for the grid and memoization table\nchar grid[MAX_SIZE][MAX_SIZE];\nint dp[MAX_SIZE][MAX_SIZE];\nint n; // Size of the grid\n\n// Function to find the maximum of two integers\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\n// Function to find the maximum of three integers\nint max3(int a, int b, int c) {\n    return max(max(a, b), c);\n}\n\n// Function to solve the problem using memoization\nint solve(int i, int j) {\n    // Base case: If the position is out of bounds, return 0\n    if (i < 1 || j < 1 || i > n || j > n) {\n        return 0;\n    }\n    // If the solution is already computed, return the stored value\n    if (dp[i][j] != -1) {\n        return dp[i][j];\n    }\n    // Calculate the maximum number of 'P' cells that can be collected\n    // by moving the knight in different directions\n    dp[i][j] = (grid[i][j] == 'P' ? 1 : 0) + max3(\n        solve(i - 1, j + 2), // Move up-left\n        solve(i + 1, j + 2), // Move down-left\n        max(solve(i - 2, j + 1), solve(i + 2, j + 1))  // Move up-right and down-right\n    );\n\n    return dp[i][j];\n}\n\nint main() {\n    int t; // Number of test cases\n    scanf(\"%d\", &t);\n\n    // Process each test case\n    while (t--) {\n        scanf(\"%d\", &n); // Read the size of the grid\n\n        int start_i = -1, start_j = -1; // Coordinates of the knight\n\n        // Read the grid and initialize the dp array\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                scanf(\" %c\", &grid[i][j]); // Input each cell\n                dp[i][j] = -1; // Initialize dp table with -1 (unvisited)\n                // Find the starting position of the knight ('K')\n                if (grid[i][j] == 'K') {\n                    start_i = i;\n                    start_j = j;\n                }\n            }\n        }\n\n        // Call solve from the knight's starting position and output the result\n        printf(\"%d\\n\", solve(start_i, start_j));\n    }\n\n    return 0;\n}\n"
+    }
+  }
+}

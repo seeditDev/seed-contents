@@ -1,0 +1,92 @@
+{
+  "questionId": "Q1269",
+  "title": "Least significant bit, and most significant bit",
+  "slug": "least-significant-bit-and-most-significant-bit",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Least Significant BitThe least significant bit (LSB) is the rightmost bit in a binary representation of a number. In binary, each digit or bit represents a power of 2. The least significant bit represents the smallest power of 2 in the binary number, typically 20 or 1.\n\nFor example, in the 8-bit binary number 11010101, the least significant bit is the rightmost bit, which is 1 in this case.\n\nChanging the least significant bit from 0 to 1 or from 1 to 0 results in a change of the least amount in the value of the number. This property is often used in various applications, such as error detection, cryptography, and certain data encoding techniques.\n\nMost Significant BitThe most significant bit (MSB) is the leftmost bit in a binary representation of a number. In binary notation, each bit represents a power of 2, with the leftmost bit typically representing the largest power of 2 in the number. The term \"most significant\" indicates that this bit contributes the most to the overall value of the number.\n\nFor example, in the 8-bit binary number 11010101, the most significant bit is the leftmost bit, which is 1 in this case.\n\nTask\nFor the given number flip the most significant bit and the least significant bit and return the number.",
+    "constraints": [
+      "2≤N≤10182 \\leq N \\leq 10^{18}2≤N≤1018"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6",
+        "output": "3",
+        "explanation": "Explanation:\nBinary form = 110\nMSB = 1, LSB = 0\nFlip them to get 011\nConvert back to decimal to get 3\n\nOutput = 3"
+      },
+      {
+        "id": "sample_2",
+        "input": "7",
+        "output": "2",
+        "explanation": "Explanation:\nBinary form = 111\nMSB = 1, LSB = 1\nFlip MSB and LSB. MSB becomes 0, LSB becomes 0. The new binary is 010\nConvert back to decimal that is 2\n\nOutput = 2"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "7",
+        "expectedOutput": "2",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The code idea is to flip the least significant and most significant bits of a given integer **n**. First, the least significant bit (LSB), which is the rightmost bit, is flipped using a bitwise XOR operation with `1` (`n = n ^ 1`). This toggles the LSB between 0 and 1. Next, to find the position of the most significant bit (MSB), we use a copy of **n** and continuously divide it by 2, counting each division until the number becomes zero. The count gives the MSB’s position. Finally, we flip this MSB by performing a bitwise XOR with `(1 &lt;&lt; pos)`, which shifts `1` to the MSB’s position and toggles it.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    long long flipBits(long long n) {\n        // compute MSB position from the original n\n        long long orig = n;\n        int pos = 0;\n        long long tmp = orig;\n        while (tmp > 1) {    // move until tmp becomes 1 (MSB)\n            tmp >>= 1;\n            pos++;\n        }\n        // flip LSB\n        long long res = orig ^ 1LL;\n        // flip MSB using 64-bit shift\n        res = res ^ (1ULL << pos);\n        return res;\n    }\n};\n",
+      "Python3": "class Solution:\n    def flipBits(self, n: int) -> int:\n        if n == 0:\n            return 1  # optional edge case\n\n        # find MSB position from the original number\n        pos = 0\n        n1 = n\n        while n1 > 1:\n            n1 //= 2\n            pos += 1\n\n        # flip LSB\n        res = n ^ 1\n        # flip MSB (may be same bit if n == 1)\n        res = res ^ (1 << pos)\n\n        return res\n",
+      "C": "long long flipBitsFunc(long long n) {\n    if (n == 0) return 1; // optional edge case\n\n    // find MSB position from the original number\n    int pos = 0;\n    long long tmp = n;\n    while (tmp > 1) {\n        tmp >>= 1;\n        pos++;\n    }\n\n    // flip LSB\n    long long res = n ^ 1LL;\n    // flip MSB (may be same bit if n == 1)\n    res = res ^ (1LL << pos);\n\n    return res;\n}\n",
+      "Java": "class Solution {\n    public long flipBits(long n) {\n        if (n == 0) return 1; // optional safeguard\n\n        // find MSB position from the original number\n        long tmp = n;\n        int pos = 0;\n        while (tmp > 1) {\n            tmp >>= 1;\n            pos++;\n        }\n\n        // flip LSB\n        long res = n ^ 1L;\n        // flip MSB (may be the same bit if n == 1)\n        res = res ^ (1L << pos);\n\n        return res;\n    }\n}\n",
+      "JavaScript": "class Solution {\n  flipBits(n) {\n    // accept Number or BigInt input\n    let x = (typeof n === 'bigint') ? n : BigInt(n);\n\n    // optional: handle 0 if you want a defined behavior\n    if (x === 0n) return 1; // returns Number 1\n\n    // find MSB position from the ORIGINAL number\n    let tmp = x;\n    let pos = 0n;\n    while (tmp > 1n) {    // stop when tmp becomes 1 (that is MSB)\n      tmp >>= 1n;\n      pos += 1n;\n    }\n\n    // flip LSB (bit 0) then flip MSB (bit pos)\n    let res = x ^ 1n;\n    res = res ^ (1n << pos);\n\n    // convert to Number if safe, otherwise return BigInt\n    if (res <= BigInt(Number.MAX_SAFE_INTEGER) && res >= BigInt(Number.MIN_SAFE_INTEGER)) {\n      return Number(res);\n    }\n    return res;\n  }\n}"
+    }
+  }
+}

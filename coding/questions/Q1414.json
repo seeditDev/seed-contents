@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1414",
+  "title": "Next Possible Event",
+  "slug": "next-possible-event",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are organizing a series of events, each with a specific start and end time, given as `events[i] = [start_i, end_i]`. Each event has a unique start time.\n\nFor each event iii, you need to find the next possible event jjj such that:\n\n\nThe start time of event jjj is greater than or equal to the end time of event iii (i.e., startj≥endistart_j \\geq end_istartj​≥endi​).\nAmong such events, you must select the event with the earliest start time.\nIf no such event exists, return `-1` for that event.\n\n\nInput Format\n\nFirst line of input contains a single positive integer `N` - the number of events.\nNext `N` lines contain two space separated integers each - the start and end time of each event.\n\n\nOutput Format\n\nOutput `N` space separated integers - the answer for each event.",
+    "constraints": [
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "0≤starti≤endi≤1090 \\leq \\text{start}_i \\leq \\text{end}_i \\leq 10^90≤starti​≤endi​≤109",
+      "Each start time is unique."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3 4\n2 3\n1 2",
+        "output": "-1 0 1",
+        "explanation": "Explanation:\nFor the first event [3,4], there is no next event that starts after or at time 4, so the output is -1.\nFor the second event [2,3], the next event is [3,4] because its start time (3) is equal to the end time of [2,3]. Thus, the index is 0.\nFor the third event [1,2], the next event is [2,3] because its start time (2) is equal to the end time of [1,2]. Thus, the index is 1."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3 4\n2 3\n1 2",
+        "expectedOutput": "-1 0 1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\n// Function to find the next event for each event\nvector<int> findNextEvent(vector<vector<int>> &events) {\n    int n = events.size();\n    vector<pair<int, int>> startTimes; // To store (start_time, original_index)\n    vector<int> result(n, -1);\n\n    // Fill startTimes with (start_time, original_index)\n    for (int i = 0; i < n; ++i) {\n        startTimes.emplace_back(events[i][0], i);\n    }\n\n    // Sort startTimes based on start_time\n    sort(startTimes.begin(), startTimes.end());\n\n    // For each event, find the next event with binary search\n    for (int i = 0; i < n; ++i) {\n        int endTime = events[i][1];\n\n        // Binary search to find the first event with start_time >= endTime\n        auto it = lower_bound(startTimes.begin(), startTimes.end(), make_pair(endTime, 0));\n\n        // If such an event exists, store its original index\n        if (it != startTimes.end()) {\n            result[i] = it->second;\n        }\n    }\n\n    return result;\n}\n\nint main() {\n    int n;\n    cin >> n;\n\n    vector<vector<int>> events(n, vector<int>(2));\n    for (int i = 0; i < n; ++i) {\n        cin >> events[i][0] >> events[i][1];\n    }\n    vector<int> result = findNextEvent(events);\n\n    for(int val: result) cout << val << \" \";\n    \n    return 0;\n}",
+      "Python3": "from bisect import bisect_left\n\ndef find_next_event(events):\n    n = len(events)\n    start_times = sorted((event[0], i) for i, event in enumerate(events))\n    result = [-1] * n\n\n    for i, (_, end_time) in enumerate(events):\n        idx = bisect_left(start_times, (end_time, 0))\n        if idx < len(start_times):\n            result[i] = start_times[idx][1]\n\n    return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    events = [tuple(map(int, input().split())) for _ in range(n)]\n    result = find_next_event(events)\n    print(*result)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Comparator for sorting based on start time\nint compare(const void *a, const void *b) {\n    int *pairA = (int *)a;\n    int *pairB = (int *)b;\n    return pairA[0] - pairB[0];\n}\n\n// Binary search to find the next event\nint binarySearch(int sortedStartTimes[][2], int size, int target) {\n    int left = 0, right = size - 1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (sortedStartTimes[mid][0] >= target) {\n            right = mid - 1;\n        } else {\n            left = mid + 1;\n        }\n    }\n    return (left < size) ? sortedStartTimes[left][1] : -1;\n}\n\n// Function to find the next event for each event\nvoid findNextEvent(int n, int events[][2], int result[]) {\n    int sortedStartTimes[n][2];\n\n    // Store start times with their original indices\n    for (int i = 0; i < n; i++) {\n        sortedStartTimes[i][0] = events[i][0];\n        sortedStartTimes[i][1] = i;\n    }\n\n    // Sort based on start time\n    qsort(sortedStartTimes, n, sizeof(sortedStartTimes[0]), compare);\n\n    // Find the next event for each event using binary search\n    for (int i = 0; i < n; i++) {\n        result[i] = binarySearch(sortedStartTimes, n, events[i][1]);\n    }\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int events[n][2], result[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d %d\", &events[i][0], &events[i][1]);\n    }\n\n    findNextEvent(n, events, result);\n\n    for (int i = 0; i < n; i++) {\n        printf(\"%d \", result[i]);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\npublic class Main {\n    public static int[] findNextEvent(int[][] events) {\n        int n = events.length;\n        int[][] startTimes = new int[n][2]; // To store {start_time, original_index}\n\n        for (int i = 0; i < n; i++) {\n            startTimes[i][0] = events[i][0];\n            startTimes[i][1] = i;\n        }\n\n        // Sort startTimes based on start_time\n        Arrays.sort(startTimes, Comparator.comparingInt(a -> a[0]));\n\n        int[] result = new int[n];\n        Arrays.fill(result, -1);\n\n        for (int i = 0; i < n; i++) {\n            int endTime = events[i][1];\n\n            // Binary search to find the first event with start_time >= endTime\n            int left = 0, right = n - 1;\n            while (left <= right) {\n                int mid = left + (right - left) / 2;\n                if (startTimes[mid][0] >= endTime) {\n                    right = mid - 1;\n                } else {\n                    left = mid + 1;\n                }\n            }\n\n            if (left < n) {\n                result[i] = startTimes[left][1];\n            }\n        }\n\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        int n = sc.nextInt();\n        int[][] events = new int[n][2];\n\n        for (int i = 0; i < n; i++) {\n            events[i][0] = sc.nextInt();\n            events[i][1] = sc.nextInt();\n        }\n\n        int[] result = findNextEvent(events);\n\n        for (int val : result) {\n            System.out.print(val + \" \");\n        }\n    }\n}\n",
+      "JavaScript": "function findNextEvent(events) {\n    const n = events.length;\n    const startTimes = events.map((event, i) => [event[0], i]);\n    startTimes.sort((a, b) => a[0] - b[0]);\n\n    const result = Array(n).fill(-1);\n\n    for (let i = 0; i < n; i++) {\n        const endTime = events[i][1];\n\n        // Binary search to find the first event with start_time >= endTime\n        let left = 0, right = n - 1;\n        while (left <= right) {\n            const mid = Math.floor((left + right) / 2);\n            if (startTimes[mid][0] >= endTime) {\n                right = mid - 1;\n            } else {\n                left = mid + 1;\n            }\n        }\n\n        if (left < n) {\n            result[i] = startTimes[left][1];\n        }\n    }\n\n    return result;\n}\n\n// Input reading and result printing\nconst readline = require(\"readline\");\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout,\n});\n\nlet input = [];\nrl.on(\"line\", (line) => {\n    input.push(line.trim());\n}).on(\"close\", () => {\n    const n = parseInt(input[0], 10);\n    const events = input.slice(1).map((line) => line.split(\" \").map(Number));\n    const result = findNextEvent(events);\n    console.log(result.join(\" \"));\n});\n"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "questionId": "Q3381",
+  "title": "Wealth Disparity",
+  "slug": "wealth-disparity",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Indian National Olympiad in Informatics 2016Boing Inc, has N employees, numbered 1 ... N. Every employee other than Mr. Hojo (the head of the company) has a manager (P[i] denotes the manager of employee i). Thus an employee may manage any number of other employees but he reports only to one manager, so that the organization forms a tree with Mr. Hojo at the root. We say that employee B is a subordinate of employee A if B appears in the subtree rooted at A.\n\n\nMr. Hojo, has hired Nikhil to analyze data about the employees to suggest how to identify faults in Boing Inc. Nikhil, who is just a clueless consultant, has decided to examine wealth disparity in the company. He has with him the net wealth of every employee (denoted A[i] for employee i). Note that this can be negative if the employee is in debt. He has already decided that he will present evidence that wealth falls rapidly as one goes down the organizational tree. He plans to identify a pair of employees i and j, j a subordinate of i, such A[i] - A[j] is maximum. Your task is to help him do this.\n\n\nSuppose, Boing Inc has 4 employees and the parent (P[i]) and wealth information (A[i]) for each employee are as follows:\n\n\n\ni\t\t1\t2\t3\t4\nA[i]\t\t5\t10\t6\t12\nP[i]\t\t2\t-1\t4\t2\n\n\nP[2] = -1 indicates that employee 2 has no manager, so employee 2 is Mr. Hojo.\n\n\nIn this case, the possible choices to consider are (2,1) with a difference in wealth of 5, (2,3) with 4, (2,4) with -2 and (4,3) with 6. So the answer is 6.\n\n\n\n\nInput Format\n\nThere will be one line which contains (2*N + 1) space-separate integers.\nThe first integer is N, giving the number of employees in the company.\nThe next N integers A[1], .., A[N] give the wealth of the N employees.\nThe last N integers are P[1], P[2], .., P[N], where P[i] identifies the manager of employee i. If Mr. Hojo is employee i then, P[i] = -1, indicating that he has no manager.\n\n\nOutput Format\nOne integer, which is the needed answer.",
+    "constraints": [
+      "-108 ≤ A[i] ≤ 108, for all i.",
+      "Subtasks",
+      "**Subtask 1 (30 Marks)** 1 ≤ N ≤ 500.",
+      "**Subtask 2 (70 Marks)** 1 ≤ N ≤ 105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 5 10 6 12 2 -1 4 2",
+        "output": "6",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 5 10 6 12 2 -1 4 2",
+        "expectedOutput": "6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To solve this problem, we can use a Depth-First Search `(DFS)` on the organization `tree`, rooted at Mr. Hojo. First, we build an `adjacency list` representation of the `tree`, where each employee points to their direct subordinates. Then, starting from Mr. Hojo, we traverse the `tree` recursively. For each node during traversal, we keep track of the maximum wealth encountered from the root down to the current node, as well as the maximum disparity (`maxDisp`) found so far. For each employee `i` we visit, we compute the difference `maxWealth - A[i]` to find how much wealth drops as we move down the tree. If this difference is greater than the current `maxDisp`, we update `maxDisp`. After visiting all subordinates of each employee, we return the maximum disparity found.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nvoid dfs(int node, vector < vector < int >> & adj, vector < int > & a, int & maxDisp, int maxWealth) {\n    maxDisp = max(maxDisp, maxWealth - a[node]);\n\n    maxWealth = max(maxWealth, a[node]);\n\n    for (int ne: adj[node]) {\n        dfs(ne, adj, a, maxDisp, maxWealth);\n    }\n}\n\nint main() {\n    int n;\n    cin >> n;\n\n    vector < int > a(n + 1);\n    vector < vector < int >> adj(n + 1);\n\n    for (int i = 0; i < n; i++) {\n        cin >> a[i + 1];\n    }\n    int start;\n    for (int i = 1; i < n + 1; i++) {\n        int q;\n        cin >> q;\n        if (q == -1) {\n            start = i;\n        } else {\n            adj[q].push_back(i);\n        }\n    }\n\n    int maxDisp = INT_MIN;\n    dfs(start, adj, a, maxDisp, a[start]);\n    cout << maxDisp << endl;\n\n    return 0;\n}"
+    }
+  }
+}

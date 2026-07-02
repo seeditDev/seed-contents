@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1569",
+  "title": "Longest Happy Prefix",
+  "slug": "longest-happy-prefix",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Strings",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "strings & pattern matching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Strings & Pattern Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "A string is called a **happy prefix** if it is a non-empty prefix which is also a suffix of the string (excluding the string itself).\n\nGiven a string s, your task is to find the **longest happy prefix** of sss. If no such prefix exists, print an empty string.\n\nFunction DeclarationFunction NamelongestHappyPrefixlongestHappyPrefixlongestHappyPrefix – This function finds the longest prefix of a string that is also its suffix.\n\nParameters\nsss : A string consisting of lowercase English letters.\nReturn Value\nReturns a string — the **longest happy prefix**.\nReturns an **empty string** if no happy prefix exists.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤∣s∣≤1051 \\leq |s| \\leq 10^51≤∣s∣≤105\nsss contains only lowercase English letters\n\nInput Format\nThe first line contains an integer TTT — the number of test cases.\n\n\nEach of the next TTT lines contains a string sss consisting of lowercase English letters.\n\n\n\nOutput Format\n\nFor each test case, print a single line containing the **longest happy prefix**.\nIf no such prefix exists, print an **empty line**.",
+    "constraints": [
+      "1≤T≤1001 \\le T \\le 1001≤T≤100",
+      "1≤∣s∣≤1051 \\le |s| \\le 10^{5}1≤∣s∣≤105",
+      "s&nbsp;contains&nbsp;only&nbsp;lowercase&nbsp;English&nbsp;letters.\\texttt{s contains only lowercase English letters.}s&nbsp;contains&nbsp;only&nbsp;lowercase&nbsp;English&nbsp;letters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\nababab\naaaa\nabcd",
+        "output": "abab\naaa",
+        "explanation": "Explanation:\nTest Case 1 :\nInput: ababab\nThe prefix abab also appears as the suffix of the string and is the longest such match.\nOutput: abab\n\n\nTest Case 2 :\nInput: aaaa\nThe prefixes a, aa, and aaa are also suffixes of the string.\nThe longest happy prefix is aaa.\nOutput: aaa\n\n\nTest Case 3 :\nInput: abcd\nNo non-empty prefix (excluding the full string) matches any suffix.\nOutput: \"\" (empty string)"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\nababab\naaaa\nabcd",
+        "expectedOutput": "abab\naaa",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Initialize an LPS array of size `n` with all zeros.\n\nStart iterating from index `1` to `n-1`:\n\n\nMaintain a pointer `len` that tracks the current longest prefix-suffix length.\nIf `s[i] == s[len]`, increment `len` and assign `lps[i] = len`.\nIf not equal, reduce `len` using previous lps[len - 1] until a match is found or `len = 0`.\nThe last **value of the LPS array**, `lps[n - 1]`, gives the **length of the longest happy prefix**.\n\nComplexity Analysis**Time Complexity**: O(n) — each character is processed at most twice\n\n**Space Complexity**: O(n) — for the LPS array\n\nReturn the substring s[0:lps[n - 1]].",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "string longestHappyPrefix(string &s) {\n    int n = s.length();\n    if (n == 0) return \"\";\n    \n    // lps[i] will store the length of the longest prefix which is also a suffix \n    // for the substring s[0...i]\n    vector<int> lps(n, 0);\n    int len = 0; // length of the previous longest prefix suffix\n    int i = 1;\n    \n    // Build the lps array\n    while (i < n) {\n        if (s[i] == s[len]) {\n            len++;\n            lps[i] = len;\n            i++;\n        } else {\n            // This is tricky. Consider the example \"ABCAAAAA\"\n            if (len != 0) {\n                len = lps[len - 1];\n            } else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n    \n    // The length of the longest happy prefix for the whole string is at the last index\n    int happyPrefixLength = lps[n - 1];\n    \n    return s.substr(0, happyPrefixLength);\n}",
+      "Python3": "def longestHappyPrefix(s: str) -> str:\n    n = len(s)\n    if n == 0:\n        return \"\"\n        \n    lps = [0] * n\n    length = 0\n    i = 1\n    \n    # Build the lps array\n    while i < n:\n        if s[i] == s[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length - 1]\n            else:\n                lps[i] = 0\n                i += 1\n                \n    happyPrefixLength = lps[n - 1]\n    return s[:happyPrefixLength]",
+      "C": "void longestHappyPrefix(const char* s, char* result) {\n    int n = strlen(s);\n    if (n == 0) {\n        result[0] = '\\0';\n        return;\n    }\n    \n    int* lps = (int*)calloc(n, sizeof(int));\n    int len = 0;\n    int i = 1;\n    \n    // Build the lps array\n    while (i < n) {\n        if (s[i] == s[len]) {\n            len++;\n            lps[i] = len;\n            i++;\n        } else {\n            if (len != 0) {\n                len = lps[len - 1];\n            } else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n    \n    int happyPrefixLength = lps[n - 1];\n    strncpy(result, s, happyPrefixLength);\n    result[happyPrefixLength] = '\\0';\n    \n    free(lps);\n}",
+      "Java": "public static String longestHappyPrefix(String s) {\n        int n = s.length();\n        if (n == 0) return \"\";\n        \n        int[] lps = new int[n];\n        int len = 0;\n        int i = 1;\n        \n        // Build the lps array\n        while (i < n) {\n            if (s.charAt(i) == s.charAt(len)) {\n                len++;\n                lps[i] = len;\n                i++;\n            } else {\n                if (len != 0) {\n                    len = lps[len - 1];\n                } else {\n                    lps[i] = 0;\n                    i++;\n                }\n            }\n        }\n        \n        int happyPrefixLength = lps[n - 1];\n        return s.substring(0, happyPrefixLength);\n    }",
+      "JavaScript": "function longestHappyPrefix(s) {\n    if (!s || s.length === 0) return \"\";\n    let n = s.length;\n    \n    let lps = new Int32Array(n);\n    let len = 0;\n    let i = 1;\n   \n    while (i < n) {\n        if (s.charCodeAt(i) === s.charCodeAt(len)) {\n            len++;\n            lps[i] = len;\n            i++;\n        } else {\n            if (len !== 0) {\n                len = lps[len - 1];\n            } else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n    \n\n    let happyPrefixLength = lps[n - 1];\n    return happyPrefixLength > 0 ? s.substring(0, happyPrefixLength) : \"\";\n}"
+    }
+  }
+}

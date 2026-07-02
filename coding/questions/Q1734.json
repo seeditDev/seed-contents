@@ -1,0 +1,71 @@
+{
+  "questionId": "Q1734",
+  "title": "Chef Counts Increasing Subsequences",
+  "slug": "chef-counts-increasing-subsequences",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of nnn integers and wants to find out how many longest strictly increasing subsequencessubsequencessubsequences are present in it.\n\nA subsequencesubsequencesubsequence is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements.\n\nChef is interested only in strictly increasing subsequencessubsequencessubsequences, where each subsequent element is greater than the previous one. Help Chef determine the count of such longest strictly increasing subsequences in the given array.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncountLongestIncreasingSubsequencescountLongestIncreasingSubsequencescountLongestIncreasingSubsequences\n\n\n\n**Parameters**\n\n\n\nnumbersnumbersnumbers: list of nnn integers\n\n\n\n**Return Value**\n\n\n\nReturns a number representing the countcountcount of the longest strictly increasing subsequences, modulo 109+710^9 + 7109+7, found in the input list.\n\n\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤N≤20001 \\leq N \\leq 20001≤N≤2000\n−106≤numbers[i]≤106-10^{6} \\leq numbers[i] \\leq 10^{6}−106≤numbers[i]≤106\nThe answer is guaranteed to fit inside a 32-bit integer.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "Input Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN — the size of Chef's array.\nThe second line contains NNN space-separated integers representing Chef's array.\n\n\n\n\nOutput Format\n\nFor each test case, print a single line containing one integer — the number of longest strictly increasing subsequences in Chef's array, modulo 109+710^9 + 7109+7.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4\n3 1 2 4\n7\n1 3 6 7 9 4 10\n5\n5 5 5 5 5",
+        "output": "1\n1\n5",
+        "explanation": "Explanation:\nTest Case 1: The longest increasing subsequence is [1, 2, 4] with length 3, only one such subsequence exists.\nTest Case 2: The longest increasing subsequence is [1, 3, 6,7,9,10] with length 6, only one such subsequence exists.\nTest Case3: All elements are equal, so each element forms a subsequence of length 1, there are 5 such subsequences."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4\n3 1 2 4\n7\n1 3 6 7 9 4 10\n5\n5 5 5 5 5",
+        "expectedOutput": "1\n1\n5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea**\n\nGenerate **all possible subsequences** of the array and check which ones are **strictly increasing**.\n\nAmong all increasing subsequences, find the maximum length and count how many times it occurs.\n\n**Why This Fails**\n\n\nTotal subsequences = 2n2^n2n\nChecking each subsequence takes O(n)O(n)O(n) time\n**Time Complexity**\n\n\nO(n⋅2n)O(n \\cdot 2^n)O(n⋅2n)\n\nThis approach is impractical and results in **TLE** for large inputs.\n**Idea**\n\nInstead of enumerating subsequences, we build the solution **incrementally**.\n\nFor every index `i`, we want to know:\n\n\nthe **length** of the longest increasing subsequence ending at `i`\nthe **number of ways** to form such a subsequence\nSo we maintain two arrays:\n\n\n`lis_length[i]`: length of LIS ending at index `i`\n`lis_count[i]`: count of LIS of that length ending at index `i`\n**Initialization**\nlis_length[i] = 1\nlis_count[i] = 1\n\nEach element alone forms an increasing subsequence of length `1` in exactly one way.\n\n**Transition**\nFor each index `i`, check all previous indices `j &lt; i`:\n\n\n\nIf `numbers[j] &lt; numbers[i]`, we can extend the subsequence ending at `j`.\n\n\n\n\n**If this extension gives a longer subsequence**:\n\n\n`lis_length[i] = lis_length[j] + 1\nlis_count[i]  = lis_count[j]\n`\nWe found a better length, so we replace the count.\n\n\n\n\n**If this extension gives the same maximum length**:\n\n\n`lis_count[i] += lis_count[j]\n`\nWe found another way to achieve the same length, so we add the count.\n\n\n\n\n\n**Final Answer**\n\n\nFind the maximum value in `lis_length`.\nSum `lis_count[i]` for all indices where `lis_length[i]` equals this maximum.\n**Time Complexity**\n\n\nO(n2)O(n^2)O(n2)\n**Space Complexity**\n\n\nO(n)O(n)O(n)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

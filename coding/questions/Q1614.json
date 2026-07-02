@@ -1,0 +1,107 @@
+{
+  "questionId": "Q1614",
+  "title": "Merge K sorted lists",
+  "slug": "merge-k-sorted-lists",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "heaps & priority queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Heaps & Priority Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given multiple test cases.\nFor each test case, you are provided with an integer kkk, followed by kkk singly linked-lists.\nEach linked-list is already sorted in non-decreasing order.\n\nYour task is to **merge all k linked-lists into one sorted linked-list** and output the final merged list.\n\nIf a test case has **no lists** or all lists are **empty**, the output should be an empty list.\n\nFunction DeclarationFunction NamemergeKListsmergeKListsmergeKLists – This function merges **k sorted singly linked-lists** into one sorted linked-list.\n\nParameters\nlistslistslists : A reference to a vector of pointers, where each pointer represents the head of a singly linked-list.\n\nEach linked-list is already sorted in **non-decreasing order**.\n\nSome lists may be empty (nullptr).\nReturn Value\nReturns a pointer to the head of the merged singly linked-list.\nIf all input lists are empty or if k=0k = 0k=0, the function returns `nullptr` (empty list).",
+    "constraints": [
+      "1≤T≤501 \\leq T \\leq 501≤T≤50",
+      "0≤k≤1040 \\leq k \\leq 10^40≤k≤104",
+      "0≤ni≤5000 \\leq n_i \\leq 5000≤ni​≤500",
+      "−104≤aij≤104-10^4 \\leq a_{ij} \\leq 10^4−104≤aij​≤104",
+      "Each linked-list is sorted in non-decreasing order",
+      "Input Format",
+      "The first line contains an integer TTT — the number of test cases.",
+      "For each test case:",
+      "The first line contains an integer kkk — the number of linked-lists.",
+      "For each linked-list iii (from 111 to kkk):",
+      "A line containing:",
+      "An integer nin_ini​ — the size of the linked-list",
+      "Followed by nin_ini​ space-separated integers representing the elements of the list in sorted order",
+      "Output Format",
+      "For each test case, output a single line containing the elements of the merged linked-list in sorted order.",
+      "If the merged list is empty, output an empty line."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n3\n3 1 5 7\n2 2 4\n4 1 3 6 8",
+        "output": "1 1 2 3 4 5 6 7 8",
+        "explanation": "Explanation:\nThere is 1 test case\nThere are 3 linked-lists\nList 1 has 3 elements -> 1 5 7\nList 2 has 2 elements -> 2 4\nList 3 has 4 elements -> 1 3 6 8"
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n2\n0\n0",
+        "output": "",
+        "explanation": "Explanation:\nTwo lists, both empty."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n3\n3 1 5 7\n2 2 4\n4 1 3 6 8",
+        "expectedOutput": "1 1 2 3 4 5 6 7 8",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n2\n0\n0",
+        "expectedOutput": "",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    ListNode* mergeKLists(vector<ListNode*>& lists) {\n        // Min-heap comparing node values\n        priority_queue<\n            ListNode*, \n            vector<ListNode*>, \n            function<bool(ListNode*, ListNode*)>\n        > pq([](ListNode* a, ListNode* b) {\n            return a->val > b->val;\n        });\n\n        // Push the head of each non-empty list\n        for (ListNode* head : lists) {\n            if (head != nullptr) {\n                pq.push(head);\n            }\n        }\n\n        // Dummy node to simplify list construction\n        ListNode dummy(0);\n        ListNode* tail = &dummy;\n\n        // Merge process\n        while (!pq.empty()) {\n            ListNode* node = pq.top();\n            pq.pop();\n\n            tail->next = node;\n            tail = tail->next;\n\n            if (node->next != nullptr) {\n                pq.push(node->next);\n            }\n        }\n\n        return dummy.next;\n    }\n};\n",
+      "Python3": "class Solution:\n    def mergeKLists(self, lists):\n        min_heap = []\n        \n        # Push head of each non-empty list\n        for node in lists:\n            if node:\n                heapq.heappush(min_heap, (node.val, id(node), node))\n        \n        dummy = ListNode(0)\n        tail = dummy\n        \n        while min_heap:\n            _, _, node = heapq.heappop(min_heap)\n            \n            tail.next = node\n            tail = tail.next\n            \n            if node.next:\n                heapq.heappush(min_heap, (node.next.val, id(node.next), node.next))\n        \n        return dummy.next\n",
+      "C": "ListNode* mergeLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy;\n    dummy.next = NULL;\n    ListNode* node = &dummy;\n\n    while (l1 && l2) {\n        if (l1->val > l2->val) {\n            node->next = l2;\n            l2 = l2->next;\n        } else {\n            node->next = l1;\n            l1 = l1->next;\n        }\n        node = node->next;\n    }\n\n    node->next = (l1 ? l1 : l2);\n    return dummy.next;\n}\n\nListNode* mergeKLists(ListNode** lists, int k) {\n    if (k == 0) return NULL;\n\n    while (k > 1) {\n        int new_k = 0;\n\n        for (int i = 0; i < k; i += 2) {\n            ListNode* l1 = lists[i];\n            ListNode* l2 = (i + 1 < k) ? lists[i + 1] : NULL;\n            lists[new_k++] = mergeLists(l1, l2);\n        }\n\n        k = new_k;\n    }\n\n    return lists[0];\n}\n\n",
+      "Java": "\nclass Solution {\n    public ListNode mergeKLists(List<ListNode> lists) {\n        if (lists == null || lists.size() == 0) {\n            return null;\n        }\n\n        PriorityQueue<ListNode> pq = new PriorityQueue<>(\n            (a, b) -> Integer.compare(a.val, b.val)\n        );\n\n        // Push initial heads\n        for (int i = 0; i < lists.size(); i++) {\n            ListNode node = lists.get(i);\n            if (node != null) {\n                pq.offer(node);\n            }\n        }\n\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n\n            tail.next = node;\n            tail = node;\n\n            if (node.next != null) {\n                pq.offer(node.next);\n            }\n        }\n\n        return dummy.next;\n    }\n}\n",
+      "JavaScript": "class MinHeap {\n    constructor() {\n        this.data = [];\n    }\n\n    size() {\n        return this.data.length;\n    }\n\n    push(node) {\n        this.data.push(node);\n        this._siftUp(this.data.length - 1);\n    }\n\n    pop() {\n        if (this.size() === 0) return null;\n        if (this.size() === 1) return this.data.pop();\n\n        const root = this.data[0];\n        this.data[0] = this.data.pop();\n        this._siftDown(0);\n        return root;\n    }\n\n    _siftUp(i) {\n        while (i > 0) {\n            const p = Math.floor((i - 1) / 2);\n            if (this.data[p].val <= this.data[i].val) break;\n            [this.data[p], this.data[i]] = [this.data[i], this.data[p]];\n            i = p;\n        }\n    }\n\n    _siftDown(i) {\n        const n = this.size();\n        while (true) {\n            let smallest = i;\n            const l = 2 * i + 1;\n            const r = 2 * i + 2;\n\n            if (l < n && this.data[l].val < this.data[smallest].val) {\n                smallest = l;\n            }\n            if (r < n && this.data[r].val < this.data[smallest].val) {\n                smallest = r;\n            }\n\n            if (smallest === i) break;\n            [this.data[i], this.data[smallest]] = [this.data[smallest], this.data[i]];\n            i = smallest;\n        }\n    }\n}\n\nclass Solution {\n    mergeKLists(lists) {\n        if (!lists || lists.length === 0) return null;\n\n        const heap = new MinHeap();\n\n        // Push initial heads\n        for (const node of lists) {\n            if (node !== null) {\n                heap.push(node);\n            }\n        }\n\n        const dummy = new ListNode(0);\n        let tail = dummy;\n\n        while (heap.size() > 0) {\n            const node = heap.pop();\n\n            tail.next = node;\n            tail = node;\n\n            if (node.next !== null) {\n                heap.push(node.next);\n            }\n        }\n\n        return dummy.next;\n    }\n}\n"
+    }
+  }
+}

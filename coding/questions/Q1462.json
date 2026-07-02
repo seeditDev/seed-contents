@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1462",
+  "title": "Job Scheduling- Implementation",
+  "slug": "job-scheduling-implementation",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "Problem Statement:You are given an array of jobs, where each job has the following attributes:\n\n\nA **deadline** (the time by which the job must be completed).\nA **profit** (earned if the job is completed before or on its deadline).\nEach job takes exactly **1 unit of time** to complete, and only **one job can be scheduled at any given time**. The goal is to maximize the total profit by scheduling the jobs optimally.\n\n\nInput Format\n\nFirst line will have an integer `n`, representing the number of jobs.\nNext n lines will have array which contains\n\n`Job ID`\n`Deadline`\n`Profit`\n\n\n\n\nOutput Format\n\nOutput a list of scheduled job IDs and the maximum profit achieved by completing the selected jobs.",
+    "constraints": [
+      "1≤n≤10001 \\leq n \\leq 10001≤n≤1000 (Number of jobs)",
+      "1≤Deadlinei≤10001 \\leq \\text{Deadline}_i \\leq 10001≤Deadlinei​≤1000 (Deadline of a job)",
+      "1≤Profiti≤1061 \\leq \\text{Profit}_i \\leq 10^61≤Profiti​≤106 (Profit of a job)"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 100 \n2 1 19 \n3 2 27 \n4 1 25 \n5 3 15",
+        "output": "1 3 5\n142",
+        "explanation": "Explanation:\nInput Jobs:\nThe jobs are represented as [Job ID, Deadline, Profit]:\n[1, 2, 100], [2, 1, 19], [3, 2, 27], [4, 1, 25], [5, 3, 15]\n\n\nSorting by Profit:\nSort the jobs in descending order of profit:\n[1, 2, 100], [3, 2, 27], [4, 1, 25], [2, 1, 19], [5, 3, 15]\n\n\nScheduling Jobs:\n\n\nJob 1: Deadline = 2 ? Slot 2 is available ? Schedule Job 1 in Slot 2.\n\n\nJob 3: Deadline = 2 ? Slot 1 is available ? Schedule Job 3 in Slot 1.\n\n\nJob 5: Deadline = 3 ? Slot 3 is available ? Schedule Job 5 in Slot 3.\n\n\nJob 4: Deadline = 1 ? Slot 1 is already occupied.\n\n\nJob 2: Deadline = 1 ? Slot 1 is already occupied.\n\n\nScheduled Jobs:\nThe jobs scheduled are:\n[1, 3, 5]\n\n\nMaximized Profit:\nThe total profit from the scheduled jobs is:\n100 + 27 + 15 = 142\n\n\nFinal Output:\nScheduled Jobs: 1 3 5 Maximized Profit: 142"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 100 \n2 1 19 \n3 2 27 \n4 1 25 \n5 3 15",
+        "expectedOutput": "1 3 5\n142",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int n;\n   // cout << \"Enter the number of jobs: \";\n    cin >> n;\n\n    vector<int> jobIds(n), deadlines(n), profits(n);\n    \n    for (int i = 0; i < n; i++) {\n        cin >> jobIds[i] >> deadlines[i] >> profits[i];\n    }\n\n    // Create an array of indices for sorting based on profit\n    vector<int> indices(n);\n    for (int i = 0; i < n; i++) {\n        indices[i] = i;\n    }\n\n    // Sort indices based on profits in descending order\n    sort(indices.begin(), indices.end(), [&](int a, int b) {\n        return profits[a] > profits[b];\n    });\n\n    // Array to track free time slots and job sequence\n    vector<bool> slot(n, false);\n    vector<int> result(n, -1);\n\n    // Schedule jobs\n    int totalProfit = 0;\n    \n    for (int i = 0; i < n; i++) {\n        int jobIndex = indices[i];\n        // Try to find a free slot for this job, starting from its deadline\n        for (int j = min(n, deadlines[jobIndex]) - 1; j >= 0; j--) {\n            if (!slot[j]) {\n                slot[j] = true; // Mark the slot as filled\n                result[j] = jobIndex; // Assign this job to the slot\n                cout << jobIds[jobIndex] << \" \"; // Print job as it is scheduled\n                totalProfit += profits[jobIndex]; // Add the profit of this job\n                break;\n            }\n        }\n    }\n\n    cout << totalProfit << endl;\n\n    return 0;\n}\n",
+      "Python3": "def job_sequencing(jobs, n):\n    # Sort jobs based on profit in descending order\n    jobs.sort(key=lambda x: x[2], reverse=True)\n    \n    # Array to track free time slots\n    slot = [False] * n\n    total_profit = 0\n    scheduled_jobs = []\n\n    # Schedule jobs\n    for job in jobs:\n        job_id, deadline, profit = job\n        # Try to find a free slot for this job, starting from its deadline\n        for j in range(min(n, deadline) - 1, -1, -1):\n            if not slot[j]:\n                slot[j] = True  # Mark the slot as filled\n                scheduled_jobs.append(job_id)  # Schedule the job\n                total_profit += profit  # Add the profit of this job\n                break\n\n    # Output the scheduled jobs and total profit\n    print(*scheduled_jobs)\n    print(total_profit)\n\n\n# Input\nn = int(input())\njobs = []\nfor _ in range(n):\n    job_id, deadline, profit = map(int, input().split())\n    jobs.append((job_id, deadline, profit))\n\n# Call the function\njob_sequencing(jobs, n)\n",
+      "C": "#include <stdio.h>\n\n// Function to swap two rows in the jobs array\nvoid swap(int jobs[][3], int i, int j) {\n    for (int k = 0; k < 3; k++) {\n        int temp = jobs[i][k];\n        jobs[i][k] = jobs[j][k];\n        jobs[j][k] = temp;\n    }\n}\n\n// Bubble sort function to sort based on profit in descending order\nvoid bubbleSort(int jobs[][3], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (jobs[j][2] < jobs[j + 1][2]) { // Compare profits\n                swap(jobs, j, j + 1);\n            }\n        }\n    }\n}\n\nint main() {\n    int n;\n    // scanf for the number of jobs\n    scanf(\"%d\", &n);\n    \n    // Array to store job data: [jobId, deadline, profit]\n    int jobs[n][3]; // jobs[i][0] = jobId, jobs[i][1] = deadline, jobs[i][2] = profit\n    \n    // Input jobs' details\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d %d %d\", &jobs[i][0], &jobs[i][1], &jobs[i][2]);\n    }\n    \n    // Sort jobs based on profit in descending order using bubble sort\n    bubbleSort(jobs, n);\n    \n    // Array to track free time slots and job sequence\n    int slot[n];\n    for (int i = 0; i < n; i++) {\n        slot[i] = 0; // 0 indicates slot is free\n    }\n    \n    int totalProfit = 0;\n    // Schedule jobs\n    for (int i = 0; i < n; i++) {\n        // Find a free slot for the job\n        for (int j = jobs[i][1] - 1; j >= 0; j--) {\n            if (slot[j] == 0) { // If slot is free\n                slot[j] = 1; // Mark slot as filled\n                printf(\"%d \", jobs[i][0]); // Print job ID\n                totalProfit += jobs[i][2]; // Add profit of this job\n                break;\n            }\n        }\n    }\n    \n    // Output total profit\n    printf(\"\\n%d\\n\", totalProfit);\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\nclass Codechef {\n\n    public static void main(String[] args) {\n        // Input reading\n        Scanner sc = new Scanner(System.in);\n\n        // Number of jobs\n        int n = sc.nextInt();\n\n        // Arrays to store job details: jobId, deadline, and profit\n        int[] jobId = new int[n];\n        int[] deadline = new int[n];\n        int[] profit = new int[n];\n\n        // Input job details\n        for (int i = 0; i < n; i++) {\n            jobId[i] = sc.nextInt();\n            deadline[i] = sc.nextInt();\n            profit[i] = sc.nextInt();\n        }\n\n        // Array to track if a slot is occupied\n        boolean[] slot = new boolean[n];\n        int totalProfit = 0;\n\n        // Array to store jobs sorted by profit\n        int[] order = new int[n];\n        \n        // Sorting jobs based on profit (in descending order)\n        for (int i = 0; i < n; i++) {\n            order[i] = i;\n        }\n        \n        // Simple bubble sort to sort jobs by profit in descending order\n        for (int i = 0; i < n - 1; i++) {\n            for (int j = 0; j < n - 1 - i; j++) {\n                if (profit[order[j]] < profit[order[j + 1]]) {\n                    // Swap the jobs based on profit\n                    int temp = order[j];\n                    order[j] = order[j + 1];\n                    order[j + 1] = temp;\n                }\n            }\n        }\n\n        // Schedule jobs to maximize profit\n        for (int i = 0; i < n; i++) {\n            int job = order[i]; // Current job index\n            // Try to find a slot for the current job\n            for (int j = Math.min(n, deadline[job]) - 1; j >= 0; j--) {\n                if (!slot[j]) {\n                    slot[j] = true; // Mark the slot as filled\n                    System.out.print(jobId[job] + \" \"); // Print the job ID\n                    totalProfit += profit[job]; // Add the profit of this job\n                    break;\n                }\n            }\n        }\n\n        // Output total profit\n        System.out.println( totalProfit);\n\n        sc.close();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n  input.push(line.trim());\n});\n\nrl.on('close', () => {\n  let [m, n] = input[0].split(' ').map(Number);\n  let a = [];\n\n  for (let i = 1; i <= m; i++) {\n    a.push(input[i].split(' ').map(Number));\n  }\n\n  let [_n, p] = input[m + 1].split(' ').map(Number);\n\n  let b = [];\n  for (let i = m + 2; i <= m + 1 + _n; i++) {\n    b.push(input[i].split(' ').map(Number));\n  }\n\n  function multiplyMatrices(matrixA, matrixB) {\n    const rowsA = matrixA.length;\n    const colsA = matrixA[0].length;\n    const rowsB = matrixB.length;\n    const colsB = matrixB[0].length;\n\n    if (colsA !== rowsB) {\n      throw new Error(\"Matrix multiplication not possible: column count of matrix A must equal row count of matrix B.\");\n    }\n\n    let result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));\n\n    for (let i = 0; i < rowsA; i++) {\n      for (let j = 0; j < colsB; j++) {\n        for (let k = 0; k < colsA; k++) {\n          result[i][j] += matrixA[i][k] * matrixB[k][j];\n        }\n      }\n    }\n\n    return result;\n  }\n\n  try {\n    const result = multiplyMatrices(a, b);\n    result.forEach(row => console.log(row.join(' ')));\n  } catch (error) {\n    console.error(error.message);\n  }\n});\n"
+    }
+  }
+}

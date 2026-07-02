@@ -1,0 +1,83 @@
+{
+  "questionId": "Q1306",
+  "title": "Paths with given sum",
+  "slug": "paths-with-given-sum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree and an integer **`target`**, retrieve all root-to-leaf paths where the sum of the node values along the path equals the given integer **`target`**. Print each such path on separate lines.\n\nA root-to-leaf path signifies a path that initiates from the root and concludes at any leaf node. A leaf node is characterized as a node without any children.\n\nFor eg., in the given tree there is only one path with sum equals to 8 (1 - 3 - 4).\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integer NNN and targettargettarget — the number of nodes in the binary tree and the desired path sum value.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the KKK(if there are KKK paths) separate lines, space separated integers - the nodes in paths whose sum is equal to targettargettarget.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤target≤10000000001 \\leq target \\leq 10000000001≤target≤1000000000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 8\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "1 3 4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 8\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "1 3 4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n    void traverse(Node* root, vector<vector<int>>&paths, vector<int> path, int s, int cur){\n        if(root == NULL)\n          return;\n        path.push_back(root->val);\n        cur += root->val;\n        if(!root->left && !root->right) {\n            if(cur == s){\n                paths.push_back(path);\n                \n            }\n            return;\n        }\n        traverse(root->left, paths, path, s, cur);\n        traverse(root->right, paths, path, s, cur);\n        cur -= root->val;\n        path.pop_back();\n    }\n  public:\n    void targetSumPaths(Node* root, int target) {\n        vector<int> path;\n        vector<vector<int>> paths;\n        traverse(root, paths, path, target, 0);\n     \n        for(auto &path: paths){\n            for(int node: path){\n                cout << node << \" \";\n            }\n            cout << endl;\n        }\n    }\n};",
+      "Python3": "class Solution:\n    def traverse(self, root, paths, path, target, current_sum):\n        if not root:\n            return\n        \n        path.append(root.val)\n        current_sum += root.val\n        \n        if not root.left and not root.right:\n            if current_sum == target:\n                paths.append(path.copy())\n        else:\n            if root.left:\n                self.traverse(root.left, paths, path, target, current_sum)\n            if root.right:\n                self.traverse(root.right, paths, path, target, current_sum)\n        \n        path.pop()\n    \n    def target_sum_paths(self, root, target):\n        paths = []\n        path = []\n        self.traverse(root, paths, path, target, 0)\n        \n        for p in paths:\n            print(\" \".join(map(str, p)))\n",
+      "C": "void traverse(Node* root, int paths[][1000], int* path, int* pathLength, int* numPaths, int target, int currentSum) {\n    if (root == NULL) return;\n\n    path[(*pathLength)++] = root->val;\n    currentSum += root->val;\n\n    if (root->left == NULL && root->right == NULL) {\n        if (currentSum == target) {\n            for (int i = 0; i < *pathLength; i++) {\n                paths[*numPaths][i] = path[i]; // Store the path\n            }\n            (*numPaths)++;\n        }\n    } else {\n        traverse(root->left, paths, path, pathLength, numPaths, target, currentSum);\n        traverse(root->right, paths, path, pathLength, numPaths, target, currentSum);\n    }\n\n    (*pathLength)--;\n}\n\nvoid targetSumPaths(Node* root, int target) {\n    int path[1000]; // Assuming max path length is 1000\n    int paths[100000][1000]; // Assuming max number of paths is 100000\n    int pathLength = 0;\n    int numPaths = 0;\n\n    traverse(root, paths, path, &pathLength, &numPaths, target, 0);\n\n    for (int i = 0; i < numPaths; i++) {\n        for (int j = 0; j < 1000 && paths[i][j] != 0; j++) {\n            printf(\"%d \", paths[i][j]);\n        }\n        printf(\"\\n\");\n    }\n}\n",
+      "Java": "class Solution {\n    private void traverse(Node root, List<List<Integer>> paths, List<Integer> path, int target, int currentSum) {\n        if (root == null) return;\n        \n        path.add(root.val);\n        currentSum += root.val;\n        \n        if (root.left == null && root.right == null) {\n            if (currentSum == target) {\n                paths.add(new ArrayList<>(path));\n            }\n        } else {\n            traverse(root.left, paths, path, target, currentSum);\n            traverse(root.right, paths, path, target, currentSum);\n        }\n        \n        path.remove(path.size() - 1);\n    }\n\n    public void targetSumPaths(Node root, int target) {\n        List<List<Integer>> paths = new ArrayList<>();\n        List<Integer> path = new ArrayList<>();\n        traverse(root, paths, path, target, 0);\n        \n        for (List<Integer> p : paths) {\n            for (int node : p) {\n                System.out.print(node + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\nclass Solution {\n    traverse(root, paths, path, target, cur) {\n        if (!root) return;\n        \n        path.push(root.val);\n        cur += root.val;\n        \n        if (!root.left && !root.right) {\n            if (cur === target) {\n                paths.push([...path]); // Push a copy of path to paths\n            }\n            path.pop(); // Backtrack\n            return;\n        }\n        \n        this.traverse(root.left, paths, path, target, cur);\n        this.traverse(root.right, paths, path, target, cur);\n        \n        path.pop(); // Backtrack\n    }\n    \n    targetSumPaths(root, target) {\n        const paths = [];\n        const path = [];\n        this.traverse(root, paths, path, target, 0);\n        \n        for (let path of paths) {\n            console.log(path.join(' '));\n        }\n    }\n}\n"
+    }
+  }
+}

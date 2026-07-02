@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1260",
+  "title": "Knapsack Problem",
+  "slug": "knapsack-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have a knapsack that can take upto WmaxW_{max}Wmax​ weight.\n\nGiven NNN items, ithi^{th}ith of them having the weight WiW_iWi​ and value ViV_iVi​. \n\nYou can pick some or all the items completely so that their weight does not exceed WmaxW_{max}Wmax​.\n\nYour task is to maximise the total value of the items you will carry in your bag.\n\n\nInput Format\n\nThe first line contains two integer NNN and WmaxW_{max}Wmax​, denoting the total number of items and capacity of the knapsack\nNext NNN lines contains the description of the items.\n\nithi^{th}ith line contains two integers WiW_iWi​ and ViV_iVi​, denoting the Weight and Value of the ithi^{th}ith item\n\n\n\n\nOutput Format\nOutput the maximum value you can carry while not exceeding the weight limit of the knapsack.",
+    "constraints": [
+      "2≤N≤152 \\leq N \\leq 152≤N≤15",
+      "1≤Wi,Vi≤1091 \\leq W_i, V_i \\leq 10^91≤Wi​,Vi​≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2",
+        "output": "17",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2",
+        "expectedOutput": "17",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std; \n\nconst int infinity = INT_MAX;\n\nbool cmp(pair<int,int> a, pair<int,int> b) {\n    if(a.second * b.first > a.first * b.second) return 1;\n    return 0;\n}\n    \n// Pick items from index idx, weight remaining\nint fractional_knapsack(int idx, vector<pair<int,int>> &items, int weight) {\n    double ans = 0;\n    for(int i = idx; i < items.size(); i++) {\n        if(items[i].first <= weight) {\n            weight -= items[i].first;\n            ans += items[i].second;\n        }\n        else {\n            double fraction = (double)weight / items[i].first;\n            ans += fraction * items[i].second;\n        }\n    }\n\n    return (int)floor(ans);\n}\n\nint branch_and_bound(int n, int wmax, vector<pair<int,int>> items) {\n    // q stores {cost + lower_bound, weight of the items, cost of the items, next item to consider}\n    priority_queue<array<int,4>> q;\n\n    // invert the sign of all the items\n    for(int i = 0; i < n; i++) items[i].second = -items[i].second;\n\n    // Presort to perform fractional knapsack\n    sort(items.begin(), items.end(), cmp);\n\n    int upper_bound = infinity;\n\n    q.push({0 + fractional_knapsack(0, items, wmax), 0, 0, 0});\n\n    while(!q.empty()) {\n        int cost_lower_bound = (q.top())[0];\n        int weight = (q.top())[1];\n        int cost = (q.top())[2];\n        int item = (q.top())[3];\n        q.pop();\n\n        if(cost_lower_bound >= upper_bound) {\n            continue;\n        }\n\n        // Atleast a solution with \"cost\" is promised\n        upper_bound = min(upper_bound, cost);\n\n        for(int i = item; i < n; i++) {\n            if(items[i].first + weight > wmax) { // weight limit exceeded\n                continue;\n            }\n            int new_cost = cost + items[i].second;\n            int new_weight = weight + items[i].first;\n            int cost_lower_bound = new_cost + fractional_knapsack(i, items, wmax - new_weight);\n            q.push({cost_lower_bound, new_weight, new_cost, i + 1});\n        }\n    }\n\n    return -upper_bound; // invert the sign\n}\n\nint main() {\n    int n; cin >> n;\n    int wmax; cin >> wmax;\n    vector<pair<int,int>> items(n);\n    for(int i = 0; i < n; i++) {\n        cin >> items[i].first >> items[i].second;\n    }\n    cout << branch_and_bound(n, wmax, items);\n\n    return 0;\n}",
+      "Python3": "import heapq\nimport sys\n\ninfinity = sys.maxsize\n\ndef cmp(a, b):\n    return a[1] * b[0] > a[0] * b[1]\n\n# Pick items from index idx, weight remaining\ndef fractional_knapsack(idx, items, weight):\n    ans = 0\n    for i in range(idx, len(items)):\n        if items[i][0] <= weight:\n            weight -= items[i][0]\n            ans += items[i][1]\n        else:\n            fraction = weight / items[i][0]\n            ans += fraction * items[i][1]\n\n    return int(ans)\n\ndef branch_and_bound(n, wmax, items):\n    # q stores [cost + lower_bound, weight of the items, cost of the items, next item to consider]\n    q = []\n\n    # Invert the sign of all the items\n    items = [(x[0], -x[1]) for x in items]\n\n    # Presort to perform fractional knapsack\n    items.sort(key=lambda x: (x[1], -x[0]))\n\n    upper_bound = infinity\n\n    heapq.heappush(q, [0 + fractional_knapsack(0, items, wmax), 0, 0, 0])\n\n    while q:\n        cost_lower_bound, weight, cost, item = heapq.heappop(q)\n\n        if cost_lower_bound >= upper_bound:\n            continue\n\n        # At least a solution with \"cost\" is promised\n        upper_bound = min(upper_bound, cost)\n\n        for i in range(item, n):\n            if items[i][0] + weight > wmax:  # weight limit exceeded\n                continue\n            new_cost = cost + items[i][1]\n            new_weight = weight + items[i][0]\n            cost_lower_bound = new_cost + fractional_knapsack(i, items, wmax - new_weight)\n            heapq.heappush(q, [cost_lower_bound, new_weight, new_cost, i + 1])\n\n    return -upper_bound  # invert the sign\n\nif __name__ == \"__main__\":\n    n, wmax = map(int, input().split())\n    items = [tuple(map(int, input().split())) for _ in range(n)]\n\n    print(branch_and_bound(n, wmax, items))\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n#include <math.h>\n\n#define infinity INT_MAX\n\ntypedef struct {\n    int first;\n    int second;\n} Pair;\n\ntypedef struct {\n    int first;\n    int second;\n    int third;\n    int fourth;\n} Array;\n\nint cmp(const void *a, const void *b) {\n    Pair *pa = (Pair *)a;\n    Pair *pb = (Pair *)b;\n    return (double)pb->second * pa->first - (double)pa->second * pb->first;\n}\n\n// Min-heap for priority queue\nvoid push(Array heap[], int *size, Array value) {\n    int i = (*size)++;\n    while (i && value.first < heap[(i - 1) / 2].first) {\n        heap[i] = heap[(i - 1) / 2];\n        i = (i - 1) / 2;\n    }\n    heap[i] = value;\n}\n\nvoid pop(Array heap[], int *size) {\n    Array last = heap[--(*size)];\n    int i = 0, child;\n    while ((child = 2 * i + 1) < *size) {\n        if (child + 1 < *size && heap[child + 1].first < heap[child].first)\n            child++;\n        if (last.first <= heap[child].first)\n            break;\n        heap[i] = heap[child];\n        i = child;\n    }\n    heap[i] = last;\n}\n\nArray top(Array heap[]) {\n    return heap[0];\n}\n\nint fractional_knapsack(int idx, Pair items[], int size, int weight) {\n    double ans = 0.0;\n    for (int i = idx; i < size; i++) {\n        if (items[i].first <= weight) {\n            weight -= items[i].first;\n            ans += items[i].second;\n        } else {\n            double fraction = (double)weight / items[i].first;\n            ans += fraction * items[i].second;\n            break;\n        }\n    }\n    return (int)floor(ans);\n}\n\nint branch_and_bound(int n, int wmax, Pair items[]) {\n    Array heap[10000];\n    int size = 0;\n\n    // Invert the sign of all the items\n    for (int i = 0; i < n; i++) items[i].second = -items[i].second;\n\n    // Pre-sort to perform fractional knapsack\n    qsort(items, n, sizeof(Pair), cmp);\n\n    int upper_bound = infinity;\n\n    Array start = {0 + fractional_knapsack(0, items, n, wmax), 0, 0, 0};\n    push(heap, &size, start);\n\n    while (size > 0) {\n        Array current = top(heap);\n        pop(heap, &size);\n\n        int cost_lower_bound = current.first;\n        int weight = current.second;\n        int cost = current.third;\n        int item = current.fourth;\n\n        if (cost_lower_bound >= upper_bound) {\n            continue;\n        }\n\n        upper_bound = cost < upper_bound ? cost : upper_bound;\n\n        for (int i = item; i < n; i++) {\n            if (items[i].first + weight > wmax) { // weight limit exceeded\n                continue;\n            }\n            int new_cost = cost + items[i].second;\n            int new_weight = weight + items[i].first;\n            int cost_lower_bound = new_cost + fractional_knapsack(i, items, n, wmax - new_weight);\n            Array next = {cost_lower_bound, new_weight, new_cost, i + 1};\n            push(heap, &size, next);\n        }\n    }\n\n    return -upper_bound; // Invert the sign back\n}\n\nint main() {\n    int n, wmax;\n    scanf(\"%d %d\", &n, &wmax);\n    Pair items[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d %d\", &items[i].first, &items[i].second);\n    }\n    printf(\"%d\\n\", branch_and_bound(n, wmax, items));\n    return 0;\n}\n\n",
+      "Java": "#include <bits/stdc++.h>\nusing namespace std; \n\nconst int infinity = INT_MAX;\n\nbool cmp(pair<int,int> a, pair<int,int> b) {\n    if(a.second * b.first > a.first * b.second) return 1;\n    return 0;\n}\n    \n// Pick items from index idx, weight remaining\nint fractional_knapsack(int idx, vector<pair<int,int>> &items, int weight) {\n    double ans = 0;\n    for(int i = idx; i < items.size(); i++) {\n        if(items[i].first <= weight) {\n            weight -= items[i].first;\n            ans += items[i].second;\n        }\n        else {\n            double fraction = (double)weight / items[i].first;\n            ans += fraction * items[i].second;\n        }\n    }\n    return (int)floor(ans);\n}\n\nint branch_and_bound(int n, int wmax, vector<pair<int,int>> items) {\n    // q stores {cost + lower_bound, weight of the items, cost of the items, next item to consider}\n    priority_queue<array<int,4>> q;\n\n    // invert the sign of all the items\n    for(int i = 0; i < n; i++) items[i].second = -items[i].second;\n\n    // Presort  to perform fractional knapsack\n    sort(items.begin(), items.end(), cmp);\n\n    int upper_bound = infinity;\n\n    q.push({0 + fractional_knapsack(0, items, wmax), 0, 0, 0});\n\n    while(!q.empty()) {\n        int cost_lower_bound = (q.top())[0];\n        int weight = (q.top())[1];\n        int cost = (q.top())[2];\n        int item = (q.top())[3];\n        q.pop();\n\n        if(cost_lower_bound >= upper_bound) {\n            continue;\n        }\n\n        // Atleast a solution with \"cost\" is promised\n        upper_bound = min(upper_bound, cost);\n\n        for(int i = item; i < n; i++) {\n            if(items[i].first + weight > wmax) { // weight limit exceeded\n                continue;\n            }\n            int new_cost = cost + items[i].second;\n            int new_weight = weight + items[i].first;\n            int cost_lower_bound = new_cost + fractional_knapsack(i, items, wmax - new_weight);\n            q.push({cost_lower_bound, new_weight, new_cost, i + 1});\n        }\n    }\n\n    return -upper_bound; // invert the sign\n}\n\nint main() {\n    int n; cin >> n;\n    int wmax; cin >> wmax;\n    vector<pair<int,int>> items(n);\n    for(int i = 0; i < n; i++) {\n        cin >> items[i].first >> items[i].second;\n    }\n    cout << branch_and_bound(n, wmax, items);\n\n    return 0;\n}",
+      "JavaScript": "import heapq\nimport sys\n\ninfinity = sys.maxsize\n\ndef cmp(a, b):\n    return a[1] * b[0] > a[0] * b[1]\n\n# Pick items from index idx, weight remaining\ndef fractional_knapsack(idx, items, weight):\n    ans = 0\n    for i in range(idx, len(items)):\n        if items[i][0] <= weight:\n            weight -= items[i][0]\n            ans += items[i][1]\n        else:\n            fraction = weight / items[i][0]\n            ans += fraction * items[i][1]\n\n    return int(ans)\n\ndef branch_and_bound(n, wmax, items):\n    # q stores [cost + lower_bound, weight of the items, cost of the items, next item to consider]\n    q = []\n\n    # Invert the sign of all the items\n    items = [(x[0], -x[1]) for x in items]\n\n    # Presort to perform fractional knapsack\n    items.sort(key=lambda x: (x[1], -x[0]))\n\n    upper_bound = infinity\n\n    heapq.heappush(q, [0 + fractional_knapsack(0, items, wmax), 0, 0, 0])\n\n    while q:\n        cost_lower_bound, weight, cost, item = heapq.heappop(q)\n\n        if cost_lower_bound >= upper_bound:\n            continue\n\n        # At least a solution with \"cost\" is promised\n        upper_bound = min(upper_bound, cost)\n\n        for i in range(item, n):\n            if items[i][0] + weight > wmax:  # weight limit exceeded\n                continue\n            new_cost = cost + items[i][1]\n            new_weight = weight + items[i][0]\n            cost_lower_bound = new_cost + fractional_knapsack(i, items, wmax - new_weight)\n            heapq.heappush(q, [cost_lower_bound, new_weight, new_cost, i + 1])\n\n    return -upper_bound  # invert the sign\n\nif __name__ == \"__main__\":\n    n, wmax = map(int, input().split())\n    items = [tuple(map(int, input().split())) for _ in range(n)]\n\n    print(branch_and_bound(n, wmax, items))\n"
+    }
+  }
+}

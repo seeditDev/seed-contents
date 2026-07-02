@@ -1,0 +1,90 @@
+{
+  "questionId": "Q3241",
+  "title": "SUPW",
+  "slug": "supw",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Zonal Computing Olympiad 2014, 30 Nov 2013\n In ICO School, all students have to participate regularly in SUPW.  There is a different SUPW activity each day, and each activity has its own duration.  The SUPW schedule for the next term has been announced, including information about the number of minutes taken by each activity.\n\n\n Nikhil has been designated SUPW coordinator.  His task is to assign SUPW duties to students, including himself.  The school's rules say that no student can go three days in a row without any SUPW duty.\n\n\n Nikhil wants to find an assignment of SUPW duty for himself that minimizes the number of minutes he spends overall on SUPW.",
+    "constraints": [],
+    "inputFormat": "Line 1: A single integer N, the number of days in the future for which SUPW data is available.\n\nLine 2: N non-negative integers, where the integer in position i represents the number of minutes required for SUPW work on day i.",
+    "outputFormat": "The output consists of a single non-negative integer, the minimum number of minutes that Nikhil needs to spend on SUPW duties this term \n\nTest dataThere is only one subtask worth 100 marks.  In all inputs:\n\n\n • 1 ≤ N ≤ 2×105\n\n • The number of minutes of SUPW each day is between 0 and\n  104, inclusive.\n\n\nLive evaluation dataThere are 12 test inputs on the server during the exam.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10\n3 2 1 1 2 3 1 3 2 1",
+        "output": "4",
+        "explanation": "Explanation:\nExplanation: 1+1+1+1"
+      },
+      {
+        "id": "sample_2",
+        "input": "8\n3 2 3 2 3 5 1 3",
+        "output": "5",
+        "explanation": "Explanation:\nExplanation: 2+2+1"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10\n3 2 1 1 2 3 1 3 2 1",
+        "expectedOutput": "4",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "8\n3 2 3 2 3 5 1 3",
+        "expectedOutput": "5",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int n; \n    cin >> n;\n    vector<int> supw(n), dp(n);\n    for (int i = 0; i < n; i++){cin >> supw[i]; dp[i] = supw[i];}\n    \n    for (int i = n-4; i > -1; i--){\n        dp[i] += min(dp[i+1], min(dp[i+2], dp[i+3]) );\n    }\n\n    cout << min(dp[0], min(dp[1], dp[2]) );\n}",
+      "Python3": "def main():\n    # Read the number of elements\n    n = int(input())\n    \n    # Read the weights and initialize the dp list\n    supw = list(map(int, input().split()))\n    dp = supw.copy()  # Initialize dp with supw\n\n    # Fill the dp array from the end to the beginning\n    for i in range(n - 4, -1, -1):\n        dp[i] += min(dp[i + 1], dp[i + 2], dp[i + 3])\n\n    # Output the minimum value from the first three elements of dp\n    print(min(dp[0], dp[1], dp[2]))\n\n# Calling the main function\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int n; \n    scanf(\"%d\", &n);\n    \n    int *supw = (int *)malloc(n * sizeof(int));\n    int *dp = (int *)malloc(n * sizeof(int));\n\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &supw[i]);\n        dp[i] = supw[i];\n    }\n    \n    for (int i = n - 4; i >= 0; i--) {\n        dp[i] += (dp[i + 1] < dp[i + 2] ? \n                   (dp[i + 1] < dp[i + 3] ? dp[i + 1] : dp[i + 3]) : \n                   (dp[i + 2] < dp[i + 3] ? dp[i + 2] : dp[i + 3]));\n    }\n\n    int result = dp[0] < dp[1] ? (dp[0] < dp[2] ? dp[0] : dp[2]) : (dp[1] < dp[2] ? dp[1] : dp[2]);\n    printf(\"%d\\n\", result);\n    \n    // Free allocated memory\n    free(supw);\n    free(dp);\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        \n        // Read the number of elements\n        int n = scanner.nextInt();\n        int[] supw = new int[n];\n        int[] dp = new int[n];\n        \n        // Read the elements into supw and initialize dp\n        for (int i = 0; i < n; i++) {\n            supw[i] = scanner.nextInt();\n            dp[i] = supw[i];\n        }\n\n        // Dynamic programming to calculate minimum path sums\n        for (int i = n - 4; i >= 0; i--) {\n            dp[i] += Math.min(dp[i + 1], Math.min(dp[i + 2], dp[i + 3]));\n        }\n\n        // Output the minimum value from dp[0], dp[1], and dp[2]\n        System.out.println(Math.min(dp[0], Math.min(dp[1], dp[2])));\n        \n        // Close the scanner\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nrl.on('line', (input) => {\n    const n = parseInt(input);\n    const supw = [];\n    const dp = new Array(n).fill(0);\n\n    rl.on('line', (input) => {\n        const weights = input.split(' ').map(Number);\n        for (let i = 0; i < n; i++) {\n            supw[i] = weights[i];\n            dp[i] = supw[i];\n        }\n\n        for (let i = n - 4; i >= 0; i--) {\n            dp[i] += Math.min(dp[i + 1], Math.min(dp[i + 2], dp[i + 3]));\n        }\n\n        console.log(Math.min(dp[0], Math.min(dp[1], dp[2])));\n        rl.close();\n    });\n});\n"
+    }
+  }
+}

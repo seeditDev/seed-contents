@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1319",
+  "title": "Deletion - Doubly Linked List",
+  "slug": "deletion-doubly-linked-list",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "In this section, we will learn how to do the deletion operation in a doubly linked list.\n\nLet's suppose you need to delete the node `target` between node `A` and node `B`, the pointers we need to update are:\n\n\nnext pointer of `A`\nprev pointer of `B`\nhead pointer if `target` is the head\nComplete the function delete(int val) where `val` denotes the value of the node to be deleted.\n\nVideo Explanation\n**Do not make changes anywhere else in the code except this function**",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 3\n1 2 3 4 5",
+        "output": "1 2 4 5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 3\n1 2 3 4 5",
+        "expectedOutput": "1 2 4 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The key idea of this function is to **find the target node** with the specified value and then **adjust the pointers** of its neighboring nodes (if they exist) to remove it from the list.\n\nHere’s how the approach works:\n\n\n\n**Finding the Target Node**:\n\n\n\nStart from the `head` and traverse the list until you find the node that contains the specified value.\n\n\n\n**Updating Pointers**:\n\n\n\n\nOnce the target node is found, identify its previous node (A) and next node (B).\n\n\n\n\nUpdate the `next` pointer of node A to point to node B.\n\n\n\n\nUpdate the `prev` pointer of node B to point to node A.\n\n\n\n\nIf the target node is the `head`, update `head` to point to node B.\n\n\n\n\n\n\n**Handling Edge Cases**:\n\n\n\nEnsure to check if node A is `NULL` (which means the `target` node was the `head`) or if node B is `NULL` (which means the `target` node was the `tail`).\n\n\nThis approach efficiently removes the node while ensuring the list remains connected.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "void deleteNode(int value) {\n    Node* targetNode = head;\n    while (targetNode -> value != value) {\n        targetNode = targetNode -> next;\n    }\n    \n    // Update A and B\n    Node* A = targetNode -> prev;\n    Node* B = targetNode -> next;\n    \n    // A could be null if target is head\n    if (A != NULL) {\n        A -> next = B;\n    }\n    \n    // B could be null if target is tail\n    if (B != NULL) {\n        B -> prev = A;\n    }\n    \n    if (targetNode == head) {\n        head = B;\n    }\n}\n",
+      "Python3": "class Node:\n    def __init__(self, val):\n        self.value = val\n        self.next = None\n        self.prev = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n\n    def insertAtIndex(self, index, value):\n        new_node = Node(value)\n\n        if index == 0:\n            new_node.next = self.head\n            if self.head:\n                self.head.prev = new_node\n            self.head = new_node\n        else:\n            iter = self.head\n            for _ in range(index - 1):\n                iter = iter.next\n\n            A = iter\n            B = iter.next\n\n            A.next = new_node\n            if B:\n                B.prev = new_node\n\n            new_node.next = B\n            new_node.prev = A\n\n    def deleteNode(self, value):\n        target_node = self.head\n        while target_node and target_node.value != value:\n            target_node = target_node.next\n\n        if not target_node:\n            return\n\n        A = target_node.prev\n        B = target_node.next\n\n        if A:\n            A.next = B\n\n        if B:\n            B.prev = A\n\n        if target_node == self.head:\n            self.head = B\n\n    def printValues(self):\n        current = self.head\n        while current:\n            print(current.value, end=' ')\n            current = current.next\n        print()\n\nif __name__ == \"__main__\":\n    n, x = map(int, input().split())\n\n    ll = LinkedList()\n    vals = list(map(int, input().split()))\n    for i in range(len(vals)):\n        a = vals[i]\n        ll.insertAtIndex(i, a)\n\n    ll.deleteNode(x)\n    ll.printValues()\n",
+      "C": "\nvoid deleteNode(struct LinkedList* list, int value) {\n    struct Node* targetNode = list->head;\n    while (targetNode && targetNode->value != value) {\n        targetNode = targetNode->next;\n    }\n\n    if (targetNode == NULL)\n        return;\n\n    // Update A and B\n    struct Node* A = targetNode->prev;\n    struct Node* B = targetNode->next;\n\n    if (A != NULL) {\n        A->next = B;\n    }\n\n    if (B != NULL) {\n        B->prev = A;\n    }\n\n    if (targetNode == list->head) {\n        list->head = B;\n    }\n\n    free(targetNode);\n}",
+      "Java": "void deleteNode(int value) {\n    Node targetNode = head;\n    while (targetNode != null && targetNode.value != value) {\n        targetNode = targetNode.next;\n    }\n\n    if (targetNode == null)\n        return;\n\n    // Update A and B\n    Node A = targetNode.prev;\n    Node B = targetNode.next;\n\n    // A could be null if target is head\n    if (A != null) {\n        A.next = B;\n    }\n\n    // B could be null if target is tail\n    if (B != null) {\n        B.prev = A;\n    }\n\n    if (targetNode == head) {\n        head = B;\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.next = null;\n        this.prev = null;\n    }\n}\n\nclass LinkedList {\n    constructor() {\n        this.head = null;\n    }\n}\n*/\nLinkedList.prototype.deleteNode = function (value) {\n  let targetNode = this.head;\n  while (targetNode !== null && targetNode.value !== value) {\n    targetNode = targetNode.next;\n  }\n\n  if (targetNode === null) return;\n\n  // Update A and B\n  const A = targetNode.prev;\n  const B = targetNode.next;\n\n  // A could be null if target is head\n  if (A !== null) {\n    A.next = B;\n  }\n\n  // B could be null if target is tail\n  if (B !== null) {\n    B.prev = A;\n  }\n\n  if (targetNode === this.head) {\n    this.head = B;\n  }\n}"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "questionId": "Q2139",
+  "title": "Small factorials",
+  "slug": "small-factorials",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "mathematics",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Mathematics"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are asked to calculate factorials of some small positive integers.",
+    "constraints": [],
+    "inputFormat": "An integer t, 1&lt;=t&lt;=100, denoting the number of testcases, followed by t lines, each containing a single integer n, 1 &lt;= n &lt;= 100",
+    "outputFormat": "For each integer n given at input, display a line with the value of n!\n\n**Note:** For larger numbers, their factorial can overflows any available numeric data type in C.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n1\n2\n5\n3",
+        "output": "1\n2\n120\n6",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n1\n2\n5\n3",
+        "expectedOutput": "1\n2\n120\n6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Challenges in the Problem**: Handling Large Numbers-\n\nThe value of n! grows extremely fast. For instance, 20! = 2,432,902,008,176,640,000. Standard data types such as `int` or `long long` cannot handle such large values since they exceed their maximum range.\n\n\n**Storing and Printing Large Numbers**: To handle the large size of factorial results-\n\nuse an array to store individual digits of the factorial.\nPerform multiplication digit by digit, handling carries like manual multiplication and store the result in reverse order for easier manipulation.",
+    "timeComplexity": "O(n^2 . m), where m is the number of digits in the factorial. The approach is efficient for n up to 100 due to the manageable size of operations on individual digits.",
+    "spaceComplexity": "O(m), where m is the number of digits in the result (maximum for 100! is 158 digits).",
+    "code": {
+      "C++": "#include <iostream>\nusing namespace std;\n\n#define MAX 500\n\nint multiply(int x, int res[], int res_size);\n\nvoid factorial(int n) {\n    int res[MAX];\n    res[0] = 1;\n    int res_size = 1;\n\n    for (int x = 2; x <= n; x++)\n        res_size = multiply(x, res, res_size);\n\n    for (int i = res_size - 1; i >= 0; i--)\n        cout << res[i];\n}\n\nint multiply(int x, int res[], int res_size) {\n    int carry = 0;\n\n    for (int i = 0; i < res_size; i++) {\n        int prod = res[i] * x + carry;\n        res[i] = prod % 10;\n        carry = prod / 10;\n    }\n\n    while (carry) {\n        res[res_size] = carry % 10;\n        carry = carry / 10;\n        res_size++;\n    }\n    return res_size;\n}\n\nint main() {\n    int t, n;\n    cin >> t;\n    \n    for (int i = 0; i < t; i++) {\n        cin >> n;\n        factorial(n);\n        cout << endl;\n    }\n    \n    return 0;\n}\n",
+      "Python3": "def multiply(x, res, res_size):\n    carry = 0\n    for i in range(res_size):\n        prod = res[i] * x + carry\n        res[i] = prod % 10\n        carry = prod // 10\n\n    while carry != 0:\n        res[res_size] = carry % 10\n        carry = carry // 10\n        res_size += 1\n    return res_size\n\ndef factorial(n):\n    MAX = 500\n    res = [0] * MAX\n    res[0] = 1\n    res_size = 1\n\n    for x in range(2, n + 1):\n        res_size = multiply(x, res, res_size)\n\n    # print(\"Factorial of given number is\")\n    for i in range(res_size - 1, -1, -1):\n        print(res[i], end=\"\")\n    print()\n\nif __name__ == \"__main__\":\n    t = int(input())\n    for _ in range(t):\n        n = int(input())\n        factorial(n)\n\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n\n   private static final int MAX = 500;\n\n    public static int multiply(int x, int res[], int res_size) {\n        int carry = 0;\n\n        for (int i = 0; i < res_size; i++) {\n            int prod = res[i] * x + carry;\n            res[i] = prod % 10;\n            carry = prod / 10;\n        }\n\n        while (carry != 0) {\n            res[res_size] = carry % 10;\n            carry = carry / 10;\n            res_size++;\n        }\n        return res_size;\n    }\n\n    public static void factorial(int n) {\n        int[] res = new int[MAX];\n        res[0] = 1;\n        int res_size = 1;\n\n        for (int x = 2; x <= n; x++) {\n            res_size = multiply(x, res, res_size);\n        }\n\n        // System.out.println(\"Factorial of given number is\");\n        for (int i = res_size - 1; i >= 0; i--) {\n            System.out.print(res[i]);\n        }\n        System.out.println();\n    }\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        \n        int t = scanner.nextInt();\n        \n        for (int i = 0; i < t; i++) {\n            int n = scanner.nextInt();\n            factorial(n);\n        }\n        \n        scanner.close();\n    }\n}\n"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1252",
+  "title": "Knapsack Problem",
+  "slug": "knapsack-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Let's now implement dynamic programming to solve this problem.\n\nYou have a knapsack that can take upto WmaxW_{max}Wmax​ weight. \n\nGiven NNN items, ithi^{th}ith of them having the weight WiW_iWi​ and value ViV_iVi​. You can pick some or all the items completely so that their weight does not exceed WmaxW_{max}Wmax​. \n\nYour task is to maximise the total value of the items you will carry in your bag.\n\nNote that you cannot take any item in fractions; that is, you either pick it or don't.\n\n\nInput Format\n\nThe first line contains a two integer NNN and WmaxW_{max}Wmax​, denoting the length of array AAA and the maximum weight you can carry.\nNext NNN lines contains the description of the items.\n\nithi^{th}ith line contains two integers WiW_iWi​ and ViV_iVi​, denoting the Weight and Value of the ithi^{th}ith item\n\n\n\n\nOutput Format\nOutput the maximum value you can carry while not exceeding the weight limit of the knapsack.",
+    "constraints": [
+      "1≤N≤1031 \\leq N \\leq 10^31≤N≤103",
+      "1≤Wmax≤1031 \\leq W_{max} \\leq 10^31≤Wmax​≤103",
+      "1≤Wi,Vi≤1031 \\leq W_i, V_i \\leq 10^31≤Wi​,Vi​≤103"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2",
+        "output": "17",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2",
+        "expectedOutput": "17",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int n, wmax;\n    cin >> n >> wmax;\n\n    int W[n + 1];\n    int V[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        cin >> W[i] >> V[i];\n    }   \n\n    // We will use 2-d array to store the solution \n    int dp[n + 1][wmax + 1];\n\n    for(int i = 0; i <= n; i++) {\n        dp[i][0] = 0; // Base case\n    }\n    for(int w = 0; w <= wmax; w++) {\n        dp[0][w] = 0; // Base case\n    }   \n\n    for(int i = 1; i <= n; i++) {\n        for(int w = 1; w <= wmax; w++) {\n            if(w >= W[i]) { // Check if we can take the Wi weight\n                dp[i][w] = max(V[i] + dp[i - 1][w - W[i]], dp[i - 1][w]);\n            }\n            else {\n                dp[i][w] = dp[i - 1][w];\n            }\n        }\n    }\n\n    cout << dp[n][wmax] << \"\\n\";\n\n    return 0;\n}",
+      "Python3": "def knapsack(n, wmax, W, V):\n    dp = [[0] * (wmax + 1) for _ in range(n + 1)]\n\n    for i in range(1, n + 1):\n        for w in range(1, wmax + 1):\n            if w >= W[i]:\n                dp[i][w] = max(V[i] + dp[i - 1][w - W[i]], dp[i - 1][w])\n            else:\n                dp[i][w] = dp[i - 1][w]\n\n    return dp[n][wmax]\n\nif __name__ == \"__main__\":\n    n, wmax = map(int, input().split())\n\n    W = [0] * (n + 1)\n    V = [0] * (n + 1)\n\n    for i in range(1, n + 1):\n        W[i], V[i] = map(int, input().split())\n\n    result = knapsack(n, wmax, W, V)\n    print(result)\n",
+      "C": "#include <stdio.h>\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint main() {\n    int n, wmax;\n    scanf(\"%d %d\", &n, &wmax);\n\n    int W[n + 1];\n    int V[n + 1];\n\n    // Using one-based indexing\n    for (int i = 1; i <= n; i++) {\n        scanf(\"%d %d\", &W[i], &V[i]);\n    }\n\n    // We will use a 2D array to store the solution\n    int dp[n + 1][wmax + 1];\n\n    for (int i = 0; i <= n; i++) {\n        dp[i][0] = 0; // Base case\n    }\n    for (int w = 0; w <= wmax; w++) {\n        dp[0][w] = 0; // Base case\n    }\n\n    for (int i = 1; i <= n; i++) {\n        for (int w = 1; w <= wmax; w++) {\n            if (w >= W[i]) { // Check if we can take the Wi weight\n                dp[i][w] = max(V[i] + dp[i - 1][w - W[i]], dp[i - 1][w]);\n            } else {\n                dp[i][w] = dp[i - 1][w];\n            }\n        }\n    }\n\n    printf(\"%d\\n\", dp[n][wmax]);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int wmax = sc.nextInt();\n\n        int[] W = new int[n + 1];\n        int[] V = new int[n + 1];\n\n        // Using one-based indexing\n        for (int i = 1; i <= n; i++) {\n            W[i] = sc.nextInt();\n            V[i] = sc.nextInt();\n        }\n\n        // We will use a 2D array to store the solution\n        int[][] dp = new int[n + 1][wmax + 1];\n\n        for (int i = 0; i <= n; i++) {\n            dp[i][0] = 0; // Base case\n        }\n        for (int w = 0; w <= wmax; w++) {\n            dp[0][w] = 0; // Base case\n        }\n\n        for (int i = 1; i <= n; i++) {\n            for (int w = 1; w <= wmax; w++) {\n                if (w >= W[i]) { // Check if we can take the Wi weight\n                    dp[i][w] = Math.max(V[i] + dp[i - 1][w - W[i]], dp[i - 1][w]);\n                } else {\n                    dp[i][w] = dp[i - 1][w];\n                }\n            }\n        }\n\n        System.out.println(dp[n][wmax]);\n    }\n}\n",
+      "JavaScript": "def knapsack(n, wmax, W, V):\n    dp = [[0] * (wmax + 1) for _ in range(n + 1)]\n\n    for i in range(1, n + 1):\n        for w in range(1, wmax + 1):\n            if w >= W[i]:\n                dp[i][w] = max(V[i] + dp[i - 1][w - W[i]], dp[i - 1][w])\n            else:\n                dp[i][w] = dp[i - 1][w]\n\n    return dp[n][wmax]\n\nif __name__ == \"__main__\":\n    n, wmax = map(int, input().split())\n\n    W = [0] * (n + 1)\n    V = [0] * (n + 1)\n\n    for i in range(1, n + 1):\n        W[i], V[i] = map(int, input().split())\n\n    result = knapsack(n, wmax, W, V)\n    print(result)\n"
+    }
+  }
+}

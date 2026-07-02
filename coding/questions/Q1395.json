@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1395",
+  "title": "Interleaving String",
+  "slug": "interleaving-string",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given three strings `s1`, `s2`, and `s3`, write a recursive function to determine if `s3` can be obtained by interleaving `s1` and `s2`. An interleaving of two strings `s1` and `s2` is a configuration where they are merged in such a way that maintains the left-to-right order of characters from each string.\n\n\nInput Format\n\nFirst line of input contains the string `s1`.\nSecond line of input contains the string `s2`.\nThird line of input contains the string `s3`.\n\n\nOutput Format\n\nOutput `True` if `s3` can be obtained by interleaving `s1` and `s2`, else `False`.",
+    "constraints": [
+      "The length of `s1`, `s2`, and `s3` will be between 0 and 20.",
+      "All strings consist of lowercase English letters only."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "abc\ndef\nadbcef",
+        "output": "True",
+        "explanation": "Explanation:\ns3 = s1[0] + s2[0] + s1[1] + s1[2] + s2[1] + s2[2]"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "abc\ndef\nadbcef",
+        "expectedOutput": "True",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Base Case**:\n\nIf `s1`, `s2`, and `s3` are all empty, return `true`. This means that we have successfully interleaved all characters from `s1` and `s2` to form `s3`.\nIf `s3` is empty but either `s1` or `s2` still has characters, return `false`. This means we couldn’t completely interleave `s1` and `s2` to form `s3`.\n\n\n**Recursive Case**:\n\nCheck the first character of `s1` with the first character of `s3`. If they match, recursively check the remaining parts of `s1`, `s3`, and `s2`.\nSimilarly, check the first character of `s2` with `s3`. If they match, recursively check the remaining parts of `s2`, `s3`, and `s1`.\nIf either recursive call returns `true`, we have found a valid interleaving.",
+    "timeComplexity": "For strings of length n, this approach can have an exponential time complexity, approximately O(2^n) in the worst case because each recursive call has two possible branches (one for s1 and one for s2).",
+    "spaceComplexity": "The space complexity is O(n) due to the depth of the recursive call stack.",
+    "code": {
+      "C++": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool is_interleave(const string &s1, const string &s2, const string &s3) {\n    // Base case: if all strings are empty, return true\n    if (s1.empty() && s2.empty() && s3.empty()) {\n        return true;\n    }\n\n    // If s3 is empty but either s1 or s2 is not, return false\n    if (s3.empty()) {\n        return false;\n    }\n\n    // Recursive cases\n    if (!s1.empty() && s1[0] == s3[0] && is_interleave(s1.substr(1), s2, s3.substr(1))) {\n        return true;\n    }\n\n    if (!s2.empty() && s2[0] == s3[0] && is_interleave(s1, s2.substr(1), s3.substr(1))) {\n        return true;\n    }\n\n    return false;\n}\n\nint main() {\n    string s1, s2, s3;\n\n    // Input strings\n    cin >> s1 >> s2 >> s3;\n\n    // Output result\n    cout << (is_interleave(s1, s2, s3) ? \"True\" : \"False\") << endl;\n\n    return 0;\n}\n",
+      "Python3": "def is_interleave(s1, s2, s3):\n    # Base case: if all strings are empty, return True\n    if not s1 and not s2 and not s3:\n        return True\n    \n    # If s3 is empty but either s1 or s2 is not, return False\n    if not s3:\n        return False\n    \n    # Recursive cases:\n    if s1 and s1[0] == s3[0]:\n        if is_interleave(s1[1:], s2, s3[1:]):\n            return True\n    \n    if s2 and s2[0] == s3[0]:\n        if is_interleave(s1, s2[1:], s3[1:]):\n            return True\n    \n    return False\n\n\ns1 = input()\ns2 = input()\ns3 = input()\nprint(is_interleave(s1, s2, s3))  # Output: True\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n#include <stdbool.h>\n\nbool is_interleave(char *s1, char *s2, char *s3) {\n    // Base case: if all strings are empty, return true\n    if (*s1 == '\\0' && *s2 == '\\0' && *s3 == '\\0') {\n        return true;\n    }\n\n    // If s3 is empty but either s1 or s2 is not, return false\n    if (*s3 == '\\0') {\n        return false;\n    }\n\n    // Recursive cases\n    if (*s1 == *s3 && is_interleave(s1 + 1, s2, s3 + 1)) {\n        return true;\n    }\n\n    if (*s2 == *s3 && is_interleave(s1, s2 + 1, s3 + 1)) {\n        return true;\n    }\n\n    return false;\n}\n\nint main() {\n    char s1[22], s2[22], s3[22];\n\n    // Input strings\n    scanf(\"%s\", s1);\n    scanf(\"%s\", s2);\n    scanf(\"%s\", s3);\n\n    // Output result\n    if (is_interleave(s1, s2, s3)) {\n        printf(\"True\");\n    } else {\n        printf(\"False\");\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\nclass Codechef {\n    public static boolean isInterleave(String s1, String s2, String s3) {\n        // Base case: if all strings are empty, return true\n        if (s1.isEmpty() && s2.isEmpty() && s3.isEmpty()) {\n            return true;\n        }\n\n        // If s3 is empty but either s1 or s2 is not, return false\n        if (s3.isEmpty()) {\n            return false;\n        }\n\n        // Recursive cases\n        if (!s1.isEmpty() && s1.charAt(0) == s3.charAt(0)) {\n            if (isInterleave(s1.substring(1), s2, s3.substring(1))) {\n                return true;\n            }\n        }\n\n        if (!s2.isEmpty() && s2.charAt(0) == s3.charAt(0)) {\n            if (isInterleave(s1, s2.substring(1), s3.substring(1))) {\n                return true;\n            }\n        }\n\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        // Input strings\n        String s1 = scanner.next();\n        String s2 = scanner.next();\n        String s3 = scanner.next();\n\n        // Output result\n        System.out.println(isInterleave(s1, s2, s3) ? \"True\" : \"False\");\n    }\n}\n",
+      "JavaScript": "function isInterleave(s1, s2, s3) {\n    // Base case: if all strings are empty, return true\n    if (s1.length === 0 && s2.length === 0 && s3.length === 0) {\n        return true;\n    }\n\n    // If s3 is empty but either s1 or s2 is not, return false\n    if (s3.length === 0) {\n        return false;\n    }\n\n    // Recursive cases\n    if (s1.length > 0 && s1[0] === s3[0] && isInterleave(s1.slice(1), s2, s3.slice(1))) {\n        return true;\n    }\n\n    if (s2.length > 0 && s2[0] === s3[0] && isInterleave(s1, s2.slice(1), s3.slice(1))) {\n        return true;\n    }\n\n    return false;\n}\n\n// Process input from stdin\nprocess.stdin.setEncoding('utf8');\nprocess.stdin.on('data', function(input) {\n    const strings = input.trim().split('\\n');\n\n    if (strings.length === 3) {\n        const [s1, s2, s3] = strings;\n\n        // Output result\n        console.log(isInterleave(s1, s2, s3) ? \"True\" : \"False\");\n    } else {\n        console.log(\"Please enter exactly three strings on different lines.\");\n    }\n\n    process.stdin.pause();\n});\n"
+    }
+  }
+}

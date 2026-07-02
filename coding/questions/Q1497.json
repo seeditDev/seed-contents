@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1497",
+  "title": "Alternating Array",
+  "slug": "alternating-array",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of integers. The array has **even length** and contains an **equal number of positive and negative integers**. Chef wants to rearrange the array so that:\n\n\nEvery consecutive pair of numbers has **opposite signs**.\nThe **relative order** of positive numbers among themselves and negative numbers among themselves is **preserved**.\nThe array **starts with a positive number**.\nHelp Chef rearrange his array according to these rules.\n\n**Function Declaration****Function Name**rearrangeArrayrearrangeArrayrearrangeArray – This function rearranges an array of integers.\n\n**Parameters**\n\narrarrarr : A reference to a vector of integers of size nnn.\n\n\n\nContains both positive and negative integers.\nHas an equal number of positive and negative values.\n\n\n\nnnn : An integer representing the size of the array\n\n\n\nAlways even\nSatisfies all constraints\n\n\n**Return Value**\n\nThe function does **not** return anything.\n\n\n\n\nIt modifies the vector **in-place**, producing a rearranged array that:\n\n\n\nStarts with a positive integer\nAlternates sign at every position\nPreserves the internal order of all positive and all negative elements\n\n\n**Constraints**\n2≤N≤2⋅1052 \\leq N \\leq 2 \\cdot 10^52≤N≤2⋅105\nNNN is even\n1≤∣A[i]∣≤1051 \\leq |A[i]| \\leq 10^51≤∣A[i]∣≤105\nThe array contains **exactly** N/2N/2N/2 positive and N/2N/2N/2 negative integers\n\nInput Format\n\nThe first line contains an integer NNN — the size of the array.\nThe next line contains NNN space-separated integers representing the array elements.\n\n\nOutput Format\n\nFor each test case, print the rearranged array (starting with positive and alternating signs) on a new line.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8\n5 -1 2 -3 7 -2 4 -6",
+        "output": "5 -1 2 -3 7 -2 4 -6",
+        "explanation": "Explanation:\nThe positives in order: [5,2,7,4]\nThe negatives in order: [-1,-3,-2,-6]\nThe array already starts with a positive number and alternates signs. Preserving relative order of positives and negatives gives the same array [5,-1,2,-3,7,-2,4,-6]."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n-7 10",
+        "output": "10 -7",
+        "explanation": "Explanation:\nThere is only one positive and one negative number. The array must start with a positive number, so the valid rearranged array is [10,-7]."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8\n5 -1 2 -3 7 -2 4 -6",
+        "expectedOutput": "5 -1 2 -3 7 -2 4 -6",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "2\n-7 10",
+        "expectedOutput": "10 -7",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Traverse the array once and separate numbers into two lists:\n\n`pos` = list of positive numbers in the order they appear.\n`neg` = list of negative numbers in the order they appear.\n\n\nSince the array length is even and positives = negatives, we can simply **interleave** elements from `pos` and `neg`.\n\nPlace `pos[0]` at index 0, `neg[0]` at index 1.\nPlace `pos[1]`` at index 2, `neg[1]` at index 3.\nContinue until the end of the array.\n\n\nPrint the resulting array.\nComplexity Analysis**Time Complexity**: O(N)\n\n\nOne pass to split positives/negatives, one pass to merge and print.\n**Space Complexity**: O(N)\n\n\nExtra space for storing positives and negatives separately.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "void rearrangeArray(vector<int>& arr, int n) {\n    vector<int> result(n);\n    \n    int posIndex = 0;  // even indices\n    int negIndex = 1;  // odd indices\n\n    for (int i = 0; i < n; i++) {\n        if (arr[i] >= 0) {\n            result[posIndex] = arr[i];\n            posIndex += 2;\n        } else {\n            result[negIndex] = arr[i];\n            negIndex += 2;\n        }\n    }\n\n    arr = result;\n}",
+      "Python3": "def rearrangeArray(arr, n):\n    result = [0] * n\n\n    pos_index = 0\n    neg_index = 1\n\n    for num in arr:\n        if num > 0:\n            result[pos_index] = num\n            pos_index += 2\n        else:\n            result[neg_index] = num\n            neg_index += 2\n\n    for i in range(n):\n        arr[i] = result[i]",
+      "C": "void rearrangeArray(int arr[], int n) {\n    int *result = (int *)malloc(n * sizeof(int));\n\n    int posIndex = 0;  // even index\n    int negIndex = 1;  // odd index\n\n    for (int i = 0; i < n; i++) {\n        if (arr[i] >= 0) {\n            result[posIndex] = arr[i];\n            posIndex += 2;\n        } else {\n            result[negIndex] = arr[i];\n            negIndex += 2;\n        }\n    }\n\n    // Copy back to original array\n    for (int i = 0; i < n; i++) {\n        arr[i] = result[i];\n    }\n\n    free(result);\n}",
+      "Java": "    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] nums = new int[n];\n        for(int i = 0; i < n; i++) {\n            nums[i] = sc.nextInt();\n        }\n\n        List<Integer> pos = new ArrayList<>();\n        List<Integer> neg = new ArrayList<>();\n\n        for(int x : nums) {\n            if(x > 0) pos.add(x);\n            else neg.add(x);\n        }\n\n        StringBuilder sb = new StringBuilder();\n        for(int i = 0; i < n/2; i++) {\n            sb.append(pos.get(i)).append(\" \").append(neg.get(i)).append(\" \");\n        }\n\n        System.out.println(sb.toString().trim());\n    }\n",
+      "JavaScript": "function rearrangeArray(arr, n) {\n    let pos = [];\n    let neg = [];\n\n    // Separate positives and negatives\n    for (let x of arr) {\n        if (x > 0) pos.push(x);\n        else neg.push(x);\n    }\n\n    // Print in alternating order\n    let result = [];\n    for (let i = 0; i < n / 2; i++) {\n        result.push(pos[i]);\n        result.push(neg[i]);\n    }\n    console.log(result.join(\" \"));\n}\n"
+    }
+  }
+}

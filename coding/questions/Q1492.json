@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1492",
+  "title": "Chef and Pair of Elements",
+  "slug": "chef-and-pair-of-elements",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of integers numsnumsnums.\n\nHe wants to invite two of his friends such that the **sum of their lucky numbers equals a given target** XXX.\n\nYour task is to help Chef find the **indices of the two numbers** in the array whose sum is exactly XXX.\n\n\nEach input will have **exactly one valid pair**.\nYou cannot use the **same element twice**.\nThe index of the element that appears first in the array must be printed before the index of the element that appears later.\n**Function Declaration****Function Name**findPairfindPairfindPair – Finds two indices of numbers in the array whose sum equals the target value.\n\n**Parameters**\nnumsnumsnums : A list/array of integers.\ntargettargettarget : An integer representing the required sum XXX.\n**Return Value**\nReturns the **two indices** of the numbers whose sum equals targettargettarget. Answers are accepted on 0-based indexing.\nConstraints:\n2≤nums.length≤1042 \\leq nums.length \\leq 10^42≤nums.length≤104\n−109≤nums[i]≤109-10^9 \\leq nums[i] \\leq 10^9−109≤nums[i]≤109\n−109≤target≤109-10^9 \\leq target \\leq 10^9−109≤target≤109\nOnly one valid answer exists.\n\nInput Format\n\nNNN → size of array\nNext line → **N integers** (the array)\nThird line → **target sum X**\n\n\nOutput Format\nPrint the two indices (0-based or 1-based depending on implementation; your samples use **0-based**).",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n3 5 2 6\n7",
+        "output": "1 2",
+        "explanation": "Explanation:\n1 index = 5 \n2 index = 2 \n5+2=7"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n3 5 2 6\n7",
+        "expectedOutput": "1 2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Initialize an empty map `mp` that maps a number to its index.\nTraverse the array `nums` with index `i`:\n\nCompute `complement = target - nums[i]`.\nIf `complement` exists in `mp`, we have found the solution: return `[mp[complement], i]`.\nOtherwise, store the current number and its index in the map: mp[nums[i]] = i.\n\n\nSince the problem guarantees **exactly one solution**, the pair will always be found.\n**Example walkthrough**:\n\n\nnums = [1, 4, 6, 8, 2], target = 10\n\ni = 0 → 1 → complement = 9 → not in map → store 1:0\ni = 1 → 4 → complement = 6 → not in map → store 4:1\ni = 2 → 6 → complement = 4 → found in map → return [1,2]\nComplexity Analysis**Time Complexity**:\n\nWe traverse the array once and perform O(1) map operations, so the complexity is **O(N)**.\n\n**Space Complexity**:\n\nWe store numbers and their indices in a map, so the space complexity is **O(N)**.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int* findPair(vector<int>& nums, int target) {\n    int* result = new int[2];\n\n    unordered_map<int, int> mp;\n    for (int i = 0; i < nums.size(); i++) {\n        int complement = target - nums[i];\n        if (mp.find(complement) != mp.end()) {\n            result[0] = mp[complement];\n            result[1] = i;\n            return result;\n        }\n        mp[nums[i]] = i;\n    }\n\n    return result; // guaranteed one solution exists\n}\n",
+      "Python3": "# ---------- Function ----------\ndef findPair(nums, target):\n    mp = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in mp:\n            return [mp[complement], i]\n        mp[num] = i\n",
+      "C": "int* findPair(int* nums, int n, int target) {\n    int* result = (int*)malloc(2 * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        for (int j = i + 1; j < n; j++) {\n            if (nums[i] + nums[j] == target) {\n                result[0] = i;\n                result[1] = j;\n                return result;\n            }\n        }\n    }\n    return result;\n}\n",
+      "Java": "public static int[] findPair(int[] nums, int target) {\n    HashMap<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n        if (map.containsKey(complement)) {\n            return new int[]{map.get(complement), i};\n        }\n        map.put(nums[i], i);\n    }\n    return new int[]{}; \n}\n",
+      "JavaScript": "function findPair(nums, target) {\n    let map = new Map();\n\n    for (let i = 0; i < nums.length; i++) {\n        let complement = target - nums[i];\n        if (map.has(complement)) {\n            return [map.get(complement), i];\n        }\n        map.set(nums[i], i);\n    }\n}\n"
+    }
+  }
+}

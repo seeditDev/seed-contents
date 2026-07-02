@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1833",
+  "title": "Group Anagram",
+  "slug": "group-anagram",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given NNN strings consisting of lowercase English letters.\n\nTwo strings are called anagrams if they contain the same characters\nwith the same frequency, possibly in a different order.\n\nYour task is to group all anagrams together.\n\n\nInput Format\n\nThe input consists of multiple lines.\n\nThe first line contains a single integer NNN , the number of strings.\nThe next NNN lines each contain one string consisting of lowercase English letters.\n\n\n\n\nOutput Format\n\nPrint the grouped anagrams.\n\nPrint each group on a new line in order of first occurrence.\nPrint words of a group in their original order, separated by a single space.",
+    "constraints": [
+      "1≤N≤1000001 \\le N \\le 1000001≤N≤100000",
+      "1≤∣Si∣≤1001 \\le |S_i| \\le 1001≤∣Si​∣≤100",
+      "All strings contain only lowercase English letters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6\neat\ntea\ntan\nate\nnat\nbat",
+        "output": "eat tea ate\ntan nat\nbat",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6\neat\ntea\ntan\nate\nnat\nbat",
+        "expectedOutput": "eat tea ate\ntan nat\nbat",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N; \n    cin >> N;\n\n    unordered_map<string, vector<string>> mp;\n    vector<string> order;\n\n    for(int i=0;i<N;i++){\n        string s; \n        cin >> s;\n        string key=s;\n        sort(key.begin(), key.end());\n\n        if(!mp.count(key)) order.push_back(key);\n        mp[key].push_back(s);\n    }\n\n    for(auto &k:order){\n        for(auto &w:mp[k]) cout<<w<<\" \";\n        cout<<\"\\n\";\n    }\n}\n\n",
+      "Python3": "import sys\nfrom collections import defaultdict\n\nn = int(sys.stdin.readline())\nmp = defaultdict(list)\norder = []\n\nfor _ in range(n):\n    s = sys.stdin.readline().strip()\n    key = ''.join(sorted(s))\n    if key not in mp:\n        order.append(key)\n    mp[key].append(s)\n\nfor k in order:\n    print(*mp[k])\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAXN 100005\n#define MAXL 105\n#define HASH 200003\n\ntypedef struct Node {\n    char key[MAXL];\n    int group;\n    struct Node* next;\n} Node;\n\nNode* table[HASH];\n\nchar words[MAXN][MAXL];\nint group_size[MAXN];\nint group_words[MAXN][10]; // temporary small, will convert to dynamic\n\n// Instead use linked list of indices per group\ntypedef struct GNode {\n    int idx;\n    struct GNode* next;\n} GNode;\n\nGNode* group_head[MAXN];\nGNode* group_tail[MAXN];\n\nint gcount=0;\n\nunsigned long long hash_str(char *s){\n    unsigned long long h=1469598103934665603ULL;\n    while(*s){\n        h^=*s++;\n        h*=1099511628211ULL;\n    }\n    return h;\n}\n\nint cmp_char(const void *a,const void *b){\n    return (*(char*)a)-(*(char*)b);\n}\n\nint find_or_create(char *key){\n    unsigned long long h = hash_str(key)%HASH;\n    Node* cur = table[h];\n\n    while(cur){\n        if(strcmp(cur->key,key)==0)\n            return cur->group;\n        cur=cur->next;\n    }\n\n    Node* node=(Node*)malloc(sizeof(Node));\n    strcpy(node->key,key);\n    node->group=gcount;\n    node->next=table[h];\n    table[h]=node;\n\n    return gcount++;\n}\n\nvoid add_to_group(int gid,int idx){\n    GNode* node=(GNode*)malloc(sizeof(GNode));\n    node->idx=idx;\n    node->next=NULL;\n\n    if(!group_head[gid]){\n        group_head[gid]=group_tail[gid]=node;\n    }else{\n        group_tail[gid]->next=node;\n        group_tail[gid]=node;\n    }\n}\n\nint main(){\n    int n;\n    scanf(\"%d\",&n);\n\n    for(int i=0;i<n;i++){\n        scanf(\"%s\",words[i]);\n\n        char key[MAXL];\n        strcpy(key,words[i]);\n        qsort(key,strlen(key),sizeof(char),cmp_char);\n\n        int gid=find_or_create(key);\n        add_to_group(gid,i);\n    }\n\n    // print groups in first appearance order\n    for(int g=0; g<gcount; g++){\n        GNode* cur=group_head[g];\n        int first=1;\n        while(cur){\n            if(!first) printf(\" \");\n            printf(\"%s\",words[cur->idx]);\n            first=0;\n            cur=cur->next;\n        }\n        printf(\"\\n\");\n    }\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n\n        // LinkedHashMap keeps insertion order of groups\n        LinkedHashMap<String, ArrayList<String>> map = new LinkedHashMap<>();\n\n        for(int i = 0; i < N; i++){\n            String s = br.readLine().trim();\n\n            char[] arr = s.toCharArray();\n            Arrays.sort(arr);\n            String key = new String(arr);\n\n            map.putIfAbsent(key, new ArrayList<>());\n            map.get(key).add(s);\n        }\n\n        StringBuilder out = new StringBuilder();\n\n        for(ArrayList<String> group : map.values()){\n            for(int i = 0; i < group.size(); i++){\n                out.append(group.get(i));\n                if(i < group.size()-1) out.append(\" \");\n            }\n            out.append(\"\\n\");\n        }\n\n        System.out.print(out.toString());\n    }\n}\n"
+    }
+  }
+}

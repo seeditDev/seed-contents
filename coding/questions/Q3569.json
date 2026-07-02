@@ -1,0 +1,87 @@
+{
+  "questionId": "Q3569",
+  "title": "Fence - INOI 2017",
+  "slug": "fence-inoi-2017",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "INOI 2017, Problem 1, Fence You have a rectangular farm which consists of **R*C** fields arranged in a grid\nconsisting of **R** rows and **C** columns. Each field is a **1 x 1** square.\nSome of these fields have been planted with potatoes while the others lie\nuncultivated. We say that two fields are adjacent if one lies immediately to the left\nor to the right or above or below the other. (Note that two fields which touch each other at just one corner are not considered adjacent). If two fields are adjacent\nthen we say we may walk from one to the other. A **patch** is a collection\nof all the cultivated fields such that one may walk from any field in the patch to any other field in the same patch only\nvia cultivated fields. There are no uncultivated fields in a patch. That is, all the cultivated fields in the farm can be partitioned into patches, and you can walk from one cultivated field to another cultivated field, if and only if, both of them belong to the same patch.\n\n\nTo prevent wild animals from destroying the cultivated fields you plan to \nenclose each patch within fences constructed all along the boundaries of the patch. Wild animals infest the uncultivated fields, and also beyond the **R*C** farm. We need to ensure that the fences protect all the boundaries of each patch, so that the wild animals cannot get to any cultivated field without crossing a fence.\n\n\nClearly, the length of the fence needed for each patch may differ. \nIf your patch consists of just a single field then the fence will be\nof length 4. If it consists of two adjacent fields then the fence\nwill be length 6. \n\n\n\nYour task is to output the maximum length of fence needed to enclose a patch, among all the patches in your farm.\nThe input to your program will be a description of the positions of all the\ncultivated fields in your farm. \n\n\n\n**(X,Y)** refers to the field on the **Xth** row and **Yth** column. So, **(1,1)** refers to the top-left corner field, and **(R,C)** refers to the bottom-right corner.",
+    "constraints": [
+      "For all test cases you may assume that:",
+      "**0 ≤ Number of cultivated fields = N ≤ 100000**",
+      "**1 ≤ Xi ≤ R**",
+      "**1 ≤ Yi ≤ C**",
+      "**Subtask 1**: For 15% of the score,",
+      "**1 ≤ R,C ≤ 20**",
+      "**Subtask 2**: For further 45% of the score,",
+      "**1 ≤ R,C ≤ 2500**",
+      "**Subtask 3**: For 40% of the score,",
+      "**1 ≤ R,C ≤ 1000000**",
+      "Example**Input:**",
+      "**Output:**",
+      "Explanation"
+    ],
+    "inputFormat": "The first line contains three space separated integers, **R, C** and **N**, which are the number of rows, number of columns and the number of cultivated fields, respectively.\n\nThe next **N** lines contain two space separated integers, **Xi** and **Yi**, which signify that **(Xi, Yi)** is a cultivated field.",
+    "outputFormat": "A single integer which is the maximum length of fence needed for any patch.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 4 9\n1 4\n2 1\n2 2\n2 3\n4 3\n4 1\n4 2\n3 1\n3 3",
+        "output": "16",
+        "explanation": "Explanation:\nThe input corresponds to the figure\n\n\t\t. . . x\n\t\tx x x .\n\t\tx . x .\n\t\tx x x .\n\n\n\n'x' corresponds to a cultivated field, and '.' corresponds to an uncultivated field.\nThere are two patches. One patch, which includes only the (1,4) field needs a fence of length 4. The other patch, which has 8 fields in it, needs fence of length 16. A length of 12 to cover its outer boundary, and length 4 to cover its inner boundary.\n\nMaximum(4,16) = 16. Hence, the answer is 16.\nNote:\nYou may download the problem statements PDF and test cases zipped files here: http://pd.codechef.com/com/inoi/problems.zip. Please feel free to use them during the contest. \nPassword for the PDF and test cases zip files: DPtrumpsGreedy2017"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 4 9\n1 4\n2 1\n2 2\n2 3\n4 3\n4 1\n4 2\n3 1\n3 3",
+        "expectedOutput": "16",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The solution uses Breadth-First Search `(BFS)` to explore each patch of cultivated fields and determine the required fence length for that patch. The `BFS` begins from each unvisited cultivated field and explores all connected cultivated fields in its patch by marking each as visited. Each field in a patch starts with a fence requirement of 4 units, representing its four sides. For each cultivated neighbor, one side of the fence is shared, so the required fence length is reduced by 1 for each adjacent cultivated field. If a neighbor is cultivated and unvisited, it is added to the queue for further exploration. The BFS completes once all connected fields in the patch are visited, yielding the total fence length for that patch. By tracking the maximum fence length across all patches, we can find the maximum required fence length among all patches.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\ntypedef long long ll;\ntypedef pair<int, int> pii;\n\n#define endl \"\\n\"\n\nconst int N = 1e6+10;\nconst ll INF = 1e18+10;\nconst int mod = 20011;\n\npii a[N];\nset<pii> s, visited;\nqueue<pii> q;\n\nint bfs(int src)\n{\n    int ans=0;\n\n    q.push(a[src]);\n\n    while(!q.empty())\n    {\n        pii v = q.front();\n        q.pop();\n        if(visited.count(v)) continue;\n        visited.insert(v);\n        ans += 4;\n        if(s.count({v.first-1, v.second})){\n            ans--;\n            if(!visited.count({v.first-1, v.second}))\n                q.push({v.first-1, v.second});\n        }\n        if(s.count({v.first+1, v.second})){\n            ans--;\n            if(!visited.count({v.first+1, v.second}))\n                q.push({v.first+1, v.second});\n        }\n\n        if(s.count({v.first, v.second-1})){\n            ans--;\n            if(!visited.count({v.first, v.second-1}))\n                q.push({v.first, v.second-1});\n        }\n\n        if(s.count({v.first, v.second+1})){\n            ans--;\n            if(!visited.count({v.first, v.second+1}))\n                q.push({v.first, v.second+1});\n        }\n\n    }\n\n    return ans;\n}\n\nint main()\n{\n    ios_base::sync_with_stdio(0);\n    cin.tie(0);\n    cout.tie(0);\n    \n    int r, c, n;\n    cin >> r >> c >> n;\n\n    for(int i=0; i<n; i++)\n        cin >> a[i].first >> a[i].second;\n\n    for(int i=0; i<n; i++)\n        s.insert({a[i].first, a[i].second});\n\n    int ans=0;\n\n    for(int i=0; i<n; i++){\n        if(!visited.count({a[i].first, a[i].second})){\n            ans = max(ans, bfs(i));\n        }\n    }\n\n    cout << ans << endl;\n\n}\n"
+    }
+  }
+}

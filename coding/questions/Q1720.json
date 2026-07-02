@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1720",
+  "title": "Chef Finds Palindromic Subsequence",
+  "slug": "chef-finds-palindromic-subsequence",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has discovered a mysterious string and wants to explore its hidden palindromic structure. Specifically, Chef wants to find the **length of the longest palindromic subsequence** within the string.\n\nA **subsequence** is formed by deleting zero or more characters from the string **without changing the order** of the remaining characters.\n\nA **palindromic subsequence** reads the same forwards and backwards.\n\nHelp Chef determine the **maximum possible length** of such a subsequence.\n\nFunction DeclarationFunction NamefindLongestPalindromicSubsequenceLengthfindLongestPalindromicSubsequenceLengthfindLongestPalindromicSubsequenceLength\n\nParameters\ninputStringinputStringinputString (string):\n\nThe string in which the longest palindromic subsequence length is to be found.\n\nThe string consists of lowercase and/or uppercase English letters.\nReturn Value\nReturns an integer resultLengthresultLengthresultLength\nresultLengthresultLengthresultLength represents the length of the longest palindromic subsequence in inputStringinputStringinputString.\nConstraints\n1≤T≤1051 \\le T \\le 10^51≤T≤105\n1≤∣inputString∣≤10001 \\le |inputString| \\le 10001≤∣inputString∣≤1000\ninputStringinputStringinputString consists only of lowercase and/or uppercase English letters\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nEach of the next TTT lines contains a single string inputStringinputStringinputString.\nOutput Format\nFor each test case, print a single integer — the length of the longest palindromic subsequence in inputStringinputStringinputString.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\nabca\nracecar\nabcd",
+        "output": "3\n7\n1",
+        "explanation": "Explanation:\nTest Case 1: \"abca\"\\texttt{\"abca\"}\"abca\"\nThe longest palindromic subsequence is \"aba\"\\texttt{\"aba\"}\"aba\", so the length is 333.\n\n\nTest Case 2: \"racecar\"\\texttt{\"racecar\"}\"racecar\"\nThe entire string is a palindrome, so the length is 777.\n\n\nTest Case 3: \"abcd\"\\texttt{\"abcd\"}\"abcd\"\nThere are no repeating characters, so the longest palindromic subsequence is any single character, and the length is 111."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\nabca\nracecar\nabcd",
+        "expectedOutput": "3\n7\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea**\n\nWe can try to generate **all possible subsequences** of the given string and check which of them are palindromes.\n\nFor a string of length nnn:\n\n\nAt each character, we have two choices: either include it in the subsequence or skip it.\nThis results in 2n2^n2n possible subsequences.\nFor each subsequence, we check whether it reads the same forwards and backwards and keep track of the maximum length.\n**Time Complexity**\n\n\nTotal number of subsequences: 2n2^n2n\nChecking whether a subsequence is a palindrome takes O(n)O(n)O(n) time.\n**Time Complexity:** O(n⋅2n)O(n \\cdot 2^n)O(n⋅2n)\nFor n=1000n = 1000n=1000, this approach is completely infeasible and will result in **Time Limit Exceeded (TLE)**.\n**Space Complexity**\n\n\nO(n)O(n)O(n) for recursion stack / subsequence storage.\n**Idea**\n\nThis problem can be solved efficiently using **Dynamic Programming on substrings**.\n\nInstead of generating subsequences directly, we observe that the longest palindromic subsequence of a string depends on the longest palindromic subsequences of its **smaller substrings**.\n\nLet us define:\n\n\ndp[i][j]\\texttt{dp}[i][j]dp[i][j] = length of the longest palindromic subsequence in the substring from index iii to jjj (inclusive).\nTo compute dp[i][j]\\texttt{dp}[i][j]dp[i][j], we consider the characters at positions iii and jjj.\n\n\nIf inputString[i]=inputString[j]\\texttt{inputString}[i] = \\texttt{inputString}[j]inputString[i]=inputString[j]:\n\nThese two characters can be part of the palindrome.\nWe add them to the result obtained from the inner substring.\ndp[i][j]=2+dp[i+1][j−1]\\texttt{dp}[i][j] = 2 + \\texttt{dp}[i+1][j-1]dp[i][j]=2+dp[i+1][j−1]\n\n\nOtherwise:\n\nWe skip either the left character or the right character.\nTake the best possible result:\ndp[i][j]=max⁡(dp[i+1][j],dp[i][j−1])\\texttt{dp}[i][j] = \\max(\\texttt{dp}[i+1][j], \\texttt{dp}[i][j-1])dp[i][j]=max(dp[i+1][j],dp[i][j−1])\n\n\n**Base Case**\n\n\nAny single character is a palindrome of length 111:\n\ndp[i][i]=1\\texttt{dp}[i][i] = 1dp[i][i]=1\n\n\n**Algorithm Steps**\n\n\nLet nnn be the length of inputString\\texttt{inputString}inputString.\nCreate a 2D DP table dp\\texttt{dp}dp of size n×nn \\times nn×n.\nInitialize all diagonal values:\n\ndp[i][i]=1\\texttt{dp}[i][i] = 1dp[i][i]=1\n\n\nFill the table for increasing substring lengths:\n\nIterate index iii from right to left.\nIterate index jjj from i+1i+1i+1 to n−1n-1n−1.\n\n\nThe final answer will be stored in:\n\ndp[0][n−1]\\texttt{dp}[0][n-1]dp[0][n−1]\n\n\n**Time Complexity**\n\n\nWe use two nested loops over the string indices.\nTotal operations ≈n2\\approx n^2≈n2.\n**Time Complexity:** O(n2)O(n^2)O(n2)\nWith n≤1000n \\le 1000n≤1000, this easily fits within the time limits.\n**Space Complexity**\n\n\nWe use a 2D DP table of size n×nn \\times nn×n.\n**Space Complexity:** O(n2)O(n^2)O(n2)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int findLongestPalindromicSubsequenceLength(string inputString) {\n    int n = inputString.size();\n    vector<vector<int>> dp(n, vector<int>(n, 0));\n\n    for (int i = n - 1; i >= 0; i--) {\n        dp[i][i] = 1;\n        for (int j = i + 1; j < n; j++) {\n            if (inputString[i] == inputString[j]) {\n                dp[i][j] = 2 + dp[i + 1][j - 1];\n            } else {\n                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n    return dp[0][n - 1];\n}\n",
+      "Python3": "def findLongestPalindromicSubsequenceLength(inputString):\n    n = len(inputString)\n    dp = [[0]*n for _ in range(n)]\n\n    for i in range(n-1, -1, -1):\n        dp[i][i] = 1\n        for j in range(i+1, n):\n            if inputString[i] == inputString[j]:\n                dp[i][j] = 2 + (dp[i+1][j-1] if i+1 <= j-1 else 0)\n            else:\n                dp[i][j] = max(dp[i+1][j], dp[i][j-1])\n    return dp[0][n-1]\n",
+      "C": "int findLongestPalindromicSubsequenceLength(char *inputString) {\n    int n = strlen(inputString);\n    int dp[n][n];\n\n    for (int i = n - 1; i >= 0; i--) {\n        dp[i][i] = 1;\n        for (int j = i + 1; j < n; j++) {\n            if (inputString[i] == inputString[j]) {\n                if (j == i + 1)\n                    dp[i][j] = 2;           \n                else\n                    dp[i][j] = 2 + dp[i + 1][j - 1];\n            } else {\n                dp[i][j] = dp[i + 1][j] > dp[i][j - 1]\n                           ? dp[i + 1][j]\n                           : dp[i][j - 1];\n            }\n        }\n    }\n    return dp[0][n - 1];\n}\n",
+      "Java": "    static int findLongestPalindromicSubsequenceLength(String inputString) {\n        int n = inputString.length();\n        int[][] dp = new int[n][n];\n\n        for (int i = n - 1; i >= 0; i--) {\n            dp[i][i] = 1;\n            for (int j = i + 1; j < n; j++) {\n                if (inputString.charAt(i) == inputString.charAt(j)) {\n                    dp[i][j] = 2 + dp[i + 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[0][n - 1];\n    }\n",
+      "JavaScript": "function findLongestPalindromicSubsequenceLength(inputString) {\n    const n = inputString.length;\n    const dp = Array.from({ length: n }, () => Array(n).fill(0));\n\n    for (let i = n - 1; i >= 0; i--) {\n        dp[i][i] = 1;\n        for (let j = i + 1; j < n; j++) {\n            if (inputString[i] === inputString[j]) {\n                dp[i][j] = 2 + (i + 1 <= j - 1 ? dp[i + 1][j - 1] : 0);\n            } else {\n                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n    return dp[0][n - 1];\n}\n"
+    }
+  }
+}

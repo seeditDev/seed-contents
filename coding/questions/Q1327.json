@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1327",
+  "title": "Galactic Network",
+  "slug": "galactic-network",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given **N planets** (represented as nodes) and **M connections** between some pairs of planets (represented as undirected edges).\n\nA **group** (connected component) is defined as a set of planets where each planet is reachable from any other planet in the same set via the given connections. Planets in different groups cannot reach each other through the existing connections.\n\nYour task is to **find the number of disconnected groups (connected components) in the galaxy network** based on the given connections.\n\n\nInput Format\n\nThe first line contains two space-separated integers, `N` and `M`, representing the number of planets and connections.\nPlanets are numbered from `1` to `N`.\nThe next `M` lines describe the connections, each containing two integers, `u` and `v`, representing a bidirectional connection between planets `u` and `v`.\nEach connection links two distinct planets, and at most one connection exists between any two planets.\n\n\nOutput Format\n\nOn a single line, print a single integer - the number of connected components.",
+    "constraints": [
+      "1≤N≤200,0001 \\leq N \\leq 200{,}0001≤N≤200,000",
+      "0≤M≤200,0000 \\leq M \\leq 200{,}0000≤M≤200,000",
+      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
+      "ui≠viu_i \\neq v_iui​=vi​ for each 1≤i≤M1 \\leq i \\leq M1≤i≤M"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 6\n1 2\n2 3\n1 3\n3 5\n2 4\n4 5",
+        "output": "1",
+        "explanation": "Explanation:\nSince all the planets are already interconnected so there is only 1 connected group."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 6\n1 2\n2 3\n1 3\n3 5\n2 4\n4 5",
+        "expectedOutput": "1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    // Function to perform DFS and mark visited nodes\n    void dfs(int node, const vector<vector<int>>& adjList, vector<bool>& visited) {\n        visited[node] = true; // Mark the current node as visited\n        for (int v : adjList[node]) { // Iterate over all neighbors of the current node\n            if (!visited[v]) { // If a neighbor has not been visited\n                dfs(v, adjList, visited); // Recursively perform DFS on the neighbor\n            }\n        }\n    }\n\n    // Function to count the number of connected components\n    int countComponents(int n, int m, vector<vector<int>>& edges) {\n        vector<vector<int>> adjList(n + 1); // Adjacency list to store the graph\n        vector<bool> visited(n + 1, false); // Array to keep track of visited nodes\n        \n        // Build the adjacency list from the edges\n        for (const auto& edge : edges) {\n            int u = edge[0];\n            int v = edge[1];\n            adjList[u].push_back(v); // Add edge from u to v\n            adjList[v].push_back(u); // Add edge from v to u (undirected graph)\n        }\n        \n        int components = 0; // Variable to count the number of connected components\n        \n        // Iterate through all nodes to count connected components\n        for (int i = 1; i <= n; ++i) {\n            if (!visited[i]) { // If the node has not been visited\n                dfs(i, adjList, visited); // Perform DFS to visit all nodes in the component\n                ++components; // Increment the count of connected components\n            }\n        }\n        \n        return components; // Return the number of connected components\n    }\n};\n",
+      "Python3": "class Solution:\n    # Function to perform DFS and mark visited nodes\n    def dfs(self, node, adjList, visited):\n        stack = [node]\n        while stack:\n            current = stack.pop()\n            if not visited[current]:\n                visited[current] = True\n                for neighbor in adjList[current]:\n                    if not visited[neighbor]:\n                        stack.append(neighbor)\n\n    # Function to count the number of connected components\n    def countComponents(self, n, m, edges):\n        # Initialize adjacency list and visited array\n        adjList = defaultdict(list)\n        visited = [False] * (n + 1)\n\n        # Build the adjacency list from the edges\n        for u, v in edges:\n            adjList[u].append(v) # Add edge from u to v\n            adjList[v].append(u) # Add edge from v to u (undirected graph)\n\n        components = 0 # Variable to count the number of connected components\n\n        # Iterate through all nodes to count connected components\n        for i in range(1, n + 1):\n            if not visited[i]: # If the node has not been visited\n                self.dfs(i, adjList, visited) # Perform DFS to visit all nodes in the component\n                components += 1 # Increment the count of connected components\n\n        return components # Return the number of connected components\n",
+      "C": "\nvoid bfs(int start, int n, int* adjSize, int** adjList, bool* visited) \n{\n    int MAX = 200004;\n    int queue[MAX], front = 0, back = 0;\n    queue[back++] = start;\n    visited[start] = true;\n\n    while (front != back) {\n        int node = queue[front++];\n        \n        for (int i = 0; i < adjSize[node]; i++) {\n            int neighbor = adjList[node][i];\n            if (!visited[neighbor]) {\n                queue[back++] = neighbor;\n                visited[neighbor] = true;\n            }\n        }\n    }\n}\n\n// Function to find the number of connected components\nint findConnectedComponents(int n, int* adjSize, int** adjList, bool* visited) \n{\n    int components = 0;\n    for (int i = 1; i <= n; i++) {\n        visited[i] = false;\n    }\n    for (int i = 1; i <= n; i++) {\n        if (!visited[i]) {\n            components++;\n            bfs(i, n, adjSize, adjList, visited);\n        }\n    }\n    return components;\n}\n",
+      "Java": "class Solution {\n    // Function to find the number of connected components in the graph\n    public int findConnectedComponents(int n, int[][] edges) {\n        // Initialize adjacency list and visited array\n        ArrayList<Integer>[] adjList = new ArrayList[n + 1];\n        boolean[] visited = new boolean[n + 1];\n        \n        // Initialize adjacency list and visited array\n        for (int i = 1; i <= n; i++) {\n            adjList[i] = new ArrayList<>(); // Create an empty list for each node\n            visited[i] = false; // Mark all nodes as not visited\n        }\n\n        // Build the adjacency list from the edges\n        for (int[] edge : edges) {\n            int u = edge[0];\n            int v = edge[1];\n            adjList[u].add(v); // Add edge from u to v\n            adjList[v].add(u); // Add edge from v to u (undirected graph)\n        }\n\n        // Count connected components\n        int components = 0;\n        for (int i = 1; i <= n; i++) {\n            if (!visited[i]) { // If the node has not been visited\n                components++; // Found a new connected component\n                dfs(i, adjList, visited); // Perform DFS to mark all nodes in this component\n            }\n        }\n\n        return components; // Return the number of connected components\n    }\n\n    // Function to perform DFS and mark visited nodes\n    private void dfs(int node, ArrayList<Integer>[] adjList, boolean[] visited) {\n        visited[node] = true; // Mark the current node as visited\n        for (int v : adjList[node]) { // Iterate over all neighbors of the current node\n            if (!visited[v]) { // If a neighbor has not been visited\n                dfs(v, adjList, visited); // Recursively perform DFS on the neighbor\n            }\n        }\n    }\n}\n",
+      "JavaScript": "// Function to find the number of connected components in the graph\nfunction findConnectedComponents(n, edges) {\n    // Initialize adjacency list and visited array\n    let adjList = Array.from({ length: n + 1 }, () => []);\n    let visited = Array.from({ length: n + 1 }, () => false);\n\n    // Build the graph by populating the adjacency list\n    for (const [u, v] of edges) {\n        adjList[u].push(v); // Add edge from u to v\n        adjList[v].push(u); // Add edge from v to u (undirected graph)\n    }\n\n    // Depth-First Search (DFS) function\n    function dfs(startNode) {\n        const stack = [startNode];\n        while (stack.length > 0) {\n            const node = stack.pop(); // Get the current node\n            if (!visited[node]) {\n                visited[node] = true; // Mark the node as visited\n                // Push all unvisited neighbors onto the stack\n                for (const neighbor of adjList[node]) {\n                    if (!visited[neighbor]) {\n                        stack.push(neighbor);\n                    }\n                }\n            }\n        }\n    }\n\n    // Find the number of connected components\n    let groupOfConnectedPlanets = 0;\n    for (let i = 1; i <= n; i++) {\n        if (!visited[i]) { // If the node is not visited, it's a new component\n            groupOfConnectedPlanets++;\n            dfs(i); // Perform DFS to visit all nodes in this component\n        }\n    }\n\n    return groupOfConnectedPlanets; // Return the number of connected components\n}\n"
+    }
+  }
+}

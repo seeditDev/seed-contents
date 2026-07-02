@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1455",
+  "title": "Minimum Depth of Binary Tree",
+  "slug": "minimum-depth-of-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, print its minimum depth.\nThe minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.\n\nFor example, the minimum depth of the following binary tree is: 2\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line - the minimum depth of the given binary tree.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    int minimumDepth(Node* root) {\n        if(root == NULL) \n          return 0;\n        if(root->left == NULL) \n          return 1 + minimumDepth(root->right);\n        if(root->right == NULL) \n          return 1 + minimumDepth(root->left);\n        return 1 + min(minimumDepth(root->left), \n               minimumDepth(root->right));\n    }\n\n};",
+      "Python3": "class Solution:\n    def minimumDepth(self, root: Node) -> int:\n        if root is None:\n            return 0\n        if root.left is None and root.right is None:\n            return 1\n        if root.left is None:\n            return 1 + self.minimumDepth(root.right)\n        if root.right is None:\n            return 1 + self.minimumDepth(root.left)\n        left_depth = self.minimumDepth(root.left)\n        right_depth = self.minimumDepth(root.right)\n        return 1 + min(left_depth, right_depth)\n",
+      "C": "int minimumDepth(struct Node* root) {\n    if (root == NULL) \n        return 0;\n    if (root->left == NULL) \n        return 1 + minimumDepth(root->right);\n    if (root->right == NULL) \n        return 1 + minimumDepth(root->left);\n    return 1 + (minimumDepth(root->left) < minimumDepth(root->right) ? minimumDepth(root->left) : minimumDepth(root->right));\n}",
+      "Java": "    static class Solution {\n        public int minimumDepth(Node root) {\n            if (root == null)\n                return 0;\n            if (root.left == null && root.right == null)\n                return 1;\n            if (root.left == null)\n                return 1 + minimumDepth(root.right);\n            if (root.right == null)\n                return 1 + minimumDepth(root.left);\n            int leftDepth = minimumDepth(root.left);\n            int rightDepth = minimumDepth(root.right);\n            return 1 + Math.min(leftDepth, rightDepth);\n        }\n    }\n",
+      "JavaScript": "/*\nclass TreeNode {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\nfunction minDepth(root) {\n    if (!root) return 0;\n\n    const queue = [{ node: root, depth: 1 }];\n\n    while (queue.length > 0) {\n        const { node, depth } = queue.shift();\n\n        if (!node.left && !node.right) {\n            return depth;\n        }\n\n        if (node.left) {\n            queue.push({ node: node.left, depth: depth + 1 });\n        }\n        if (node.right) {\n            queue.push({ node: node.right, depth: depth + 1 });\n        }\n    }\n}"
+    }
+  }
+}

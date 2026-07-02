@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1629",
+  "title": "Cookie distribution",
+  "slug": "cookie-distribution",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Greedy",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "greedy algorithms",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Greedy Algorithms"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are a generous parent and have a collection of cookies to give to your children. Each child can receive **at most one cookie**.\n\nEach child iii has a **greed factor** g[i]g[i]g[i], which is the minimum size of a cookie that will make the child happy. Each cookie jjj has a **size** s[j]s[j]s[j]. A child will be content if the size of the cookie they receive is **greater than or equal to** their greed factor.\n\nYour task is to **maximize the number of content children** and return that number.\n\nFunction DeclarationFunction NamemaxContentChildrenmaxContentChildrenmaxContentChildren – This function calculates the maximum number of children that can be made content by distributing cookies such that each child receives at most one cookie, and the cookie size is at least the child’s greed factor.\n\nParameters\nggg : A reference to an integer array representing the greed factor of each child.\nsss : A reference to an integer array representing the sizes of available cookies.\nReturn Value\nReturns an integer representing the maximum number of content children.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤n≤3×1041 \\leq n \\leq 3 \\times 10^41≤n≤3×104 (number of children)\n0≤m≤3×1040 \\leq m \\leq 3 \\times 10^40≤m≤3×104 (number of cookies)\n1≤g[i],s[j]≤231−11 \\leq g[i], s[j] \\leq 2^{31} - 11≤g[i],s[j]≤231−1\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains two integers nnn and mmm — number of children and number of cookies.\nThe next line contains nnn integers — greed factors of the children.\nThe next line contains mmm integers — sizes of the cookies.\n\n\n\n\nOutput Format\n\nFor each test case, output a single integer — the maximum number of content children.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4 3\n2 3 1 4\n1 3 2\n3 5\n1 2 2\n2 3 1 4 5",
+        "output": "3\n3",
+        "explanation": "Explanation:\nTest case 1: Children have greed factors [2,3,1,4] and cookies [1,3,2].\n\nAssign cookie 1 -> child with greed 1\nAssign cookie 2 -> child with greed 2\nAssign cookie 3 -> child with greed 3\nThe child with greed 4 cannot be satisfied. Maximum content children = 3\n\n\n\nTest case 2: Children [1,2,2] and cookies [2,3,1,4,5]\n\nAssign cookie 1 -> child with greed 1\nAssign cookie 2 -> child with greed 2\nAssign cookie 3 -> child with greed 2\nAll children are content. Maximum content children = 3"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4 3\n2 3 1 4\n1 3 2\n3 5\n1 2 2\n2 3 1 4 5",
+        "expectedOutput": "3\n3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Sort the children’s greed factors** in ascending order.\n\n\n\n\n**Sort the cookies** in ascending order.\n\n\n\n\nUse **two pointers**:\n\n\n\nOne pointer iterates through the children.\nAnother pointer iterates through the cookies.\n\n\n\nFor each child, try to find the **smallest cookie** that is large enough.\n\n\n\nIf the current cookie satisfies the child, increment both pointers (child is content, move to next cookie).\nIf not, move only the cookie pointer to try the next larger cookie.\n\n\n\nContinue until all children or all cookies are considered.\n\n\n\n\nThe number of satisfied children is the final position of the child pointer.\n\n\n\nWhy This Works\n\n**Greedy strategy**: Always give the smallest sufficient cookie to the current child.\n\n\n\n\nSorting ensures that:\n\n\n\nChildren with smaller greed are matched first, avoiding unnecessary wastage of larger cookies.\nCookies are considered in increasing order, ensuring the smallest one is used whenever possible.\n\n\n\nThis guarantees the **maximum number of children can be satisfied**.\n\n\n\nTime and Space Complexity\n**Sorting children and cookies**: `O(n log n + m log m)` where `n` is number of children and `m` is number of cookies.\n**Matching with two pointers**: `O(n + m)`.\n**Total complexity**: `O(n log n + m log m)`\n**Space complexity**: `O(1)` if sorting is in-place.\nEdge Cases to Consider\n**No cookies** → All children remain unsatisfied.\n**No children** → Nothing to satisfy.\n**All cookies too small** → No child can be satisfied.\n**All children greed ≤ smallest cookie** → All children can be satisfied.\n**More cookies than children** → Some cookies remain unused.\n**All children greedier than largest cookie** → No child can be satisfied.\nSummaryThe problem can be efficiently solved with a **greedy approach** combined with sorting. The key idea is to **match children starting from the least greedy with the smallest available cookie** that can satisfy them. This guarantees the maximum number of satisfied children with minimal wasted resources.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int maxContentChildren(vector<int>& g, vector<int>& s) {\n        sort(g.begin(), g.end());\n        sort(s.begin(), s.end());\n        int i = 0, j = 0;\n        while (i < g.size() && j < s.size()) {\n            if (s[j] >= g[i]) {\n                i++; \n            }\n            j++; \n        }\n        return i; \n    }\n};\n",
+      "Python3": "class Solution:\n    def maxContentChildren(self, g, s):\n        g.sort()\n        s.sort()\n        i = j = 0\n        while i < len(g) and j < len(s):\n            if s[j] >= g[i]:\n                i += 1 \n            j += 1\n        return i  \n",
+      "C": "int cmp(const void* a, const void* b) {\n    int x = *(int*)a;\n    int y = *(int*)b;\n    return x - y;\n}\n\nint maxContentChildren(int* g, int n, int* s, int m) {\n    qsort(g, n, sizeof(int), cmp);\n    qsort(s, m, sizeof(int), cmp);\n\n    int i = 0, j = 0;\n    while (i < n && j < m) {\n        if (s[j] >= g[i]) {\n            i++; \n        }\n        j++; \n    }\n    return i; \n}\n",
+      "Java": "class Solution {\n    public int maxContentChildren(int[] g, int[] s) {\n        Arrays.sort(g);\n        Arrays.sort(s);\n        int i = 0, j = 0;\n        while (i < g.length && j < s.length) {\n            if (s[j] >= g[i]) {\n                i++; \n            }\n            j++; \n        }\n        return i; \n    }\n}\n",
+      "JavaScript": "\nfunction maxContentChildren(g, s) {\n    // Sort greed factors and cookie sizes in ascending order\n    g.sort((a, b) => a - b);\n    s.sort((a, b) => a - b);\n\n    let childPtr = 0;\n    let cookiePtr = 0;\n\n    // Iterate through both arrays\n    while (childPtr < g.length && cookiePtr < s.length) {\n        // If the current cookie is large enough for the current child\n        if (s[cookiePtr] >= g[childPtr]) {\n            childPtr++; // The child is content, move to the next child\n        }\n        // Always move to the next cookie (whether it was used or too small)\n        cookiePtr++; \n    }\n\n    // The child pointer represents the number of successfully fed children\n    return childPtr;\n}\n\n"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1632",
+  "title": "Valid Parenthesis String Practice",
+  "slug": "valid-parenthesis-string-practice",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a special string called the parenthesisStringparenthesisStringparenthesisString that contains only three types of characters: `'('`, `')'`, and `'*'`. Chef wants to determine if this parenthesisStringparenthesisStringparenthesisString is valid according to some strict rules. The rules are:\n\n\nEvery `'('` must have a matching `')'` that comes after it.\nEvery `')'` must have a matching `'('` that comes before it.\nThe character `'*'` can represent either `'('`, `')'`, or an empty string.\nHelp Chef by writing a program that checks whether the given parenthesisStringparenthesisStringparenthesisString can be considered valid under these conditions.\n\nFunction DeclarationFunction NameisValidParenthesisStringisValidParenthesisStringisValidParenthesisString – This function checks whether a given parenthesis string containing '(', ')', and '' can be considered valid by interpreting '' as '(', ')', or an empty string.\n\nParameters\nparenthesisStringparenthesisStringparenthesisString : A string consisting only of characters '(', ')', and '*', representing Chef’s parenthesis string.\nReturn Value\nReturns truetruetrue if the parenthesis string can be valid.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤∣parenthesisString∣≤1001 \\leq |parenthesisString| \\leq 1001≤∣parenthesisString∣≤100\nEach character of parenthesisStringparenthesisStringparenthesisString is either `'('`, `')'`, or `'*'`.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe next line contains a string parenthesisStringparenthesisStringparenthesisString.\n\n\n\n\nOutput Format\n\nFor each test case, print truetruetrue if the parenthesis string is valid, or falsefalsefalse otherwise.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n()\n(*)\n(*))\n((*))\n((*)*)",
+        "output": "1\n1\n1\n1\n1",
+        "explanation": "Explanation:\nt1: \"()\" is a balanced pair of parentheses, so output is true.\nt2: \"()\" can be \"()\" by treating '' as empty, valid string.\nt3: \"())\" can be \"(()),\" replacing '' with '(', balanced.\nt4: \"(())\" is balanced as it stands with '' as '('.\nt5: \"(())\" can be \"(()),\" with '*' as empty and '('."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n()\n(*)\n(*))\n((*))\n((*)*)",
+        "expectedOutput": "1\n1\n1\n1\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(n), where n is the length of parenthesisString.",
+    "spaceComplexity": "O(1), only a few variables are used.",
+    "code": {
+      "C++": "bool isValidParenthesisString(string parenthesisString) {\n        int low = 0, high = 0;\n        for (char c : parenthesisString) {\n            if (c == '(') {\n                low++;\n                high++;\n            } else if (c == ')') {\n                if (low > 0) low--;\n                high--;\n            } else {\n                if (low > 0) low--;\n                high++;\n            }\n            if (high < 0) return false;\n        }\n        return low == 0;\n    }",
+      "Python3": "class Solution:\n    def isValidParenthesisString(self, parenthesisString: str) -> bool:\n        low = high = 0\n\n        for c in parenthesisString:\n            if c == '(':\n                low += 1\n                high += 1\n            elif c == ')':\n                low = max(low - 1, 0)\n                high -= 1\n            else:  # '*'\n                low = max(low - 1, 0)\n                high += 1\n\n            if high < 0:\n                return False\n\n        return low == 0\n",
+      "C": "bool dfs(const char *parenthesisString, int index, int openCount, int len, int memo[][101]) {\n    if (openCount < 0) return false;            // can't have negative '('\n    if (index == len) return openCount == 0;    // valid only if balanced\n\n    if (memo[index][openCount] != -1)          // memoized result\n        return memo[index][openCount];\n\n    bool res = false;\n    char c = parenthesisString[index];\n\n    if (c == '(') {\n        res = dfs(parenthesisString, index + 1, openCount + 1, len, memo);\n    } \n    else if (c == ')') {\n        res = dfs(parenthesisString, index + 1, openCount - 1, len, memo);\n    } \n    else {  // '*'\n        res = dfs(parenthesisString, index + 1, openCount + 1, len, memo) || // treat as '('\n              dfs(parenthesisString, index + 1, openCount, len, memo)     || // treat as empty\n              dfs(parenthesisString, index + 1, openCount - 1, len, memo);   // treat as ')'\n    }\n\n    memo[index][openCount] = res;\n    return res;\n}\n\nbool isValidParenthesisString(char *parenthesisString) {\n    int len = strlen(parenthesisString);\n    int memo[101][101];\n\n    // initialize memo table with -1\n    for (int i = 0; i <= len; i++) {\n        for (int j = 0; j <= len; j++) {\n            memo[i][j] = -1;\n        }\n    }\n\n    return dfs(parenthesisString, 0, 0, len, memo);\n}\n",
+      "Java": "public boolean isValidParenthesisString(String parenthesisString) {\n    int low = 0, high = 0;\n\n    for (char c : parenthesisString.toCharArray()) {\n        if (c == '(') {\n            low++;\n            high++;\n        } \n        else if (c == ')') {\n            if (low > 0) low--;  // match a '('\n            high--;             // must reduce the upper bound\n            if (high < 0) return false;  // too many ')'\n        }\n        else { // '*'\n            if (low > 0) low--;  // treat '*' as ')'\n            high++;              // or treat '*' as '('\n        }\n    }\n    return low == 0;\n}\n",
+      "JavaScript": "function isValidParenthesisString(parenthesisString) {\n    let low = 0, high = 0;\n\n    for (let c of parenthesisString) {\n        if (c === '(') {\n            low++;\n            high++;\n        } else if (c === ')') {\n            if (low > 0) low--;\n            high--;\n        } else { // '*'\n            if (low > 0) low--;\n            high++;\n        }\n\n        if (high < 0) return false; // too many ')'\n    }\n\n    return low === 0;\n}\n"
+    }
+  }
+}

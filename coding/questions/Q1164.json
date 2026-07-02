@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1164",
+  "title": "Robot Movings",
+  "slug": "robot-movings",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Math",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "combinatorics & number theory",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Combinatorics & Number Theory"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a square table sized NNN x NNN (rows and columns are indexed from 1) with a robot on it. \n\nThe robot has a mission of moving from cell (1, 1) to cell (NNN, NNN) using only the directions \"right\" or \"down\". \n\nYou are requested to find the number of different ways for the robot using exactly KKK turns. \n\nThe answer should be given with modulo 109+710^9+7109+7.\n\nNote:We define a \"turn\" as a right move followed immediately by a down move, or a down move followed immediately by a right move.",
+    "constraints": [
+      "3≤N≤50003 \\leq N \\leq 50003≤N≤5000",
+      "1≤K≤2N−11 \\leq K \\leq  2N - 11≤K≤2N−1",
+      "Number&nbsp;of&nbsp;test&nbsp;cases≤5000\\text{Number of test cases} \\leq 5000Number&nbsp;of&nbsp;test&nbsp;cases≤5000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4 2\n4 3\n5 3",
+        "output": "4\n8\n18",
+        "explanation": "Explanation:\nExplanation for the first sample test case: 4 ways are RRDDDR, RDDDRR, DRRRDD, DDRRRD ('R' or 'D' represents a right or down move respectively)."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4 2\n4 3\n5 3",
+        "expectedOutput": "4\n8\n18",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\n    static const int MOD = 1e9 + 7;\n    static const int N = 5001;\n    int C[N][N];\n    bool precomputed = false;\n\npublic:\n    void computeDP() {\n        if (precomputed) return; // Compute only once\n        precomputed = true;\n        for (int n = 0; n < N; n++) {\n            C[n][0] = C[n][n] = 1;\n            for (int k = 1; k < n; k++) {\n                C[n][k] = (C[n - 1][k - 1] + C[n - 1][k]) % MOD;\n            }\n        }\n    }\n\n    int nCr(int n, int k) {\n        if (k < 0 || k > n) return 0;\n        return C[n][k];\n    }\n\n    int compute(int n, int k) {\n        computeDP();  // ✅ Build Pascal’s triangle once\n        if (n < 2) return 0;\n        long long part1 = nCr(n - 2, k / 2);\n        long long part2 = nCr(n - 2, (k - 1) / 2);\n        return (int)((2LL * part1 % MOD * part2) % MOD);\n    }\n};\n",
+      "Python3": "MOD = 10**9 + 7\nN = 5001\n\nclass Solution:\n    def __init__(self):\n        # Precompute factorials and inverse factorials once\n        self.fact = [1] * N\n        self.invFact = [1] * N\n        for i in range(1, N):\n            self.fact[i] = (self.fact[i - 1] * i) % MOD\n        self.invFact[N - 1] = pow(self.fact[N - 1], MOD - 2, MOD)\n        for i in range(N - 2, -1, -1):\n            self.invFact[i] = (self.invFact[i + 1] * (i + 1)) % MOD\n\n    def nCr(self, n, k):\n        if k < 0 or k > n:\n            return 0\n        return (self.fact[n] * self.invFact[k] % MOD * self.invFact[n - k]) % MOD\n\n    def compute(self, n, k):\n        if n < 2:\n            return 0\n        part1 = self.nCr(n - 2, k // 2)\n        part2 = self.nCr(n - 2, (k - 1) // 2)\n        return (2 * part1 % MOD * part2) % MOD\n",
+      "C": "#define MOD 1000000007\n#define N 5001\n\nlong long fact[N];\nlong long invFact[N];\nint precomputed = 0;\n\n// Fast modular exponentiation (a^b mod M)\nlong long modPow(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\n// Precompute factorials and inverse factorials\nvoid precompute() {\n    if (precomputed) return;\n    precomputed = 1;\n    fact[0] = 1;\n    for (int i = 1; i < N; i++)\n        fact[i] = (fact[i - 1] * i) % MOD;\n\n    invFact[N - 1] = modPow(fact[N - 1], MOD - 2);\n    for (int i = N - 2; i >= 0; i--)\n        invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;\n}\n\nlong long nCr(int n, int k) {\n    if (k < 0 || k > n) return 0;\n    return (((fact[n] * invFact[k]) % MOD) * invFact[n - k]) % MOD;\n}\n\nint compute(int n, int k) {\n    precompute();\n    if (n < 2) return 0;\n    long long part1 = nCr(n - 2, k / 2);\n    long long part2 = nCr(n - 2, (k - 1) / 2);\n    return (int)((2LL * part1 % MOD * part2) % MOD);\n}\n",
+      "Java": "class Solution {\n    static final int MOD = 1_000_000_007;\n    static final int N = 5001;\n    static long[] fact = new long[N];\n    static long[] invFact = new long[N];\n    static boolean precomputed = false;\n\n    // Fast exponentiation (a^b mod M)\n    private static long modPow(long a, long b) {\n        long res = 1;\n        while (b > 0) {\n            if ((b & 1) == 1) res = (res * a) % MOD;\n            a = (a * a) % MOD;\n            b >>= 1;\n        }\n        return res;\n    }\n\n    // Precompute factorials and inverse factorials\n    private static void precompute() {\n        if (precomputed) return;\n        precomputed = true;\n        fact[0] = 1;\n        for (int i = 1; i < N; i++) fact[i] = (fact[i - 1] * i) % MOD;\n\n        invFact[N - 1] = modPow(fact[N - 1], MOD - 2);\n        for (int i = N - 2; i >= 0; i--) invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;\n    }\n\n    private static long nCr(int n, int k) {\n        if (k < 0 || k > n) return 0;\n        return (((fact[n] * invFact[k]) % MOD) * invFact[n - k]) % MOD;\n    }\n\n    public int compute(int n, int k) {\n        precompute();\n        if (n < 2) return 0;\n        long part1 = nCr(n - 2, k / 2);\n        long part2 = nCr(n - 2, (k - 1) / 2);\n        return (int) ((2L * part1 % MOD * part2) % MOD);\n    }\n}\n",
+      "JavaScript": "class Solution {\n    static MOD = 1_000_000_007n;\n    static N = 5001;\n    static fact = new Array(Solution.N).fill(1n);\n    static invFact = new Array(Solution.N).fill(1n);\n    static precomputed = false;\n\n    static modPow(a, b) {\n        let res = 1n;\n        while (b > 0n) {\n            if (b & 1n) res = (res * a) % Solution.MOD;\n            a = (a * a) % Solution.MOD;\n            b >>= 1n;\n        }\n        return res;\n    }\n\n    static precompute() {\n        if (Solution.precomputed) return;\n        Solution.precomputed = true;\n        for (let i = 1; i < Solution.N; i++) {\n            Solution.fact[i] = (Solution.fact[i - 1] * BigInt(i)) % Solution.MOD;\n        }\n        Solution.invFact[Solution.N - 1] = Solution.modPow(Solution.fact[Solution.N - 1], Solution.MOD - 2n);\n        for (let i = Solution.N - 2; i >= 0; i--) {\n            Solution.invFact[i] = (Solution.invFact[i + 1] * BigInt(i + 1)) % Solution.MOD;\n        }\n    }\n\n    static nCr(n, k) {\n        if (k < 0 || k > n) return 0n;\n        return (Solution.fact[n] * Solution.invFact[k] % Solution.MOD * Solution.invFact[n - k]) % Solution.MOD;\n    }\n\n    compute(n, k) {\n        Solution.precompute();\n        if (n < 2) return 0;\n        let part1 = Solution.nCr(n - 2, Math.floor(k / 2));\n        let part2 = Solution.nCr(n - 2, Math.floor((k - 1) / 2));\n        return Number((2n * part1 % Solution.MOD * part2) % Solution.MOD);\n    }\n}\n"
+    }
+  }
+}

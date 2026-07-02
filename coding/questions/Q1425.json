@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1425",
+  "title": "Minimum Conference Rooms (Stark Industry)",
+  "slug": "minimum-conference-rooms-stark-industry",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "JARVIS needs help managing meeting rooms at Stark Tower. Given N meetings with their start and end times, determine the minimum number of conference rooms required so that all meetings can be conducted without overlap. If a meeting ends at time X, another meeting can start at time X using the same room.\n\n\nInput Format\n\nFirst line contains TTT, number of test cases\nFor each test case:\n\nFirst line contains NNN, number of meetings\nSecond line contains NNN space-separated integers denoting start times\nThird line contains NNN space-separated integers denoting end times\n\n\n\n\nOutput Format\n\nFor each test case, print the minimum number of conference rooms needed.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤10001 \\leq N \\leq 10001≤N≤1000",
+      "0000≤time≤23590000 \\leq time \\leq 23590000≤time≤2359 (24-hour format)"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n3\n1300 1500 1600\n1600 1700 1800",
+        "output": "2",
+        "explanation": "Explanation:\nMeeting times: [1300-1600], [1500-1700], [1600-1800]\n\nAt 1300: Room 1 allocated\nAt 1500: Room 2 needed as first meeting ongoing\nAt 1600: First meeting ends, third meeting can use Room 1\nMaximum 2 rooms needed"
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n3\n900 940 950\n1000 1030 1020\n4\n1000 1000 1000 1000\n1100 1200 1300 1400",
+        "output": "3\n4",
+        "explanation": "Explanation:\nTest Case 1:\n\nThree meetings overlap during 950-1000\nMaximum 3 rooms needed\n\nTest Case 2:\n\nAll 4 meetings start at 1000\nNeed separate room for each\nMaximum 4 rooms needed"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n3\n1300 1500 1600\n1600 1700 1800",
+        "expectedOutput": "2",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "2\n3\n900 940 950\n1000 1030 1020\n4\n1000 1000 1000 1000\n1100 1200 1300 1400",
+        "expectedOutput": "3\n4",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint minConferenceRooms(vector<int>& start, vector<int>& end, int n) {\n    // Sort start and end times separately\n    sort(start.begin(), start.end());\n    sort(end.begin(), end.end());\n    \n    int rooms = 0;      // current rooms in use\n    int maxRooms = 0;   // maximum rooms needed\n    int i = 0, j = 0;   // pointers for start and end times\n    \n    while(i < n && j < n) {\n        // If next start time is before next end time\n        if(start[i] < end[j]) {\n            rooms++;        // need new room\n            i++;           // move to next start time\n        }\n        // If meeting ends\n        else if(start[i] >= end[j]) {\n            rooms--;       // free up a room\n            j++;          // move to next end time\n        }\n        maxRooms = max(maxRooms, rooms);\n    }\n    \n    return maxRooms;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n;\n        cin >> n;\n        \n        vector<int> start(n), end(n);\n        \n        // Input start times\n        for(int i = 0; i < n; i++) {\n            cin >> start[i];\n        }\n        \n        // Input end times\n        for(int i = 0; i < n; i++) {\n            cin >> end[i];\n        }\n        \n        cout << minConferenceRooms(start, end, n) << endl;\n    }\n    \n    return 0;\n}"
+    }
+  }
+}

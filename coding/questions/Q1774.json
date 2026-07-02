@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1774",
+  "title": "Chef Solves LRU Cache",
+  "slug": "chef-solves-lru-cache",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef wants to build a data structure that behaves like a **Least Recently Used (LRU) cache** to efficiently manage key–value pairs.\n\nChef has a **fixed cache capacity** and wants to store keys with their values such that **when the cache exceeds this capacity, the least recently used key is removed**. Chef also wants to retrieve values by keys and update or add new key–value pairs efficiently.\n\nBoth retrieval and insertion operations must run in **average O(1)O(1)O(1) time**.\n\nClass DescriptionChef will implement a class named **LruCacheLruCacheLruCache**.\n\nThe class supports the following operations:\n\n\n\n**getValue(cacheKey)getValue(cacheKey)getValue(cacheKey)** Returns the value associated with cacheKeycacheKeycacheKey if it exists in the cache; otherwise returns −1-1−1.\n\n\n\n\n**putValue(cacheKey,cacheValue)putValue(cacheKey, cacheValue)putValue(cacheKey,cacheValue)** Inserts or updates the key–value pair in the cache.\n\nIf the cache is already full, the **least recently used key** is evicted before inserting the new pair.\n\n\n\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤cacheCapacity≤30001 \\leq cacheCapacity \\leq 30001≤cacheCapacity≤3000\n1≤Q≤2×1051 \\leq Q \\leq 2 \\times 10^51≤Q≤2×105\n0≤cacheKey≤1040 \\leq cacheKey \\leq 10^40≤cacheKey≤104\n0≤cacheValue≤1050 \\leq cacheValue \\leq 10^50≤cacheValue≤105\nThe total number of getValuegetValuegetValue and putValueputValueputValue operations across all test cases does not exceed 2×1052 \\times 10^52×105.\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer cacheCapacitycacheCapacitycacheCapacity — the capacity of Chef’s LRU cache.\nThe next line contains an integer QQQ — the number of operations.\nEach of the next QQQ lines contains one of the following operations:\n\nget&nbsp;cacheKeyget\\ cacheKeyget&nbsp;cacheKey — retrieve the value associated with cacheKeycacheKeycacheKey.\nput&nbsp;cacheKey&nbsp;cacheValueput\\ cacheKey\\ cacheValueput&nbsp;cacheKey&nbsp;cacheValue — insert or update the key–value pair.\n\n\n\n\nOutput Format\nFor each getgetget operation, print a single line containing:\n\nthe value associated with cacheKeycacheKeycacheKey if it exists, or\n−1-1−1 if the key does not exist in the cache.\n\n\nprint None for putputput operation.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n2\n9\nput 1 1\nput 2 2\nget 1\nput 3 3\nget 2\nput 4 4\nget 1\nget 3\nget 4",
+        "output": "None\nNone\n1\nNone\n-1\nNone\n-1\n3\n4",
+        "explanation": "Explanation:\nput(1, 1)\nCache: {1=1}\nOutput: None\n\n\nput(2, 2)\nCache: {1=1, 2=2}\nOutput: None\n\n\nget(1)\nReturns 1 and marks key 1 as most recently used\nCache order: {2=2, 1=1}\nOutput: 1\n\n\nput(3, 3)\nCache is full ? least recently used key is 2, so it is evicted\nCache: {1=1, 3=3}\nOutput: None\n\n\nget(2)\nKey 2 is not present in the cache\nOutput: -1\n\n\nput(4, 4)\nCache is full ? least recently used key is 1, so it is evicted\nCache: {3=3, 4=4}\nOutput: None\n\n\nget(1)\nKey 1 is not present in the cache\nOutput: -1\n\n\nget(3)\nReturns 3 and marks key 3 as most recently used\nCache order: {4=4, 3=3}\nOutput: 3\n\n\nget(4)\nReturns 4\nOutput: 4"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n2\n9\nput 1 1\nput 2 2\nget 1\nput 3 3\nget 2\nput 4 4\nget 1\nget 3\nget 4",
+        "expectedOutput": "None\nNone\n1\nNone\n-1\nNone\n-1\n3\n4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "Time Complexity\n\ngetValuegetValuegetValue → O(N)O(N)O(N)\nputValueputValueputValue → O(N)O(N)O(N) (due to search)",
+    "spaceComplexity": "Space Complexity\n\nO(N)O(N)O(N)",
+    "code": {
+      "C++": "class LruCache {\n    int cap;\n    list<int> dll; // most recent at front\n    unordered_map<int, pair<int, list<int>::iterator>> mp; // key -> {value, iterator}\n\npublic:\n    LruCache(int cacheCapacity) {\n        cap = cacheCapacity;\n    }\n\n    int getValue(int key) {\n        if (!mp.count(key)) return -1;\n        dll.erase(mp[key].second);\n        dll.push_front(key);\n        mp[key].second = dll.begin();\n        return mp[key].first;\n    }\n\n    void putValue(int key, int value) {\n        if (cap == 0) return;\n\n        if (mp.count(key)) {\n            dll.erase(mp[key].second);\n        } else if ((int)mp.size() == cap) {\n            int lru = dll.back();\n            dll.pop_back();\n            mp.erase(lru);\n        }\n        dll.push_front(key);\n        mp[key] = {value, dll.begin()};\n    }\n};\n",
+      "Python3": "from collections import OrderedDict\n\nclass LruCache:\n    def __init__(self, capacity):\n        self.cap = capacity\n        self.od = OrderedDict()\n\n    def getValue(self, key):\n        if key not in self.od:\n            return -1\n        self.od.move_to_end(key)\n        return self.od[key]\n\n    def putValue(self, key, value):\n        if self.cap == 0:\n            return\n        if key in self.od:\n            self.od.move_to_end(key)\n        elif len(self.od) == self.cap:\n            self.od.popitem(last=False)\n        self.od[key] = value\n",
+      "C": "typedef struct Node {\n    int key, value;\n    struct Node *prev, *next;\n} Node;\n\ntypedef struct {\n    int cap, size;\n    Node *head, *tail;\n    Node **map; // key -> Node*\n} LruCache;\n\nLruCache* createCache(int cap) {\n    LruCache* c = malloc(sizeof(LruCache));\n    c->cap = cap;\n    c->size = 0;\n    c->head = c->tail = NULL;\n    c->map = calloc(10001, sizeof(Node*));\n    return c;\n}\n\nvoid moveToFront(LruCache* c, Node* n) {\n    if (c->head == n) return;\n    if (n->prev) n->prev->next = n->next;\n    if (n->next) n->next->prev = n->prev;\n    if (c->tail == n) c->tail = n->prev;\n    n->prev = NULL;\n    n->next = c->head;\n    if (c->head) c->head->prev = n;\n    c->head = n;\n    if (!c->tail) c->tail = n;\n}\n\nint getValue(LruCache* c, int key) {\n    Node* n = c->map[key];\n    if (!n) return -1;\n    moveToFront(c, n);\n    return n->value;\n}\n\nvoid putValue(LruCache* c, int key, int value) {\n    if (c->cap == 0) return;\n\n    Node* n = c->map[key];\n    if (n) {\n        n->value = value;\n        moveToFront(c, n);\n        return;\n    }\n\n    if (c->size == c->cap) {\n        Node* lru = c->tail;\n        c->map[lru->key] = NULL;\n        c->tail = lru->prev;\n        if (c->tail) c->tail->next = NULL;\n        else c->head = NULL;\n        free(lru);\n        c->size--;\n    }\n\n    Node* node = malloc(sizeof(Node));\n    node->key = key;\n    node->value = value;\n    node->prev = NULL;\n    node->next = c->head;\n    if (c->head) c->head->prev = node;\n    c->head = node;\n    if (!c->tail) c->tail = node;\n    c->map[key] = node;\n    c->size++;\n}\n",
+      "Java": "class LruCache {\n    private int cap;\n    private LinkedHashMap<Integer, Integer> map;\n\n    public LruCache(int cacheCapacity) {\n        cap = cacheCapacity;\n        map = new LinkedHashMap<>(16, 0.75f, true) {\n            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> e) {\n                return size() > cap;\n            }\n        };\n    }\n\n    public int getValue(int key) {\n        return map.getOrDefault(key, -1);\n    }\n\n    public void putValue(int key, int value) {\n        if (cap == 0) return;\n        map.put(key, value);\n    }\n}\n",
+      "JavaScript": "class LruCache {\n    constructor(capacity) {\n        this.cap = capacity;\n        this.map = new Map(); // preserves insertion order\n    }\n\n    getValue(key) {\n        if (!this.map.has(key)) return -1;\n        const val = this.map.get(key);\n        this.map.delete(key);\n        this.map.set(key, val);\n        return val;\n    }\n\n    putValue(key, value) {\n        if (this.cap === 0) return;\n        if (this.map.has(key)) {\n            this.map.delete(key);\n        } else if (this.map.size === this.cap) {\n            const lruKey = this.map.keys().next().value;\n            this.map.delete(lruKey);\n        }\n        this.map.set(key, value);\n    }\n}\n"
+    }
+  }
+}

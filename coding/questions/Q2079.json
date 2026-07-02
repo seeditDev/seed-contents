@@ -1,0 +1,77 @@
+{
+  "questionId": "Q2079",
+  "title": "Word Counting",
+  "slug": "word-counting",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Math",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "combinatorics & number theory",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Combinatorics & Number Theory"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has decided to retire and settle near a peaceful beach. He had always been interested in literature &amp; linguistics. Now when he has leisure time, he plans to read a lot of novels and understand structure of languages. Today he has decided to learn a difficult language called Smeagolese. \n\n**Smeagolese** is an exotic  language whose alphabet is lowercase and uppercase roman letters. \n\nAlso every word on this alphabet is a meaningful word in Smeagolese. Chef, we all know is a fierce learner - he has given himself a tough exercise. \n\nHe has taken a word SSS and wants to determine all possible anagrams of the word which mean something in Smeagolese.  Can you help him ?\n\nFunction DeclarationFunction NamecountSmeagoleseAnagramscountSmeagoleseAnagramscountSmeagoleseAnagrams – This function calculates the number of distinct anagrams of a given word that are meaningful in the Smeagolese language.\n\nParameters\nSSS : A string representing the word chosen by Chef.\nThe string consists of lowercase and uppercase English letters.\nAll permutations (anagrams) of the string are considered valid words in Smeagolese.\nReturn Value\nReturns an integer representing the number of **distinct anagrams** of the string SSS.\nSince the answer can be very large, return the result **modulo 109+710^9 + 7109+7**.\nConstraints\n\n1≤T≤5001 \\leq T \\leq 5001≤T≤500\n\n\n\n\n1≤∣S∣≤5001 \\leq |S| \\leq 5001≤∣S∣≤500\n\n\n\n\nEach character appears **at most 10 times** in the string\n\n\n\n\nCharacters may include:\n\n\n\nlowercase letters (`a`–`z`)\nuppercase letters (`A`–`Z`)\n\n\n\nModulo value: 109+710^9 + 7109+7\n\n\n\n\nInput Format\n\n\nThe first line contains a single integer TTT — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nA single line containing a string SSS — the word chosen by Chef.\n\n\n\n\nOutput Format\n\n\nFor each test case, output a single integer on a new line:\n\n\n\nThe number of **distinct anagrams** of the given string SSS, taken modulo 109+710^9 + 7109+7.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\nab\naa\naA\nAAbaz",
+        "output": "2\n1\n2\n60",
+        "explanation": "Explanation:\nIn first case \"ab\" & \"ba\" are two different words. In third case, note that A & a are different alphabets and hence \"Aa\" & \"aA\" are different words."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\nab\naa\naA\nAAbaz",
+        "expectedOutput": "2\n1\n2\n60",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\nprivate:\n    static const int MOD = 1000000007;\n    static const int MAXN = 500;\n\n    long long fact[MAXN + 1];\n    long long invFact[MAXN + 1];\n\n    // Fast exponentiation: a^b % MOD\n    long long modPow(long long a, long long b) {\n        long long result = 1;\n        while (b > 0) {\n            if (b & 1) result = (result * a) % MOD;\n            a = (a * a) % MOD;\n            b >>= 1;\n        }\n        return result;\n    }\n\n    // Precompute factorials and inverse factorials\n    void precompute() {\n        fact[0] = 1;\n        for (int i = 1; i <= MAXN; i++)\n            fact[i] = (fact[i - 1] * i) % MOD;\n\n        // Fermat's inverse: invFact[n] = (fact[n])^(MOD-2)\n        invFact[MAXN] = modPow(fact[MAXN], MOD - 2);\n        for (int i = MAXN - 1; i >= 0; i--)\n            invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;\n    }\n\npublic:\n    Solution() {\n        precompute();\n    }\n\n    long long countSmeagoleseAnagrams(const string &S) {\n        unordered_map<char, int> freq;\n        for (char c : S)\n            freq[c]++;\n\n        long long n = S.size();\n        long long result = fact[n];\n\n        for (auto &p : freq) {\n            result = (result * invFact[p.second]) % MOD;\n        }\n\n        return result;\n    }\n};\n",
+      "Python3": "class Solution:\n    MOD = 10**9 + 7\n    MAXN = 500\n\n    def __init__(self):\n        # Precompute factorials and inverse factorials\n        self.fact = [1] * (self.MAXN + 1)\n        self.invFact = [1] * (self.MAXN + 1)\n\n        for i in range(1, self.MAXN + 1):\n            self.fact[i] = (self.fact[i - 1] * i) % self.MOD\n\n        # Fermat's Little Theorem for inverse factorial\n        self.invFact[self.MAXN] = pow(self.fact[self.MAXN], self.MOD - 2, self.MOD)\n        for i in range(self.MAXN - 1, -1, -1):\n            self.invFact[i] = (self.invFact[i + 1] * (i + 1)) % self.MOD\n\n    def countSmeagoleseAnagrams(self, S: str) -> int:\n        from collections import Counter\n\n        freq = Counter(S)\n        n = len(S)\n\n        result = self.fact[n]\n        for count in freq.values():\n            result = (result * self.invFact[count]) % self.MOD\n\n        return result",
+      "C": "#define MAXN 500\n#define MOD 1000000007\n\nstatic long long fact[MAXN + 1];\nstatic long long invFact[MAXN + 1];\nstatic int initialized = 0;\n\n/* Fast exponentiation: a^b % MOD */\nlong long modPow(long long a, long long b) {\n    long long result = 1;\n    while (b > 0) {\n        if (b & 1)\n            result = (result * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return result;\n}\n\n/* Precompute factorials and inverse factorials */\nvoid precompute() {\n    fact[0] = 1;\n    for (int i = 1; i <= MAXN; i++) {\n        fact[i] = (fact[i - 1] * i) % MOD;\n    }\n\n    invFact[MAXN] = modPow(fact[MAXN], MOD - 2);\n    for (int i = MAXN - 1; i >= 0; i--) {\n        invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;\n    }\n\n    initialized = 1;\n}\n\nlong long countSmeagoleseAnagrams(char *S) {\n    if (!initialized) {\n        precompute();\n    }\n\n    int freq[256] = {0};\n    int n = strlen(S);\n\n    for (int i = 0; i < n; i++) {\n        freq[(unsigned char)S[i]]++;\n    }\n\n    long long result = fact[n];\n\n    for (int i = 0; i < 256; i++) {\n        if (freq[i] > 0) {\n            result = (result * invFact[freq[i]]) % MOD;\n        }\n    }\n\n    return result;\n}",
+      "Java": "class Solution {\n    private static final int MOD = 1000000007;\n    private static final int MAXN = 500;\n\n    private long[] fact = new long[MAXN + 1];\n    private long[] invFact = new long[MAXN + 1];\n\n    public Solution() {\n        precompute();\n    }\n\n    // Fast exponentiation: a^b % MOD\n    private long modPow(long a, long b) {\n        long result = 1;\n        while (b > 0) {\n            if ((b & 1) == 1)\n                result = (result * a) % MOD;\n            a = (a * a) % MOD;\n            b >>= 1;\n        }\n        return result;\n    }\n\n    // Precompute factorials and inverse factorials\n    private void precompute() {\n        fact[0] = 1;\n        for (int i = 1; i <= MAXN; i++) {\n            fact[i] = (fact[i - 1] * i) % MOD;\n        }\n\n        invFact[MAXN] = modPow(fact[MAXN], MOD - 2);\n        for (int i = MAXN - 1; i >= 0; i--) {\n            invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;\n        }\n    }\n\n    public long countSmeagoleseAnagrams(String S) {\n        long result = fact[S.length()];\n\n        Map<Character, Integer> freq = new HashMap<>();\n        for (char c : S.toCharArray()) {\n            freq.put(c, freq.getOrDefault(c, 0) + 1);\n        }\n\n        for (int count : freq.values()) {\n            result = (result * invFact[count]) % MOD;\n        }\n\n        return result;\n    }\n}",
+      "JavaScript": "class Solution {\n    constructor() {\n        this.MOD = 1000000007n;\n        this.MAXN = 500;\n\n        this.fact = Array(this.MAXN + 1).fill(0n);\n        this.invFact = Array(this.MAXN + 1).fill(0n);\n\n        this.precompute();\n    }\n\n    // Fast power: a^b % MOD (BigInt)\n    modPow(a, b) {\n        let result = 1n;\n        while (b > 0n) {\n            if (b & 1n) result = (result * a) % this.MOD;\n            a = (a * a) % this.MOD;\n            b >>= 1n;\n        }\n        return result;\n    }\n\n    // Precompute factorials and inverse factorials\n    precompute() {\n        this.fact[0] = 1n;\n        for (let i = 1; i <= this.MAXN; i++) {\n            this.fact[i] = (this.fact[i - 1] * BigInt(i)) % this.MOD;\n        }\n\n        // Fermat's Little Theorem for inverse factorial\n        this.invFact[this.MAXN] = this.modPow(\n            this.fact[this.MAXN],\n            this.MOD - 2n\n        );\n\n        for (let i = this.MAXN - 1; i >= 0; i--) {\n            this.invFact[i] =\n                (this.invFact[i + 1] * BigInt(i + 1)) % this.MOD;\n        }\n    }\n\n    countSmeagoleseAnagrams(S) {\n        const freq = new Map();\n        for (const ch of S) {\n            freq.set(ch, (freq.get(ch) || 0) + 1);\n        }\n\n        let result = this.fact[S.length];\n        for (const count of freq.values()) {\n            result = (result * this.invFact[count]) % this.MOD;\n        }\n\n        return result.toString();\n    }\n}"
+    }
+  }
+}

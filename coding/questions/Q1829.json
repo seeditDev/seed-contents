@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1829",
+  "title": "Job Sequencing Problem",
+  "slug": "job-sequencing-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "disjoint set union",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Disjoint Set Union"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef is managing a busy workshop where multiple **taskDeadlinestaskDeadlinestaskDeadlines** and **taskRewardstaskRewardstaskRewards** determine how work gets scheduled.\n\nEach task requires exactly **one unit of time**, and only **one task can be executed at a time slot**.\n\nHowever, every task must be finished **on or before its deadline** to earn its reward.\n\nChef wants to plan the schedule in a way that:\n\n\nMaximizes the **total number of completed tasks**\nAchieves the **highest possible reward**\n**NOTE:** During conflicts, tasks with higher rewards are prioritized over lower-reward tasks.\n\nYour job is to help Chef build the most efficient schedule.\n\nFunction Declaration\n\n**Function Name**\n\n\n\nscheduleTasksscheduleTasksscheduleTasks\n\n\n\n**Parameters**\n\n\n\ntaskDeadlinestaskDeadlinestaskDeadlines: An array of integers where each value represents the deadline of a task.\ntaskRewardstaskRewardstaskRewards: An array of integers where each value represents the reward earned upon completing the corresponding task.\n\n\n\n**Return Value**\n\n\n\nReturns a list of two integers:\n\nThe maximum number of tasks completed.\nThe total reward earned.\n\n\n\n\nConstraints\n1≤N≤1051 \\le N \\le 10^51≤N≤105\n1≤taskDeadlines[i]≤N1 \\le taskDeadlines[i] \\le N1≤taskDeadlines[i]≤N\n1≤taskRewards[i]≤5001 \\le taskRewards[i] \\le 5001≤taskRewards[i]≤500\nInput Format\nThe first line contains an integer NNN — the number of tasks.\nThe second line contains NNN space-separated integers representing the taskDeadlinestaskDeadlinestaskDeadlines.\nThe third line contains NNN space-separated integers representing the taskRewardstaskRewardstaskRewards.\nOutput Format\nPrint two space-separated integers:\n\nMaximum tasks completed\nMaximum reward earned",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n4 1 1 1\n20 10 40 30",
+        "output": "2 60",
+        "explanation": "Explanation:\nSchedule the task with reward 40 at slot 1 since it has the highest reward among tasks with deadline 1.\nTasks with rewards 30 and 10 cannot be scheduled due to slot conflict.\nThe task with reward 20 fits in a later available slot (? 4).\n\nResult: 2 tasks completed with a total reward of 60."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n4 1 1 1\n20 10 40 30",
+        "expectedOutput": "2 60",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "vector<int> scheduleTasks(vector<int>& taskDeadlines, vector<int>& taskRewards) {\n\n    int n = taskDeadlines.size();\n\n    vector<pair<int,int>> jobs;\n    int maxDeadline = 0;\n\n    for(int i=0;i<n;i++){\n        jobs.push_back({taskRewards[i], taskDeadlines[i]});\n        maxDeadline = max(maxDeadline, taskDeadlines[i]);\n    }\n\n    sort(jobs.begin(), jobs.end(), greater<>());\n\n    vector<int> parent(maxDeadline+1);\n    for(int i=0;i<=maxDeadline;i++)\n        parent[i]=i;\n\n    function<int(int)> find = [&](int x){\n        if(parent[x]==x) return x;\n        return parent[x]=find(parent[x]);\n    };\n\n    int count=0,total=0;\n\n    for(auto &job:jobs){\n        int slot=find(job.second);\n\n        if(slot>0){\n            parent[slot]=find(slot-1);\n            count++;\n            total+=job.first;\n        }\n    }\n\n    return {count,total};\n}\n",
+      "Python3": "def scheduleTasks(taskDeadlines, taskRewards):\n\n    jobs = sorted(zip(taskRewards, taskDeadlines), reverse=True)\n\n    max_deadline = max(taskDeadlines)\n\n    parent = list(range(max_deadline+1))\n\n    def find(x):\n        if parent[x] != x:\n            parent[x] = find(parent[x])\n        return parent[x]\n\n    count = 0\n    total = 0\n\n    for reward, deadline in jobs:\n\n        slot = find(deadline)\n\n        if slot > 0:\n            parent[slot] = find(slot-1)\n            count += 1\n            total += reward\n\n    return [count, total]\n",
+      "C": "int find(int x, int parent[]){\n    if(parent[x] == x)\n        return x;\n    return parent[x] = find(parent[x], parent);\n}\n\n\nint compare(const void* a, const void* b){\n    return ((Task*)b)->reward - ((Task*)a)->reward;\n}\n\n\nint* scheduleTasks(int* taskDeadlines, int* taskRewards, int n, int* returnSize){\n\n    Task* tasks = (Task*)malloc(sizeof(Task) * n);\n    int maxDeadline = 0;\n\n    for(int i = 0; i < n; i++){\n        tasks[i].reward = taskRewards[i];\n        tasks[i].deadline = taskDeadlines[i];\n        if(taskDeadlines[i] > maxDeadline)\n            maxDeadline = taskDeadlines[i];\n    }\n\n    qsort(tasks, n, sizeof(Task), compare);\n\n    int* parent = (int*)malloc(sizeof(int) * (maxDeadline + 1));\n    for(int i = 0; i <= maxDeadline; i++)\n        parent[i] = i;\n\n    int count = 0, total = 0;\n\n    for(int i = 0; i < n; i++){\n\n        int slot = find(tasks[i].deadline, parent);\n\n        if(slot > 0){\n            parent[slot] = find(slot - 1, parent);\n            count++;\n            total += tasks[i].reward;\n        }\n    }\n\n    int* res = (int*)malloc(sizeof(int) * 2);\n    res[0] = count;\n    res[1] = total;\n    *returnSize = 2;\n\n    free(tasks);\n    free(parent);\n\n    return res;\n}",
+      "Java": "    private int find(int x, int[] parent){\n        if(parent[x] == x)\n            return x;\n\n        return parent[x] = find(parent[x], parent);\n    }\n\n    public int[] scheduleTasks(int[] taskDeadlines, int[] taskRewards) {\n\n        int n = taskDeadlines.length;\n        int maxDeadline = 0;\n\n        // Store tasks as {reward, deadline}\n        int[][] tasks = new int[n][2];\n\n        for(int i = 0; i < n; i++){\n            tasks[i][0] = taskRewards[i];\n            tasks[i][1] = taskDeadlines[i];\n            maxDeadline = Math.max(maxDeadline, taskDeadlines[i]);\n        }\n\n        // Sort by reward DESC\n        Arrays.sort(tasks, (a, b) -> b[0] - a[0]);\n\n        // DSU parent array\n        int[] parent = new int[maxDeadline + 1];\n        for(int i = 0; i <= maxDeadline; i++)\n            parent[i] = i;\n\n        int count = 0;\n        int totalReward = 0;\n\n        for(int[] task : tasks){\n\n            int availableSlot = find(task[1], parent);\n\n            if(availableSlot > 0){\n\n                // occupy slot\n                parent[availableSlot] = find(availableSlot - 1, parent);\n\n                count++;\n                totalReward += task[0];\n            }\n        }\n\n        return new int[]{count, totalReward};\n    }\n\n",
+      "JavaScript": "function scheduleTasks(taskDeadlines, taskRewards) {\n\n    const jobs = taskRewards.map((r,i)=>[r, taskDeadlines[i]])\n                            .sort((a,b)=>b[0]-a[0]);\n\n    const maxDeadline = Math.max(...taskDeadlines);\n\n    const parent = Array.from({length:maxDeadline+1},(_,i)=>i);\n\n    function find(x){\n        if(parent[x]!==x)\n            parent[x]=find(parent[x]);\n        return parent[x];\n    }\n\n    let count=0,total=0;\n\n    for(const [reward,deadline] of jobs){\n\n        const slot=find(deadline);\n\n        if(slot>0){\n            parent[slot]=find(slot-1);\n            count++;\n            total+=reward;\n        }\n    }\n\n    return [count,total];\n}\n"
+    }
+  }
+}

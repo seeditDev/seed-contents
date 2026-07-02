@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1382",
+  "title": "Chef Square Tile Problem",
+  "slug": "chef-square-tile-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "The chef buys square tiles of size 1∗11*11∗1  from N shops. The ith shop sells a[i]a[i]a[i] tiles. The chef wants to know if he can create a large, tiled square area using all the tiles he bought.\n\n\nInput Format\n\nThe first line contains a single integer NNN.\nThe second line contains NNN space-separated integers a[i]a[i]a[i].\n\n\nOutput Format\n\nOutput \"Yes\" if the Chef can create a square area using all the tiles.\nOutput \"No\" otherwise.",
+    "constraints": [
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "0≤a[i]≤1090 \\leq a[i] \\leq 10^90≤a[i]≤109"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4 9 7",
+        "output": "No",
+        "explanation": "Explanation:\nThe sum of tiles is 20, which is not a perfect square."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n16 9",
+        "output": "Yes",
+        "explanation": "Explanation:\nThe sum of tiles is 25, which is a perfect square (5x5)."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4 9 7",
+        "expectedOutput": "No",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "2\n16 9",
+        "expectedOutput": "Yes",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    // Fast I/O\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int n;\n    if (cin >> n) {\n        long long total_sum = 0;\n        for (int i = 0; i < n; i++) {\n            long long a;\n            cin >> a;\n            total_sum += a;\n        }\n        \n        // Pure integer binary search\n        long long left = 0, right = 10000000; // sqrt(10^14) is 10^7\n        bool is_square = false;\n        \n        while (left <= right) {\n            long long mid = left + (right - left) / 2;\n            long long square = mid * mid;\n            \n            if (square == total_sum) {\n                is_square = true;\n                break;\n            } else if (square < total_sum) {\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n        \n        if (is_square) {\n            cout << \"Yes\\n\";\n        } else {\n            cout << \"No\\n\";\n        }\n    }\n    \n    return 0;\n}",
+      "Python3": "import sys\n\ndef main():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    \n    n = int(input_data[0])\n    total_sum = sum(int(x) for x in input_data[1:n+1])\n    \n    left, right = 0, 10000000\n    is_square = False\n    \n    while left <= right:\n        mid = left + (right - left) // 2\n        square = mid * mid\n        \n        if square == total_sum:\n            is_square = True\n            break\n        elif square < total_sum:\n            left = mid + 1\n        else:\n            right = mid - 1\n            \n    if is_square:\n        print(\"Yes\")\n    else:\n        print(\"No\")\n\nif __name__ == '__main__':\n    main()# Write your code here\n",
+      "C": "#include <stdio.h>\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    \n    long long total_sum = 0;\n    for (int i = 0; i < n; i++) {\n        long long a;\n        scanf(\"%lld\", &a);\n        total_sum += a;\n    }\n    \n    long long left = 0, right = 10000000;\n    int is_square = 0;\n    \n    while (left <= right) {\n        long long mid = left + (right - left) / 2;\n        long long square = mid * mid;\n        \n        if (square == total_sum) {\n            is_square = 1;\n            break;\n        } else if (square < total_sum) {\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    \n    if (is_square) {\n        printf(\"Yes\\n\");\n    } else {\n        printf(\"No\\n\");\n    }\n    \n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\nclass Codechef{\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        \n        int n = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        \n        long totalSum = 0;\n        for (int i = 0; i < n; i++) {\n            totalSum += Long.parseLong(st.nextToken());\n        }\n        \n        long left = 0, right = 10000000;\n        boolean isSquare = false;\n        \n        while (left <= right) {\n            long mid = left + (right - left) / 2;\n            long square = mid * mid;\n            \n            if (square == totalSum) {\n                isSquare = true;\n                break;\n            } else if (square < totalSum) {\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n        \n        if (isSquare) {\n            System.out.println(\"Yes\");\n        } else {\n            System.out.println(\"No\");\n        }\n    }\n}",
+      "JavaScript": "const fs = require('fs');\n\nfunction main() {\n    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\n    if (input.length < 2) return;\n    \n    let n = parseInt(input[0], 10);\n    \n    let totalSum = 0n;\n    for (let i = 1; i <= n; i++) {\n        totalSum += BigInt(input[i]);\n    }\n    \n    let left = 0n;\n    let right = 10000000n;\n    let isSquare = false;\n    \n    while (left <= right) {\n        let mid = left + (right - left) / 2n;\n        let square = mid * mid;\n        \n        if (square === totalSum) {\n            isSquare = true;\n            break;\n        } else if (square < totalSum) {\n            left = mid + 1n;\n        } else {\n            right = mid - 1n;\n        }\n    }\n    \n    if (isSquare) {\n        console.log(\"Yes\");\n    } else {\n        console.log(\"No\");\n    }\n}\n\nmain();"
+    }
+  }
+}

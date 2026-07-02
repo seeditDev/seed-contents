@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1779",
+  "title": "Chef Calculates Subarray Minimums",
+  "slug": "chef-calculates-subarray-minimums",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of integers inputArrayinputArrayinputArray, and wants to find the **sum of the minimum elements of all possible contiguous subarrays** of this array.\n\nSince the total number of subarrays can be very large and the resulting sum may exceed normal integer limits, Chef wants the final answer **modulo 109+710^9 + 7109+7**.\n\nHelp Chef solve this problem efficiently for multiple test cases.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncalculateSumOfSubarrayMinimumscalculateSumOfSubarrayMinimumscalculateSumOfSubarrayMinimums\n\n\n\n**Parameters**\n\n\n\ninputArrayinputArrayinputArray: a list of integers representing Chef’s array\n\n\n\n**Return Value**\n\n\n\nAn integer representing the **sum of the minimum values of all contiguous subarrays** of inputArrayinputArrayinputArray, taken modulo 109+710^9 + 7109+7\n\n\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤N≤3×1041 \\leq N \\leq 3 \\times 10^41≤N≤3×104\n1≤inputArray[i]≤3×1041 \\leq inputArray[i] \\leq 3 \\times 10^41≤inputArray[i]≤3×104\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN — the size of the array.\nThe second line contains NNN space-separated integers representing inputArrayinputArrayinputArray.\n\n\nOutput Format\nFor each test case, print a single integer:\n\nthe sum of the minimum elements of all contiguous subarrays of inputArrayinputArrayinputArray modulo 109+710^9 + 7109+7.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n3\n1 3 2\n4\n8 7 6 5\n1\n10000",
+        "output": "10\n60\n10000",
+        "explanation": "Explanation:\nTest Case 1\nSubarrays are: [1], [3], [2], [1,3], [3,2], [1,3,2]\nMinimums are: 1, 3, 2, 1, 2, 1\nSum of minimums = 10\nTest Case 2\nSubarrays are:\n[8], [7], [6], [5],\n[8,7], [7,6], [6,5],\n[8,7,6], [7,6,5],\n[8,7,6,5]\nMinimums are: 8, 7, 6, 5, 7, 6, 5, 6, 5, 5\nSum of minimums = 60\nTest Case 3\nSubarray is: [10000]\nMinimum is: 10000\nSum of minimums = 10000"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n3\n1 3 2\n4\n8 7 6 5\n1\n10000",
+        "expectedOutput": "10\n60\n10000",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int calculateSumOfSubarrayMinimums(vector<int>& inputArray) {\n        int inputArrayLength = inputArray.size();\n        const int MOD = 1e9 + 7;\n        vector<int> prev(inputArrayLength), next(inputArrayLength);\n        vector<int> stack;\n        for (int i = 0; i < inputArrayLength; ++i) {\n            while (!stack.empty() && inputArray[stack.back()] > inputArray[i]) stack.pop_back();\n            prev[i] = stack.empty() ? -1 : stack.back();\n            stack.push_back(i);\n        }\n        stack.clear();\n        for (int i = inputArrayLength - 1; i >= 0; --i) {\n            while (!stack.empty() && inputArray[stack.back()] >= inputArray[i]) stack.pop_back();\n            next[i] = stack.empty() ? inputArrayLength : stack.back();\n            stack.push_back(i);\n        }\n        long long result = 0;\n        for (int i = 0; i < inputArrayLength; ++i) {\n            long long leftCount = i - prev[i];\n            long long rightCount = next[i] - i;\n            result = (result + inputArray[i] * leftCount * rightCount) % MOD;\n        }\n        return (int)result;\n    }",
+      "Python3": "def calculateSumOfSubarrayMinimums(inputArray):\n    mod = 10**9 + 7\n    stack = []\n    res = 0\n\n    # Add a sentinel to flush the stack\n    for i, x in enumerate(inputArray + [float('-inf')]):\n        while stack and inputArray[stack[-1]] > x:\n            mid = stack.pop()\n            left = mid - stack[-1] if stack else mid + 1\n            right = i - mid\n            res += inputArray[mid] * left * right\n        stack.append(i)\n\n    return res % mod",
+      "C": "int calculateSumOfSubarrayMinimums(int* inputArray, int inputArrayLength){\n    int mod = 1000000007;\n    int stack[inputArrayLength];\n    int top = -1;\n    long long result = 0;\n    long long dp[inputArrayLength];\n    for(int i = 0; i < inputArrayLength; i++){\n        while(top >= 0 && inputArray[stack[top]] > inputArray[i]) top--;\n        int prevIndex = top == -1 ? -1 : stack[top];\n        dp[i] = (long long)(i - prevIndex) * inputArray[i] + (prevIndex == -1 ? 0 : dp[prevIndex]);\n        dp[i] %= mod;\n        result += dp[i];\n        result %= mod;\n        stack[++top] = i;\n    }\n    return (int)result;\n}",
+      "Java": "    public  static int calculateSumOfSubarrayMinimums(int[] inputArray) {\n        int mod = 1_000_000_007;\n        int n = inputArray.length;\n        int[] left = new int[n];\n        int[] right = new int[n];\n        java.util.Stack<Integer> stack = new java.util.Stack<>();\n\n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && inputArray[stack.peek()] > inputArray[i]) {\n                stack.pop();\n            }\n            left[i] = stack.isEmpty() ? i + 1 : i - stack.peek();\n            stack.push(i);\n        }\n\n        stack.clear();\n\n        for (int i = n - 1; i >= 0; i--) {\n            while (!stack.isEmpty() && inputArray[stack.peek()] >= inputArray[i]) {\n                stack.pop();\n            }\n            right[i] = stack.isEmpty() ? n - i : stack.peek() - i;\n            stack.push(i);\n        }\n\n        long result = 0;\n        for (int i = 0; i < n; i++) {\n            long count = (long) left[i] * right[i];\n            result = (result + count * inputArray[i]) % mod;\n        }\n        return (int) result;\n    }\n",
+      "JavaScript": "const MOD = 1e9 + 7;\nfunction calculateSumOfSubarrayMinimums(inputArray) {\n    const n = inputArray.length;\n    const stack = [];\n    const left = new Array(n);\n    const right = new Array(n);\n    for (let i = 0; i < n; i++) {\n        while (stack.length && inputArray[stack[stack.length - 1]] > inputArray[i]) {\n            stack.pop();\n        }\n        left[i] = stack.length ? i - stack[stack.length - 1] : i + 1;\n        stack.push(i);\n    }\n    stack.length = 0;\n    for (let i = n - 1; i >= 0; i--) {\n        while (stack.length && inputArray[stack[stack.length - 1]] >= inputArray[i]) {\n            stack.pop();\n        }\n        right[i] = stack.length ? stack[stack.length - 1] - i : n - i;\n        stack.push(i);\n    }\n    let result = 0;\n    for (let i = 0; i < n; i++) {\n        result = (result + inputArray[i] * left[i] * right[i]) % MOD;\n    }\n    return result;\n}\n"
+    }
+  }
+}

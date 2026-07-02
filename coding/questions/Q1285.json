@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1285",
+  "title": "Optimized Implementation of DSU",
+  "slug": "optimized-implementation-of-dsu",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "disjoint set union",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Disjoint Set Union"
+    ]
+  },
+  "content": {
+    "problemStatement": "Fill in the blanks to implement the optimizations in the previous lessons in the code editor.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 7\nunion 1 0\nunion 2 1\nfind 0\nfind 1\nfind 2\nfind 3\nfind 4",
+        "output": "2\n2\n2\n3\n4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 7\nunion 1 0\nunion 2 1\nfind 0\nfind 1\nfind 2\nfind 3\nfind 4",
+        "expectedOutput": "2\n2\n2\n3\n4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint parent[1000000];\nint setSize[1000000];\n\n\nint dsuFind(int a){\n    if(parent[a]==a) return a;\n    //fill in the blanks for the optimized find in DSU\n    return parent[a] = dsuFind(parent[a]);\n}\n\nvoid dsuUnion(int a, int b) {\n    int leader_a = dsuFind(a);\n    int leader_b = dsuFind(b);\n    if(leader_a!=leader_b)\n    {\n        //fill in the blanks for the optimized union in DSU\n        if(setSize[leader_b]<setSize[leader_a])\n        {\n            swap(leader_a, leader_b);\n        }\n        parent[leader_b] = leader_a;\n        setSize[leader_a]+=setSize[leader_b];\n    }\n}\nint main() {\n    int n, m;\n    cin>>n>>m;\n    for(int i=0; i<n; i++)\n    {\n        parent[i] = i;\n        setSize[i] = 1;\n    }\n    for(int i=0; i<m; i++)\n    {\n        string command;\n        cin>>command;\n        if(command == \"union\")\n        {\n            int a, b;\n            cin>>a>>b;\n            dsuUnion(a, b);\n        }\n        else if(command == \"find\"){\n            int a;\n            cin>>a;\n            cout<<dsuFind(a)<<endl;\n        }\n    }\n}\n",
+      "Python3": "parent = []\nsetSize = []\n\ndef dsu_find(a):\n    if parent[a] == a:\n        return a\n    #fill in the blanks for the optimized find in DSU\n    parent[a] = dsu_find(parent[a])\n    return parent[a]\n\ndef dsu_union(a, b):\n    leader_a = dsu_find(a)\n    leader_b = dsu_find(b)\n    if leader_a != leader_b:\n        #fill in the blanks for the optimized union in DSU\n        if setSize[leader_b] < setSize[leader_a]:\n            leader_a, leader_b = leader_b, leader_a\n        parent[leader_b] = leader_a\n        setSize[leader_a] += setSize[leader_b]\n\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n\n    for i in range(n):\n        parent.append(i)\n        setSize.append(1)\n\n    for i in range(m):\n        command = list(map(str, input().split()))\n        if command[0] == \"union\":\n            a, b = int(command[1]), int(command[2])\n            dsu_union(a, b)\n        elif command[0] == \"find\":\n            a = int(command[1])\n            print(dsu_find(a))\n",
+      "C": "#include <stdio.h>\nint parent[1000000];\nint size[1000000];\n\nvoid swap(int *x, int *y)\n{\n    int temp = *x;\n    *x = *y;\n    *y = temp;\n}\n\nint dsuFind(int a){\n    if(parent[a]==a) return a;\n    //fill in the blanks for the optimized find in DSU\n    return parent[a] = dsuFind(parent[a]);\n}\n\nvoid dsuUnion(int a, int b) {\n    int leader_a = dsuFind(a);\n    int leader_b = dsuFind(b);\n    if(leader_a!=leader_b)\n    {\n        //fill in the blanks for the optimized union in DSU\n        if(size[leader_b]<size[leader_a])\n        {\n            swap(&leader_a, &leader_b);\n        }\n        parent[leader_b] = leader_a;\n        size[leader_a]+=size[leader_b];\n    }\n}\nint main(void) {\n    int n, m;\n    scanf(\"%d\", &n);\n    scanf(\"%d\", &m);\n    for(int i=0; i<n; i++)\n    {\n        parent[i] = i;\n        size[i] = 1;\n    }\n    for(int i=0; i<m; i++)\n    {\n        char command[10];\n        scanf(\"%s\", &command);\n        if(strcmp(command, \"union\")==0){\n            int a, b;\n            scanf(\"%d\", &a);\n            scanf(\"%d\", &b);\n            dsuUnion(a, b);\n        }\n        else if(strcmp(command, \"find\")==0)\n        {\n            int a;\n            scanf(\"%d\", &a);\n            printf(\"%d\\n\", dsuFind(a));\n        }\n    }\n}\n\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    static int[] parent;\n    static int[] setSize;\n\n    static int dsuFind(int a) {\n        if (parent[a] == a)\n            return a;\n            //fill in the blanks for the optimized find in DSU\n            \n        return parent[a] = dsuFind(parent[a]);\n    }\n\n    static void dsuUnion(int a, int b) {\n        int leader_a = dsuFind(a);\n        int leader_b = dsuFind(b);\n        if (leader_a != leader_b) {\n            //fill in the blanks for the optimized union in DSU\n            \n            if (setSize[leader_b] < setSize[leader_a]) {\n                int temp = leader_a;\n                leader_a = leader_b;\n                leader_b = temp;\n            }\n            parent[leader_b] = leader_a;\n            setSize[leader_a] += setSize[leader_b];\n        }\n    }\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        parent = new int[n];\n        setSize = new int[n];\n        for (int i = 0; i < n; i++) {\n            parent[i] = i;\n            setSize[i] = 1;\n        }\n\n        for (int i = 0; i < m; i++) {\n            String command = scanner.next();\n            if (command.equals(\"union\")) {\n                int a = scanner.nextInt();\n                int b = scanner.nextInt();\n                dsuUnion(a, b);\n            } else if (command.equals(\"find\")) {\n                int a = scanner.nextInt();\n                System.out.println(dsuFind(a));\n            }\n        }\n    }\n}\n",
+      "JavaScript": "class DSU {\n    constructor(n) {\n        this.parent = new Array(n);\n        this.setSize = new Array(n);\n        for (let i = 0; i < n; i++) {\n            this.parent[i] = i;\n            this.setSize[i] = 1;\n        }\n    }\n\n    dsuFind(a) {\n        if (this.parent[a] === a) {\n            return a;\n        }\n        // Path compression optimization\n        return this.parent[a] = this.dsuFind(this.parent[a]);\n    }\n\n    dsuUnion(a, b) {\n        let leader_a = this.dsuFind(a);\n        let leader_b = this.dsuFind(b);\n        \n        if (leader_a !== leader_b) {\n            // Union by size optimization\n            if (this.setSize[leader_b] < this.setSize[leader_a]) {\n                [leader_a, leader_b] = [leader_b, leader_a];\n            }\n            this.parent[leader_b] = leader_a;\n            this.setSize[leader_a] += this.setSize[leader_b];\n        }\n    }\n}\n\nfunction main() {\n    const readline = require('readline');\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout,\n        terminal: false\n    });\n\n    let n, m;\n    let dsu;\n\n    rl.on('line', function(line) {\n        const tokens = line.trim().split(' ');\n        if (!n) {\n            n = parseInt(tokens[0]);\n            m = parseInt(tokens[1]);\n            dsu = new DSU(n);\n        } else {\n            const command = tokens[0];\n            if (command === 'union') {\n                const a = parseInt(tokens[1]);\n                const b = parseInt(tokens[2]);\n                dsu.dsuUnion(a, b);\n            } else if (command === 'find') {\n                const a = parseInt(tokens[1]);\n                console.log(dsu.dsuFind(a));\n            }\n        }\n    });\n}\n\nmain();\n"
+    }
+  }
+}

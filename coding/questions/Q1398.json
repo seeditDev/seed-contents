@@ -1,0 +1,100 @@
+{
+  "questionId": "Q1398",
+  "title": "Subarray Sum equals k",
+  "slug": "subarray-sum-equals-k",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "prefix sums & difference arrays",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Prefix Sums & Difference Arrays"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an array of integers numsnumsnums and an integer kkk, return the total number of subarrays whose sum equals to kkk.\n\nNote: A **subarray** is a contiguous non-empty sequence of elements within an array.\n\n**Function Declaration**Function NamesubarraySumsubarraySumsubarraySum – This function computes the total number of continuous subarrays whose sum is exactly equal to kkk.\n\n**Parameters**\nnumsnumsnums : An array of integers of length nnn, representing the input array.\nnnn : An integer representing the size of the array.\nkkk : An integer representing the target sum.\n**Return Value**Returns a single integer — the total number of continuous subarrays whose sum equals kkk.\nIf no such subarray exists, the function returns 000.",
+    "constraints": [
+      "1≤N≤2∗1041 \\le N \\le 2*10^41≤N≤2∗104",
+      "−1000≤nums[i]≤1000 -1000 \\le nums[i] \\le 1000−1000≤nums[i]≤1000",
+      "−107≤k≤107 -10^7 \\le k \\le 10^7−107≤k≤107",
+      "Input Format",
+      "The first line contains n the length of an array.",
+      "The second line contains an array of length n",
+      "The third line contains an integer representing the target sum.",
+      "Output Format",
+      "Output the total number of subarrays whose sum equals to kkk."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n1 1 1\n2",
+        "output": "2",
+        "explanation": "Explanation:\nThere are two subarrays whose sum equals 2:\n\n[1, 1] (starting at index 0, ending at index 1)\n[1, 1] (starting at index 1, ending at index 2)"
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n1 2 3\n3",
+        "output": "2",
+        "explanation": "Explanation:\nThere are two subarrays whose sum equals 3:\n\n[1, 2] (starting at index 0, ending at index 1)\n[3] (starting at index 2, ending at index 2)"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n1 1 1\n2",
+        "expectedOutput": "2",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3\n1 2 3\n3",
+        "expectedOutput": "2",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "In this approach, we consider every possible subarray of the given array nums, compute the sum of elements for each subarray, and check if the sum is equal to k. If it matches, we increment the count of valid subarrays.\n\nThe problem is solved using a **Prefix Sum** and **Hash Map** (or unordered_map in C++). The idea is to use the prefix sum technique to track subarray sums efficiently.",
+    "timeComplexity": "O(N) We traverse the array once and use the hash map for constant-time lookups and updates.",
+    "spaceComplexity": "O(N) The hash map stores prefix sums. In the worst case, all prefix sums could be unique, so the hash map could contain N entries.",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int subarraySum(int nums[], int n, int k) {\n        int count = 0, sum = 0;\n        unordered_map<int, int> map;\n        map[0] = 1;  // Initialize the map with sum 0 occurring once\n        for (int i = 0; i < n; i++) {\n            sum += nums[i];  // Calculate cumulative sum\n            \n            // Check if (sum - k) exists in the map\n            if (map.find(sum - k) != map.end()) {\n                count += map[sum - k];  // Increment count by the frequency of (sum - k)\n            }\n            map[sum]++;\n        }\n        return count;\n    }\n};",
+      "Python3": "def subarray_sum(nums, n, k):\n    count = 0\n    sum_ = 0\n    sum_map = {0: 1}  # Initialize map with sum 0 occurring once\n\n    for num in nums:\n        sum_ += num\n\n        # Check if (sum - k) exists in the map\n        if (sum_ - k) in sum_map:\n            count += sum_map[sum_ - k]\n\n        # Update the map with the current cumulative sum\n        sum_map[sum_] = sum_map.get(sum_, 0) + 1\n\n    return count  # Return the total count of subarrays\n\n",
+      "C": "#define MAX 100000\n\ntypedef struct {\n    int key;\n    int value;\n} Pair;\n\nPair map[MAX];\nint size = 0;\n\n// Function to find index of key\nint find(int key) {\n    for (int i = 0; i < size; i++) {\n        if (map[i].key == key) {\n            return i;\n        }\n    }\n    return -1;\n}\n\n// Function to get value of key\nint get(int key) {\n    int idx = find(key);\n    if (idx == -1) return 0;\n    return map[idx].value;\n}\n\n// Function to increment value of key\nvoid increment(int key) {\n    int idx = find(key);\n    if (idx == -1) {\n        map[size].key = key;\n        map[size].value = 1;\n        size++;\n    } else {\n        map[idx].value++;\n    }\n}\n\nint subarraySum(int nums[], int n, int k) {\n    int count = 0, sum = 0;\n\n    // Initialize map with sum 0 occurring once\n    increment(0);\n\n    for (int i = 0; i < n; i++) {\n        sum += nums[i];\n\n        // Check if (sum - k) exists\n        count += get(sum - k);\n\n        // Add current sum to map\n        increment(sum);\n    }\n\n    return count;\n}",
+      "Java": "public int subarraySum(int[] nums, int n, int k) {\n    int count = 0, sum = 0;\n    HashMap<Integer, Integer> map = new HashMap<>();\n    map.put(0, 1);  // Initialize map with sum 0 occurring once\n\n    for (int i = 0; i < n; i++) {\n        sum += nums[i];\n\n        // Check if (sum - k) exists in the map\n        if (map.containsKey(sum - k)) {\n            count += map.get(sum - k);  // Increment count by the frequency of (sum - k)\n        }\n        // Update the map with the current cumulative sum\n        map.put(sum, map.getOrDefault(sum, 0) + 1);\n    }\n\n    return count; \n}",
+      "JavaScript": "process.stdin.resume();\nprocess.stdin.setEncoding('utf-8');\n\nlet inputString = '';\nprocess.stdin.on('data', function (input) {\n    inputString += input;\n});\n\nprocess.stdin.on('end', function () {\n    // Split the input into lines\n    const inputLines = inputString.trim().split('\\n');\n\n    // First line: length of the array (not needed in logic directly)\n    const n = parseInt(inputLines[0]);\n\n    // Second line: the array of numbers\n    const nums = inputLines[1].split(' ').map(Number);\n\n    // Third line: the target sum\n    const k = parseInt(inputLines[2]);\n\n    // Call the function and output the result\n    console.log(subarraySum(nums, k));\n});\n\n// Function to find the number of subarrays with sum equal to k\nfunction subarraySum(nums, k) {\n    let count = 0;\n    let sum = 0;\n    let prefixSumMap = new Map();\n    prefixSumMap.set(0, 1);  // Initialize the map with sum 0 occurring once\n\n    for (let i = 0; i < nums.length; i++) {\n        sum += nums[i];  // Calculate cumulative sum\n        \n        // Check if (sum - k) exists in the map\n        if (prefixSumMap.has(sum - k)) {\n            count += prefixSumMap.get(sum - k);  // Increment count by the frequency of (sum - k)\n        }\n\n        // Update the prefix sum frequency in the map\n        if (prefixSumMap.has(sum)) {\n            prefixSumMap.set(sum, prefixSumMap.get(sum) + 1);\n        } else {\n            prefixSumMap.set(sum, 1);\n        }\n    }\n\n    return count;\n}\n"
+    }
+  }
+}

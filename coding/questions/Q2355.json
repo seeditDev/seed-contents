@@ -1,0 +1,75 @@
+{
+  "questionId": "Q2355",
+  "title": "Dish Distribution",
+  "slug": "dish-distribution",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Math",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "combinatorics & probability",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Combinatorics & Probability"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef feels that being the Head Chef is a very difficult job. More than cooking, managing the kitchen and distributing the work between various cooks proves to be a tiring task. There are many dishes to be prepared. And he has a team of talented cooks to do this for him. But the Chef always has a problem distributing tasks among them. For a cook i, the Chef wants to give him atleast xi dishes to prepare in a day. But different cooks have different capacities. Any cook i can cook atmost yi number of dishes in a single day. Chef is very aware of every cook's capability and will not give anyone more work than his maximum capacity. Now, he wants you to help him out here. \n\nYour task will be simple: Tell him the number of ways in which he can distribute the given number of dishes among his team.\n\nInput:First line contains T, number of tests.\nEach test begins with a single line containing 2 space separated integers: n and m, the number of dishes to be prepared and the number of cooks in Chef's team.\n\nThen follow m lines. The ith line contains 2 space separater integers which are the corresponding xi and yi.\n\nOutput:For every test case, output a single integer: the number of ways of distributing the work mod 1000000007.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n3 2\n0 3\n1 3",
+        "output": "3",
+        "explanation": "Explanation:\nTest case 111: Chef can distribute the dishes in the following three ways:\n\n000 dishes for the first cook and 333 dishes for the second cook.\n111 dish for the first cook and 222 dishes for the second cook.\n222 dishes for the first cook and 111 dish for the second cook."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n3 2\n0 3\n1 3",
+        "expectedOutput": "3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nusing vi = vector<int>;\nusing vvi = vector<vi>;\nconst int mod = 1e9 + 7;\nint main()\n{\n    int t;\n    cin>>t;\n    \n    while (t--){\n        int n,m;\n        cin>>m>>n;//m is the number of dishes and n is the number of cooks\n\n        vi x(n + 1),y(n + 1);\n        vvi dp(n + 1,vi(m + 1));\n\n        for (int i = 1;i<=n;i++)\n            cin>>x[i]>>y[i];\n        \n        dp[0][0] = 1;//base case\n\n        for (int i = 1;i<=n;i++)\n            for (int j = 0;j<=m;j++)\n                //dp[i][j] is number of ways of giving j dishes to first i cooks\n                for (int k = x[i];k<=y[i];k++)\n                    if (j >= k)//k = number of dishes given to ith cook\n                        dp[i][j] = (dp[i][j] + (dp[i - 1][j - k]))%mod;\n\n        cout<<(dp[n][m]%mod + mod)%mod<<endl;\n\n        //dp[n][m] == (dp[n][m]%mod + mod)%mod \n    }\n    return 0;\n}",
+      "C": "#include <stdio.h>\n\n#define MAX_N 100 // Maximum number of cooks\n#define MAX_M 1000 // Maximum number of dishes\n#define MOD 1000000007\n\nint main() {\n    int t;\n    scanf(\"%d\", & t);\n\n    while (t--) {\n        int n, m;\n        scanf(\"%d %d\", & m, & n); // m is the number of dishes and n is the number of cooks\n\n        int x[MAX_N + 1], y[MAX_N + 1];\n        long long dp[MAX_N + 1][MAX_M + 1] = {\n            0\n        }; // Using long long to prevent overflow\n\n        for (int i = 1; i <= n; i++) {\n            scanf(\"%d %d\", & x[i], & y[i]);\n        }\n\n        dp[0][0] = 1; // base case\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 0; j <= m; j++) {\n                // dp[i][j] is the number of ways of giving j dishes to the first i cooks\n                for (int k = x[i]; k <= y[i]; k++) {\n                    if (j >= k) { // k = number of dishes given to ith cook\n                        dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % MOD;\n                    }\n                }\n            }\n        }\n\n        printf(\"%lld\\n\", (dp[n][m] + MOD) % MOD); // Ensure non-negative output\n    }\n    return 0;\n}",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    public static void main(String[] args) throws java.lang.Exception {\n        // Initialize scanner for input\n        Scanner sc = new Scanner(System.in);\n\n        int t = sc.nextInt(); // Read number of test cases\n\n        while (t-- > 0) {\n            int m = sc.nextInt(); // Number of dishes\n            int n = sc.nextInt(); // Number of cooks\n\n            int[] x = new int[n + 1];\n            int[] y = new int[n + 1];\n            long[][] dp = new long[n + 1][m + 1];\n\n            // Read the minimum and maximum dishes for each cook\n            for (int i = 1; i <= n; i++) {\n                x[i] = sc.nextInt();\n                y[i] = sc.nextInt();\n            }\n\n            dp[0][0] = 1; // Base case\n\n            // Fill the dp array\n            for (int i = 1; i <= n; i++) {\n                for (int j = 0; j <= m; j++) {\n                    // dp[i][j] is number of ways of giving j dishes to first i cooks\n                    for (int k = x[i]; k <= y[i]; k++) {\n                        if (j >= k) {\n                            dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % 1000000007; // mod\n                        }\n                    }\n                }\n            }\n\n            // Output the result for the current test case\n            System.out.println((dp[n][m] + 1000000007) % 1000000007);\n        }\n\n        // Close the scanner\n        sc.close();\n    }\n}"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "questionId": "Q3085",
+  "title": "Special Economic Zone",
+  "slug": "special-economic-zone",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "flow & matching",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Flow & Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "Fox Ciel is the queen of Fox Kingdom. There are **n** cities and **m** bidirectional roads between them. Two cities are called neighbours if there is a road between them. She wants to select some of the cities to establish as SEZs (Special Economic Zones). Also she must ensure that no two neighbouring cities are SEZ's as it will hinders growth of both the cities.\n\n\nPeople in SEZ will be happy due to huge employments opportunities. People living in a non SEZ city and having at least one neighbouring SEZ city will be unhappy due to jealousy. \n\n\n\n\n\n\nLet **x** be the number of happy cities and **y** be the number of unhappy cities. Ciel's goal is to maximize the value of **(x - y)**. Please output the maximal value of **(x - y)**.",
+    "constraints": [],
+    "inputFormat": "There will be exactly one test case in a single test file. \nThe first line will contain two space separated integers **n** and **m**. \nIn the next **m** lines, each line will contain two space integers **u, v** denoting that there is a road between city **u** and **v**.\n\n\n\nOutput\n \nPrint a single integer corresponding to the maximal value of **(x - y)**.\n\n\n\nConstraints\n\n**1 ≤ n ≤ 200 **\n**1 ≤ m ≤ 400 **\nThere won't be any self-loop or repeated edges. \n\nSubtasks\n\n5%: n &lt;= 20 \n95%: no other constraints\n\nSample 1:\nInputOutput6 5\n1 2\n2 3\n4 5\n5 6\n6 41\nExplanation:\n\nCiel will select city **1** and **3** as SEZ. So **x = 2** (city **1** and **3**), **y = 1** (city **2**), **x - y = 1**.",
+    "outputFormat": "",
+    "sampleTestCases": []
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Let us make a bipartite graph H = (L, R, E), where each side contains N vertices: left side containing (u_1, u_2, \\ldots, u_N) and right side containing (v_1, v_2, \\ldots v_N). For any edge (a, b) in the original graph G, we add edges (u_a, v_b) and (u_b, v_a) in the new graph. For any subset S of L, the size of N(S) is the same as the size of the neighborhood of the corresponding set in G, hence our task reduces to finding a subset S of L, for which (\\| S \\| - \\| N(S) \\|) is maximum.\n\nHall’s marriage theorem states that in a bipartite graph, the size of the maximum matching is the same as the number of vertices on left side if and only each subset of the vertices on the left side has a neighborhood, whose size is at least as large as this subset, i.e., (\\| S \\| \\leq \\| N(S) \\|), for each subset S of L.\n\nThis means that if we have a perfect matching in H, then (\\| S \\| \\leq \\| N(S) \\|) will hold for each subset of L, hence, the maximum value of (\\| S \\| - \\| N(S) \\|) will be zero. In fact, we can use a generalized form of Hall’s theorem which establishes a relationship between the size of matching matching of H, and the maximum value of (\\| S \\| - \\| N(S) \\|).\n\n**Lemma 2:** In a bipartite graph with N vertices on the left side, the maximum value of (\\| S \\| - \\| N(S) \\|), S being a subset of left side vertices, will be (N - k), where k is the size of the maximum matching (Theorem 6.3 in this paper)\n\n**Proof:**\n\nWe first prove that the (\\| S \\| - \\| N(S) \\|) \\leq (N - k).\n\nThe size of the maximum matching is k, hence exactly (N - k) vertices on the left side are unmatched. Now, if we add (N - k) vertices on the right side of the bipartite graph, and connect them with each vertex of the left side, the resulting graph will have a matching of size N. Also we have increased the neighborhood of each non-empty subset of the left side vertices by (N - k).  According to Hall’s theorem, in the new graph each subset of left side vertices will have a neighborhood at least as large as the subset itself, i.e., (\\| S \\| \\leq \\| N(S) \\|) + (N - k), or in other words, \\text{max} (\\| S \\| - \\| N(S) \\|) \\leq (N - k).\n\nOn the other hand, if the maximum value of (\\| S \\| - \\| N(S) \\|) is x, then we add x vertices on the right side and connect them with each vertex of the left side, which will increase the neighborhood of each subset S by x, i.e., in the new graph each subset of the left side vertices will have a neighborhood at least as large the subset. This means the new graph must have a matching of size of N according to Hall’s theorem. Since, we have added only x vertices, we can increase the size of maximum matching by at most x, i.e., N \\leq (k + x) (equivalently, (N - k) \\leq x). This completes the proof of the lemma.\n\nThis means, in order to solve our problem, we only need to compute the size of maximum matching in the graph H, which can be done in O (EN^{0.5}) time using Hopcroft-Karp algorithm.\n\nIn this section, we discuss an approach based on linear programming, which is slower than the maximum matching based solution, but still runs in polynomial time, and will fit in time for the given constraints.\n\nLet us formulate our problem in terms of linear constraints. We have discussed in the first section that the problem is equivalent to picking x_1, x_2, \\cdots, x_N and y_1, y_2, \\cdots, y_N from the set \\{0, 1\\}, such that the following constraints are satisfied:\n\nIf vertex i has neighbors  j_1, j_2, \\cdots, j_k, then\n\ny_i = \\text{max} (x_{j_1}, x_{j_2}, \\cdots, x_{j_k}).\n\nWe can write this in terms of linear constraints as follows:\n\nx_{j_1} \\leq y_i\n\nx_{j_2} \\leq y_i\n\n…\n\nx_{j_k} \\leq y_i\n\ny_i \\leq (x_{j_1} + x_{j_2} + \\cdots + x_{j_k})\n\nWe also have boundary constraints on the value of $x_i$’s\n\n0 \\leq x_i \\leq 1\n\nThe boundary constraints of the value of y_i's will be satisfied implicitly by the above constraints. The objective is to maximize the function.\n\n(x_1 + x_2 + \\cdots + x_N) - (y_1 + y_2 + \\cdots + y_N)\n\nNote that, the optimization function will decrease if we increase the value of $y_i$’s, hence, we can remove the constraint\n\ny_i \\leq (x_{j_1} + x_{j_2} + \\cdots + x_{j_k}),\n\nas it will be forced by the optimization function anyway.\n\nSo, our Integer Linear programming formulation looks as follows:\n\n0 \\leq x_i \\leq 1\n\nFor edge (u, v): x_u \\leq y_v, x_v \\leq y_u\n\n\\text{maximize} (x_1 + x_2 + \\cdots + x_N) - (y_1 + y_2 + \\cdots + y_N)\n\nWe have 2  (N + M) linear constraints, and an extra constraint that all x_i and $y_i$’s must be integers. The extra constraint makes the problem hard.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

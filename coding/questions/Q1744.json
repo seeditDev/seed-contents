@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1744",
+  "title": "Chef Counts Target Sum",
+  "slug": "chef-counts-target-sum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of integers and a target sum. Chef wants to build expressions by assigning either **+++** or **−-−** sign before each integer in the array and then adding all the signed integers.\n\nChef evaluates each expression and wants to know how many **different expressions** result in a value exactly equal to the target sum.\n\nIf multiple sign assignments lead to the target sum, each of them is counted as a valid expression.\n\nYour task is to help Chef count the **total number of valid expressions**.\n\nFunction Declaration\n\n**Function Name**\n\n\n\n**countTargetSumExpressionscountTargetSumExpressionscountTargetSumExpressions**\n\n\n\n**Parameters**\n\n\n\n\n**numbersnumbersnumbers** A list of integers representing Chef’s array.\n\n\n\n\n**targetSumtargetSumtargetSum** (`int`)\nThe target value that the final expression must evaluate to.\n\n\n\n\n\n\n**Return Value**\n\n\n\nReturns an `int` representing the **number of different expressions** that evaluate to targetSumtargetSumtargetSum.\n\n\nConstraints\n1≤T≤1001 ≤ T ≤ 1001≤T≤100\n1≤N≤201 ≤ N ≤ 201≤N≤20\n0≤numbers[i]≤10000 ≤ numbers[i] ≤ 10000≤numbers[i]≤1000\n0≤0 ≤0≤ sum of all numbers ≤1000≤ 1000≤1000\n−1000≤targetSum≤1000-1000 ≤ targetSum ≤ 1000−1000≤targetSum≤1000",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "Input Format\n\n\nThe first line contains a single integer **TTT** — the number of test cases.\n\n\n\n\nEach test case consists of:\n\n\n\nFirst line containing integer **NNN** — the size of the array.\nSecond line containing **NNN** space-separated integers representing the array numbersnumbersnumbers.\nThird line containg **targetSumtargetSumtargetSum** — the target value\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the **number of different expressions** Chef can build that evaluate to the given targetSumtargetSumtargetSum.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n5\n1 2 3 4 5\n3\n3\n1 1 1\n0\n4\n0 0 0 0\n1\n3\n2 2 2\n6",
+        "output": "3\n0\n0\n1",
+        "explanation": "Explanation:\nTest Case 1 :\nArray: [1, 2, 3, 4, 5], Target sum: 3\nThere are 3 valid ways to assign '+' and '-' signs such that the total sum becomes 3:\n\n(+1 +2 -3 +4 -5)\n(+1 -2 +3 -4 +5)\n(-1 +2 +3 +4 -5)\n\nHence, the output is 3.\nTest Case 2 :\nArray: [1, 1, 1], Target sum: 0\nThere are actually 0 ways to get target sum 0.\nHence, the output is 0.\nTest Case 3 :\nArray: [0, 0, 0, 0], Target sum: 1\nEach element is 0, so the sum of the expression will always be 0 regardless of the sign assignments.\nIt is not possible to reach a target sum of 1.\nHence, the output is 0.\nTest Case 4 :\nArray: [2, 2, 2], Target sum: 6\nThe target sum can be achieved only when all numbers are assigned the '+' sign:\n\n(+2 +2 +2)\n\nHence, there is exactly 1 valid way."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n5\n1 2 3 4 5\n3\n3\n1 1 1\n0\n4\n0 0 0 0\n1\n3\n2 2 2\n6",
+        "expectedOutput": "3\n0\n0\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N×S)O(N \\times S)O(N×S) .",
+    "spaceComplexity": "O(S)O(S)O(S).",
+    "code": {
+      "C++": "    int countTargetSumExpressions(vector<int>& numbers, int targetSum) {\n        long long totalSum = accumulate(numbers.begin(), numbers.end(), 0LL);\n        \n        // Validation:\n        // 1. Total sum must be sufficient to reach target\n        // 2. (TotalSum + Target) must be even for P to be an integer\n        if (totalSum < abs(targetSum) || (totalSum + targetSum) % 2 != 0) {\n            return 0;\n        }\n        \n        int subsetTarget = (totalSum + targetSum) / 2;\n        \n        // DP Table: dp[i] = number of ways to get sum 'i'\n        vector<int> dp(subsetTarget + 1, 0);\n        dp[0] = 1; // Base Case\n        \n        for (int num : numbers) {\n            // Iterate backwards to avoid using the same number twice in one step\n            for (int i = subsetTarget; i >= num; i--) {\n                dp[i] += dp[i - num];\n            }\n        }\n        \n        return dp[subsetTarget];\n    }",
+      "Python3": "def countTargetSumExpressions(numbers: list[int], targetSum: int) -> int:\n    total_sum = sum(numbers)\n    \n    # Validation\n    if total_sum < abs(targetSum) or (total_sum + targetSum) % 2 != 0:\n        return 0\n        \n    subset_target = (total_sum + targetSum) // 2\n    \n    # Initialize DP table\n    dp = [0] * (subset_target + 1)\n    dp[0] = 1\n    \n    for num in numbers:\n        for i in range(subset_target, num - 1, -1):\n            dp[i] += dp[i - num]\n            \n    return dp[subset_target]",
+      "C": "int countTargetSumExpressions(int* numbers, int n, int targetSum) {\n    long long totalSum = 0;\n    for (int i = 0; i < n; i++) totalSum += numbers[i];\n    \n    // Validation\n    if (totalSum < abs(targetSum) || (totalSum + targetSum) % 2 != 0) {\n        return 0;\n    }\n    \n    int subsetTarget = (totalSum + targetSum) / 2;\n    \n    // Use calloc to initialize DP array with 0\n    int* dp = (int*)calloc(subsetTarget + 1, sizeof(int));\n    if (dp == NULL) return 0;\n    \n    dp[0] = 1; // Base Case\n    \n    for (int i = 0; i < n; i++) {\n        for (int j = subsetTarget; j >= numbers[i]; j--) {\n            dp[j] += dp[j - numbers[i]];\n        }\n    }\n    \n    int result = dp[subsetTarget];\n    free(dp);\n    return result;\n}",
+      "Java": "class Codechef {\n    public static int countTargetSumExpressions(int[] numbers, int targetSum) {\n        int totalSum = 0;\n        for (int num : numbers) totalSum += num;\n        \n        // Validation\n        if (totalSum < Math.abs(targetSum) || (totalSum + targetSum) % 2 != 0) {\n            return 0;\n        }\n        \n        int subsetTarget = (totalSum + targetSum) / 2;\n        int[] dp = new int[subsetTarget + 1];\n        dp[0] = 1; // Base Case\n        \n        for (int num : numbers) {\n            for (int i = subsetTarget; i >= num; i--) {\n                dp[i] += dp[i - num];\n            }\n        }\n        \n        return dp[subsetTarget];\n    }",
+      "JavaScript": "function countTargetSumExpressions(numbers, targetSum) {\n    const totalSum = numbers.reduce((a, b) => a + b, 0);\n    \n    // Validation\n    if (totalSum < Math.abs(targetSum) || (totalSum + targetSum) % 2 !== 0) {\n        return 0;\n    }\n    \n    const subsetTarget = (totalSum + targetSum) / 2;\n    const dp = new Array(subsetTarget + 1).fill(0);\n    dp[0] = 1;\n    \n    for (const num of numbers) {\n        for (let i = subsetTarget; i >= num; i--) {\n            dp[i] += dp[i - num];\n        }\n    }\n    \n    return dp[subsetTarget];\n}"
+    }
+  }
+}

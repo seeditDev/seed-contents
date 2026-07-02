@@ -1,0 +1,83 @@
+{
+  "questionId": "Q1315",
+  "title": "Recover the BST",
+  "slug": "recover-the-bst",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary search tree, where exactly two nodes of the tree were swapped by mistake. Recover the tree without changing its structure.\n\nExample:\n\n\n\n\nInput Format\n\nThe first line of the input contains s single integer NNN — the number of nodes in the binary search tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nComplete the given function by recovering the BST without modifying its structure and return the root of the BST.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "No pair of pip_ipi​ and cic_ici​ is repeated in any test case.",
+      "There are no duplicate nodes."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "12\n29 9 L\n29 37 R\n39 29 L\n39 58 R\n58 56 L\n100 39 L\n100 96 R\n89 81 L\n96 89 L\n96 65 R\n65 97 L",
+        "output": "OK! BST recovered. Well done!",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "12\n29 9 L\n29 37 R\n39 29 L\n39 58 R\n58 56 L\n100 39 L\n100 96 R\n89 81 L\n96 89 L\n96 65 R\n65 97 L",
+        "expectedOutput": "OK! BST recovered. Well done!",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\n    Node* first_node = NULL;\n    Node* second_node = NULL;\n    Node* prev_node = new Node(INT_MIN);\n    void traverse(Node* root) {\n        \n        if (root == NULL)\n            return;\n            \n        traverse(root->left);\n        \n        if (first_node == NULL && prev_node->val >= root->val) {\n            first_node = prev_node;\n        }\n\n        if (first_node != NULL && prev_node->val >= root->val) {\n            second_node = root;\n        }        \n        prev_node = root;\n\n        traverse(root->right);\n   }\n  public:\n    Node* recoverBST(Node* root) {\n        traverse(root);\n        int temp = first_node->val;\n        first_node->val = second_node->val;\n        second_node->val = temp;\n        return root;\n    }\n};",
+      "Python3": "class Solution:\n    def __init__(self):\n        self.first_node = None\n        self.second_node = None\n        self.prev_node = Node(float('-inf'))\n\n    def traverse(self, root):\n        if root is None:\n            return\n\n        self.traverse(root.left)\n\n        if self.first_node is None and self.prev_node.val >= root.val:\n            self.first_node = self.prev_node\n\n        if self.first_node is not None and self.prev_node.val >= root.val:\n            self.second_node = root\n\n        self.prev_node = root\n\n        self.traverse(root.right)\n\n    def recoverBST(self, root):\n        self.traverse(root)\n        if self.first_node and self.second_node:\n            self.first_node.val, self.second_node.val = self.second_node.val, self.first_node.val\n        return root\n",
+      "C": " /*\nstruct TreeNode {\n    int value;\n    struct TreeNode* left;\n    struct TreeNode* right;\n};\n*/\n\n\n// Struct to encapsulate the solution state for recovering the BST\nstruct RecoverBSTHelper {\n    struct TreeNode* firstIncorrectNode;\n    struct TreeNode* secondIncorrectNode;\n    struct TreeNode* previousNode;\n};\n\n// Function to traverse the tree and find the two nodes that are swapped\nvoid findSwappedNodes(struct RecoverBSTHelper* helper, struct TreeNode* root) {\n    if (root == NULL)\n        return;\n\n    // In-order traversal: left subtree\n    findSwappedNodes(helper, root->left);\n\n    // Check if the current node violates the BST property\n    if (helper->firstIncorrectNode == NULL && helper->previousNode->value >= root->value) {\n        helper->firstIncorrectNode = helper->previousNode;\n    }\n    if (helper->firstIncorrectNode != NULL && helper->previousNode->value >= root->value) {\n        helper->secondIncorrectNode = root;\n    }\n\n    helper->previousNode = root;\n\n    // In-order traversal: right subtree\n    findSwappedNodes(helper, root->right);\n}\n\n// Function to recover the BST by swapping the values of the two incorrect nodes\nstruct TreeNode* recoverBinarySearchTree(struct TreeNode* root) {\n    struct RecoverBSTHelper helper;\n    helper.firstIncorrectNode = NULL;\n    helper.secondIncorrectNode = NULL;\n    helper.previousNode = createTreeNode(INT_MIN);  // Initialize previous node with the smallest possible value\n\n    findSwappedNodes(&helper, root);\n\n    // Swap the values of the incorrect nodes\n    if (helper.firstIncorrectNode != NULL && helper.secondIncorrectNode != NULL) {\n        int temp = helper.firstIncorrectNode->value;\n        helper.firstIncorrectNode->value = helper.secondIncorrectNode->value;\n        helper.secondIncorrectNode->value = temp;\n    }\n\n    return root;\n}\n",
+      "Java": "class Solution {\n    Node firstNode = null;\n    Node secondNode = null;\n    Node prevNode = new Node(Integer.MIN_VALUE);\n\n    void traverse(Node root) {\n        if (root == null) return;\n\n        traverse(root.left);\n\n        if (firstNode == null && prevNode.val >= root.val) {\n            firstNode = prevNode;\n        }\n\n        if (firstNode != null && prevNode.val >= root.val) {\n            secondNode = root;\n        }\n\n        prevNode = root;\n\n        traverse(root.right);\n    }\n\n    Node recoverBST(Node root) {\n        traverse(root);\n        if (firstNode != null && secondNode != null) {\n            int temp = firstNode.val;\n            firstNode.val = secondNode.val;\n            secondNode.val = temp;\n        }\n        return root;\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction recoverBST(root) {\n    let nodes = inorderTraversal(root);\n    let first = null, second = null, prev = null;\n\n    for (let i = 0; i < nodes.length - 1; i++) {\n        let current = nodes[i];\n        let next = nodes[i + 1];\n\n        if (current.val > next.val) {\n            if (!first) {\n                first = current;\n            }\n            second = next;\n        }\n    }\n\n    if (first && second) {\n        let temp = first.val;\n        first.val = second.val;\n        second.val = temp;\n    }\n    \n    return root;\n}\n"
+    }
+  }
+}

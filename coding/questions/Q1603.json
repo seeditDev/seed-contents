@@ -1,0 +1,103 @@
+{
+  "questionId": "Q1603",
+  "title": "Count All Subsequences with Sum K",
+  "slug": "count-all-subsequences-with-sum-k",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an array numsnumsnums containing nnn integers and an integer kkk.\n\nYour task is to **find the total number of non-empty subsequences** of numsnumsnums such that the **sum of elements in the subsequence equals** kkk.\n\nA subsequence of an array is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements.\n\n**Notes: if there are duplicate values, they are treated as different values**\n\nFunction DeclarationFunction NamecountSubsequencescountSubsequencescountSubsequences – This function counts the number of non-empty subsequences whose sum is equal to kkk.\n\nParameters\nnumsnumsnums : A number array containing the elements.\nkkk : A number representing the target sum.\nReturn Value\nReturns an integer — the total number of non-empty subsequences whose sum equals kkk. Return 0 if there are no subsequence with the given sum.\nConstraints\n1≤n≤201 ≤ n ≤ 201≤n≤20\n1≤nums[i]≤1001 ≤ nums[i] ≤ 1001≤nums[i]≤100\n1≤k≤20001 ≤ k ≤ 20001≤k≤2000\nThe subsequence must be **non-empty**\nOrder of elements must be preserved\n\nInput Format\nThe first line contains two integers nnn and kkk — the number of elements in the array and the target sum.\n\n\nThe second line contains nnn space-separated integers representing the elements of the array numsnumsnums.\n\n\n\nOutput Format\nPrint a single integer — the number of subsequences whose sum is equal to kkk.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 8\n2 3 5 1 4",
+        "output": "3",
+        "explanation": "Explanation:\nValid subsequences with sum 8 are:\n\n[3, 5]\n[2, 5, 1]\n[3, 1, 4]\n\nTotal = 3"
+      },
+      {
+        "id": "sample_2",
+        "input": "4 6\n1 2 3 4",
+        "output": "2",
+        "explanation": "Explanation:\nSubsequences with sum = 6 are:\n\n[2, 4]\n[1, 2, 3]\nHence, output = 2"
+      },
+      {
+        "id": "sample_3",
+        "input": "2 2\n2 2",
+        "output": "2",
+        "explanation": "Explanation:\nSubsequences with sum = 2 are:\n\n[2] 0 index\n[2] 1 index \nHence, output = 2"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 8\n2 3 5 1 4",
+        "expectedOutput": "3",
+        "weight": 33
+      },
+      {
+        "id": "tc_2",
+        "input": "4 6\n1 2 3 4",
+        "expectedOutput": "2",
+        "weight": 33
+      },
+      {
+        "id": "tc_3",
+        "input": "2 2\n2 2",
+        "expectedOutput": "2",
+        "weight": 34
+      }
+    ],
+    "totalTestCases": 3,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      33,
+      33,
+      34
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(2^(n/2) * log(2^(n/2)))",
+    "spaceComplexity": "O(2^(n/2))",
+    "code": {
+      "C++": "int backtrack(int index, int currentSum, bool taken,\n              vector<int>& nums, int k) {\n\n    // Base case\n    if (index == nums.size()) {\n        return (currentSum == k && taken) ? 1 : 0;\n    }\n\n    // Include current element\n    int include = backtrack(\n        index + 1,\n        currentSum + nums[index],\n        true,\n        nums,\n        k\n    );\n\n    // Exclude current element\n    int exclude = backtrack(\n        index + 1,\n        currentSum,\n        taken,\n        nums,\n        k\n    );\n\n    return include + exclude;\n}\n\nint countSubsequences(vector<int>& nums, int k) {\n    return backtrack(0, 0, false, nums, k);\n}",
+      "Python3": "def backtrack(index, current_sum, taken, nums, k):\n    # Base case\n    if index == len(nums):\n        return 1 if current_sum == k and taken else 0\n\n    # Include current element\n    include = backtrack(\n        index + 1,\n        current_sum + nums[index],\n        True,\n        nums,\n        k\n    )\n\n    # Exclude current element\n    exclude = backtrack(\n        index + 1,\n        current_sum,\n        taken,\n        nums,\n        k\n    )\n\n    return include + exclude\n\n\ndef countSubsequences(nums, k):\n    return backtrack(0, 0, False, nums, k)",
+      "C": "int backtrack(int index, int currentSum, int taken,\n              int nums[], int n, int k) {\n\n    // Base case\n    if (index == n) {\n        return (currentSum == k && taken) ? 1 : 0;\n    }\n\n    // Include current element\n    int include = backtrack(\n        index + 1,\n        currentSum + nums[index],\n        1,\n        nums,\n        n,\n        k\n    );\n\n    // Exclude current element\n    int exclude = backtrack(\n        index + 1,\n        currentSum,\n        taken,\n        nums,\n        n,\n        k\n    );\n\n    return include + exclude;\n}\n\nint countSubsequences(int nums[], int n, int k) {\n    return backtrack(0, 0, 0, nums, n, k);\n}",
+      "Java": "public static int backtrack(int index, int currentSum, boolean taken,\n                            int[] nums, int k) {\n\n    // Base case\n    if (index == nums.length) {\n        return (currentSum == k && taken) ? 1 : 0;\n    }\n\n    // Include current element\n    int include = backtrack(\n        index + 1,\n        currentSum + nums[index],\n        true,\n        nums,\n        k\n    );\n\n    // Exclude current element\n    int exclude = backtrack(\n        index + 1,\n        currentSum,\n        taken,\n        nums,\n        k\n    );\n\n    return include + exclude;\n}\n\npublic static int countSubsequences(int[] nums, int k) {\n    return backtrack(0, 0, false, nums, k);\n}",
+      "JavaScript": "function backtrack(index, currentSum, taken, nums, k) {\n    // Base case\n    if (index === nums.length) {\n        return (currentSum === k && taken) ? 1 : 0;\n    }\n\n    // Include current element\n    const include = backtrack(\n        index + 1,\n        currentSum + nums[index],\n        true,\n        nums,\n        k\n    );\n\n    // Exclude current element\n    const exclude = backtrack(\n        index + 1,\n        currentSum,\n        taken,\n        nums,\n        k\n    );\n\n    return include + exclude;\n}\n\nfunction countSubsequences(nums, k) {\n    return backtrack(0, 0, false, nums, k);\n}"
+    }
+  }
+}

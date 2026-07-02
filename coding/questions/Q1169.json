@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1169",
+  "title": "Your Name is Mine",
+  "slug": "your-name-is-mine",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "In an attempt to control the rise in population, **Archer** was asked to come up with a plan. This time he is targeting marriages. Archer, being as intelligent as he is, came up with the following plan:\n\nA man with name **M** is allowed to marry a woman with name **W**, only if **M** is a subsequence of **W** or **W** is a subsequence of **M**.\n\n**A** is said to be a subsequence of **B**, if **A** can be obtained by deleting some elements of **B** without changing the order of the remaining elements.\n\nYour task is to determine whether a couple is allowed to marry or not, according to Archer's rule.",
+    "constraints": [
+      "**1 ≤ T ≤ 100**",
+      "**1 ≤ |M|, |W| ≤ 25000 (|A| denotes the length of the string A.)**",
+      "All names consist of lowercase English letters only."
+    ],
+    "inputFormat": "The first line contains an integer **T**, the number of test cases. **T** test cases follow. Each test case contains two space separated strings **M** and **W**.",
+    "outputFormat": "For each test case print `\"YES\"` if they are allowed to marry, else print `\"NO\"`. (quotes are meant for clarity, please don't print them)",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\njohn johanna\nira ira\nkayla jayla",
+        "output": "YES\nYES\nNO",
+        "explanation": "Explanation:\nCase 1: Consider S = \"johanna\". So, S[0] = 'j', S[1] = 'o', S[2] = 'h' and so on. If we remove the indices [3, 4, 6] or [3, 5, 6] from S, it becomes \"john\". Hence \"john\" is a subsequence of S, so the answer is \"YES\".\nCase 2: Any string is a subsequence of it self, as it is formed after removing \"0\" characters. Hence the answer is \"YES\".\nCase 3: \"jayla\" can not be attained from \"kayla\" as removing any character from \"kayla\" would make the string length smaller than \"jayla\", also there is no 'j' in \"kayla\". Similar reasoning can be applied to see why \"kayla\" can't be attained from \"jayla\". Hence the answer is \"NO\"."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\njohn johanna\nira ira\nkayla jayla",
+        "expectedOutput": "YES\nYES\nNO",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nbool checkSub(const string &m, const string &w) {\n    int l1 = m.length();\n    int l2 = w.length();\n    int i = 0, j = 0;\n\n    while (i < l1 && j < l2) {\n        if (m[i] == w[j]) {\n            i++;\n        }\n        j++;\n    }\n\n    return (i == l1);\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        string m, w;\n        cin >> m >> w;\n\n        if (checkSub(m, w) || checkSub(w, m)) {\n            cout << \"YES\" << endl;\n        } else {\n            cout << \"NO\" << endl;\n        }\n    }\n\n    return 0;\n}\n",
+      "Python3": "# cook your dish here\ndef checkSub(m , w):\n    \n    l1 = len(m)\n    l2 = len(w)\n    i = 0\n    j = 0 \n    \n    while i < l1 and j < l2:\n        if m[i] == w[j]:\n            i+=1 \n            j+=1 \n        else:\n            j+=1 #j is ptr => str\n    \n    if i == l1:\n        return True \n    return False\nt = int(input())\nfor _ in range(t):\n    m , w = input().split()\n    \n    if checkSub(m, w) or checkSub(w , m):\n        print('YES')\n    else:\n        print('NO')",
+      "C": "#include <stdio.h>\n#include <string.h>\n#include <stdbool.h>\n\nbool checkSub(const char *m, const char *w) {\n    int l1 = strlen(m);\n    int l2 = strlen(w);\n    int i = 0, j = 0;\n\n    while (i < l1 && j < l2) {\n        if (m[i] == w[j]) {\n            i++;\n        }\n        j++;\n    }\n\n    return (i == l1);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        char m[25001], w[25001]; // Assuming the maximum length of the strings is 99\n        scanf(\"%s %s\", m, w);\n\n        if (checkSub(m, w) || checkSub(w, m)) {\n            printf(\"YES\\n\");\n        } else {\n            printf(\"NO\\n\");\n        }\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    // Method to check if 'm' is a subsequence of 'w'\n    static boolean checkSub(String m, String w) {\n        int l1 = m.length();\n        int l2 = w.length();\n        int i = 0, j = 0;\n\n        while (i < l1 && j < l2) {\n            if (m.charAt(i) == w.charAt(j)) {\n                i++;\n            }\n            j++;\n        }\n\n        return (i == l1);\n    }\n\n    public static void main(String[] args) throws java.lang.Exception {\n        Scanner scanner = new Scanner(System.in);\n        \n        int t = scanner.nextInt(); // Read number of test cases\n        while (t-- > 0) {\n            String m = scanner.next(); // Read first string\n            String w = scanner.next(); // Read second string\n\n            // Check if either string is a subsequence of the other\n            if (checkSub(m, w) || checkSub(w, m)) {\n                System.out.println(\"YES\");\n            } else {\n                System.out.println(\"NO\");\n            }\n        }\n\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "// your code goes here\nconst fs = require('fs');\n\n// Helper function to check if shortStr is a subsequence of longStr\nfunction isSubsequence(shortStr, longStr) {\n    let i = 0; // Pointer for shortStr\n    let j = 0; // Pointer for longStr\n    \n    while (i < shortStr.length && j < longStr.length) {\n        if (shortStr[i] === longStr[j]) {\n            i++; // Match found, move to the next character in shortStr\n        }\n        j++; // Always move to the next character in longStr\n    }\n    \n    // If we've traversed all characters in shortStr, it's a valid subsequence\n    return i === shortStr.length;\n}\n\nfunction solve() {\n    // Read all input from standard input (file descriptor 0)\n    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\n    \n    // Handle empty input edge case\n    if (input.length === 0 || input[0] === '') return;\n    \n    const T = parseInt(input[0], 10);\n    let currentIdx = 1;\n    const results = [];\n    \n    for (let t = 0; t < T; t++) {\n        const M = input[currentIdx++];\n        const W = input[currentIdx++];\n        \n        let possible = false;\n        \n        // Always check the shorter string against the longer string\n        if (M.length <= W.length) {\n            possible = isSubsequence(M, W);\n        } else {\n            possible = isSubsequence(W, M);\n        }\n        \n        results.push(possible ? \"YES\" : \"NO\");\n    }\n    \n    // Print all results efficiently joined by newline\n    console.log(results.join('\\n'));\n}\n\nsolve();"
+    }
+  }
+}

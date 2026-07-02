@@ -1,0 +1,78 @@
+{
+  "questionId": "Q2208",
+  "title": "Treasure Hunting",
+  "slug": "treasure-hunting",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Treasure Hunting is a great computer game that has attracted generations of Bytelandian children.\nIn the game, there is a maze divided into N×NN \\times NN×N squares.\n\n\nDave starts in the top-left corner, which is square (1,1)(1,1)(1,1), and needs to go to the bottom-right corner, which is square (N,N)(N,N)(N,N).\nSome of the squares are blocked and some of the squares contain treasures.\nDave needs to capture all the treasures in the maze before going to square (N,N)(N,N)(N,N).\nIn each second, Dave can go to one of its four adjacent squares (if the destination is not blocked).\nFind the earliest time that Dave can reach the destination (N,N)(N,N)(N,N) after collecting all the treasures in the maze.\n\n\nInput Format\n\nThe first line contains TTT, the number of test cases. Then TTT test cases follow.\nThe first line of each testcase contains NNN, the size of the maze\nThe NNN following lines describe the maze. The meaning of the symbols is as follows:\n\n'.' : an empty square\n'*' : a treasure\n'#' : a blocked square\n\n\n\n\nOutput Format\nFor each test case, print in a single line the earliest time that Dave can reach the destination after collecting all the treasures. If Dave cannot reach the destination, print -1.",
+    "constraints": [
+      "1≤T≤151 \\leq T \\leq 151≤T≤15",
+      "1≤N≤131 \\leq N \\leq 131≤N≤13",
+      "The number of treasures in the maze does not exceed 13.",
+      "Squares (1,1)(1,1)(1,1) and (N,N)(N,N)(N,N) are always empty."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n3\n...\n.##\n*#.\n3\n..*\n...\n...\n3\n..*\n*..\n...\n4\n....\n.#.*\n.#*.\n**#.",
+        "output": "-1\n4\n6\n16",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n3\n...\n.##\n*#.\n3\n..*\n...\n...\n3\n..*\n*..\n...\n4\n....\n.#.*\n.#*.\n**#.",
+        "expectedOutput": "-1\n4\n6\n16",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The approach starts by scanning the maze to find all treasure positions and storing their coordinates. Each treasure is represented by a unique bit in a binary bitmask to track the treasures Dave has collected. Once all treasures are located, a target bitmask is defined to represent the state where all treasures are collected.\n\nThe solution uses `Breadth-First Search` (BFS), starting from the `top-left` corner. BFS explores the maze level by level, ensuring the shortest path to collect all treasures and reach the destination. At each step, we check if Dave collects a treasure and update the bitmask accordingly. A `3D` visited array tracks each cell’s state to avoid reprocessing.\n\nBFS continues until Dave reaches the bottom-right corner with all treasures collected, returning the time taken. If no valid path exists, the result is -1.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint dx[] = {0, 0, 1, -1};\nint dy[] = {1, -1, 0, 0};\n\nint solveMaze(int n, vector<string>& maze) {\n    int totalTreasures = 0;\n    vector<pair<int, int>> treasurePositions;\n    \n    // Identify treasures and map them to bits\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < n; ++j) {\n            if (maze[i][j] == '*') {\n                treasurePositions.push_back({i, j});\n                totalTreasures++;\n            }\n        }\n    }\n    \n    int allTreasuresMask = (1 << totalTreasures) - 1;\n    \n    // BFS Queue\n    queue<tuple<int, int, int, int>> q;\n    q.push({0, 0, 0, 0}); // (x, y, collected_bitmask, time)\n    vector<vector<vector<bool>>> visited(n, vector<vector<bool>>(n, vector<bool>(1 << totalTreasures, false)));\n    visited[0][0][0] = true;\n    \n    while (!q.empty()) {\n        auto [x, y, collected, time] = q.front();\n        q.pop();\n        \n        // Collect a treasure if at the position\n        for (int t = 0; t < treasurePositions.size(); ++t) {\n            if (maze[x][y] == '*' && x == treasurePositions[t].first && y == treasurePositions[t].second) {\n                collected |= (1 << t);\n            }\n        }\n        \n        // Check if all treasures collected and reached end\n        if (collected == allTreasuresMask && x == n - 1 && y == n - 1) {\n            return time;\n        }\n        \n        // Explore all four directions\n        for (int dir = 0; dir < 4; ++dir) {\n            int nx = x + dx[dir];\n            int ny = y + dy[dir];\n            \n            if (nx >= 0 && nx < n && ny >= 0 && ny < n && maze[nx][ny] != '#' && !visited[nx][ny][collected]) {\n                visited[nx][ny][collected] = true;\n                q.push({nx, ny, collected, time + 1});\n            }\n        }\n    }\n    \n    return -1; // If destination is not reachable\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<string> maze(N);\n        for (int i = 0; i < N; ++i) {\n            cin >> maze[i];\n        }\n        cout << solveMaze(N, maze) << endl;\n    }\n    \n    return 0;\n}"
+    }
+  }
+}

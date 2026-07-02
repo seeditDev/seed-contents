@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1299",
+  "title": "ZigZag Traversal",
+  "slug": "zigzag-traversal",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, print the zigzag level order traversal of its nodes. (i.e., from left to right, then right to left for the next level and alternate between).\n\nFor example, the zigzag traversal of the following binary tree is: \n\n1 \n\n3 2 \n\n4 5\n\n\n\n\nOutput Format\nOutput on the L separate lines, NNN space separated integers - its nodes in the zigzag level order traversal of the given tree, where L is total no. of levels in the given tree.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "1\n3 2\n4 5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "1\n3 2\n4 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    void zigzagTraversal(Node* root) {\n        if (root == nullptr) {\n           return;\n        }\n\n        vector<vector<int> > result;\n        queue<Node*> nodesQueue;\n        nodesQueue.push(root);\n        bool leftToRight = true;\n    \n        while (!nodesQueue.empty()) {\n            int size = nodesQueue.size();\n            vector<int> row(size);\n    \n            for (int i = 0; i < size; i++) {\n                Node* node = nodesQueue.front();\n                nodesQueue.pop();\n    \n                // find position to fill node's value\n                int index = (leftToRight) ? i : (size - 1 - i);\n                row[index] = node->val;\n    \n                if (node->left) {\n                    nodesQueue.push(node->left);\n                }\n                if (node->right) {\n                    nodesQueue.push(node->right);\n                }\n            }\n    \n            // after this level\n            leftToRight = !leftToRight;\n            result.push_back(row);\n        }\n        for(auto &level_nodes : result){\n            for(int node: level_nodes){\n                cout << node << ' ';\n            }\n            cout << endl;\n        }\n    }\n};",
+      "Python3": "class Solution:\n    def zigzag_traversal(self, root):\n        if not root:\n            return\n\n        result = []\n        nodes_queue = [root]\n        left_to_right = True\n\n        while nodes_queue:\n            size = len(nodes_queue)\n            row = [0] * size\n\n            for i in range(size):\n                node = nodes_queue.pop(0)\n                index = i if left_to_right else (size - 1 - i)\n                row[index] = node.val\n\n                if node.left:\n                    nodes_queue.append(node.left)\n                if node.right:\n                    nodes_queue.append(node.right)\n\n            result.append(row)\n            left_to_right = not left_to_right\n\n        for level_nodes in result:\n            print(\" \".join(map(str, level_nodes)))\n",
+      "C": "void zigzagTraversal(struct Node* root) {\n    if (root == NULL) {\n        return;\n    }\n\n    struct Node* queue[10000];\n    int start = 0, end = 0;\n    int level[10000];\n    int level_start = 0, level_end = 0;\n    int leftToRight = 1;\n\n    queue[end++] = root;\n    level[level_end++] = 0;\n\n    while (start < end) {\n        int size = end - start;\n        int current_level = level[start];\n\n        int row[10000];\n        int row_index = 0;\n\n        for (int i = 0; i < size; i++) {\n            struct Node* node = queue[start++];\n            int index = leftToRight ? i : (size - 1 - i);\n            row[index] = node->val;\n\n            if (node->left != NULL) {\n                queue[end++] = node->left;\n                level[level_end++] = current_level + 1;\n            }\n            if (node->right != NULL) {\n                queue[end++] = node->right;\n                level[level_end++] = current_level + 1;\n            }\n        }\n\n        for (int i = 0; i < size; i++) {\n            printf(\"%d \", row[i]);\n        }\n        printf(\"\\n\");\n\n        leftToRight = !leftToRight;\n    }\n}\n",
+      "Java": "class Solution {\n    public void zigzagTraversal(Node root) {\n        if (root == null) {\n            return;\n        }\n\n        List<List<Integer>> result = new ArrayList<>();\n        Queue<Node> nodeQueue = new LinkedList<>();\n        nodeQueue.offer(root);\n        boolean leftToRight = true;\n\n        while (!nodeQueue.isEmpty()) {\n            int size = nodeQueue.size();\n            List<Integer> row = new ArrayList<>(Collections.nCopies(size, 0));\n\n            for (int i = 0; i < size; i++) {\n                Node node = nodeQueue.poll();\n                int index = (leftToRight) ? i : (size - 1 - i);\n                row.set(index, node.val);\n\n                if (node.left != null) {\n                    nodeQueue.offer(node.left);\n                }\n                if (node.right != null) {\n                    nodeQueue.offer(node.right);\n                }\n            }\n\n            leftToRight = !leftToRight;\n            result.add(row);\n        }\n\n        for (List<Integer> level : result) {\n            for (int val : level) {\n                System.out.print(val + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "JavaScript": "/*\nclass TreeNode {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction zigzagLevelOrderTraversal(root) {\n    if (!root) return [];\n\n    const result = [];\n    const queue = [root];\n    let leftToRight = true;\n\n    while (queue.length > 0) {\n        const levelSize = queue.length;\n        const currentLevel = new Array(levelSize);\n\n        for (let i = 0; i < levelSize; i++) {\n            const node = queue.shift();\n\n            const index = leftToRight ? i : levelSize - 1 - i;\n            currentLevel[index] = node.value;\n\n            if (node.left) queue.push(node.left);\n            if (node.right) queue.push(node.right);\n        }\n\n        leftToRight = !leftToRight;\n\n        result.push(currentLevel);\n    }\n\n    return result;\n}\n\n"
+    }
+  }
+}

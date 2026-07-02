@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1727",
+  "title": "Chef Minimizes Cut Cost",
+  "slug": "chef-minimizes-cut-cost",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has a wooden stick of length **stickLengthstickLengthstickLength** units and must cut it at certain specified positions. The        order in which these cuts are made affects the total cost.\n\n\nThe cost of making a cut is equal to the **length of the stick segment** being cut at that moment.\nAfter each cut, the stick is divided into **two smaller sticks**, which may be cut further.\nChef continues cutting until **all required positions** are cut.\nChef wants to choose the cutting order that results in the **minimum total cost**.\nYour task is to determine this **minimum cost**.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncalculateMinimumCutCostcalculateMinimumCutCostcalculateMinimumCutCost\n\n\n\n**Parameters**\n\n\n\n\nstickLengthstickLengthstickLength (`int`)\nThe total length of the stick.\n\n\n\n\ncutPositionscutPositionscutPositions (`dynamicArray&amp;`)\nA dynamic array of positions where the stick must be cut\n[1≤cutPositions[i]≤stickLength−1][\n1 \\leq cutPositions[i] \\leq stickLength - 1\n][1≤cutPositions[i]≤stickLength−1]\nThe array may be unsorted.\n\n\n\n\n\n\n**Return Value**\n\n\n\nReturns an `int` representing the **minimum total cost** required to perform all cuts.\n\n\nConstraints\n1≤T≤1051 \\le T \\le 10^51≤T≤105\n2≤stickLength≤1062 \\le stickLength \\le 10^62≤stickLength≤106\n1≤numberOfCuts≤min⁡(stickLength−1,100)1 \\le numberOfCuts \\le \\min(stickLength - 1, 100)1≤numberOfCuts≤min(stickLength−1,100)\n1≤cutPositions[i]≤stickLength−11 \\le cutPositions[i] \\le stickLength - 11≤cutPositions[i]≤stickLength−1\nAll values in **cutPositionscutPositionscutPositions** are distinct.\nInput Format\n\nThe first line contains a single integer **TTT** — the number of test cases.\n\n\n\n\nEach test case consists of:\n\n\n\nFirst line containing integer **stickLengthstickLengthstickLength** — the length of the stick.\nSecond line containing integer **numberOfCutsnumberOfCutsnumberOfCuts** — the number **cutPositioncutPositioncutPosition**.\nThird line containing **ArrayArrayArray** integers representing **cutPositionscutPositionscutPositions**.\n\n\nOutput Format\nFor each test case, print a single line containing one integer — the **minimum total cost** Chef must pay to perform all the cuts.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n7\n4\n1 3 4 5\n9\n5\n5 6 1 4 2",
+        "output": "16\n22",
+        "explanation": "Explanation:\nFor t=1t = 1t=1\nCutting at positions 1, 3, 4, and 5 in the order (3, 5, 4, 1) minimizes the total cost to 16 by splitting the stick into smaller segments efficiently.\n\n\nFor t=2t = 2t=2\nPerforming cuts in the order (1, 2, 4, 5, 6) results in a total cost of 22, as it minimizes the sum of segment lengths cut at each step."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n7\n4\n1 3 4 5\n9\n5\n5 6 1 4 2",
+        "expectedOutput": "16\n22",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(n3)O(n^3)O(n3) , where  is the number of cut positions.",
+    "spaceComplexity": "O(n2)O(n^2)O(n2).",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint calculateMinimumCutCost(int stickLength, vector<int>& cutPositions) {\n\n    // Step 1: Add boundaries\n    vector<int> cuts;\n    cuts.push_back(0);\n\n    for (int cut : cutPositions)\n        cuts.push_back(cut);\n\n    cuts.push_back(stickLength);\n\n    // Step 2: Sort cuts\n    sort(cuts.begin(), cuts.end());\n\n    int n = cuts.size();\n\n    // Step 3: DP table\n    vector<vector<int>> dp(n, vector<int>(n, 0));\n\n    // Step 4: Interval DP\n    for (int length = 2; length < n; length++) {\n\n        for (int i = 0; i + length < n; i++) {\n\n            int j = i + length;\n\n            dp[i][j] = INT_MAX;\n\n            for (int k = i + 1; k < j; k++) {\n\n                int cost = dp[i][k]\n                         + dp[k][j]\n                         + (cuts[j] - cuts[i]);\n\n                dp[i][j] = min(dp[i][j], cost);\n            }\n\n            // If no cut possible inside interval\n            if (dp[i][j] == INT_MAX)\n                dp[i][j] = 0;\n        }\n    }\n\n    return dp[0][n - 1];\n}\n",
+      "Python3": "def calculateMinimumCutCost(stickLength, cutPositions):\n    cutPositions = [0] + sorted(cutPositions) + [stickLength]\n    m = len(cutPositions)\n    dp = [[0] * m for _ in range(m)]\n    for length in range(2, m):\n        for left in range(m - length):\n            right = left + length\n            dp[left][right] = min(dp[left][k] + dp[k][right] for k in range(left + 1, right)) + cutPositions[right] - cutPositions[left]\n    return dp[0][m - 1]",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\nint compare(const void* a, const void* b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint calculateMinimumCutCost(int stickLength, int* cutPositions, int numberOfCuts) {\n\n    // Step 1: Create cuts array with boundaries\n    int n = numberOfCuts + 2;\n    int* cuts = (int*)malloc(n * sizeof(int));\n\n    cuts[0] = 0;\n    for (int i = 0; i < numberOfCuts; i++)\n        cuts[i + 1] = cutPositions[i];\n    cuts[n - 1] = stickLength;\n\n    // Step 2: Sort cuts\n    qsort(cuts, n, sizeof(int), compare);\n\n    // Step 3: DP table\n    int** dp = (int**)malloc(n * sizeof(int*));\n    for (int i = 0; i < n; i++) {\n        dp[i] = (int*)calloc(n, sizeof(int));\n    }\n\n    // Step 4: Interval DP\n    for (int length = 2; length < n; length++) {\n\n        for (int i = 0; i + length < n; i++) {\n\n            int j = i + length;\n            dp[i][j] = INT_MAX;\n\n            for (int k = i + 1; k < j; k++) {\n\n                int cost = dp[i][k]\n                         + dp[k][j]\n                         + (cuts[j] - cuts[i]);\n\n                if (cost < dp[i][j])\n                    dp[i][j] = cost;\n            }\n\n            // No cut inside interval\n            if (dp[i][j] == INT_MAX)\n                dp[i][j] = 0;\n        }\n    }\n\n    int result = dp[0][n - 1];\n\n    // Step 5: Free memory\n    for (int i = 0; i < n; i++)\n        free(dp[i]);\n    free(dp);\n    free(cuts);\n\n    return result;\n}\n",
+      "Java": "import java.util.*;\n\nclass Codechef {\n\n    public int calculateMinimumCutCost(int stickLength, int[] cutPositions) {\n\n        // Step 1: Create cuts array with boundaries\n        int n = cutPositions.length + 2;\n        int[] cuts = new int[n];\n\n        cuts[0] = 0;\n        cuts[n - 1] = stickLength;\n\n        for (int i = 0; i < cutPositions.length; i++) {\n            cuts[i + 1] = cutPositions[i];\n        }\n\n        // Step 2: Sort cuts\n        Arrays.sort(cuts);\n\n        // Step 3: DP table\n        int[][] dp = new int[n][n];\n\n        // Step 4: Interval DP\n        for (int length = 2; length < n; length++) {\n\n            for (int i = 0; i + length < n; i++) {\n\n                int j = i + length;\n                dp[i][j] = Integer.MAX_VALUE;\n\n                for (int k = i + 1; k < j; k++) {\n\n                    int cost = dp[i][k]\n                             + dp[k][j]\n                             + (cuts[j] - cuts[i]);\n\n                    dp[i][j] = Math.min(dp[i][j], cost);\n                }\n\n                // No cut inside interval\n                if (dp[i][j] == Integer.MAX_VALUE) {\n                    dp[i][j] = 0;\n                }\n            }\n        }\n\n        return dp[0][n - 1];\n    }\n}\n",
+      "JavaScript": "function calculateMinimumCutCost(stickLength, cutPositions) {\n    cutPositions.push(0, stickLength);\n    cutPositions.sort((a, b) => a - b);\n    const m = cutPositions.length;\n    const dp = Array.from({ length: m }, () => Array(m).fill(0));\n    for (let length = 2; length < m; length++) {\n        for (let left = 0; left + length < m; left++) {\n            const right = left + length;\n            let calculateMinimumCutCost = Infinity;\n            for (let mid = left + 1; mid < right; mid++) {\n                const cost = dp[left][mid] + dp[mid][right] + cutPositions[right] - cutPositions[left];\n                if (cost < calculateMinimumCutCost) calculateMinimumCutCost = cost;\n            }\n            dp[left][right] = calculateMinimumCutCost === Infinity ? 0 : calculateMinimumCutCost;\n        }\n    }\n    return dp[0][m - 1];\n}\nmodule.exports = calculateMinimumCutCost;"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1513",
+  "title": "First and last occurrence of a given number",
+  "slug": "first-and-last-occurrence-of-a-given-number",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a sorted array of integers called arrarrarr in ascending order. Your task is to find the first and last positions of a given integer keykeykey.\n\n\nIf keykeykey is not present in the array, return [−1,−1][-1, -1][−1,−1].\nYour solution must have a runtime complexity of **O(log n)**.\nFunction DeclarationFunction NamesearchRangesearchRangesearchRange – This function finds the first and last occurrence of a given key in a sorted array.\n\nParameters\narrarrarr : A reference to a sorted array of integers (may contain duplicates).\nkeykeykey : The integer value whose first and last positions are to be found.\nReturn Value\nReturns a vector of two integers:\n\nFirst occurrence index of keykeykey\nLast occurrence index of keykeykey\n\n\nReturns [−1,−1][-1, -1][−1,−1] if keykeykey is not present.\nConstraints\n0≤arr.length≤1050 \\leq arr.length \\leq 10^50≤arr.length≤105\n−109≤arr[i]≤109-10^9 \\leq arr[i] \\leq 10^9−109≤arr[i]≤109\narrarrarr is sorted in **non-decreasing order**\n−109≤key≤109-10^9 \\leq key \\leq 10^9−109≤key≤109\n\nInput Format\n\nThe first line contains an integer TTT — number of test cases.\nFor each test case:\n\nOne line containing two integers: nnn and keykeykey\nOne line containing nnn space-separated integers — the sorted array\n\n\n\n\nOutput Format\n\nFor each test case, print two integers:\n\nfirst occurrence index and last occurrence index",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n7 5\n1 3 3 5 5 5 7\n5 7\n2 4 6 8 10\n0 1",
+        "output": "3 5\n-1 -1\n-1 -1",
+        "explanation": "Explanation:\nFor the first test case: 5 can be found at index 3 for the first time and at index 5 for the last time.\nFor the second test case: 7 is not present in the array.\nFor the third test case: there is no element in the array."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n7 5\n1 3 3 5 5 5 7\n5 7\n2 4 6 8 10\n0 1",
+        "expectedOutput": "3 5\n-1 -1\n-1 -1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Find First Occurrence of Target:\n\n\nInitialize two pointers: left = 0, right = array size - 1.\n\n\n\n\nPerform binary search:\n\n\n\nCalculate mid = (left + right) / 2.\nIf array[mid] == target, store mid as a candidate for the first occurrence, and continue searching in the left half by setting right = mid - 1.\nIf array[mid] &lt; target, discard the left half: left = mid + 1.\nIf array[mid] &gt; target, discard the right half: right = mid - 1.\n\n\n\nAt the end, if we found the target, return the smallest index where it appears.\n\n\n\n\nFind Last Occurrence of Target:\n\n\nSimilar binary search, but:\n\n\n\nWhen array[mid] == target, store mid as a candidate for the last occurrence, and continue searching in the right half by setting left = mid + 1.\nOther comparisons remain the same as in step 1.\n\n\n\nReturn the Result:\n\nCombine the first and last occurrence indices into a result array: [first_occurrence, last_occurrence].\nIf the target was never found, both will be -1.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    // Find first occurrence of key\n    int findFirst(const vector<int>& arr, int key) {\n        int left = 0, right = arr.size() - 1;\n        int first = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                first = mid;\n                right = mid - 1;  // Search on the left side\n            }\n        }\n        return first;\n    }\n    \n    // Find last occurrence of key\n    int findLast(const vector<int>& arr, int key) {\n        int left = 0, right = arr.size() - 1;\n        int last = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                last = mid;\n                left = mid + 1;  // Search on the right side\n            }\n        }\n        return last;\n    }\n    \n    // Solve function that returns the result pair\n    vector<int> searchRange(const vector<int>& arr, int key) {\n        int first = findFirst(arr, key);\n        int last = findLast(arr, key);\n        return {first, last};\n    }\n};\n",
+      "Python3": "def find_first(arr, key):\n    left, right = 0, len(arr) - 1\n    first = -1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if arr[mid] < key:\n            left = mid + 1\n        elif arr[mid] > key:\n            right = mid - 1\n        else:\n            first = mid\n            right = mid - 1\n    return first\n\n\ndef find_last(arr, key):\n    left, right = 0, len(arr) - 1\n    last = -1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if arr[mid] < key:\n            left = mid + 1\n        elif arr[mid] > key:\n            right = mid - 1\n        else:\n            last = mid\n            left = mid + 1\n    return last\n\n\ndef search_range(arr, key):\n    first = find_first(arr, key)\n    last = find_last(arr, key)\n    return [first, last]",
+      "C": "// Function to find the first occurrence of key\nint findFirst(int arr[], int n, int key) {\n    int left = 0, right = n - 1;\n    int first = -1;\n    \n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        \n        if (arr[mid] < key) {\n            left = mid + 1;\n        } else if (arr[mid] > key) {\n            right = mid - 1;\n        } else {\n            first = mid;\n            right = mid - 1;  // Continue searching to the left\n        }\n    }\n    \n    return first;\n}\n\n// Function to find the last occurrence of key\nint findLast(int arr[], int n, int key) {\n    int left = 0, right = n - 1;\n    int last = -1;\n    \n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        \n        if (arr[mid] < key) {\n            left = mid + 1;\n        } else if (arr[mid] > key) {\n            right = mid - 1;\n        } else {\n            last = mid;\n            left = mid + 1;  // Continue searching to the right\n        }\n    }\n    \n    return last;\n}\n",
+      "Java": "class Solution {\n    \n    // Find first occurrence of key\n    public int findFirst(int[] arr, int key) {\n        int left = 0, right = arr.length - 1;\n        int first = -1;\n        \n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            \n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                first = mid;\n                right = mid - 1;  // Continue searching to the left\n            }\n        }\n        \n        return first;\n    }\n    \n    // Find last occurrence of key\n    public int findLast(int[] arr, int key) {\n        int left = 0, right = arr.length - 1;\n        int last = -1;\n        \n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            \n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                last = mid;\n                left = mid + 1;  // Continue searching to the right\n            }\n        }\n        \n        return last;\n    }\n    \n    // Public method to get the result range\n    public int[] searchRange(int[] arr, int key) {\n        int first = findFirst(arr, key);\n        int last = findLast(arr, key);\n        return new int[] {first, last};\n    }\n}\n",
+      "JavaScript": "class Solution {\n    findFirst(arr, key) {\n        let left = 0, right = arr.length - 1;\n        let first = -1;\n        \n        while (left <= right) {\n            let mid = Math.floor(left + (right - left) / 2);\n            \n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                first = mid;\n                right = mid - 1;\n            }\n        }\n        \n        return first;\n    }\n    \n    findLast(arr, key) {\n        let left = 0, right = arr.length - 1;\n        let last = -1;\n        \n        while (left <= right) {\n            let mid = Math.floor(left + (right - left) / 2);\n            \n            if (arr[mid] < key) {\n                left = mid + 1;\n            } else if (arr[mid] > key) {\n                right = mid - 1;\n            } else {\n                last = mid;\n                left = mid + 1;\n            }\n        }\n        \n        return last;\n    }\n    \n    searchRange(arr, key) {\n        const first = this.findFirst(arr, key);\n        const last = this.findLast(arr, key);\n        return [first, last];\n    }\n}"
+    }
+  }
+}

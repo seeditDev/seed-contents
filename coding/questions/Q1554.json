@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1554",
+  "title": "Chef and String to Integer",
+  "slug": "chef-and-string-to-integer",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Searching",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "searching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Searching"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has found a strange string that may contain spaces, signs, numbers, and letters.\nHe wants to **convert this string into an integer** by following a few simple rules.\n\nYou need to help Chef by writing a program that performs this conversion carefully.\n\n**Conversion Rules**\n\n\n\n**Ignore spaces**:\n\n\n\nSkip all leading spaces before any character.\n\n\n\n**Check the sign**:\n\n\n\nIf the next character is `'-'`, the number is negative.\nIf the next character is `'+'`, the number is positive.\nIf no sign is given, assume it is positive.\n\n\n\n**Read digits only**:\n\n\n\nRead all consecutive digits and stop when a non-digit character is found.\nIf no digits are found, the result is **0**.\n\n\n\n**Clamp within range**:\n\n\n\nIf the number is smaller than **-2147483648**, return **-2147483648**.\nIf the number is larger than **2147483647**, return **2147483647**.\n\n\nFunction DeclarationFunction NamemyAtoimyAtoimyAtoi – This function converts a given string into a 32-bit signed integer by following specific conversion rules similar to the standard `atoi` function.\n\nParameters\nsss : A string that may contain leading spaces, optional sign characters (`+` or `-`), digits, and other non-digit characters.\nReturn Value\nReturns an integer obtained after converting the string according to the given rules.\nIf no valid number can be formed, the function returns `0`.\nIf the converted number is smaller than `-2147483648`, it returns `-2147483648`.\nIf the converted number is larger than `2147483647`, it returns `2147483647`.\n\nInput Format\n\nThe first line contains an integer TTT — the number of test cases.\nEach of the next TTT lines contains one string SSS.\n\n\n\nOutput Format\n\nFor each test case, print the converted integer on a new line.",
+    "constraints": [
+      "1≤T≤1001 \\le T \\le 1001≤T≤100",
+      "0≤∣S∣≤2000 \\le |S| \\le 2000≤∣S∣≤200",
+      "S&nbsp;may&nbsp;contain&nbsp;letters,&nbsp;digits,&nbsp;spaces,&nbsp;’+’&nbsp;,&nbsp;’-’&nbsp;,&nbsp;and&nbsp;’.’\\texttt{S may contain letters, digits, spaces, '+' , '-' , and '.'}S&nbsp;may&nbsp;contain&nbsp;letters,&nbsp;digits,&nbsp;spaces,&nbsp;’+’&nbsp;,&nbsp;’-’&nbsp;,&nbsp;and&nbsp;’.’"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n   98hello\n-00456\n+45abc23\nword123\n  -91283472332",
+        "output": "98\n-456\n45\n0\n-2147483648",
+        "explanation": "Explanation:\nTest case 1:\n\" 98hello\" -> ignore spaces -> read digits 98 -> result = 98\nTest case 2:\n\"-00456\" -> negative sign -> read digits 456 -> result = -456\nTest case 3:\n\"+45abc23\" -> sign + -> read digits 45 -> result = 45\nTest case 4:\n\"word123\" -> starts with non-digit ? no number found -> result = 0\nTest case 5:\n\"-91283472332\" -> number is too small -> clamp to -2147483648"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n   98hello\n-00456\n+45abc23\nword123\n  -91283472332",
+        "expectedOutput": "98\n-456\n45\n0\n-2147483648",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int myAtoi(const string &s) {\n    int n = s.size();\n    int i = 0;\n\n    while (i < n && isspace(s[i])) i++;\n    if (i == n) return 0;\n\n    int sign = 1;\n    if (s[i] == '+' || s[i] == '-') {\n        if (s[i] == '-') sign = -1;\n        i++;\n    }\n\n    long long result = 0;\n    while (i < n && isdigit(s[i])) {\n        int d = s[i] - '0';\n        if (sign == 1) {\n            if (result > (INT_MAX - d) / 10) return INT_MAX;\n        } else {\n            if (result > ((long long)INT_MAX + 1 - d) / 10) return INT_MIN;\n        }\n        result = result * 10 + d;\n        i++;\n    }\n\n    return (int)(result * sign);\n}\n\n",
+      "Python3": "def myAtoi(s: str) -> int:\n    i = 0\n    n = len(s)\n\n    # 1️⃣ Skip leading spaces\n    while i < n and s[i] == ' ':\n        i += 1\n    if i == n:\n        return 0\n\n    # 2️⃣ Check sign\n    sign = 1\n    if s[i] == '+' or s[i] == '-':\n        if s[i] == '-':\n            sign = -1\n        i += 1\n\n    result = 0\n    has_digits = False\n\n    # 3️⃣ Read digits\n    while i < n and s[i].isdigit():\n        has_digits = True\n        digit = int(s[i])\n\n        # Overflow check BEFORE multiplying\n        if sign == 1 and result > (INT_MAX - digit) // 10:\n            return INT_MAX\n        if sign == -1 and result > (INT_MAX + 1 - digit) // 10:\n            return INT_MIN\n\n        result = result * 10 + digit\n        i += 1\n\n    if not has_digits:\n        return 0\n\n    result *= sign\n\n    # Convert -0 to 0\n    if result == 0:\n        result = 0\n\n    return result\n\n",
+      "C": "int myAtoi(const char *s) {\n    int i = 0, n = (int)strlen(s);\n\n    // 1. Skip leading whitespace (use isspace safely)\n    while (i < n && isspace((unsigned char)s[i])) i++;\n\n    // If no characters left\n    if (i >= n) return 0;\n\n    // 2. Check sign\n    int sign = 1;\n    if (s[i] == '+' || s[i] == '-') {\n        if (s[i] == '-') sign = -1;\n        i++;\n    }\n\n    // 3. Convert digits with clamping against 32-bit limits\n    long long result = 0;\n    long long limit = (sign == 1) ? (long long)INT_MAX : (long long)INT_MAX + 1LL; \n    // when negative we allow up to 2147483648 (abs(INT_MIN))\n\n    while (i < n && isdigit((unsigned char)s[i])) {\n        int d = s[i] - '0';\n        if (result > (limit - d) / 10) {\n            return sign == 1 ? INT_MAX : INT_MIN;\n        }\n        result = result * 10 + d;\n        i++;\n    }\n\n    if (sign == -1) result = -result;\n\n    if (result > INT_MAX) return INT_MAX;\n    if (result < INT_MIN) return INT_MIN;\n    return (int)result;\n}\n",
+      "Java": "public static int myAtoi(String s) {\n        if (s == null || s.length() == 0) return 0;\n\n        int i = 0, n = s.length();\n        // 1. Skip leading whitespaces\n        while (i < n && s.charAt(i) == ' ') i++;\n\n        // If string ends after spaces\n        if (i == n) return 0;\n\n        // 2. Check sign\n        int sign = 1;\n        if (s.charAt(i) == '-') {\n            sign = -1;\n            i++;\n        } else if (s.charAt(i) == '+') {\n            i++;\n        }\n\n        // 3. Convert digits\n        long num = 0;\n        while (i < n && Character.isDigit(s.charAt(i))) {\n            num = num * 10 + (s.charAt(i) - '0');\n\n            // 4. Clamp to 32-bit integer range\n            if (sign == 1 && num > Integer.MAX_VALUE)\n                return Integer.MAX_VALUE;\n            if (sign == -1 && -num < Integer.MIN_VALUE)\n                return Integer.MIN_VALUE;\n\n            i++;\n        }\n\n        return (int)(sign * num);\n    }",
+      "JavaScript": "function myAtoi(s) {\n    let i = 0, n = s.length;\n\n    // 1. Skip leading spaces\n    while (i < n && s[i] === ' ') i++;\n    if (i === n) return 0;\n\n    // 2. Check sign\n    let sign = 1;\n    if (s[i] === '+' || s[i] === '-') {\n        if (s[i] === '-') sign = -1;\n        i++;\n    }\n\n    let result = 0;\n    const INT_MAX = 2147483647;\n    const INT_MIN = -2147483648;\n\n    let hasDigits = false;\n\n    // 3. Read digits\n    while (i < n && s[i] >= '0' && s[i] <= '9') {\n        hasDigits = true;\n        let digit = s[i].charCodeAt(0) - '0'.charCodeAt(0);\n\n        // Overflow check BEFORE multiplying\n        if (sign === 1 && result > Math.floor((INT_MAX - digit) / 10)) return INT_MAX;\n        if (sign === -1 && result > Math.floor((INT_MAX + 1 - digit) / 10)) return INT_MIN;\n\n        result = result * 10 + digit;\n        i++;\n    }\n\n    if (!hasDigits) return 0; // no digits found\n\n    result *= sign;\n\n    // Convert -0 to 0\n    if (result === 0) result = 0;\n\n    return result;\n}\n"
+    }
+  }
+}

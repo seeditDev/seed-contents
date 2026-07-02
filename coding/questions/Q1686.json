@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1686",
+  "title": "Level Order Traversal",
+  "slug": "level-order-traversal",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, print the level order traversal of its nodes. (i.e., from left to right, on each level).\n\nFor example, the level order traversal of the following binary tree is: \n\n1 \n\n2 3 \n\n4 5\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the L separate lines, NNN space separated integers - its nodes in the level order traversal of the given tree, where L is total no. of levels in the given tree.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "1 2 3 4 5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "1 2 3 4 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    void levelOrderTraversal(Node* root) {\n        vector<vector<int> > result;\n\n        if (root == NULL) {\n            return;\n        }\n\n        queue<Node*> nodeQueue;\n        nodeQueue.push(root);\n    \n        while (!nodeQueue.empty()) {\n            int levelSize = nodeQueue.size();\n            vector<int> levelValues;\n    \n            for (int i = 0; i < levelSize; i++) {\n                Node* node = nodeQueue.front();\n                nodeQueue.pop();\n    \n                if (node->left != nullptr) {\n                    nodeQueue.push(node->left);\n                }\n                if (node->right != nullptr) {\n                    nodeQueue.push(node->right);\n                }\n    \n                levelValues.push_back(node->val);\n            }\n    \n            result.push_back(levelValues);\n        }\n    \n        for(auto &level_nodes: result){\n            for(int node: level_nodes){\n                cout << node << ' ';\n            }\n            cout << endl;\n        }\n    }\n};",
+      "C": "// struct Node {\n//     int val;\n//     struct Node* left;\n//     struct Node* right;\n\n//     struct Node(int val) {\n//         this->val = val;\n//         left = right = NULL;\n//     }\n// };\n\n#define MAX_NODES 100001\n\nvoid levelOrderTraversal(struct Node* root) {\n    if (root == NULL) {\n        return;\n    }\n\n    struct Node* queue[MAX_NODES];\n    int front = 0, rear = 0;\n    queue[rear++] = root;\n\n    while (front < rear) {\n        int levelSize = rear - front;\n        int levelValues[MAX_NODES];\n        int levelIndex = 0;\n\n        for (int i = 0; i < levelSize; i++) {\n            struct Node* node = queue[front++];\n\n            if (node->left != NULL) {\n                queue[rear++] = node->left;\n            }\n            if (node->right != NULL) {\n                queue[rear++] = node->right;\n            }\n\n            levelValues[levelIndex++] = node->val;\n        }\n\n        for (int i = 0; i < levelIndex; i++) {\n            printf(\"%d \", levelValues[i]);\n        }\n        printf(\"\\n\");\n    }\n}\n\n",
+      "Java": "/*\nclass Node {\n    int val;\n    Node left, right;\n\n    Node(int val) {\n        this.val = val;\n        left = right = null;\n    }\n}\n*/\nclass Solution {\n    public void levelOrderTraversal(Node root) {\n        if (root == null) return;\n\n        Queue<Node> queue = new LinkedList<>();\n        queue.add(root);\n\n        while (!queue.isEmpty()) {\n            int levelSize = queue.size(); // Get the number of nodes at the current level\n            List<Integer> currentLevel = new ArrayList<>();\n\n            for (int i = 0; i < levelSize; i++) {\n                Node node = queue.poll();\n                currentLevel.add(node.val); // Collect the values at this level\n\n                if (node.left != null) queue.add(node.left);\n                if (node.right != null) queue.add(node.right);\n            }\n\n            // Print the nodes at the current level\n            for (int val : currentLevel) {\n                System.out.print(val + \" \");\n            }\n            System.out.println(); // New line after each level\n        }\n    }\n}\n",
+      "JavaScript": "class Solution {\n    levelOrderTraversal(root) {\n        if (!root) return;\n\n        let queue = [root];\n        \n        while (queue.length > 0) {\n            let levelSize = queue.length; // Get the number of nodes at the current level\n            let currentLevel = [];\n\n            for (let i = 0; i < levelSize; i++) {\n                let node = queue.shift();\n                currentLevel.push(node.val); // Collect the values at this level\n                \n                if (node.left) queue.push(node.left);\n                if (node.right) queue.push(node.right);\n            }\n            \n            console.log(currentLevel.join(' ')); // Print all nodes of the current level in one line\n        }\n    }\n}"
+    }
+  }
+}

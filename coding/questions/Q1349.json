@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1349",
+  "title": "Maximum Area Island",
+  "slug": "maximum-area-island",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "matrices",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Matrices"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given is a `N x M` binary matrix which represents islands. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.\n\nThe area of an island is the number of cells with a value `1` in the island.\n\nReturn the maximum area of an island in matrix. If there is no island, return `0`.\n\nFor eg., in the following matrix:\n\n\n\nMaximum area of island is: **5** (lands are highlighted in maximum area island).\n\n\nInput Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the matrix.\nNext NNN lines containing MMM space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line the maximum area of the island.",
+    "constraints": [
+      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
+      "The elements of the matrix are either `0` or `1`."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 3\n0 1 1\n0 1 1\n0 1 1",
+        "output": "6",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 3\n0 1 1\n0 1 1\n0 1 1",
+        "expectedOutput": "6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint areaOfIsland(vector<vector<int>>& mat, int i, int j){\n    if(i >= 0 && i < mat.size() && j >= 0 && j < mat[0].size() && mat[i][j] == 1){\n        mat[i][j] = 0;\n        return 1 + areaOfIsland(mat, i + 1, j) + areaOfIsland(mat, i-1, j) \n               + areaOfIsland(mat, i, j - 1) + areaOfIsland(mat, i, j + 1);\n    }\n    return 0;\n}\n\nint maxAreaOfIsland(vector<vector<int>>& mat) {\n    int max_area = 0;\n    for(int i = 0; i < mat.size(); i++) {\n        for(int j = 0; j < mat[0].size(); j++) {\n            if(mat[i][j] == 1)\n                max_area = max(max_area, areaOfIsland(mat, i, j));\n        }\n    }\n    return max_area;\n}\n\n\nint main() {\n\n  int n, m;\n  cin >> n >> m;\n\n  assert(1 <= n && n <= 100);\n  assert(1 <= m && m <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (m));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cin >> mat[i][j];\n    }\n  } \n  \n  cout << maxAreaOfIsland(mat);\n\n\n  return 0;\n} ",
+      "Python3": "def areaOfIsland(mat, i, j):\n    if 0 <= i < len(mat) and 0 <= j < len(mat[0]) and mat[i][j] == 1:\n        mat[i][j] = 0\n        return 1 + areaOfIsland(mat, i + 1, j) + areaOfIsland(mat, i - 1, j) \\\n               + areaOfIsland(mat, i, j - 1) + areaOfIsland(mat, i, j + 1)\n    return 0\n\ndef maxAreaOfIsland(mat):\n    max_area = 0\n    for i in range(len(mat)):\n        for j in range(len(mat[0])):\n            if mat[i][j] == 1:\n                max_area = max(max_area, areaOfIsland(mat, i, j))\n    return max_area\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n    \n    assert 1 <= n <= 100\n    assert 1 <= m <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n    \n    print(maxAreaOfIsland(mat))\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <assert.h>\n\nint max(int x, int y){\n    return x > y ? x : y;\n}\nint areaOfIsland(int mat[][100], int i, int j, int n, int m) {\n    if(i >= 0 && i < n && j >= 0 && j < m && mat[i][j] == 1){\n        mat[i][j] = 0;\n        return 1 + areaOfIsland(mat, i + 1, j, n, m) + areaOfIsland(mat, i - 1, j, n, m) \n               + areaOfIsland(mat, i, j - 1, n, m) + areaOfIsland(mat, i, j + 1, n, m);\n    }\n    return 0;\n}\n\nint maxAreaOfIsland(int mat[][100], int n, int m) {\n    int max_area = 0;\n    for(int i = 0; i < n; i++) {\n        for(int j = 0; j < m; j++) {\n            if(mat[i][j] == 1)\n                max_area = max(max_area, areaOfIsland(mat, i, j, n, m));\n        }\n    }\n    return max_area;\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    \n    assert(1 <= n && n <= 100);\n    assert(1 <= m && m <= 100);\n\n    int mat[100][100];\n    \n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            scanf(\"%d\", &mat[i][j]);\n        }\n    }\n\n    printf(\"%d\\n\", maxAreaOfIsland(mat, n, m));\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static int areaOfIsland(int[][] mat, int i, int j, int n, int m) {\n        if (i >= 0 && i < n && j >= 0 && j < m && mat[i][j] == 1) {\n            mat[i][j] = 0;\n            return 1 + areaOfIsland(mat, i + 1, j, n, m) + areaOfIsland(mat, i - 1, j, n, m)\n                   + areaOfIsland(mat, i, j - 1, n, m) + areaOfIsland(mat, i, j + 1, n, m);\n        }\n        return 0;\n    }\n\n    public static int maxAreaOfIsland(int[][] mat, int n, int m) {\n        int max_area = 0;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                if (mat[i][j] == 1)\n                    max_area = Math.max(max_area, areaOfIsland(mat, i, j, n, m));\n            }\n        }\n        return max_area;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n            }\n        }\n\n        System.out.println(maxAreaOfIsland(mat, n, m));\n    }\n}\n",
+      "JavaScript": "function areaOfIsland(mat, i, j) {\n    if (i >= 0 && i < mat.length && j >= 0 && j < mat[0].length && mat[i][j] === 1) {\n        mat[i][j] = 0; \n        return 1 + areaOfIsland(mat, i + 1, j) + areaOfIsland(mat, i - 1, j)\n                 + areaOfIsland(mat, i, j + 1) + areaOfIsland(mat, i, j - 1);\n    }\n    return 0;\n}\n\nfunction maxAreaOfIsland(mat) {\n    let maxArea = 0;\n    for (let i = 0; i < mat.length; i++) {\n        for (let j = 0; j < mat[0].length; j++) {\n            if (mat[i][j] === 1) {\n                maxArea = Math.max(maxArea, areaOfIsland(mat, i, j));\n            }\n        }\n    }\n    return maxArea;\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const [n, m] = input[0].split(' ').map(Number);\n    const mat = [];\n    for (let i = 1; i <= n; i++) {\n        mat.push(input[i].split(' ').map(Number));\n    }\n\n    console.log(maxAreaOfIsland(mat)); \n});\n"
+    }
+  }
+}

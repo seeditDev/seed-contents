@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1696",
+  "title": "Sum of deepest leaves",
+  "slug": "sum-of-deepest-leaves",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, find the sum of leaves at deepest level.\n\nFor example, in the following tree, leaves 444 and 555 are the the deepest level and their sum is 999.\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, the sum of leaves at the deepest level.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "9",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "9",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n    void deepLSum(Node* root, int &maxLevel, int curLevel, int &ans){\n        if(!root)\n           return;\n        if(curLevel > maxLevel){\n            ans = root->val;\n        } else if(curLevel == maxLevel){\n            ans += root->val;\n        }\n        maxLevel = max(maxLevel, curLevel);\n        deepLSum(root->left, maxLevel, curLevel + 1, ans);\n        deepLSum(root->right, maxLevel, curLevel + 1, ans);\n    }\n  public:\n    int deepestLeavesSum(Node* root) {\n        int mxL = 0, ans = 0;\n        deepLSum(root, mxL, 0, ans);\n        return ans;\n    }\n};",
+      "Python3": "class Solution:\n    def deepLSum(self, root, maxLevel, curLevel, ans):\n        if not root:\n            return\n        if curLevel > maxLevel[0]:\n            ans[0] = root.val\n        elif curLevel == maxLevel[0]:\n            ans[0] += root.val\n        maxLevel[0] = max(maxLevel[0], curLevel)\n        self.deepLSum(root.left, maxLevel, curLevel + 1, ans)\n        self.deepLSum(root.right, maxLevel, curLevel + 1, ans)\n\n    def deepestLeavesSum(self, root):\n        maxLevel = [0]\n        ans = [0]\n        self.deepLSum(root, maxLevel, 0, ans)\n        return ans[0]\n",
+      "C": "void deepLSum(Node* root, int* maxLevel, int curLevel, int* ans) {\n    if (root == NULL) return;\n    if (curLevel > *maxLevel) {\n        *ans = root->val;\n    } else if (curLevel == *maxLevel) {\n        *ans += root->val;\n    }\n    *maxLevel = (*maxLevel > curLevel) ? *maxLevel : curLevel;\n    deepLSum(root->left, maxLevel, curLevel + 1, ans);\n    deepLSum(root->right, maxLevel, curLevel + 1, ans);\n}\n\nint deepestLeavesSum(Node* root) {\n    int mxL = 0, ans = 0;\n    deepLSum(root, &mxL, 0, &ans);\n    return ans;\n}\n",
+      "Java": "\nclass Solution {\n    private void deepLSum(Node root, int[] maxLevel, int curLevel, int[] ans) {\n        if (root == null) return;\n        if (curLevel > maxLevel[0]) {\n            ans[0] = root.val;\n            maxLevel[0] = curLevel;\n        } else if (curLevel == maxLevel[0]) {\n            ans[0] += root.val;\n        }\n        deepLSum(root.left, maxLevel, curLevel + 1, ans);\n        deepLSum(root.right, maxLevel, curLevel + 1, ans);\n    }\n  \n    // Public method to initiate calculation\n    public int deepestLeavesSum(Node root) {\n        int[] maxLevel = {0};  // Array used to mimic pass-by-reference\n        int[] ans = {0};  // Array used to mimic pass-by-reference\n        deepLSum(root, maxLevel, 0, ans);\n        return ans[0];\n    }\n}\n\n",
+      "JavaScript": "/*\nclass TreeNode {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction sumDeepestLeaves(root) {\n    if (!root) return 0;\n\n    let queue = [root];\n    let sum = 0;\n\n    while (queue.length > 0) {\n        let levelSum = 0;\n        let size = queue.length;\n\n        for (let i = 0; i < size; i++) {\n            let node = queue.shift();\n\n            if (!node.left && !node.right) {\n                levelSum += node.val;\n            }\n\n            if (node.left) {\n                queue.push(node.left);\n            }\n            if (node.right) {\n                queue.push(node.right);\n            }\n        }\n\n        if (queue.length === 0) {\n            sum = levelSum; \n        }\n    }\n\n    return sum;\n}\n\n"
+    }
+  }
+}

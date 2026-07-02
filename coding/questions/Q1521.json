@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1521",
+  "title": "Minimum Eating Speed",
+  "slug": "minimum-eating-speed",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given NNN **piles** of fruits, where the ithi^\\text{th}ith pile has A[i]A[i]A[i] fruits.\n\nYou have **H hours** to finish eating all the fruits.\n\nYou can choose an eating speed of **K fruits per hour**.\n\n\nIn one hour, you pick one pile and eat up to KKK fruits.\nIf the pile has fewer than KKK fruits, you eat the entire pile and stop for that hour.\nFind the **minimum integer K** such that you can finish all the fruits within HHH hours.\n\nFunction DeclarationFunction NamefindMinKfindMinKfindMinK – This function determines the minimum eating speed required to finish all piles within the given time.\n\nParameters\npilespilespiles : An array representing the number of fruits in each pile.\nNNN : The number of piles.\nHHH : The total number of hours available.\nReturn Value\nReturns a single integer — the **minimum eating speed** KKK.\nConstraints\n1≤N≤1041 ≤ N ≤ 10^41≤N≤104\nN≤H≤109N ≤ H ≤ 10^9N≤H≤109\n1≤piles[i]≤1091 ≤ piles[i] ≤ 10^91≤piles[i]≤109\nKKK must be an integer\n\nInput Format\n\nThe first line contains two space-separated integers NNN and HHH — the number of piles and the number of hours.\nThe second line contains NNN space-separated integers representing the number of fruits in each pile.\n\n\nOutput Format\n\nPrint a single integer — the minimum value of KKK.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 5\n4 8 5",
+        "output": "4",
+        "explanation": "Explanation:\nIf speed = 4:\n\nPile 1 (4) -> 1 hour\nPile 2 (8) -> 2 hours\nPile 3 (5) -> 2 hours\n\n\nTotal = 5 hours\nSmaller speeds (3, 2, 1) would take more than 5 hours.\nSo, answer = 4."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 10\n2 4 6 8 10",
+        "output": "4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 5\n4 8 5",
+        "expectedOutput": "4",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5 10\n2 4 6 8 10",
+        "expectedOutput": "4",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Binary Search** on `K`:\n\n\n\nInitialize `low = 1` and `high = max(A[i])`.\n\n\n\n\nWhile `low ≤ high`:\n\n\n\n\nCompute `mid = (low + high) // 2`.\n\n\n\n\nCheck if `mid` is **fast enough** using a helper function `canEat(piles, H, mid)`.\n\n\n\n\nIf yes, update answer → search smaller speeds (`high = mid - 1`).\n\n\n\n\nIf no, search larger speeds (`low = mid + 1`).\n\n\n\n\n\n**Helper Function** `canEat(piles, H, K)`:\n\n\n\nInitialize `hours = 0`.\n\n\n\n\nFor each pile:\n\n\n\n\nAdd `ceil(pile / K)` to `hours`.\n\n\n\n\nIf `hours &gt; H`, return `false → K` too small.\n\n\n\n\n\n\nIf all piles can be eaten in `H` hours, return `true`.\n\n\n\nThe **first K** that satisfies the condition is the **minimum eating speed**.\n\nComplexity Analysis**Time Complexity**: `O(N * log(max(A[i])))`\n\n\n\n`log(max(A[i]))` for binary search on `[1, max(A[i])]`.\n\n\n\n\n`O(N)` to compute hours in `canEat()` per iteration.\n\n\n\n**Space Complexity**: `O(1)` (no extra arrays or recursion used).",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// Check if K is enough to eat all piles within H hours\nbool canEat(int piles[], int N, long long H, int K) {\n    long long hours = 0;\n    for (int i = 0; i < N; i++) {\n        hours += (piles[i] + K - 1LL) / K; // ceil division\n        if (hours > H) return false;\n    }\n    return true;\n}\n\n// Binary search to find minimum K\nint findMinK(int piles[], int N, long long H) {\n    int low = 1, high = 0;\n    for (int i = 0; i < N; i++)\n        high = max(high, piles[i]);\n\n    int ans = high;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (canEat(piles, N, H, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n",
+      "Python3": "# Check if K is enough to eat all piles within H hours\ndef canEat(piles, H, K):\n    hours = 0\n    for pile in piles:\n        hours += -(-pile // K)  # ceil division\n        if hours > H:\n            return False\n    return True\n\n# Binary search to find minimum K\ndef findMinK(piles, H):\n    low, high = 1, max(piles)\n    ans = high\n    while low <= high:\n        mid = (low + high) // 2\n        if canEat(piles, H, mid):\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n    return ans\n",
+      "C": "// Check if K is enough\nint canEat(int piles[], int N, long long H, int K) {\n    long long hours = 0;\n    for (int i = 0; i < N; i++) {\n        hours += (piles[i] + K - 1) / K; // ceil division\n        if (hours > H) return 0; // false\n    }\n    return 1; // true\n}\n\n// Find minimum K using binary search\nint findMinK(int piles[], int N, long long H) {\n    int low = 1, high = 0;\n    for (int i = 0; i < N; i++)\n        if (piles[i] > high) high = piles[i];\n    int ans = high;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (canEat(piles, N, H, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n",
+      "Java": "static boolean canEat(int[] piles, long H, int K) {\n    long hours = 0;\n    for (int pile : piles) {\n        hours += (pile + K - 1L) / K; // ceil division\n        if (hours > H) return false;\n    }\n    return true;\n}\n\nstatic int findMinK(int[] piles, long H) {\n    int low = 1, high = 0;\n    for (int pile : piles) high = Math.max(high, pile);\n    int ans = high;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (canEat(piles, H, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n",
+      "JavaScript": "// Check if K is enough to eat all piles within H hours\nfunction canEat(piles, H, K) {\n    let hours = 0;\n    for (let pile of piles) {\n        hours += Math.ceil(pile / K);\n        if (hours > H) return false;\n    }\n    return true;\n}\n\n// Binary search to find minimum K\nfunction findMinK(piles, H) {\n    let low = 1, high = Math.max(...piles);\n    let ans = high;\n\n    while (low <= high) {\n        let mid = Math.floor(low + (high - low) / 2);\n        if (canEat(piles, H, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n"
+    }
+  }
+}

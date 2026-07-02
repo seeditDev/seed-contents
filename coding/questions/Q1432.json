@@ -1,0 +1,78 @@
+{
+  "questionId": "Q1432",
+  "title": "Hamiltonian Path Detection",
+  "slug": "hamiltonian-path-detection",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an undirected graph with NNN vertices and MMM edges, determine if there exists a Hamiltonian path (a path that visits each vertex exactly once) in the graph.\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains NNN and MMM\nNext MMM lines contain pairs of integers representing edges\n\n\n\n\nOutput Format\n\nFor each test case, print 1 if Hamiltonian path exists, 0 otherwise.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤101 \\leq N \\leq 101≤N≤10",
+      "1≤M≤151 \\leq M \\leq 151≤M≤15"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4 4\n1 2\n2 3\n3 4\n2 4\n4 3\n1 2\n2 3\n2 4",
+        "output": "1\n0",
+        "explanation": "Explanation:\nTest Case 1: Graph has Hamiltonian path 1->2->3->4 \nTest Case 2: No possible path can visit all vertices exactly once"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4 4\n1 2\n2 3\n3 4\n2 4\n4 3\n1 2\n2 3\n2 4",
+        "expectedOutput": "1\n0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\n    vector<vector<int>> graph;\n    \n    bool dfs(int vertex, vector<bool>& visited, int count, int N) {\n        visited[vertex] = true;\n        \n        if(count == N) return true;\n        \n        for(int next : graph[vertex]) {\n            if(!visited[next]) {\n                if(dfs(next, visited, count+1, N)) \n                    return true;\n                visited[next] = false;\n            }\n        }\n        return false;\n    }\n    \npublic:\n    bool hasHamiltonianPath(int N, int M, vector<vector<int>>& edges) {\n        graph.resize(N+1);\n        \n        // Build adjacency list\n        for(auto& edge : edges) {\n            graph[edge[0]].push_back(edge[1]);\n            graph[edge[1]].push_back(edge[0]);\n        }\n        \n        vector<bool> visited(N+1, false);\n        \n        // Try starting from each vertex\n        for(int i = 1; i <= N; i++) {\n            fill(visited.begin(), visited.end(), false);\n            if(dfs(i, visited, 1, N)) \n                return true;\n        }\n        return false;\n    }\n};\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n, m;\n        cin >> n >> m;\n        \n        vector<vector<int>> edges(m, vector<int>(2));\n        for(int i = 0; i < m; i++) {\n            cin >> edges[i][0] >> edges[i][1];\n        }\n        \n        Solution sol;\n        cout << sol.hasHamiltonianPath(n, m, edges) << endl;\n    }\n    return 0;\n}",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n\nint graph[11][11];\nint N;\n\nbool dfs(int vertex, bool visited[], int count) {\n    visited[vertex] = true;\n\n    if (count == N)\n        return true;\n\n    for (int next = 1; next <= N; next++) {\n        if (graph[vertex][next] && !visited[next]) {\n            if (dfs(next, visited, count + 1))\n                return true;\n            visited[next] = false;\n        }\n    }\n\n    return false;\n}\n\nbool hasHamiltonianPath(int n, int m) {\n    bool visited[11];\n    for (int start = 1; start <= n; start++) {\n        memset(visited, false, sizeof(visited));\n        if (dfs(start, visited, 1))\n            return true;\n    }\n    return false;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int m;\n        scanf(\"%d %d\", &N, &m);\n\n        for (int i = 1; i <= N; i++)\n            for (int j = 1; j <= N; j++)\n                graph[i][j] = 0;\n\n        for (int i = 0; i < m; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            graph[u][v] = 1;\n            graph[v][u] = 1;\n        }\n\n        printf(\"%d\\n\", hasHamiltonianPath(N, m) ? 1 : 0);\n    }\n\n    return 0;\n}\n"
+    }
+  }
+}

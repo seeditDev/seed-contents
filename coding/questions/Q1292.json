@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1292",
+  "title": "Height of Binary Tree",
+  "slug": "height-of-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a connected binary tree with **N** nodes, find the height of it. (**Note:** The height of a binary tree is the number of edges between the tree's root and its furthest leaf.)\n\nFor example, the following binary tree has height `2`:\n\n\n\nHint: While traversing the Tree, you will have to store the height of children and use that to calculate the height of parent.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, the height of the given binary tree.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "output": "2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "expectedOutput": "2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    int heightOfBinaryTree(Node* root) {\n       return max(0, depth(root) - 1);\n    }\n    int depth(Node* root){\n        if(root == NULL) return 0;\n        int left = depth(root->left);\n        int right = depth(root->right);\n        return max(left, right) + 1;\n    }\n};",
+      "Python3": "class Solution:\n    def heightOfBinaryTree(self, root):\n        # Base case\n        if root is None:\n            return -1\n        \n        # Recursively calculate left and right subtree heights\n        left_height = self.heightOfBinaryTree(root.left)\n        right_height = self.heightOfBinaryTree(root.right)\n        \n        # Return height of current node\n        return 1 + max(left_height, right_height)\n\ndef build_binary_tree(edges):\n    nodes = {}\n    children = set()\n\n    for p, c, r in edges:\n        if p not in nodes:\n            nodes[p] = Node(p)\n\n        if c not in nodes:\n            nodes[c] = Node(c)\n\n        if r == 'L':\n            nodes[p].left = nodes[c]\n        else:\n            nodes[p].right = nodes[c]\n\n        children.add(c)\n\n    root = None\n    for node in nodes:\n        if node not in children:\n            root = nodes[node]\n            break\n\n    return root\n\ndef in_order(root, bt_nodes):\n    if root is None:\n        return\n\n    in_order(root.left, bt_nodes)\n    bt_nodes.append(root.val)\n    in_order(root.right, bt_nodes)\n\n",
+      "C": "int max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint depth(Node* root) {\n    if (root == NULL) return 0;\n    int left = depth(root->left);\n    int right = depth(root->right);\n    return max(left, right) + 1;\n}\n\nint heightOfBinaryTree(Node* root) {\n    return max(0, depth(root) - 1);\n}\n",
+      "Java": "class Solution {\n    public int heightOfBinaryTree(Node root) {\n        return Math.max(0, depth(root) - 1);\n    }\n\n    public int depth(Node root) {\n        if (root == null) return 0;\n        int left = depth(root.left);\n        int right = depth(root.right);\n        return Math.max(left, right) + 1;\n    }\n}",
+      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\nclass Solution {\n    heightOfBinaryTree(root) {\n        return Math.max(0, this.depth(root) - 1);\n    }\n\n    depth(root) {\n        if (root === null) return 0;\n        const left = this.depth(root.left);\n        const right = this.depth(root.right);\n        return Math.max(left, right) + 1;\n    }\n}\n"
+    }
+  }
+}

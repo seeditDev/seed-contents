@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1469",
+  "title": "N Queens",
+  "slug": "n-queens",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a chessboard of dimensions N⋅NN \\cdot NN⋅N. \n\nPlace NNN queens on the chessboard such that none of the Queens attack each other.\n\n\nInput Format\n\nThe first line of input contains one integer NNN - the dimension of chessboard.\n\n\nOutput Format\nReturn all the distinct board configurations, where `'Q'` denotes the placement of a Queen and `'.'` denotes an empty cell.",
+    "constraints": [
+      "1≤N≤91 \\leq N \\leq 91≤N≤9"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4",
+        "output": "..Q.\nQ...\n...Q\n.Q..\n.Q..\n...Q\nQ...\n..Q.",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4",
+        "expectedOutput": "..Q.\nQ...\n...Q\n.Q..\n.Q..\n...Q\nQ...\n..Q.",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>  // For std::reverse\n\nusing namespace std;\n\nbool is_safe(const vector<string>& board, int row, int col, int n) {\n    // Check if there is a queen in the same column\n    for (int i = 0; i < row; ++i) {\n        if (board[i][col] == 'Q') {\n            return false;\n        }\n    }\n\n    // Check if there is a queen in the left diagonal\n    for (int i = row, j = col; i >= 0 && j >= 0; --i, --j) {\n        if (board[i][j] == 'Q') {\n            return false;\n        }\n    }\n\n    // Check if there is a queen in the right diagonal\n    for (int i = row, j = col; i >= 0 && j < n; --i, ++j) {\n        if (board[i][j] == 'Q') {\n            return false;\n        }\n    }\n\n    return true;\n}\n\nvoid solve_n_queens_util(vector<string>& board, int row, int n, vector<vector<string>>& result) {\n    if (row == n) {\n        result.push_back(board);\n        return;\n    }\n\n    for (int col = 0; col < n; ++col) {\n        if (is_safe(board, row, col, n)) {\n            board[row][col] = 'Q';\n            solve_n_queens_util(board, row + 1, n, result);\n            board[row][col] = '.';  // Backtrack\n        }\n    }\n}\n\nvector<vector<string>> solve_n_queens(int n) {\n    vector<string> board(n, string(n, '.'));\n    vector<vector<string>> result;\n    solve_n_queens_util(board, 0, n, result);\n    return result;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    vector<vector<string>> solutions = solve_n_queens(n);\n    reverse(solutions.begin(), solutions.end());\n    for (const auto& solution : solutions) {\n        for (const auto& row : solution) {\n            cout << row << endl;\n        }\n        cout << endl;\n    }\n    return 0;\n}\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <stdlib.h>\n#include <string.h>\n\n// Function to check if placing a queen at board[row][col] is safe\nbool is_safe(char **board, int row, int col, int n) {\n    for (int i = 0; i < row; ++i) {\n        if (board[i][col] == 'Q') {\n            return false;\n        }\n    }\n\n    for (int i = row, j = col; i >= 0 && j >= 0; --i, --j) {\n        if (board[i][j] == 'Q') {\n            return false;\n        }\n    }\n\n    for (int i = row, j = col; i >= 0 && j < n; --i, ++j) {\n        if (board[i][j] == 'Q') {\n            return false;\n        }\n    }\n\n    return true;\n}\n\n// Utility function for solving N-Queens using backtracking\nvoid solve_n_queens_util(char **board, int row, int n, char ***result, int *result_size) {\n    if (row == n) {\n        result[*result_size] = malloc(n * sizeof(char *));\n        for (int i = 0; i < n; ++i) {\n            result[*result_size][i] = strdup(board[i]);\n        }\n        (*result_size)++;\n        return;\n    }\n\n    for (int col = 0; col < n; ++col) {\n        if (is_safe(board, row, col, n)) {\n            board[row][col] = 'Q';\n            solve_n_queens_util(board, row + 1, n, result, result_size);\n            board[row][col] = '.';  // Backtrack\n        }\n    }\n}\n\n// Function to solve N-Queens problem and return all solutions\nchar ***solve_n_queens(int n, int *return_size) {\n    char **board = malloc(n * sizeof(char *));\n    for (int i = 0; i < n; ++i) {\n        board[i] = malloc((n + 1) * sizeof(char));\n        memset(board[i], '.', n);\n        board[i][n] = '\\0';\n    }\n\n    int max_solutions = 1000; // assuming a maximum of 1000 solutions\n    char ***result = malloc(max_solutions * sizeof(char **));\n    *return_size = 0;\n\n    solve_n_queens_util(board, 0, n, result, return_size);\n\n    for (int i = 0; i < n; ++i) {\n        free(board[i]);\n    }\n    free(board);\n\n    return result;\n}\n\n// Function to free the allocated memory for the results\nvoid free_results(char ***result, int result_size, int n) {\n    for (int i = 0; i < result_size; ++i) {\n        for (int j = 0; j < n; ++j) {\n            free(result[i][j]);\n        }\n        free(result[i]);\n    }\n    free(result);\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int return_size;\n    char ***solutions = solve_n_queens(n, &return_size);\n\n    // Print solutions in reverse order to match the required output format\n    for (int i = return_size - 1; i >= 0; --i) {\n        for (int j = 0; j < n; ++j) {\n            printf(\"%s\\n\", solutions[i][j]);\n        }\n        printf(\"\\n\");\n    }\n\n    free_results(solutions, return_size, n);\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass main {\n\n    static int[] dx = {0, 0, -1, -1, -1, 1, 1, 1};\n    static int[] dy = {-1, 1, 0, -1, 1, 0, -1, 1};\n\n    static boolean check(List<String> board, int n, int row, int col) {\n        for (int k = 0; k < 8; k++) {\n            int x = row, y = col;\n            while (x >= 0 && x < n && y >= 0 && y < n) {\n                if (board.get(x).charAt(y) == 'Q') {\n                    return false; // Queen attacks another\n                }\n                x += dx[k];\n                y += dy[k];\n            }\n        }\n        return true; // Can place queen here\n    }\n\n    static void backtrack(int row, int n, List<String> board, List<List<String>> ans) {\n        if (row == n) { // No more rows to fill\n            ans.add(new ArrayList<>(board));  // Add the possible answer\n            return;\n        }\n        for (int col = 0; col < n; col++) {\n            if (check(board, n, row, col)) {\n                StringBuilder sb = new StringBuilder(board.get(row));\n                sb.setCharAt(col, 'Q'); // Add the queen\n                board.set(row, sb.toString());\n                backtrack(row + 1, n, board, ans);\n                sb.setCharAt(col, '.'); // Remove the queen\n                board.set(row, sb.toString());\n            }\n        }\n    }\n\n    static List<List<String>> nQueens(int n) {\n        List<String> board = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            StringBuilder sb = new StringBuilder();\n            for (int j = 0; j < n; j++) {\n                sb.append('.');\n            }\n            board.add(sb.toString());\n        }\n\n        List<List<String>> ans = new ArrayList<>();\n        backtrack(0, n, board, ans);\n        return ans;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        List<List<String>> a = nQueens(n);\n        Collections.sort(a, (x, y) -> {\n            for (int i = 0; i < n; i++) {\n                int cmp = x.get(i).compareTo(y.get(i));\n                if (cmp != 0) return cmp;\n            }\n            return 0;\n        });\n\n        for (List<String> board : a) {\n            for (String row : board) {\n                System.out.println(row);\n            }\n            System.out.println();\n        }\n    }\n}\n"
+    }
+  }
+}

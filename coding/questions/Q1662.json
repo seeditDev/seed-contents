@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1662",
+  "title": "Chef Solves Meeting Rooms III",
+  "slug": "chef-solves-meeting-rooms-iii",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "heaps & priority queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Heaps & Priority Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has nnn meeting rooms totalRoomstotalRoomstotalRooms numbered from 000 to n−1n-1n−1 . Chef wants to schedule a series of meetings meetingSchedulesmeetingSchedulesmeetingSchedules, each with a unique start time and a defined end time. \n\nEvery meeting must be assigned to the unused room with the lowest number available at its start time. If no rooms are free, Chef delays the meeting until a room becomes available, keeping the original meeting duration intact. \n\nWhen multiple meetings are waiting, Chef prioritizes those with earlier original start times to occupy newly freed rooms.\n\nHelp Chef determine which room is booked the most times after scheduling all meetings. If multiple rooms share the highest booking count, Chef wants to know the smallest room number among them.\n\nFunction DeclarationFunction NamefindMostBookedRoomfindMostBookedRoomfindMostBookedRoom\n\nParameters\ntotalRoomstotalRoomstotalRooms : The total number of available meeting rooms, numbered from 000 to totalRooms−1totalRooms - 1totalRooms−1.\nmeetingSchedulesmeetingSchedulesmeetingSchedules : A list where each element is a vector [start,end][start, end][start,end] representing the start and end times of a meeting. All start times are unique.\nReturn Value\nReturns an integer representing the room number that is booked the most times.\nIf multiple rooms have the same highest booking count, returns the smallest room number among them.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤n≤1001 \\leq n \\leq 1001≤n≤100\n1≤number&nbsp;of&nbsp;meetings≤1051 \\leq \\text{number of meetings} \\leq 10^51≤number&nbsp;of&nbsp;meetings≤105\n0≤starti&lt;endi≤5×1050 \\leq start_i &lt; end_i \\leq 5 \\times 10^50≤starti​&lt;endi​≤5×105\nAll startistart_istarti​ are unique across each test case.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer nnn — the number of meeting rooms.\nThe following mmm lines each contain two integers startistart_istarti​ and endiend_iendi​ — the start and end times of the ithi^{th}ith meeting.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the room number that Chef finds to be booked the most times after scheduling all meetings according to the rules.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n3\n[[1, 20], [2, 10], [3, 5], [4, 9], [6, 8]]\n2\n[[0, 5], [2, 7], [4, 6]]",
+        "output": "1\n0",
+        "explanation": "Explanation:\nTest case 1: All of the other meeting can be merged into the first one [1,20].\nTest case 2: Three meetings [0,5], [2,7], and [4,6] all overlap, requiring zero free rooms at any time."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\n[[1, 2], [2, 3], [3, 4], [4, 5]]",
+        "output": "0",
+        "explanation": "Explanation:\nAll meetings are consecutive without overlap: [1-2], [2-3], [3-4], [4-5].\nOne room is enough since each meeting starts exactly when the previous ends.\nThus, the output is 0 (no additional rooms needed beyond the first)."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n3\n[[1, 20], [2, 10], [3, 5], [4, 9], [6, 8]]\n2\n[[0, 5], [2, 7], [4, 6]]",
+        "expectedOutput": "1\n0",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n5\n[[1, 2], [2, 3], [3, 4], [4, 5]]",
+        "expectedOutput": "0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(totalMeetings × (log totalMeetings + log totalRooms))",
+    "spaceComplexity": "O(totalRooms + totalMeetings) for heaps and counters.",
+    "code": {
+      "C++": "class Solution {\npublic:\n    int findMostBookedRoom(int totalRooms, vector<vector<int>>& meetings) {\n        sort(meetings.begin(), meetings.end());\n\n        priority_queue<int, vector<int>, greater<int>> freeRooms;\n        for (int i = 0; i < totalRooms; i++) {\n            freeRooms.push(i);\n        }\n\n        priority_queue<pair<long long, int>,\n                       vector<pair<long long, int>>,\n                       greater<pair<long long, int>>> busyRooms;\n\n        vector<long long> count(totalRooms, 0);\n\n        for (auto &m : meetings) {\n            long long start = m[0];\n            long long end = m[1];\n            long long duration = end - start;\n\n            while (!busyRooms.empty() && busyRooms.top().first <= start) {\n                freeRooms.push(busyRooms.top().second);\n                busyRooms.pop();\n            }\n\n            if (!freeRooms.empty()) {\n                int room = freeRooms.top();\n                freeRooms.pop();\n                busyRooms.push({end, room});\n                count[room]++;\n            } else {\n                auto [freeTime, room] = busyRooms.top();\n                busyRooms.pop();\n                busyRooms.push({freeTime + duration, room});\n                count[room]++;\n            }\n        }\n\n        int ans = 0;\n        for (int i = 1; i < totalRooms; i++) {\n            if (count[i] > count[ans]) {\n                ans = i;\n            }\n        }\n        return ans;\n    }\n};",
+      "Python3": "class Solution:\n    def findMostBookedRoom(self, totalRooms, meetings):\n        # Sort meetings by start time\n        meetings.sort()\n\n        # Min-heap of available rooms\n        free_rooms = list(range(totalRooms))\n        heapq.heapify(free_rooms)\n\n        # Min-heap of busy rooms: (endTime, roomNumber)\n        busy_rooms = []\n\n        room_count = [0] * totalRooms\n\n        for start, end in meetings:\n            duration = end - start\n\n            # Free rooms that have completed by current start time\n            while busy_rooms and busy_rooms[0][0] <= start:\n                _, room = heapq.heappop(busy_rooms)\n                heapq.heappush(free_rooms, room)\n\n            if free_rooms:\n                # Assign smallest available room\n                room = heapq.heappop(free_rooms)\n                heapq.heappush(busy_rooms, (end, room))\n                room_count[room] += 1\n            else:\n                # Delay meeting\n                free_time, room = heapq.heappop(busy_rooms)\n                heapq.heappush(busy_rooms, (free_time + duration, room))\n                room_count[room] += 1\n\n        # Find room with max bookings (tie → smallest index)\n        max_room = 0\n        for i in range(1, totalRooms):\n            if room_count[i] > room_count[max_room]:\n                max_room = i\n\n        return max_room",
+      "C": "// -------- Structures --------\ntypedef struct {\n    long long time;\n    int room;\n} Pair;\n\n// -------- Global Heaps --------\nint freeHeap[MAXN];\nint freeSize;\n\nPair busyHeap[MAXN];\nint busySize;\n\n// -------- Comparator for Pair --------\nint cmpPair(Pair a, Pair b) {\n    if (a.time != b.time) return a.time < b.time;\n    return a.room < b.room;\n}\n\n// -------- Free Rooms Heap (min-heap) --------\nvoid pushFree(int x) {\n    int i = freeSize++;\n    freeHeap[i] = x;\n\n    while (i > 0) {\n        int p = (i - 1) / 2;\n        if (freeHeap[p] <= freeHeap[i]) break;\n\n        int tmp = freeHeap[p];\n        freeHeap[p] = freeHeap[i];\n        freeHeap[i] = tmp;\n        i = p;\n    }\n}\n\nint popFree() {\n    int res = freeHeap[0];\n    freeHeap[0] = freeHeap[--freeSize];\n\n    int i = 0;\n    while (1) {\n        int l = 2 * i + 1, r = 2 * i + 2, smallest = i;\n\n        if (l < freeSize && freeHeap[l] < freeHeap[smallest])\n            smallest = l;\n\n        if (r < freeSize && freeHeap[r] < freeHeap[smallest])\n            smallest = r;\n\n        if (smallest == i) break;\n\n        int tmp = freeHeap[i];\n        freeHeap[i] = freeHeap[smallest];\n        freeHeap[smallest] = tmp;\n        i = smallest;\n    }\n    return res;\n}\n\n// -------- Busy Rooms Heap (min-heap with tie-breaking) --------\nvoid pushBusy(long long t, int r) {\n    int i = busySize++;\n    busyHeap[i].time = t;\n    busyHeap[i].room = r;\n\n    while (i > 0) {\n        int p = (i - 1) / 2;\n\n        if (cmpPair(busyHeap[p], busyHeap[i])) break;\n\n        Pair tmp = busyHeap[p];\n        busyHeap[p] = busyHeap[i];\n        busyHeap[i] = tmp;\n        i = p;\n    }\n}\n\nPair popBusy() {\n    Pair res = busyHeap[0];\n    busyHeap[0] = busyHeap[--busySize];\n\n    int i = 0;\n    while (1) {\n        int l = 2 * i + 1, r = 2 * i + 2, smallest = i;\n\n        if (l < busySize && !cmpPair(busyHeap[smallest], busyHeap[l]))\n            smallest = l;\n\n        if (r < busySize && !cmpPair(busyHeap[smallest], busyHeap[r]))\n            smallest = r;\n\n        if (smallest == i) break;\n\n        Pair tmp = busyHeap[i];\n        busyHeap[i] = busyHeap[smallest];\n        busyHeap[smallest] = tmp;\n        i = smallest;\n    }\n    return res;\n}\n\nPair topBusy() {\n    return busyHeap[0];\n}\n\n// -------- Sorting meetings --------\nint cmpMeet(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    if (x[0] != y[0]) return x[0] - y[0];\n    return x[1] - y[1];\n}\n\nint findMostBookedRoom(int totalRooms, int meetings[][2], int mSize) {\n    qsort(meetings, mSize, sizeof(meetings[0]), cmpMeet);\n\n    freeSize = 0;\n    busySize = 0;\n\n    for (int i = 0; i < totalRooms; i++)\n        pushFree(i);\n\n    static long long count[MAXN];\n    for (int i = 0; i < totalRooms; i++)\n        count[i] = 0;\n\n    for (int i = 0; i < mSize; i++) {\n        long long start = meetings[i][0];\n        long long end = meetings[i][1];\n        long long duration = end - start;\n\n        while (busySize > 0 && topBusy().time <= start) {\n            Pair p = popBusy();\n            pushFree(p.room);\n        }\n\n        if (freeSize > 0) {\n            int room = popFree();\n            pushBusy(end, room);\n            count[room]++;\n        } else {\n            Pair p = popBusy();\n            pushBusy(p.time + duration, p.room);\n            count[p.room]++;\n        }\n    }\n\n    int ans = 0;\n    for (int i = 1; i < totalRooms; i++) {\n        if (count[i] > count[ans])\n            ans = i;\n    }\n    return ans;\n}",
+      "Java": "class Solution {\n\n    public int findMostBookedRoom(int totalRooms, List<int[]> meetings) {\n        // Sort meetings by start time\n        meetings.sort(Comparator.comparingInt(a -> a[0]));\n\n        // Min-heap of available rooms\n        PriorityQueue<Integer> freeRooms = new PriorityQueue<>();\n        for (int i = 0; i < totalRooms; i++) {\n            freeRooms.offer(i);\n        }\n\n        // Min-heap of busy rooms: (endTime, roomNumber)\n        PriorityQueue<long[]> busyRooms = new PriorityQueue<>(\n            (a, b) -> a[0] == b[0] ? Long.compare(a[1], b[1]) : Long.compare(a[0], b[0])\n        );\n\n        long[] roomCount = new long[totalRooms];\n\n        for (int[] meeting : meetings) {\n            long start = meeting[0];\n            long end = meeting[1];\n            long duration = end - start;\n\n            // Free rooms that are available by start time\n            while (!busyRooms.isEmpty() && busyRooms.peek()[0] <= start) {\n                freeRooms.offer((int) busyRooms.poll()[1]);\n            }\n\n            if (!freeRooms.isEmpty()) {\n                int room = freeRooms.poll();\n                busyRooms.offer(new long[]{end, room});\n                roomCount[room]++;\n            } else {\n                long[] earliest = busyRooms.poll();\n                long freeTime = earliest[0];\n                int room = (int) earliest[1];\n                busyRooms.offer(new long[]{freeTime + duration, room});\n                roomCount[room]++;\n            }\n        }\n\n        int ans = 0;\n        for (int i = 1; i < totalRooms; i++) {\n            if (roomCount[i] > roomCount[ans]) {\n                ans = i;\n            }\n        }\n        return ans;\n    }\n}",
+      "JavaScript": "class MinHeap {\n    constructor(compare) {\n        this.data = [];\n        this.compare = compare;\n    }\n\n    size() {\n        return this.data.length;\n    }\n\n    peek() {\n        return this.data[0];\n    }\n\n    push(val) {\n        this.data.push(val);\n        this._heapifyUp();\n    }\n\n    pop() {\n        if (this.size() === 1) return this.data.pop();\n        const root = this.data[0];\n        this.data[0] = this.data.pop();\n        this._heapifyDown();\n        return root;\n    }\n\n    _heapifyUp() {\n        let idx = this.size() - 1;\n        while (idx > 0) {\n            let parent = Math.floor((idx - 1) / 2);\n            if (this.compare(this.data[idx], this.data[parent]) >= 0) break;\n            [this.data[idx], this.data[parent]] = [this.data[parent], this.data[idx]];\n            idx = parent;\n        }\n    }\n\n    _heapifyDown() {\n        let idx = 0;\n        while (true) {\n            let left = 2 * idx + 1;\n            let right = 2 * idx + 2;\n            let smallest = idx;\n\n            if (left < this.size() && this.compare(this.data[left], this.data[smallest]) < 0)\n                smallest = left;\n            if (right < this.size() && this.compare(this.data[right], this.data[smallest]) < 0)\n                smallest = right;\n\n            if (smallest === idx) break;\n            [this.data[idx], this.data[smallest]] = [this.data[smallest], this.data[idx]];\n            idx = smallest;\n        }\n    }\n}\n\nclass Solution {\n    findMostBookedRoom(totalRooms, meetings) {\n        meetings.sort((a, b) => a[0] - b[0]);\n\n        const freeRooms = new MinHeap((a, b) => a - b);\n        for (let i = 0; i < totalRooms; i++) freeRooms.push(i);\n\n        const busyRooms = new MinHeap((a, b) => {\n            if (a[0] !== b[0]) return a[0] - b[0];\n            return a[1] - b[1];\n        });\n\n        const count = Array(totalRooms).fill(0);\n\n        for (const [start, end] of meetings) {\n            const duration = end - start;\n\n            while (busyRooms.size() && busyRooms.peek()[0] <= start) {\n                freeRooms.push(busyRooms.pop()[1]);\n            }\n\n            if (freeRooms.size()) {\n                const room = freeRooms.pop();\n                busyRooms.push([end, room]);\n                count[room]++;\n            } else {\n                const [freeTime, room] = busyRooms.pop();\n                busyRooms.push([freeTime + duration, room]);\n                count[room]++;\n            }\n        }\n\n        let ans = 0;\n        for (let i = 1; i < totalRooms; i++) {\n            if (count[i] > count[ans]) ans = i;\n        }\n        return ans;\n    }\n}"
+    }
+  }
+}

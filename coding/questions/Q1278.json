@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1278",
+  "title": "Convert Decimal to Binary",
+  "slug": "convert-decimal-to-binary",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Let's implement a stack using arrays to solve a classic problem: converting an integer from decimal to binary using the \"divisor-remainder\" method.\n\nIn this method, you repeatedly divide the decimal number by 2 and keep track of the remainders. \n\nThe remainders, when read from bottom to top, give you the binary representation of the number.\n\nUpdate the code given in the IDE to solve this problem.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n10\n15\n18",
+        "output": "1010\n1111\n10010",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n10\n15\n18",
+        "expectedOutput": "1010\n1111\n10010",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The key idea behind this code is to use a stack to reverse the binary digits generated from a decimal number.\n\n\n\n**Stack Implementation**: We use an array `a[]` and a variable `top` to implement the stack, where `push()` adds an element and `pop()` removes an element from the stack. The stack stores the binary digits (remainder when dividing by 2) of the decimal number in reverse order.\n\n\n\n\n**Decimal to Binary Conversion**:\n\n\n\nFor each decimal number, we repeatedly divide it by 2, storing the remainder in the stack. This remainder represents the binary digits in reverse order (Least Significant Bit first).\nAfter converting all digits, the binary digits are popped from the stack and printed, giving the correct order for binary representation.\n\n\n\n**Edge Case**: If the input decimal number is 0, the binary representation is directly printed as **0**.\n\n\n\n\n**Multiple Test Cases**: The program reads multiple test cases and performs the decimal to binary conversion for each one, printing the binary result.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define MAX_SIZE 101\nint a[MAX_SIZE];\nint top = -1;\n\nvoid push(int ele){\n    if(top<=MAX_SIZE-1){\n        a[++top]=ele;\n    }\n    else{\n        cout<<\"Stack is full. Cannot push: \"<<ele<<\"\\n\";\n    }\n}\n\nint pop(){\n    if(top>=0){\n        int ele = a[top];\n        top--;\n        return ele;\n    }\n    else{\n        cout<<\"Stack is empty. Cannot pop.\\n\";\n        return -1;\n    }\n}\n\nbool isEmpty(){\n    return top==-1;\n}\n\nint size(){\n    return top+1;\n}\n\nvoid decimalToBinary(int decimal){\n    while (decimal > 0) {\n        int Remainder = decimal % 2;\n        push(Remainder);\n        decimal/=2;\n    }\n\n    if(isEmpty()) {\n        cout<<\"0\\n\"; // Special case for decimal = 0\n        return;\n    }\n\n    // string ans;\n    while(!isEmpty()){\n        cout<<pop();\n    }\n    cout<<\"\\n\";\n}\n\nint main(){\n    int t;\n    cin>>t;\n\n    while(t--){\n        int decimal;\n        cin>>decimal;\n        decimalToBinary(decimal);\n    }\n    return 0;\n}",
+      "Python3": "MAX_SIZE = 101\na = [0] * MAX_SIZE\ntop = -1\n\ndef push(ele):\n    global top\n    if top <= MAX_SIZE - 1:\n        top += 1\n        a[top] = ele\n    else:\n        print(f\"Stack is full. Cannot push: {ele}\")\n\ndef pop():\n    global top\n    if top >= 0:\n        ele = a[top]\n        top -= 1\n        return ele\n    else:\n        print(\"Stack is empty. Cannot pop.\")\n        return -1\n\ndef is_empty():\n    return top == -1\n\ndef size():\n    return top + 1\n\ndef decimal_to_binary(decimal):\n    while decimal > 0:\n        remainder = decimal % 2\n        push(remainder)\n        decimal //= 2\n\n    if is_empty():\n        print(\"0\")  # Special case for decimal = 0\n        return\n\n    while not is_empty():\n        print(pop(), end=\"\")\n    print()\n\nif __name__ == \"__main__\":\n    t = int(input())\n\n    for _ in range(t):\n        decimal = int(input())\n        decimal_to_binary(decimal)\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n\n#define MAX_SIZE 101\nint a[MAX_SIZE];\nint top = -1;\n\nvoid push(int ele){\n    if(top <= MAX_SIZE - 1){\n        a[++top] = ele;\n    }\n    else{\n        printf(\"Stack is full. Cannot push: %d\\n\", ele);\n    }\n}\n\nint pop(){\n    if(top >= 0){\n        int ele = a[top];\n        top--;\n        return ele;\n    }\n    else{\n        printf(\"Stack is empty. Cannot pop.\\n\");\n        return -1;\n    }\n}\n\nbool isEmpty(){\n    return top == -1;\n}\n\nint size(){\n    return top + 1;\n}\n\nvoid decimalToBinary(int decimal){\n    while (decimal > 0) {\n        int Remainder = decimal % 2;\n        push(Remainder);\n        decimal /= 2;\n    }\n\n    if(isEmpty()) {\n        printf(\"0\\n\"); // Special case for decimal = 0\n        return;\n    }\n\n    while(!isEmpty()){\n        printf(\"%d\", pop());\n    }\n    printf(\"\\n\");\n}\n\nint main(){\n    int t;\n    scanf(\"%d\", &t);\n\n    while(t--){\n        int decimal;\n        scanf(\"%d\", &decimal);\n        decimalToBinary(decimal);\n    }\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\nimport java.util.Stack;\n\nclass DecimalToBinary {\n    static final int MAX_SIZE = 101;\n    static int[] a = new int[MAX_SIZE];\n    static int top = -1;\n\n    static void push(int ele) {\n        if (top <= MAX_SIZE - 1) {\n            a[++top] = ele;\n        } else {\n            System.out.println(\"Stack is full. Cannot push: \" + ele);\n        }\n    }\n\n    static int pop() {\n        if (top >= 0) {\n            int ele = a[top];\n            top--;\n            return ele;\n        } else {\n            System.out.println(\"Stack is empty. Cannot pop.\");\n            return -1;\n        }\n    }\n\n    static boolean isEmpty() {\n        return top == -1;\n    }\n\n    static int size() {\n        return top + 1;\n    }\n\n    static void decimalToBinary(int decimal) {\n        while (decimal > 0) {\n            int remainder = decimal % 2;\n            push(remainder);\n            decimal /= 2;\n        }\n\n        if (isEmpty()) {\n            System.out.println(\"0\"); // Special case for decimal = 0\n            return;\n        }\n\n        while (!isEmpty()) {\n            System.out.print(pop());\n        }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            int decimal = scanner.nextInt();\n            decimalToBinary(decimal);\n        }\n    }\n}\n",
+      "JavaScript": "class Stack {\n    constructor() {\n        this.items = [];\n    }\n\n    push(ele) {\n        this.items.push(ele);\n    }\n\n    pop() {\n        if (this.isEmpty()) {\n            return -1;\n        }\n        return this.items.pop();\n    }\n\n    isEmpty() {\n        return this.items.length === 0;\n    }\n}\n\nfunction decimalToBinary(decimal) {\n    let stack = new Stack();\n\n    if (decimal === 0) {\n        console.log(\"0\");\n        return;\n    }\n\n    while (decimal > 0) {\n        let remainder = decimal % 2;\n        stack.push(remainder);\n        decimal = Math.floor(decimal / 2);\n    }\n\n    let binaryString = \"\";\n    while (!stack.isEmpty()) {\n        binaryString += stack.pop();\n    }\n    console.log(binaryString);\n}\n\nfunction main() {\n    const readline = require('readline');\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout,\n        terminal: false\n    });\n\n    let testCases = [];\n\n    rl.question('', (t) => {\n        t = parseInt(t);\n\n        rl.on('line', (line) => {\n            testCases.push(parseInt(line.trim()));\n            if (testCases.length === t) {\n                rl.close();\n            }\n        });\n    });\n\n    rl.on('close', () => {\n        testCases.forEach(decimalToBinary);\n    });\n}\n\nmain();"
+    }
+  }
+}

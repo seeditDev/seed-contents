@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1303",
+  "title": "Boundary of the Binary Tree",
+  "slug": "boundary-of-the-binary-tree",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a binary tree, print the boundary nodes of it in an **Anti-Clockwise** direction, starting from the root. The boundary encompasses:\n\n\nLeft boundary (nodes on the left, excluding leaf nodes).\nLeaves (comprising solely the leaf nodes).\nRight boundary (nodes on the right, excluding leaf nodes).\nFor eg., in the above tree: \n\n**root:** 1 \n\n**left boundary nodes:** 2 \n\n**leaf nodes:** 6 8 4 5 \n\n**right boundary nodes:** 3 \n\nHence the output should be: 1 2 6 8 4 5 3\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nPrint on the single line, KKK (if there are KKK nodes in the tree's boundary) space separated nodes values - the boundary nodes of the given binary tree in an **Anti-Clockwise** direction",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
+        "output": "1 2 6 8 4 5 3",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
+        "expectedOutput": "1 2 6 8 4 5 3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n    // Function to print leaf nodes of a binary tree\n    void printLeaves(Node* root) {\n        if (root == NULL)\n            return;\n    \n        printLeaves(root->left);\n    \n        // Print it if it is a leaf node\n        if (!root->left && !root->right)\n            cout << root->val << \" \";\n    \n        printLeaves(root->right);\n    }\n    \n    // Function to print the left boundary nodes in TOP DOWN manner\n    void printBoundaryLeft(Node* root) {\n        if (!root)\n            return;\n    \n        if (root->left) {\n            // To ensure top-down order, print the node\n            // before calling itself for the left subtree\n            cout << root->val << \" \";\n            printBoundaryLeft(root->left);\n        } else if (root->right) {\n            cout << root->val << \" \";\n            printBoundaryLeft(root->right);\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n    \n    // Function to print the right boundary nodes in BOTTOM UP manner\n    void printBoundaryRight(Node* root) {\n        if (!root)\n            return;\n    \n        if (root->right) {\n            // To ensure bottom-up order, first call for the right\n            // subtree, then print this node\n            printBoundaryRight(root->right);\n            cout << root->val << \" \";\n        } else if (root->left) {\n            printBoundaryRight(root->left);\n            cout << root->val << \" \";\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n  public:\n    void printBoundary(Node* root) {\n        if (root == NULL)\n            return;\n \n        cout << root->val << \" \";\n     \n        // Print the left boundary in top-down manner.\n        printBoundaryLeft(root->left);\n     \n        // Print all leaf nodes\n        printLeaves(root->left);\n        printLeaves(root->right);\n     \n        // Print the right boundary in bottom-up manner\n        printBoundaryRight(root->right);\n    }\n   \n};",
+      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\nclass Solution:\n    def print_leaves(self, root):\n        if root is None:\n            return\n\n        self.print_leaves(root.left)\n        \n        if root.left is None and root.right is None:\n            print(root.val, end=\" \")\n\n        self.print_leaves(root.right)\n\n    def print_boundary_left(self, root):\n        if root is None:\n            return\n\n        if root.left is not None:\n            print(root.val, end=\" \")\n            self.print_boundary_left(root.left)\n        elif root.right is not None:\n            print(root.val, end=\" \")\n            self.print_boundary_left(root.right)\n\n    def print_boundary_right(self, root):\n        if root is None:\n            return\n\n        if root.right is not None:\n            self.print_boundary_right(root.right)\n            print(root.val, end=\" \")\n        elif root.left is not None:\n            self.print_boundary_right(root.left)\n            print(root.val, end=\" \")\n\n    def print_boundary(self, root):\n        if root is None:\n            return\n\n        print(root.val, end=\" \")\n        self.print_boundary_left(root.left)\n        self.print_leaves(root.left)\n        self.print_leaves(root.right)\n        self.print_boundary_right(root.right)\n",
+      "C": "void printLeaves(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    printLeaves(root->left);\n\n    if (root->left == NULL && root->right == NULL)\n        printf(\"%d \", root->val);\n\n    printLeaves(root->right);\n}\n\nvoid printBoundaryLeft(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    if (root->left) {\n        printf(\"%d \", root->val);\n        printBoundaryLeft(root->left);\n    } else if (root->right) {\n        printf(\"%d \", root->val);\n        printBoundaryLeft(root->right);\n    }\n}\n\nvoid printBoundaryRight(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    if (root->right) {\n        printBoundaryRight(root->right);\n        printf(\"%d \", root->val);\n    } else if (root->left) {\n        printBoundaryRight(root->left);\n        printf(\"%d \", root->val);\n    }\n}\n\nvoid printBoundary(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    printf(\"%d \", root->val);\n\n    printBoundaryLeft(root->left);\n    printLeaves(root->left);\n    printLeaves(root->right);\n    printBoundaryRight(root->right);\n}\n",
+      "Java": "class Solution {\n    void printLeaves(Node root) {\n        if (root == null)\n            return;\n\n        printLeaves(root.left);\n\n        if (root.left == null && root.right == null)\n            System.out.print(root.val + \" \");\n\n        printLeaves(root.right);\n    }\n\n    void printBoundaryLeft(Node root) {\n        if (root == null)\n            return;\n\n        if (root.left != null) {\n            System.out.print(root.val + \" \");\n            printBoundaryLeft(root.left);\n        } else if (root.right != null) {\n            System.out.print(root.val + \" \");\n            printBoundaryLeft(root.right);\n        }\n    }\n\n    void printBoundaryRight(Node root) {\n        if (root == null)\n            return;\n\n        if (root.right != null) {\n            printBoundaryRight(root.right);\n            System.out.print(root.val + \" \");\n        } else if (root.left != null) {\n            printBoundaryRight(root.left);\n            System.out.print(root.val + \" \");\n        }\n    }\n\n    void printBoundary(Node root) {\n        if (root == null)\n            return;\n\n        System.out.print(root.val + \" \");\n        printBoundaryLeft(root.left);\n        printLeaves(root.left);\n        printLeaves(root.right);\n        printBoundaryRight(root.right);\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(value) {\n        this.val = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nclass Solution {\n    // Function to print leaf nodes of a binary tree\n    printLeaves(root) {\n        if (root === null) return;\n\n        this.printLeaves(root.left);\n\n        // Print it if it is a leaf node\n        if (root.left === null && root.right === null) {\n            process.stdout.write(root.val + \" \");\n        }\n\n        this.printLeaves(root.right);\n    }\n\n    // Function to print the left boundary nodes in TOP DOWN manner\n    printBoundaryLeft(root) {\n        if (root === null) return;\n\n        if (root.left !== null) {\n            // To ensure top-down order, print the node\n            // before calling itself for the left subtree\n            process.stdout.write(root.val + \" \");\n            this.printBoundaryLeft(root.left);\n        } else if (root.right !== null) {\n            process.stdout.write(root.val + \" \");\n            this.printBoundaryLeft(root.right);\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n    // Function to print the right boundary nodes in BOTTOM UP manner\n    printBoundaryRight(root) {\n        if (root === null) return;\n\n        if (root.right !== null) {\n            // To ensure bottom-up order, first call for the right\n            // subtree, then print this node\n            this.printBoundaryRight(root.right);\n            process.stdout.write(root.val + \" \");\n        } else if (root.left !== null) {\n            this.printBoundaryRight(root.left);\n            process.stdout.write(root.val + \" \");\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n    // Main function to print boundary of a binary tree\n    printBoundary(root) {\n        if (root === null) return;\n\n        process.stdout.write(root.val + \" \");\n\n        // Print the left boundary in top-down manner.\n        this.printBoundaryLeft(root.left);\n\n        // Print all leaf nodes\n        this.printLeaves(root.left);\n        this.printLeaves(root.right);\n\n        // Print the right boundary in bottom-up manner\n        this.printBoundaryRight(root.right);\n    }\n}\n\n"
+    }
+  }
+}

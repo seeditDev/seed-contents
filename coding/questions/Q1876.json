@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1876",
+  "title": "Model a Simple Banking System Using OOP",
+  "slug": "model-a-simple-banking-system-using-oop",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "oop concepts",
+      "programming languages"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "OOP Concepts"
+    ]
+  },
+  "content": {
+    "problemStatement": "You're building a basic banking system with different types of accounts. Your task is to use **Object-Oriented Programming principles** like **inheritance** and **method overriding** to model this system.\n\nRequirements\n\nCreate a base class `BankAccount` with:\n\n\n\nFields: `accountNumber`, `balance`\nMethod: `deposit(double amount)`\nMethod: `withdraw(double amount)` — reduces balance if funds are sufficient; otherwise, print `\"Insufficient balance\"`\n\n\n\nCreate a derived class `SavingsAccount` that:\n\n\n\nInherits from `BankAccount`\nHas an additional field: `interestRate`\nOverrides the `withdraw` method to prevent withdrawals that would drop balance below ₹500.\n\n\n\nInput Format\n\nFirst line: Account number and initial balance\nSecond line: Interest rate (for savings account)\nThird line: An integer `N`, the number of operations\nNext `N` lines: Each operation in format:\n\n`deposit amount`\n`withdraw amount`\n\n\n\n\nOutput Format\n\nAfter each operation, print the updated balance or `\"Insufficient balance\"` message as applicable.",
+    "constraints": [
+      "0 &lt;= balance &lt;= 10^6",
+      "0 &lt;= interestRate &lt;= 100",
+      "Withdrawals cannot drop savings balance below ₹500"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1001 1000\n3.5\n3\nwithdraw 300\nwithdraw 300\ndeposit 500",
+        "output": "700.0\nInsufficient balance\n1200.0",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1001 1000\n3.5\n3\nwithdraw 300\nwithdraw 300\ndeposit 500",
+        "expectedOutput": "700.0\nInsufficient balance\n1200.0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    \n    vector<pair<int, int>> pairs(n);\n    \n    for (int i = 0; i < n; ++i) {\n        cin >> pairs[i].first >> pairs[i].second;\n    }\n    \n    for (int i = 0; i < n; ++i) {\n        if ((pairs[i].first + pairs[i].second) % k == 0) {\n            cout << \"(\" << pairs[i].first << \", \" << pairs[i].second << \")\" << endl;\n        }\n    }\n    \n    return 0;\n}\n",
+      "Python3": "def main():\n    n, k = map(int, input().split())\n    \n    pairs = []\n    \n    for _ in range(n):\n        first, second = map(int, input().split())\n        pairs.append((first, second))\n    \n    for first, second in pairs:\n        if (first + second) % k == 0:\n            print(f\"({first}, {second})\")\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    \n    int pairs[n][2];\n    \n    for (int i = 0; i < n; ++i) {\n        scanf(\"%d %d\", &pairs[i][0], &pairs[i][1]);\n    }\n    \n    for (int i = 0; i < n; ++i) {\n        if ((pairs[i][0] + pairs[i][1]) % k == 0) {\n            printf(\"(%d, %d)\\n\", pairs[i][0], pairs[i][1]);\n        }\n    }\n    \n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass BankAccount {\n    protected int accountNumber;\n    protected double balance;\n\n    public BankAccount(int accountNumber, double balance) {\n        this.accountNumber = accountNumber;\n        this.balance = balance;\n    }\n\n    public void deposit(double amount) {\n        balance += amount;\n        System.out.println(balance);\n    }\n\n    public void withdraw(double amount) {\n        if (amount <= balance) {\n            balance -= amount;\n            System.out.println(balance);\n        } else {\n            System.out.println(\"Insufficient balance\");\n        }\n    }\n}\n\nclass SavingsAccount extends BankAccount {\n    private double interestRate;\n\n    public SavingsAccount(int accountNumber, double balance, double interestRate) {\n        super(accountNumber, balance);\n        this.interestRate = interestRate;\n    }\n\n    @Override\n    public void withdraw(double amount) {\n        if (amount <= balance && (balance - amount) >= 500) {\n            balance -= amount;\n            System.out.println(balance);\n        } else {\n            System.out.println(\"Insufficient balance\");\n        }\n    }\n}\n\nclass Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int accNo = sc.nextInt();\n        double bal = sc.nextDouble();\n        sc.nextLine();\n        double rate = sc.nextDouble();\n        sc.nextLine();\n        int n = Integer.parseInt(sc.nextLine());\n\n        SavingsAccount sa = new SavingsAccount(accNo, bal, rate);\n\n        for (int i = 0; i < n; i++) {\n            String[] parts = sc.nextLine().split(\" \");\n            String op = parts[0];\n            double amt = Double.parseDouble(parts[1]);\n\n            if (op.equals(\"deposit\")) {\n                sa.deposit(amt);\n            } else if (op.equals(\"withdraw\")) {\n                sa.withdraw(amt);\n            }\n        }\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let inputLines = [];\n    \n    rl.on('line', (line) => {\n        inputLines.push(line);\n        if (inputLines.length === parseInt(inputLines[0].split(' ')[0]) + 1) {\n            rl.close();\n        }\n    });\n\n    rl.on('close', () => {\n        // Extract the number of pairs and the divisor k\n        let [n, k] = inputLines[0].split(' ').map(Number);\n        let pairs = inputLines.slice(1);\n        \n        // Iterate through pairs to find and print those whose sum is divisible by k\n        pairs.forEach(pairLine => {\n            let [a, b] = pairLine.split(' ').map(Number);\n            if ((a + b) % k === 0) {\n                console.log(`(${a}, ${b})`);\n            }\n        });\n    });\n}\n\nmain();\n"
+    }
+  }
+}

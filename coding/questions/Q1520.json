@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1520",
+  "title": "Perfect Root Finder",
+  "slug": "perfect-root-finder",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef is playing with numbers and came across an interesting problem. Given two positive integers nnn and mmm, Chef wants to find an integer XXX such that when XXX is raised to the power of NNN, it equals MMM.\n\nFormally, find an integer XXX satisfying:\n\nXn=mX^n = mXn=m\n\nIf no such integer exists, output −1-1−1.\n\nCan you help Chef find the answer?\n\nFunction DeclarationFunction NamenthRootnthRootnthRoot – This function finds the integer NthN^\\text{th}Nth root of a number if it exists.\n\nParameters\nnnn : A positive integer representing the power.\nmmm : A positive integer representing the target value.\nReturn Value\nReturns an integer XXX such that Xn=mX^n = mXn=m.\nReturns −1-1−1 if no such integer exists.\nConstraints\n1≤T≤10001 \\leq T ≤ 10001≤T≤1000\n1≤n≤301 \\leq n \\leq 301≤n≤30\n1≤m≤1091 \\leq m \\leq 10^91≤m≤109\nXXX must be an integer\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nEach of the next TTT lines contains two space-separated integers nnn and mmm.\n\n\nOutput Format\n\nFor each test case, print a single integer — the value of XXX if it exists, otherwise −1-1−1.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n2 16\n5 243\n3 10\n6 729",
+        "output": "4\n3\n-1\n3",
+        "explanation": "Explanation:\nTest case 1: N = 2, M = 16 -> 4^2 = 16 -> output 4.\nTest case 2: N = 5, M = 243 -> 3^5 = 243 -> output 3.\nTest case 3: N = 3, M = 10 -> no integer cube root for 10 -> output -1.\nTest case 4: N = 6, M = 729 -> 3^6 = 729 -> output 3."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n2 16\n5 243\n3 10\n6 729",
+        "expectedOutput": "4\n3\n-1\n3",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "We use **binary search** to find the integer N-th root:\n\n\n\nInitialize `low = 1` and `high = M`.\n\n\n\n\nWhile `low ≤ high`:\n\n\n\n\nCompute `mid = (low + high) // 2`.\n\n\n\n\nCompute `mid^N` using a **safe multiplication function** to avoid overflow. Stop early if it exceeds `M`.\n\n\n\n\nCompare `mid^N` with `M`:\n\n\n\n\nIf `mid^N == M`, return `mid` → exact root found.\n\n\n\n\nIf `mid^N &lt; M`, search higher → `low = mid + 1`.\n\n\n\n\nIf `mid^N &gt; M`, search lower → `high = mid - 1`.\n\n\n\n\n\n\n\n\nIf the loop ends without finding an exact root, return `-1`.\n\n\n\nSafe Power ComputationUse a **helper function** to compute `base^exp` with **early exit** if it exceeds the limit `M`.\n\nThis prevents integer overflow and keeps\ncalculations fast.\n\nComplexity Analysis\n\n**Time Complexity**: `O(log M * N)`\n\n\n\n\n`log M` for binary search on `[1, M]`.\n\n\n\n\n`N` multiplications per iteration for `mid^N`.\n\n\n\n\n\n\n**Space Complexity**: `O(1)`` (no extra arrays or recursion used).",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// Function to compute base^exp safely with early stop\nlong long power(int base, int exp, int limit) {\n    long long result = 1;\n    for (int i = 0; i < exp; i++) {\n        result *= base;\n        if (result > limit) return result; // stop early if it exceeds limit\n    }\n    return result;\n}\n\n// Function to find Nth root of M\nint nthRoot(int n, int m) {\n    int low = 1, high = m;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        long long val = power(mid, n, m);\n\n        if (val == m) return mid;     // found exact root\n        if (val < m) low = mid + 1;  // search higher\n        else high = mid - 1;         // search lower\n    }\n    return -1; // no integer root\n}\n",
+      "Python3": "def power(base, exp, limit):\n    result = 1\n    for _ in range(exp):\n        result *= base\n        if result > limit:  # early stop\n            return result\n    return result\n\ndef nth_root(n, m):\n    low, high = 1, m\n    while low <= high:\n        mid = (low + high) // 2\n        val = power(mid, n, m)\n        if val == m:\n            return mid\n        elif val < m:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1",
+      "C": "// Function to compute base^exp safely with early stop\nlong long power(int base, int exp, int limit) {\n    long long result = 1;\n    for (int i = 0; i < exp; i++) {\n        result *= base;\n        if (result > limit) return result; // stop early\n    }\n    return result;\n}\n\n// Function to find Nth root of M\nint nthRoot(int n, int m) {\n    int low = 1, high = m;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        long long val = power(mid, n, m);\n\n        if (val == m) return mid;    // found exact root\n        if (val < m) low = mid + 1; // search higher\n        else high = mid - 1;        // search lower\n    }\n    return -1; // no integer root\n}\n",
+      "Java": "    // Function to compute mid^n safely\n    static long power(int base, int exp, int limit) {\n        long result = 1;\n        for (int i = 0; i < exp; i++) {\n            result *= base;\n            if (result > limit) return result; // stop early\n        }\n        return result;\n    }\n\n    // Function to find Nth root of M\n    static int nthRoot(int n, int m) {\n        int low = 1, high = m;\n        while (low <= high) {\n            int mid = low + (high - low) / 2;\n            long val = power(mid, n, m);\n\n            if (val == m) return mid;   // exact root\n            if (val < m) low = mid + 1; // search right\n            else high = mid - 1;        // search left\n        }\n        return -1; // no integer root\n    }\n",
+      "JavaScript": "// Function to compute base^exp safely with early stop\nfunction power(base, exp, limit) {\n    let result = 1n; // use BigInt for safety\n    let b = BigInt(base);\n    let l = BigInt(limit);\n\n    for (let i = 0; i < exp; i++) {\n        result *= b;\n        if (result > l) return result;\n    }\n    return result;\n}\n\n// Function to find Nth root of M\nfunction nthRoot(n, m) {\n    let low = 1, high = m;\n    let target = BigInt(m);\n\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n        let val = power(mid, n, m);\n\n        if (val === target) return mid;\n        if (val < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}"
+    }
+  }
+}

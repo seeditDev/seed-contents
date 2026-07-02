@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1585",
+  "title": "Copy List with Random Pointer",
+  "slug": "copy-list-with-random-pointer",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a **special linked list** that has two pointers for every node:\n\n\nnextnextnext → points to the next node\nrandomrandomrandom → can point to **any node** in the list (or to NULLNULLNULL)\nYour task is to **make a deep copy** of this linked list.\n\nThat means you need to create a **new linked list** such that:\n\n\nEvery node in the new list has the **same value** as the old list.\nThe nextnextnext and randomrandomrandom connections are exactly the same as in the original list.\nNo new node should point to any node from the original list.\nIn simple words, you must `clone` the given linked list completely.\n\nFunction DeclarationFunction NamecopyRandomListcopyRandomListcopyRandomList – This function creates a deep copy of a special linked list where each node contains:\n\n\na nextnextnext pointer to the next node, and\na randomrandomrandom pointer that may point to any node in the list (or NULL).\nParameters\nheadheadhead : A pointer to the head of the original linked list.\nReturn Value\nReturns the head of the newly constructed deep-copied linked list.\nIf the input list is empty, returns NULLNULLNULL.\nConstraints\n0≤N≤10000 \\leq N \\leq 10000≤N≤1000\n−104≤val≤104-10^4 \\leq \\text{val} \\leq 10^4−104≤val≤104\nrandom_index=−1\\texttt{random\\_index} = -1random_index=−1 or 0≤random_index&lt;N0 \\leq \\texttt{random\\_index} &lt; N0≤random_index&lt;N\n\nInput Format\n\nThe first line contains an integer NNN — the number of nodes in the list.\nThe next NNN lines each contain two space-separated integers:\n\n`val` — the value of the node\n`random_index` — the 0-based index of the node that the `random` pointer points to, or `-1` if it is `NULL`\n\n\n\nNodes appear in index order from `0` to `N−1`.\n\n\n\nOutput Format\n\nPrint the deep copied linked list in the format:\n\n`[[val1, random_index1], [val2, random_index2], ..., [valN, random_indexN]]`\nIf the list is empty, print `[]`.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n10 1\n20 2\n30 0",
+        "output": "[[10,1],[20,2],[30,0]]",
+        "explanation": "Explanation:\nThe random pointers form a loop:\nNode 1 -> Node 2 -> Node 3 -> Node 1\nYour deep copy should maintain this cycle, but all nodes must be new."
+      },
+      {
+        "id": "sample_2",
+        "input": "0",
+        "output": "[]",
+        "explanation": "Explanation:\nThe list is empty, so the output is also empty."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n10 1\n20 2\n30 0",
+        "expectedOutput": "[[10,1],[20,2],[30,0]]",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "0",
+        "expectedOutput": "[]",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// Function to clone a linked list with random pointers\nNode* copyRandomList(Node* head) {\n    if (!head) return NULL;\n\n    Node* curr = head;\n\n    // Step 1: Create copy nodes and insert them between original nodes\n    while (curr) {\n        Node* newNode = new Node(curr->val);\n        newNode->next = curr->next;\n        curr->next = newNode;\n        curr = newNode->next;\n    }\n\n    // Step 2: Assign random pointers to copied nodes\n    curr = head;\n    while (curr) {\n        if (curr->random)\n            curr->next->random = curr->random->next;\n        curr = curr->next->next;\n    }\n\n    // Step 3: Separate original and copied lists\n    curr = head;\n    Node* newHead = head->next;\n    Node* copyCurr = newHead;\n\n    while (curr) {\n        curr->next = curr->next->next;\n        if (copyCurr->next)\n            copyCurr->next = copyCurr->next->next;\n        curr = curr->next;\n        copyCurr = copyCurr->next;\n    }\n\n    return newHead;\n}\n",
+      "Python3": "def copyRandomList(head):\n    if not head:\n        return None\n\n    # Step 1: clone nodes and interleave them\n    curr = head\n    while curr:\n        new_node = Node(curr.val)\n        new_node.next = curr.next\n        curr.next = new_node\n        curr = new_node.next\n\n    # Step 2: assign random pointers for cloned nodes\n    curr = head\n    while curr:\n        if curr.random:\n            curr.next.random = curr.random.next\n        curr = curr.next.next\n\n    # Step 3: separate cloned list from original\n    curr = head\n    new_head = head.next\n    copy_curr = new_head\n    while curr:\n        curr_next = curr.next.next  # original next\n        curr.next = curr_next\n        if copy_curr.next:\n            copy_curr.next = copy_curr.next.next\n            copy_curr = copy_curr.next\n        curr = curr_next\n\n    return new_head",
+      "C": "// Function to clone the linked list with random pointers\nNode* copyRandomList(Node* head) {\n    if (!head) return NULL;\n\n    Node* curr = head;\n\n    // Step 1: Create new nodes and insert them between original nodes\n    while (curr) {\n        Node* newNode = createNode(curr->val);\n        newNode->next = curr->next;\n        curr->next = newNode;\n        curr = newNode->next;\n    }\n\n    // Step 2: Set random pointers for new nodes\n    curr = head;\n    while (curr) {\n        if (curr->random)\n            curr->next->random = curr->random->next;\n        curr = curr->next->next;\n    }\n\n    // Step 3: Separate the copied list from original\n    curr = head;\n    Node* newHead = head->next;\n    Node* copyCurr = newHead;\n\n    while (curr) {\n        curr->next = curr->next->next;\n        if (copyCurr->next)\n            copyCurr->next = copyCurr->next->next;\n        curr = curr->next;\n        copyCurr = copyCurr->next;\n    }\n\n    return newHead;\n}",
+      "Java": "public static Node copyRandomList(Node head) {\n    if (head == null) return null;\n\n    // Step 1: Create copy nodes and insert them between original nodes\n    Node curr = head;\n    while (curr != null) {\n        Node newNode = new Node(curr.val);\n        newNode.next = curr.next;\n        curr.next = newNode;\n        curr = newNode.next;\n    }\n\n    // Step 2: Assign random pointers to the copied nodes\n    curr = head;\n    while (curr != null) {\n        if (curr.random != null) {\n            curr.next.random = curr.random.next;\n        }\n        curr = curr.next.next;\n    }\n\n    // Step 3: Separate original and copied lists\n    curr = head;\n    Node newHead = head.next;\n    Node copyCurr = newHead;\n\n    while (curr != null) {\n        curr.next = curr.next.next;\n        if (copyCurr.next != null)\n            copyCurr.next = copyCurr.next.next;\n        curr = curr.next;\n        copyCurr = copyCurr.next;\n    }\n\n    return newHead;\n}",
+      "JavaScript": "// Function to clone a linked list with random pointers\nfunction copyRandomList(head) {\n    if (!head) return null;\n\n    let curr = head;\n\n    // Step 1: Insert new copied nodes between original nodes\n    while (curr) {\n        const newNode = new Node(curr.val);\n        newNode.next = curr.next;\n        curr.next = newNode;\n        curr = newNode.next;\n    }\n\n    // Step 2: Set random pointers for copied nodes\n    curr = head;\n    while (curr) {\n        if (curr.random) {\n            curr.next.random = curr.random.next;\n        }\n        curr = curr.next.next;\n    }\n\n    // Step 3: Separate copied list from original\n    curr = head;\n    const newHead = head.next;\n    let copyCurr = newHead;\n\n    while (curr) {\n        curr.next = curr.next.next;\n        if (copyCurr.next) {\n            copyCurr.next = copyCurr.next.next;\n        }\n        curr = curr.next;\n        copyCurr = copyCurr.next;\n    }\n\n    return newHead;\n}\n"
+    }
+  }
+}

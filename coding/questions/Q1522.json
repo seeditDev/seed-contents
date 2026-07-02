@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1522",
+  "title": "Bouquet Garden",
+  "slug": "bouquet-garden",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have a garden with NNN flowers planted in a row. The ithi^\\text{th}ith flower will bloom on day bloomDay[i]bloomDay[i]bloomDay[i]. Once a flower blooms, it can be used to make a bouquet **exactly once**.\n\nYou want to make **m bouquets**, and each bouquet requires **k adjacent flowers** from the garden.\n\nFunction DeclarationFunction NameminDaysminDaysminDays – This function calculates the minimum number of days needed to make the required bouquets.\n\nParameters\nbloomDaybloomDaybloomDay : An array where bloomDay[i]bloomDay[i]bloomDay[i] represents the day the ithi^\\text{th}ith flower blooms.\nmmm : The number of bouquets required.\nkkk : The number of **adjacent flowers** needed per bouquet.\nReturn Value\nReturns a single integer — the **minimum number of days** required to make mmm bouquets.\nReturns −1-1−1 if it is **impossible** to make the bouquets.\nConstraints\n1≤N≤1051 ≤ N ≤ 10^51≤N≤105\n1≤bloomDay[i]≤1091 ≤ bloomDay[i] ≤ 10^91≤bloomDay[i]≤109\n1≤m≤1051 ≤ m ≤ 10^51≤m≤105\n1≤k≤N1 ≤ k ≤ N1≤k≤N\nEach flower can be used **only once**\nFlowers used in a bouquet must be **adjacent**\n\nInput Format\n\n\nFirst line contains three integers: NNN, mmm, kkk — the number of flowers, the number of bouquets, and the number of adjacent flowers needed per bouquet.\n\n\n\n\nSecond line contains NNN space-separated integers: bloomDay[1],bloomDay[2],...,bloomDay[N]bloomDay[1], bloomDay[2], ..., bloomDay[N]bloomDay[1],bloomDay[2],...,bloomDay[N] — the day each flower blooms.\n\n\n\n\n\nOutput Format\n\nPrint a single integer — the minimum number of days required.\nPrint −1-1−1 if it is impossible to form mmm bouquets.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 3 1\n1 10 3 10 2",
+        "output": "3",
+        "explanation": "Explanation:\nAfter 3 days, the flowers bloom as [x, _, x, _, x]. We can make 3 bouquets (each with 1 flower)."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 3 2\n1 10 3 10 2",
+        "output": "-1",
+        "explanation": "Explanation:\nEach bouquet requires 2 flowers, so 3 bouquets need 6 flowers. There are only 5 flowers, so it's impossible."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 3 1\n1 10 3 10 2",
+        "expectedOutput": "3",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5 3 2\n1 10 3 10 2",
+        "expectedOutput": "-1",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Check for impossibility**:\nIf total flowers are less than required:\n`if (M * K &gt; N) → return -1`\n\n**Binary Search on days**:\n\n\n\nSet `low = 1`\n\n\n\n\nSet `high = max(bloomDay)`\n\n\n\n\nThe goal is to find the smallest day `mid` on which we can make `M` bouquets.\n\n\n\n**Counting possible bouquets for a given day**:\nFor a particular day `mid`, check how many bouquets can be formed:\n\n\n\nIterate over the flowers:\n\n\n\n\nIf a flower blooms on or before day `mid`, count it.\n\n\n\n\nIf `K` consecutive flowers have bloomed, form one bouquet and reset the count.\n\n\n\n\nIf a flower hasn’t bloomed, reset the count (because they must be adjacent).\n\n\n\n\n\n\n**Adjust search range**:\n\n\n\n\nIf you can make at least `M` bouquets on `mid`, try smaller days → `high = mid - 1`.\n\n\n\n\nOtherwise, try larger days → `low = mid + 1`.\n\n\n\n\n\nThe smallest `mid` that satisfies the condition is your answer.\n\nComplexity Analysis**Time Complexity**: `O(N * log(max(bloomDay)))`\n\n(Binary search over days, each check needs O(N))\n\n**Space Complexity**: `O(1)`\n(No extra space used)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int minDays(vector<int>& bloomDay, int m, int k) {\n    if (1LL * m * k > bloomDay.size()) return -1;\n\n    int maxVal = *max_element(bloomDay.begin(), bloomDay.end());\n    int low = 1, high = maxVal, ans = -1;\n\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        int bouquets = 0, flowers = 0;\n\n        for (int bloom : bloomDay) {\n            if (bloom <= mid) {\n                flowers++;\n                if (flowers == k) {\n                    bouquets++;\n                    flowers = 0;\n                }\n            } else {\n                flowers = 0;\n            }\n        }\n\n        if (bouquets >= m) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n",
+      "Python3": "def minDays(bloomDay, m, k):\n    if m * k > len(bloomDay):\n        return -1\n\n    low, high = 1, max(bloomDay)\n    ans = -1\n\n    while low <= high:\n        mid = (low + high) // 2\n        bouquets, flowers = 0, 0\n\n        for bloom in bloomDay:\n            if bloom <= mid:\n                flowers += 1\n                if flowers == k:\n                    bouquets += 1\n                    flowers = 0\n            else:\n                flowers = 0\n\n        if bouquets >= m:\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n\n    return ans\n",
+      "C": "int minDays(int bloomDay[], int n, int m, int k) {\n    if ((long long)m * k > n) return -1;\n\n    int maxVal = 0;\n    for (int i = 0; i < n; i++) {\n        if (bloomDay[i] > maxVal) maxVal = bloomDay[i];\n    }\n\n    int low = 1, high = maxVal, ans = -1;\n\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        int bouquets = 0, flowers = 0;\n\n        for (int i = 0; i < n; i++) {\n            if (bloomDay[i] <= mid) {\n                flowers++;\n                if (flowers == k) {\n                    bouquets++;\n                    flowers = 0;\n                }\n            } else {\n                flowers = 0;\n            }\n        }\n\n        if (bouquets >= m) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n",
+      "Java": "    // Function to compute minimum days\n    static int minDays(int[] bloomDay, int m, int k) {\n        // If total flowers are not enough\n        if ((long) m * k > bloomDay.length) return -1;\n\n        int low = 1;\n        int high = Arrays.stream(bloomDay).max().getAsInt();\n        int ans = -1;\n\n        while (low <= high) {\n            int mid = low + (high - low) / 2;\n            int bouquets = 0, flowers = 0;\n\n            for (int bloom : bloomDay) {\n                if (bloom <= mid) {\n                    flowers++;\n                    if (flowers == k) {\n                        bouquets++;\n                        flowers = 0;\n                    }\n                } else {\n                    flowers = 0;\n                }\n            }\n\n            if (bouquets >= m) {\n                ans = mid;\n                high = mid - 1; // try smaller day\n            } else {\n                low = mid + 1;\n            }\n        }\n        return ans;\n    }\n",
+      "JavaScript": "function minDays(bloomDay, m, k) {\n    if (m * k > bloomDay.length) return -1;\n\n    let maxVal = Math.max(...bloomDay);\n    let low = 1, high = maxVal, ans = -1;\n\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n        let bouquets = 0, flowers = 0;\n\n        for (let bloom of bloomDay) {\n            if (bloom <= mid) {\n                flowers++;\n                if (flowers === k) {\n                    bouquets++;\n                    flowers = 0;\n                }\n            } else {\n                flowers = 0;\n            }\n        }\n\n        if (bouquets >= m) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return ans;\n}\n"
+    }
+  }
+}

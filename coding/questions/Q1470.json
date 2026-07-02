@@ -1,0 +1,76 @@
+{
+  "questionId": "Q1470",
+  "title": "Subset sum problem",
+  "slug": "subset-sum-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "You have NNN positive integers ithi^{th}ith integer begin AiA_iAi​, and a number XXX.\n\nReturn all the subsets of these NNN integers such that the sum of the integers (in the subset) is equal to XXX.\n\n\nInput Format\n\nThe first contains a two integers NNN and XXX, denoting the length of array AAA and the target sum value.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ — denoting the array AAA.\n\n\nOutput Format\nReturn the list of all the subset of integers which fulfil the target sum value.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 4\n1 1 2 3 4",
+        "output": "1 1 2 \n1 3 \n1 3 \n4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 4\n1 1 2 3 4",
+        "expectedOutput": "1 1 2 \n1 3 \n1 3 \n4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid backtrack(int idx, vector<int> &a, int x, vector<int> &subset, vector<vector<int>> &ans) {\n    if(idx == a.size()) { // No more integers to consider\n        int sum = 0;\n        for(auto &x: subset) {\n            sum += x;\n        }\n        if(sum == x) {\n            ans.push_back(subset);\n        }\n        return;\n    }\n    backtrack(idx + 1, a, x, subset, ans); // Dont take the i-th integer\n\n    subset.push_back(a[idx]);\n    backtrack(idx + 1, a, x, subset, ans); // Take the i-th integer\n    subset.pop_back();\n}\n\nvector<vector<int>> subset_sum(vector<int> a, int x) {\n    vector<int> subset; // Creating an empty subset\n    vector<vector<int>> ans; // To store all the subsets\n\n    backtrack(0, a, x, subset, ans);\n\n    return ans;\n}\n\nint main() {\n    int n, x;\n    cin >> n >> x;\n    vector<int> a(n);\n    for(auto &x: a) cin >> x;\n\n    vector<vector<int>> subsets = subset_sum(a, x);\n    for(auto &x: subsets) sort(x.begin(), x.end());\n    sort(subsets.begin(), subsets.end());\n    \n    for(auto &x: subsets) {\n        for(auto &y: x) {\n            cout << y << \" \";\n        }\n        cout << \"\\n\";\n    }\n}",
+      "Python3": "def subset_sum(a, x):\n    def backtrack(idx, subset, target):\n        if target == 0:\n            ans.append(subset.copy())\n            return\n\n        for i in range(idx, len(a)):\n            if a[i] <= target:\n                subset.append(a[i])\n                backtrack(i + 1, subset, target - a[i])\n                subset.pop()\n\n    ans = []\n    a.sort()\n    backtrack(0, [], x)\n    return ans\n\nif __name__ == \"__main__\":\n    n, x = map(int, input().split())\n    a = list(map(int, input().split()))\n\n    subsets = subset_sum(a, x)\n    subsets = [sorted(subset) for subset in subsets]\n    subsets.sort()\n\n    for subset in subsets:\n        print(*subset)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid backtrack(int idx, int a[], int x, int subset[], int j, int n)\n{\n    if (idx == n)\n    { // No more integers to consider\n        int sum = 0;\n        for (int i = 0; i < j; i++)\n        {\n            sum += subset[i];\n        }\n        if (sum == x)\n        {\n            for (int i = 0; i < j; i++)\n            {\n                printf(\"%d \", subset[i]);\n            }\n            printf(\"\\n\");\n        }\n        return;\n    }\n    subset[j] = a[idx];\n    backtrack(idx + 1, a, x, subset, j + 1, n); // Take the i-th integer\n    backtrack(idx + 1, a, x, subset, j, n);     // Don't take the i-th integer\n}\n\nvoid subset_sum(int a[], int x, int n)\n{\n    int subsets[n];\n    backtrack(0, a, x, subsets, 0, n);\n}\n\nint comp(const void *elem1, const void *elem2)\n{\n    int f = *((int *)elem1);\n    int s = *((int *)elem2);\n    if (f > s) return 1;\n    if (f < s) return -1;\n    return 0;\n}\n\nint main(void)\n{\n    int n, x;\n    scanf(\"%d%d\", &n, &x);\n    int a[n];\n    for (int i = 0; i < n; i++)\n    {\n        scanf(\"%d\", &a[i]);\n    }\n    qsort(a, n, sizeof(int), comp);\n    subset_sum(a, x, n);\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass main {\n    static void backtrack(int idx, int[] a, int x, List<Integer> subset, List<List<Integer>> ans) {\n        if(idx == a.length) { // No more integers to consider\n            int sum = 0;\n            for(int num : subset) {\n                sum += num;\n            }\n            if(sum == x) {\n                ans.add(new ArrayList<>(subset));\n            }\n            return;\n        }\n        backtrack(idx + 1, a, x, subset, ans); // Don't take the i-th integer\n\n        subset.add(a[idx]);\n        backtrack(idx + 1, a, x, subset, ans); // Take the i-th integer\n        subset.remove(subset.size() - 1);\n    }\n\n    static List<List<Integer>> subsetSum(int[] a, int x) {\n        List<Integer> subset = new ArrayList<>(); // Creating an empty subset\n        List<List<Integer>> ans = new ArrayList<>(); // To store all the subsets\n\n        backtrack(0, a, x, subset, ans);\n\n        return ans;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int x = scanner.nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) {\n            a[i] = scanner.nextInt();\n        }\n\n        List<List<Integer>> subsets = subsetSum(a, x);\n        for (List<Integer> subset : subsets) {\n            Collections.sort(subset);\n        }\n        subsets.sort(Comparator.comparing(Object::toString));\n\n        for (List<Integer> subset : subsets) {\n            for (int val : subset) {\n                System.out.print(val + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n"
+    }
+  }
+}

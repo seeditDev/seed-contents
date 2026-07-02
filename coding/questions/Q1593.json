@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1593",
+  "title": "Generate Binary Strings Without Consecutive 1s",
+  "slug": "generate-binary-strings-without-consecutive-1s",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Recursion",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "recursion & backtracking",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Recursion & Backtracking"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an integer nnn, and your task is to generate all binary strings of length nnn that **do not contain consecutive `1`s**.\n\nThe strings must be printed in **lexicographically increasing order** (sorted order).\n\nA binary string is a string that contains only the characters `'0'` and `'1'`.\n\nFunction DeclarationFunction Namegenerategenerategenerate – This function generates all binary strings of length **`n`** that do not contain consecutive `1`s using **recursion**, and prints them in lexicographically increasing order.\n\nParameters\nnnn : A number representing the required length of the binary strings.\nReturn Value\nThe function **does not return anything**.\nIt prints all valid binary strings of length nnn, each on a new line.\nConstraints\n1≤n≤201 \\le n \\le 201≤n≤20\nThe string contains only characters 000 and 111\nNo binary string may contain 111111 as a substring\n\nInput Format\n\nThe first line contains a single integer nnn — the length of the binary string.\n\n\nOutput Format\n\nPrint all valid binary strings of length nnn that do **not contain consecutive 111s**.\nEach string must be printed on a **new line**.\nStrings must appear in **lexicographically increasing order**.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4",
+        "output": "0000\n0001\n0010\n0100\n0101\n1000\n1001\n1010",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "3",
+        "output": "000\n001\n010\n100\n101",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4",
+        "expectedOutput": "0000\n0001\n0010\n0100\n0101\n1000\n1001\n1010",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3",
+        "expectedOutput": "000\n001\n010\n100\n101",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(F(n)), where F(n) is the nth Fibonacci number",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "void generate(int n) {\n    static string s = \"\";\n\n    // Base case\n    if (s.length() == n) {\n        cout << s << endl;\n        return;\n    }\n\n    // Try adding '0'\n    s.push_back('0');\n    generate(n);\n    s.pop_back();\n\n    // Try adding '1' only if last character is not '1'\n    if (s.empty() || s.back() == '0') {\n        s.push_back('1');\n        generate(n);\n        s.pop_back();\n    }\n}",
+      "Python3": "def generate(n):\n    s = []\n\n    def backtrack():\n        # Base case\n        if len(s) == n:\n            print(\"\".join(s))\n            return\n\n        # Always try adding '0'\n        s.append('0')\n        backtrack()\n        s.pop()\n\n        # Try adding '1' only if previous character is not '1'\n        if not s or s[-1] == '0':\n            s.append('1')\n            backtrack()\n            s.pop()\n\n    backtrack()",
+      "C": "void generate(int n) {\n    static char s[21];   // n ≤ 20\n    static int len = 0;\n\n    // Base case\n    if (len == n) {\n        s[len] = '\\0';\n        printf(\"%s\\n\", s);\n        return;\n    }\n\n    // Always try adding '0'\n    s[len++] = '0';\n    generate(n);\n    len--;\n\n    // Try adding '1' only if previous character is not '1'\n    if (len == 0 || s[len - 1] == '0') {\n        s[len++] = '1';\n        generate(n);\n        len--;\n    }\n}",
+      "Java": "public static void generate(int n) {\n    StringBuilder sb = new StringBuilder();\n\n    backtrack(n, sb);\n}\n\nprivate static void backtrack(int n, StringBuilder sb) {\n    // Base case\n    if (sb.length() == n) {\n        System.out.println(sb.toString());\n        return;\n    }\n\n    // Always try adding '0'\n    sb.append('0');\n    backtrack(n, sb);\n    sb.deleteCharAt(sb.length() - 1);\n\n    // Try adding '1' only if previous character is not '1'\n    if (sb.length() == 0 || sb.charAt(sb.length() - 1) == '0') {\n        sb.append('1');\n        backtrack(n, sb);\n        sb.deleteCharAt(sb.length() - 1);\n    }\n}",
+      "JavaScript": "function generate(n) {\n    const arr = [];\n\n    function backtrack() {\n        // Base case\n        if (arr.length === n) {\n            console.log(arr.join(\"\"));\n            return;\n        }\n\n        // Always try adding '0'\n        arr.push('0');\n        backtrack();\n        arr.pop();\n\n        // Try adding '1' only if previous character is not '1'\n        if (arr.length === 0 || arr[arr.length - 1] === '0') {\n            arr.push('1');\n            backtrack();\n            arr.pop();\n        }\n    }\n\n    backtrack();\n}"
+    }
+  }
+}

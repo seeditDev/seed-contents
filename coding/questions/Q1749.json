@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1749",
+  "title": "Find the Two Unique Numbers",
+  "slug": "find-the-two-unique-numbers",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Bit Manipulation",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "bit manipulation",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Bit Manipulation"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given an integer array numsnumsnums where **every number appears exactly twice except for two distinct numbers**, your task is to **identify the two numbers that occur only once**.\nAll other numbers appear in pairs.\nReturn the two unique numbers **in ascending order**.\n\nFunction DeclarationFunction NamefindSingleNumbersfindSingleNumbersfindSingleNumbers – This function determines the two integers that appear exactly once in an array where all other integers appear twice.\n\nParameters\nnumsnumsnums: A list of integers representing the array elements.\nReturn Value\nReturns a list of **two integers** that appear only once, sorted in **ascending order**.\n`The input and output formats below are only if you want to test using custom inputs.`\n\nConstraints\n2≤nums.length≤1052 \\leq nums.length \\leq 10^52≤nums.length≤105\n−3×105≤nums[i]≤3×105-3 \\times 10^5 \\leq nums[i] \\leq 3 \\times 10^5−3×105≤nums[i]≤3×105\nExactly two integers appear once; all others appear twice.\n\nInput Format\n\n\nThe first line contains a single integer TTT — the number of test cases.\n\n\n\n\nEach test case consists of:\n\n\n\nA single line containing comma-separated integers representing the array numsnumsnums.\n\n\n\n\nOutput Format\n\nFor each test case, print the two unique integers in ascending order inside brackets.\nExample:\n[a,b][a, b][a,b]",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n[4, 7, 4, 9, 11, 7]\n[-5, -2, -5, 13]\n[6, 1, 6, 3, 10, 3]",
+        "output": "[9, 11]\n[-2, 13]\n[1, 10]",
+        "explanation": "Explanation:\nFor first test case: Every element appears twice except 9 and 11, which appear only once.\nFor second test case: -5 appears twice, while -2 and 13 appear exactly once."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n[4, 7, 4, 9, 11, 7]\n[-5, -2, -5, 13]\n[6, 1, 6, 3, 10, 3]",
+        "expectedOutput": "[9, 11]\n[-2, 13]\n[1, 10]",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    vector<int> findSingleNumbers(vector<int>& nums) {\n        int xorAll = 0;\n\n        for (int x : nums) xorAll ^= x;\n\n        int diffBit = xorAll & -xorAll;\n\n        int num1 = 0, num2 = 0;\n\n        for (int x : nums) {\n            if (x & diffBit) num1 ^= x;\n            else num2 ^= x;\n        }\n\n        if (num1 < num2) return {num1, num2};\n        return {num2, num1};\n    }\n};\n",
+      "Python3": "class Solution:\n    def findSingleNumbers(self, nums):\n        xor_all = 0\n        \n        # Step 1: XOR of all numbers\n        for x in nums:\n            xor_all ^= x\n        \n        # Step 2: Rightmost set bit\n        diff_bit = xor_all & -xor_all\n        \n        num1 = 0\n        num2 = 0\n        \n        # Step 3: Split numbers\n        for x in nums:\n            if x & diff_bit:\n                num1 ^= x\n            else:\n                num2 ^= x\n        \n        return sorted([num1, num2])",
+      "C": "void findSingleNumbers(int *nums, int n, int *a, int *b) {\n    unsigned int xor_all = 0;\n    \n    // Step 1: XOR all elements together (cast to unsigned to be safe with negatives)\n    for (int i = 0; i < n; i++) {\n        xor_all ^= (unsigned int)nums[i];\n    }\n    unsigned int rightmost_bit = xor_all & ~(xor_all - 1);\n    \n    unsigned int num1 = 0;\n    unsigned int num2 = 0;\n    \n    // Step 3: Partition the numbers into two groups and XOR them\n    for (int i = 0; i < n; i++) {\n        if (((unsigned int)nums[i] & rightmost_bit) != 0) {\n            num1 ^= (unsigned int)nums[i];\n        } else {\n            num2 ^= (unsigned int)nums[i];\n        }\n    }\n    \n    // Step 4: Cast back to signed integers and assign in ascending order\n    int res1 = (int)num1;\n    int res2 = (int)num2;\n    \n    if (res1 < res2) {\n        *a = res1;\n        *b = res2;\n    } else {\n        *a = res2;\n        *b = res1;\n    }\n}",
+      "Java": "class Solution {\n    public int[] findSingleNumbers(int[] nums) {\n        int xorAll = 0;\n\n        // Step 1: XOR of all numbers\n        for (int x : nums) {\n            xorAll ^= x;\n        }\n\n        // Step 2: Rightmost set bit difference\n        int diffBit = xorAll & -xorAll;\n\n        int num1 = 0, num2 = 0;\n\n        // Step 3: Partition numbers\n        for (int x : nums) {\n            if ((x & diffBit) != 0) num1 ^= x;\n            else num2 ^= x;\n        }\n\n        int[] result = new int[] { num1, num2 };\n        Arrays.sort(result);\n        return result;\n    }\n}\n",
+      "JavaScript": "class Solution {\n    findSingleNumbers(nums) {\n        let xorAll = 0;\n\n        // Step 1: XOR all numbers\n        for (let x of nums) xorAll ^= x;\n\n        // Step 2: Rightmost set bit\n        let diffBit = xorAll & -xorAll;\n\n        let num1 = 0, num2 = 0;\n\n        // Step 3: Split into two groups\n        for (let x of nums) {\n            if (x & diffBit) num1 ^= x;\n            else num2 ^= x;\n        }\n\n        return [num1, num2].sort((a, b) => a - b);\n    }\n}\n"
+    }
+  }
+}

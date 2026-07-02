@@ -1,0 +1,84 @@
+{
+  "questionId": "Q1724",
+  "title": "Chef Builds String Chain",
+  "slug": "chef-builds-string-chain",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef is organizing his collection of words, each consisting of lowercase English letters. He wants to arrange them into a **String Chain** to see how they evolve.\n\nA **String Chain** is a sequence of words where each word is a **predecessor** of the next word.\n\nWord **AAA** is a predecessor of word **BBB** if and only if:\n\n\n\n**∣B∣=∣A∣+1|B| = |A| + 1∣B∣=∣A∣+1**\n\n\n\n\nYou can insert **exactly one** character anywhere in **AAA** to make it identical to **BBB**\n\n\n\n\nThe relative order of existing characters in **AAA** must remain the same.\n\n\n\n\nValid: \"abc\" → \"ab**a**c\" (Added 'a' at index 2).\n\n\n\n\nInvalid: \"cba\" → \"bcad\" (The order of 'c', 'b', and 'a' was scrambled).\n\n\n\nChef wants to find the **maximum possible length** of a chain that can be formed using words from his list.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**findLongestStringChainfindLongestStringChainfindLongestStringChain**\n\n\n\n**Parameters:**\n\n\n\n**wordListwordListwordList** (`Array&lt;string&gt;`)\nA list of words available to Chef.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **length of the longest possible string chain**.",
+    "constraints": [
+      "1≤T≤1051 \\le T \\le 10^51≤T≤105",
+      "1≤N≤10001 \\le N \\le 10001≤N≤1000",
+      "1≤∣wordList[i]∣≤161 \\le |wordList[i]| \\le 161≤∣wordList[i]∣≤16",
+      "All strings consist of lowercase English letters only",
+      "The **sum of NNN over all test cases** does not exceed **10510^5105**",
+      "The list **wordListwordListwordList may contain duplicates**, but duplicates are treated as **separate entries**."
+    ],
+    "inputFormat": "The first line contains a single integer **TTT** — the number of test cases.\n\nFor each test case:\n\n\nThe first line contains an integer **NNN** — the number of words.\nThe second line contains **NNN** space-separated strings representing **wordListwordListwordList**.",
+    "outputFormat": "For each test case, print a single integer — the **maximum length** of a string chain Chef can form from the given **wordListwordListwordList**.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n6\na b ba bca bda bdca\n5\nxbc pcxbcf xb cxbc pcxbc\n2\nabcd dbqca",
+        "output": "4\n5\n1",
+        "explanation": "Explanation:\nTest Case 1: Chain is \"a\" -> \"ba\" -> \"bda\" -> \"bdca\", length 4.\nTest Case 2: Chain is \"xb\" -> \"xbc\" -> \"cxbc\" -> \"pcxbc\" -> \"pcxbcf\", length 5.\nTest Case 3: No valid chain longer than 1 can be formed because the character order is changed, so output is 1."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n6\na b ba bca bda bdca\n5\nxbc pcxbcf xb cxbc pcxbc\n2\nabcd dbqca",
+        "expectedOutput": "4\n5\n1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "It performs redundant calculations (calculating the same sub-chain multiple times).\nWith a large word list, the number of recursive calls will cause a \"Time Limit Exceeded\" error.\nOptimal Approach (Dynamic Programming)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int findLongestStringChain(vector<string>& wordList) {\n        sort(wordList.begin(), wordList.end(), [](const string& a, const string& b) {\n            return a.size() < b.size();\n        });\n        unordered_map<string, int> dp;\n        int resultNumber = 1;\n        for (const string& wordString : wordList) {\n            int best = 1;\n            for (int i = 0; i < (int)wordString.size(); ++i) {\n                string prev = wordString.substr(0, i) + wordString.substr(i + 1);\n                if (dp.count(prev)) {\n                    best = max(best, dp[prev] + 1);\n                }\n            }\n            dp[wordString] = best;\n            resultNumber = max(resultNumber, best);\n        }\n        return resultNumber;\n    }",
+      "Python3": "def findLongestStringChain(word_list):\n    if not word_list:\n        return 0\n\n    # Sort words by length\n    word_list.sort(key=len)\n\n    dp = {}\n    max_chain = 1\n\n    for word in word_list:\n        best = 1\n        for i in range(len(word)):\n            prev = word[:i] + word[i+1:]\n            best = max(best, dp.get(prev, 0) + 1)\n        dp[word] = best\n        max_chain = max(max_chain, best)\n\n    return max_chain",
+      "C": "// Compare function to sort words by length (ascending)\nint compareByLength(const void* a, const void* b) {\n    return strlen(*(char**)a) - strlen(*(char**)b);\n}\n\n// Task requirement: Implement only the function. Do not create a class.\nint findLongestStringChain(char** wordList, int wordListSize) {\n    if (wordListSize == 0) return 0;\n\n    // Sort words by length\n    qsort(wordList, wordListSize, sizeof(char*), compareByLength);\n\n    int dp[1000];\n    for (int i = 0; i < wordListSize; i++) {\n        dp[i] = 1;\n    }\n\n    int maxChain = 1;\n\n    for (int i = 0; i < wordListSize; i++) {\n        for (int j = 0; j < i; j++) {\n\n            int lenI = strlen(wordList[i]);\n            int lenJ = strlen(wordList[j]);\n\n            // Predecessor must be exactly one character shorter\n            if (lenJ + 1 != lenI) continue;\n\n            int p = 0, q = 0, diff = 0;\n\n            // Check if wordList[j] is predecessor of wordList[i]\n            while (p < lenJ && q < lenI) {\n                if (wordList[j][p] == wordList[i][q]) {\n                    p++;\n                    q++;\n                } else {\n                    diff++;\n                    q++;   // skip extra character\n                    if (diff > 1) break;\n                }\n            }\n\n            if (diff <= 1) {\n                if (dp[i] < dp[j] + 1) {\n                    dp[i] = dp[j] + 1;\n                }\n            }\n        }\n\n        if (dp[i] > maxChain) {\n            maxChain = dp[i];\n        }\n    }\n\n    return maxChain;\n}\n",
+      "Java": "public int findLongestStringChain(String[] wordList) {\n    java.util.Arrays.sort(wordList, (a, b) -> a.length() - b.length());\n    java.util.Map<String, Integer> dp = new java.util.HashMap<>();\n    int resultNumber = 1;\n    for (String wordString : wordList) {\n        int best = 0;\n        for (int i = 0; i < wordString.length(); i++) {\n            StringBuilder sb = new StringBuilder(wordString);\n            sb.deleteCharAt(i);\n            String prev = sb.toString();\n            best = Math.max(best, dp.getOrDefault(prev, 0) + 1);\n        }\n        dp.put(wordString, best);\n        resultNumber = Math.max(resultNumber, best);\n    }\n    return resultNumber;\n}\n",
+      "JavaScript": "function findLongestStringChain(wordList) {\n    wordList.sort((a, b) => a.length - b.length);\n    const dp = new Map();\n    let resultNumber = 1;\n    for (const wordString of wordList) {\n        let maxChain = 1;\n        for (let i = 0; i < wordString.length; i++) {\n            const predecessor = wordString.slice(0, i) + wordString.slice(i + 1);\n            if (dp.has(predecessor)) {\n                maxChain = Math.max(maxChain, dp.get(predecessor) + 1);\n            }\n        }\n        dp.set(wordString, maxChain);\n        resultNumber = Math.max(resultNumber, maxChain);\n    }\n    return resultNumber;\n}"
+    }
+  }
+}

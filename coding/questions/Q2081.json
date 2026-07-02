@@ -1,0 +1,83 @@
+{
+  "questionId": "Q2081",
+  "title": "Delete a Node in BST",
+  "slug": "delete-a-node-in-bst",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Trees",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "trees",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Trees"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a Binary Search Tree (BST) and a target node XXX, delete the node from the BST. The goal is to return the reference to the root node, which may be modified after the deletion process.\nThe solution can be achieved into two main steps:\n\n\nSearch for the given node.\nIf the node is found, delete it and return the updated reference to the root node of the modified BST.\nVideo Explanation\nFor eg., in the following BST, node 2 is deleted:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and XXX — the number of nodes in the binary search tree, and the node to be deleted.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nComplete the given function and return the root of modified BST after node XXX's deletion.",
+    "constraints": [
+      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
+      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
+      "RiR_iRi​ = `L` or `R`",
+      "All pip_ipi​'s and cic_ici​'s are distinct.",
+      "1≤X≤1000001 \\leq X \\leq 1000001≤X≤100000"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10 8\n3 1 L\n8 3 L\n8 11 R\n11 9 L\n13 8 L\n13 19 R\n18 16 L\n19 18 L\n19 20 R",
+        "output": "Successfully deleted the node!",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10 8\n3 1 L\n8 3 L\n8 11 R\n11 9 L\n13 8 L\n13 19 R\n18 16 L\n19 18 L\n19 20 R",
+        "expectedOutput": "Successfully deleted the node!",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    Node* deleteNode(Node* root, int x) {\n       if(root) {\n            if(x < root->val)\n                root->left = deleteNode(root->left, x);\n            else if(x > root->val)\n                root->right = deleteNode(root->right, x);\n            else {\n                if(!root->left && !root->right)\n                    return NULL;\n                if (!root->left || !root->right)\n                    return root->left ? root->left : root->right;\n                Node* temp = root->right;\n                while(temp->left != NULL)\n                    temp = temp->left;\n                root->val = temp->val;\n                root->right = deleteNode(root->right, temp->val);\n            }\n        }\n        return root;\n    }\n};\n",
+      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\ndef deleteNode(root, x):\n    if root:\n        if x < root.val:\n            root.left = deleteNode(root.left, x)\n        elif x > root.val:\n            root.right = deleteNode(root.right, x)\n        else:\n            if root.left is None and root.right is None:\n                return None\n            if root.left is None or root.right is None:\n                return root.left if root.left else root.right\n            temp = root.right\n            while temp.left is not None:\n                temp = temp.left\n            root.val = temp.val\n            root.right = deleteNode(root.right, temp.val)\n    return root\n",
+      "C": "// #include <stdio.h>\n// #include <stdlib.h>\n// #include <stdbool.h>\n// #include <assert.h>\n\n// #define MAX_NODES 100000\n\n// typedef struct Node {\n//     int val;\n//     struct Node* left;\n//     struct Node* right;\n// } Node;\n\nNode* deleteNode(Node* root, int x) {\n    if (root == NULL) return NULL;\n\n    if (x < root->val) {\n        root->left = deleteNode(root->left, x);\n    } else if (x > root->val) {\n        root->right = deleteNode(root->right, x);\n    } else {\n        // Node to be deleted found\n        if (root->left == NULL && root->right == NULL) {\n            free(root);\n            return NULL;\n        }\n        if (root->left == NULL) {\n            Node* temp = root->right;\n            free(root);\n            return temp;\n        }\n        if (root->right == NULL) {\n            Node* temp = root->left;\n            free(root);\n            return temp;\n        }\n\n        // Node with two children: get the inorder successor\n        Node* temp = root->right;\n        while (temp->left != NULL) {\n            temp = temp->left;\n        }\n        root->val = temp->val;\n        root->right = deleteNode(root->right, temp->val);\n    }\n    return root;\n}\n",
+      "Java": "// import java.util.*;\n\n// class Node {\n//     int val;\n//     Node left;\n//     Node right;\n\n//     Node(int val) {\n//         this.val = val;\n//         this.left = null;\n//         this.right = null;\n//     }\n// }\n\nclass Solution {\n    public Node deleteNode(Node root, int x) {\n        if (root == null) return null;\n\n        if (x < root.val) {\n            root.left = deleteNode(root.left, x);\n        } else if (x > root.val) {\n            root.right = deleteNode(root.right, x);\n        } else {\n            if (root.left == null && root.right == null) {\n                return null;\n            }\n            if (root.left == null) {\n                return root.right;\n            }\n            if (root.right == null) {\n                return root.left;\n            }\n\n            // Node with two children: get the inorder successor\n            Node temp = root.right;\n            while (temp.left != null) {\n                temp = temp.left;\n            }\n            root.val = temp.val;\n            root.right = deleteNode(root.right, temp.val);\n        }\n        return root;\n    }\n}\n",
+      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction deleteNode(root, key) {\n    if (root === null) return root;\n\n    if (key < root.val) {\n        root.left = deleteNode(root.left, key);\n    } else if (key > root.val) {\n        root.right = deleteNode(root.right, key);\n    } else {\n        if (root.left === null) {\n            return root.right;\n        } else if (root.right === null) {\n            return root.left;\n        }\n\n        root.val = minValue(root.right);\n        root.right = deleteNode(root.right, root.val);\n    }\n\n    return root;\n}\n\nfunction minValue(node) {\n    let current = node;\n    while (current.left !== null) {\n        current = current.left;\n    }\n    return current.val;\n}\n\n"
+    }
+  }
+}

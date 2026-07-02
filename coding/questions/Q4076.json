@@ -1,0 +1,74 @@
+{
+  "questionId": "Q4076",
+  "title": "Sorting Rows of Numbers",
+  "slug": "sorting-rows-of-numbers",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Sorting",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "sorting",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Sorting"
+    ]
+  },
+  "content": {
+    "problemStatement": "You will be given several lines of input where each line contains a sequence of positive integers. Your task is to sort these lines in lexicographic order. Lexicographic order is the order in which words are listed in the dictionary. The ordering is determined by the left most element (in this case the left most integer on each line) and if the left most elements are equal then by the second element from the left, if the left most and the second element from the left are equal then by the third element from the left and so on.\n\nFor example, when the lines\n\n \n\n`  14   38   11   89\n  27   34\n  27   12   34\n  27\n  92    2    3    1\n  17    2\n` \n\nare sorted in the lexicographic order we get\n\n \n\n`  14   38    11   89\n  17    2\n  27\n  27   12    34\n  27   34\n  92    2     3    1\n` \n\nInput:The first line of the input contains a single integer NNN indicating the number of lines of input. This is followed by NNN lines (lines 222 through N+1N+1N+1) each which consists of a sequence of positive integers followed by a single −1-1−1. (The −1-1−1 is there just as an end marker and is not to be used in the sorting). Every line contains at the most 505050 numbers.\n\nOutput:NNN lines each containing a sequence of integers. These NNN lines must be the lexicographically sorted presentation of the NNN input lines.",
+    "constraints": [
+      "1≤N≤10001 \\leq N \\leq 10001≤N≤1000.",
+      "There are at the most 505050 integers on each line."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "6\n14 38 11 89 -1\n27 34 -1\n27 12 34 -1\n27 -1\n92 2 3 1 -1\n17 2 -1",
+        "output": "14 38 11 89 \n17 2 \n27 \n27 12 34 \n27 34 \n92 2 3 1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "6\n14 38 11 89 -1\n27 34 -1\n27 12 34 -1\n27 -1\n92 2 3 1 -1\n17 2 -1",
+        "expectedOutput": "14 38 11 89 \n17 2 \n27 \n27 12 34 \n27 34 \n92 2 3 1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Intuition:**\n\nBoth C++ and Python provide built-in methods that compare sequences (e.g. vectors or lists) lexicographically by default. This means that when you sort a list of sequences:\n\n\nThe first elements are compared.\nIf they are equal, the second elements are compared.\nThe process continues until a difference is found or one sequence runs out of elements.\n**C++ Implementation:**\n\nIn C++, if you store each line as a `vector&lt;int&gt;`, the default `&lt;` operator performs lexicographical comparison. Therefore, you can simply use `std::sort` without any custom comparator. The logic flow is:\n\n\nRead the integer NNN (number of lines).\nFor each line, read integers until you encounter −1-1−1.\nStore the numbers in a `vector&lt;int&gt;`.\nSort the collection of vectors.\nOutput the sorted sequences.\nBelow is the C++ code for this approach:\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n \nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;vector&lt;int&gt;&gt; lines;\n \n    while (N--) {\n        vector&lt;int&gt; nums;\n        int x;\n        while (cin &gt;&gt; x &amp;&amp; x != -1) {\n            nums.push_back(x);\n        }\n        lines.push_back(nums);\n    }\n \n    // Default lexicographical sorting of vectors\n    sort(lines.begin(), lines.end());\n \n    // Output the sorted lines\n    for (auto &amp;vec : lines) {\n        for (auto &amp;num : vec) {\n            cout &lt;&lt; num &lt;&lt; \" \";\n        }\n        cout &lt;&lt; \"\\n\";\n    }\n    return 0;\n}\n`**Python Implementation:**\n\nPython lists are compared lexicographically by default. The steps are similar:\n\n\nRead NNN from input.\nFor each of the next NNN lines, read and convert the numbers (ignoring the trailing −1-1−1) into a list.\nSort the list of lists.\nPrint the sorted lists.\nThe Python code for this approach is as follows:\n\n`def main():\n    import sys\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    N = int(data[0])\n    all_lines = []\n    for line in data[1:N+1]:\n        # Convert to integers and ignore the last element (-1)\n        nums = list(map(int, line.split()))[:-1]\n        all_lines.append(nums)\n    \n    # Default lexicographical sort\n    all_lines.sort()\n    \n    for nums in all_lines:\n        print(\" \".join(map(str, nums)))\n\nif __name__ == \"__main__\":\n    main()\n`**Intuition:**\n\nAlthough the default sorting works well, it is educational to know how to implement a custom comparator that mimics lexicographical order. This can be useful in scenarios where you need to alter or explicitly define the comparison logic. The idea is to compare two sequences element by element:\n\n\nIterate over both sequences up to the length of the shorter one.\nAt the first index where the numbers differ, decide the order.\nIf all compared elements are equal, the sequence with fewer numbers comes first.\n**C++ Implementation:**\n\nWe define a custom comparator function `lexCompare` to compare two `vector&lt;int&gt;` objects manually and then pass it to `std::sort`.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n \nbool lexCompare(const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {\n    int n = min(a.size(), b.size());\n    for (int i = 0; i &lt; n; i++) {\n        if (a[i] &lt; b[i])\n            return true;\n        if (a[i] &gt; b[i])\n            return false;\n    }\n    return a.size() &lt; b.size();\n}\n \nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n \n    int N;\n    cin &gt;&gt; N;\n    vector&lt;vector&lt;int&gt;&gt; lines;\n    while (N--) {\n        vector&lt;int&gt; nums;\n        int x;\n        while (cin &gt;&gt; x &amp;&amp; x != -1) {\n            nums.push_back(x);\n        }\n        lines.push_back(nums);\n    }\n \n    // Sort using the custom lexicographical comparator\n    sort(lines.begin(), lines.end(), lexCompare);\n \n    // Output the sorted lines\n    for (auto &amp;vec : lines) {\n        for (auto num : vec)\n            cout &lt;&lt; num &lt;&lt; \" \";\n        cout &lt;&lt; \"\\n\";\n    }\n    return 0;\n}\n`**Python Implementation:**\n\nIn Python, you can use the `functools.cmp_to_key` function to convert a custom comparator into a key function for sorting. Here is how you can implement a custom comparator:\n\n`from functools import cmp_to_key\n\ndef lex_compare(a, b):\n    n = min(len(a), len(b))\n    for i in range(n):\n        if a[i] &lt; b[i]:\n            return -1\n        elif a[i] &gt; b[i]:\n            return 1\n    return -1 if len(a) &lt; len(b) else (1 if len(a) &gt; len(b) else 0)\n\ndef main():\n    import sys\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    N = int(data[0])\n    all_lines = []\n    for line in data[1:N+1]:\n        # Convert to integers and ignore the trailing -1\n        nums = list(map(int, line.split()))[:-1]\n        all_lines.append(nums)\n    \n    # Sort using a custom comparator\n    all_lines.sort(key=cmp_to_key(lex_compare))\n    \n    for nums in all_lines:\n        print(\" \".join(map(str, nums)))\n        \nif __name__ == \"__main__\":\n    main()\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

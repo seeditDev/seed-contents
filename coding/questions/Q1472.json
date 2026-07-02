@@ -1,0 +1,80 @@
+{
+  "questionId": "Q1472",
+  "title": "Check Reachability",
+  "slug": "check-reachability",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a graph of NNN vertices - numbered from 111 to NNN and MMM edges between them. \n\nThe ithi^{th}ith edge connects the AiA_iAi​ node to BiB_iBi​. The edges are directed.\n\nYou live at the vertex 111, output all the vertices that you can visit. You can travel using the given edges.\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i−thi-thi−th of these MMM lines contains two space-separated integers AiA_iAi​ and BiB_iBi​ denoting there exists a directed edge from AiA_iAi​ to BiB_iBi​.\n\n\nOutput Format\nOutput all the nodes you can visit from the node 1, in increasing order of their index.",
+    "constraints": [
+      "2≤N,M≤2⋅1052 \\leq N, M \\leq 2 \\cdot 10^52≤N,M≤2⋅105",
+      "1≤Ai,Bi≤N1 \\leq A_i, B_i \\leq N1≤Ai​,Bi​≤N"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 6\n1 3\n4 3\n3 2\n2 4\n5 4\n3 1",
+        "output": "1 2 3 4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 6\n1 3\n4 3\n3 2\n2 4\n5 4\n3 1",
+        "expectedOutput": "1 2 3 4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int N = 2e5 + 1;\nvector<int> adj[N];\nvector<bool> vis(N, 0);\n\nvoid dfs(int v) {\n    if(vis[v]) {\n        return;\n    }\n    vis[v] = true;\n\n    for(auto u: adj[v]) {\n        dfs(u);\n    }\n}\n\nint main() {\n    int n, m; \n    cin >> n >> m;\n\n    while(m--) {\n        int a, b;\n        cin >> a >> b;\n        adj[a].push_back(b); // Directed edge\n    }\n\n    dfs(1); // Start dfs from source: 1\n\n    for(int i = 1; i <= n; i++) {\n        if(vis[i]) // A node is reachable if it is marked visited\n            cout << i << \" \";\n    }\n}",
+      "Python3": "N = 2 * 10**5 + 1\nadj = [[] for _ in range(N)]\nvis = [False] * N\n\ndef dfs(v):\n    if vis[v]:\n        return\n    vis[v] = True\n\n    for u in adj[v]:\n        dfs(u)\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n\n    for _ in range(m):\n        a, b = map(int, input().split())\n        adj[a].append(b)\n\n    dfs(1)\n\n    for i in range(1, n + 1):\n        if vis[i]:\n            print(i, end=\" \")\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define N 200001\n\n// Structure for adjacency list node\nstruct Node {\n    int vertex;\n    struct Node* next;\n};\n\n// Array of adjacency lists\nstruct Node* adj[N];\n\n// Array to keep track of visited nodes\nint vis[N];\n\n// Function to create a new adjacency list node\nstruct Node* createNode(int v) {\n    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));\n    newNode->vertex = v;\n    newNode->next = NULL;\n    return newNode;\n}\n\n// Function to add an edge to a directed graph\nvoid addEdge(int src, int dest) {\n    // Add edge from src to dest\n    struct Node* newNode = createNode(dest);\n    newNode->next = adj[src];\n    adj[src] = newNode;\n}\n\n// Depth First Search function\nvoid dfs(int v) {\n    if (vis[v]) {\n        return; // If the node is already visited, do not process it\n    }\n    vis[v] = 1; // Mark the node as visited\n\n    // Process the neighbors\n    struct Node* temp = adj[v];\n    while (temp) {\n        int u = temp->vertex;\n        dfs(u);\n        temp = temp->next;\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    // Initialize adjacency list and visited array\n    for (int i = 0; i < N; i++) {\n        adj[i] = NULL;\n        vis[i] = 0;\n    }\n\n    // Read the edges\n    while (m--) {\n        int a, b;\n        scanf(\"%d %d\", &a, &b);\n        addEdge(a, b); // Directed edge\n    }\n\n    dfs(1); // Start dfs from source: 1\n\n    // Print reachable nodes\n    for (int i = 1; i <= n; i++) {\n        if (vis[i]) { // A node is reachable if it is marked visited\n            printf(\"%d \", i);\n        }\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\nclass Main {\n    static int N = 200001; \n    static List<Integer>[] adj = new ArrayList[N];\n    static boolean[] vis = new boolean[N];\n\n    // Depth-First Search function\n    public static void dfs(int v) {\n        if (vis[v]) {\n            return;\n        }\n        vis[v] = true;\n\n        // Traverse neighbors of vertex v\n        for (int u : adj[v]) {\n            dfs(u);\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        // Initialize adjacency list\n        for (int i = 1; i <= n; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        // Read and construct the graph edges\n        while (m-- > 0) {\n            int a = scanner.nextInt();\n            int b = scanner.nextInt();\n            adj[a].add(b); // Directed edge\n        }\n\n        dfs(1); // Start DFS from source: 1\n\n        // Print reachable nodes\n        for (int i = 1; i <= n; i++) {\n            if (vis[i]) { // A node is reachable if it is marked visited\n                System.out.print(i + \" \");\n            }\n        }\n    }\n}\n",
+      "JavaScript": "//const readline = require('readline');\n\nfunction findReachableNodes(N, M, edges) {\n    // Create an adjacency list\n    const adjList = Array.from({ length: N + 1 }, () => []);\n    for (const [u, v] of edges) {\n        adjList[u].push(v);\n    }\n\n    // BFS to find reachable nodes\n    const visited = new Array(N + 1).fill(false);\n    const queue = [1];\n    visited[1] = true;\n    const reachable = [];\n\n    while (queue.length > 0) {\n        const node = queue.shift();\n        reachable.push(node);\n        for (const neighbor of adjList[node]) {\n            if (!visited[neighbor]) {\n                visited[neighbor] = true;\n                queue.push(neighbor);\n            }\n        }\n    }\n\n    reachable.sort((a, b) => a - b);\n    return reachable;\n}\n\n"
+    }
+  }
+}

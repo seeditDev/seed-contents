@@ -1,0 +1,102 @@
+{
+  "questionId": "Q1184",
+  "title": "Minimum Cost Walk",
+  "slug": "minimum-cost-walk",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Consider a weighted, undirected and connected graph with **N** nodes, numbered 1 to **N**, and **M** edges. Find the minimum cost of any walk from node **S** to node **T** , via node **V** (visiting node **V** is compulsory) , where cost of a walk is the sum of weights of distinct edges occurring in the walk. This means that even if an edge occurs multiple times in a walk, its weight is added only once to the cost of the walk.\n\n\n\n**Warning:** Large input data, use faster methods for Input.",
+    "constraints": [
+      "**1** ≤ **t** ≤ **5**",
+      "**1** ≤ **N** ≤ **100000**",
+      "**1** ≤ **S,T,V** ≤ **N**",
+      "**N-1** ≤ **M** ≤ **min(100000,N*(N-1)/2)**",
+      "**1** ≤ **a, b** ≤ **N**",
+      "**1** ≤ **c** ≤ **109**",
+      "Example**Input:**",
+      "2",
+      "4 3",
+      "1 3 4",
+      "1 2 1",
+      "2 3 2",
+      "2 4 3",
+      "4 3",
+      "1 1 4",
+      "1 2 1",
+      "2 3 2",
+      "2 4 3",
+      "**Output:**",
+      "6",
+      "4",
+      "Explanation:Test case 1:",
+      "The walk with least cost is: 1-&gt;2-&gt;3-&gt;2-&gt;4",
+      "Note that the edge (2-3) occurs twice in the walk, but its weight is added only once to the walk."
+    ],
+    "inputFormat": "The first line contains an integer **t** , the number of test cases.\n\n**t** test cases follow:\n\nThe first line of each test case contains 2 space seperated integers: **N** and **M**.\n\nThe next line contains 3 space seperated integers: **S**, **T** and **V**.\n\nThe next **M** lines contain 3 space seperated integers each: **a b c** , denoting an edge between nodes **a** and **b** with weight c.\n\nNote: There is at most one edge between any pair of nodes and there are no self loops.",
+    "outputFormat": "Output the required answer for each test case on a separate line",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n4 3\n1 3 4\n1 2 1\n2 3 2\n2 4 3\n4 3\n1 1 4\n1 2 1\n2 3 2\n2 4 3",
+        "output": "6\n4",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n4 3\n1 3 4\n1 2 1\n2 3 2\n2 4 3\n4 3\n1 1 4\n1 2 1\n2 3 2\n2 4 3",
+        "expectedOutput": "6\n4",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\n/*\nConsider we fix a vertex through which our path goes through -> U\nCost of walk will be: dist(U, S) + dist(U, T) + dist(U, V) \nTo minimise the above equation, we will consider all such vertices U\nWe will need to compute dijkstra from 3 sources -> S, T, V\n*/\n\nconst int N = 1e5 + 1;\nconst long long INF = 1e18;\n\nlong long d[3][N]; // d[0] stores min distance from S, d[1] from T, d[2] from V\nvector<pair<int,int>> adj[N];\nbool vis[N];\n\n\nvoid dijkstra(int source, int n, int idx) {\n    for(int i = 1; i <= n; i++) {\n        d[idx][i] = INF, vis[i] = false;\n    }\n    d[idx][source] = 0;\n    priority_queue<pair<long long, int>> pq;\n    pq.push({0, source});\n    while(pq.size() != 0) {\n        pair<long long, int> node = pq.top();\n        pq.pop();\n        int v = node.second;\n        long long distance = node.first;\n        if(vis[v]) {\n            continue;\n        }\n        vis[v] = 1;\n        for(auto edge: adj[v]) {\n            int u = edge.first;\n            int weight = edge.second;\n            d[idx][u] = min(d[idx][u], d[idx][v] + weight);\n            pq.push({-d[idx][u], u}); \n        }\n    }      \n}\n\nint main() {\n    int t; cin >> t;\n    while(t--) {\n        int n, m; cin >> n >> m;\n        int S, T, V; cin >> S >> T >> V;\n        for(int i = 1; i <= n; i++) {\n            adj[i].clear(); // resetting the adjacency list\n        }\n        for(int i = 1; i <= m; i++) {\n            int x, y, w; cin >> x >> y >> w;\n            // Undirected graph\n            adj[x].push_back({y, w});\n            adj[y].push_back({x, w});\n        }\n\n        dijkstra(S, n, 0); // S as source\n        dijkstra(T, n, 1); // T as source\n        dijkstra(V, n, 2); // V as source\n\n        long long ans = INF;\n\n        for(int u = 1; u <= n; u++) { // Fixing a vertex u\n            long long res = d[0][u] + d[1][u] + d[2][u];\n            ans = min(ans, res);\n        }\n\n        cout << ans << \"\\n\";\n    }\n    return 0;\n}",
+      "Python3": "import heapq\n\nN = 10 ** 5 + 1\nINF = 10 ** 18\n\nd = [[INF] * N for _ in range(3)]  # d[0] stores min distance from S, d[1] from T, d[2] from V\nadj = [[] for _ in range(N)]\nvis = [False] * N\n\ndef dijkstra(source, n, idx):\n    for i in range(1, n + 1):\n        d[idx][i] = INF\n        vis[i] = False\n\n    d[idx][source] = 0\n    pq = [(0, source)]\n\n    while pq:\n        distance, v = heapq.heappop(pq)\n\n        if vis[v]:\n            continue\n\n        vis[v] = True\n\n        for u, weight in adj[v]:\n            d[idx][u] = min(d[idx][u], d[idx][v] + weight)\n            heapq.heappush(pq, (d[idx][u], u))\n\nif __name__ == \"__main__\":\n    t = int(input())\n\n    for _ in range(t):\n        n, m = map(int, input().split())\n        S, T, V = map(int, input().split())\n\n        adj = [[] for _ in range(n + 1)]\n\n        for i in range(1, m + 1):\n            x, y, w = map(int, input().split())\n            # Undirected graph\n            adj[x].append((y, w))\n            adj[y].append((x, w))\n\n        for i in range(3):\n            dijkstra([S, T, V][i], n, i)  # S, T, V as sources\n\n        ans = INF\n\n        for u in range(1, n + 1):  # Fixing a vertex u\n            res = d[0][u] + d[1][u] + d[2][u]\n            ans = min(ans, res)\n\n        print(ans)\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <limits.h>\n\n#define N 100001\n#define INF 1000000000000000000LL\n\ntypedef struct {\n    int vertex;\n    long long distance;\n} Node;\n\ntypedef struct {\n    Node *nodes;\n    int size;\n} MinHeap;\n\nlong long d[3][N]; // d[0] stores min distance from S, d[1] from T, d[2] from V\nint **adj;\nint *adj_size;\nbool *vis;\n\n// Function to create a new MinHeap node\nNode newNode(int vertex, long long distance) {\n    Node node;\n    node.vertex = vertex;\n    node.distance = distance;\n    return node;\n}\n\n// Function to create a MinHeap\nMinHeap* createMinHeap(int capacity) {\n    MinHeap* minHeap = (MinHeap*) malloc(sizeof(MinHeap));\n    minHeap->nodes = (Node*) malloc(capacity * sizeof(Node));\n    minHeap->size = 0;\n    return minHeap;\n}\n\n// Function to swap two nodes of the MinHeap\nvoid swapNode(Node *a, Node *b) {\n    Node t = *a;\n    *a = *b;\n    *b = t;\n}\n\n// Heapify function\nvoid heapify(MinHeap* minHeap, int idx) {\n    int smallest = idx;\n    int left = 2 * idx + 1;\n    int right = 2 * idx + 2;\n\n    if (left < minHeap->size && minHeap->nodes[left].distance < minHeap->nodes[smallest].distance)\n        smallest = left;\n\n    if (right < minHeap->size && minHeap->nodes[right].distance < minHeap->nodes[smallest].distance)\n        smallest = right;\n\n    if (smallest != idx) {\n        swapNode(&minHeap->nodes[smallest], &minHeap->nodes[idx]);\n        heapify(minHeap, smallest);\n    }\n}\n\n// Function to check if the heap is empty\nbool isEmpty(MinHeap* minHeap) {\n    return minHeap->size == 0;\n}\n\n// Extract the node with minimum distance value\nNode extractMin(MinHeap* minHeap) {\n    if (isEmpty(minHeap))\n        return newNode(-1, INF);\n\n    Node root = minHeap->nodes[0];\n    Node lastNode = minHeap->nodes[minHeap->size - 1];\n    minHeap->nodes[0] = lastNode;\n    minHeap->size--;\n    heapify(minHeap, 0);\n    return root;\n}\n\n// Function to insert a new node to the heap\nvoid insertMinHeap(MinHeap* minHeap, Node node) {\n    minHeap->size++;\n    int i = minHeap->size - 1;\n    minHeap->nodes[i] = node;\n\n    while (i && minHeap->nodes[i].distance < minHeap->nodes[(i - 1) / 2].distance) {\n        swapNode(&minHeap->nodes[i], &minHeap->nodes[(i - 1) / 2]);\n        i = (i - 1) / 2;\n    }\n}\n\n// Function to add an edge\nvoid add_edge(int u, int v, int weight) {\n    adj[u][adj_size[u]] = v;\n    adj[u][adj_size[u] + 1] = weight;\n    adj_size[u] += 2;\n}\n\nvoid dijkstra(int source, int n, int idx) {\n    for (int i = 1; i <= n; i++) {\n        d[idx][i] = INF;\n        vis[i] = false;\n    }\n    d[idx][source] = 0;\n\n    MinHeap* minHeap = createMinHeap(N);\n    insertMinHeap(minHeap, newNode(source, 0));\n\n    while (!isEmpty(minHeap)) {\n        Node minNode = extractMin(minHeap);\n        int v = minNode.vertex;\n\n        if (vis[v]) continue;\n        vis[v] = true;\n\n        for (int k = 0; k < adj_size[v]; k += 2) {\n            int u = adj[v][k];\n            int weight = adj[v][k + 1];\n            if (d[idx][u] > weight + d[idx][v]) {\n                d[idx][u] = weight + d[idx][v];\n                insertMinHeap(minHeap, newNode(u, d[idx][u]));\n            }\n        }\n    }\n    free(minHeap->nodes);\n    free(minHeap);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    adj = (int **)malloc(N * sizeof(int *));\n    adj_size = (int *)malloc(N * sizeof(int));\n    vis = (bool *)malloc(N * sizeof(bool));\n\n    for (int i = 0; i < N; i++) {\n        adj[i] = (int *)malloc(2 * N * sizeof(int)); // Allocate enough space for edges\n        adj_size[i] = 0;\n    }\n\n    while (t--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int S, T, V;\n        scanf(\"%d %d %d\", &S, &T, &V);\n\n        for (int i = 1; i <= n; i++) {\n            adj_size[i] = 0;\n        }\n\n        for (int i = 0; i < m; i++) {\n            int x, y, w;\n            scanf(\"%d %d %d\", &x, &y, &w);\n\n            // Undirected edge\n            add_edge(x, y, w);\n            add_edge(y, x, w);\n        }\n\n        dijkstra(S, n, 0); // S as source\n        dijkstra(T, n, 1); // T as source\n        dijkstra(V, n, 2); // V as source\n\n        long long ans = INF;\n\n        for (int u = 1; u <= n; u++) { // Fixing a vertex u\n            long long res = d[0][u] + d[1][u] + d[2][u];\n            if (res < ans) ans = res;\n        }\n\n        printf(\"%lld\\n\", ans);\n    }\n\n    for (int i = 0; i < N; i++) {\n        free(adj[i]);\n    }\n    free(adj);\n    free(adj_size);\n    free(vis);\n\n    return 0;\n}\n\n\n",
+      "Java": "import java.util.*;\n\n/*\nConsider we fix a vertex through which our path goes through -> U\nCost of walk will be: dist(U, S) + dist(U, T) + dist(U, V) \nTo minimise the above equation, we will consider all such vertices U\nWe will need to compute dijkstra from 3 sources -> S, T, V\n*/\n\nclass main {\n    static final int N = 100001;\n    static final long INF = (long)1e18;\n    static long[][] d = new long[3][N]; // d[0] stores min distance from S, d[1] from T, d[2] from V\n    static List<Pair>[] adj = new ArrayList[N];\n    static boolean[] vis = new boolean[N];\n\n    static class Pair {\n        int node;\n        long weight;\n\n        Pair(int node, long weight) {\n            this.node = node;\n            this.weight = weight;\n        }\n    }\n\n    static void dijkstra(int source, int n, int idx) {\n        for (int i = 1; i <= n; i++) {\n            d[idx][i] = INF;\n            vis[i] = false;\n        }\n        d[idx][source] = 0;\n        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Long.compare(a.weight, b.weight));\n        pq.add(new Pair(source, 0));\n\n        while (!pq.isEmpty()) {\n            Pair node = pq.poll();\n\n            int v = node.node;\n            long distance = node.weight;\n\n            if (vis[v]) {\n                continue;\n            }\n            vis[v] = true;\n\n            for (Pair edge : adj[v]) {\n                int u = edge.node;\n                long weight = edge.weight;\n                d[idx][u] = Math.min(d[idx][u], d[idx][v] + weight);\n                pq.add(new Pair(u, d[idx][u]));\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            int n = scanner.nextInt();\n            int m = scanner.nextInt();\n            int S = scanner.nextInt();\n            int T = scanner.nextInt();\n            int V = scanner.nextInt();\n\n            for (int i = 1; i <= n; i++) {\n                adj[i] = new ArrayList<>();\n            }\n\n            for (int i = 0; i < m; i++) {\n                int x = scanner.nextInt();\n                int y = scanner.nextInt();\n                int w = scanner.nextInt();\n                // Undirected graph\n                adj[x].add(new Pair(y, w));\n                adj[y].add(new Pair(x, w));\n            }\n\n            dijkstra(S, n, 0); // S as source\n            dijkstra(T, n, 1); // T as source\n            dijkstra(V, n, 2); // V as source\n\n            long ans = INF;\n\n            for (int u = 1; u <= n; u++) { // Fixing a vertex u\n                long res = d[0][u] + d[1][u] + d[2][u];\n                ans = Math.min(ans, res);\n            }\n\n            System.out.println(ans);\n        }\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "// your code goes here\n/**\n * Minimum Cost Walk - Steiner Tree for 3 Terminals\n * Fast I/O and custom Min-Heap used for performance constraints.\n */\n\nconst fs = require('fs');\n\nfunction solve() {\n    // Fast I/O setup using Buffer (Required for large I/O in competitive programming)\n    const buffer = fs.readFileSync(0);\n    let offset = 0;\n\n    function readInt() {\n        while (offset < buffer.length && buffer[offset] <= 32) offset++;\n        if (offset >= buffer.length) return null;\n        let res = 0;\n        while (offset < buffer.length && buffer[offset] > 32) {\n            res = res * 10 + (buffer[offset] - 48);\n            offset++;\n        }\n        return res;\n    }\n\n    // Read number of test cases\n    let t = readInt();\n    if (t === null) return;\n\n    // Graph global allocations (reused across test cases to prevent Garbage Collection pauses)\n    const MAXN = 100005;\n    const MAXM = 200005; // 2 * M for undirected graph edges\n\n    const head = new Int32Array(MAXN).fill(-1);\n    const to = new Int32Array(MAXM);\n    const nxt = new Int32Array(MAXM);\n    const weight = new Int32Array(MAXM);\n    \n    // Custom Min-Heap tailored for Dijkstra's\n    class MinHeap {\n        constructor(maxSize) {\n            this.node = new Int32Array(maxSize);\n            this.dist = new Float64Array(maxSize);\n            this.size = 0;\n        }\n        push(u, d) {\n            let i = this.size++;\n            let p;\n            while (i > 0) {\n                p = (i - 1) >> 1;\n                if (this.dist[p] <= d) break;\n                this.node[i] = this.node[p];\n                this.dist[i] = this.dist[p];\n                i = p;\n            }\n            this.node[i] = u;\n            this.dist[i] = d;\n        }\n        remove() {\n            this.size--;\n            if (this.size > 0) {\n                let u = this.node[this.size];\n                let d = this.dist[this.size];\n                let i = 0, half = this.size >> 1;\n                while (i < half) {\n                    let left = (i << 1) + 1;\n                    let right = left + 1;\n                    let best = (right < this.size && this.dist[right] < this.dist[left]) ? right : left;\n                    \n                    if (this.dist[best] >= d) break;\n                    this.node[i] = this.node[best];\n                    this.dist[i] = this.dist[best];\n                    i = best;\n                }\n                this.node[i] = u;\n                this.dist[i] = d;\n            }\n        }\n    }\n\n    const pq = new MinHeap(MAXM * 2);\n    const INF = 1e16; // Safe infinity well within Number.MAX_SAFE_INTEGER\n\n    function dijkstra(start, n) {\n        let dist = new Float64Array(n + 1).fill(INF);\n        dist[start] = 0;\n        pq.size = 0;\n        pq.push(start, 0);\n\n        while (pq.size > 0) {\n            let u = pq.node[0];\n            let d = pq.dist[0];\n            pq.remove();\n\n            if (d > dist[u]) continue;\n\n            for (let e = head[u]; e !== -1; e = nxt[e]) {\n                let v = to[e];\n                let w = weight[e];\n                if (dist[u] + w < dist[v]) {\n                    dist[v] = dist[u] + w;\n                    pq.push(v, dist[v]);\n                }\n            }\n        }\n        return dist;\n    }\n\n    let out = [];\n\n    // Process all test cases\n    while (t--) {\n        let n = readInt();\n        let m = readInt();\n        let s = readInt();\n        let target = readInt(); // T in the problem\n        let v = readInt();\n\n        // Reset adjacency array heads for current N nodes\n        head.fill(-1, 0, n + 1);\n        let edgeCount = 0;\n\n        // Build Graph\n        for (let i = 0; i < m; i++) {\n            let a = readInt();\n            let b = readInt();\n            let c = readInt();\n\n            to[edgeCount] = b;\n            weight[edgeCount] = c;\n            nxt[edgeCount] = head[a];\n            head[a] = edgeCount++;\n\n            to[edgeCount] = a;\n            weight[edgeCount] = c;\n            nxt[edgeCount] = head[b];\n            head[b] = edgeCount++;\n        }\n\n        // Generate shortest path trees from the 3 terminal nodes\n        let distS = dijkstra(s, n);\n        let distT = dijkstra(target, n);\n        let distV = dijkstra(v, n);\n\n        // Find the optimal junction point (Steiner point)\n        let minCost = INF;\n        for (let i = 1; i <= n; i++) {\n            let cost = distS[i] + distT[i] + distV[i];\n            if (cost < minCost) {\n                minCost = cost;\n            }\n        }\n\n        out.push(minCost);\n    }\n\n    // Print all answers in one go\n    console.log(out.join('\\n'));\n}\n\nsolve();"
+    }
+  }
+}

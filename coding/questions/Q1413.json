@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1413",
+  "title": "Painter Partition Problem",
+  "slug": "painter-partition-problem",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given NNN boards of varying lengths, and kkk painters are available to paint these boards. Each painter takes the same amount of time to paint **1 unit** of board length. A painter can only paint contiguous sections of boards, and each board must be painted by exactly **one** painter.\n\nYour task is to determine the **minimum time** required to paint all the boards such that no painter paints more than a specific amount of length. You need to divide the boards into kkk **contiguous** parts in such a way that the maximum length painted by any painter is **minimized**.\n\n\nInput Format\nThe first line contains the number of test cases, T.\n\n\n\nThe first line of each test case contains two integers, NNN (the number of boards) and kkk (the number of painters).\nThe second line of each test case contains NNN space-separated integers, where the iii-th integer represents the length of the iii-th board\n\n\nOutput Format\n\nA single integer representing the minimum time required to paint all the boards, where the time is defined as the maximum time taken by any single painter to paint their assigned section of boards.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "1≤k≤N1 \\leq k \\leq N1≤k≤N",
+      "1≤a[i]≤1051 \\leq a[i] \\leq 10^51≤a[i]≤105"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4 2\n10 20 30 40\n5 3\n10 10 10 10 10\n6 1\n5 10 15 20 25 30",
+        "output": "60\n20\n105",
+        "explanation": "Explanation:\nTest Case 1: There are 4 boards with lengths [10, 20, 30, 40] and 2 painters. Optimal division will be  [10, 20, 30] for one painter and [40] for the other. Maximum length painted by a painter = 60.\nTest case 2: There are 5 boards with equal lengths [10, 10, 10, 10, 10] and 3 painters. Optimal division will be [10, 10], [10, 10], and [10]. Maximum length painted by a painter = 20.\nTest case 3: Only one painter is available, so they must paint all boards. Total length = 5 + 10 + 15 + 20 + 25 + 30 = 105."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4 2\n10 20 30 40\n5 3\n10 10 10 10 10\n6 1\n5 10 15 20 25 30",
+        "expectedOutput": "60\n20\n105",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool is_valid_partition(const vector<int> &boards, int k, int max_length) {\n    int painters_required = 1, current_length = 0;\n\n    for (int length : boards) {\n        if (current_length + length > max_length) {\n            painters_required++;\n            current_length = length;\n            if (painters_required > k)\n                return false;\n        } else {\n            current_length += length;\n        }\n    }\n    return true;\n}\n\nint painter_partition(const vector<int> &boards, int k) {\n    int low = *max_element(boards.begin(), boards.end());\n    int high = accumulate(boards.begin(), boards.end(), 0);\n    int result = high;\n\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n\n        if (is_valid_partition(boards, k, mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return result;\n}\n\nint main() {\n    int t;\n    cin>>t;\n    while(t--){\n    int N, k;\n    cin >> N >> k;\n    vector<int> boards(N);\n    for (int i = 0; i < N; i++)\n        cin >> boards[i];\n\n    cout << painter_partition(boards, k) << endl;\n    }\n    return 0;\n}\n",
+      "Python3": "def is_valid_partition(boards, k, max_length):\n    painters_required = 1\n    current_length = 0\n\n    for length in boards:\n        if current_length + length > max_length:\n            painters_required += 1\n            current_length = length\n            if painters_required > k:\n                return False\n        else:\n            current_length += length\n    return True\n\ndef painter_partition(boards, k):\n    low = max(boards)\n    high = sum(boards)\n    result = high\n\n    while low <= high:\n        mid = (low + high) // 2\n\n        if is_valid_partition(boards, k, mid):\n            result = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n\n    return result\n\n# Input and Output using input()\ndef main():\n    t = int(input())  \n    results = []  \n\n    for _ in range(t):\n        N, k = map(int, input().split())  \n        boards = list(map(int, input().split())) \n        results.append(str(painter_partition(boards, k))) \n    print(\"\\n\".join(results))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <limits.h>\n\nbool is_valid_partition(int boards[], int n, int k, int max_length) {\n    int painters_required = 1, current_length = 0;\n\n    for (int i = 0; i < n; i++) {\n        if (current_length + boards[i] > max_length) {\n            painters_required++;\n            current_length = boards[i];\n            if (painters_required > k) {\n                return false;\n            }\n        } else {\n            current_length += boards[i];\n        }\n    }\n    return true;\n}\n\nint painter_partition(int boards[], int n, int k) {\n    int low = 0, high = 0, result = INT_MAX;\n\n    // Calculate low (max element) and high (sum of all elements)\n    for (int i = 0; i < n; i++) {\n        if (boards[i] > low) {\n            low = boards[i];\n        }\n        high += boards[i];\n    }\n\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n\n        if (is_valid_partition(boards, n, k, mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n\n    return result;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int n, k;\n        scanf(\"%d %d\", &n, &k);\n\n        int* boards = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &boards[i]);\n        }\n\n        printf(\"%d\\n\", painter_partition(boards, n, k));\n\n        free(boards);\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\npublic class Main {\n\n    public static boolean isValidPartition(int[] boards, int k, int maxLength) {\n        int paintersRequired = 1, currentLength = 0;\n\n        for (int length : boards) {\n            if (currentLength + length > maxLength) {\n                paintersRequired++;\n                currentLength = length;\n                if (paintersRequired > k)\n                    return false;\n            } else {\n                currentLength += length;\n            }\n        }\n        return true;\n    }\n\n    public static int painterPartition(int[] boards, int k) {\n        int low = Arrays.stream(boards).max().getAsInt();\n        int high = Arrays.stream(boards).sum();\n        int result = high;\n\n        while (low <= high) {\n            int mid = low + (high - low) / 2;\n\n            if (isValidPartition(boards, k, mid)) {\n                result = mid;\n                high = mid - 1;\n            } else {\n                low = mid + 1;\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        \n        // Ensure input is available and handled properly\n        if (sc.hasNextInt()) {\n            int t = sc.nextInt();\n            \n            while (t-- > 0) {\n                if (sc.hasNextInt()) {\n                    int N = sc.nextInt();\n                    int k = sc.nextInt();\n                    int[] boards = new int[N];\n                    \n                    for (int i = 0; i < N; i++) {\n                        if (sc.hasNextInt()) {\n                            boards[i] = sc.nextInt();\n                        }\n                    }\n                    System.out.println(painterPartition(boards, k));\n                } \n                }\n            }\n    }\n}\n",
+      "JavaScript": "function isValidPartition(boards, k, maxLength) {\n    let paintersRequired = 1;\n    let currentLength = 0;\n\n    for (let length of boards) {\n        if (currentLength + length > maxLength) {\n            paintersRequired++;\n            currentLength = length;\n            if (paintersRequired > k) {\n                return false;\n            }\n        } else {\n            currentLength += length;\n        }\n    }\n    return true;\n}\n\nfunction painterPartition(boards, k) {\n    let low = Math.max(...boards);\n    let high = boards.reduce((sum, length) => sum + length, 0);\n    let result = high;\n\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n\n        if (isValidPartition(boards, k, mid)) {\n            result = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n    return result;\n}\n\n// Input and Output using readline module\nconst readline = require(\"readline\");\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout,\n});\n\nrl.question(\" \", (t) => {\n    t = parseInt(t);\n    let testCaseCount = 0;\n    let results = [];  // Store results here\n\n    function nextTestCase() {\n        if (testCaseCount === t) {\n            rl.close();\n            console.log(results.join('\\n'));  // Output all results at once\n            return;\n        }\n\n        rl.question(\" \", (nk) => {\n            const [N, k] = nk.split(\" \").map(Number);\n            rl.question(\" \", (input) => {\n                const boards = input.split(\" \").map(Number);\n                results.push(painterPartition(boards, k));  // Store the result\n                testCaseCount++;\n                nextTestCase();\n            });\n        });\n    }\n\n    nextTestCase();\n});\n"
+    }
+  }
+}

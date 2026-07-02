@@ -1,0 +1,73 @@
+{
+  "questionId": "Q2173",
+  "title": "Bytelandian Robots",
+  "slug": "bytelandian-robots",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "The Bytelandian Robotic Deparment has just succesfully made a robot that can be programmed to   move. Our robot can perform two type of movements: moving one step to the left or one step to the   right.\n\nOur robot moves according to the instruction from its control sequence. A control sequence of the   robot is a string consisting of only two type of characters: '+' and '-' symbols, in which '+' means   a rightward step and '-' means a leftward step. For example, '+--' is a control sequence that instruct the robot to go one step to the right   followed by two steps to the left.\n\nOur robot also has a master control sequence (MCQ), which is a string of N characters '+' and   '-'. **Any valid control sequence of the robot must be a subsequence of the MCQ**. Recall that a   subsequence is a sequence obtained by removing some characters of the initial sequence. An empty   sequence is also a subsequence of the MCQ.\n\nOur robot is currently placed on a runway of length L, in which the leftmost point has coordinate 0   and the rightmost point has coordinate L. Intially our robot stands at the point at coordinate A. It   needs to move to the point at coordinate B. Of course, it cannot go outside the runway.\n\nHow many different control sequences are there that make the robot go from A to B?",
+    "constraints": [],
+    "inputFormat": "The first line contains t, the number of test cases (about 50). Then t test cases follow. Each   test case has the following form:\n\nThe first line contains four integers N, L, A, B (1 ≤ N ≤ 500, 1 ≤ L ≤   109, 0 ≤ A, B ≤ L).\n The second line contains the MCQ which is a string of exactly N characters. The MCQ contains only   symbols '+' and '-'.",
+    "outputFormat": "For each test case, print a single number that is the number of different control sequences that   could make the robot to go from A to B. Since the result may be a very large number, you only need   to print the remainder of the result when dividing by 7051954.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n6 6 0 0\n+-+-+-\n6 6 3 3\n+-+-+-\n6 1 0 0 \n+-+-+-\n6 6 1 4\n+-+-+-\n6 6 2 6\n+-+-+-",
+        "output": "5 \n9\n4\n1\n0",
+        "explanation": "Explanation:\nCase 1: the different control sequences are +-, +-+-, ++--, +-+-+- and the empty sequence.\nCase 2: same as case 1 together with 4 additional sequences: -+, -+-+, -++-, +--+. These additional   sequences no longer make the robot go outside the runway as in case 1.\nCase 3: same as case 1 but without the sequence ++-- since it will make the robot go outside the   runway\nCase 4: there is only one possible control sequence: +++\nCase 5: there is no way for the robot to go to coordinate 6"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n6 6 0 0\n+-+-+-\n6 6 3 3\n+-+-+-\n6 1 0 0 \n+-+-+-\n6 6 1 4\n+-+-+-\n6 6 2 6\n+-+-+-",
+        "expectedOutput": "5 \n9\n4\n1\n0",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The solution uses dynamic programming with preprocessing. Precompute the `next_plus` and `next_minus` arrays to track the next occurrences of `+` and `-` for each position, along with `plus_cnt` and `minus_cnt` arrays to store cumulative counts. This allows us to determine the possible range of reachable positions, **farthest_left** and **farthest_right**.\n\nThe `dp` table is defined where `dp[x][i]` indicates the number of valid sequences that move the robot from position `x` to **B** starting at command index `i`. Iterate through the MCQ from the end to the beginning, updating the table based on whether the robot moves left or right. The result is stored at `dp[A][0]`, representing valid sequences starting from **A**.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\n#define MOD 7051954ll\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    \n    int T;\n    cin >> T;\n    \n    while (T--) {\n        int N, L, A, B;\n        cin >> N >> L >> A >> B;\n        string mcq;\n        cin >> mcq;\n        \n        vector<int> next_plus(N);\n        vector<int> next_minus(N);\n        vector<int> plus_cnt(N);\n        vector<int> minus_cnt(N);\n        \n        int np = -1, nm = -1;\n        int cp = 0, cm = 0;\n        \n        for (int i = N - 1; i >= 0; --i) {\n            char cur_char = mcq[i];\n            if (cur_char == '+') {\n                np = i;\n                cp++;\n            } else {\n                nm = i;\n                cm++;\n            }\n            next_plus[i] = np;\n            next_minus[i] = nm;\n            plus_cnt[i] = cp;\n            minus_cnt[i] = cm;\n        }\n        \n        int farthest_right = min(A + plus_cnt[0], L);\n        int farthest_left = max(A - minus_cnt[0], 0);\n        \n        if (B < farthest_left || B > farthest_right) {\n            cout << 0 << endl;\n            continue;\n        }\n        \n        vector<vector<int>> dp(farthest_right - farthest_left + 1, vector<int>(N + 1, 0));\n        \n        dp[B - farthest_left][N] = 1;\n        \n        for (int command_start = N - 1; command_start >= 0; --command_start) {\n            for (int curposition = farthest_left; curposition <= farthest_right; ++curposition) {\n                int cur_ind = curposition - farthest_left;\n                int np = next_plus[command_start];\n                int nm = next_minus[command_start];\n                \n                if (np != -1 && curposition + 1 <= farthest_right) {\n                    dp[cur_ind][command_start] += dp[cur_ind + 1][np + 1];\n                    dp[cur_ind][command_start] %= MOD;\n                }\n                \n                if (nm != -1 && curposition - 1 >= farthest_left) {\n                    dp[cur_ind][command_start] += dp[cur_ind - 1][nm + 1];\n                    dp[cur_ind][command_start] %= MOD;\n                }\n                \n                if (curposition == B) {\n                    dp[cur_ind][command_start]++;\n                    dp[cur_ind][command_start] %= MOD;\n                }\n            }\n        }\n        \n        cout << dp[A - farthest_left][0] << endl;\n    }\n    \n    return 0;\n}"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1533",
+  "title": "The Great Painting Showdown",
+  "slug": "the-great-painting-showdown",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has AAA painters and NNN wooden boards placed in a row.\n\nThe ithi^\\text{th}ith board has a length of C[i].\n\n\nEach painter takes **B units of time** to paint **1 unit length** of a board.\nA painter can only paint consecutive boards (no skipping allowed).\nA board cannot be divided between two painters.\nChef’s goal is to **distribute the boards among painters** so that the **slowest painter finishes as early as possible**.\n\nYou need to determine the **minimum time** in which all boards can be painted. Since the answer can be very large, output it modulo `10000003`.\n\nFunction DeclarationFunction NameminTimeminTimeminTime – This function calculates the minimum time required to paint all boards when painters work under given constraints.\n\nParameters\nAAA : The number of painters available.\nBBB : The time taken by a painter to paint one unit length of a board.\nCCC : A vector of integers where `C[i]` represents the length of the `i`-th board.\nReturn Value\nReturns a number representing the **minimum time** required to paint all boards.\nSince the result can be very large, the returned value should be taken **modulo `10000003`**.\nConstraints\n1≤A≤10001 \\le A \\le 10001≤A≤1000\n1≤B≤1061 \\le B \\le 10^61≤B≤106\n1≤N≤1051 \\le N \\le 10^51≤N≤105 where N=∣C∣N = |C|N=∣C∣\n1≤C[i]≤1061 \\le C[i] \\le 10^61≤C[i]≤106\nEach painter can paint **only consecutive boards**\nA board **cannot be divided** between painters\n\nInput Format\n\n\nThe first line contains three integers:\n\n\n\nAAA → number of painters,\nBBB → time taken to paint one unit length,\nNNN → number of boards.\n\n\n\nThe second line contains NNN integers, where the `i-th` integer denotes the length of the `i-th` board.\n\n\n\n\n\nOutput Format\nPrint a single integer — the minimum time required to finish painting all the boards, modulo 100000031000000310000003.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2 3 4\n10 10 10 10",
+        "output": "60",
+        "explanation": "Explanation:\nPainter 1 -> [10, 10] -> 20 units -> 60 time\nPainter 2 -> [10, 10] -> 20 units -> 60 time\nMaximum = 60 -> answer = 60"
+      },
+      {
+        "id": "sample_2",
+        "input": "4 1 6\n5 2 4 6 1 3",
+        "output": "6",
+        "explanation": "Explanation:\nBoards can be split as:\n\nPainter 1 -> [5]\nPainter 2 -> [2, 4] -> 6\nPainter 3 -> [6]\nPainter 4 -> [1, 3] -> 4\nMaximum = 6"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2 3 4\n10 10 10 10",
+        "expectedOutput": "60",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4 1 6\n5 2 4 6 1 3",
+        "expectedOutput": "6",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "bool isPossible(const vector<long long>& C, int A, long long limit) {\n    int painters = 1;\n    long long total = 0;\n\n    for (auto len : C) {\n        if (len > limit) return false;\n        if (total + len > limit) {\n            painters++;\n            total = len;\n            if (painters > A) return false;\n        } else {\n            total += len;\n        }\n    }\n    return true;\n}\n\nlong long minTime(int A, int B, const vector<long long>& C) {\n    const long long mod = 10000003;\n    long long low = *max_element(C.begin(), C.end());\n    long long high = accumulate(C.begin(), C.end(), 0LL);\n    long long ans = high;\n\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n        if (isPossible(C, A, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n\n    return ((ans % mod) * (B % mod)) % mod;\n}\n",
+      "Python3": "def is_possible(C, A, limit):\n    painters = 1\n    total = 0\n    for length in C:\n        if length > limit:\n            return False\n        if total + length > limit:\n            painters += 1\n            total = length\n            if painters > A:\n                return False\n        else:\n            total += length\n    return True\n\ndef min_time(A, B, C):\n    low = max(C)\n    high = sum(C)\n    ans = high\n\n    while low <= high:\n        mid = (low + high) // 2\n        if is_possible(C, A, mid):\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n\n    return (ans * B) % MOD\n",
+      "C": "int isPossible(long long* C, int N, int A, long long limit) {\n    int painters = 1;\n    long long total = 0;\n\n    for (int i = 0; i < N; i++) {\n        if (C[i] > limit) return 0;\n        if (total + C[i] > limit) {\n            painters++;\n            total = C[i];\n            if (painters > A) return 0;\n        } else {\n            total += C[i];\n        }\n    }\n    return 1;\n}\n\nlong long minTime(int A, int B, long long* C, int N) {\n    const long long mod = 10000003;\n    long long low = 0, high = 0;\n\n    for (int i = 0; i < N; i++) {\n        high += C[i];\n        if (C[i] > low) low = C[i];\n    }\n\n    long long ans = high;\n    while (low <= high) {\n        long long mid = low + (high - low) / 2;\n        if (isPossible(C, N, A, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n\n    return ((ans % mod) * (B % mod)) % mod;\n}\n",
+      "Java": " static long minTime(int A, int B, long[] C) {\n        long mod = 10000003;\n        long low = 0, high = 0;\n\n        for (long len : C) {\n            high += len;\n            low = Math.max(low, len);\n        }\n\n        long ans = high;\n\n        while (low <= high) {\n            long mid = low + (high - low) / 2;\n            int painters = 1;\n            long total = 0;\n\n            for (long len : C) {\n                if (total + len > mid) {\n                    painters++;\n                    total = len;\n                } else {\n                    total += len;\n                }\n            }\n\n            if (painters <= A) {\n                ans = mid;\n                high = mid - 1;\n            } else {\n                low = mid + 1;\n            }\n        }\n\n        return ((ans % mod) * (B % mod)) % mod;\n    }",
+      "JavaScript": "function isPossible(C, A, limit) {\n    let painters = 1;\n    let total = 0;\n\n    for (let len of C) {\n        if (len > limit) return false;\n        if (total + len > limit) {\n            painters++;\n            total = len;\n            if (painters > A) return false;\n        } else {\n            total += len;\n        }\n    }\n    return true;\n}\n\nfunction minTime(A, B, C) {\n    const mod = 10000003;\n    let low = Math.max(...C);\n    let high = C.reduce((a, b) => a + b, 0);\n    let ans = high;\n\n    while (low <= high) {\n        let mid = Math.floor((low + high) / 2);\n        if (isPossible(C, A, mid)) {\n            ans = mid;\n            high = mid - 1;\n        } else {\n            low = mid + 1;\n        }\n    }\n\n    // Convert BigInt result back to normal number\n    return Number((BigInt(ans % mod) * BigInt(B % mod)) % BigInt(mod));\n}\n"
+    }
+  }
+}

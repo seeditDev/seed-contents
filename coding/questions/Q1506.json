@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1506",
+  "title": "Largest Subarray with Sum 0",
+  "slug": "largest-subarray-with-sum-0",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has an array of integers arrarrarr which may contain both positive and negative values.\n\nHe is curious to know the length of the **longest contiguous subarray** whose sum is equal to 000.\n\nYour task is to help Chef find this length.\n\nIf no such subarray exists, output 000.\n\nFunction DeclarationFunction NamelargestSubarrayWithSumZerolargestSubarrayWithSumZerolargestSubarrayWithSumZero – This function finds the length of the longest contiguous subarray with sum equal to zero.\n\nParameters\narrarrarr : An array of integers (can contain positive and negative values).\nReturn Value\nReturns a single integer — the **maximum length** of a contiguous subarray whose sum is 000.\nReturns 000 if no such subarray exists.\nConstraints\n1≤n≤1061 \\leq n \\leq 10^61≤n≤106\n−103≤arr[i]≤103−10^3 \\leq arr[i] \\leq 10^3−103≤arr[i]≤103\nArray elements can be positive, negative, or zero\n\nInput Format\n\nThe first line of each test case contains a single integer nnn — the number of elements in the array.\nThe next line contains nnn space-separated integers arr[i]arr[i]arr[i] — the elements of the array.\n\n\nOutput Format\n\nFor each test case, print a single integer — the length of the longest subarray whose sum is `0`.",
+    "constraints": [
+      "1≤n≤1061 \\le n \\le 10^6 1≤n≤106",
+      "−103≤arr[i]≤103-10^3 \\le arr[i] \\le 10^3 −103≤arr[i]≤103"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "7\n4 -3 1 -2 2 6 -6",
+        "output": "4",
+        "explanation": "Explanation:\nThe longest subarray with sum 0 is [-2, 2, 6, -6] (indexes 1 to 4) with length 4."
+      },
+      {
+        "id": "sample_2",
+        "input": "5\n1 2 -3 3 -3",
+        "output": "5",
+        "explanation": "Explanation:\nThe longest subarray with sum 0 is [1, 2, -3, 3, -3] with length 5."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "7\n4 -3 1 -2 2 6 -6",
+        "expectedOutput": "4",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "5\n1 2 -3 3 -3",
+        "expectedOutput": "5",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Initialize:\n\n`prefixSum = 0`\n`maxLen = 0`\nHashMap `map` to store first index of each prefix sum.\n\nTraverse array:\n\nAdd current element to `prefixSum`.\nIf `prefixSum == 0`, then the subarray `(0..i)` has sum = 0 → update `maxLen = i+1`.\nIf `prefixSum` has been seen before at index `j`, then subarray `(j+1 .. i)` has sum 0 → update length = `i - j`.\nOtherwise, store current index as first occurrence of this prefix sum.\n\n\nReturn `maxLen`.\nComplexity Analysis\n\n**Time Complexity**: `O(N)` → single pass over array, each lookup in hashmap is `O(1)` average.\n\n\n\n\n**Space Complexity**: `O(N)` → hashmap stores prefix sums.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "int largestSubarrayWithSumZero(vector<int>& arr) {\n    unordered_map<int, int> prefixMap;\n    int prefixSum = 0, maxLen = 0;\n\n    for (int i = 0; i < arr.size(); i++) {\n        prefixSum += arr[i];\n\n        if (prefixSum == 0) {\n            maxLen = i + 1; // sum from 0..i is 0\n        }\n\n        if (prefixMap.find(prefixSum) != prefixMap.end()) {\n            maxLen = max(maxLen, i - prefixMap[prefixSum]);\n        } else {\n            prefixMap[prefixSum] = i; // store first occurrence\n        }\n    }\n\n    return maxLen;\n}\n",
+      "Python3": "def largest_subarray_with_sum_zero(arr):\n    prefix_map = {}\n    prefix_sum = 0\n    max_len = 0\n\n    for i, val in enumerate(arr):\n        prefix_sum += val\n\n        if prefix_sum == 0:\n            max_len = i + 1  # sum from 0..i is 0\n\n        if prefix_sum in prefix_map:\n            max_len = max(max_len, i - prefix_map[prefix_sum])\n        else:\n            prefix_map[prefix_sum] = i  # store first occurrence\n\n    return max_len\n",
+      "C": "int largestSubarrayWithSumZero(int arr[], int n) {\n    struct Node* hashTable[TABLE_SIZE] = {NULL};\n\n    int prefixSum = 0;\n    int maxLen = 0;\n\n    for (int i = 0; i < n; i++) {\n        prefixSum += arr[i];\n\n        if (prefixSum == 0) {\n            maxLen = i + 1; // whole array from 0..i sums to 0\n        }\n\n        int prevIndex = search(hashTable, prefixSum);\n        if (prevIndex != -1) {\n            if (i - prevIndex > maxLen) {\n                maxLen = i - prevIndex;\n            }\n        } else {\n            insert(hashTable, prefixSum, i);\n        }\n    }\n    return maxLen;\n}\n",
+      "Java": "public static int largestZeroSumSubarray(int[] arr, int n) {\n        Map<Integer, Integer> map = new HashMap<>();\n        int maxLen = 0;\n        int prefixSum = 0;\n\n        for (int i = 0; i < n; i++) {\n            prefixSum += arr[i];\n\n            if (prefixSum == 0) {\n                maxLen = i + 1;  // whole array from 0..i has sum 0\n            }\n\n            if (map.containsKey(prefixSum)) {\n                // subarray between previous index+1 and i sums to 0\n                maxLen = Math.max(maxLen, i - map.get(prefixSum));\n            } else {\n                // store first occurrence of this prefix sum\n                map.put(prefixSum, i);\n            }\n        }\n        return maxLen;\n    }",
+      "JavaScript": "function largestSubarrayWithSumZero(arr) {\n    const prefixMap = new Map();\n    let prefixSum = 0;\n    let maxLen = 0;\n\n    for (let i = 0; i < arr.length; i++) {\n        prefixSum += arr[i];\n\n        if (prefixSum === 0) {\n            maxLen = i + 1; // sum from 0..i is 0\n        }\n\n        if (prefixMap.has(prefixSum)) {\n            maxLen = Math.max(maxLen, i - prefixMap.get(prefixSum));\n        } else {\n            prefixMap.set(prefixSum, i); // store first occurrence\n        }\n    }\n\n    return maxLen;\n}\n"
+    }
+  }
+}

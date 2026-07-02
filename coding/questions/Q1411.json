@@ -1,0 +1,94 @@
+{
+  "questionId": "Q1411",
+  "title": "Search in a 2D Matrix",
+  "slug": "search-in-a-2d-matrix",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "binary search",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Binary Search"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an **N × M** matrix where:\n\n\nEach row is sorted in **ascending** order.\nThe first integer of each row is **greater** than the last integer of the **previous** row.\nYour task is to find if an integer **Target** exists in the matrix.\n\n**Note:** You must implement a solution with a time complexity faster than **O(N + M)**.\n\n\nInput Format\n\nThe first line contains two integers, `N` and `M`, separated by a space, representing the number of rows and columns in the matrix, respectively.\nThe next `N` lines each contain `M` integers, representing the elements of the matrix.\nThe final line contains a single integer, `Target`, which is the value to search for in the matrix.\n\n\nOutput Format\n\nPrint **YES** if the `Target` exists in the matrix.\nPrint **NO** otherwise.",
+    "constraints": [
+      "1≤m,n≤1001 \\leq m, n \\leq 1001≤m,n≤100",
+      "−104≤matrix[i][j],target≤104-10^4 \\leq \\text{matrix}[i][j], \\text{target} \\leq 10^4−104≤matrix[i][j],target≤104",
+      "The matrix is guaranteed to be non-empty and sorted."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3 4\n1 3 5 7 \n10 11 16 20 \n23 30 34 60\n3",
+        "output": "YES",
+        "explanation": "Explanation:\nTest case 1: The target 3 exists in the matrix"
+      },
+      {
+        "id": "sample_2",
+        "input": "3 4\n1 3 5 7 \n10 11 16 20 \n23 30 34 60\n13",
+        "output": "NO",
+        "explanation": "Explanation:\nTest case 2: The target 13 does not exists in the matrix"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3 4\n1 3 5 7 \n10 11 16 20 \n23 30 34 60\n3",
+        "expectedOutput": "YES",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3 4\n1 3 5 7 \n10 11 16 20 \n23 30 34 60\n13",
+        "expectedOutput": "NO",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Since the matrix can be **conceptually treated** as a sorted 1D array, we can apply **binary search** directly. Instead of manually flattening the matrix, we use **mathematical indexing** to map a 1D index into 2D row-column coordinates:\n\n\n**Index Mapping**:\n\nConsider the matrix as a 1D array where each index (i) corresponds to:\n\n**Row**: i / M\n**Column**: i % M\n\n\n\n\nUsing this, we can access the value at any index without explicitly converting the matrix into an array.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool searchMatrix(vector<vector <int> > &matrix, int target) {\n    int rows = matrix.size(), cols = matrix[0].size();\n    int left = 0, right = rows * cols - 1;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        int midValue = matrix[mid / cols][mid % cols];\n\n        if (midValue == target) {\n            return true;\n        } else if (midValue < target) {\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n\n    return false;\n}\n\nint main() {\n    int N, M, target;\n    cin >> N >> M;\n\n    vector<vector <int> > matrix(N, vector<int> (M));\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            cin >> matrix[i][j];\n        }\n    }\n\n    cin >> target;\n\n    if (searchMatrix(matrix, target)) {\n        cout << \"YES\" << endl;\n    } else {\n        cout << \"NO\" << endl;\n    }\n\n    return 0;\n}\n",
+      "Python3": "def search_matrix(matrix, rows, cols, target):\n    left, right = 0, rows * cols - 1\n\n    while left <= right:\n        mid = left + (right - left) // 2\n        mid_value = matrix[mid // cols][mid % cols]\n\n        if mid_value == target:\n            return True\n        elif mid_value < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n\n    return False\n\n\nif __name__ == \"__main__\":\n    N, M = map(int, input().split())\n    matrix = [list(map(int, input().split())) for _ in range(N)]\n    target = int(input())\n\n    if search_matrix(matrix, N, M, target):\n        print(\"YES\")\n    else:\n        print(\"NO\")\n",
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n\nbool searchMatrix(int matrix[100][100], int rows, int cols, int target) {\n    int left = 0, right = rows * cols - 1;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        int midValue = matrix[mid / cols][mid % cols];\n\n        if (midValue == target) {\n            return true;\n        } else if (midValue < target) {\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n\n    return false;\n}\n\nint main() {\n    int N, M, target;\n    scanf(\"%d %d\", &N, &M);\n\n    int matrix[100][100]; // Assuming max size is 100x100 for the matrix\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            scanf(\"%d\", &matrix[i][j]);\n        }\n    }\n\n    scanf(\"%d\", &target);\n\n    if (searchMatrix(matrix, N, M, target)) {\n        printf(\"YES\\n\");\n    } else {\n        printf(\"NO\\n\");\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static boolean searchMatrix(int[][] matrix, int rows, int cols, int target) {\n        int left = 0, right = rows * cols - 1;\n\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            int midValue = matrix[mid / cols][mid % cols];\n\n            if (midValue == target) {\n                return true;\n            } else if (midValue < target) {\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int N = scanner.nextInt();\n        int M = scanner.nextInt();\n\n        int[][] matrix = new int[N][M];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                matrix[i][j] = scanner.nextInt();\n            }\n        }\n\n        int target = scanner.nextInt();\n\n        if (searchMatrix(matrix, N, M, target)) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n\n        scanner.close();\n    }\n}\n",
+      "JavaScript": "function searchMatrix(matrix, rows, cols, target) {\n    let left = 0, right = rows * cols - 1;\n\n    while (left <= right) {\n        let mid = Math.floor(left + (right - left) / 2);\n        let midValue = matrix[Math.floor(mid / cols)][mid % cols];\n\n        if (midValue === target) {\n            return true;\n        } else if (midValue < target) {\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n\n    return false;\n}\n\n// Input handling\nconst input = require(\"readline\").createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet matrix = [];\nlet N, M, target, count = 0;\n\ninput.on(\"line\", (line) => {\n    if (count === 0) {\n        [N, M] = line.split(\" \").map(Number);\n        count++;\n    } else if (count <= N) {\n        matrix.push(line.split(\" \").map(Number));\n        count++;\n    } else {\n        target = parseInt(line);\n        if (searchMatrix(matrix, N, M, target)) {\n            console.log(\"YES\");\n        } else {\n            console.log(\"NO\");\n        }\n        input.close();\n    }\n});\n"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1778",
+  "title": "Chef Solves Online Stock Span",
+  "slug": "chef-solves-online-stock-span",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Stack",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "stacks & queues",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Stacks & Queues"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef is given a list of stock prices for NNN days. For each day, Chef needs to calculate the **stock span**.\n\nThe **stock span** of a day is defined as the maximum number of consecutive days (including the current day) just before the given day, for which the stock price was less than or equal to the price on the current day.\n\nIn simple words, for each day, look backwards and count how many continuous days the stock price was **not greater** than today’s price.\n\nChef needs your help to find the **stock span** for each day.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncalculateStockSpancalculateStockSpancalculateStockSpan\n\n\n\n**Parameters**\n\n\n\npricespricesprices: A list of integers representing the daily stock prices.\n\n\n\n**Return Value**\n\n\n\nReturns an array (or list) of integers representing the stock span for each day.\n\n\nConstraints\n1≤T≤1051 \\le T \\le 10^51≤T≤105\n1≤N≤2×1051 \\le N \\le 2 \\times 10^51≤N≤2×105\n1≤stockPrice≤1051 \\le stockPrice \\le 10^51≤stockPrice≤105\nThe total number of elements (NNN) across all test cases will not exceed 2×1052 \\times 10^52×105.\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer NNN — the number of stock prices Chef wants to process.\nThe second line contains NNN integers representing the daily stock prices.\n\n\nOutput Format\nFor each test case, print a single line containing NNN integers — the span of the stock price for each day in    the order they are processed.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n7\n100 80 60 70 60 75 85",
+        "output": "1 1 1 2 1 4 6",
+        "explanation": "Explanation:\nTest Case 1:\n\nDay 1: Price=100, no previous prices, span=1.\nDay 2: Price=80, previous price 100≥80100 \\ge 80100≥80, span=1.\nDay 3: Price=60, previous price 80≥6080 \\ge 6080≥60, span=1.\nDay 4: Price=70, previous price 60≤7060 \\le 7060≤70, span=1+1=2.\nDay 5: Price=60, previous price 70≥6070 \\ge 6070≥60, span=1.\nDay 6: Price=75, previous prices 60≤75,70≤75,60≤7560 \\le 75, 70 \\le 75, 60 \\le 7560≤75,70≤75,60≤75, span=4.\nDay 7: Price=85, previous prices 75≤85,60≤85,70≤85,60≤85,80≤8575 \\le 85, 60 \\le 85, 70 \\le 85, 60 \\le 85, 80 \\le 8575≤85,60≤85,70≤85,60≤85,80≤85, span=6."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n7\n100 80 60 70 60 75 85",
+        "expectedOutput": "1 1 1 2 1 4 6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "This leads to a time complexity of O(N2)O(N^2)O(N2), which is inefficient for large inputs.",
+    "spaceComplexity": "Therefore, the space complexity is O(N)O(N)O(N).",
+    "code": {
+      "C++": "vector<int> calculateStockSpan(vector<int>& prices) {\n    stack<pair<int,int>> st; // {price, span}\n    vector<int> span;\n\n    for (int price : prices) {\n        int currSpan = 1;\n        while (!st.empty() && st.top().first <= price) {\n            currSpan += st.top().second;\n            st.pop();\n        }\n        st.push({price, currSpan});\n        span.push_back(currSpan);\n    }\n    return span;\n}\n",
+      "Python3": "def calculateStockSpan(prices):\n    stack = []\n    span = []\n\n    for price in prices:\n        curr_span = 1\n        while stack and stack[-1][0] <= price:\n            curr_span += stack.pop()[1]\n        stack.append((price, curr_span))\n        span.append(curr_span)\n\n    return span\n",
+      "C": "int* calculateStockSpan(int prices[], int n) {\n    static int span[100000];\n    int stackPrice[n], stackSpan[n];\n    int top = -1;\n\n    for (int i = 0; i < n; i++) {\n        int currSpan = 1;\n\n        while (top >= 0 && stackPrice[top] <= prices[i]) {\n            currSpan += stackSpan[top];\n            top--;\n        }\n\n        stackPrice[++top] = prices[i];\n        stackSpan[top] = currSpan;\n        span[i] = currSpan;\n    }\n    return span;\n}\n",
+      "Java": "static int[] calculateStockSpan(int[] prices) {\n    Stack<int[]> st = new Stack<>();\n    int[] span = new int[prices.length];\n\n    for (int i = 0; i < prices.length; i++) {\n        int currSpan = 1;\n        while (!st.isEmpty() && st.peek()[0] <= prices[i]) {\n            currSpan += st.pop()[1];\n        }\n        st.push(new int[]{prices[i], currSpan});\n        span[i] = currSpan;\n    }\n    return span;\n}\n",
+      "JavaScript": "function calculateStockSpan(prices) {\n    const stack = [];\n    const span = [];\n\n    for (let price of prices) {\n        let currSpan = 1;\n        while (stack.length && stack[stack.length - 1][0] <= price) {\n            currSpan += stack.pop()[1];\n        }\n        stack.push([price, currSpan]);\n        span.push(currSpan);\n    }\n    return span;\n}\n"
+    }
+  }
+}

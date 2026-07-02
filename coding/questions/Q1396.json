@@ -1,0 +1,94 @@
+{
+  "questionId": "Q1396",
+  "title": "Frequency greater than k",
+  "slug": "frequency-greater-than-k",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "hashing",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Hashing"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a string S and an integer, K. Write a program to print characters with frequency greater than or equal to K in sorted order.\n\n\nInput Format\n\nThe first line contains two integers: NNN and KKK.\nThe second line contains the string SSS.\n\n\nOutput Format\nOutput the characters with frequency greater than or equal to KKK.",
+    "constraints": [
+      "2≤length(S)≤1052 \\leq length(S) \\leq 10^52≤length(S)≤105",
+      "1≤K≤1051 \\leq K \\leq 10^51≤K≤105",
+      "S can have both upper and lowercase letters"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10 3\naaabbcdddd",
+        "output": "ad",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "10 2\naaAbBcdDdD",
+        "output": "Dad",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10 3\naaabbcdddd",
+        "expectedOutput": "ad",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "10 2\naaAbBcdDdD",
+        "expectedOutput": "Dad",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "We can use an **ordered map** (TreeMap in Java) to store the frequencies of all the characters in sorted order. After populating the frequency map, iterate through it and select characters with frequencies greater than or equal to K.",
+    "timeComplexity": "O(N), Traversed the whole string once to store the frequencies.",
+    "spaceComplexity": "O(1), We store the frequency of each character in the map. Taking both lower and uppercase, the maximum space it can take is O(52) → O(26) for lowercase and O(26) for uppercase. As O(52) is a constant, the space complexity will be O(1).",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n\n    int n, k;\n    cin >> n >> k;\n    string s;\n    cin >> s;\n    map < char, int > mp;\n    for (char & ch: s) {\n        mp[ch]++;\n    }\n    for (auto x: mp) {\n        if (x.second >= k)\n        {\n            cout << x.first;\n        }\n    }\n\n}",
+      "Python3": "def main():\n    import sys\n    input = sys.stdin.read\n    data = input().split()\n\n    n = int(data[0])\n    k = int(data[1])\n    s = data[2]\n    \n    frequency_map = {}\n    \n    for ch in s:\n        if ch in frequency_map:\n            frequency_map[ch] += 1\n        else:\n            frequency_map[ch] = 1\n            \n    uppercase = sorted([ch for ch in frequency_map if ch.isupper() and frequency_map[ch] >= k])\n    lowercase = sorted([ch for ch in frequency_map if ch.islower() and frequency_map[ch] >= k])\n\n    result = uppercase + lowercase\n    \n    print(\"\".join(result))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    char s[100001]; \n    scanf(\"%s\", s);\n    \n    int freq[256] = {0}; // Array to count frequency of each character\n\n    // Count frequency of each character in the string\n    for (int i = 0; i < strlen(s); i++) {\n        freq[(int)s[i]]++;\n    }\n\n    // Print characters with frequency >= k\n    for (int i = 0; i < 256; i++) {\n        if (freq[i] >= k) {\n            printf(\"%c\", i);\n        }\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main(String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n        String s = scanner.next();\n\n        Map <Character, Integer > mp = new HashMap < > ();\n\n        for (char ch: s.toCharArray()) {\n            mp.put(ch, mp.getOrDefault(ch, 0) + 1);\n        }\n        for (Map.Entry < Character, Integer > entry: mp.entrySet()) {\n            char ch = entry.getKey();\n            int freq = entry.getValue();\n\n            if (freq >= k) {\n                System.out.print(ch);\n            }\n        }\n    }\n}",
+      "JavaScript": "process.stdin.resume();\nprocess.stdin.setEncoding('utf8');\n\nlet input = '';\n\nprocess.stdin.on('data', (chunk) => {\n    input += chunk;\n});\n\nprocess.stdin.on('end', () => {\n    // Split input into lines\n    const lines = input.trim().split('\\n');\n    \n    // Read n and k from the first line\n    const [n, k] = lines[0].split(' ').map(Number);\n    \n    // Read the string from the second line\n    const s = lines[1].trim();\n    \n    // Map to count character frequencies\n    const freq = new Map();\n\n    // Count the frequency of each character\n    for (let ch of s) {\n        freq.set(ch, (freq.get(ch) || 0) + 1);\n    }\n\n    // Use a Set to track characters that have already been added to the result\n    const resultSet = new Set();\n\n    // Iterate over the original string to maintain order\n    for (let ch of s) {\n        if (freq.get(ch) >= k) {\n            resultSet.add(ch);\n        }\n    }\n\n    // Convert the Set to an array, sort it alphabetically, and join to form the result string\n    const result = Array.from(resultSet).sort().join('');\n    \n    console.log(result);\n});\n"
+    }
+  }
+}

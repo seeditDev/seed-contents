@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1575",
+  "title": "Check if Linked List is Palindrome",
+  "slug": "check-if-linked-list-is-palindrome",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has been given a singly linked list containing integers.\n\nHe wants to check whether the given linked list forms a **palindrome** — i.e., it reads the same forwards and backwards.\n\nYour task is to help Chef determine if the linked list is a palindrome.\n\nFunction DeclarationFunction NameisPalindromeisPalindromeisPalindrome – This function checks whether a singly linked list is a palindrome.\n\nParameters\nheadheadhead : A pointer to the head node of the singly linked list.\nReturn Value\nReturns truetruetrue if the linked list is a palindrome.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤N≤1051 \\leq N \\leq 10^51≤N≤105, where NNN is the number of nodes in the linked list.\n0≤0 \\leq0≤ Value stored in each node ≤9\\leq 9≤9\nThe linked list is singly linked\nThe input and output formats provided below are only for testing with custom inputs. You only need to complete the core logic function.\n\n\nInput Format\n\nThe first line contains a single integer NNN — the number of nodes in the linked list.\nThe second line contains NNN space-separated integers representing the values of the linked list nodes in order.\n\n\nOutput Format\n\nPrint YESYESYES if the linked list is a palindrome.\nOtherwise, print NONONO.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5\n1 2 3 2 1",
+        "output": "YES",
+        "explanation": "Explanation:\nIn the first case, the list 1 -> 2 -> 3 -> 2 -> 1 reads the same backward."
+      },
+      {
+        "id": "sample_2",
+        "input": "4\n1 2 3 4",
+        "output": "NO",
+        "explanation": "Explanation:\nIn the second case, 1 -> 2 -> 3 -> 4 does not read the same backward."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5\n1 2 3 2 1",
+        "expectedOutput": "YES",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "NO",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "// Node structure used:\n// struct Node {\n//     int val;\n//     Node* next;\n//     Node(int x) : val(x), next(NULL) {}\n// };\n\nbool isPalindrome(Node* head) {\n    if (head == NULL || head->next == NULL)\n        return true;\n\n    // Step 1: Find middle\n    Node* slow = head;\n    Node* fast = head;\n\n    while (fast->next != NULL && fast->next->next != NULL) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n\n    // Step 2: Reverse second half\n    Node* prev = NULL;\n    Node* curr = slow->next;\n    Node* next = NULL;\n\n    while (curr != NULL) {\n        next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n\n    Node* secondHalf = prev;\n    Node* firstHalf = head;\n\n    // Step 3: Compare both halves\n    while (secondHalf != NULL) {\n        if (firstHalf->val != secondHalf->val)\n            return false;\n        firstHalf = firstHalf->next;\n        secondHalf = secondHalf->next;\n    }\n\n    return true;\n}\n",
+      "Python3": "# Node structure used:\n# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.next = None\n\ndef reverse(head):\n    prev = None\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev\n\ndef isPalindrome(head):\n    if head is None or head.next is None:\n        return True\n\n    # Step 1: Find the middle using slow/fast pointers\n    slow = head\n    fast = head\n    while fast.next is not None and fast.next.next is not None:\n        slow = slow.next\n        fast = fast.next.next\n\n    # Step 2: Reverse the second half (starting from slow.next)\n    second_half = reverse(slow.next)\n    first_half = head\n\n    # Step 3: Compare both halves\n    temp1 = first_half\n    temp2 = second_half\n    result = True\n    while temp2:  # only need to compare till end of shorter half\n        if temp1.val != temp2.val:\n            result = False\n            break\n        temp1 = temp1.next\n        temp2 = temp2.next\n\n    # (Optional) Restore the list\n    # slow.next = reverse(second_half)\n\n    return result\n",
+      "C": "// Node structure used:\n// struct Node {\n//     int val;\n//     struct Node* next;\n// };\n\nstruct Node* reverse(struct Node* head) {\n    struct Node* prev = NULL;\n    struct Node* curr = head;\n    struct Node* next = NULL;\n\n    while (curr != NULL) {\n        next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}\n\nbool isPalindrome(struct Node* head) {\n    if (head == NULL || head->next == NULL)\n        return true;\n\n    struct Node* slow = head;\n    struct Node* fast = head;\n\n    // Step 1: Find middle node\n    while (fast->next != NULL && fast->next->next != NULL) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n\n    // Step 2: Reverse second half\n    struct Node* secondHalf = reverse(slow->next);\n    struct Node* firstHalf = head;\n    struct Node* temp = secondHalf;\n\n    // Step 3: Compare halves\n    while (temp != NULL) {\n        if (firstHalf->val != temp->val)\n            return false;\n        firstHalf = firstHalf->next;\n        temp = temp->next;\n    }\n\n    // (Optional) Restore:\n    // slow->next = reverse(secondHalf);\n\n    return true;\n}\n",
+      "Java": "// Node structure used:\n// class Node {\n//     int val;\n//     Node next;\n//     Node(int val) {\n//         this.val = val;\n//         this.next = null;\n//     }\n// }\n\nclass Solution {\nstatic Node reverse(Node head) {\n    Node prev = null, curr = head, next = null;\n    while (curr != null) {\n        next = curr.next;\n        curr.next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}\n\npublic boolean isPalindrome(Node head) {\n    if (head == null || head.next == null)\n        return true;\n\n    // Step 1: Find middle\n    Node slow = head, fast = head;\n    while (fast.next != null && fast.next.next != null) {\n        slow = slow.next;\n        fast = fast.next.next;\n    }\n\n    // Step 2: Reverse second half\n    Node secondHalf = reverse(slow.next);\n    Node firstHalf = head;\n\n    // Step 3: Compare halves\n    Node temp = secondHalf;\n    while (temp != null) {\n        if (firstHalf.val != temp.val)\n            return false;\n        firstHalf = firstHalf.next;\n        temp = temp.next;\n    }\n\n    // (Optional) Restore:\n    // slow.next = reverse(secondHalf);\n\n    return true;\n}\n}\n",
+      "JavaScript": "// Node structure used:\n// function Node(val) {\n//   this.val = val;\n//   this.next = null;\n// }\n\nfunction reverse(head) {\n  let prev = null, curr = head, next = null;\n  while (curr !== null) {\n    next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\n\nfunction isPalindrome(head) {\n  if (head === null || head.next === null) return true;\n\n  // Step 1: Find middle (slow will stop at middle node)\n  let slow = head, fast = head;\n  while (fast.next !== null && fast.next.next !== null) {\n    slow = slow.next;\n    fast = fast.next.next;\n  }\n\n  // Step 2: Reverse second half starting from slow.next\n  let secondHalf = reverse(slow.next);\n  let firstHalf = head;\n  let temp = secondHalf;\n\n  // Step 3: Compare both halves\n  while (temp !== null) {\n    if (firstHalf.val !== temp.val) return false;\n    firstHalf = firstHalf.next;\n    temp = temp.next;\n  }\n\n  // (Optional) Restore the list:\n  // slow.next = reverse(secondHalf);\n\n  return true;\n}\n"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "questionId": "Q1806",
+  "title": "Chef Counts Enclaves",
+  "slug": "chef-counts-enclaves",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "matrices",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Matrices"
+    ]
+  },
+  "content": {
+    "problemStatement": "Chef has discovered a mysterious map represented as a binary matrix called landSeaGridlandSeaGridlandSeaGrid. Each cell in this grid is either land (denoted by 111) or sea (denoted by 000). \n\nChef wants to find out how many land cells are completely trapped inside the sea, meaning these land cells cannot reach the boundary of the grid by moving up, down, left, or right through adjacent land cells. Help Chef count the number of such enclosed land cells that are surrounded by sea and cannot walk off the grid boundary.\n\nFunction DeclarationFunction NamecountEnclavedLandCellscountEnclavedLandCellscountEnclavedLandCells\n\nParameters\nlandSeaGridlandSeaGridlandSeaGrid: A 2D grid representing the map where 111 indicates land and 000 indicates sea.\ngridRowCountgridRowCountgridRowCount : The number of rows in the grid.\ngridColumnSizesgridColumnSizesgridColumnSizes : A array representing the number of columns in each row of the grid.\nReturn Value\nReturns an integer representing the total count of land cells that are not connected to the grid boundary through any path of adjacent land cells.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤columns,rows≤5001 \\leq columns, rows \\leq 5001≤columns,rows≤500\nEach element of `landSeaGrid` is either 000 or 111\n\nInput Format\n\nThe first line contains a single integer TTT, the number of test cases.\nFor each test case:\n\nThe first line contain nnn number — the number of rows in Chef's `landSeaGrid`.\nThe next nnn lines each contain integers (either 000 or 111), representing the grid cells.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the number of land cells that are completely enclosed by sea cells and cannot reach the grid boundary.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n5\n[1 1 1 1 1]\n[1 0 0 0 1]\n[1 0 1 0 1]\n[1 0 0 0 1]\n[1 1 1 1 1]\n3\n[1 0 1]\n[0 1 0]\n[1 0 1]",
+        "output": "1\n1",
+        "explanation": "Explanation:\nTest case 1: Only the land cell at (2,2) is completely surrounded by water or land inside the grid and not connected to the boundary, so the output is 1.\nTest case 2: The single land cell at the center (1,1) is enclosed by water and not touching the boundary, so the output is 1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3\n[1 1 1]\n[1 1 1]\n[1 1 1]",
+        "output": "0",
+        "explanation": "Explanation:\nThere is no water so there is no land surrounded by water"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n5\n[1 1 1 1 1]\n[1 0 0 0 1]\n[1 0 1 0 1]\n[1 0 0 0 1]\n[1 1 1 1 1]\n3\n[1 0 1]\n[0 1 0]\n[1 0 1]",
+        "expectedOutput": "1\n1",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n3\n[1 1 1]\n[1 1 1]\n[1 1 1]",
+        "expectedOutput": "0",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    void dfs(int r, int c, int rows, int cols, vector<vector<int>>& grid) {\n        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] == 0)\n            return;\n\n        grid[r][c] = 0; // mark visited\n\n        dfs(r + 1, c, rows, cols, grid);\n        dfs(r - 1, c, rows, cols, grid);\n        dfs(r, c + 1, rows, cols, grid);\n        dfs(r, c - 1, rows, cols, grid);\n    }\n\n    int countEnclavedLandCells(\n        vector<vector<int>>& landSeaGrid,\n        int gridRowCount,\n        vector<int>& gridColumnSizes\n    ) {\n        int rows = gridRowCount;\n        int cols = gridColumnSizes[0];\n\n        // Remove boundary-connected land\n        for (int i = 0; i < rows; i++) {\n            dfs(i, 0, rows, cols, landSeaGrid);\n            dfs(i, cols - 1, rows, cols, landSeaGrid);\n        }\n\n        for (int j = 0; j < cols; j++) {\n            dfs(0, j, rows, cols, landSeaGrid);\n            dfs(rows - 1, j, rows, cols, landSeaGrid);\n        }\n\n        // Count enclosed land cells\n        int ans = 0;\n        for (int i = 0; i < rows; i++) {\n            for (int j = 0; j < cols; j++) {\n                if (landSeaGrid[i][j] == 1)\n                    ans++;\n            }\n        }\n        return ans;\n    }\n};",
+      "Python3": "class Solution:\n    def dfs(self, r, c, rows, cols, grid):\n        if r < 0 or c < 0 or r >= rows or c >= cols or grid[r][c] == 0:\n            return\n\n        grid[r][c] = 0  # mark visited land as sea\n\n        self.dfs(r + 1, c, rows, cols, grid)\n        self.dfs(r - 1, c, rows, cols, grid)\n        self.dfs(r, c + 1, rows, cols, grid)\n        self.dfs(r, c - 1, rows, cols, grid)\n\n    def countEnclavedLandCells(self, landSeaGrid, gridRowCount, gridColumnSizes):\n        rows = gridRowCount\n        cols = gridColumnSizes[0]\n\n        # Remove land connected to boundaries\n        for i in range(rows):\n            self.dfs(i, 0, rows, cols, landSeaGrid)\n            self.dfs(i, cols - 1, rows, cols, landSeaGrid)\n\n        for j in range(cols):\n            self.dfs(0, j, rows, cols, landSeaGrid)\n            self.dfs(rows - 1, j, rows, cols, landSeaGrid)\n\n        # Count remaining land cells\n        enclaves = 0\n        for i in range(rows):\n            for j in range(cols):\n                if landSeaGrid[i][j] == 1:\n                    enclaves += 1\n\n        return enclaves",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Helper function to perform DFS and mark boundary-connected land cells as visited (0)\nvoid dfs(int** grid, int r, int c, int rows, int cols) {\n    // Boundary checks and check if the current cell is land (1)\n    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != 1) {\n        return;\n    }\n    \n    // Mark the current land cell as sea (0) so it's not counted, \n    // and to prevent infinite loops in DFS\n    grid[r][c] = 0;\n    \n    // Visit all 4 adjacent directions (up, down, left, right)\n    dfs(grid, r + 1, c, rows, cols);\n    dfs(grid, r - 1, c, rows, cols);\n    dfs(grid, r, c + 1, rows, cols);\n    dfs(grid, r, c - 1, rows, cols);\n}\n\n// Main function to count the enclosed land cells\nint countEnclavedLandCells(int** landSeaGrid, int gridRowCount, int* gridColumnSizes) {\n    if (gridRowCount == 0) return 0;\n    \n    // Assuming all rows have the same number of columns\n    int gridColCount = gridColumnSizes[0]; \n    \n    // Step 1: Traverse the top and bottom boundaries\n    for (int j = 0; j < gridColCount; j++) {\n        if (landSeaGrid[0][j] == 1) {\n            dfs(landSeaGrid, 0, j, gridRowCount, gridColCount);\n        }\n        if (landSeaGrid[gridRowCount - 1][j] == 1) {\n            dfs(landSeaGrid, gridRowCount - 1, j, gridRowCount, gridColCount);\n        }\n    }\n    \n    // Step 2: Traverse the left and right boundaries\n    for (int i = 0; i < gridRowCount; i++) {\n        if (landSeaGrid[i][0] == 1) {\n            dfs(landSeaGrid, i, 0, gridRowCount, gridColCount);\n        }\n        if (landSeaGrid[i][gridColCount - 1] == 1) {\n            dfs(landSeaGrid, i, gridColCount - 1, gridRowCount, gridColCount);\n        }\n    }\n    \n    // Step 3: Count the remaining 1s, which are completely surrounded by 0s\n    int enclavedCount = 0;\n    for (int i = 0; i < gridRowCount; i++) {\n        for (int j = 0; j < gridColCount; j++) {\n            if (landSeaGrid[i][j] == 1) {\n                enclavedCount++;\n            }\n        }\n    }\n    \n    return enclavedCount;\n}",
+      "Java": "class Solution {\n\n    private void dfs(int r, int c, int rows, int cols, int[][] grid) {\n        if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] == 0)\n            return;\n\n        // Mark visited land as sea\n        grid[r][c] = 0;\n\n        dfs(r + 1, c, rows, cols, grid);\n        dfs(r - 1, c, rows, cols, grid);\n        dfs(r, c + 1, rows, cols, grid);\n        dfs(r, c - 1, rows, cols, grid);\n    }\n\n    public int countEnclavedLandCells(\n            int[][] landSeaGrid,\n            int gridRowCount,\n            int[] gridColumnSizes\n    ) {\n        int rows = gridRowCount;\n        int cols = gridColumnSizes[0];\n\n        // Remove boundary-connected land\n        for (int i = 0; i < rows; i++) {\n            dfs(i, 0, rows, cols, landSeaGrid);\n            dfs(i, cols - 1, rows, cols, landSeaGrid);\n        }\n\n        for (int j = 0; j < cols; j++) {\n            dfs(0, j, rows, cols, landSeaGrid);\n            dfs(rows - 1, j, rows, cols, landSeaGrid);\n        }\n\n        // Count remaining land cells\n        int enclaves = 0;\n        for (int i = 0; i < rows; i++) {\n            for (int j = 0; j < cols; j++) {\n                if (landSeaGrid[i][j] == 1)\n                    enclaves++;\n            }\n        }\n\n        return enclaves;\n    }\n}",
+      "JavaScript": "class Solution {\n    countEnclavedLandCells(landSeaGrid, gridRowCount, gridColumnSizes) {\n        const rows = gridRowCount;\n        const cols = gridColumnSizes[0];\n\n        const queue = [];\n        const dirs = [[1,0], [-1,0], [0,1], [0,-1]];\n\n        // Push all boundary land cells into queue\n        for (let i = 0; i < rows; i++) {\n            if (landSeaGrid[i][0] === 1) {\n                queue.push([i, 0]);\n                landSeaGrid[i][0] = 0;\n            }\n            if (landSeaGrid[i][cols - 1] === 1) {\n                queue.push([i, cols - 1]);\n                landSeaGrid[i][cols - 1] = 0;\n            }\n        }\n\n        for (let j = 0; j < cols; j++) {\n            if (landSeaGrid[0][j] === 1) {\n                queue.push([0, j]);\n                landSeaGrid[0][j] = 0;\n            }\n            if (landSeaGrid[rows - 1][j] === 1) {\n                queue.push([rows - 1, j]);\n                landSeaGrid[rows - 1][j] = 0;\n            }\n        }\n\n        // BFS flood-fill\n        let head = 0;\n        while (head < queue.length) {\n            const [r, c] = queue[head++];\n\n            for (const [dr, dc] of dirs) {\n                const nr = r + dr;\n                const nc = c + dc;\n\n                if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && landSeaGrid[nr][nc] === 1) {\n                    landSeaGrid[nr][nc] = 0;\n                    queue.push([nr, nc]);\n                }\n            }\n        }\n\n        // Count remaining land cells\n        let enclaves = 0;\n        for (let i = 0; i < rows; i++) {\n            for (let j = 0; j < cols; j++) {\n                if (landSeaGrid[i][j] === 1)\n                    enclaves++;\n            }\n        }\n\n        return enclaves;\n    }\n}"
+    }
+  }
+}

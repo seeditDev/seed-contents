@@ -1,0 +1,101 @@
+{
+  "questionId": "Q2913",
+  "title": "Push the Flow!",
+  "slug": "push-the-flow",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "flow & matching",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Flow & Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a connected undirected graph **G**, consisting of **N** vertices and **M** edges. The vertices of **G** are indexed with integers 1, 2, 3, ..., **N**, the edges of **G** are indexed with integers 1, 2, 3, ..., **M**. Each edge of **G** has a capacity - a positive integer parameter. Each pair of the vertices is connected by at most one edge. No edge connects a vertex with itself.\n\n\n\nLet's call a sequence of vertices **A** = **A1**, **A2**, ..., **AK**(**K** &gt; 2) a simple cycle, if:\n\n\n\n    \n\n\n        There's an edge between vertices **Ai** and **Ai + 1**, for each 1 ≤ **i** &lt; **K**;\n        There's an edge between vertices **A1** and **AK**; \n        **Ai** equals to **Aj** if and only if **i** equals to **j**.\n    \n\nIt's guaranteed, that each vertex of **G** belongs to at most one simple cycle.\n\nYou task is to implement a data structure, which can process the following queries efficiently:\n\n\n    \n\n\n        0 **S** **T**: find the maximum flow in **G** in case the source is **S** and the sink is **T**;\n        1 **X** **NEW_CAPACITY**: make the capacity of **X**'th edge equal to **NEW_CAPACITY**. \n    \n\nYou can read about maximum flow problem here: http://en.wikipedia.org/wiki/Maximum_flow_problem",
+    "constraints": [
+      "1 ≤ **N** ≤ 100 000;",
+      "0 ≤ **M** ≤ 200 000;",
+      "0 ≤ **Q** ≤ 200 000;",
+      "1 ≤ **U, V** ≤ **N**, for each edge;",
+      "1 ≤ **C** ≤ 109, for each edge;",
+      "1 ≤ **S ≠ T** ≤ **N**, for each query of the zeroth type appeared in the input;",
+      "1 ≤ **X** ≤ **M**, for each query of the first type appeared in the input;",
+      "1 ≤ **NEW_CAPACITY** ≤ 109, for each query of the first type appeared in the input;",
+      "&nbsp;",
+      "Example**Input:**",
+      "6 6",
+      "1 2 1",
+      "4 5 8",
+      "4 3 2",
+      "6 5 5",
+      "1 6 4",
+      "2 3 1",
+      "6",
+      "0 4 5",
+      "0 1 3",
+      "0 1 2",
+      "1 1 5",
+      "1 6 5",
+      "0 1 2",
+      "**Output:**",
+      "9",
+      "3",
+      "2",
+      "7"
+    ],
+    "inputFormat": "The first line of the input contains two integers **N** and **M**, denoting the number of the vertices and the number of the edges.\n\nThe next **M** lines contain the information about the edges of **G**, each contains three integers **U**, **V** and **C**, which means that this edge connects vertices **U**-**V** and has a capacity equal to **C**. The information about **i**'th edge is on **(i + 1)**'th line of the input.\n\nThe next line contains an integer **Q**, denoting the number of queries to process.\n\nThe next **Q** lines contain the queries to process, each contains one query. The format of queries is the same with the one described in the legend.",
+    "outputFormat": "Your output should contain exactly **Q0** lines, where **Q0** is the number of the queries of the zeroth type in the input.\n\nFor each query of the zeroth type you should to output one integer: the maximum flow in the corresponding graph. You should output the answers for the queries in the order they appear in the input.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "Input:\n6 6\n1 2 1\n4 5 8\n4 3 2\n6 5 5\n1 6 4\n2 3 1\n6\n0 4 5\n0 1 3\n0 1 2\n1 1 5\n1 6 5\n0 1 2\nOutput:\n9\n3\n2\n7",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "Input:\n6 6\n1 2 1\n4 5 8\n4 3 2\n6 5 5\n1 6 4\n2 3 1\n6\n0 4 5\n0 1 3\n0 1 2\n1 1 5\n1 6 5\n0 1 2\nOutput:\n9\n3\n2\n7",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "We consider a cycle as a node, then graph will be a tree. After this we do HL-decomposition, then each component will be like a (upper component) – cycle – cycle – cycle – cycle. (here cycle = a cycle or an ordinary node). We use a segment tree for each component of HLD, and we also use a segment tree for each cycle. Then we can calculate the maximum flow from some node to the nearest node of upper component of HLD in O(log N). And of course, we can calculate the maximum flow from some node to some node, if both nodes are in the same component in O(log N). The depth of HLD is O(log N), so we can calculate the maximum flow in O( (log N)^2 ).\n\nThe modification query is not difficult in this approach.\n\nIf the edge is in cycle, we modify this cycle, and then modify HLD.\n\nOtherwise, we just modify HLD.\n\nIt will be done in O(log N).\n\nFirsly, let’s make our graph rooted(let’s assume that the first vertex is the root). Now the processing of the queries is splited into two parts:\n\n\nWe need to raise both vertices A and B to the same cycle.\nThen, just simply solve the problem of a cycle(described before).\nSo, the problem is to raise a single vertex to a cycle.\n\nLet’s do this for each cycle: we have a cycle 1 - 2 - 3 - 4 - … - K, which consists of K vertices. Then, let’s transform it into K - 1 edges 1 - 2, 1 - 3, 1 - 4, …, 1 - K, where the capacity of edges 1 - L(for 1 &lt; L &lt;= K) is equal to the size of the flow, that can stream through the cycle from vertex L to the vertex 1.\n\nIf we have no modification queries, than the problem is easy: we simply transform our graph into a tree and then process all the queries the way described above.\n\nBut the problem is that we have modification queries. \n\nIf we modify the capacity of an edge, that doesn’t belong to any cycle(let’s call it a tree edge), then we can simply maintain such edges with HLDOT.\n\nIf we modify the capacity of an edge, that does belong to a cycle(let’s call it a cycle edge), then we should:\n\nA) Update the corresponding segment tree with the new capacity.\n\nB) Update the capacity of all (K - 1) edges, that we built for the cycle of this cycle edge.\n\nThe problem is with B). If we update the capacity of a cycle edge, that belongs to a big cycle, then we should update a lot of edges and can lead to the TLE verdict.\n\nBut there are not so many big cycles. Let’s call a cycle BIG if it contains at least sqrt( N ) vertices and SMALL otherwise. Then, for each small cycle we can simply update all the (K - 1) edges. For big cycle we won’t maintain the edges in our HLDOT. We will store them separately. When we need to process a flow-query, we can simply loop through all the big cycles and calculate the size of the flow.\n\nSo, total complexity:\n\nPreprocessing: O( N log N )\n\nChange-query: O( log N ) for an tree edge, O( K * log N ) for an cycle edge of a small cycle, O( log N ) for an cycle edge of a big cycle.\n\nFlow-query: O( ( log N ) ** 2 + T * log N ), where T equals to the number of big cycles.\n\nThe complexity of change-query won’t exceed sqrt( N ) * log N.\n\nThe complexity of flow-query won’t exceed sqrt( N ) * log N as well.\n\nSo, the solution runs in O( N log N + Q * sqrt( N ) * log( N ) )\n\nAUTHOR’S AND TESTER’S SOLUTIONS:\n\nAuthor’s solution\n\nTester’s solution",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

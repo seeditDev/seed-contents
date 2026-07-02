@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1827",
+  "title": "Minimum Cost Matrix Chain Multiplication",
+  "slug": "minimum-cost-matrix-chain-multiplication",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a chain of matrices\nA1,A2,A3,…,An−1A_1, A_2, A_3, \\ldots, A_{n-1}A1​,A2​,A3​,…,An−1​.\n\nAn array nums\\texttt{nums}nums of size nnn. The dimension of matrix AiA_iAi​ (1≤i&lt;n)(1 \\le i &lt; n)(1≤i&lt;n) is nums[i−1]×nums[i]\\texttt{nums}[i-1]\\times\\texttt{nums}[i]nums[i−1]×nums[i].\n\nThe task is to determine the minimum number of scalar multiplications required to multiply the entire chain of matrices by choosing the most optimal placement of parentheses.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT (1≤T≤103)(1 \\le T \\le 10^3)(1≤T≤103), denoting the number of test cases.\nEach test case consists of two lines:\n\nThe first line contains a single integer nnn — the size of the array nums\\texttt{nums}nums.\nThe second line contains nnn space-separated integers nums0,nums1,…,numsn−1\\texttt{nums}_0, \\texttt{nums}_1, \\ldots, \\texttt{nums}_{n-1}nums0​,nums1​,…,numsn−1​.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the minimum number of multiplications needed to multiply the given chain of matrices.",
+    "constraints": [
+      "1≤T≤10001 \\le T \\le 10001≤T≤1000",
+      "2≤n≤1002 \\le n \\le 1002≤n≤100",
+      "1≤nums[i]≤1001 \\le \\texttt{nums}[i] \\le 1001≤nums[i]≤100"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n4\n10 15 20 25",
+        "output": "8000",
+        "explanation": "Explanation:\nA1 -> 10 × 15\nA2 -> 15 × 20\nA3 -> 20 × 25\nPossible parenthesizations:\nA1 × (A2 × A3)\nCost = 15 × 20 × 25 + 10 × 15 × 25 = 11250\n(A1 × A2) × A3\nCost =  10 × 15 × 20 + 10 × 20 × 25 = 8000\nMinimum cost = 8000"
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\n5 4 6 2 7",
+        "output": "158",
+        "explanation": "Explanation:\nA1 -> 5 × 4\nA2 -> 4 × 6\nA3 -> 6 × 2\nA4 -> 2 × 7\nOne optimal parenthesization:\n(A1 × (A2 × A3)) × A4\nCost: A2 × A3 -> 4 × 6 × 2 = 48\nA1 × result -> 5 × 4 × 2 = 40\nResult × A4 -> 5 × 2 × 7 = 70\nTotal = 158"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "1\n4\n10 15 20 25",
+        "expectedOutput": "8000",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n5\n5 4 6 2 7",
+        "expectedOutput": "158",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution{\n    public:\n        int matrixMultiplication(vector<int>& nums){                     // function to compute minimum scalar multiplications\n            int n = nums.size();                                        // total number of dimension entries\n            int m = n - 1;                                              // total number of matrices\n            \n            if(m <= 0) return 0;                                        // if no matrix exists, return 0\n            \n            vector<vector<long long>> dp(m, vector<long long>(m, 0));  // dp[i][j] stores minimum cost to multiply matrices i..j\n            \n            for(int len = 2; len <= m; len++){                          // len is the current chain length (number of matrices)\n                for(int i = 0; i + len - 1 < m; i++){                   // starting matrix index\n                    int j = i + len - 1;                                // ending matrix index\n                    long long best = LLONG_MAX;                         // store minimum cost for this segment\n                    \n                    for(int k = i; k < j; k++){                         // try all possible split points\n                        long long cost = dp[i][k]                       // cost to multiply left subchain\n                                         + dp[k+1][j]                   // cost to multiply right subchain\n                                         + 1LL * nums[i]                // rows of left result matrix\n                                         * nums[k+1]                    // common dimension\n                                         * nums[j+1];                   // columns of right result matrix\n                        \n                        if(cost < best)                                 // check if current split gives smaller cost\n                            best = cost;                                // update best cost\n                    }\n                    \n                    dp[i][j] = best;                                    // store the minimum cost for matrices i..j\n                }\n            }\n            \n            return (int)dp[0][m-1];                                      // return minimum cost to multiply all matrices\n        }\n};\n",
+      "Python3": "class Solution:\n    def matrixMultiplication(self, nums):\n        n = len(nums)\n        m = n - 1\n\n        if m <= 0:\n            return 0\n\n        dp = [[0] * m for _ in range(m)]\n\n        for length in range(2, m + 1):\n            for i in range(0, m - length + 1):\n                j = i + length - 1\n                best = float('inf')\n\n                for k in range(i, j):\n                    cost = (\n                        dp[i][k]\n                        + dp[k + 1][j]\n                        + nums[i] * nums[k + 1] * nums[j + 1]\n                    )\n\n                    if cost < best:\n                        best = cost\n\n                dp[i][j] = best\n\n        return dp[0][m - 1]\n",
+      "C": "int matrixMultiplication(int *nums, int n)                 // function to compute minimum scalar multiplications\n{\n    int m = n - 1;                                         // total number of matrices\n\n    if (m <= 0) return 0;                                  // if no matrix exists, return 0\n\n    long long dp[105][105];                                // dp[i][j] stores minimum cost to multiply matrices i..j\n\n    for (int i = 0; i < m; i++)                            // initialize dp table\n        for (int j = 0; j < m; j++)                        // for all pairs (i, j)\n            dp[i][j] = 0;                                  // base value is 0\n\n    for (int len = 2; len <= m; len++)                     // len is the current chain length (number of matrices)\n    {\n        for (int i = 0; i + len - 1 < m; i++)              // starting matrix index\n        {\n            int j = i + len - 1;                           // ending matrix index\n            long long best = LLONG_MAX;                    // store minimum cost for this segment\n\n            for (int k = i; k < j; k++)                    // try all possible split points\n            {\n                long long cost = dp[i][k]                  // cost to multiply left subchain\n                                + dp[k + 1][j]             // cost to multiply right subchain\n                                + 1LL * nums[i]            // rows of left result matrix\n                                * nums[k + 1]              // common dimension\n                                * nums[j + 1];             // columns of right result matrix\n\n                if (cost < best)                           // check if current split gives smaller cost\n                    best = cost;                           // update best cost\n            }\n\n            dp[i][j] = best;                               // store the minimum cost for matrices i..j\n        }\n    }\n\n    return (int) dp[0][m - 1];                              // return minimum cost to multiply all matrices\n}\n",
+      "Java": "class Solution {\n    public int matrixMultiplication(int[] nums) {                     // function to compute minimum scalar multiplications\n        int n = nums.length;                                          // total number of dimension entries\n        int m = n - 1;                                                // total number of matrices\n\n        if (m <= 0) return 0;                                         // if no matrix exists, return 0\n\n        long[][] dp = new long[m][m];                                 // dp[i][j] stores minimum cost to multiply matrices i..j\n\n        for (int len = 2; len <= m; len++) {                          // len is the current chain length (number of matrices)\n            for (int i = 0; i + len - 1 < m; i++) {                   // starting matrix index\n                int j = i + len - 1;                                  // ending matrix index\n                long best = Long.MAX_VALUE;                           // store minimum cost for this segment\n\n                for (int k = i; k < j; k++) {                         // try all possible split points\n                    long cost = dp[i][k]                              // cost to multiply left subchain\n                              + dp[k + 1][j]                          // cost to multiply right subchain\n                              + 1L * nums[i]                          // rows of left result matrix\n                              * nums[k + 1]                           // common dimension\n                              * nums[j + 1];                          // columns of right result matrix\n\n                    if (cost < best)                                  // check if current split gives smaller cost\n                        best = cost;                                  // update best cost\n                }\n\n                dp[i][j] = best;                                      // store the minimum cost for matrices i..j\n            }\n        }\n\n        return (int) dp[0][m - 1];                                     // return minimum cost to multiply all matrices\n    }\n}\n"
+    }
+  }
+}

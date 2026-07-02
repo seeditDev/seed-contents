@@ -1,0 +1,77 @@
+{
+  "questionId": "Q2250",
+  "title": "Count palindromes",
+  "slug": "count-palindromes",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "Each palindrome can be always created from the other palindromes, since a single character is also a palindrome. For example, the string \"bobseesanna\" can be created by some ways:\n\n* bobseesanna = bob + sees + anna\n\n* bobseesanna = bob + s + ee + s + anna\n\n* bobseesanna = b + o + b + sees + a + n + n + a\n\n...\n\nWe want to take the value of function CountPal(s) which is the number of different ways to use the palindromes to create the string s by the above method.",
+    "constraints": [],
+    "inputFormat": "The string s",
+    "outputFormat": "The value of function CountPal(s), taking the modulo of 1 000 000 007 (109+7)\n\nLimitations0 &lt; |s| &lt;= 1000",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "bobseesanna",
+        "output": "18",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "bobseesanna",
+        "expectedOutput": "18",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "class Solution {\npublic:\n    long long countWays(string s) {\n        const long long MOD = 1000000007;\n\n        long long n = s.size();\n        s = \" \" + s; // Add leading space for 1-based indexing\n\n        vector<vector<pair<long long, long long>>> d(n + 1);\n        d[1] = {{1, 1}}; // Initialize first character\n\n        // Fill ranges for each character\n        for (long long i = 2; i <= n; i++) {\n            d[i] = {{i, i}}; \n            if (s[i] == s[i - 1]) {\n                d[i].push_back({i - 1, i});\n            }\n            for (auto j : d[i - 1]) {\n                if (s[j.first - 1] == s[i]) {\n                    d[i].push_back({j.first - 1, i});\n                }\n            }\n        }\n\n        // DP array to count ways\n        vector<long long> f(n + 1, 0);\n        f[0] = 1; // Base case\n\n        for (long long i = 1; i <= n; i++) {\n            for (auto j : d[i]) {\n                f[i] += f[j.first - 1];\n                f[i] %= MOD;\n            }\n        }\n\n        return f[n];\n    }\n};\n",
+      "Python3": "# Constants\nBIG_MOD = 998244353  # Large prime number\nMOD = 1000000007      # Modulus value for calculations\nMAXN = int(1e3 + 1)   # Maximum size of the input string\n\nclass Solution:\n    def count_ways(self, s: str) -> int:\n        n = len(s)\n        s = \" \" + s  # Add leading space for 1-based indexing\n\n        # List of lists to hold ranges for each position\n        d = [[] for _ in range(n + 1)]\n        d[1] = [(1, 1)]  # Initialize first element\n\n        # Fill the ranges for each character\n        for i in range(2, n + 1):\n            d[i] = [(i, i)]\n            if s[i] == s[i - 1]:\n                d[i].append((i - 1, i))\n            for j in d[i - 1]:\n                if s[j[0] - 1] == s[i]:\n                    d[i].append((j[0] - 1, i))\n\n        # DP array to count ways\n        f = [0] * (n + 1)\n        f[0] = 1  # Base case\n\n        for i in range(1, n + 1):\n            for j in d[i]:\n                f[i] += f[j[0] - 1]\n                f[i] %= MOD\n\n        return f[n]\n",
+      "C": "#define MOD 1000000007LL\n\n// Function to build ranges d[i]\nvoid build_ranges(char *a, int n, int **d, int *dsz) {\n    d[1][dsz[1]++] = 1;\n\n    for (int i = 2; i <= n; ++i) {\n        // always add (i,i) -> start = i\n        d[i][dsz[i]++] = i;\n\n        // if s[i] == s[i-1] add (i-1, i) -> start = i-1\n        if (a[i] == a[i - 1]) {\n            d[i][dsz[i]++] = i - 1;\n        }\n\n        // for each tuple in d[i-1] with start = st\n        for (int k = 0; k < dsz[i - 1]; ++k) {\n            int st = d[i - 1][k];\n            int prev_index = st - 1;\n            if (prev_index >= 0 && a[prev_index] == a[i]) {\n                d[i][dsz[i]++] = prev_index;\n            }\n        }\n    }\n}\n\n// Function to compute number of ways using DP\nlong long count_ways(char *s) {\n    int n = (int)strlen(s);\n    if (n == 0) return 0;\n\n    // make 1-based array (a[0] = ' ')\n    char *a = (char *)malloc((n + 2) * sizeof(char));\n    a[0] = ' ';\n    for (int i = 1; i <= n; ++i) a[i] = s[i - 1];\n\n    // allocate ranges\n    int **d = (int **)malloc((n + 2) * sizeof(int *));\n    int *dsz = (int *)malloc((n + 2) * sizeof(int));\n    for (int i = 0; i <= n; ++i) {\n        d[i] = (int *)malloc((n + 2) * sizeof(int));\n        dsz[i] = 0;\n    }\n\n    // build ranges\n    build_ranges(a, n, d, dsz);\n\n    // DP\n    long long *f = (long long *)calloc((n + 2), sizeof(long long));\n    f[0] = 1;\n    for (int i = 1; i <= n; ++i) {\n        long long sum = 0;\n        for (int k = 0; k < dsz[i]; ++k) {\n            int st = d[i][k];\n            int idx = st - 1;\n            if (idx >= 0 && idx <= n) {\n                sum += f[idx];\n                if (sum >= (1LL << 62)) sum %= MOD; // avoid overflow\n            }\n        }\n        f[i] = sum % MOD;\n    }\n\n    long long ans = f[n];\n\n    // cleanup\n    for (int i = 0; i <= n; ++i) free(d[i]);\n    free(d);\n    free(dsz);\n    free(f);\n    free(a);\n\n    return ans;\n}\n",
+      "Java": "class Solution {\n    static final int MOD = 1000000007;\n\n    /**\n     * Count ways to form the string using the same algorithm you provided.\n     * Returns 0 for empty input (consistent with the C refactor behavior).\n     */\n    public long countWays(String input) {\n        if (input == null) return 0;\n        int n = input.length();\n        if (n == 0) return 0;\n\n        // add leading space to make string 1-indexed\n        String s = \" \" + input; // length is n+1, valid indices [0..n]\n\n        // d[i] will hold list of int[]{start, end} pairs (we only use start)\n        List<List<int[]>> d = new ArrayList<>(n + 1);\n        for (int i = 0; i <= n; i++) d.add(new ArrayList<>());\n\n        // initialize d[1] if n >= 1\n        d.get(1).add(new int[]{1, 1});\n\n        // build ranges\n        for (int i = 2; i <= n; i++) {\n            d.get(i).add(new int[]{i, i});\n            if (s.charAt(i) == s.charAt(i - 1)) {\n                d.get(i).add(new int[]{i - 1, i});\n            }\n            for (int[] prev : d.get(i - 1)) {\n                int start = prev[0];\n                // check s[start-1] == s[i]\n                if (s.charAt(start - 1) == s.charAt(i)) {\n                    d.get(i).add(new int[]{start - 1, i});\n                }\n            }\n        }\n\n        // DP array\n        long[] f = new long[n + 1];\n        f[0] = 1;\n\n        for (int i = 1; i <= n; i++) {\n            long sum = 0;\n            for (int[] pair : d.get(i)) {\n                int start = pair[0];\n                int idx = start - 1;\n                if (idx >= 0 && idx <= n) {\n                    sum += f[idx];\n                    if (sum >= (1L << 62)) sum %= MOD; // occasional reduction\n                }\n            }\n            f[i] = sum % MOD;\n        }\n\n        return f[n];\n    }\n}\n",
+      "JavaScript": "function countWays(inputStr) {\n  const MOD = 1000000007n; // BigInt modulo\n  let s = (inputStr === null || inputStr === undefined) ? \"\" : inputStr.trim();\n  let n = s.length;\n  // handle empty string: by original DP logic f[0] = 1 => result 1\n  if (n === 0) return \"1\";\n\n  // make 1-based indexing (prefix space)\n  s = \" \" + s;\n  // d[i] = array of [L, R] pairs (L and R are numbers)\n  const d = Array.from({ length: n + 1 }, () => []);\n  // Use a set-per-index to avoid duplicate ranges like [a,b] being pushed twice\n  const seen = Array.from({ length: n + 1 }, () => new Set());\n\n  // initialize for i = 1\n  d[1].push([1, 1]);\n  seen[1].add(\"1,1\");\n\n  for (let i = 2; i <= n; i++) {\n    // always can have single char range [i, i]\n    const keySingle = `${i},${i}`;\n    if (!seen[i].has(keySingle)) {\n      d[i].push([i, i]);\n      seen[i].add(keySingle);\n    }\n\n    // If same as previous char, add [i-1, i]\n    if (s[i] === s[i - 1]) {\n      const keyPrev = `${i - 1},${i}`;\n      if (!seen[i].has(keyPrev)) {\n        d[i].push([i - 1, i]);\n        seen[i].add(keyPrev);\n      }\n    }\n\n    // Extend previous ranges where applicable\n    for (const j of d[i - 1]) {\n      const Lprev = j[0]; // j = [Lprev, Rprev], Rprev should be i-1\n      const candidateL = Lprev - 1;\n      if (candidateL >= 1 && s[candidateL] === s[i]) {\n        const key = `${candidateL},${i}`;\n        if (!seen[i].has(key)) {\n          d[i].push([candidateL, i]);\n          seen[i].add(key);\n        }\n      }\n    }\n  }\n\n  // DP f array (BigInt)\n  const f = Array(n + 1).fill(0n);\n  f[0] = 1n;\n\n  for (let i = 1; i <= n; i++) {\n    let sum = 0n;\n    for (const range of d[i]) {\n      const L = range[0];\n      sum += f[L - 1];\n      if (sum >= 8n * MOD) sum %= MOD; // occasional reduction to keep numbers small\n    }\n    f[i] = sum % MOD;\n  }\n\n  return f[n].toString(); // string for printing\n}\n"
+    }
+  }
+}

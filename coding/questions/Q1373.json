@@ -1,0 +1,93 @@
+{
+  "questionId": "Q1373",
+  "title": "Flipping subarray",
+  "slug": "flipping-subarray",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given a binary array arrarrarr whose elements are only 000 and 111. Your task is to find the length of the longest subarray that contains only 1s1s1s after flipping exactly one contiguous subarray from 000 to 111.\n\n\n\n\nYou must perform the flip operation at least once.\n\n\n\n\nInput Format\n\nThe first line contains one integer nnn, the size of the array.                                                                                                               - Next line contains nnn integers arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n], representing the elements of the array.\n\n\nOutput Format\n\nFind length of longest subarray with 111 after flipping one contiguous subarray.",
+    "constraints": [
+      "1≤n≤1051 \\leq n \\leq 10^51≤n≤105",
+      "0≤arr[i]≤10 \\leq arr[i] \\leq 10≤arr[i]≤1"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n0 1 0",
+        "output": "2",
+        "explanation": "Explanation:\nFlip the first contiguous 0 to make it 1, the arr would look like 1,1,0. it contains 2 ones that are maximum from all possible cases."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n0 0 0",
+        "output": "3",
+        "explanation": "Explanation:\nFLip all the elements as it is contiguous , then the arr would look like 1,1,1 and it has a maximum number of ones that is 3."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n0 1 0",
+        "expectedOutput": "2",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "3\n0 0 0",
+        "expectedOutput": "3",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "To solve this problem efficiently, we can break it down into a series of steps. The key idea is to first identify and group contiguous segments of `0`s and `1`s. By analyzing these segments, we can determine the best place to flip a segment of `0`s to maximize the length of `1`s.",
+    "timeComplexity": "The solution runs in O(N) time, where N is the length of the array. This is because we make a single pass through the array to build the freq list and then another pass to calculate the maximum possible length of 1s.",
+    "spaceComplexity": "The space complexity is O(N) due to the storage used by the freq list.",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n    int n;\n    cin>>n;\n    int arr[n];\n    for(int i=0; i<n; i++){\n        cin>>arr[i];\n    }\n    int current = 0, count = 0;\n    vector<int> freq;\n    for(int i=0; i<n; i++){\n        if(arr[i] != current) {\n            current = arr[i];\n            freq.push_back(count);\n            count = 0;\n            \n        }\n        count++;\n    }\n    freq.push_back(count);\n    long long maximum = INT_MIN;\n    for(int i=0; i<freq.size(); i++){\n        long long sum = 0;\n        if(i%2!=0) sum = freq[i];\n        else{\n            sum = freq[i];\n            if(i>0) sum+=freq[i-1];\n            if(i<freq.size()-1) sum+=freq[i+1];\n        }\n        maximum = max(maximum, sum);\n    }\n    if(freq.size()==2 && freq[0]==0){\n        cout<<n-1<<endl;\n        return 0;\n    }\n    cout<<maximum<<endl;\n    \n}\n",
+      "Python3": "def main():\n    n = int(input())\n    s = list(map(int, input().split()))\n    prev_one, curr_zero, next_one = 0, 0, 0\n    ans, zero, i = 0, 0, 0\n\n    while i < n:\n        while i < n and s[i] == 0:\n            zero += 1\n            curr_zero += 1\n            i += 1\n        while i < n and s[i] == 1:\n            next_one += 1\n            i += 1\n        ans = max(ans, prev_one + curr_zero + next_one)\n        prev_one, curr_zero, next_one = next_one, 0, 0\n\n    if ans == n and zero == 0:\n        print(ans - 1)\n    else:\n        print(ans)\n\nif __name__ == \"__main__\":\n    main()",
+      "C": "#include <stdio.h>\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int s[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &s[i]);\n    }\n    int prev_one = 0;\n    int curr_zero = 0;\n    int next_one = 0;\n    int ans = 0;\n    int zero = 0;\n    int i = 0;\n    while (i < n) {\n        while (i < n && s[i] == 0) {\n            zero++;\n            curr_zero++;\n            i++;\n        }\n        while (i < n && s[i] == 1) {\n            next_one++;\n            i++;\n        }\n        ans = (ans > prev_one + curr_zero + next_one) ? ans : prev_one + curr_zero + next_one;\n        prev_one = next_one;\n        curr_zero = 0;\n        next_one = 0;\n    }\n    if (ans == n && zero == 0)\n        printf(\"%d\\n\", ans - 1);\n    else\n        printf(\"%d\\n\", ans);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int[] s = new int[n];\n        for (int i = 0; i < n; i++) {\n            s[i] = scanner.nextInt();\n        }\n        int prevOne = 0, currZero = 0, nextOne = 0;\n        int ans = 0, zero = 0, i = 0;\n\n        while (i < n) {\n            while (i < n && s[i] == 0) {\n                zero++;\n                currZero++;\n                i++;\n            }\n            while (i < n && s[i] == 1) {\n                nextOne++;\n                i++;\n            }\n            ans = Math.max(ans, prevOne + currZero + nextOne);\n            prevOne = nextOne;\n            currZero = 0;\n            nextOne = 0;\n        }\n\n        if (ans == n && zero == 0) {\n            System.out.println(ans - 1);\n        } else {\n            System.out.println(ans);\n        }\n    }\n}\n",
+      "JavaScript": "function countMaxSubarray(arr) {\n    let current = 0;\n    let count = 0;\n    const freq = [];\n\n    for (let i = 0; i < arr.length; i++) {\n        if (arr[i] !== current) {\n            current = arr[i];\n            freq.push(count);\n            count = 0;\n        }\n        count++;\n    }\n    freq.push(count);\n\n    let maximum = Number.MIN_SAFE_INTEGER;\n\n    for (let i = 0; i < freq.length; i++) {\n        let sum = 0;\n        if (i % 2 !== 0) {\n            sum = freq[i];\n        } else {\n            sum = freq[i];\n            if (i > 0) sum += freq[i - 1];\n            if (i < freq.length - 1) sum += freq[i + 1];\n        }\n        maximum = Math.max(maximum, sum);\n    }\n\n    // Handle the special case\n    if (freq.length === 2 && freq[0] === 0) {\n        return arr.length - 1;\n    }\n\n    return maximum;\n}\n\n// Main function to read input and invoke the countMaxSubarray function\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nrl.on('line', (line) => {\n    const n = parseInt(line.trim(), 10);\n\n    rl.on('line', (line) => {\n        const arr = line.trim().split(' ').map(Number);\n        console.log(countMaxSubarray(arr));\n        rl.close();\n    });\n});\n"
+    }
+  }
+}

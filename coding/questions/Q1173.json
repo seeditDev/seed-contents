@@ -1,0 +1,76 @@
+{
+  "questionId": "Q1173",
+  "title": "Easy Tiling",
+  "slug": "easy-tiling",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "We wish to tile a grid of size Nx2 with rectangles (dominoes) of 2x1 (in either orientation).\n\nWrite a program that takes input N and outputs the number of different ways to tile the grid. Output the ans mod 10^9 + 7",
+    "constraints": [],
+    "inputFormat": "First line contains T (number of test case)\n\nNext T lines contains N(height of grid)",
+    "outputFormat": "T lines with desired ans mod 1000000007 in each line",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n1\n2",
+        "output": "1\n2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n1\n2",
+        "expectedOutput": "1\n2",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The problem is equivalent to finding the (N+1) th Fibonacci number. The reasoning is:\n\n\nFor an N*2 grid, you can either place a vertical domino (leaving an (N-1)*2 grid) or two horizontal dominoes (leaving an (N-2)*2 grid).\nTo solve efficiently, we use **matrix exponentiation** to compute Fibonacci numbers. The transformation matrix:\n\n\n\nis raised to the power of **N-1** using **binary exponentiation**, making it more efficient with **O(log N)** time.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\n#define int long long\n\nconst int MOD = 1000000007;\n\n// Function to multiply two 2x2 matrices\nvector<vector<int>> matrixMultiply(vector<vector<int>>& A, vector<vector<int>>& B) {\n    vector<vector<int>> C(2, vector<int>(2, 0));\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            for (int k = 0; k < 2; k++) {\n                C[i][j] += A[i][k]*B[k][j];\n                C[i][j] %= MOD;\n            }\n        }\n    }\n    return C;\n}\n\n// Function to raise a matrix to the power n using binary exponentiation\nvector<vector<int>> matrixPower(vector<vector<int>>& mat, int n) {\n    if (n == 1) return mat;\n    \n    // Recursively compute half power\n    vector<vector<int>> halfPower = matrixPower(mat, n / 2);\n    \n    // Square the result\n    vector<vector<int>> result = matrixMultiply(halfPower, halfPower);\n    \n    // If n is odd, multiply one more time by the matrix\n    if (n % 2 == 1) {\n        result = matrixMultiply(result, mat);\n    }\n    \n    return result;\n}\n\n// Function to solve each test case\nvoid solveTestCase() {\n    int N;\n    cin >> N;\n\n    // Base transformation matrix for Fibonacci sequence\n    vector<vector<int>> baseMatrix = {{1, 1}, {1, 0}};\n    \n    // Compute the (N-1)th power of the base matrix\n    vector<vector<int>> resultMatrix = matrixPower(baseMatrix, N);\n    \n    // The number of ways to tile an Nx2 grid is the top-left element of the result matrix\n    cout << resultMatrix[0][0] << endl;\n}\n\nsigned main() {\n    ios_base::sync_with_stdio(0);\n    cin.tie(0);\n    \n    int T;  // Number of test cases\n    cin >> T;\n    \n    // Solve each test case\n    for (int t = 0; t < T; t++) {\n        solveTestCase();\n    }\n    \n    return 0;\n}\n",
+      "Python3": "MOD = 1000000007\n\n# Function to multiply two 2x2 matrices\ndef matrixMultiply(A, B):\n    C = [[0, 0], [0, 0]]\n    for i in range(2):\n        for j in range(2):\n            for k in range(2):\n                C[i][j] += A[i][k] * B[k][j]\n                C[i][j] %= MOD\n    return C\n\n# Function to raise a matrix to the power n using binary exponentiation\ndef matrixPower(mat, n):\n    if n == 1:\n        return mat\n    \n    # Recursively compute half power\n    halfPower = matrixPower(mat, n // 2)\n    \n    # Square the result\n    result = matrixMultiply(halfPower, halfPower)\n    \n    # If n is odd, multiply one more time by the matrix\n    if n % 2 == 1:\n        result = matrixMultiply(result, mat)\n    \n    return result\n\n# Function to solve each test case\ndef solveTestCase():\n    N = int(input())\n    \n    # Base transformation matrix for Fibonacci sequence\n    baseMatrix = [[1, 1], [1, 0]]\n    \n    # Compute the Nth power of the base matrix\n    resultMatrix = matrixPower(baseMatrix, N)\n    \n    # The number of ways to tile an Nx2 grid is the top-left element of the result matrix\n    print(resultMatrix[0][0])\n\n# Main function\ndef main():\n    T = int(input())  # Number of test cases\n    \n    # Solve each test case\n    for _ in range(T):\n        solveTestCase()\n\nif __name__ == \"__main__\":\n    main()\n",
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MOD 1000000007\n\n// Function to multiply two 2x2 matrices\nvoid matrixMultiply(long int A[2][2], long int B[2][2], long int C[2][2]) {\n    for (long int i = 0; i < 2; i++) {\n        for (long int j = 0; j < 2; j++) {\n            C[i][j] = 0;\n            for (long int k = 0; k < 2; k++) {\n                C[i][j] += A[i][k] * B[k][j];\n                C[i][j] %= MOD;\n            }\n        }\n    }\n}\n\n// Function to raise a matrix to the power n using binary exponentiation\nvoid matrixPower(long int mat[2][2], long int n, long int result[2][2]) {\n    if (n == 1) {\n        result[0][0] = mat[0][0];\n        result[0][1] = mat[0][1];\n        result[1][0] = mat[1][0];\n        result[1][1] = mat[1][1];\n        return;\n    }\n    \n    long int halfPower[2][2];\n    matrixPower(mat, n / 2, halfPower);\n    \n    long int squared[2][2];\n    matrixMultiply(halfPower, halfPower, squared);\n    \n    if (n % 2 == 1) {\n        matrixMultiply(squared, mat, result);\n    } else {\n        result[0][0] = squared[0][0];\n        result[0][1] = squared[0][1];\n        result[1][0] = squared[1][0];\n        result[1][1] = squared[1][1];\n    }\n}\n\n// Function to solve each test case\nvoid solveTestCase() {\n    long int N;\n    scanf(\"%ld\", &N);\n\n    // Base transformation matrix for Fibonacci sequence\n    long int baseMatrix[2][2] = {{1, 1}, {1, 0}};\n    \n    long int resultMatrix[2][2];\n    \n    // Compute the (N-1)th power of the base matrix\n    matrixPower(baseMatrix, N, resultMatrix);\n    \n    // The number of ways to tile an Nx2 grid is the top-left element of the result matrix\n    printf(\"%ld\\n\", resultMatrix[0][0]);\n}\n\nint main() {\n    long int T;  // Number of test cases\n    scanf(\"%ld\", &T);\n    \n    // Solve each test case\n    for (long int t = 0; t < T; t++) {\n        solveTestCase();\n    }\n    \n    return 0;\n}\n",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nimport java.util.*;\n\nclass Codechef {\n\n    // Constant for MOD value\n    private static final long MOD = 1000000007;\n\n    // Function to multiply two 2x2 matrices\n    public static long[][] matrixMultiply(long[][] A, long[][] B) {\n        long[][] C = new long[2][2];\n        for (int i = 0; i < 2; i++) {\n            for (int j = 0; j < 2; j++) {\n                for (int k = 0; k < 2; k++) {\n                    C[i][j] += A[i][k] * B[k][j];\n                    C[i][j] %= MOD;  // Taking mod for each operation\n                }\n            }\n        }\n        return C;\n    }\n\n    // Function to raise a matrix to the power n using binary exponentiation\n    public static long[][] matrixPower(long[][] mat, long n) {\n        if (n == 1) {\n            return mat;\n        }\n\n        // Recursively compute half power\n        long[][] halfPower = matrixPower(mat, n / 2);\n\n        // Square the result\n        long[][] result = matrixMultiply(halfPower, halfPower);\n\n        // If n is odd, multiply one more time by the matrix\n        if (n % 2 == 1) {\n            result = matrixMultiply(result, mat);\n        }\n\n        return result;\n    }\n\n    // Function to solve each test case\n    public static void solveTestCase(Scanner sc) {\n        long N = sc.nextLong();\n\n        // Base transformation matrix for Fibonacci sequence\n        long[][] baseMatrix = {{1, 1}, {1, 0}};\n\n        // Compute the (N-1)th power of the base matrix\n        long[][] resultMatrix = matrixPower(baseMatrix, N);\n\n        // The number of ways to tile an Nx2 grid is the top-left element of the result matrix\n        System.out.println(resultMatrix[0][0]);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();  // Number of test cases\n\n        // Solve each test case\n        for (int t = 0; t < T; t++) {\n            solveTestCase(sc);\n        }\n    }\n}\n"
+    }
+  }
+}

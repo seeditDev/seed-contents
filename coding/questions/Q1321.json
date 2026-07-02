@@ -1,0 +1,77 @@
+{
+  "questionId": "Q1321",
+  "title": "Delete from any position",
+  "slug": "delete-from-any-position",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Linked List",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "linked lists",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Linked Lists"
+    ]
+  },
+  "content": {
+    "problemStatement": "Deletion from any position other than front is a little different.\n\nFor example, we have 1 -&gt; 2 -&gt; 3 and we want to remove 2.\n\nFor that, we have to point the next of 1 to 3 and delete 2.\n\nVideo Explanation\nTaskComplete the function **deleteNode** to delete an element from any position.",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "5 3\n1 2 3 4 5",
+        "output": "1 2 4 5",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "5 3\n1 2 3 4 5",
+        "expectedOutput": "1 2 4 5",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The **deleteNode** function removes a node with a specific value from a linked list:\n\n\n\n**If the node to delete is the head**:\n\n\n\nSimply update the `head` pointer to the next node and delete the old `head`.\n\n\n\n**If the node is elsewhere**:\n\n\n\nTraverse the list until you find the node whose next node has the target value.\nThen, skip over the target node by updating the `next` pointer.\n\n\nExplanation of `iter -&gt; next = iter -&gt; next -&gt; next`:\n\nThis line **removes** the target node by by passing it:\n\n\n\n`iter -&gt; next` is the node we want to remove.\n\n\n\n\n`iter -&gt; next -&gt; next` is the node that comes **after** the one we want to remove.\n\n\n\n\nBy setting `iter -&gt; next = iter -&gt; next -&gt; next`, we make the current node **skip** the node being deleted, linking directly to the next one. This effectively removes the target node from the list.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "\nvoid deleteNode(int value) {\n    \n    if (head -> value == value) {\n        Node* targetNode = head;\n        head = head -> next;\n        delete targetNode;\n    } else {\n        Node* iter = head;\n        \n        // Traverse the list\n        // When next element is our target element, eliminate it\n        while (iter -> next != NULL) {\n            if (iter -> next -> value == value) {\n                // Set next of iter\n                // To next to next of iter\n                iter -> next = iter -> next -> next;\n                break;\n            }\n            iter = iter -> next;\n        }\n    }\n}",
+      "Python3": "class Node:\n    def __init__(self, val):\n        self.value = val\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def insertAtEnd(self, value):\n        new_node = Node(value)\n\n        if self.head is None:\n            self.head = new_node\n            self.tail = new_node\n            return\n\n        self.tail.next = new_node\n        self.tail = new_node\n\n    def deleteNode(self, value):\n        if self.head.value == value:\n            self.head = self.head.next\n            return\n\n        iter = self.head\n        \n        # Traverse the list\n        # When next element is our target element, eliminate it\n        \n        while iter.next:\n            if iter.next.value == value:\n                # Set next of iter\n                # To next to next of iter\n                iter.next = iter.next.next\n                return\n            iter = iter.next\n            \n\n    def printValues(self):\n        current = self.head\n        while current:\n            print(current.value, end=' ')\n            current = current.next\n        print()\n\nif __name__ == \"__main__\":\n    n, x = map(int, input().split())\n\n    ll = LinkedList()\n    vals = list(map(int, input().split()))\n    for a in vals:\n        ll.insertAtEnd(a)\n\n    ll.deleteNode(x)\n    ll.printValues()\n",
+      "C": "void deleteNode(struct LinkedList* list, int value) {\n    if (list->head->value == value) {\n        struct Node* targetNode = list->head;\n        list->head = targetNode->next;\n        free(targetNode);\n    } else {\n        struct Node* iter = list->head;\n        \n        // Traverse the list\n        // When next element is our target element, eliminate it\n        while (iter->next != NULL) {\n            if (iter->next->value == value) {\n                // Set next of iter\n                // To next to next of iter\n                struct Node* temp = iter->next;\n                iter->next = iter->next->next;\n                free(temp);\n                break;\n            }\n            iter = iter->next;\n        }\n    }\n}",
+      "Java": "void deleteNode(int value) {\n    if (head.value == value) {\n        Node targetNode = head;\n        head = head.next;\n        return;\n    }\n    Node iter = head;\n    // Traverse the list\n    // When next element is our target element, eliminate it\n    while (iter.next != null) {\n        if (iter.next.value == value) {\n            // Set next of iter\n            // To next to next of iter\n            iter.next = iter.next.next;\n            return;\n        }\n        iter = iter.next;\n    }\n}\n",
+      "JavaScript": "/* LinkedList Node and class definition. (Do not remove comment)\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.next = null;\n    }\n}\nclass LinkedList {\n    constructor() {\n        this.head = null;\n        this.tail = null;\n    }\n}\n*/\nLinkedList.prototype.deleteNode = function(value) {\n    if (this.head.value === value) {\n        this.head = this.head.next;\n        return;\n    }\n\n    let iter = this.head;\n    // Traverse the list\n    // When the next element is our target element, eliminate it\n    while (iter.next !== null) {\n        if (iter.next.value === value) {\n            // Set next of iter\n            // To next to next of iter\n            iter.next = iter.next.next;\n            return;\n        }\n        iter = iter.next;\n    }\n}"
+    }
+  }
+}

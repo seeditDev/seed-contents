@@ -1,0 +1,84 @@
+{
+  "questionId": "Q4085",
+  "title": "Critical Intersections",
+  "slug": "critical-intersections",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "Siruseri receives a lot of rainfall during the monsoons and this used to ruin its otherwise excellent roads. A few years ago, a wise Collector converted most of the roads of Siruseri to concrete roads to avoid this nuisance.\n\nHowever, since there are underground cables (telephone, power, fibre optic ... ) and pipes which have to cross the roads and these cables and pipes often need fixing, the collector did not concrete any of the intersections (places where roads meet each other). The intersections were left tar covered. Cables and drains were relaid so as to cross roads only under intersections.\n\nHowever, during the monsoons the intersections do get ruined and this results in a lot of traffic jams on Siruseri roads.\n\nRecently, the Collector learnt of a new technology that uses small concrete blocks to pave the roads. This gives the road the strength of concrete and, further, a few of these blocks can be removed quite easily to excavate parts of the road if necessary. So he decided to use these concrete blocks to pave all the intersections in Siruseri.\n\nPaving an intersection involves stopping all the traffic through that intersection. Now, he was worried that some of these intersections could be critical. A intersection III is critical if there are two other intersections JJJ and KKK such that any route from JJJ to KKK must necessarily pass through III. Notice that if III is critical, then stopping all the traffic through it disconnects at least one pair of intersections from each other.\n\nYou may assume that the roads of Siruseri are such that if all the intersections are usable then one can get from any intersection to any other intersection. All the roads in Siruseri permit traffic in both directions (there are no one way streets). Politicians in Siruseri love to see their names on roads and so every road segment connecting a pair of intersections has a different name. Thus a road merely connects two intersections and never pass through any other intersections.\n\nSuppose there are five intersections I1,I2,I3,I4I_1, I_2, I_3, I_4I1​,I2​,I3​,I4​ and I5I_5I5​ and there are 666 roads where,\n\n\nRoad 111 connects I1I_1I1​ and I2I_2I2​\nRoad 222 connects I2I_2I2​ and I3I_3I3​\nRoad 333 connects I1I_1I1​ and I3I_3I3​\nRoad 444 connects I2I_2I2​ and I4I_4I4​\nRoad 555 connects I2I_2I2​ and I5I_5I5​\nRoad 666 connects I5I_5I5​ and I4I_4I4​\nThen, I2I_2I2​ is a critical intersection because if all traffic through I2I_2I2​ is blocked then there is no route from I4I_4I4​ to I1I_1I1​ (or I3I_3I3​). Similarly I5I_5I5​ is also cut off from I1I_1I1​ and I3I_3I3​. You can check that no other intersections is critical.\n\nGiven the description of the intersections and roads in Siruseri, your task is to determine the number of critical intersections in Siruseri and list them out.\n\n###Input:\n\nThe first line of the input contains two integers NNN and MMM. NNN is the number of intersections in Siruseri and MMM is the number of roads. You may assume that the intersections are numbered 1,2,...,N1,2,...,N1,2,...,N. The next MMM lines (lines 2,...,M+12,..., M+12,...,M+1) describe the roads in Siruseri. Line i+1i+1i+1 contains two integers in the range 1,...,N1,...,N1,...,N indicating the pair of intersections connected by road iii.\n\n###Output:\n\nThe first line of the output must contain a single integer CCC indicating the number of critical intersections. The next CCC lines must list out the CCC critical intersections in increasing order, one per line.\n\n###Constraints:\n\n\n1≤N≤3001 \\leq N \\leq 3001≤N≤300.\n1≤M≤500001 \\leq M \\leq 500001≤M≤50000.\n###Sample Input\n\n`5 6\r\n1 2\r\n2 3 \r\n1 3\r\n2 4\r\n2 5 \r\n5 4\n`###Sample Output\n\n`1\r\n2\n`",
+    "constraints": [],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "",
+        "output": "5 6\r\n1 2\r\n2 3 \r\n1 3\r\n2 4\r\n2 5 \r\n5 4",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "",
+        "output": "1\r\n2",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "",
+        "expectedOutput": "5 6\r\n1 2\r\n2 3 \r\n1 3\r\n2 4\r\n2 5 \r\n5 4",
+        "weight": 50
+      },
+      {
+        "id": "tc_2",
+        "input": "",
+        "expectedOutput": "1\r\n2",
+        "weight": 50
+      }
+    ],
+    "totalTestCases": 2,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      50,
+      50
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nThis is the most efficient method to find articulation points in a connected, undirected graph. The algorithm performs a depth-first search (DFS) and maintains two arrays for each vertex:\n\n\n**Discovery time,** tin[u]tin[u]tin[u]: the time at which vertex uuu is first visited.\n**Low value,** low[u]low[u]low[u]: the smallest discovery time reachable from uuu (including uuu itself) through any of its descendants, possibly using a back edge.\nAs we traverse the graph:\n\n\nFor each vertex uuu, we iterate over its neighbors. If the neighbor vvv has not yet been visited, we recursively call DFS on it.\nAfter the DFS call, we update low[u]low[u]low[u] with low[v]low[v]low[v].\nFor a non-root vertex uuu, if for any child vvv in the DFS tree we have\nlow[v]≥tin[u],low[v] \\ge tin[u],low[v]≥tin[u],\nthen uuu is an articulation point.\nFor the root of the DFS, if it has more than one child, then it is an articulation point.\n**Why It Works:**\n\nThe lowlowlow value indicates if a subtree has a “back edge” that connects to an ancestor of uuu. When for a child vvv, low[v]≥tin[u]low[v] \\ge tin[u]low[v]≥tin[u], it means no such back edge exists, and removal of uuu would disconnect the component containing vvv from the rest of the graph.\n\n**Time Complexity:**\n\nO(N+M),O(N + M),O(N+M),\nwhere NNN is the number of intersections and MMM is the number of roads.\n\n**Example Code Implementations:**\n\nBelow are the implementations in both C++ and Python using this approach.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nint timer;\nvector&lt;int&gt; tin, low;\nvector&lt;bool&gt; visited, isArt;\nvector&lt;vector&lt;int&gt;&gt; graph;\n\nvoid dfs(int u, int parent) {\n    visited[u] = true;\n    tin[u] = low[u] = timer++;\n    int children = 0;\n    for (int v : graph[u]) {\n        if (v == parent) continue;\n        if (!visited[v]) {\n            dfs(v, u);\n            low[u] = min(low[u], low[v]);\n            // For a non-root vertex, if no back edge exists from v or its descendants to u's ancestors\n            if (parent != -1 &amp;&amp; low[v] &gt;= tin[u])\n                isArt[u] = true;\n            children++;\n        } else {\n            low[u] = min(low[u], tin[v]);\n        }\n    }\n    // Special case for root\n    if (parent == -1 &amp;&amp; children &gt; 1)\n        isArt[u] = true;\n}\n\nint main() {\n    int n, m;\n    cin &gt;&gt; n &gt;&gt; m;\n    graph.assign(n + 1, vector&lt;int&gt;());\n    tin.assign(n + 1, -1);\n    low.assign(n + 1, -1);\n    visited.assign(n + 1, false);\n    isArt.assign(n + 1, false);\n    timer = 0;\n\n    for (int i = 0; i &lt; m; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n\n    // Run DFS for every component (graph is assumed connected,\n    // but this covers any disconnected components)\n    for (int i = 1; i &lt;= n; i++) {\n        if (!visited[i])\n            dfs(i, -1);\n    }\n\n    vector&lt;int&gt; result;\n    for (int i = 1; i &lt;= n; i++) {\n        if (isArt[i])\n            result.push_back(i);\n    }\n\n    cout &lt;&lt; result.size() &lt;&lt; \"\\n\";\n    sort(result.begin(), result.end());\n    for (int v : result)\n        cout &lt;&lt; v &lt;&lt; \"\\n\";\n    return 0;\n}\n``import sys\nsys.setrecursionlimit(10 ** 6)\n\ndef dfs(u, parent):\n    global timer\n    visited[u] = True\n    tin[u] = low[u] = timer\n    timer += 1\n    children = 0\n    for v in graph[u]:\n        if v == parent:\n            continue\n        if not visited[v]:\n            children += 1\n            dfs(v, u)\n            low[u] = min(low[u], low[v])\n            if parent != -1 and low[v] &gt;= tin[u]:\n                isArt[u] = True\n        else:\n            low[u] = min(low[u], tin[v])\n    if parent == -1 and children &gt; 1:\n        isArt[u] = True\n\n# Reading input\nn, m = map(int, sys.stdin.readline().split())\ngraph = [[] for _ in range(n + 1)]\nfor _ in range(m):\n    u, v = map(int, sys.stdin.readline().split())\n    graph[u].append(v)\n    graph[v].append(u)\n\ntin = [-1] * (n + 1)\nlow = [-1] * (n + 1)\nvisited = [False] * (n + 1)\nisArt = [False] * (n + 1)\ntimer = 0\n\nfor i in range(1, n + 1):\n    if not visited[i]:\n        dfs(i, -1)\n\nresult = [i for i in range(1, n + 1) if isArt[i]]\nresult.sort()\nprint(len(result))\nfor v in result:\n    print(v)\n`**Idea:**\n\nThis method iterates through every vertex and checks what happens when it is \"removed\" from the graph. For each vertex iii, we simulate its removal and then perform a BFS/DFS starting from any other vertex. If the number of vertices reached (excluding the removed vertex) is less than N−1N - 1N−1, then vertex iii is a critical intersection.\n\n**Why It Works:**\n\nBy checking connectivity after removal, we directly determine if the intersection plays a critical role in maintaining a connected graph. Although this method is conceptually simple and intuitive, its time complexity is higher.\n\n**Time Complexity:**\n\nO(N×(N+M))O(N \\times (N + M))O(N×(N+M))\nwhich is acceptable for small to moderate-sized graphs (here, N≤300N \\leq 300N≤300).\n\n**Example Code Implementations:**\n\nBelow are the implementations in both C++ and Python using the naive approach.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;queue&gt;\n#include &lt;algorithm&gt;\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin &gt;&gt; n &gt;&gt; m;\n    vector&lt;vector&lt;int&gt;&gt; graph(n + 1);\n    \n    for (int i = 0; i &lt; m; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    \n    vector&lt;bool&gt; isArt(n + 1, false);\n    \n    // Check each vertex for criticality\n    for (int removed = 1; removed &lt;= n; removed++) {\n        vector&lt;bool&gt; visited(n + 1, false);\n        int start = -1;\n        for (int i = 1; i &lt;= n; i++) {\n            if (i != removed) {\n                start = i;\n                break;\n            }\n        }\n        if (start == -1) continue; // In case n == 1\n        \n        queue&lt;int&gt; q;\n        q.push(start);\n        visited[start] = true;\n        int count = 1;\n        \n        while (!q.empty()) {\n            int u = q.front();\n            q.pop();\n            for (int v : graph[u]) {\n                if (v == removed) continue;\n                if (!visited[v]) {\n                    visited[v] = true;\n                    count++;\n                    q.push(v);\n                }\n            }\n        }\n        \n        if (count != n - 1)\n            isArt[removed] = true;\n    }\n    \n    vector&lt;int&gt; result;\n    for (int i = 1; i &lt;= n; i++) {\n        if (isArt[i])\n            result.push_back(i);\n    }\n    cout &lt;&lt; result.size() &lt;&lt; \"\\n\";\n    sort(result.begin(), result.end());\n    for (int v : result)\n        cout &lt;&lt; v &lt;&lt; \"\\n\";\n    \n    return 0;\n}\n``from collections import deque\nimport sys\nsys.setrecursionlimit(10 ** 6)\n\ndef bfs(start, removed, graph, n):\n    visited = [False] * (n + 1)\n    q = deque([start])\n    visited[start] = True\n    count = 1\n    while q:\n        u = q.popleft()\n        for v in graph[u]:\n            if v == removed:\n                continue\n            if not visited[v]:\n                visited[v] = True\n                count += 1\n                q.append(v)\n    return count\n\nn, m = map(int, sys.stdin.readline().split())\ngraph = [[] for _ in range(n + 1)]\nfor _ in range(m):\n    u, v = map(int, sys.stdin.readline().split())\n    graph[u].append(v)\n    graph[v].append(u)\n\nisArt = [False] * (n + 1)\n\nfor removed in range(1, n + 1):\n    start = -1\n    for i in range(1, n + 1):\n        if i != removed:\n            start = i\n            break\n    if start == -1:\n        continue\n    count = bfs(start, removed, graph, n)\n    if count != n - 1:\n        isArt[removed] = True\n\nresult = [i for i in range(1, n + 1) if isArt[i]]\nresult.sort()\nprint(len(result))\nfor v in result:\n    print(v)\n`",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

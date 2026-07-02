@@ -1,0 +1,85 @@
+{
+  "questionId": "Q1870",
+  "title": "Sliding Window Maximum",
+  "slug": "sliding-window-maximum",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "two pointers & sliding window",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Two Pointers & Sliding Window"
+    ]
+  },
+  "content": {
+    "problemStatement": "**Sliding Window Maximum**\n\nYou are given an array AAA consisting of NNN integers and an integer XXX.\n\nFind the **maximum** element in each subarray of size XXX.\n\nPrint (N−X+1)(N-X+1)(N−X+1) space-separated integers where the ithi^{th}ith integer denotes the maximum element of the ithi^{th}ith subarray of size XXX from left.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains two space-separated integers NNN and XXX — the number of elements in the array and the size of subarrays.\nThe next line contains NNN space-separated integers, the elements of array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **maximum** element in each subarray of size XXX.\n\nPrint (N−X+1)(N-X+1)(N−X+1) space-separated integers where the ithi^{th}ith integer denotes the maximum element of the ithi^{th}ith subarray of size XXX from left.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤X≤N≤1051 \\leq X \\leq N \\leq 10^51≤X≤N≤105",
+      "1≤Ai≤1091 \\leq A_i \\leq 10^91≤Ai​≤109",
+      "The sum of NNN over all test cases won't exceed 2⋅1052\\cdot 10^52⋅105.",
+      "Subtasks",
+      "**Subtask 1 (30 points):** 1≤X≤N≤10001 \\leq X \\leq N \\leq 10001≤X≤N≤1000",
+      "**Subtask 2 (70 points):** Original Constraints."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n4 2\n1 2 3 4\n4 3\n4 3 2 1\n3 1\n9 7 10",
+        "output": "2 3 4\n4 3\n9 7 10",
+        "explanation": "Explanation:\nTest case 111: For the array A=[1,2,3,4]A = [1, 2, 3, 4]A=[1,2,3,4]:\n\nThe maximum element in the subarray [1,2][1, 2][1,2] is 222.\nThe maximum element in the subarray [2,3][2, 3][2,3] is 333.\nThe maximum element in the subarray [3,4][3, 4][3,4] is 444.\n\nNote that the subarrays are traverses from left to right.\nTest case 222: For the array A=[4,3,2,1]A = [4, 3, 2, 1]A=[4,3,2,1]:\n\nThe maximum element in the subarray [4,3,2][4, 3, 2][4,3,2] is 444.\nThe maximum element in the subarray [3,2,1][3, 2, 1][3,2,1] is 333.\n\nTest case 333: For the array A=[9,7,10]A = [9, 7, 10]A=[9,7,10]:\n\nThe maximum element in the subarray [9][9][9] is 999.\nThe maximum element in the subarray [7][7][7] is 777.\nThe maximum element in the subarray [10][10][10] is 101010."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "3\n4 2\n1 2 3 4\n4 3\n4 3 2 1\n3 1\n9 7 10",
+        "expectedOutput": "2 3 4\n4 3\n9 7 10",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "\n#include <iostream>\n#include <vector>\n#include <deque>\n\nusing namespace std;\n\nvector<int> maxSlidingWindow(vector<int>& nums, int k) {\n    vector<int> result;\n    deque<int> dq;\n    \n    for (int i = 0; i < nums.size(); i++) {\n        if (!dq.empty() && dq.front() == i - k) {\n            dq.pop_front();\n        }\n        \n        while (!dq.empty() && nums[dq.back()] < nums[i]) {\n            dq.pop_back();\n        }\n        \n        dq.push_back(i);\n        \n        if (i >= k - 1) {\n            result.push_back(nums[dq.front()]);\n        }\n    }\n    \n    return result;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    \n    while (T--) {\n        int N, X;\n        cin >> N >> X;\n        \n        vector<int> A(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        \n        vector<int> result = maxSlidingWindow(A, X);\n        \n        for (int i = 0; i < result.size(); i++) {\n            cout << result[i] << \" \";\n        }\n        cout << endl;\n    }\n    \n    return 0;\n}\n",
+      "Python3": " def max_sum_subarray_k(arr, n, k):\n    result = []\n\n    # Step 1: First window\n    window = arr[:k]\n    result.append(max(window))\n\n    # Step 2: Slide the window\n    for i in range(k, n):\n        # remove left and add new element\n        window.pop(0)\n        window.append(arr[i])\n        \n        result.append(max(window))\n\n    return result",
+      "C": "#include <stdio.h>\n\n#define MAX 1000 // Define maximum size for the array\n\nint deque[MAX];  // Array for deque\nint front = 0, back = 0;\n\nvoid push_back(int value) {\n    deque[back++] = value;\n}\n\nvoid pop_back() {\n    if (back > front) {\n        back--;\n    }\n}\n\nvoid pop_front() {\n    if (back > front) {\n        front++;\n    }\n}\n\nint front_value() {\n    return deque[front];\n}\n\nint is_empty() {\n    return front == back;\n}\n\nint back_value() {\n    return deque[back - 1];\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int N, X;\n        scanf(\"%d %d\", &N, &X);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n\n        front = back = 0;  // Reset deque for each test case\n\n        for (int i = 0; i < N; i++) {\n            int x = A[i];\n            \n            // Remove elements from the deque's back while they are smaller than or equal to x\n            while (!is_empty() && A[back_value()] <= x) {\n                pop_back();\n            }\n\n            // Push current index to the back of the deque\n            push_back(i);\n\n            // When the window size is achieved, start printing results\n            if (i >= X - 1) {\n                // Remove elements that are outside of the window\n                if (i >= X && front_value() == i - X) {\n                    pop_front();\n                }\n                \n                // Print the maximum element in the current window\n                printf(\"%d \", A[front_value()]);\n            }\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}\n",
+      "Java": "\nimport java.util.*;\nimport java.io.*;\n\nclass Solution {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine());\n        \n        while (T-- > 0) {\n            String[] input = br.readLine().split(\" \");\n            int N = Integer.parseInt(input[0]);\n            int X = Integer.parseInt(input[1]);\n            \n            int[] A = new int[N];\n            input = br.readLine().split(\" \");\n            for (int i = 0; i < N; i++) {\n                A[i] = Integer.parseInt(input[i]);\n            }\n            \n            findMaxInSubarrays(A, N, X);\n        }\n    }\n    \n    static void findMaxInSubarrays(int[] A, int N, int X) {\n        Deque<Integer> deque = new ArrayDeque<>();\n        StringBuilder result = new StringBuilder();\n        \n        for (int i = 0; i < N; i++) {\n            while (!deque.isEmpty() && deque.peekFirst() <= i - X) {\n                deque.pollFirst();\n            }\n            \n            while (!deque.isEmpty() && A[deque.peekLast()] < A[i]) {\n                deque.pollLast();\n            }\n            \n            deque.offerLast(i);\n            \n            if (i >= X - 1) {\n                result.append(A[deque.peekFirst()]).append(\" \");\n            }\n        }\n        \n        System.out.println(result.toString().trim());\n    }\n}\n",
+      "JavaScript": "\nfunction solveSlidingWindowMax(input) {\n    // Split input into lines and parse\n    const lines = input.trim().split(\"\\n\");\n    let t = parseInt(lines[0].trim());\n    let outputLines = [];\n    let lineIndex = 1;\n    \n    for (let i = 0; i < t; i++) {\n        let [n, x] = lines[lineIndex++].trim().split(\" \").map(Number);\n        let arr = lines[lineIndex++].trim().split(\" \").map(Number);\n        \n        let deque = []; // will store indices\n        let res = [];\n        \n        // Process first window\n        for (let j = 0; j < x; j++) {\n            while (deque.length > 0 && arr[j] >= arr[deque[deque.length - 1]]) {\n                deque.pop();\n            }\n            deque.push(j);\n        }\n        \n        // For remaining elements\n        for (let j = x; j < n; j++) {\n            // The front of the deque is the largest element of the previous window\n            res.push(arr[deque[0]]);\n            \n            // Remove indices that are out of the current window\n            while (deque.length > 0 && deque[0] <= j - x) {\n                deque.shift();\n            }\n            \n            // Remove indices whose corresponding values are less than arr[j]\n            while (deque.length > 0 && arr[j] >= arr[deque[deque.length - 1]]) {\n                deque.pop();\n            }\n            \n            deque.push(j);\n        }\n        // Add max for the last window\n        res.push(arr[deque[0]]);\n        \n        outputLines.push(res.join(\" \"));\n    }\n    \n    return outputLines.join(\"\\n\");\n}\n"
+    }
+  }
+}

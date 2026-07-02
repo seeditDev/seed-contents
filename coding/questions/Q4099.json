@@ -1,0 +1,75 @@
+{
+  "questionId": "Q4099",
+  "title": "End of Corruption",
+  "slug": "end-of-corruption",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "data structures",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Data Structures"
+    ]
+  },
+  "content": {
+    "problemStatement": "A despotic king decided that his kingdom needed to be rid of corruption and disparity. He called his prime minister and ordered that all corrupt citizens be put to death. Moreover, he wanted this done quickly.\n\nThe wily prime minister realised that investigating every citizen to decide who was corrupt and who was not was rather difficult. So he decided on the following plan: He ordered all the citizens to appear in the court one by one and declare their wealth.\n\nThe king does not sit in the court all the time (he has other important business to attend to - for instance, meet dignitaries from neighbouring kingdoms, spend time with his family ...) Whenever the king walks into the court, the prime minister pulls out the richest man who has appeared before the court so far and is still alive and beheads him for being corrupt. Since the rich are more likely to be corrupt, he hopes to get rid of most of the corrupt and the king is happy as he sees his policy being implemented enthusiastically.\n\nSuppose the wealth of the citizens trooping into the court is\n\n1  3  7  6  5  18  9  11  2  41\\; 3\\; 7\\; 6\\; 5\\; 18\\;  9\\; 11\\;  2\\; 4137651891124\n\nand the king walked in three times: the first time after the first four persons have seen the minister, the second time after the first five persons have seen the minister and, finally after the first nine persons have seen the minister.\n\nAt the king's first visit the richest person to have met the minister has wealth 777 and he would be beheaded. At the second visit, the wealth of the richest person who has met the minister and is still alive has wealth 666 and so he would be beheaded. At the third visit the richest person to have met the minister who is still alive has wealth 181818 and so he would be beheaded.\n\nYou may assume that the input is such that whenever the king walks in, it is always possible to behead someone.\n\nYour aim is to write a program that will enable the prime minister to identify the richest man to have met the minister and who is still alive quickly. You may assume that no two citizens have the same wealth.\n\nInput:The first line of the input consists of two numbers NNN and MMM, where NNN is the number of citizens in the kingdom and M is the number of visits to the court by the king.\n\nThe next N+MN+MN+M lines describe the order in which the NNN citizens' appearances are interleaved with the MMM visits by the king. A citizen's visit is denoted by a positive integer, signifying his wealth. You may assume that no two citizens have the same wealth. A visit by the king is denoted by −1-1−1.\n\nOutput:Your output should consist of MMM lines, where the ithi^{th}ith line contains the wealth of the citizen who is beheaded at the ithi^{th}ith visit of the king.",
+    "constraints": [
+      "1≤M≤100001 \\leq M \\leq 100001≤M≤10000.",
+      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000.",
+      "You may assume that in 50%50 \\%50% of the inputs 1≤M≤10001 \\leq M \\leq 10001≤M≤1000 and 1≤N≤80001 \\leq N \\leq 80001≤N≤8000."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "10 3\n1 \n3 \n7 \n6 \n-1 \n5 \n-1 \n18 \n9 \n11\n2\n-1\n4",
+        "output": "7\n6\n18",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "10 3\n1 \n3 \n7 \n6 \n-1 \n5 \n-1 \n18 \n9 \n11\n2\n-1\n4",
+        "expectedOutput": "7\n6\n18",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "**Idea:**\n\nUse a max heap (priority queue) to store the wealth of all citizens who have appeared but have not been beheaded. When a citizen appears, push his wealth into the heap. When the king visits (event =−1=-1=−1), pop the top element of the heap, which will always be the richest alive citizen. This simulates the beheading as required.\n\n**Methodology:**\n\n\n**C++:** We use `std::priority_queue&lt;int&gt;`, which provides O(log⁡n)O(\\log n)O(logn) insertion and removal.\n**Python:** Because Python’s `heapq` module implements a min heap by default, we store the negative of each wealth value. Popping the minimum then corresponds to obtaining the maximum actual wealth.\n**Time Complexity:**\n\nBoth insertion and removal take O(log⁡n)O(\\log n)O(logn) per operation, resulting in an overall complexity of O((N+M)log⁡N)O((N+M) \\log N)O((N+M)logN) where NNN is the number of citizens and MMM is the number of king’s visits.\n\n**Idea:**\n\nA balanced binary search tree (BST) automatically maintains order. In this approach, we insert each citizen’s wealth into the BST. When the king visits, we retrieve and remove the maximum element (which is always at one end of the tree).\n\n**Methodology:**\n\n\n**C++:** We use `std::set&lt;int&gt;` since the wealth values are unique. The richest citizen can be accessed via the reverse iterator (`rbegin()`) or by moving to the last element.\n**Python:** Python does not provide a built-in balanced BST, so we mimic an ordered set using a sorted list along with the `bisect` module. Inserting into the sorted list using `bisect.insort` keeps it sorted. When the king visits, we simply remove (pop) the last element, which is the highest.\n**Time Complexity:**\n\n\n**C++:** Both insertion and deletion take O(log⁡N)O(\\log N)O(logN).\n**Python:** While deletion of the last element is O(1)O(1)O(1), insertion using `bisect.insort` takes O(N)O(N)O(N) in the worst-case. Hence, for very large inputs, the heap-based approach is preferable in Python even though this method is conceptually useful.\nCode ImplementationBelow you will find implementations for both approaches in **C++** and **Python**.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}

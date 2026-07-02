@@ -1,0 +1,82 @@
+{
+  "questionId": "Q1255",
+  "title": "All to All Shortest Path",
+  "slug": "all-to-all-shortest-path",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Easy",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "You are given an undirected weighted graph it has NNN vertices and MMM edges. \n\nYou are tasked to find the length of the shortest path duvd_{uv}duv​ between each pair of vertices uuu and vvv.\n\nTaskImplement the Floyd-Warshall Algorithm to solve the problem\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i−thi-thi−th of these MMM lines contains three space-separated integers uiu_iui​, viv_ivi​ and wiw_iwi​ denoting there exists an edge between uiu_iui​ and viv_ivi​ with weight wiw_iwi​.\n\n\nOutput Format\nOutput a Matrix of N x N dimension - i−thi-thi−th  line has the distance from node iii to all the other nodes.\nIf there exists no path from iii to jjj output -1 instead.",
+    "constraints": [
+      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
+      "2≤M≤N(N−1)22 \\leq M \\leq \\frac{N(N-1)}{2}2≤M≤2N(N−1)​",
+      "1≤ui,vi≤1091 \\leq u_i, v_i \\leq 10^91≤ui​,vi​≤109",
+      "0≤wi≤1080 \\leq w_i \\leq 10^80≤wi​≤108"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4 3 \n1 2 5\n1 3 9\n2 3 3",
+        "output": "10 5 8 -1 \n5 6 3 -1 \n8 3 6 -1 \n-1 -1 -1 -1",
+        "explanation": ""
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4 3 \n1 2 5\n1 3 9\n2 3 3",
+        "expectedOutput": "10 5 8 -1 \n5 6 3 -1 \n8 3 6 -1 \n-1 -1 -1 -1",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\nconst int INF = 1e9;\n\nint main() {\n    int n , m; \n    cin >> n >> m;\n\n    int dp[n + 1][n + 1];\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= n; j++) {\n            dp[i][j] = INF;\n        }\n    }\n\n    for(int i = 0; i < m; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        // Bidirectional edges\n        dp[u][v] = w;\n        dp[v][u] = w;\n    }\n\n    // Set the phase from 1 to N\n    for (int k = 1; k <= n; k++) {\n        // Update answer for all the pairs of vertices \n        for (int u = 1; u <= n; u++) {\n            for (int v = 1; v <= n; v++) {\n                dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v]); \n            }\n        }\n    }\n\n    for(int u = 1; u <= n; u++) {\n        for(int v = 1; v <= n; v++) {\n            if(dp[u][v] == INF) \n                cout << -1 << \" \";\n            else \n                cout << dp[u][v] << \" \";\n        }\n        cout << \"\\n\";\n    }\n\n    return 0;\n}",
+      "Python3": "INF = 10**9\n\nn, m = map(int, input().split())\n\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\n\nfor i in range(m):\n    u, v, w = map(int, input().split())\n    # Bidirectional edges\n    dp[u][v] = w\n    dp[v][u] = w\n\n# Set the phase from 1 to N\nfor k in range(1, n + 1):\n    # Update answer for all pairs of vertices\n    for u in range(1, n + 1):\n        for v in range(1, n + 1):\n            dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v])\n\nfor u in range(1, n + 1):\n    for v in range(1, n + 1):\n        if dp[u][v] == INF:\n            print(-1, end=\" \")\n        else:\n            print(dp[u][v], end=\" \")\n    print()\n",
+      "C": "#include <stdio.h>\n\nconst int INF = 1e9;\n\nint min(int a, int b) {\n    return (a < b) ? a : b;\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    int dp[n + 1][n + 1];\n    \n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            dp[i][j] = INF;\n        }\n    }\n\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        // Bidirectional edges\n        dp[u][v] = w;\n        dp[v][u] = w;\n    }\n\n    // Set the phase from 1 to N\n    for (int k = 1; k <= n; k++) {\n        // Update answer for all the pairs of vertices\n        for (int u = 1; u <= n; u++) {\n            for (int v = 1; v <= n; v++) {\n                dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v]);\n            }\n        }\n    }\n\n    for (int u = 1; u <= n; u++) {\n        for (int v = 1; v <= n; v++) {\n            if (dp[u][v] == INF) {\n                printf(\"-1 \");\n            } else {\n                printf(\"%d \", dp[u][v]);\n            }\n        }\n        printf(\"\\n\");\n    }\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n\n        int INF = 1000000000; // setting infinity as 10^9\n\n        int[][] dp = new int[n + 1][n + 1];\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                dp[i][j] = INF;\n            }\n        }\n\n        for (int i = 0; i < m; i++) {\n            int u = sc.nextInt();\n            int v = sc.nextInt();\n            int w = sc.nextInt();\n            // Bidirectional edges\n            dp[u][v] = w;\n            dp[v][u] = w;\n        }\n\n        // Set the phase from 1 to N\n        for (int k = 1; k <= n; k++) {\n            // Update answer for all the pairs of vertices\n            for (int u = 1; u <= n; u++) {\n                for (int v = 1; v <= n; v++) {\n                    dp[u][v] = Math.min(dp[u][v], dp[u][k] + dp[k][v]);\n                }\n            }\n        }\n\n        for (int u = 1; u <= n; u++) {\n            for (int v = 1; v <= n; v++) {\n                if (dp[u][v] == INF)\n                    System.out.print(-1 + \" \");\n                else\n                    System.out.print(dp[u][v] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
+      "JavaScript": "INF = 10**9\n\nn, m = map(int, input().split())\n\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\n\nfor i in range(m):\n    u, v, w = map(int, input().split())\n    # Bidirectional edges\n    dp[u][v] = w\n    dp[v][u] = w\n\n# Set the phase from 1 to N\nfor k in range(1, n + 1):\n    # Update answer for all pairs of vertices\n    for u in range(1, n + 1):\n        for v in range(1, n + 1):\n            dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v])\n\nfor u in range(1, n + 1):\n    for v in range(1, n + 1):\n        if dp[u][v] == INF:\n            print(-1, end=\" \")\n        else:\n            print(dp[u][v], end=\" \")\n    print()\n"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "questionId": "Q1824",
+  "title": "KMP Approach- Implementation",
+  "slug": "kmp-approach-implementation",
+  "version": 1,
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-01",
+  "metadata": {
+    "category": "Strings",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "strings & pattern matching",
+      "data structures and algorithms"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Strings & Pattern Matching"
+    ]
+  },
+  "content": {
+    "problemStatement": "Given a text `T` of length `n` and a pattern `P` of length `m`, the task is to find all occurrences of the pattern `P` in the text `T`. The approach to solving this problem will be the **Naive String Matching Algorithm**.\n\nIn this approach, we will compare the pattern `P` with every substring of `T` that has the same length as `P`. If a match is found, record the starting index of the substring in `T`.\n\nInput:\nThe first line contains the string `T` (the text) of length `n` containing only lowercase English letters.\nThe second line contains the string `P` (the pattern) of length `m` containing only lowercase English letters.\nOutput:\nThe output should be the starting indices (0-based) of all occurrences of the pattern `P` in the text `T`. If no match is found, output should be `-1`.",
+    "constraints": [
+      "1 ≤ n ≤ 1000",
+      "1 ≤ m ≤ 100",
+      "The text and pattern consist of only lowercase English letters."
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "abcbbcbcbabcd\nabc",
+        "output": "0 9",
+        "explanation": "Explanation:\nAt the index 0 and 9 we have the pattern abc"
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "abcbbcbcbabcd\nabc",
+        "expectedOutput": "0 9",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "",
+    "timeComplexity": "",
+    "spaceComplexity": "",
+    "code": {
+      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Function to build the longest prefix suffix (LPS) array\nvoid computeLPSArray(const string &pattern, vector<int> &lps) {\n    int length = 0; // Length of the previous longest prefix suffix\n    int i = 1;\n    lps[0] = 0; // lps[0] is always 0\n\n    while (i < pattern.length()) {\n        if (pattern[i] == pattern[length]) {\n            length++;\n            lps[i] = length;\n            i++;\n        } else {\n            if (length != 0) {\n                length = lps[length - 1];\n            } else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n}\n\n// KMP search function\nvoid KMPSearch(const string &text, const string &pattern) {\n    int n = text.length();\n    int m = pattern.length();\n\n    vector<int> lps(m);\n    computeLPSArray(pattern, lps);\n\n    int i = 0; // Index for text\n    int j = 0; // Index for pattern\n    int flag=0;\n    \n    while (i < n) {\n        if (pattern[j] == text[i]) {\n            i++;\n            j++;\n        }\n\n        if (j == m) {\n            cout << i - j<<\" \";\n            j = lps[j - 1];\n            flag=1;\n        } else if (i < n && pattern[j] != text[i]) {\n            if (j != 0) {\n                j = lps[j - 1];\n            } else {\n                i++;\n            }\n        }\n    }\n    if(flag==0)\n    {\n        cout<<-1<<endl;\n    }\n}\n\nint main() {\n    string text, pattern;\n\n    \n    cin >> text;\n  \n    cin >> pattern;\n\n    KMPSearch(text, pattern);\n\n    return 0;\n}\n",
+      "Python3": "def computeLPSArray(pattern):\n    m = len(pattern)\n    lps = [0] * m  # lps array to store the longest prefix suffix lengths\n    length = 0  # Length of the previous longest prefix suffix\n    i = 1\n    while i < m:\n        if pattern[i] == pattern[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length - 1]  # Use the previously computed lps value\n            else:\n                lps[i] = 0\n                i += 1\n    return lps\n\ndef KMPSearch(text, pattern):\n    n = len(text)\n    m = len(pattern)\n    \n    # Compute LPS array for the pattern\n    lps = computeLPSArray(pattern)\n    \n    i = 0  # Index for the text\n    j = 0  # Index for the pattern\n    flag = 0  # To track if we found any match\n\n    while i < n:\n        if pattern[j] == text[i]:\n            i += 1\n            j += 1\n\n        if j == m:  # If the entire pattern is found\n            print(i - j, end=\" \")  # Pattern found, print the index\n            j = lps[j - 1]  # Reset pattern index based on lps\n            flag = 1\n        elif i < n and pattern[j] != text[i]:\n            if j != 0:\n                j = lps[j - 1]  # Use the lps to skip characters\n            else:\n                i += 1\n\n    if flag == 0:\n        print(-1)  # If no match was found, print -1\n\n# Read input\ntext = input().strip()\npattern = input().strip()\n\n# Perform KMP search\nKMPSearch(text, pattern)\n",
+      "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n// Function to build the longest prefix suffix (LPS) array\nvoid computeLPSArray(const char* pattern, int m, int* lps) {\n    int length = 0; // Length of the previous longest prefix suffix\n    int i = 1;\n    lps[0] = 0; // lps[0] is always 0\n\n    while (i < m) {\n        if (pattern[i] == pattern[length]) {\n            length++;\n            lps[i] = length;\n            i++;\n        } else {\n            if (length != 0) {\n                length = lps[length - 1];\n            } else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n}\n\n// KMP search function\nvoid KMPSearch(const char* text, const char* pattern) {\n    int n = strlen(text);\n    int m = strlen(pattern);\n\n    int* lps = (int*)malloc(m * sizeof(int));\n    computeLPSArray(pattern, m, lps);\n\n    int i = 0; // Index for text\n    int j = 0; // Index for pattern\n    int flag = 0;\n\n    while (i < n) {\n        if (pattern[j] == text[i]) {\n            i++;\n            j++;\n        }\n\n        if (j == m) {\n            printf(\"%d \", i - j);\n            j = lps[j - 1];\n            flag = 1;\n        } else if (i < n && pattern[j] != text[i]) {\n            if (j != 0) {\n                j = lps[j - 1];\n            } else {\n                i++;\n            }\n        }\n    }\n\n    if (flag == 0) {\n        printf(\"-1\\n\");\n    }\n\n    free(lps);\n}\n\nint main() {\n    char text[1000], pattern[1000];\n\n    scanf(\"%s\", text);\n    scanf(\"%s\", pattern);\n\n    KMPSearch(text, pattern);\n\n    return 0;\n}\n",
+      "Java": "import java.util.Scanner;\n\n class KMP {\n    \n    // Function to build the longest prefix suffix (LPS) array\n    public static void computeLPSArray(String pattern, int m, int[] lps) {\n        int length = 0; // Length of the previous longest prefix suffix\n        int i = 1;\n        lps[0] = 0; // lps[0] is always 0\n\n        while (i < m) {\n            if (pattern.charAt(i) == pattern.charAt(length)) {\n                length++;\n                lps[i] = length;\n                i++;\n            } else {\n                if (length != 0) {\n                    length = lps[length - 1];\n                } else {\n                    lps[i] = 0;\n                    i++;\n                }\n            }\n        }\n    }\n\n    // KMP search function\n    public static void KMPSearch(String text, String pattern) {\n        int n = text.length();\n        int m = pattern.length();\n\n        int[] lps = new int[m];\n        computeLPSArray(pattern, m, lps);\n\n        int i = 0; // Index for text\n        int j = 0; // Index for pattern\n        int flag = 0;\n\n        while (i < n) {\n            if (pattern.charAt(j) == text.charAt(i)) {\n                i++;\n                j++;\n            }\n\n            if (j == m) {\n                System.out.print((i - j) + \" \");\n                j = lps[j - 1];\n                flag = 1;\n            } else if (i < n && pattern.charAt(j) != text.charAt(i)) {\n                if (j != 0) {\n                    j = lps[j - 1];\n                } else {\n                    i++;\n                }\n            }\n        }\n\n        if (flag == 0) {\n            System.out.println(\"-1\");\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        String text = sc.next();\n        String pattern = sc.next();\n\n        KMPSearch(text, pattern);\n        \n        sc.close();\n    }\n}\n",
+      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n  input.push(line.trim());\n});\n\nrl.on('close', () => {\n  let [m, n] = input[0].split(' ').map(Number);\n  let a = [];\n\n  for (let i = 1; i <= m; i++) {\n    a.push(input[i].split(' ').map(Number));\n  }\n\n  let [_n, p] = input[m + 1].split(' ').map(Number);\n\n  let b = [];\n  for (let i = m + 2; i <= m + 1 + _n; i++) {\n    b.push(input[i].split(' ').map(Number));\n  }\n\n  function multiplyMatrices(matrixA, matrixB) {\n    const rowsA = matrixA.length;\n    const colsA = matrixA[0].length;\n    const rowsB = matrixB.length;\n    const colsB = matrixB[0].length;\n\n    if (colsA !== rowsB) {\n      throw new Error(\"Matrix multiplication not possible: column count of matrix A must equal row count of matrix B.\");\n    }\n\n    let result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));\n\n    for (let i = 0; i < rowsA; i++) {\n      for (let j = 0; j < colsB; j++) {\n        for (let k = 0; k < colsA; k++) {\n          result[i][j] += matrixA[i][k] * matrixB[k][j];\n        }\n      }\n    }\n\n    return result;\n  }\n\n  try {\n    const result = multiplyMatrices(a, b);\n    result.forEach(row => console.log(row.join(' ')));\n  } catch (error) {\n    console.error(error.message);\n  }\n});\n"
+    }
+  }
+}
