@@ -1,0 +1,79 @@
+{
+  "questionId": "Q5186",
+  "title": "Cricket Match",
+  "slug": "cricket-match",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "graphs",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Graphs"
+    ]
+  },
+  "content": {
+    "problemStatement": "There are NNN people numbered from 111 to NNN and they want to play a cricket match between them by forming two teams that may not be of the same size. There are MMM pairs of peoples and for each pair of peoples, they can not be in the same team. Now Chef wants to know if there is any way to split them into two teams such that Chef can organize the cricket match between two teams. If possible then print `\"YES\"` (without quotes), otherwise print `\"NO\"` (without quotes).",
+    "constraints": [
+      "1≤T≤101 \\leq T \\leq 101≤T≤10",
+      "1≤N≤20001 \\leq N \\leq 20001≤N≤2000",
+      "1≤M≤100001 \\leq M \\leq 100001≤M≤10000",
+      "1≤u&lt;v≤N1 \\leq u &lt; v \\leq N1≤u&lt;v≤N"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and MMM.\nEach of the following MMM lines follows. Each line has two space-separated numbers uuu and vvv.",
+    "outputFormat": "For each test case, output in a single line the answer to the problem.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n3 3\n1 2\n1 3\n2 3\n4 2\n1 4\n2 3",
+        "output": "NO\nYES",
+        "explanation": "Explanation:\nExample case 1: It's impossible to divide them into two teams.\nExample case 2: Both the teams will look like [1,2][1, 2][1,2] and [3,4][3, 4][3,4]."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "2\n3 3\n1 2\n1 3\n2 3\n4 2\n1 4\n2 3",
+        "expectedOutput": "NO\nYES",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "The problem can be visualized as graph where each person is a node, and each restricted pair forms an edge. The task is to split the nodes into two groups, which requires checking if the graph is bipartite. In a bipartite graph, nodes can be divided into two sets where no two nodes within the same set are adjacent. To verify this, we can use DFS (or BFS), assigning each node a level or “depth” during traversal. We start with an unvisited node, assigning it an initial level (0), and assign alternating levels (0 and 1) to adjacent nodes.\n\nIf we find two adjacent nodes with the same level, the graph contains an odd-length cycle, meaning it’s non-bipartite, so we output `\"NO\"`. This indicates we can’t separate the nodes into two groups. If no such condition occurs in any graph component, we output `\"YES\"`.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool isOddCycle(int u, vector <int>& level, vector <vector <int>>& adj, int l){\n    level[u] = l;\n    for(int v: adj[u]){\n        if(level[v] == -1){\n            if(isOddCycle(v, level, adj, l + 1)) return true;\n        }else if((l - level[v]) % 2 == 0) return true;\n    }\n    return false;\n}\n\nvoid solve(){\n    int n, m;\n    cin >> n >> m;\n\n    vector <vector <int> > adj(1+n);\n    while(m--){\n        int u, v;\n        cin >> u >> v;\n\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n\n    vector <int> level(1+n, -1);\n    for(int u = 1; u <= n; u++){\n        if(level[u] == -1){\n            if(isOddCycle(u, level, adj, 0)){\n                cout << \"NO\\n\";\n                return;\n            }\n        }\n    }\n    cout << \"YES\\n\";\n}\n\nint main(){\n    int t = 1;\n    cin >> t;\n\n    while(t--) solve();\n}",
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    static boolean isOddCycle(int u, int[] level, List < List < Integer >> adj, int l) {\n        level[u] = l;\n        for (int v: adj.get(u)) {\n            if (level[v] == -1) {\n                if (isOddCycle(v, level, adj, l + 1)) return true;\n            } else if ((l - level[v]) % 2 == 0) return true;\n        }\n        return false;\n    }\n\n    static void solve(Scanner scanner) {\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        List < List < Integer >> adj = new ArrayList < > (n + 1);\n        for (int i = 0; i <= n; i++) {\n            adj.add(new ArrayList < > ());\n        }\n\n        for (int i = 0; i < m; i++) {\n            int u = scanner.nextInt();\n            int v = scanner.nextInt();\n            adj.get(u).add(v);\n            adj.get(v).add(u);\n        }\n\n        int[] level = new int[n + 1];\n        Arrays.fill(level, -1);\n\n        for (int u = 1; u <= n; u++) {\n            if (level[u] == -1) {\n                if (isOddCycle(u, level, adj, 0)) {\n                    System.out.println(\"NO\");\n                    return;\n                }\n            }\n        }\n        System.out.println(\"YES\");\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n        while (t--> 0) {\n            solve(scanner);\n        }\n        scanner.close();\n    }\n}"
+    }
+  }
+}

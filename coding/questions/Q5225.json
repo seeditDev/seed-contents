@@ -1,0 +1,76 @@
+{
+  "questionId": "Q5225",
+  "title": "Beautiful Subsequence",
+  "slug": "beautiful-subsequence",
+  "version": 1,
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
+  "metadata": {
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": false,
+    "tags": [
+      "dynamic programming",
+      "competitive programming"
+    ],
+    "companyTags": [],
+    "topicTags": [
+      "Dynamic Programming"
+    ]
+  },
+  "content": {
+    "problemStatement": "An array AAA consisting of NNN integers is called KKK-beautiful if it holds the following property:\nThe number of adjacent indices with different values is at most KKK. More formally, there are at most KKK indices iii (1≤i&lt;N1\\le i\\lt N1≤i&lt;N) such that Ai≠Ai+1A_i\\ne A_{i+1}Ai​=Ai+1​. Note that according to this definition, if an array AAA is KKK-beautiful, then AAA is also (K+1)(K+1)(K+1)-beautiful.\n\nYou are given an array AAA consisting of NNN integers and an integer KKK. Find the length of the longest KKK-beautiful subsequence of AAA, where a subsequence is defined below.\n\nFor example, consider the array A=[1,1,2,3,2,4]A = [1 , 1, 2, 3, 2 , 4]A=[1,1,2,3,2,4]. The subsequences [1,1][1, 1][1,1] and [1,1,2][1, 1, 2][1,1,2] are 111-beautiful, and the subsequences [1,2,3][1, 2, 3][1,2,3] and [1,2,2,4][1, 2, 2, 4][1,2,2,4] are 222-beautiful.\n\n**Note:** A sequence aaa is a subsequence of a sequence bbb if aaa can be obtained from bbb by deletion of several (possibly, zero) elements. For example, [3,1][3,1][3,1] is a subsequence of [3,2,1][3,2,1][3,2,1] and [4,3,1][4,3,1][4,3,1], but not a subsequence of [1,3,3,7][1,3,3,7][1,3,3,7] and [3,10,4][3,10,4][3,10,4].\n\n\nInput Format\nThe first line contains an integer TTT - the number of test cases. Then TTT test cases follow.\n\n\nThe first line of each test case contains two integers NNN, KKK - the length of array AAA and the parameter for a beautiful sequence.\n\n\nThe second line of each testcase contains NNN integers A1,…,ANA_1,\\ldots, A_NA1​,…,AN​.\n\n\n\nOutput Format\nFor each test case, output the maximum possible length of a KKK-beautiful subsequence of AAA.",
+    "constraints": [
+      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
+      "1≤N≤1031 \\leq N \\leq 10^31≤N≤103",
+      "1≤K≤1031 \\leq K \\leq 10^31≤K≤103",
+      "1≤Ai≤1031 \\leq A_i \\leq 10^31≤Ai​≤103"
+    ],
+    "inputFormat": "",
+    "outputFormat": "",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n4 1\n1 1 2 3\n9 2\n1 2 3 2 4 5 6 7 5\n5 5\n1 1 1 1 1\n10 1\n1 2 1 2 1 2 1 2 1 2",
+        "output": "3\n5\n5\n6",
+        "explanation": "Explanation:\nTest Case 1 : You can either choose [1,1,2][1, 1, 2][1,1,2] or [1,1,3][1, 1, 3][1,1,3] as a subsequence. Both of the subsequences are 111-beautiful. So the maximum length of a 111-beautiful subsequence is 333.\n\n\nTest Case 2 : It is optimal to choose the subsequence [1,2,2,5,5][1, 2, 2, 5, 5][1,2,2,5,5]. So the maximum length of a 222-beautiful subsequence is 555.\n\n\nTest Case 3 : You can choose the entire array as a subsequence because the given array is KKK-beautiful for any K≥0K\\ge 0K≥0, which includes K=5K=5K=5."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "input": "4\n4 1\n1 1 2 3\n9 2\n1 2 3 2 4 5 6 7 5\n5 5\n1 1 1 1 1\n10 1\n1 2 1 2 1 2 1 2 1 2",
+        "expectedOutput": "3\n5\n5\n6",
+        "weight": 100
+      }
+    ],
+    "totalTestCases": 1,
+    "totalWeight": 100
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      100
+    ],
+    "maxScore": 100
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Let’s define our dp states slightly differently. Let \\mathrm{dp}[a][k] denote the length of the longest k beautiful subsequence ending with an element whose value is a. Initially all states are 0.\n\nNow for each i and k (say a = A_i), we can either start a new subsequence at i and set \\mathrm{dp}[a][k] = 1, or try to extend some existing subsequence (1 + \\mathrm{dp}[a][k]) or \\displaystyle (1 + \\max_{\\forall a' \\neq a} \\mathrm{dp}[a'][k-1]).\n\nThe second type of transition can be reduced to \\mathcal{O}(1) in a way similar to the one described in the section above (maintain \\mathrm{pref}[k]).\n\nThis solution also has time complexity \\mathcal{O}(NK) and space complexity \\mathcal{O}(NK). You may find the implementation in one of the solutions below.\n\n\nTIME COMPLEXITY\\mathcal{O}(NK) per test case\n\n\nSOLUTIONS\n\nSetter's Solution\n`#include&lt;bits/stdc++.h&gt;\nusing namespace std;\nvoid solve() {\nint n, k; cin &gt;&gt; n &gt;&gt; k;\nvector&lt;int&gt; a(n);\nfor (int i = 0; i &lt; n; i++) {\ncin &gt;&gt; a[i];\na[i]--;\n}\nint maxi = *max_element(a.begin(), a.end()), ans = 0;\nvector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; dp(n, vector&amp;lt;int&amp;gt;(k + 1, 1));\nvector&amp;lt;int&amp;gt; last_idx(maxi + 1, -1);\nvector&amp;lt;int&amp;gt; mx_ans(k + 1); // maximum answer upto (i-1) th index with j bad indices\nfor (int i = 0; i &amp;lt; n; i++) {\n    for (int j = k; j &amp;gt;= 0; j--) {\n        if (j &amp;gt;= 1) {\n            dp[i][j] = mx_ans[j - 1] + 1;\n        }\n        if (last_idx[a[i]] != -1) {\n            dp[i][j] = max(dp[i][j], dp[last_idx[a[i]]][j] + 1);\n        }\n        mx_ans[j] = max(mx_ans[j], dp[i][j]);\n        ans = max(ans, dp[i][j]);\n    }\n    last_idx[a[i]] = i;\n}\ncout &amp;lt;&amp;lt; ans &amp;lt;&amp;lt; '\\n';\n\n}\n``signed main() {\nios_base :: sync_with_stdio(0); cin.tie(0); cout.tie(0);\nint t; cin &gt;&gt; t;\nwhile (t--) {\nsolve();\n}\nreturn 0;\n}\n`\n\n\n\n\n\n\nTester's Solution\n`#!/usr/bin/env python\nimport os\nimport sys\nfrom io import BytesIO, IOBase\ndef main():\nfor _ in range(int(input())):\nn,k=map(int,input().split())\na=[int(x)-1 for x in input().split()]\nN=1000\ndp=[[0](k+1) for _ in range(N)]\ndp2=[0](k+1)\nfor x in a:\nb=dp[x]\nb[0]+=1\nfor i in range(k):\nb[i+1]+=1\nb[i+1]=max(b[i+1],1+dp2[i])\ndp2[i]=max(dp2[i],b[i])\ndp2[k]=max(dp2[k],b[k])\nprint(dp2[-1])\nregion fastio\nBUFSIZE = 8192\nclass FastIO(IOBase):\nnewlines = 0\ndef __init__(self, file):\n    self._fd = file.fileno()\n    self.buffer = BytesIO()\n    self.writable = \"x\" in file.mode or \"r\" not in file.mode\n    self.write = self.buffer.write if self.writable else None\n\ndef read(self):\n    while True:\n        b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))\n        if not b:\n            break\n        ptr = self.buffer.tell()\n        self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)\n    self.newlines = 0\n    return self.buffer.read()\n\ndef readline(self):\n    while self.newlines == 0:\n        b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))\n        self.newlines = b.count(b\"\\n\") + (not b)\n        ptr = self.buffer.tell()\n        self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)\n    self.newlines -= 1\n    return self.buffer.readline()\n\ndef flush(self):\n    if self.writable:\n        os.write(self._fd, self.buffer.getvalue())\n        self.buffer.truncate(0), self.buffer.seek(0)\n\nclass IOWrapper(IOBase):\ndef init(self, file):\nself.buffer = FastIO(file)\nself.flush = self.buffer.flush\nself.writable = self.buffer.writable\nself.write = lambda s: self.buffer.write(s.encode(\"ascii\"))\nself.read = lambda: self.buffer.read().decode(\"ascii\")\nself.readline = lambda: self.buffer.readline().decode(\"ascii\")\nsys.stdin, sys.stdout = IOWrapper(sys.stdin), IOWrapper(sys.stdout)\ninput = lambda: sys.stdin.readline().rstrip(\"\\r\\n\")\nendregion\n``if name == \"main\":\nmain()\n`\n\n\n\n\n\n\nEditorialist's Solution\n`/**\n ???? the_hyp0cr1t3\n ???? 28.07.2021 00:37:21\n**/\n#ifdef W\n    #include \"k_II.h\"\n#else\n    #include &lt;bits/stdc++.h&gt;\n    using namespace std;\n#endif\n#define pb emplace_back\n#define all(x) x.begin(), x.end()\n#define sz(x) static_cast&lt;int32_t&gt;(x.size())\nauto chmax = [](auto&amp; A, auto&amp;&amp; B) { return B &gt; A? A = B, true : false; };\nauto chmin = [](auto&amp; A, auto&amp;&amp; B) { return B &lt; A? A = B, true : false; };\nconst int64_t k_II = 2e18;\nconst int INF = 2e9, MOD = 1e9+7;\nconst int N = 1000 + 5;\nint main() {\nios_base::sync_with_stdio(false), cin.tie(nullptr);\nint Q; cin &gt;&gt; Q;\nwhile(Q--) []() {\n    int i, n, k;\n    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; k; ++k;\n    vector&amp;lt;int&amp;gt; a(n);\n    for(auto&amp;amp; x: a) cin &amp;gt;&amp;gt; x;\n\n    vector&amp;lt;int&amp;gt; dp(n + 1), cur(N, n), nxt(n);\n    for(i = n-1; ~i; i--)\n        nxt[i] = cur[a[i]], cur[a[i]] = i;\n\n    while(k--) {\n        for(i = n; i; i--)\n            chmax(dp[i], dp[i-1] + 1);\n        for(i = 0; i &amp;lt; n; i++) {\n            if(nxt[i] &amp;lt; n)\n                chmax(dp[nxt[i] + 1], dp[i + 1] + 1);\n            chmax(dp[i + 1], dp[i]);\n        }\n    }\n\n    cout &amp;lt;&amp;lt; *max_element(all(dp)) &amp;lt;&amp;lt; '\\n';\n}();\n\n``} // ~W\n`\n\n\n\n\nFeel free to share your approach. Suggestions are welcomed.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  }
+}
