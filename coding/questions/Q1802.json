@@ -4,14 +4,15 @@
   "slug": "chef-finds-city-neighbors",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "graphs",
-      "data structures and algorithms"
+      "Floyd-Warshall Algorithm",
+      "Shortest Path",
+      "Graph Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +21,33 @@
   },
   "content": {
     "problemStatement": "Chef has nnn cities numbered from 000 to n−1n-1n−1. Each pair of cities may be connected by bidirectional roads with certain distances. Chef wants to find the city which has the smallest number of neighbouring cities reachable within a given maximum distance threshold. \n\nIf multiple cities have the same smallest count of reachable neighbours, Chef wants to choose the city with the greatest index among them. Help Chef determine this city based on the road connections and the maximum distance allowed which is reachable via shortest path.\n\nFunction DeclarationFunction NamefindCityWithSmallestNeighborsfindCityWithSmallestNeighborsfindCityWithSmallestNeighbors\n\nParameters\ntotalCitiestotalCitiestotalCities : The total number of cities, labeled from 000 to totalCities−1totalCities - 1totalCities−1.\nroadConnectionsroadConnectionsroadConnections : A list of roads where each road is represented as `[city1, city2, distance]`.\nmaxDistancemaxDistancemaxDistance : The maximum distance threshold to consider a city reachable.\nReturn Value\nReturns a number representing the city index with the smallest number of reachable neighbours within the maxDistancemaxDistancemaxDistance.\nIf multiple cities have the same smallest count, returns the city with the greatest index.\nThe output is a single integer value.\nConstraints\n2≤totalCities≤1002 \\leq totalCities \\leq 1002≤totalCities≤100\n1≤length&nbsp;of&nbsp;roadConnections≤totalCities×(totalCities−1)21 \\leq \\text{length of } roadConnections \\leq \\frac{totalCities \\times (totalCities - 1)}{2}1≤length&nbsp;of&nbsp;roadConnections≤2totalCities×(totalCities−1)​\nEach element in roadConnectionsroadConnectionsroadConnections is a vector of size 3: `[city1, city2, distance]`\n0≤city1&lt;city2&lt;totalCities0 \\leq city1 &lt; city2 &lt; totalCities0≤city1&lt;city2&lt;totalCities\n1≤distance,maxDistance≤1041 \\leq distance, maxDistance \\leq 10^41≤distance,maxDistance≤104\nAll pairs `(city1, city2)` are distinct.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains an integer totalCitiestotalCitiestotalCities.\nSecond line → List of roads. Each road is represented as: [city1, city2, distance]\nThird line → maxDistance\n\n\n\n\nOutput Format\n\nFor each test case, print a single line containing the city index that has the smallest number of reachable neighbours within the distance threshold.\nIf multiple cities have the same smallest count, print the city with the greatest index among them.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "2 <= totalCities <= 100",
+      "1 <= length of roadConnections <= totalCities * (totalCities - 1) / 2",
+      "Each element in roadConnections is a vector of size 3: [city1, city2, distance]",
+      "0 <= city1 < city2 < totalCities",
+      "1 <= distance, maxDistance <= 10^4"
+    ],
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains three lines: the first line contains an integer totalCities, the second line contains a list of roads where each road is represented as [city1, city2, distance], and the third line contains the maximum distance threshold maxDistance.",
+    "outputFormat": "For each test case, print a single integer representing the city index with the smallest number of reachable neighbours within the maxDistance. If multiple cities have the same smallest count, print the city with the greatest index among them.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n3\n[[0,1,10],[1,2,10],[0,2,20]]\n15",
         "output": "2",
-        "explanation": "Explanation:\nCity 0 has 1 reachable neighbor\nCity 1 has 2 reachable neighbors\nCity 2 has 1 reachable neighbor\nThe smallest count is 1 ? cities {0,2}\nChoose greatest index ? 2"
+        "explanation": "City 0 has 1 reachable neighbor\nCity 1 has 2 reachable neighbors\nCity 2 has 1 reachable neighbor\nThe smallest count is 1 — cities {0,2}\nChoose greatest index — 2"
       },
       {
         "id": "sample_2",
         "input": "2\n6\n[[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1]]\n7\n3\n[[0,1,3],[1,2,3],[0,2,5]]\n4",
         "output": "5\n2",
-        "explanation": "Explanation:\nFor the first test case, city 5 has only 1 neighbor within distance 2 (city 4), fewer than all others, so output is 5.\nIn the second test case, cities 0 and 2 each have 2 neighbors within distance 4, but city 2 has the greatest index, so output is 2."
+        "explanation": "For the first test case, city 5 has only 1 neighbor within distance 2 (city 4), fewer than all others, so output is 5.\nIn the second test case, cities 0 and 2 each have 2 neighbors within distance 4, but city 2 has the greatest index, so output is 2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n[[0,1,10],[1,2,10],[2,3,10],[0,3,40]]\n20",
+        "output": "3",
+        "explanation": "City 0 has 2 reachable neighbors\nCity 1 has 3 reachable neighbors\nCity 2 has 3 reachable neighbors\nCity 3 has 2 reachable neighbors\nThe smallest count is 2 — cities {0,3}\nChoose greatest index — 3"
       }
     ]
   },
@@ -42,27 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n3\n[[0,1,10],[1,2,10],[0,2,20]]\n15",
-        "expectedOutput": "2",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n2\n[[0,1,1]]\n1",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "2\n6\n[[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1]]\n7\n3\n[[0,1,3],[1,2,3],[0,2,5]]\n4",
-        "expectedOutput": "5\n2",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n100\n[[0,1,10000],[1,2,10000],[2,3,10000],[3,4,10000],[4,5,10000]]\n10000",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5\n[[0,1,10],[1,2,10],[2,3,10],[3,4,10],[0,4,50]]\n10",
+        "expectedOutput": "4",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n6\n[[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1]]\n2",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n2\n[[0,1,1]]\n1",
+        "expectedOutput": "1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(totalCities^3)",
-    "spaceComplexity": "O(totalCities^2) due to the distance matrix",
+    "approach": "The problem can be solved using the Floyd-Warshall algorithm to find the shortest path between all pairs of cities. Then, for each city, count the number of other cities that are reachable within the given maxDistance. The city with the smallest count is the answer. If multiple cities have the same smallest count, choose the one with the greatest index.",
+    "timeComplexity": "O(T * totalCities^3) per test case, O(T * totalCities^3) total. The Floyd-Warshall algorithm has a time complexity of O(n^3), where n is the number of cities.",
+    "spaceComplexity": "O(totalCities^2) — the dominant structure is the distance matrix.",
     "code": {
-      "C++": "class Solution {\npublic:\n    int findCityWithSmallestNeighbors(\n        int totalCities,\n        vector<vector<int>>& roadConnections,\n        int maxDistance\n    ) {\n        const int INF = 1e9;\n        vector<vector<int>> dist(totalCities, vector<int>(totalCities, INF));\n\n        for (int i = 0; i < totalCities; i++)\n            dist[i][i] = 0;\n\n        // Build graph\n        for (auto &e : roadConnections) {\n            int u = e[0], v = e[1], w = e[2];\n            dist[u][v] = min(dist[u][v], w);\n            dist[v][u] = min(dist[v][u], w);\n        }\n\n        // Floyd–Warshall\n        for (int k = 0; k < totalCities; k++) {\n            for (int i = 0; i < totalCities; i++) {\n                for (int j = 0; j < totalCities; j++) {\n                    if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                        dist[i][j] = dist[i][k] + dist[k][j];\n                    }\n                }\n            }\n        }\n\n        int minCnt = INT_MAX;\n        int ans = -1;\n\n        for (int i = 0; i < totalCities; i++) {\n            int cnt = 0;\n            for (int j = 0; j < totalCities; j++) {\n                if (i != j && dist[i][j] <= maxDistance)\n                    cnt++;\n            }\n\n            if (cnt < minCnt || (cnt == minCnt && i > ans)) {\n                minCnt = cnt;\n                ans = i;\n            }\n        }\n\n        return ans;\n    }\n};",
-      "Python3": "class Solution:\n    def findCityWithSmallestNeighbors(self, totalCities, roadConnections, maxDistance):\n        INF = 10**9\n\n        # Distance matrix\n        dist = [[INF] * totalCities for _ in range(totalCities)]\n\n        for i in range(totalCities):\n            dist[i][i] = 0\n\n        # Build graph\n        for u, v, w in roadConnections:\n            dist[u][v] = min(dist[u][v], w)\n            dist[v][u] = min(dist[v][u], w)\n\n        # Floyd–Warshall\n        for k in range(totalCities):\n            for i in range(totalCities):\n                for j in range(totalCities):\n                    if dist[i][k] + dist[k][j] < dist[i][j]:\n                        dist[i][j] = dist[i][k] + dist[k][j]\n\n        min_count = float('inf')\n        answer = -1\n\n        for i in range(totalCities):\n            count = 0\n            for j in range(totalCities):\n                if i != j and dist[i][j] <= maxDistance:\n                    count += 1\n\n            # tie-breaking: greatest index\n            if count < min_count or (count == min_count and i > answer):\n                min_count = count\n                answer = i\n\n        return answer",
-      "C": "typedef struct Edge {\n    int to;\n    int weight;\n    struct Edge *next;\n} Edge;\n\ntypedef struct {\n    int node;\n    int dist;\n} HeapNode;\n\ntypedef struct {\n    HeapNode *data;\n    int size;\n    int capacity;\n} MinHeap;\n\nMinHeap* createHeap(int capacity) {\n    MinHeap *heap = (MinHeap *)malloc(sizeof(MinHeap));\n    heap->data = (HeapNode *)malloc(capacity * sizeof(HeapNode));\n    heap->size = 0;\n    heap->capacity = capacity;\n    return heap;\n}\n\nvoid swap(HeapNode *a, HeapNode *b) {\n    HeapNode temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\nvoid heapifyUp(MinHeap *heap, int idx) {\n    while (idx > 0) {\n        int parent = (idx - 1) / 2;\n        if (heap->data[idx].dist < heap->data[parent].dist) {\n            swap(&heap->data[idx], &heap->data[parent]);\n            idx = parent;\n        } else {\n            break;\n        }\n    }\n}\n\nvoid heapifyDown(MinHeap *heap, int idx) {\n    while (1) {\n        int smallest = idx;\n        int left = 2 * idx + 1;\n        int right = 2 * idx + 2;\n        \n        if (left < heap->size && heap->data[left].dist < heap->data[smallest].dist)\n            smallest = left;\n        if (right < heap->size && heap->data[right].dist < heap->data[smallest].dist)\n            smallest = right;\n        \n        if (smallest != idx) {\n            swap(&heap->data[idx], &heap->data[smallest]);\n            idx = smallest;\n        } else {\n            break;\n        }\n    }\n}\n\nvoid push(MinHeap *heap, int node, int dist) {\n    if (heap->size >= heap->capacity) return;\n    heap->data[heap->size].node = node;\n    heap->data[heap->size].dist = dist;\n    heapifyUp(heap, heap->size);\n    heap->size++;\n}\n\nHeapNode pop(MinHeap *heap) {\n    HeapNode result = heap->data[0];\n    heap->size--;\n    if (heap->size > 0) {\n        heap->data[0] = heap->data[heap->size];\n        heapifyDown(heap, 0);\n    }\n    return result;\n}\n\nint isEmpty(MinHeap *heap) {\n    return heap->size == 0;\n}\n\nvoid addEdge(Edge **graph, int from, int to, int weight) {\n    Edge *newEdge = (Edge *)malloc(sizeof(Edge));\n    newEdge->to = to;\n    newEdge->weight = weight;\n    newEdge->next = graph[from];\n    graph[from] = newEdge;\n}\n\nint dijkstra(Edge **graph, int totalCities, int source, int maxDistance) {\n    int *dist = (int *)malloc(totalCities * sizeof(int));\n    for (int i = 0; i < totalCities; i++) {\n        dist[i] = INF;\n    }\n    dist[source] = 0;\n    \n    MinHeap *heap = createHeap(totalCities * 100);\n    push(heap, source, 0);\n    \n    while (!isEmpty(heap)) {\n        HeapNode current = pop(heap);\n        int u = current.node;\n        int d = current.dist;\n        \n        if (d > dist[u]) continue;\n        \n        for (Edge *e = graph[u]; e != NULL; e = e->next) {\n            int v = e->to;\n            int newDist = dist[u] + e->weight;\n            if (newDist < dist[v]) {\n                dist[v] = newDist;\n                push(heap, v, newDist);\n            }\n        }\n    }\n    \n    int count = 0;\n    for (int i = 0; i < totalCities; i++) {\n        if (i != source && dist[i] <= maxDistance) {\n            count++;\n        }\n    }\n    \n    free(dist);\n    free(heap->data);\n    free(heap);\n    \n    return count;\n}\n\nint findCityWithSmallestNeighbors(\n    int totalCities,\n    int roadConnections[][3],\n    int numRoads,\n    int maxDistance\n) {\n    // Build adjacency list\n    Edge **graph = (Edge **)calloc(totalCities, sizeof(Edge *));\n    \n    for (int i = 0; i < numRoads; i++) {\n        int u = roadConnections[i][0];\n        int v = roadConnections[i][1];\n        int w = roadConnections[i][2];\n        addEdge(graph, u, v, w);\n        addEdge(graph, v, u, w);\n    }\n    \n    int minCnt = INT_MAX;\n    int ans = -1;\n    \n    for (int i = 0; i < totalCities; i++) {\n        int cnt = dijkstra(graph, totalCities, i, maxDistance);\n        if (cnt < minCnt || (cnt == minCnt && i > ans)) {\n            minCnt = cnt;\n            ans = i;\n        }\n    }\n    \n    // Free graph\n    for (int i = 0; i < totalCities; i++) {\n        Edge *current = graph[i];\n        while (current != NULL) {\n            Edge *temp = current;\n            current = current->next;\n            free(temp);\n        }\n    }\n    free(graph);\n    \n    return ans;\n}\n",
-      "Java": "class Solution {\n\n    public int findCityWithSmallestNeighbors(\n            int totalCities,\n            List<int[]> roadConnections,\n            int maxDistance\n    ) {\n        final int INF = (int) 1e9;\n\n        int[][] dist = new int[totalCities][totalCities];\n\n        for (int i = 0; i < totalCities; i++) {\n            Arrays.fill(dist[i], INF);\n            dist[i][i] = 0;\n        }\n\n        // Build graph\n        for (int[] e : roadConnections) {\n            int u = e[0], v = e[1], w = e[2];\n            dist[u][v] = Math.min(dist[u][v], w);\n            dist[v][u] = Math.min(dist[v][u], w);\n        }\n\n        // Floyd–Warshall\n        for (int k = 0; k < totalCities; k++) {\n            for (int i = 0; i < totalCities; i++) {\n                for (int j = 0; j < totalCities; j++) {\n                    if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                        dist[i][j] = dist[i][k] + dist[k][j];\n                    }\n                }\n            }\n        }\n\n        int minCount = Integer.MAX_VALUE;\n        int answer = -1;\n\n        for (int i = 0; i < totalCities; i++) {\n            int count = 0;\n            for (int j = 0; j < totalCities; j++) {\n                if (i != j && dist[i][j] <= maxDistance) {\n                    count++;\n                }\n            }\n\n            // tie-breaking: greatest index\n            if (count < minCount || (count == minCount && i > answer)) {\n                minCount = count;\n                answer = i;\n            }\n        }\n\n        return answer;\n    }\n}",
-      "JavaScript": "class Solution {\n    findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance) {\n        const INF = 1e9;\n\n        // Distance matrix\n        const dist = Array.from({ length: totalCities }, () =>\n            Array(totalCities).fill(INF)\n        );\n\n        for (let i = 0; i < totalCities; i++) {\n            dist[i][i] = 0;\n        }\n\n        // Build graph\n        for (const [u, v, w] of roadConnections) {\n            dist[u][v] = Math.min(dist[u][v], w);\n            dist[v][u] = Math.min(dist[v][u], w);\n        }\n\n        // Floyd–Warshall\n        for (let k = 0; k < totalCities; k++) {\n            for (let i = 0; i < totalCities; i++) {\n                for (let j = 0; j < totalCities; j++) {\n                    const nd = dist[i][k] + dist[k][j];\n                    if (nd < dist[i][j]) {\n                        dist[i][j] = nd;\n                    }\n                }\n            }\n        }\n\n        let minCount = Infinity;\n        let answer = -1;\n\n        for (let i = 0; i < totalCities; i++) {\n            let count = 0;\n            for (let j = 0; j < totalCities; j++) {\n                if (i !== j && dist[i][j] <= maxDistance) {\n                    count++;\n                }\n            }\n\n            // tie-breaking: greatest index\n            if (count < minCount || (count === minCount && i > answer)) {\n                minCount = count;\n                answer = i;\n            }\n        }\n\n        return answer;\n    }\n}"
+      "C": "#include <stdio.h>\n#include <limits.h>\n\nint findCityWithSmallestNeighbors(int totalCities, int roadConnections[][3], int numRoads, int maxDistance) {\n    int dist[totalCities][totalCities];\n    for (int i = 0; i < totalCities; i++) {\n        for (int j = 0; j < totalCities; j++) {\n            dist[i][j] = INT_MAX;\n        }\n        dist[i][i] = 0;\n    }\n\n    // Build graph\n    for (int i = 0; i < numRoads; i++) {\n        int u = roadConnections[i][0];\n        int v = roadConnections[i][1];\n        int w = roadConnections[i][2];\n        dist[u][v] = w;\n        dist[v][u] = w;\n    }\n\n    // Floyd–Warshall\n    for (int k = 0; k < totalCities; k++) {\n        for (int i = 0; i < totalCities; i++) {\n            for (int j = 0; j < totalCities; j++) {\n                if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                    dist[i][j] = dist[i][k] + dist[k][j];\n                }\n            }\n        }\n    }\n\n    int minCnt = INT_MAX;\n    int ans = -1;\n\n    for (int i = 0; i < totalCities; i++) {\n        int cnt = 0;\n        for (int j = 0; j < totalCities; j++) {\n            if (i != j && dist[i][j] <= maxDistance) {\n                cnt++;\n            }\n        }\n\n        if (cnt < minCnt || (cnt == minCnt && i > ans)) {\n            minCnt = cnt;\n            ans = i;\n        }\n    }\n\n    return ans;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int totalCities;\n        scanf(\"%d\", &totalCities);\n        int roadConnections[totalCities * (totalCities - 1) / 2][3];\n        int numRoads = 0;\n        for (int i = 0; i < totalCities; i++) {\n            for (int j = i + 1; j < totalCities; j++) {\n                int distance;\n                scanf(\"%d\", &distance);\n                roadConnections[numRoads][0] = i;\n                roadConnections[numRoads][1] = j;\n                roadConnections[numRoads][2] = distance;\n                numRoads++;\n            }\n        }\n        int maxDistance;\n        scanf(\"%d\", &maxDistance);\n        printf(\"%d\\n\", findCityWithSmallestNeighbors(totalCities, roadConnections, numRoads, maxDistance));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <limits.h>\nusing namespace std;\n\nint findCityWithSmallestNeighbors(int totalCities, int roadConnections[][3], int numRoads, int maxDistance) {\n    int dist[totalCities][totalCities];\n    for (int i = 0; i < totalCities; i++) {\n        for (int j = 0; j < totalCities; j++) {\n            dist[i][j] = INT_MAX;\n        }\n        dist[i][i] = 0;\n    }\n\n    // Build graph\n    for (int i = 0; i < numRoads; i++) {\n        int u = roadConnections[i][0];\n        int v = roadConnections[i][1];\n        int w = roadConnections[i][2];\n        dist[u][v] = w;\n        dist[v][u] = w;\n    }\n\n    // Floyd–Warshall\n    for (int k = 0; k < totalCities; k++) {\n        for (int i = 0; i < totalCities; i++) {\n            for (int j = 0; j < totalCities; j++) {\n                if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                    dist[i][j] = dist[i][k] + dist[k][j];\n                }\n            }\n        }\n    }\n\n    int minCnt = INT_MAX;\n    int ans = -1;\n\n    for (int i = 0; i < totalCities; i++) {\n        int cnt = 0;\n        for (int j = 0; j < totalCities; j++) {\n            if (i != j && dist[i][j] <= maxDistance) {\n                cnt++;\n            }\n        }\n\n        if (cnt < minCnt || (cnt == minCnt && i > ans)) {\n            minCnt = cnt;\n            ans = i;\n        }\n    }\n\n    return ans;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int totalCities;\n        cin >> totalCities;\n        int roadConnections[totalCities * (totalCities - 1) / 2][3];\n        int numRoads = 0;\n        for (int i = 0; i < totalCities; i++) {\n            for (int j = i + 1; j < totalCities; j++) {\n                int distance;\n                cin >> distance;\n                roadConnections[numRoads][0] = i;\n                roadConnections[numRoads][1] = j;\n                roadConnections[numRoads][2] = distance;\n                numRoads++;\n            }\n        }\n        int maxDistance;\n        cin >> maxDistance;\n        cout << findCityWithSmallestNeighbors(totalCities, roadConnections, numRoads, maxDistance) << endl;\n    }\n    return 0;\n}",
+      "Java": "public class Main {\n    public static int findCityWithSmallestNeighbors(int totalCities, int[][] roadConnections, int maxDistance) {\n        int[][] dist = new int[totalCities][totalCities];\n        for (int i = 0; i < totalCities; i++) {\n            for (int j = 0; j < totalCities; j++) {\n                dist[i][j] = Integer.MAX_VALUE;\n            }\n            dist[i][i] = 0;\n        }\n\n        // Build graph\n        for (int[] e : roadConnections) {\n            int u = e[0];\n            int v = e[1];\n            int w = e[2];\n            dist[u][v] = w;\n            dist[v][u] = w;\n        }\n\n        // Floyd–Warshall\n        for (int k = 0; k < totalCities; k++) {\n            for (int i = 0; i < totalCities; i++) {\n                for (int j = 0; j < totalCities; j++) {\n                    if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                        dist[i][j] = dist[i][k] + dist[k][j];\n                    }\n                }\n            }\n        }\n\n        int minCnt = Integer.MAX_VALUE;\n        int ans = -1;\n\n        for (int i = 0; i < totalCities; i++) {\n            int cnt = 0;\n            for (int j = 0; j < totalCities; j++) {\n                if (i != j && dist[i][j] <= maxDistance) {\n                    cnt++;\n                }\n            }\n\n            if (cnt < minCnt || (cnt == minCnt && i > ans)) {\n                minCnt = cnt;\n                ans = i;\n            }\n        }\n\n        return ans;\n    }\n\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int totalCities = sc.nextInt();\n            int[][] roadConnections = new int[totalCities * (totalCities - 1) / 2][3];\n            int numRoads = 0;\n            for (int i = 0; i < totalCities; i++) {\n                for (int j = i + 1; j < totalCities; j++) {\n                    int distance = sc.nextInt();\n                    roadConnections[numRoads][0] = i;\n                    roadConnections[numRoads][1] = j;\n                    roadConnections[numRoads][2] = distance;\n                    numRoads++;\n                }\n            }\n            int maxDistance = sc.nextInt();\n            System.out.println(findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance));\n        }\n    }\n}",
+      "Python3": "import sys\n\ndef findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance):\n    dist = [[float('inf')] * totalCities for _ in range(totalCities)]\n    for i in range(totalCities):\n        dist[i][i] = 0\n\n    # Build graph\n    for u, v, w in roadConnections:\n        dist[u][v] = w\n        dist[v][u] = w\n\n    # Floyd–Warshall\n    for k in range(totalCities):\n        for i in range(totalCities):\n            for j in range(totalCities):\n                if dist[i][k] + dist[k][j] < dist[i][j]:\n                    dist[i][j] = dist[i][k] + dist[k][j]\n\n    minCnt = float('inf')\n    ans = -1\n\n    for i in range(totalCities):\n        cnt = 0\n        for j in range(totalCities):\n            if i != j and dist[i][j] <= maxDistance:\n                cnt += 1\n\n        if cnt < minCnt or (cnt == minCnt and i > ans):\n            minCnt = cnt\n            ans = i\n\n    return ans\n\nT = int(input())\nwhile T > 0:\n    totalCities = int(input())\n    roadConnections = []\n    for i in range(totalCities):\n        for j in range(i + 1, totalCities):\n            distance = int(input())\n            roadConnections.append([i, j, distance])\n    maxDistance = int(input())\n    print(findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance))\n    T -= 1",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance) {\n    const dist = Array.from({ length: totalCities }, () => Array(totalCities).fill(Infinity));\n    for (let i = 0; i < totalCities; i++) {\n        dist[i][i] = 0;\n    }\n\n    // Build graph\n    for (const [u, v, w] of roadConnections) {\n        dist[u][v] = w;\n        dist[v][u] = w;\n    }\n\n    // Floyd–Warshall\n    for (let k = 0; k < totalCities; k++) {\n        for (let i = 0; i < totalCities; i++) {\n            for (let j = 0; j < totalCities; j++) {\n                if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                    dist[i][j] = dist[i][k] + dist[k][j];\n                }\n            }\n        }\n    }\n\n    let minCnt = Infinity;\n    let ans = -1;\n\n    for (let i = 0; i < totalCities; i++) {\n        let cnt = 0;\n        for (let j = 0; j < totalCities; j++) {\n            if (i !== j && dist[i][j] <= maxDistance) {\n                cnt++;\n            }\n        }\n\n        if (cnt < minCnt || (cnt === minCnt && i > ans)) {\n            minCnt = cnt;\n            ans = i;\n        }\n    }\n\n    return ans;\n}\n\nlet T = +lines[idx++];\nwhile (T-- > 0) {\n    let totalCities = +lines[idx++];\n    let roadConnections = [];\n    for (let i = 0; i < totalCities; i++) {\n        for (let j = i + 1; j < totalCities; j++) {\n            let distance = +lines[idx++];\n            roadConnections.push([i, j, distance]);\n        }\n    }\n    let maxDistance = +lines[idx++];\n    console.log(findCityWithSmallestNeighbors(totalCities, roadConnections, maxDistance));\n}"
     }
   }
 }

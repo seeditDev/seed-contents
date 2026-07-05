@@ -4,14 +4,14 @@
   "slug": "little-elephant-and-alcohol",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "competitive programming"
+      "Sliding Window",
+      "Minimum Operations"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +21,30 @@
   "content": {
     "problemStatement": "The Little Elephant and his friends from the Zoo of Lviv were returning from the party. But suddenly they were stopped by the policeman Big Hippo, who wanted to make an alcohol test for elephants.\n\nThere were **N** elephants ordered from the left to the right in a row and numbered from **0** to **N-1**. Let **R[i]** to be the result of breathalyzer test of **i**-th elephant.\n\nConsidering current laws in the Zoo, elephants would be arrested if there exists **K** consecutive elephants among them for which at least **M** of these **K** elephants have the maximal test result among these **K** elephants.\n\nUsing poor math notations we can alternatively define this as follows. The elephants would be arrested if there exists **i** from **0** to **N-K**, inclusive, such that for at least **M** different values of **j** from **i** to **i+K-1**, inclusive, we have **R[j] = max{R[i], R[i+1], ..., R[i+K-1]}**.\n\n\nThe Big Hippo is very old and the Little Elephant can change some of the results. In a single operation he can add **1** to the result of any elephant. But for each of the elephants he can apply this operation at most once.\n\nWhat is the minimum number of operations that the Little Elephant needs to apply, such that the sequence of results, after all operations will be applied, let elephants to avoid the arrest? If it is impossible to avoid the arrest applying any number of operations, output **-1**.",
     "constraints": [
-      "**1** ≤ **T** ≤ **10**",
-      "**1** ≤ **M** ≤ **K** ≤ **N** ≤ **17**",
-      "**1** ≤ **R[i]** ≤ **17**"
+      "1 ≤ T ≤ 10",
+      "1 ≤ M ≤ K ≤ N ≤ 17",
+      "1 ≤ R[i] ≤ 17"
     ],
-    "inputFormat": "The first line of the input contains an integer **T** denoting the number of test cases. The description of **T** test cases follows. The first line of each test case contains three space-separated integers **N, K, M**. The second line contains **N** space-separated integers ** R[0], R[1], ..., R[N-1]** denoting the test results of the elephants.",
-    "outputFormat": "For each test case, output a single line containing the minimum number of operations needed to avoid the arrest.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains three space-separated integers N, K, and M. The second line contains N space-separated integers R[0], R[1], ..., R[N-1] denoting the test results of the elephants.",
+    "outputFormat": "For each test case, print the minimum number of operations needed to avoid the arrest. If it is impossible to avoid the arrest applying any number of operations, output -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n5 3 2\n1 3 1 2 1\n5 3 3\n7 7 7 7 7\n5 3 3\n7 7 7 8 8\n4 3 1\n1 3 1 2",
-        "output": "0\n1\n1\n-1",
-        "explanation": "Explanation:\nExample case 1. Let's follow the poor math definition of arrest. We will consider all values of i from 0 to N-K = 2, inclusive, and should count the number of values of j described in the definition. If it less than M = 2 then this value of i does not cause the arrest, otherwise causes.\ni{R[i],...,R[i+K-1]}max{R[i],...,R[i+K-1]}For which j = i, ..., i+K-1 we have R[j] = maxConclusioni=0{1, 3, 1}max = 3R[j] = 3 for j = 1does not cause the arresti=1{3, 1, 2}max = 3R[j] = 3 for j = 1does not cause the arresti=2{1, 2, 1}max = 2R[j] = 2 for j = 3does not cause the arrestSo we see that initial test results of the elephants do not cause their arrest. Hence the Little Elephant does not need to apply any operations. Therefore, the answer is 0.\nExample case 2.We have N = 5, K = 3, M = 3. Let's construct similar table as in example case 1. Here the value of i will cause the arrest if we have at least 3 values of j described in the definition.\ni{R[i],...,R[i+K-1]}max{R[i],...,R[i+K-1]}For which j = i, ..., i+K-1 we have R[j] = maxConclusioni=0{7, 7, 7}max = 7R[j] = 7 for j = 0, 1, 2causes the arresti=1{7, 7, 7}max = 7R[j] = 7 for j = 1, 2, 3causes the arresti=2{7, 7, 7}max = 7R[j] = 7 for j = 2, 3, 4causes the arrestSo we see that for initial test results of the elephants each value of i causes their arrest. Hence the Little Elephant needs to apply some operations in order to avoid the arrest. He could achieve his goal by adding 1 to the result R[2]. Then results will be {R[0], R[1], R[2], R[3], R[4]} = {7, 7, 8, 7, 7}. Let's check that now elephants will be not arrested.\ni{R[i],...,R[i+K-1]}max{R[i],...,R[i+K-1]}For which j = i, ..., i+K-1 we have R[j] = maxConclusioni=0{7, 7, 8}max = 8R[j] = 8 for j = 2does not cause the arresti=1{7, 8, 7}max = 8R[j] = 8 for j = 2does not cause the arresti=2{8, 7, 7}max = 8R[j] = 8 for j = 2does not cause the arrestSo we see that now test results of the elephants do not cause their arrest. Thus we see that using 0 operations we can't avoid the arrest but using 1 operation can. Hence the answer is 1.\nExample case 3.We have N = 5, K = 3, M = 3. Let's construct similar table as in example case 1. Here the value of i will cause the arrest if we have at least 3 values of j described in the definition.\ni{R[i],...,R[i+K-1]}max{R[i],...,R[i+K-1]}For which j = i, ..., i+K-1 we have R[j] = maxConclusioni=0{7, 7, 7}max = 7R[j] = 7 for j = 0, 1, 2causes the arresti=1{7, 7, 8}max = 8R[j] = 8 for j = 3does not cause the arresti=2{7, 8, 8}max = 8R[j] = 8 for j = 3, 4does not cause the arrestSo we see that for initial test results of the elephants the value of i = 0 causes their arrest. Hence the Little Elephant needs to apply some operations in order to avoid the arrest. He could achieve his goal by adding 1 to the result R[1]. Then results will be {R[0], R[1], R[2], R[3], R[4]} = {7, 8, 7, 8, 8}. Let's check that now elephants will be not arrested.\ni{R[i],...,R[i+K-1]}max{R[i],...,R[i+K-1]}For which j = i, ..., i+K-1 we have R[j] = maxConclusioni=0{7, 8, 7}max = 8R[j] = 8 for j = 1does not cause the arresti=1{8, 7, 8}max = 8R[j] = 8 for j = 1, 3does not cause the arresti=2{7, 8, 8}max = 8R[j] = 8 for j = 3, 4does not cause the arrestSo we see that now test results of the elephants do not cause their arrest. Thus we see that using 0 operations we can't avoid the arrest but using 1 operation can. Hence the answer is 1. Note that if we increase by 1 the result R[2] instead of R[1] then the value i = 2 will cause the arrest since {R[2], R[3], R[4]} will be {8, 8, 8} after this operation and we will have 3 values of j from 2 to 4, inclusive, for which R[j] = max{R[2], R[3], R[4]}, namely, j = 2, 3, 4.\nExample case 4. When M = 1 the Little Elephant can't reach the goal since for each value of i from 0 to N-K we have at least one value of j for which R[j] = max{R[i], R[i+1], ..., R[i+K-1]}."
+        "input": "1\n5 3 2\n1 3 1 2 1",
+        "output": "0",
+        "explanation": "The initial test results of the elephants do not cause their arrest."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5 3 3\n7 7 7 7 7",
+        "output": "1",
+        "explanation": "The Little Elephant needs to apply one operation to avoid the arrest."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5 3 3\n7 7 7 8 8",
+        "output": "1",
+        "explanation": "The Little Elephant needs to apply one operation to avoid the arrest."
       }
     ]
   },
@@ -40,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n5 3 2\n1 3 1 2 1\n5 3 3\n7 7 7 7 7\n5 3 3\n7 7 7 8 8\n4 3 1\n1 3 1 2",
-        "expectedOutput": "0\n1\n1\n-1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1 1\n1",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n17 17 17\n17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5 3 3\n5 5 5 5 5",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n4 3 1\n1 3 1 2",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "2\n5 3 2\n1 3 1 2 1\n5 3 3\n7 7 7 7 7",
+        "expectedOutput": "0\n1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,9 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The problem can be solved using a brute force approach with a time complexity of O(T * 2^N), where T is the number of test cases and N is the number of elephants. We iterate over all possible combinations of increasing the values and find the minimum number of operations that satisfies the condition.",
+    "timeComplexity": "O(T * 2^N) in the worst case, where T is the number of test cases and N is the number of elephants.",
+    "spaceComplexity": "O(N) for storing the test results of the elephants.",
+    "code": {
+      "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n\nint minOperations(int* R, int N, int K, int M) {\n    int minOps = 100;\n    for (int mask = 0; mask < (1 << N); mask++) {\n        int ops = 0;\n        int* temp = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            temp[i] = R[i];\n            if ((mask & (1 << i)) != 0) {\n                temp[i]++;\n                ops++;\n            }\n        }\n        int valid = 1;\n        for (int i = 0; i <= N - K; i++) {\n            int maxVal = temp[i];\n            int maxCount = 0;\n            for (int j = i; j < i + K; j++) {\n                if (temp[j] > maxVal) {\n                    maxVal = temp[j];\n                    maxCount = 1;\n                } else if (temp[j] == maxVal) {\n                    maxCount++;\n                }\n            }\n            if (maxCount >= M) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid == 1) {\n            if(minOps > ops) minOps = ops;\n        }\n        free(temp);\n    }\n    if (minOps == 100) return -1;\n    return minOps;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N, K, M;\n        scanf(\"%d %d %d\", &N, &K, &M);\n        int* R = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &R[i]);\n        }\n        printf(\"%d\\n\", minOperations(R, N, K, M));\n        free(R);\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint minOperations(vector<int>& R, int N, int K, int M) {\n    int minOps = 100;\n    for (int mask = 0; mask < (1 << N); mask++) {\n        int ops = 0;\n        vector<int> temp = R;\n        for (int i = 0; i < N; i++) {\n            if ((mask & (1 << i)) != 0) {\n                temp[i]++;\n                ops++;\n            }\n        }\n        int valid = 1;\n        for (int i = 0; i <= N - K; i++) {\n            int maxVal = temp[i];\n            int maxCount = 0;\n            for (int j = i; j < i + K; j++) {\n                if (temp[j] > maxVal) {\n                    maxVal = temp[j];\n                    maxCount = 1;\n                } else if (temp[j] == maxVal) {\n                    maxCount++;\n                }\n            }\n            if (maxCount >= M) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid == 1) {\n            if(minOps > ops) minOps = ops;\n        }\n    }\n    if (minOps == 100) return -1;\n    return minOps;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N, K, M;\n        cin >> N >> K >> M;\n        vector<int> R(N);\n        for (int i = 0; i < N; i++) {\n            cin >> R[i];\n        }\n        cout << minOperations(R, N, K, M) << endl;\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\nimport java.util.Scanner;\npublic class Main {\n    public static int minOperations(int[] R, int N, int K, int M) {\n        int minOps = 100;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int ops = 0;\n            int[] temp = new int[N];\n            for (int i = 0; i < N; i++) {\n                temp[i] = R[i];\n                if ((mask & (1 << i)) != 0) {\n                    temp[i]++;\n                    ops++;\n                }\n            }\n            int valid = 1;\n            for (int i = 0; i <= N - K; i++) {\n                int maxVal = temp[i];\n                int maxCount = 0;\n                for (int j = i; j < i + K; j++) {\n                    if (temp[j] > maxVal) {\n                        maxVal = temp[j];\n                        maxCount = 1;\n                    } else if (temp[j] == maxVal) {\n                        maxCount++;\n                    }\n                }\n                if (maxCount >= M) {\n                    valid = 0;\n                    break;\n                }\n            }\n            if (valid == 1) {\n                if(minOps > ops) minOps = ops;\n            }\n        }\n        if (minOps == 100) return -1;\n        return minOps;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        for (int t = 0; t < T; t++) {\n            int N = sc.nextInt();\n            int K = sc.nextInt();\n            int M = sc.nextInt();\n            int[] R = new int[N];\n            for (int i = 0; i < N; i++) {\n                R[i] = sc.nextInt();\n            }\n            System.out.println(minOperations(R, N, K, M));\n        }\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\n\ndef minOperations(R, N, K, M):\n    minOps = 100\n    for mask in range(1 << N):\n        ops = 0\n        temp = R[:]\n        for i in range(N):\n            if (mask & (1 << i)) != 0:\n                temp[i] += 1\n                ops += 1\n        valid = 1\n        for i in range(N - K + 1):\n            maxVal = temp[i]\n            maxCount = 0\n            for j in range(i, i + K):\n                if temp[j] > maxVal:\n                    maxVal = temp[j]\n                    maxCount = 1\n                elif temp[j] == maxVal:\n                    maxCount += 1\n            if maxCount >= M:\n                valid = 0\n                break\n        if valid == 1:\n            if minOps > ops: minOps = ops\n    if minOps == 100:\n        return -1\n    return minOps\n\nT = int(input())\nfor t in range(T):\n    N, K, M = map(int, input().split())\n    R = list(map(int, input().split()))\n    print(minOperations(R, N, K, M))",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\nconst fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction minOperations(R, N, K, M) {\n    let minOps = 100;\n    for (let mask = 0; mask < (1 << N); mask++) {\n        let ops = 0;\n        let temp = R.slice();\n        for (let i = 0; i < N; i++) {\n            if ((mask & (1 << i)) != 0) {\n                temp[i]++;\n                ops++;\n            }\n        }\n        let valid = 1;\n        for (let i = 0; i <= N - K; i++) {\n            let maxVal = temp[i];\n            let maxCount = 0;\n            for (let j = i; j < i + K; j++) {\n                if (temp[j] > maxVal) {\n                    maxVal = temp[j];\n                    maxCount = 1;\n                } else if (temp[j] == maxVal) {\n                    maxCount++;\n                }\n            }\n            if (maxCount >= M) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid == 1) {\n            if(minOps > ops) minOps = ops;\n        }\n    }\n    if (minOps == 100) return -1;\n    return minOps;\n}\n\nlet T = parseInt(lines[idx++]);\nfor (let t = 0; t < T; t++) {\n    let [N, K, M] = lines[idx++].trim().split(' ').map(Number);\n    let R = lines[idx++].trim().split(' ').map(Number);\n    console.log(minOperations(R, N, K, M));\n}"
+    }
   }
 }

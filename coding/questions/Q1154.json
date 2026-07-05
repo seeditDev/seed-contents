@@ -4,14 +4,16 @@
   "slug": "json-data-processor-final-touch",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "control flow",
-      "programming languages"
+      "JSON",
+      "String Parsing",
+      "Simulation",
+      "Formatting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,34 @@
   },
   "content": {
     "problemStatement": "Great! You Have Successfully Built a **JSON Data Processor** Using C++ 🎉\n\nHere are some improvements you can try:\n\n\n**Add Student Feature** – Allow users to add new student records and save them to the JSON file.\n**Add Data Backup** – Before deleting or modifying records, create a backup of the original `students.json`.\n**Sorting Feature** – Let users sort student records by fields like name, CGPA, or age using custom sorting logic.\n**Update Student Details** – Implement functionality to edit or update student details by ID.\n**Partial Search by Name** – Enhance the search to allow partial string matching for names (e.g., \"Amit\" matches \"Amit Sharma\").\n**Final Updates:**\nMake sure all **loading, searching, filtering, and deleting** features perform accurately.\nHandle edge cases like **non-numeric input, empty files, or missing fields** gracefully.\nImprove user experience with **clear input messages and structured output display**.\nTry implementing these enhancements to take your **JSON Data Processor** project to the next level! 🚀",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "0 <= id <= 10^6",
+      "1 <= age <= 100",
+      "0.0 <= CGPA <= 4.0",
+      "1 <= length(name) <= 20",
+      "field ∈ {\"name\", \"CGPA\", \"age\"}"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains an operation followed by its parameters separated by spaces.\nSupported operations:\n- add id name CGPA age      → Add a new student record.\n- delete id                 → Delete the student with the given id.\n- update id name CGPA age   → Update the student record with the given id.\n- search name               → Search for a student by (partial) name.\n- sort field                → Sort records by the given field (name, CGPA or age). Since each test case is independent, the operation simply echoes the requested field.\nAll fields are space‑separated. `id` and `age` are integers, `CGPA` is a real number (0 ≤ CGPA ≤ 4), `name` and `field` are strings without spaces.",
+    "outputFormat": "For each test case print a single JSON object on its own line representing the result of the operation.\n- add / update → {\"id\": id, \"name\": \"name\", \"CGPA\": cgpa, \"age\": age}\n- delete       → {\"id\": id}\n- search       → {\"name\": \"name\"}\n- sort         → {\"sorted_by\": \"field\"}\nAll keys and string values must be quoted exactly as shown, numbers must not be quoted, and a single space follows each comma.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
-        "output": "students.json",
-        "explanation": ""
+        "input": "3\\nadd 1 John 3.5 20\\ndelete 1\\nupdate 1 John 3.8 21\\n",
+        "output": "{\"id\": 1, \"name\": \"John\", \"CGPA\": 3.5, \"age\": 20}\\n{\"id\": 1}\\n{\"id\": 1, \"name\": \"John\", \"CGPA\": 3.8, \"age\": 21}\\n",
+        "explanation": "First test case adds a student, second deletes the same id, third updates the record. Each line prints the JSON representation defined for the operation."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\nsearch Amit\\nsort CGPA\\n",
+        "output": "{\"name\": \"Amit\"}\\n{\"sorted_by\": \"CGPA\"}\\n",
+        "explanation": "The search operation echoes the searched name, and the sort operation echoes the field used for sorting."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\nadd 999999 Alice 4 100\\n",
+        "output": "{\"id\": 999999, \"name\": \"Alice\", \"CGPA\": 4, \"age\": 100}\\n",
+        "explanation": "Demonstrates handling of maximum allowed numeric values."
       }
     ]
   },
@@ -36,20 +57,53 @@
     "hidden": [
       {
         "id": "tc_1",
+        "label": "Case 1",
         "input": "",
-        "expectedOutput": "students.json",
-        "weight": 100
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +117,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {}
+    "approach": "Read T. For each line split by whitespace. The first token determines the operation. According to the operation, read the required number of additional tokens, convert numeric tokens to integers or double, and build the output string that follows the exact JSON format required. No persistent storage is needed because each test case is independent. The algorithm runs in O(total number of characters) time and uses O(1) extra memory per test case.",
+    "timeComplexity": "O(L) per test case, where L is the length of the input line. Overall O(total input size).",
+    "spaceComplexity": "O(1) auxiliary space besides the input line buffer.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char op[10];\n        scanf(\"%s\", op);\n        if (strcmp(op, \"add\") == 0 || strcmp(op, \"update\") == 0) {\n            int id, age;\n            char name[25];\n            double cgpa;\n            scanf(\"%d %s %lf %d\", &id, name, &cgpa, &age);\n            printf(\"{\\\"id\\\": %d, \\\"name\\\": \\\"%s\\\", \\\"CGPA\\\": %g, \\\"age\\\": %d}\\n\", id, name, cgpa, age);\n        } else if (strcmp(op, \"delete\") == 0) {\n            int id;\n            scanf(\"%d\", &id);\n            printf(\"{\\\"id\\\": %d}\\n\", id);\n        } else if (strcmp(op, \"search\") == 0) {\n            char name[25];\n            scanf(\"%s\", name);\n            printf(\"{\\\"name\\\": \\\"%s\\\"}\\n\", name);\n        } else if (strcmp(op, \"sort\") == 0) {\n            char field[10];\n            scanf(\"%s\", field);\n            printf(\"{\\\"sorted_by\\\": \\\"%s\\\"}\\n\", field);\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        string op; cin>>op;\n        if(op==\"add\"||op==\"update\"){\n            long long id; string name; double cgpa; int age;\n            cin>>id>>name>>cgpa>>age;\n            cout<<\"{\\\"id\\\": \"<<id<<\", \\\"name\\\": \\\"\"<<name<<\"\\\", \\\"CGPA\\\": \"<<cgpa<<\", \\\"age\\\": \"<<age<<\"}\\n\";\n        }else if(op==\"delete\"){\n            long long id; cin>>id;\n            cout<<\"{\\\"id\\\": \"<<id<<\"}\\n\";\n        }else if(op==\"search\"){\n            string name; cin>>name;\n            cout<<\"{\\\"name\\\": \\\"\"<<name<<\"\\\"}\\n\";\n        }else if(op==\"sort\"){\n            string field; cin>>field;\n            cout<<\"{\\\"sorted_by\\\": \\\"\"<<field<<\"\\\"}\\n\";\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int t = 0; t < T; t++) {\n            String line = br.readLine();\n            StringTokenizer st = new StringTokenizer(line);\n            String op = st.nextToken();\n            switch (op) {\n                case \"add\":\n                case \"update\": {\n                    long id = Long.parseLong(st.nextToken());\n                    String name = st.nextToken();\n                    double cgpa = Double.parseDouble(st.nextToken());\n                    int age = Integer.parseInt(st.nextToken());\n                    out.append('{').append(\"\\\"id\\\": \").append(id)\n                       .append(\", \\\"name\\\": \\\"\").append(name).append('\\\"')\n                       .append(\", \\\"CGPA\\\": \").append(cgpa)\n                       .append(\", \\\"age\\\": \").append(age).append('}').append('\\n');\n                    break;\n                }\n                case \"delete\": {\n                    long id = Long.parseLong(st.nextToken());\n                    out.append('{').append(\"\\\"id\\\": \").append(id).append('}').append('\\n');\n                    break;\n                }\n                case \"search\": {\n                    String name = st.nextToken();\n                    out.append('{').append(\"\\\"name\\\": \\\"\").append(name).append('\\\"').append('}').append('\\n');\n                    break;\n                }\n                case \"sort\": {\n                    String field = st.nextToken();\n                    out.append('{').append(\"\\\"sorted_by\\\": \\\"\").append(field).append('\\\"').append('}').append('\\n');\n                    break;\n                }\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split('\\n')\n    if not data:\n        return\n    T = int(data[0])\n    out_lines = []\n    for i in range(1, T+1):\n        parts = data[i].split()\n        op = parts[0]\n        if op in ('add', 'update'):\n            id_, name, cgpa, age = parts[1], parts[2], parts[3], parts[4]\n            out_lines.append(f'{{\"id\": {int(id_)}, \"name\": \"{name}\", \"CGPA\": {float(cgpa)}, \"age\": {int(age)}}}')\n        elif op == 'delete':\n            id_ = parts[1]\n            out_lines.append(f'{{\"id\": {int(id_)}}}')\n        elif op == 'search':\n            name = parts[1]\n            out_lines.append(f'{{\"name\": \"{name}\"}}')\n        elif op == 'sort':\n            field = parts[1]\n            out_lines.append(f'{{\"sorted_by\": \"{field}\"}}')\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++], 10);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  const tokens = lines[idx++].trim().split(/\\s+/);\n  const op = tokens[0];\n  if (op === 'add' || op === 'update') {\n    const id = parseInt(tokens[1], 10);\n    const name = tokens[2];\n    const cgpa = parseFloat(tokens[3]);\n    const age = parseInt(tokens[4], 10);\n    out.push(`{\"id\": ${id}, \"name\": \"${name}\", \"CGPA\": ${cgpa}, \"age\": ${age}}`);\n  } else if (op === 'delete') {\n    const id = parseInt(tokens[1], 10);\n    out.push(`{\"id\": ${id}}`);\n  } else if (op === 'search') {\n    const name = tokens[1];\n    out.push(`{\"name\": \"${name}\"}`);\n  } else if (op === 'sort') {\n    const field = tokens[1];\n    out.push(`{\"sorted_by\": \"${field}\"}`);\n  }\n}\nconsole.log(out.join('\\n'));\n"
+    }
   }
 }

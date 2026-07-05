@@ -4,14 +4,14 @@
   "slug": "find-maximum-in-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Searching",
+    "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "searching",
-      "data structures and algorithms"
+      "Maximum",
+      "Linear Scan"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +21,30 @@
   "content": {
     "problemStatement": "Given a list of NNN integers, representing height of mountains. Find the height of the tallest mountain.\n\nInput:\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nThe first line in each testcase contains one integer, NNN.\nThe following line contains NNN space separated integers: the height of each mountains.\nOutput:For each testcase, output one line with one integer: the height of the tallest mountain for that test case.",
     "constraints": [
-      "1≤T≤101 \\leq T \\leq 101≤T≤10",
-      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
-      "0≤0 \\leq0≤ height of each mountain ≤109\\leq 10^9≤109"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "0 <= height <= 1000000000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the number of mountains; the second line contains N space-separated integers denoting the heights of the mountains.",
+    "outputFormat": "For each test case, output a single line containing one integer – the maximum height among the given mountains.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n5\n4 7 6 3 1",
         "output": "7",
-        "explanation": ""
+        "explanation": "The heights are [4,7,6,3,1]; the largest value is 7."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3\n10 20 30",
+        "output": "30",
+        "explanation": "Among 10, 20 and 30 the maximum is 30."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1\n1000000000",
+        "output": "1000000000",
+        "explanation": "Only one mountain exists with height 10^9, so that is the answer."
       }
     ]
   },
@@ -40,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n5\n4 7 6 3 1",
-        "expectedOutput": "7",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n5\n1000000000 999999999 1000000000 1000000000 999999998",
+        "expectedOutput": "1000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "1\n4\n0 0 0 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "descending order",
+        "input": "1\n6\n6 5 4 3 2 1",
+        "expectedOutput": "6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "multiple varied cases",
+        "input": "3\n3\n5 2 9\n2\n0 0\n4\n100 200 150 199",
+        "expectedOutput": "9\n0\n200",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,9 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The maximum height can be obtained by scanning the array once and keeping the largest value seen so far. Initialise a variable maxHeight with the smallest possible value (e.g., -1 or LLONG_MIN). For each height h, if h > maxHeight, update maxHeight = h. After processing all N numbers, maxHeight is the answer for that test case. This works because the maximum of a set is the greatest element, and a single linear pass examines every element exactly once.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases.",
+    "spaceComplexity": "O(1) extra space besides input storage.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <limits.h>\nint main(){int T,N; if(scanf(\"%d\",&T)!=1) return 0; while(T--){ if(scanf(\"%d\",&N)!=1) return 0; long long maxHeight=LLONG_MIN; for(int i=0;i<N;++i){ long long h; scanf(\"%lld\",&h); if(h>maxHeight) maxHeight=h; } printf(\"%lld\\n\",maxHeight); } return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T,N; if(!(cin>>T)) return 0; while(T--){cin>>N; long long maxHeight=LLONG_MIN; for(int i=0;i<N;++i){ long long h; cin>>h; if(h>maxHeight) maxHeight=h; } cout<<maxHeight<<'\\n'; } return 0; }",
+      "Java": "import java.io.*;import java.util.*;public class Main{public static void main(String[] args) throws IOException{BufferedReader br=new BufferedReader(new InputStreamReader(System.in));StringBuilder sb=new StringBuilder();int T=Integer.parseInt(br.readLine().trim());while(T-- >0){int N=Integer.parseInt(br.readLine().trim());StringTokenizer st=new StringTokenizer(br.readLine());long maxHeight=Long.MIN_VALUE;for(int i=0;i<N;i++){ long h=Long.parseLong(st.nextToken()); if(h>maxHeight) maxHeight=h; } sb.append(maxHeight).append('\\n');}System.out.print(sb.toString());}}",
+      "Python3": "import sys\ndef main():\n    data=sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        max_h=-1\n        for _ in range(N):\n            h=int(next(it))\n            if h>max_h:\n                max_h=h\n        out.append(str(max_h))\n    sys.stdout.write('\\n'.join(out))\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=Number(input[idx++]);\nlet res=[];\nfor(let t=0;t<T;t++){\n  const N=Number(input[idx++]);\n  let max=-Infinity;\n  for(let i=0;i<N;i++){\n    const h=Number(input[idx++]);\n    if(h>max) max=h;\n  }\n  res.push(String(max));\n}\nconsole.log(res.join('\\n'));"
+    }
   }
 }

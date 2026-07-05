@@ -4,14 +4,14 @@
   "slug": "search-in-bst",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Searching",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Binary Search Tree",
+      "Tree Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +21,32 @@
   "content": {
     "problemStatement": "Given a binary search tree and an integer **`X`**, search if **`X`** exists in the BST or not.\n\n(**Note:** A binary search tree is a rooted binary tree data structure with the key of each internal node being greater than all the keys in the respective node's left subtree and less than the ones in its right subtree.)\n\nFor eg., the given tree is a binary search tree and we can easily search whether node 666 exists in it or not.\n\n\n\n**Function Declaration****Function Name**searchInBSTsearchInBSTsearchInBST – Searches for a given value in a Binary Search Tree (BST).\n\n**Parameters**\nrootrootroot : A pointer to the root node of the Binary Search Tree.\nxxx : An integer value that needs to be searched in the BST.\n**Return Value**\n\nReturns a **boolean value**:\n\n\n\ntruetruetrue if the value xxx exists in the BST.\nfalsefalsefalse otherwise.\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integer NNN and XXX — the number of nodes in the binary search tree and the node which we need to search.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on a single line `YES` if XXX is present in the given BST, otherwise `NO`.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
-      "RiR_iRi​ = `L` or `R`",
-      "All pip_ipi​'s and cic_ici​'s are distinct.",
-      "1≤X≤1000001 \\leq X \\leq 1000001≤X≤100000"
+      "1 ≤ N ≤ 10000",
+      "1 ≤ pi, ci ≤ 100000",
+      "Ri = 'L' or 'R'",
+      "All pi's and ci's are distinct.",
+      "1 ≤ X ≤ 100000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains two space-separated integers N and X — the number of nodes in the binary search tree and the node which we need to search. Next N-1 lines contain three space-separated characters pi, ci, Ri, describing the tree with edge information - pi is an integer denoting the parent node of the ith edge, ci is the child node, and the letter Ri denotes whether the child is a left child or right child, its value is 'L' if ci is the left child of pi, else 'R'.",
+    "outputFormat": "Output on a single line 'YES' if X is present in the given BST, otherwise 'NO'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "7 6\n4 2 L\n4 6 R\n2 1 L\n2 3 R\n6 5 L\n6 7 R",
         "output": "YES",
-        "explanation": ""
+        "explanation": "The given tree is a binary search tree. We can search for the value 6 in the tree by starting at the root and comparing the value of the current node with 6. Since the root's value is 4, which is less than 6, we move to the right subtree. The right child of the root is 6, so we return true."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 10\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "output": "NO",
+        "explanation": "The given tree is a binary search tree. We can search for the value 10 in the tree by starting at the root and comparing the value of the current node with 10. Since the root's value is 1, which is less than 10, we move to the right subtree. The right child of the root is 3, which is also less than 10, so we move to the right subtree again. The right child of 3 is null, so we return false."
+      },
+      {
+        "id": "sample_3",
+        "input": "3 2\n1 2 L\n1 3 R",
+        "output": "YES",
+        "explanation": "The given tree is a binary search tree. We can search for the value 2 in the tree by starting at the root and comparing the value of the current node with 2. Since the root's value is 1, which is less than 2, we move to the left subtree. The left child of the root is 2, so we return true."
       }
     ]
   },
@@ -42,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "7 6\n4 2 L\n4 6 R\n2 1 L\n2 3 R\n6 5 L\n6 7 R",
+        "label": "minimum boundary",
+        "input": "1 1\n",
         "expectedOutput": "YES",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "10000 10000\n",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5 5\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "5 6\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10 10\n1 2 L\n1 3 R\n2 4 L\n2 5 R\n3 6 L\n3 7 R\n4 8 L\n4 9 R\n5 10 L\n5 11 R",
+        "expectedOutput": "YES",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To solve this problem, we first construct the binary search tree based on the given edge information. Then, we perform a search operation in the constructed binary search tree to find the node with value X. If the node is found, we output 'YES'; otherwise, we output 'NO'. The search operation can be performed using a recursive or iterative approach.",
+    "timeComplexity": "O(N) for constructing the binary search tree and O(h) for searching the node, where h is the height of the tree. In the worst case, the tree can be skewed, and h = N. However, for a balanced binary search tree, h = log(N).",
+    "spaceComplexity": "O(N) for storing the nodes of the binary search tree.",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\nclass Solution {\n    public:\n    bool searchInBST(Node* root, int x) {\n        if (root == NULL) {\n            return false;\n        }\n        \n        if (root -> val == x) {\n            return true;\n        }\n        \n        if(root->val < x)\n           return searchInBST(root->right, x);\n        else\n           return searchInBST(root->left, x);\n    }\n};",
-      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\ndef search_in_bst(root, x):\n    if root is None:\n        return False\n    \n    if root.val == x:\n        return True\n    \n    if root.val < x:\n        return search_in_bst(root.right, x)\n    else:\n        return search_in_bst(root.left, x)\n",
-      "C": "// Definition of the tree node\n/*\nstruct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n};\n*/\n\n// Function to search a value in the BST\nbool searchInBST(struct Node* root, int x) {\n    if (root == NULL) {\n        return false;\n    }\n\n    if (root->val == x) {\n        return true;\n    }\n\n    if (root->val < x) {\n        return searchInBST(root->right, x);\n    } else {\n        return searchInBST(root->left, x);\n    }\n}\n",
-      "Java": "class Solution {\n    public static boolean searchInBST(Node root, int x) {\n        if (root == null) {\n            return false;\n        }\n\n        if (root.val == x) {\n            return true;\n        }\n        \n        if (root.val > x)\n            return searchInBST(root.left, x); \n        else \n            return searchInBST(root.right, x);\n    }\n}\n",
-      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\nclass Solution {\n    searchInBST(root, x) {\n        if (root === null) {\n            return false;\n        }\n\n        if (root.val === x) {\n            return true;\n        }\n\n        if (x < root.val) {\n            return this.searchInBST(root.left, x);\n        } else {\n            return this.searchInBST(root.right, x);\n        }\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new node\nNode* createNode(int val) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    if (!newNode) {\n        printf(\"Memory error\\n\");\n        return NULL;\n    }\n    newNode->val = val;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to search for a value in the BST\nbool searchInBST(Node* root, int x) {\n    if (root == NULL) {\n        return false;\n    }\n    if (root->val == x) {\n        return true;\n    }\n    if (root->val < x) {\n        return searchInBST(root->right, x);\n    } else {\n        return searchInBST(root->left, x);\n    }\n}\n\nint main() {\n    int N, X;\n    scanf(\"%d %d\", &N, &X);\n    Node* root = NULL;\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        scanf(\"%d %d %c\", &pi, &ci, &Ri);\n        // Create nodes and assign them to the tree\n        if (root == NULL) {\n            root = createNode(pi);\n        }\n        Node* newNode = createNode(ci);\n        Node* currentNode = root;\n        while (currentNode != NULL) {\n            if (currentNode->val == pi) {\n                if (Ri == 'L') {\n                    currentNode->left = newNode;\n                } else {\n                    currentNode->right = newNode;\n                }\n                break;\n            }\n            if (currentNode->val < pi) {\n                if (currentNode->right == NULL) {\n                    currentNode->right = createNode(pi);\n                }\n                currentNode = currentNode->right;\n            } else {\n                if (currentNode->left == NULL) {\n                    currentNode->left = createNode(pi);\n                }\n                currentNode = currentNode->left;\n            }\n        }\n    }\n    bool found = searchInBST(root, X);\n    if (found) {\n        printf(\"YES\\n\");\n    } else {\n        printf(\"NO\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int val;\n    Node* left;\n    Node* right;\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n};\n\n// Function to search for a value in the BST\nbool searchInBST(Node* root, int x) {\n    if (root == NULL) {\n        return false;\n    }\n    if (root->val == x) {\n        return true;\n    }\n    if (root->val < x) {\n        return searchInBST(root->right, x);\n    } else {\n        return searchInBST(root->left, x);\n    }\n}\n\nint main() {\n    int N, X;\n    cin >> N >> X;\n    Node* root = NULL;\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        cin >> pi >> ci >> Ri;\n        // Create nodes and assign them to the tree\n        if (root == NULL) {\n            root = new Node(pi);\n        }\n        Node* newNode = new Node(ci);\n        Node* currentNode = root;\n        while (currentNode != NULL) {\n            if (currentNode->val == pi) {\n                if (Ri == 'L') {\n                    currentNode->left = newNode;\n                } else {\n                    currentNode->right = newNode;\n                }\n                break;\n            }\n            if (currentNode->val < pi) {\n                if (currentNode->right == NULL) {\n                    currentNode->right = new Node(pi);\n                }\n                currentNode = currentNode->right;\n            } else {\n                if (currentNode->left == NULL) {\n                    currentNode->left = new Node(pi);\n                }\n                currentNode = currentNode->left;\n            }\n        }\n    }\n    bool found = searchInBST(root, X);\n    if (found) {\n        cout << \"YES\" << endl;\n    } else {\n        cout << \"NO\" << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\n// Define the class for a tree node\nclass Node {\n    int val;\n    Node left;\n    Node right;\n    Node(int node_value) {\n        val = node_value;\n        left = right = null;\n    }\n}\n\npublic class Main {\n    // Function to search for a value in the BST\n    public static boolean searchInBST(Node root, int x) {\n        if (root == null) {\n            return false;\n        }\n        if (root.val == x) {\n            return true;\n        }\n        if (root.val < x) {\n            return searchInBST(root.right, x);\n        } else {\n            return searchInBST(root.left, x);\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int X = sc.nextInt();\n        Node root = null;\n        for (int i = 0; i < N - 1; i++) {\n            int pi = sc.nextInt();\n            int ci = sc.nextInt();\n            char Ri = sc.next().charAt(0);\n            // Create nodes and assign them to the tree\n            if (root == null) {\n                root = new Node(pi);\n            }\n            Node newNode = new Node(ci);\n            Node currentNode = root;\n            while (currentNode != null) {\n                if (currentNode.val == pi) {\n                    if (Ri == 'L') {\n                        currentNode.left = newNode;\n                    } else {\n                        currentNode.right = newNode;\n                    }\n                    break;\n                }\n                if (currentNode.val < pi) {\n                    if (currentNode.right == null) {\n                        currentNode.right = new Node(pi);\n                    }\n                    currentNode = currentNode.right;\n                } else {\n                    if (currentNode.left == null) {\n                        currentNode.left = new Node(pi);\n                    }\n                    currentNode = currentNode.left;\n                }\n            }\n        }\n        boolean found = searchInBST(root, X);\n        if (found) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}",
+      "Python3": "class Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\n# Function to search for a value in the BST\ndef search_in_bst(root, x):\n    if root is None:\n        return False\n    if root.val == x:\n        return True\n    if root.val < x:\n        return search_in_bst(root.right, x)\n    else:\n        return search_in_bst(root.left, x)\n\n# Read input\nN, X = map(int, input().split())\nroot = None\nfor _ in range(N - 1):\n    pi, ci, Ri = input().split()\n    pi, ci = int(pi), int(ci)\n    # Create nodes and assign them to the tree\n    if root is None:\n        root = Node(pi)\n    new_node = Node(ci)\n    current_node = root\n    while current_node is not None:\n        if current_node.val == pi:\n            if Ri == 'L':\n                current_node.left = new_node\n            else:\n                current_node.right = new_node\n            break\n        if current_node.val < pi:\n            if current_node.right is None:\n                current_node.right = Node(pi)\n            current_node = current_node.right\n        else:\n            if current_node.left is None:\n                current_node.left = Node(pi)\n            current_node = current_node.left\nfound = search_in_bst(root, X)\nif found:\n    print(\"YES\")\nelse:\n    print(\"NO\")",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\n// Define the class for a tree node\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n\n// Function to search for a value in the BST\nfunction searchInBST(root, x) {\n    if (root === null) {\n        return false;\n    }\n    if (root.val === x) {\n        return true;\n    }\n    if (root.val < x) {\n        return searchInBST(root.right, x);\n    } else {\n        return searchInBST(root.left, x);\n    }\n}\n\n// Read input\nlet line = lines[idx++].trim().split(' ');\nlet N = parseInt(line[0]);\nlet X = parseInt(line[1]);\nlet root = null;\nfor (let i = 0; i < N - 1; i++) {\n    line = lines[idx++].trim().split(' ');\n    let pi = parseInt(line[0]);\n    let ci = parseInt(line[1]);\n    let Ri = line[2];\n    // Create nodes and assign them to the tree\n    if (root === null) {\n        root = new Node(pi);\n    }\n    let newNode = new Node(ci);\n    let currentNode = root;\n    while (currentNode !== null) {\n        if (currentNode.val === pi) {\n            if (Ri === 'L') {\n                currentNode.left = newNode;\n            } else {\n                currentNode.right = newNode;\n            }\n            break;\n        }\n        if (currentNode.val < pi) {\n            if (currentNode.right === null) {\n                currentNode.right = new Node(pi);\n            }\n            currentNode = currentNode.right;\n        } else {\n            if (currentNode.left === null) {\n                currentNode.left = new Node(pi);\n            }\n            currentNode = currentNode.left;\n        }\n    }\n}\nlet found = searchInBST(root, X);\nif (found) {\n    console.log('YES');\n} else {\n    console.log('NO');\n}"
     }
   }
 }

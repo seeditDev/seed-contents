@@ -4,14 +4,13 @@
   "slug": "identify-the-error",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "language basics",
-      "programming languages"
+      "Number to Words"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +19,30 @@
   },
   "content": {
     "problemStatement": "Identify and correct the error in the following code",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= number <= 1000"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case contains a single integer number.",
+    "outputFormat": "For each test case, print the number of letters in the input number when written in English.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
-        "output": "19",
-        "explanation": ""
+        "input": "1\n19",
+        "output": "8",
+        "explanation": "The number 19 has 8 letters: one nine."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n123",
+        "output": "24",
+        "explanation": "The number 123 has 24 letters: one hundred and twenty three."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n456",
+        "output": "23",
+        "explanation": "The number 456 has 23 letters: four hundred and fifty six."
       }
     ]
   },
@@ -36,20 +50,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "19",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n1000",
+        "expectedOutput": "11",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n0",
+        "expectedOutput": "4",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n100",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\n1\n2\n3\n4\n5",
+        "expectedOutput": "3\n3\n5\n4\n4",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +110,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The problem can be solved by using a recursive approach to convert the number into words and then counting the number of letters. We can use arrays to store the words for ones, teens, and tens.",
+    "timeComplexity": "O(log N) per test case, O(T log N) total.",
+    "spaceComplexity": "O(1) — the space used does not grow with the size of the input.",
     "code": {
-      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n\n  int number = 19;\n  cout << number; // number and Number are not same\n\n  return 0;\n}",
-      "Python3": "#include <iostream>\nusing namespace std;\n\nint main() {\n\n  int number = 19;\n  cout << number; // number and Number are not same\n\n  return 0;\n}",
-      "C": "#include <iostream>\nusing namespace std;\n\nint main() {\n\n  int number = 19;\n  cout << number; // number and Number are not same\n\n  return 0;\n}",
-      "Java": "#include <iostream>\nusing namespace std;\n\nint main() {\n\n  int number = 19;\n  cout << number; // number and Number are not same\n\n  return 0;\n}",
-      "JavaScript": "#include <iostream>\nusing namespace std;\n\nint main() {\n\n  int number = 19;\n  cout << number; // number and Number are not same\n\n  return 0;\n}"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint countLetters(int num) {\n    if (num < 10) {\n        char *ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n        return strlen(ones[num]);\n    }\n    if (num < 20) {\n        char *teens[] = {\"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\"};\n        return strlen(teens[num - 10]);\n    }\n    if (num < 100) {\n        char *tens[] = {\"\", \"\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\"};\n        if (num % 10 == 0) {\n            return strlen(tens[num / 10]);\n        } else {\n            return strlen(tens[num / 10]) + strlen(ones[num % 10]);\n        }\n    }\n    if (num < 1000) {\n        if (num % 100 == 0) {\n            char *ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n            return strlen(ones[num / 100]) + strlen(\"hundred\");\n        } else {\n            char *ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n            return strlen(ones[num / 100]) + strlen(\"hundredand\") + countLetters(num % 100);\n        }\n    }\n    return 0;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while(t--) {\n        int num;\n        scanf(\"%d\", &num);\n        if (num == 0) {\n            printf(\"4\\n\");\n            continue;\n        }\n        printf(\"%d\\n\", countLetters(num));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint countLetters(int num) {\n    if (num < 10) {\n        string ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n        return ones[num].length();\n    }\n    if (num < 20) {\n        string teens[] = {\"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\"};\n        return teens[num - 10].length();\n    }\n    if (num < 100) {\n        string tens[] = {\"\", \"\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\"};\n        if (num % 10 == 0) {\n            return tens[num / 10].length();\n        } else {\n            return tens[num / 10].length() + ones[num % 10].length();\n        }\n    }\n    if (num < 1000) {\n        if (num % 100 == 0) {\n            string ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n            return ones[num / 100].length() + 7;\n        } else {\n            string ones[] = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n            return ones[num / 100].length() + 10 + countLetters(num % 100);\n        }\n    }\n    return 0;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    while(t--) {\n        int num;\n        cin >> num;\n        if (num == 0) {\n            cout << 4 << endl;\n            continue;\n        }\n        cout << countLetters(num) << endl;\n    }\n    return 0;\n}",
+      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        int t = scanner.nextInt();\n        while(t-- > 0) {\n            int num = scanner.nextInt();\n            if (num == 0) {\n                System.out.println(4);\n                continue;\n            }\n            System.out.println(countLetters(num));\n        }\n    }\n    public static int countLetters(int num) {\n        if (num < 10) {\n            String[] ones = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n            return ones[num].length();\n        }\n        if (num < 20) {\n            String[] teens = {\"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\"};\n            return teens[num - 10].length();\n        }\n        if (num < 100) {\n            String[] tens = {\"\", \"\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\"};\n            if (num % 10 == 0) {\n                return tens[num / 10].length();\n            } else {\n                return tens[num / 10].length() + ones[num % 10].length();\n            }\n        }\n        if (num < 1000) {\n            if (num % 100 == 0) {\n                String[] ones = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n                return ones[num / 100].length() + 7;\n            } else {\n                String[] ones = {\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"};\n                return ones[num / 100].length() + 10 + countLetters(num % 100);\n            }\n        }\n        return 0;\n    }\n}",
+      "Python3": "import sys\n\ndef countLetters(num):\n    if num < 10:\n        ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\n        return len(ones[num])\n    if num < 20:\n        teens = [\"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\"]\n        return len(teens[num - 10])\n    if num < 100:\n        tens = [\"\", \"\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\"]\n        if num % 10 == 0:\n            return len(tens[num // 10])\n        else:\n            return len(tens[num // 10]) + len(ones[num % 10])\n    if num < 1000:\n        if num % 100 == 0:\n            ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\n            return len(ones[num // 100]) + 7\n        else:\n            ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"]\n            return len(ones[num // 100]) + 10 + countLetters(num % 100)\n\nT = int(sys.stdin.readline())\nwhile T > 0:\n    num = int(sys.stdin.readline())\n    if num == 0:\n        print(4)\n        T -= 1\n        continue\n    print(countLetters(num))\n    T -= 1",
+      "JavaScript": "const lines = require('fs').readFileSync(0,'utf-8').trim().split('\\n');\nlet i=0;\nlet T = parseInt(lines[i++]);\n\nfunction countLetters(num) {\n    if (num < 10) {\n        let ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"];\n        return ones[num].length;\n    }\n    if (num < 20) {\n        let teens = [\"ten\", \"eleven\", \"twelve\", \"thirteen\", \"fourteen\", \"fifteen\", \"sixteen\", \"seventeen\", \"eighteen\", \"nineteen\"];\n        return teens[num - 10].length;\n    }\n    if (num < 100) {\n        let tens = [\"\", \"\", \"twenty\", \"thirty\", \"forty\", \"fifty\", \"sixty\", \"seventy\", \"eighty\", \"ninety\"];\n        if (num % 10 == 0) {\n            return tens[num / 10 | 0].length;\n        } else {\n            return tens[num / 10 | 0].length + ones[num % 10].length;\n        }\n    }\n    if (num < 1000) {\n        if (num % 100 == 0) {\n            let ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"];\n            return ones[num / 100 | 0].length + 7;\n        } else {\n            let ones = [\"\", \"one\", \"two\", \"three\", \"four\", \"five\", \"six\", \"seven\", \"eight\", \"nine\"];\n            return ones[num / 100 | 0].length + 10 + countLetters(num % 100);\n        }\n    }\n}\n\nwhile (T-- > 0) {\n    let num = parseInt(lines[i++]);\n    if (num == 0) {\n        console.log(4);\n        continue;\n    }\n    console.log(countLetters(num));\n}"
     }
   }
 }

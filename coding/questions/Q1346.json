@@ -4,14 +4,16 @@
   "slug": "path-with-minimum-sum",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "DP",
+      "Grid",
+      "Shortest Path",
+      "Matrix"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +23,30 @@
   "content": {
     "problemStatement": "Given a `N x M` matrix with non-negative integers, find the minimum sum of path cells from top left cell to bottom right cell. You can only move right or downward from any cell without exiting the matrix boundary.\n\nFor eg., in the following matrix :\n\n\n\nMinimum path sum = **13** (highlighted cells are minimum path cells).\n\n\nInput Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the input matrix.\nNext NNN lines contains MMM space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line, the minimum sum of path cells from top left cell to bottom right cell",
     "constraints": [
-      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
-      "The elements of the matrix are non-negative and won't exceed 100010001000."
+      "1 <= T <= 100",
+      "1 <= N, M <= 100",
+      "0 <= matrix[i][j] <= 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains two space-separated integers N and M denoting the number of rows and columns of the matrix. Then N lines follow, each containing M space-separated non-negative integers representing the matrix.",
+    "outputFormat": "For each test case, output a single line containing the minimum possible sum of values along a path from the top-left cell to the bottom-right cell moving only right or down.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3 3\n4 3 0\n8 2 1\n3 1 5",
         "output": "13",
-        "explanation": ""
+        "explanation": "The optimal path is 4 → 3 → 0 → 1 → 5 giving sum 13."
+      },
+      {
+        "id": "sample_2",
+        "input": "2 2\n1 2\n3 4",
+        "output": "7",
+        "explanation": "Path 1 → 2 → 4 yields the minimum sum 7."
+      },
+      {
+        "id": "sample_3",
+        "input": "1 1\n5",
+        "output": "5",
+        "explanation": "Only one cell exists, so the answer is its value."
       }
     ]
   },
@@ -39,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3 3\n4 3 0\n8 2 1\n3 1 5",
-        "expectedOutput": "13",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +114,14 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The optimal substructure is: the minimum sum to reach cell (i,j) equals the value at (i,j) plus the minimum of the sums to reach the cell directly above (i-1,j) or the cell to the left (i,j-1). By filling a DP table row by row we obtain dp[i][j] for all cells, and dp[N-1][M-1] is the answer. The algorithm runs in O(N·M) time per test case and uses O(N·M) auxiliary space (which can be reduced to O(M) but the full table keeps the code simple).",
+    "timeComplexity": "O(N*M) per test case, O(total cells) overall.",
+    "spaceComplexity": "O(N*M) auxiliary space per test case (the DP table).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint minPathSum(vector<vector<int>>& mat) {\n\n    int m = mat.size();\n    int n = mat[0].size();\n\n    vector<vector<int>> dp(m,vector<int>(n,0));\n\n    dp[0][0] = mat[0][0];\n\n    for(int i = 1;i < m; i++){\n        dp[i][0] = dp[i - 1][0] + mat[i][0];\n    }\n    for(int j = 1; j < n; j++){\n        dp[0][j] = dp[0][j-1] + mat[0][j];\n    }\n    for(int i = 1; i < m; i++){\n       for(int j = 1; j < n; j++) {\n         dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j];\n       }\n    }\n    \n    return dp[m - 1][n - 1];\n}\n\n\nint main() {\n\n  int n, m;\n  cin >> n >> m;\n\n  assert(1 <= n && n <= 100);\n  assert(1 <= m && m <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (m));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cin >> mat[i][j];\n    }\n  } \n  \n  cout << minPathSum(mat);\n\n\n  return 0;\n} ",
-      "Python3": "def minPathSum(mat):\n    m = len(mat)\n    n = len(mat[0])\n    \n    dp = [[0] * n for _ in range(m)]\n    \n    dp[0][0] = mat[0][0]\n    \n    for i in range(1, m):\n        dp[i][0] = dp[i - 1][0] + mat[i][0]\n    \n    for j in range(1, n):\n        dp[0][j] = dp[0][j - 1] + mat[0][j]\n    \n    for i in range(1, m):\n        for j in range(1, n):\n            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j]\n    \n    return dp[m - 1][n - 1]\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n    \n    assert 1 <= n <= 100\n    assert 1 <= m <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n    \n    print(minPathSum(mat))\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <assert.h>\n\nint min(int a, int b) {\n    return (a < b) ? a : b;\n}\n\nint minPathSum(int mat[][100], int m, int n) {\n    int dp[100][100];\n    \n    dp[0][0] = mat[0][0];\n    \n    for(int i = 1; i < m; i++) {\n        dp[i][0] = dp[i - 1][0] + mat[i][0];\n    }\n    \n    for(int j = 1; j < n; j++) {\n        dp[0][j] = dp[0][j - 1] + mat[0][j];\n    }\n    \n    for(int i = 1; i < m; i++) {\n        for(int j = 1; j < n; j++) {\n            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j];\n        }\n    }\n    \n    return dp[m - 1][n - 1];\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    \n    assert(1 <= n && n <= 100);\n    assert(1 <= m && m <= 100);\n\n    int mat[100][100];\n    \n    for(int i = 0; i < n; i++) {\n        for(int j = 0; j < m; j++) {\n            scanf(\"%d\", &mat[i][j]);\n        }\n    }\n\n    printf(\"%d\\n\", minPathSum(mat, n, m));\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static int minPathSum(int[][] mat) {\n        int m = mat.length;\n        int n = mat[0].length;\n        \n        int[][] dp = new int[m][n];\n        \n        dp[0][0] = mat[0][0];\n        \n        for(int i = 1; i < m; i++) {\n            dp[i][0] = dp[i - 1][0] + mat[i][0];\n        }\n        \n        for(int j = 1; j < n; j++) {\n            dp[0][j] = dp[0][j - 1] + mat[0][j];\n        }\n        \n        for(int i = 1; i < m; i++) {\n            for(int j = 1; j < n; j++) {\n                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j];\n            }\n        }\n        \n        return dp[m - 1][n - 1];\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n            }\n        }\n\n        System.out.println(minPathSum(mat));\n    }\n}\n",
-      "JavaScript": "function minPathSum(mat) {\n    const m = mat.length;\n    const n = mat[0].length;\n\n    const dp = Array.from({ length: m }, () => Array(n).fill(0));\n\n    dp[0][0] = mat[0][0];\n\n    for (let i = 1; i < m; i++) {\n        dp[i][0] = dp[i - 1][0] + mat[i][0];\n    }\n    for (let j = 1; j < n; j++) {\n        dp[0][j] = dp[0][j - 1] + mat[0][j];\n    }\n    for (let i = 1; i < m; i++) {\n        for (let j = 1; j < n; j++) {\n            dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j];\n        }\n    }\n    \n    return dp[m - 1][n - 1];\n}\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const [n, m] = input[0].split(' ').map(Number);\n    const mat = [];\n    for (let i = 1; i <= n; i++) {\n        mat.push(input[i].split(' ').map(Number));\n    }\n    \n    console.log(minPathSum(mat)); \n});\n"
+      "C": "#include <stdio.h>\\n#include <assert.h>\\n\\nint min(int a",
+      "int b)": {
+        "return a < b ? a": "b;"
+      }
     }
   }
 }

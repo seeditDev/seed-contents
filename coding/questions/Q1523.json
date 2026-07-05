@@ -4,14 +4,15 @@
   "slug": "the-divisor-game",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Searching",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Binary Search",
+      "Ceiling Division",
+      "Array"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +21,33 @@
   },
   "content": {
     "problemStatement": "In a faraway land, the mathematicians of Numeria discovered a way to control the growth of numbers by choosing a special divisor.\n\nYou are given an array AAA of size NNN, and an integer TTT called the **threshold**.\n\nYour task is to choose the **smallest positive integer divisor** DDD such that:\n\n∑i=1N⌈AiD⌉≤T\\sum_{i=1}^{N} \\left\\lceil \\frac{A_i}{D} \\right\\rceil \\le Ti=1∑N​⌈DAi​​⌉≤THere, ⌈x⌉⌈x⌉⌈x⌉ denotes the **ceiling function**, i.e., rounding xxx up to the nearest integer.\n\nFunction DeclarationFunction NamefindSmallestDivisorfindSmallestDivisorfindSmallestDivisor – This function finds the smallest divisor that satisfies the threshold condition.\n\nParameters\nAAA : A list of positive integers.\nTTT : An integer representing the threshold value.\nReturn Value\nReturns a single integer — the **smallest positive divisor** DDD such that the sum of ceilings is less than or equal to TTT.\nConstraints\n1≤N≤5×1041 ≤ N ≤ 5 × 10^41≤N≤5×104\n1≤A[i]≤1061 ≤ A[i] ≤ 10^61≤A[i]≤106\nN≤T≤106N ≤ T ≤ 10^6N≤T≤106\nIt is guaranteed that a valid divisor exists\n\nInput Format\n\nThe first line contains two space-separated integers NNN and TTT — the size of the array and the threshold.\nThe second line contains NNN space-separated integers representing the elements of the array AAA.\n\n\nOutput Format\n\nPrint a single integer — the **smallest divisor** DDD that satisfies the condition.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= Q <= 10",
+      "1 <= N <= 5 * 10^4",
+      "1 <= A_i <= 10^6",
+      "N <= T <= 10^6",
+      "It is guaranteed that at least one divisor satisfies the condition."
+    ],
+    "inputFormat": "The first line contains an integer Q, the number of test cases. Each test case consists of two lines: the first line contains two space‑separated integers N and T — the size of the array and the threshold. The second line contains N space‑separated positive integers A1 … AN.",
+    "outputFormat": "For each test case output a single line containing the smallest positive integer divisor D such that \\sum_{i=1}^{N} \\lceil A_i / D \\rceil \\le T.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3 8\n3 7 10",
+        "input": "1\n3 8\n3 7 10",
         "output": "3",
-        "explanation": "Explanation:\nFor D = 3 -> ceil(3/3) + ceil(7/3) + ceil(10/3) = 1 + 3 + 4 = 8 -> 8 \nSmaller divisors give sums > 8, so the smallest valid D is 3."
+        "explanation": "For D=3 the sum is ceil(3/3)+ceil(7/3)+ceil(10/3)=1+3+4=8 which equals the threshold. Any smaller divisor gives a larger sum, so 3 is the smallest valid divisor."
       },
       {
         "id": "sample_2",
-        "input": "6 12\n8 16 24 4 2 6",
+        "input": "1\n6 12\n8 16 24 4 2 6",
         "output": "6",
-        "explanation": "Explanation:\nFor D = 6 -> ceil(8/6)+ceil(16/6)+ceil(24/6)+ceil(4/6)+ceil(2/6)+ceil(6/6)\n= 2 + 3 + 4 + 1 + 1 + 1 = 12 -> 12 \nSmaller D gives sum > 12, so the smallest valid D is 6."
+        "explanation": "With D=6 the sum becomes 2+3+4+1+1+1=12, meeting the threshold. No divisor smaller than 6 satisfies the condition."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4 10\n9 10 11 12",
+        "output": "5",
+        "explanation": "D=5 yields ceil values 2,2,3,3 whose sum is 10. D=4 would give a sum of 12, which exceeds the threshold, therefore the answer is 5."
       }
     ]
   },
@@ -42,27 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3 8\n3 7 10",
-        "expectedOutput": "3",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1 1\n1",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "6 12\n8 16 24 4 2 6",
-        "expectedOutput": "6",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n15 15\n1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000",
+        "expectedOutput": "1000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case where D=1 works",
+        "input": "1\n3 20\n2 3 4",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n4 10\n5 9 10 12",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n6 12\n1 2 3 4 5 6",
+        "expectedOutput": "2",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For a fixed divisor D the value of \\sum \\lceil A_i / D \\rceil can be computed in O(N) time. The sum is monotonic decreasing with respect to D: a larger divisor never increases any individual ceiling value. Therefore we can binary‑search the answer in the interval [1, max(A)]. For each mid we compute the sum, stop early if it exceeds T, and decide whether to search the left or right half. The smallest D that makes the sum ≤ T is the answer.",
+    "timeComplexity": "O(N log M) per test case, where M = max(A_i) ≤ 10^6. The binary search performs at most log2(10^6) ≈ 20 iterations.",
+    "spaceComplexity": "O(1) extra besides the input array.",
     "code": {
-      "C++": "bool isValid(const vector<int> &A, int D, int T) {\n    long long sum = 0;\n    for (int num : A) {\n        sum += (num + D - 1) / D; // Equivalent to ceil(num / D)\n        if (sum > T) return false; // Early exit\n    }\n    return true;\n}\n\n// Function to find the smallest divisor\nint findSmallestDivisor(const vector<int> &A, int T) {\n    int left = 1;\n    int right = *max_element(A.begin(), A.end());\n    int ans = right;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (isValid(A, mid, T)) {\n            ans = mid;       // Update answer\n            right = mid - 1; // Try smaller divisor\n        } else {\n            left = mid + 1;  // Increase divisor\n        }\n    }\n\n    return ans;\n}",
-      "Python3": "# Function to check if a divisor D is valid\ndef is_valid(A, D, T):\n    total = 0\n    for num in A:\n        total += math.ceil(num / D)\n        if total > T:  # early exit\n            return False\n    return True\n\n# Function to find the smallest divisor\ndef find_smallest_divisor(A, T):\n    left = 1\n    right = max(A)\n    ans = right\n\n    while left <= right:\n        mid = (left + right) // 2\n        if is_valid(A, mid, T):\n            ans = mid       # update answer\n            right = mid - 1 # try smaller divisor\n        else:\n            left = mid + 1  # increase divisor\n\n    return ans",
-      "C": "int isValid(int A[], int N, int D, int T) {\n    long long sum = 0;\n    for (int i = 0; i < N; i++) {\n        sum += (A[i] + D - 1) / D;  // Equivalent to ceil(A[i]/D)\n        if (sum > T) return 0;      // Early exit if sum exceeds T\n    }\n    return 1; // Valid\n}\n\n// Function to find the smallest divisor\nint findSmallestDivisor(int A[], int N, int T) {\n    int left = 1;\n    int right = A[0];\n\n    // Find the maximum element in the array\n    for (int i = 1; i < N; i++) {\n        if (A[i] > right) right = A[i];\n    }\n\n    int ans = right;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (isValid(A, N, mid, T)) {\n            ans = mid;       // Update answer\n            right = mid - 1; // Try smaller divisor\n        } else {\n            left = mid + 1;  // Increase divisor\n        }\n    }\n\n    return ans;\n}",
-      "Java": " public static boolean isValid(int[] A, int D, int T) {\n        long sum = 0;\n        for (int num : A) {\n            sum += (num + D - 1) / D; // Equivalent to ceil(num / D)\n            if (sum > T) return false; // Early exit if sum exceeds threshold\n        }\n        return true;\n    }\n\n    public static int findSmallestDivisor(int[] A, int T) {\n        int left = 1; // Minimum possible divisor\n        int right = Arrays.stream(A).max().getAsInt(); // Maximum element in array\n        int ans = right;\n\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n\n            if (isValid(A, mid, T)) {\n                ans = mid;       // Update answer\n                right = mid - 1; // Try smaller divisor\n            } else {\n                left = mid + 1;  // Increase divisor\n            }\n        }\n\n        return ans;\n    }\n\n",
-      "JavaScript": "function isValid(A, D, T) {\n        let sum = 0;\n        for (let num of A) {\n            sum += Math.floor((num + D - 1) / D); // ceil division\n            if (sum > T) return false;  // early exit\n        }\n        return true;\n    }\n\n    // Function to find the smallest divisor\n    function findSmallestDivisor(A, T) {\n        let left = 1;\n        let right = Math.max(...A);\n        let ans = right;\n\n        while (left <= right) {\n            let mid = Math.floor((left + right) / 2);\n            if (isValid(A, mid, T)) {\n                ans = mid;        // update answer\n                right = mid - 1;  // try smaller divisor\n            } else {\n                left = mid + 1;   // increase divisor\n            }\n        }\n\n        return ans;\n    }"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint isValid(const int *A, int N, int D, int T) {\n    long long sum = 0;\n    for (int i = 0; i < N; ++i) {\n        sum += (A[i] + D - 1) / D; // ceil division\n        if (sum > T) return 0;    // early exit\n    }\n    return 1;\n}\n\nint main() {\n    int Q;\n    if (scanf(\"%d\", &Q) != 1) return 0;\n    while (Q--) {\n        int N, T;\n        scanf(\"%d %d\", &N, &T);\n        int *A = (int*)malloc(N * sizeof(int));\n        int maxA = 0;\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%d\", &A[i]);\n            if (A[i] > maxA) maxA = A[i];\n        }\n        int left = 1, right = maxA, ans = maxA;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (isValid(A, N, mid, T)) {\n                ans = mid;\n                right = mid - 1;\n            } else {\n                left = mid + 1;\n            }\n        }\n        printf(\"%d\\n\", ans);\n        free(A);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool isValid(const vector<int>& A, int D, int T) {\n    long long sum = 0;\n    for (int x : A) {\n        sum += (x + D - 1) / D; // ceil division\n        if (sum > T) return false;\n    }\n    return true;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int Q; if (!(cin >> Q)) return 0;\n    while (Q--) {\n        int N, T; cin >> N >> T;\n        vector<int> A(N);\n        int maxA = 0;\n        for (int i = 0; i < N; ++i) {\n            cin >> A[i];\n            maxA = max(maxA, A[i]);\n        }\n        int left = 1, right = maxA, ans = maxA;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (isValid(A, mid, T)) {\n                ans = mid;\n                right = mid - 1;\n            } else {\n                left = mid + 1;\n            }\n        }\n        cout << ans << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static boolean isValid(int[] arr, int D, int T) {\n        long sum = 0;\n        for (int v : arr) {\n            sum += (v + D - 1) / D; // ceil division\n            if (sum > T) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int Q = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        while (Q-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int T = Integer.parseInt(st.nextToken());\n            int[] arr = new int[N];\n            st = new StringTokenizer(br.readLine());\n            int maxA = 0;\n            for (int i = 0; i < N; ++i) {\n                arr[i] = Integer.parseInt(st.nextToken());\n                if (arr[i] > maxA) maxA = arr[i];\n            }\n            int left = 1, right = maxA, ans = maxA;\n            while (left <= right) {\n                int mid = left + (right - left) / 2;\n                if (isValid(arr, mid, T)) {\n                    ans = mid;\n                    right = mid - 1;\n                } else {\n                    left = mid + 1;\n                }\n            }\n            out.append(ans).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef is_valid(arr, D, T):\n    total = 0\n    for v in arr:\n        total += (v + D - 1) // D\n        if total > T:\n            return False\n    return True\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    Q = int(next(it))\n    out_lines = []\n    for _ in range(Q):\n        N = int(next(it))\n        T = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        left, right = 1, max(arr)\n        ans = right\n        while left <= right:\n            mid = (left + right) // 2\n            if is_valid(arr, mid, T):\n                ans = mid\n                right = mid - 1\n            else:\n                left = mid + 1\n        out_lines.append(str(ans))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst Q = Number(input[idx++]);\nlet outputs = [];\nfunction isValid(arr, D, T) {\n  let sum = 0;\n  for (let v of arr) {\n    sum += Math.floor((v + D - 1) / D);\n    if (sum > T) return false;\n  }\n  return true;\n}\nfor (let tc = 0; tc < Q; ++tc) {\n  const N = Number(input[idx++]);\n  const T = Number(input[idx++]);\n  const arr = new Array(N);\n  let maxA = 0;\n  for (let i = 0; i < N; ++i) {\n    const val = Number(input[idx++]);\n    arr[i] = val;\n    if (val > maxA) maxA = val;\n  }\n  let left = 1, right = maxA, ans = maxA;\n  while (left <= right) {\n    const mid = Math.floor((left + right) / 2);\n    if (isValid(arr, mid, T)) {\n      ans = mid;\n      right = mid - 1;\n    } else {\n      left = mid + 1;\n    }\n  }\n  outputs.push(String(ans));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }

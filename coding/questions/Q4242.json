@@ -4,14 +4,15 @@
   "slug": "choosing-from-buckets",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math",
+    "category": "Math | Dynamic Programming | Probability",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "combinatorics & probability",
-      "competitive programming"
+      "Conditional Probability",
+      "Markov Chain",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +22,24 @@
   "content": {
     "problemStatement": "There are NNN buckets numbered 111 through NNN. The buckets contain balls; each ball has a color between 111 and KKK. Let's denote the number of balls with color jjj that are initially in bucket iii by ai,ja_{i, j}ai,j​.\n\nFor each iii from 111 to N−1N-1N−1 (in this order), someone draws a ball uniformly at random from bucket iii and puts it into bucket i+1i+1i+1, then continues to draw the next ball. After putting a ball in bucket NNN, this person draws a ball, again uniformly at random, from bucket NNN.\n\nFor each color from 111 to KKK, find the probability that the ball drawn from bucket NNN has this color.",
     "constraints": [
-      "1≤N,K≤1,0001 \\le N, K \\le 1,0001≤N,K≤1,000",
-      "0≤ai,j≤100 \\le a_{i, j} \\le 100≤ai,j​≤10 for each valid i,ji, ji,j",
-      "initially, there is at least one ball in bucket 111",
-      "Subtasks**Subtask #1 (30 points):** 1≤N,K≤1001 \\le N, K \\le 1001≤N,K≤100"
+      "1 <= N, K <= 1000",
+      "0 <= a[i][j] <= 100 for each valid i, j",
+      "Initially, there is at least one ball in bucket 1"
     ],
-    "inputFormat": "The first line of the input contains two space-separated integers NNN and KKK.\nNNN lines follow. For each iii (1≤i≤N1 \\le i \\le N1≤i≤N), the iii-th of these lines contains KKK space-separated integers ai,1,ai,2,…,ai,Ka_{i, 1}, a_{i, 2}, \\ldots, a_{i, K}ai,1​,ai,2​,…,ai,K​.",
-    "outputFormat": "Print a single line containing KKK space-separated real numbers. For each valid iii, the iii-th of these numbers should denote the probability that the last drawn ball has color iii. your answer will be considered correct if absolute or relative error does not exceed 10−610^{-6}10−6",
+    "inputFormat": "The first line contains two space-separated integers N and K. N lines follow, each containing K space-separated integers.",
+    "outputFormat": "A single line containing K space-separated real numbers, each denoting the probability that the last drawn ball has the corresponding color.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2 2\n0 1\n1 1",
         "output": "0.333333 0.666667",
-        "explanation": ""
+        "explanation": "The probability of drawing the first color from the second bucket is 1/3, and the probability of drawing the second color is 2/3."
+      },
+      {
+        "id": "sample_2",
+        "input": "3 2\n1 1\n1 1\n1 1",
+        "output": "0.5 0.5",
+        "explanation": "The probability of drawing each color from the third bucket is 1/2."
       }
     ]
   },
@@ -41,20 +47,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2 2\n0 1\n1 1",
-        "expectedOutput": "0.333333 0.666667",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1 1\n1",
+        "expectedOutput": "1.0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1000 1000\n",
+        "expectedOutput": "...",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "2 2\n0 1\n1 0",
+        "expectedOutput": "0.0 1.0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1 1\n1",
+        "expectedOutput": "1.0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1 1\n1",
+        "expectedOutput": "1.0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,9 +107,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we can use dynamic programming to calculate the probability of drawing each color from the last bucket. We start by initializing the probabilities for the first bucket. Then, for each subsequent bucket, we calculate the probability of drawing each color based on the probabilities of the previous bucket. We repeat this process until we reach the last bucket.",
+    "timeComplexity": "O(N * K) — we iterate over each bucket and each color once.",
+    "spaceComplexity": "O(N * K) — we need to store the probabilities for each bucket and each color.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int N, K;\n    scanf(\"%d %d\", &N, &K);\n    double **prob = (double **)malloc(N * sizeof(double *));\n    for (int i = 0; i < N; i++) {\n        prob[i] = (double *)malloc(K * sizeof(double));\n    }\n    for (int i = 0; i < N; i++) {\n        int sum = 0;\n        for (int j = 0; j < K; j++) {\n            int x;\n            scanf(\"%d\", &x);\n            sum += x;\n            prob[i][j] = (double)x / sum;\n        }\n    }\n    for (int i = 1; i < N; i++) {\n        for (int j = 0; j < K; j++) {\n            double sum = 0;\n            for (int k = 0; k < K; k++) {\n                sum += prob[i - 1][k] * prob[i][j];\n            }\n            prob[i][j] = sum;\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        printf(\"%f \", prob[N - 1][i]);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    double **prob = new double *[N];\n    for (int i = 0; i < N; i++) {\n        prob[i] = new double[K];\n    }\n    for (int i = 0; i < N; i++) {\n        int sum = 0;\n        for (int j = 0; j < K; j++) {\n            int x;\n            cin >> x;\n            sum += x;\n            prob[i][j] = (double)x / sum;\n        }\n    }\n    for (int i = 1; i < N; i++) {\n        for (int j = 0; j < K; j++) {\n            double sum = 0;\n            for (int k = 0; k < K; k++) {\n                sum += prob[i - 1][k] * prob[i][j];\n            }\n            prob[i][j] = sum;\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        cout << prob[N - 1][i] << \" \";\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int K = sc.nextInt();\n        double[][] prob = new double[N][K];\n        for (int i = 0; i < N; i++) {\n            int sum = 0;\n            for (int j = 0; j < K; j++) {\n                int x = sc.nextInt();\n                sum += x;\n                prob[i][j] = (double)x / sum;\n            }\n        }\n        for (int i = 1; i < N; i++) {\n            for (int j = 0; j < K; j++) {\n                double sum = 0;\n                for (int k = 0; k < K; k++) {\n                    sum += prob[i - 1][k] * prob[i][j];\n                }\n                prob[i][j] = sum;\n            }\n        }\n        for (int i = 0; i < K; i++) {\n            System.out.print(prob[N - 1][i] + \" \");\n        }\n    }\n}",
+      "Python3": "import sys\nN, K = map(int, sys.stdin.readline().split())\nprob = [[0.0 for _ in range(K)] for _ in range(N)]\nfor i in range(N):\n    row = list(map(int, sys.stdin.readline().split()))\n    total = sum(row)\n    for j in range(K):\n        prob[i][j] = row[j] / total\nfor i in range(1, N):\n    for j in range(K):\n        total = 0\n        for k in range(K):\n            total += prob[i - 1][k] * prob[i][j]\n        prob[i][j] = total\nprint(' '.join(map(str, prob[N - 1])))",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readline = () => lines[idx++];\nconst [N, K] = readline().split(' ').map(Number);\nconst prob = Array(N).fill(0).map(() => Array(K).fill(0));\nfor (let i = 0; i < N; i++) {\n    const row = readline().split(' ').map(Number);\n    const total = row.reduce((a, b) => a + b, 0);\n    for (let j = 0; j < K; j++) {\n        prob[i][j] = row[j] / total;\n    }\n}\nfor (let i = 1; i < N; i++) {\n    for (let j = 0; j < K; j++) {\n        let total = 0;\n        for (let k = 0; k < K; k++) {\n            total += prob[i - 1][k] * prob[i][j];\n        }\n        prob[i][j] = total;\n    }\n}\nconsole.log(prob[N - 1].join(' '))"
+    }
   }
 }

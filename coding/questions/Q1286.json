@@ -4,14 +4,15 @@
   "slug": "auto-complete",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Trie",
+      "Autocomplete",
+      "Prefix Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,33 @@
   },
   "content": {
     "problemStatement": "Complete the function autocomplete to print all the words in the trie that start with a string SSS. The string SSS is passed as an argument in the function",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 1000",
+      "1 <= length of each word <= 100",
+      "1 <= length of S <= 100",
+      "All words contain only lowercase letters 'a'-'z'"
+    ],
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains an integer N, the number of words, followed by a string S, the prefix to search. Then N lines follow, each containing one word consisting of lowercase English letters.",
+    "outputFormat": "For each test case, print all words that start with the given prefix S, one word per line, in lexicographical order. If no word matches, print nothing for that test case.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "10 sa\nhello \nworld\ncode\nchef\nso\nsafari\nsafe\nsafer\nsave\nsaved",
-        "output": "safari\nsafe\nsafer\nsave\nsaved",
-        "explanation": ""
+        "input": "1\n5\nsa\nhello \nworld\ncode\nchef\nso\nsafari\nsafe\nsafer\nsave\nsaved",
+        "output": "sa\nsafari\nsafe\nsafer\nsave\nsaved",
+        "explanation": "The given string S is 'sa'. The words in the Trie that start with 'sa' are 'sa', 'safari', 'safe', 'safer', 'save', and 'saved'."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3\nab\nabc\nabcd\nabce",
+        "output": "abc\nabcd\nabce",
+        "explanation": "The given string S is 'ab'. The words in the Trie that start with 'ab' are 'abc', 'abcd', and 'abce'."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n2\na\nb",
+        "output": "",
+        "explanation": "The given string S is 'a'. There is no word in the Trie that starts with 'a'."
       }
     ]
   },
@@ -36,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "10 sa\nhello \nworld\ncode\nchef\nso\nsafari\nsafe\nsafer\nsave\nsaved",
-        "expectedOutput": "safari\nsafe\nsafer\nsave\nsaved",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\na\na",
+        "expectedOutput": "a",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n1000\na\na\na\na\na\na\na\na\na\na",
+        "expectedOutput": "a\na\na\na\na\na\na\na\na\na",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5\naaaa\naaaa\naaaa\naaaa\naaaa",
+        "expectedOutput": "aaaa\naaaa\naaaa\naaaa\naaaa",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n5\nabc\nabcd\nabce\nabcf\nabcg",
+        "expectedOutput": "abc\nabcd\nabce\nabcf\nabcg",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10\n5\na\nb\nc\nd\ne\nf\ng\nh\ni\nj",
+        "expectedOutput": "a\nb\nc\nd\ne\nf\ng\nh\ni\nj",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea of this solution is to use a **Trie** (pronounced as “try”), which is a specialized tree-like data structure used for storing a dynamic set of strings. Each node in the Trie represents a character of a word, and it allows for efficient insertion and search operations.\n\n\n\n**TrieNode Structure**:\n\n\n\n\nEach `TrieNode` has an array of pointers (`children`) to its child nodes, representing the next characters in the words.\n\n\n\n\nA boolean flag (`isEndOfWord`) indicates if the node marks the end of a valid word.\n\n\n\n\n\n\n**Trie Class**: `insert(const string&amp; word)`\n\n\n\n\nThis function inserts a word into the Trie by iterating through each character of the word.\n\n\n\n\nFor each character, it checks if the corresponding child node exists; if not, it creates a new node.\n\n\n\n\nOnce all characters of the word are processed, it marks the last node as the end of a word.\n\n\n\n\n\n\n**search(const string&amp; word)**:\n\n\n\n\nThis function searches for a word in the Trie by checking if the characters exist in sequence.\n\n\n\n\nIt returns true if the word exists in the Trie and is marked as an end of a word.\n\n\n\n\n\n\n**Main Function**:\n\n\n\n\nFirst, it reads a number of words to be inserted into the Trie.\n\n\n\n\nIt then reads words to be searched and prints “correct” if found and “incorrect” otherwise.\n\n\n\n\n\nThis logic makes the Trie a powerful tool for prefix-based search problems and ensures efficient lookup times.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem can be solved using a Trie data structure. First, we insert all the words into the Trie. Then, we search for the prefix S in the Trie and perform a depth-first search to find all words that start with S.",
+    "timeComplexity": "O(N * M) for inserting words into the Trie, where N is the number of words and M is the maximum length of a word. O(26^M) for searching and printing all words that start with the prefix S, where M is the length of the prefix S.",
+    "spaceComplexity": "O(N * M) for storing the Trie, where N is the number of words and M is the maximum length of a word.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int ALPHABET_SIZE = 26;\n\nstruct TrieNode {\n    TrieNode* children[ALPHABET_SIZE];\n    bool isEndOfWord;\n\n    TrieNode() : isEndOfWord(false) {}\n};\n\nclass Trie {\npublic:\n    TrieNode* root;\n    Trie() {\n        root = new TrieNode();\n    }\n\n    void insert(const string& word) {\n        TrieNode* current = root;\n        for (char ch : word) {\n            int index = ch - 'a';\n            if (current->children[index] == NULL) {\n                current->children[index] = new TrieNode();\n            }\n            current = current->children[index];\n        }\n        current->isEndOfWord = true;\n    }\n    \n\n    bool nodeHasNoChildren(TrieNode* node) {\n        for (TrieNode* child : node->children) {\n            if (child != nullptr) {\n                return false;\n            }\n        }\n        return !node->isEndOfWord;\n    }\n    \n    bool search(const string& word) {\n        TrieNode* node = searchNode(word);\n        return (node != NULL && node->isEndOfWord);\n    }\n    \n    TrieNode* searchNode(const string& word) {\n        TrieNode* current = root;\n        for (char ch : word) {\n            int index = ch - 'a';\n            if (current->children[index] == NULL) {\n                return NULL; // Character not found in the trie\n            }\n            current = current->children[index];\n        }\n        return current;\n    }\n    \n    \n    void autocomplete(string s){\n        TrieNode* current = root;\n        for(auto ch: s)\n        {\n            int index = ch-'a';\n            if (current->children[index] == NULL) {\n                return;\n            }\n            current = current->children[index];\n        }\n        string currentWord = s;\n        printWordsRecursive(current, currentWord);\n    }\n    \n    void printWordsRecursive(TrieNode* node, string& currentWord) {\n        if (node == NULL) {\n            return;\n        }\n\n        if (node->isEndOfWord) {\n            cout << currentWord << endl;\n        }\n\n        for (int i = 0; i < ALPHABET_SIZE; ++i) {\n            if (node->children[i] != NULL) {\n                currentWord.push_back('a' + i);\n                printWordsRecursive(node->children[i], currentWord);\n                currentWord.pop_back();\n            }\n        }\n    }\n};\n\nint main() {\n    \n    Trie trie;\n    int n;\n    cin>>n;\n    string s;\n    cin>>s;\n    for(int i=0; i<n; i++)\n    {\n        string word;\n        cin>>word;\n        trie.insert(word);\n    }\n    trie.autocomplete(s);\n    return 0;\n}\n",
-      "Python3": "class Trie:\n    ALPHABET_SIZE = 26\n\n    class TrieNode:\n        def __init__(self):\n            self.children = [None] * Trie.ALPHABET_SIZE\n            self.isEndOfWord = False\n\n    def __init__(self):\n        self.root = self.TrieNode()\n\n    def insert(self, word):\n        current = self.root\n        for ch in word:\n            index = ord(ch) - ord('a')\n            if current.children[index] is None:\n                current.children[index] = self.TrieNode()\n            current = current.children[index]\n        current.isEndOfWord = True\n\n\n    def _node_has_no_children(self, node):\n        return all(child is None for child in node.children) and not node.isEndOfWord\n\n    def search(self, word):\n        node = self._search_node(word)\n        return node is not None and node.isEndOfWord\n\n    def _search_node(self, word):\n        current = self.root\n        for ch in word:\n            index = ord(ch) - ord('a')\n            if current.children[index] is None:\n                return None  # Character not found in the trie\n            current = current.children[index]\n        return current\n\n    def print_all_words(self):\n        current_word = []\n        self._print_words_recursive(self.root, current_word)\n\n    def _print_words_recursive(self, node, current_word):\n        if node is None:\n            return\n\n        if node.isEndOfWord:\n            print(''.join(current_word))\n\n        for i in range(self.ALPHABET_SIZE):\n            if node.children[i] is not None:\n                current_word.append(chr(ord('a') + i))\n                self._print_words_recursive(node.children[i], current_word)\n                current_word.pop()\n                \n    def autocomplete(self, s):\n        current = self.root\n        for ch in s:\n            index = ord(ch) - ord('a')\n            if current.children[index] is None:\n                return\n            current = current.children[index]\n        current_word = list(s)\n        self._print_words_recursive(current, current_word)\n\n\n\nif __name__ == \"__main__\":\n    trie = Trie()\n    n, s = (input().split())\n    n = int(n)\n    for i in range(n):\n        word = input().strip()\n        trie.insert(word)\n    \n    trie.autocomplete(s)\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define ALPHABET_SIZE 26\n\nstruct TrieNode {\n    struct TrieNode* children[ALPHABET_SIZE];\n    int isEndOfWord;\n};\n\ntypedef struct TrieNode TrieNode;\n\nstruct Trie {\n    TrieNode* root;\n};\n\ntypedef struct Trie Trie;\n\nTrieNode* createNode() {\n    TrieNode* newNode = (TrieNode*)malloc(sizeof(TrieNode));\n    if (newNode != NULL) {\n        newNode->isEndOfWord = 0;\n        for (int i = 0; i < ALPHABET_SIZE; ++i) {\n            newNode->children[i] = NULL;\n        }\n    }\n    return newNode;\n}\n\nTrie* createTrie() {\n    Trie* trie = (Trie*)malloc(sizeof(Trie));\n    if (trie != NULL) {\n        trie->root = createNode();\n    }\n    return trie;\n}\n\nvoid insert(Trie* trie, const char* word) {\n    TrieNode* current = trie->root;\n    while (*word != '\\0') {\n        int index = *word - 'a';\n        if (current->children[index] == NULL) {\n            current->children[index] = createNode();\n        }\n        current = current->children[index];\n        ++word;\n    }\n    current->isEndOfWord = 1;\n}\n\nint nodeHasNoChildren(TrieNode* node) {\n    for (int i = 0; i < ALPHABET_SIZE; ++i) {\n        if (node->children[i] != NULL) {\n            return 0;\n        }\n    }\n    return !node->isEndOfWord;\n}\n\n\nTrieNode* searchNode(Trie* trie, const char* word) {\n    TrieNode* current = trie->root;\n    while (*word != '\\0') {\n        int index = *word - 'a';\n        if (current->children[index] == NULL) {\n            return NULL; // Character not found in the trie\n        }\n        current = current->children[index];\n        ++word;\n    }\n    return current;\n}\n\nint search(Trie* trie, const char* word) {\n    TrieNode* node = searchNode(trie, word);\n    return (node != NULL && node->isEndOfWord);\n}\n\n\n\n\nvoid printWordsRecursive(TrieNode* node, char* currentWord, int depth) {\n    if (node == NULL) {\n        return;\n    }\n\n    if (node->isEndOfWord) {\n        currentWord[depth] = '\\0';\n        printf(\"%s\\n\", currentWord);\n    }\n\n    for (int i = 0; i < ALPHABET_SIZE; ++i) {\n        if (node->children[i] != NULL) {\n            currentWord[depth] = 'a' + i;\n            printWordsRecursive(node->children[i], currentWord, depth + 1);\n        }\n    }\n}\n\nvoid printAllWords(Trie* trie) {\n    char currentWord[ALPHABET_SIZE];\n    printWordsRecursive(trie->root, currentWord, 0);\n}\n\nvoid autocomplete(Trie* trie, const char* s) {\n    TrieNode* current = trie->root;\n    for (int i = 0; s[i] != '\\0'; ++i) {\n        int index = s[i] - 'a';\n        if (current->children[index] == NULL) {\n            return;\n        }\n        current = current->children[index];\n    }\n    char currentWord[ALPHABET_SIZE];\n    strcpy(currentWord, s);\n    printWordsRecursive(current, currentWord, strlen(s));\n}\n\nint main() {\n    Trie* trie = createTrie();\n\n    int n;\n    scanf(\"%d\", &n);\n    \n    char s[100]; // Assuming maximum word length is 100\n    scanf(\"%s\", s);\n    \n    for (int i = 0; i < n; ++i) {\n        char word[100]; // Assuming maximum word length is 100\n        scanf(\"%s\", word);\n        insert(&trie, word);\n    }\n\n    autocomplete(&trie, s);\n\n}\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Trie\n{\n    static final int ALPHABET_SIZE = 26;\n\n    static class TrieNode {\n        TrieNode[] children;\n        boolean isEndOfWord;\n\n        TrieNode() {\n            children = new TrieNode[ALPHABET_SIZE];\n            isEndOfWord = false;\n        }\n    }\n\n    TrieNode root;\n\n    Trie() {\n        root = new TrieNode();\n    }\n\n    void insert(String word) {\n        TrieNode current = root;\n        for (char ch : word.toCharArray()) {\n            int index = ch - 'a';\n            if (current.children[index] == null) {\n                current.children[index] = new TrieNode();\n            }\n            current = current.children[index];\n        }\n        current.isEndOfWord = true;\n    }\n\n    \n\n    boolean nodeHasNoChildren(TrieNode node) {\n        return Arrays.stream(node.children).allMatch(child -> child == null) && !node.isEndOfWord;\n    }\n\n    boolean search(String word) {\n        TrieNode node = searchNode(word);\n        return (node != null && node.isEndOfWord);\n    }\n\n    TrieNode searchNode(String word) {\n        TrieNode current = root;\n        for (char ch : word.toCharArray()) {\n            int index = ch - 'a';\n            if (current.children[index] == null) {\n                return null; // Character not found in the trie\n            }\n            current = current.children[index];\n        }\n        return current;\n    }\n\n    void printAllWords() {\n        StringBuilder currentWord = new StringBuilder();\n        printWordsRecursive(root, currentWord);\n    }\n\n    void printWordsRecursive(TrieNode node, StringBuilder currentWord) {\n        if (node == null) {\n            return;\n        }\n\n        if (node.isEndOfWord) {\n            System.out.println(currentWord);\n        }\n\n        for (int i = 0; i < ALPHABET_SIZE; ++i) {\n            if (node.children[i] != null) {\n                currentWord.append((char) ('a' + i));\n                printWordsRecursive(node.children[i], currentWord);\n                currentWord.deleteCharAt(currentWord.length() - 1);\n            }\n        }\n    }\n    \n    void autocomplete(String s) {\n        TrieNode current = root;\n        for (char ch : s.toCharArray()) {\n            int index = ch - 'a';\n            if (current.children[index] == null) {\n                return;\n            }\n            current = current.children[index];\n        }\n        StringBuilder currentWord = new StringBuilder();\n        currentWord.append(s);\n        printWordsRecursive(current, currentWord);\n    }\n}\nclass Codechef\n{\n\n    public static void main(String[] args) {\n        Trie trie = new Trie();\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        String s = scanner.next();\n        for (int i = 0; i < n; i++) {\n            String word = scanner.next();\n            trie.insert(word);\n        }\n\n        trie.autocomplete(s);\n    }\n}\n",
-      "JavaScript": "/*\nclass TrieNode {\n    constructor() {\n        this.children = new Array(ALPHABET_SIZE).fill(null); // Array to store children nodes\n        this.isEndOfWord = false; // Flag to indicate end of a word\n    }\n}\n\nclass Trie {\n    constructor() {\n        this.root = new TrieNode(); // Initialize root of the trie\n    }\n}\n*/\nTrie.prototype.autocomplete = function(prefix) {\n    let current = this.root;\n    for (let ch of prefix) {\n        const index = ch.charCodeAt(0) - 'a'.charCodeAt(0);\n        if (!current.children[index]) {\n            return; // Prefix not found in the trie\n        }\n        current = current.children[index]; // Move to the child node\n    }\n    let currentWord = prefix;\n    this.printWordsRecursive(current, currentWord);\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define ALPHABET 26\n\ntypedef struct Node{ struct Node* child[ALPHABET]; int isEnd; } Node;\n\nNode* newNode(){ Node* n=(Node*)malloc(sizeof(Node)); for(int i=0;i<ALPHABET;i++) n->child[i]=NULL; n->isEnd=0; return n; }\n\nvoid insert(Node* root, const char* s){ Node* cur=root; for(;*s;s++){\n    int idx=*s-'a';\n    if(!cur->child[idx]) cur->child[idx]=newNode();\n    cur=cur->child[idx];\n}\ncur->isEnd=1;\n}\n\nvoid dfs(Node* node, char* buffer, int depth){ if(node->isEnd){ buffer[depth]='\\0'; printf(\"%s\\n\",buffer); }\n    for(int i=0;i<ALPHABET;i++) if(node->child[i]){ buffer[depth]=i+'a'; dfs(node->child[i],buffer,depth+1); }\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; char S[105];\n        scanf(\"%d\",&N);\n        scanf(\"%s\",S);\n        Node* root=newNode();\n        for(int i=0;i<N;i++){\n            char w[105];\n            scanf(\"%s\",w);\n            insert(root,w);\n        }\n        Node* cur=root; int ok=1;\n        for(int i=0;S[i];i++){\n            int idx=S[i]-'a';\n            if(!cur->child[idx]){ ok=0; break; }\n            cur=cur->child[idx];\n        }\n        if(ok){\n            char buf[105];\n            strcpy(buf,S);\n            int len=strlen(S);\n            dfs(cur,buf,len);\n        }\n        if(T) printf(\"\\n\");\n        // free memory omitted for brevity\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Node{ Node* child[26]; bool end; Node(){ fill(begin(child),end(child),nullptr); end=false; } };\n\nvoid insert(Node* root,const string& s){ Node* cur=root; for(char c:s){ int idx=c-'a'; if(!cur->child[idx]) cur->child[idx]=new Node(); cur=cur->child[idx]; } cur->end=true; }\n\nvoid dfs(Node* node,string& cur){ if(node->end) cout<<cur<<\"\\n\"; for(int i=0;i<26;i++) if(node->child[i]){ cur.push_back('a'+i); dfs(node->child[i],cur); cur.pop_back(); } }\n\nint main(){ ios::sync_with_stdio(false); cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; while(T--){ int N; string S; cin>>N>>S; Node* root=new Node(); for(int i=0;i<N;i++){ string w; cin>>w; insert(root,w); }\n        Node* cur=root; bool ok=true; for(char c:S){ int idx=c-'a'; if(!cur->child[idx]){ ok=false; break; } cur=cur->child[idx]; }\n        if(ok){ string pref=S; dfs(cur,pref); }\n        if(T) cout<<\"\\n\"; // optional separator\n        // memory cleanup omitted\n    }\n    return 0; }\n",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        Node[] child = new Node[26];\n        boolean end = false;\n    }\n    static void insert(Node root, String s){\n        Node cur = root;\n        for(char c: s.toCharArray()){\n            int idx = c - 'a';\n            if(cur.child[idx]==null) cur.child[idx]=new Node();\n            cur = cur.child[idx];\n        }\n        cur.end = true;\n    }\n    static void dfs(Node node, StringBuilder sb, BufferedWriter out) throws IOException{\n        if(node.end){ out.write(sb.toString()); out.newLine(); }\n        for(int i=0;i<26;i++) if(node.child[i]!=null){\n            sb.append((char)('a'+i));\n            dfs(node.child[i], sb, out);\n            sb.deleteCharAt(sb.length()-1);\n        }\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N = Integer.parseInt(br.readLine().trim());\n            String S = br.readLine().trim();\n            Node root = new Node();\n            for(int i=0;i<N;i++){\n                String w = br.readLine().trim();\n                insert(root,w);\n            }\n            Node cur = root; boolean ok = true;\n            for(char c: S.toCharArray()){\n                int idx = c - 'a';\n                if(cur.child[idx]==null){ ok = false; break; }\n                cur = cur.child[idx];\n            }\n            if(ok){\n                StringBuilder sb = new StringBuilder(S);\n                dfs(cur, sb, out);\n            }\n            if(T>0) out.newLine(); // optional blank line between test cases\n        }\n        out.flush();\n    }\n}\n",
+      "Python3": "import sys\n\nclass Node:\n    __slots__ = ('child','end')\n    def __init__(self):\n        self.child = [None]*26\n        self.end = False\n\ndef insert(root, word):\n    cur = root\n    for ch in word:\n        idx = ord(ch)-97\n        if cur.child[idx] is None:\n            cur.child[idx] = Node()\n        cur = cur.child[idx]\n    cur.end = True\n\ndef dfs(node, path, out):\n    if node.end:\n        out.append(''.join(path))\n    for i in range(26):\n        child = node.child[i]\n        if child is not None:\n            path.append(chr(i+97))\n            dfs(child, path, out)\n            path.pop()\n\ndef solve():\n    data = sys.stdin.read().splitlines()\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        S = next(it).strip()\n        root = Node()\n        for _ in range(N):\n            w = next(it).strip()\n            insert(root, w)\n        cur = root\n        ok = True\n        for ch in S:\n            idx = ord(ch)-97\n            if cur.child[idx] is None:\n                ok = False\n                break\n            cur = cur.child[idx]\n        if ok:\n            dfs(cur, list(S), out_lines)\n        if _ != T-1:\n            out_lines.append('')  # optional separator (will produce a blank line)\n    sys.stdout.write('\\n'.join(out_lines).rstrip('\\n'))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0,'utf-8').trim().split(/\\n/);\nlet idx = 0;\nconst T = parseInt(lines[idx++].trim(),10);\nlet output = [];\nfunction newNode(){ return {child:Array(26).fill(null), end:false}; }\nfunction insert(root, word){ let cur=root; for(let ch of word){ let i=ch.charCodeAt(0)-97; if(!cur.child[i]) cur.child[i]=newNode(); cur=cur.child[i]; } cur.end=true; }\nfunction dfs(node, path){ if(node.end) output.push(path.join(''));\n    for(let i=0;i<26;i++) if(node.child[i]){ path.push(String.fromCharCode(97+i)); dfs(node.child[i],path); path.pop(); }\n}\nfor(let t=0;t<T;t++){\n    const N = parseInt(lines[idx++].trim(),10);\n    const S = lines[idx++].trim();\n    const root = newNode();\n    for(let i=0;i<N;i++) insert(root, lines[idx++].trim());\n    let cur=root; let ok=true;\n    for(let ch of S){ let i=ch.charCodeAt(0)-97; if(!cur.child[i]){ ok=false; break; } cur=cur.child[i]; }\n    if(ok) dfs(cur, S.split(''));\n    if(t!==T-1) output.push(''); // optional blank line between test cases\n}\nconsole.log(output.join('\\n'));\n"
     }
   }
 }

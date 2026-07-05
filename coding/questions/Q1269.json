@@ -4,14 +4,13 @@
   "slug": "least-significant-bit-and-most-significant-bit",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "bit manipulation",
-      "data structures and algorithms"
+      "Bit Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,22 +20,29 @@
   "content": {
     "problemStatement": "Least Significant BitThe least significant bit (LSB) is the rightmost bit in a binary representation of a number. In binary, each digit or bit represents a power of 2. The least significant bit represents the smallest power of 2 in the binary number, typically 20 or 1.\n\nFor example, in the 8-bit binary number 11010101, the least significant bit is the rightmost bit, which is 1 in this case.\n\nChanging the least significant bit from 0 to 1 or from 1 to 0 results in a change of the least amount in the value of the number. This property is often used in various applications, such as error detection, cryptography, and certain data encoding techniques.\n\nMost Significant BitThe most significant bit (MSB) is the leftmost bit in a binary representation of a number. In binary notation, each bit represents a power of 2, with the leftmost bit typically representing the largest power of 2 in the number. The term \"most significant\" indicates that this bit contributes the most to the overall value of the number.\n\nFor example, in the 8-bit binary number 11010101, the most significant bit is the leftmost bit, which is 1 in this case.\n\nTask\nFor the given number flip the most significant bit and the least significant bit and return the number.",
     "constraints": [
-      "2≤N≤10182 \\leq N \\leq 10^{18}2≤N≤1018"
+      "1 <= T <= 10",
+      "2 <= N <= 10^18"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a single integer N (2 ≤ N ≤ 10^18).",
+    "outputFormat": "For each test case output a single line with the integer obtained after flipping the most significant bit and the least significant bit of N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "6",
-        "output": "3",
-        "explanation": "Explanation:\nBinary form = 110\nMSB = 1, LSB = 0\nFlip them to get 011\nConvert back to decimal to get 3\n\nOutput = 3"
+        "input": "3\n6\n7\n10",
+        "output": "3\n2\n3",
+        "explanation": "6 (110) → flip MSB (bit2) and LSB (bit0) → 011 = 3. 7 (111) → flip MSB (bit2) and LSB (bit0) → 010 = 2. 10 (1010) → flip MSB (bit3) and LSB (bit0) → 0011 = 3."
       },
       {
         "id": "sample_2",
-        "input": "7",
-        "output": "2",
-        "explanation": "Explanation:\nBinary form = 111\nMSB = 1, LSB = 1\nFlip MSB and LSB. MSB becomes 0, LSB becomes 0. The new binary is 010\nConvert back to decimal that is 2\n\nOutput = 2"
+        "input": "2\n2\n15",
+        "output": "1\n6",
+        "explanation": "2 (10) → flip bits 1 and 0 → 01 = 1. 15 (1111) → flip bits 3 and 0 → 0110 = 6."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n8",
+        "output": "1",
+        "explanation": "8 (1000) → flip bits 3 and 0 → 0001 = 1."
       }
     ]
   },
@@ -44,27 +50,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "6",
-        "expectedOutput": "3",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n2",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "7",
-        "expectedOutput": "2",
-        "weight": 50
+        "label": "large power of two",
+        "input": "1\n576460752303423488",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "3\n7\n7\n7",
+        "expectedOutput": "2\n2\n2",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "both ends are 1",
+        "input": "1\n3",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "mixed varied values",
+        "input": "5\n9\n12\n5\n16\n31",
+        "expectedOutput": "0\n5\n0\n1\n14",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -78,15 +110,15 @@
     ]
   },
   "solution": {
-    "approach": "The code idea is to flip the least significant and most significant bits of a given integer **n**. First, the least significant bit (LSB), which is the rightmost bit, is flipped using a bitwise XOR operation with `1` (`n = n ^ 1`). This toggles the LSB between 0 and 1. Next, to find the position of the most significant bit (MSB), we use a copy of **n** and continuously divide it by 2, counting each division until the number becomes zero. The count gives the MSB’s position. Finally, we flip this MSB by performing a bitwise XOR with `(1 &lt;&lt; pos)`, which shifts `1` to the MSB’s position and toggles it.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each N we need to toggle (flip) its most significant bit (MSB) and its least significant bit (LSB). The LSB is always bit 0, so we can toggle it with XOR 1. The position of the MSB is (bit_length(N) - 1). Toggling the MSB is done with XOR (1 << msb). Combining both toggles: result = N ^ 1 ^ (1 << msb). This runs in O(1) per test case.",
+    "timeComplexity": "O(T) overall, O(1) per test case.",
+    "spaceComplexity": "O(1) extra space.",
     "code": {
-      "C++": "class Solution {\npublic:\n    long long flipBits(long long n) {\n        // compute MSB position from the original n\n        long long orig = n;\n        int pos = 0;\n        long long tmp = orig;\n        while (tmp > 1) {    // move until tmp becomes 1 (MSB)\n            tmp >>= 1;\n            pos++;\n        }\n        // flip LSB\n        long long res = orig ^ 1LL;\n        // flip MSB using 64-bit shift\n        res = res ^ (1ULL << pos);\n        return res;\n    }\n};\n",
-      "Python3": "class Solution:\n    def flipBits(self, n: int) -> int:\n        if n == 0:\n            return 1  # optional edge case\n\n        # find MSB position from the original number\n        pos = 0\n        n1 = n\n        while n1 > 1:\n            n1 //= 2\n            pos += 1\n\n        # flip LSB\n        res = n ^ 1\n        # flip MSB (may be same bit if n == 1)\n        res = res ^ (1 << pos)\n\n        return res\n",
-      "C": "long long flipBitsFunc(long long n) {\n    if (n == 0) return 1; // optional edge case\n\n    // find MSB position from the original number\n    int pos = 0;\n    long long tmp = n;\n    while (tmp > 1) {\n        tmp >>= 1;\n        pos++;\n    }\n\n    // flip LSB\n    long long res = n ^ 1LL;\n    // flip MSB (may be same bit if n == 1)\n    res = res ^ (1LL << pos);\n\n    return res;\n}\n",
-      "Java": "class Solution {\n    public long flipBits(long n) {\n        if (n == 0) return 1; // optional safeguard\n\n        // find MSB position from the original number\n        long tmp = n;\n        int pos = 0;\n        while (tmp > 1) {\n            tmp >>= 1;\n            pos++;\n        }\n\n        // flip LSB\n        long res = n ^ 1L;\n        // flip MSB (may be the same bit if n == 1)\n        res = res ^ (1L << pos);\n\n        return res;\n    }\n}\n",
-      "JavaScript": "class Solution {\n  flipBits(n) {\n    // accept Number or BigInt input\n    let x = (typeof n === 'bigint') ? n : BigInt(n);\n\n    // optional: handle 0 if you want a defined behavior\n    if (x === 0n) return 1; // returns Number 1\n\n    // find MSB position from the ORIGINAL number\n    let tmp = x;\n    let pos = 0n;\n    while (tmp > 1n) {    // stop when tmp becomes 1 (that is MSB)\n      tmp >>= 1n;\n      pos += 1n;\n    }\n\n    // flip LSB (bit 0) then flip MSB (bit pos)\n    let res = x ^ 1n;\n    res = res ^ (1n << pos);\n\n    // convert to Number if safe, otherwise return BigInt\n    if (res <= BigInt(Number.MAX_SAFE_INTEGER) && res >= BigInt(Number.MIN_SAFE_INTEGER)) {\n      return Number(res);\n    }\n    return res;\n  }\n}"
+      "C": "#include <stdio.h>\n#include <stdint.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        unsigned long long n;\n        scanf(\"%llu\", &n);\n        int msb = 0;\n        unsigned long long tmp = n;\n        while (tmp > 1) {\n            tmp >>= 1;\n            msb++;\n        }\n        unsigned long long result = n ^ 1ULL ^ (1ULL << msb);\n        printf(\"%llu\\n\", result);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if(!(cin >> T)) return 0;\n    while (T--) {\n        unsigned long long n;\n        cin >> n;\n        int msb = 0;\n        unsigned long long tmp = n;\n        while (tmp > 1) { tmp >>= 1; ++msb; }\n        unsigned long long result = n ^ 1ULL ^ (1ULL << msb);\n        cout << result << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            long n = Long.parseLong(br.readLine().trim());\n            int msb = 63 - Long.numberOfLeadingZeros(n);\n            long result = n ^ 1L ^ (1L << msb);\n            sb.append(result).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        n = int(next(it))\n        msb = n.bit_length() - 1\n        result = n ^ 1 ^ (1 << msb)\n        out.append(str(result))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let i = 0; i < T; i++) {\n    let n = BigInt(input[idx++]);\n    let msb = 0n;\n    let temp = n;\n    while (temp > 1n) { temp >>= 1n; msb++; }\n    let result = n ^ 1n ^ (1n << msb);\n    outputs.push(result.toString());\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "distinct-characters-subsequence",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "hashing",
-      "data structures and algorithms"
+      "Counting Distinct",
+      "Hash Set",
+      "ASCII"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +22,30 @@
   "content": {
     "problemStatement": "You have initially a string of **N** characters, denoted by **A1,A2...AN**. You have to print the size of the largest subsequence of string **A** such that all the characters in that subsequence are distinct ie. no two characters in that subsequence should be same.\n\nA subsequence of string **A** is a sequence that can be derived from **A** by deleting some elements  and without changing the order of the remaining elements.",
     "constraints": [
-      "**1** ≤ **T** ≤ **10**",
-      "Subtask 1 (20 points):**1** ≤ **N** ≤ **10**",
-      "Subtask 2 (80 points):**1** ≤ **N** ≤ **105**"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "All characters are standard ASCII (code 0‑255)"
     ],
-    "inputFormat": "First line contains **T**, number of testcases. Each testcase consists of a single string in one line. Each character of the string will be a small alphabet(ie. 'a' to 'z').",
-    "outputFormat": "For each testcase, print the required answer in one line.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting of printable ASCII characters (code 0‑255). The length of S is N (1 ≤ N ≤ 100000).",
+    "outputFormat": "For each test case output a single integer on its own line – the maximum possible length of a subsequence of S that contains only distinct characters.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\nabc\naba",
-        "output": "3\n2",
-        "explanation": "Explanation:\nFor first testcase, the whole string is a subsequence which has all distinct characters.\nIn second testcase, the we can delete last or first 'a' to get the required subsequence."
+        "input": "1\\nabc",
+        "output": "3",
+        "explanation": "All three characters are different, so the whole string can be taken as the subsequence."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\naba",
+        "output": "2",
+        "explanation": "The character 'a' appears twice; we can keep one 'a' and the 'b', giving a subsequence of length 2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\nxyz",
+        "output": "3",
+        "explanation": "All characters are distinct, therefore the answer equals the string length."
       }
     ]
   },
@@ -40,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\nabc\naba",
-        "expectedOutput": "3\n2",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\na",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\nABCDEFGHIJKLMNO",
+        "expectedOutput": "15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\naaaaaaaaaa",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case with spaces and punctuation",
+        "input": "1\\na A a!",
+        "expectedOutput": "4",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general mixed cases",
+        "input": "5\\nabcABC123\\nabca\\n112233!!@@##\\nThe quick brown fox\\n~`~`~",
+        "expectedOutput": "9\\n3\\n6\\n16\\n2",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The longest subsequence with all distinct characters can contain at most one occurrence of each character present in the original string. Hence the answer equals the number of different characters that appear in the string. We simply scan the string once, mark each character (0‑255) as seen using a boolean array of size 256, and count how many new characters are encountered. This works because the order of characters does not matter for a subsequence – we can always pick the first occurrence of each distinct character. The algorithm runs in O(N) time per test case and uses O(1) extra memory (256 booleans).",
+    "timeComplexity": "O(N) per test case, O(total length of all strings) overall",
+    "spaceComplexity": "O(1) – a fixed array of 256 booleans",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int t;\n    cin>>t;\n    while(t--)\n    {\n        string s;\n        cin>>s;\n        int n=s.length();\n        set<char>st;\n        for(int i=0;i<n;i++)\n        {\n            st.insert(s[i]);\n        }\n        cout<<st.size()<<\"\\n\";\n    }\n\n}",
-      "Python3": "t = int(input())\nfor _ in range(t):\n    s = input().strip()\n    unique_chars = set(s)\n    print(len(unique_chars))\n",
-      "C": "#include <stdio.h>\n#include <string.h>\n\nint unique_char_count(char s[]) {\n    int count = 0;\n    int freq[256] = {0}; // Array to keep track of character frequency\n    int len = strlen(s);\n\n    for (int i = 0; i < len; i++) {\n        if (freq[(int)s[i]] == 0) {\n            count++;\n            freq[(int)s[i]] = 1;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        char s[100001]; // Assuming a max string length of 100000\n        scanf(\"%s\", s);\n        printf(\"%d\\n\", unique_char_count(s));\n    }\n    return 0;\n}\n",
-      "Java": "import java.util.HashSet;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int t = sc.nextInt();\n        sc.nextLine(); // To consume the newline character after the integer input\n        while (t-- > 0) {\n            String s = sc.nextLine();\n            int n = s.length();\n            HashSet<Character> st = new HashSet<>();\n            for (int i = 0; i < n; i++) {\n                st.add(s.charAt(i));\n            }\n            System.out.println(st.size());\n        }\n        sc.close();\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    let t = parseInt(input[0]);\n    for (let i = 1; i <= t; i++) {\n        let s = input[i];\n        let uniqueChars = new Set(s);\n        console.log(uniqueChars.size);\n    }\n});\n"
+      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; int c=getchar(); // consume newline\nfor(int tc=0; tc<T; ++tc){char buf[100005];\n    // read non‑empty line (may contain spaces)\n    while(fgets(buf,sizeof(buf),stdin)){\n        size_t len=strlen(buf);\n        if(len==0) continue;\n        if(buf[len-1]=='\\n') buf[--len]='\\0';\n        if(len==0) continue; // skip blank lines\n        break;\n    }\n    bool seen[256]={false};\n    int distinct=0;\n    for(size_t i=0; buf[i]!='\\0'; ++i){unsigned char ch=(unsigned char)buf[i]; if(!seen[ch]){seen[ch]=true; ++distinct;}}\n    printf(\"%d\\n\",distinct);\n}\nreturn 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; string line; getline(cin,line); // consume end‑of‑line\n    for(int tc=0; tc<T; ++tc){\n        // read non‑empty line (may contain spaces)\n        while(true){\n            if(!getline(cin,line)) return 0;\n            if(!line.empty()) break;\n        }\n        bool seen[256]={false};\n        int distinct=0;\n        for(unsigned char ch: line){ if(!seen[ch]){ seen[ch]=true; ++distinct; } }\n        cout<<distinct<<'\\n';\n    }\n    return 0; }",
+      "Java": "import java.io.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String first = br.readLine();\n        if(first==null) return;\n        int T = Integer.parseInt(first.trim());\n        StringBuilder out = new StringBuilder();\n        for(int tc=0; tc<T; ++tc){\n            String s;\n            while(true){\n                s = br.readLine();\n                if(s==null) return; // no more input\n                if(!s.isEmpty()) break;\n            }\n            boolean[] seen = new boolean[256];\n            int distinct = 0;\n            for(int i=0;i<s.length();++i){\n                int ch = s.charAt(i);\n                if(!seen[ch]){ seen[ch]=true; ++distinct; }\n            }\n            out.append(distinct).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}\n",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().splitlines()\n    if not data:\n        return\n    t = int(data[0].strip())\n    idx = 1\n    out = []\n    for _ in range(t):\n        while idx < len(data) and data[idx] == '':\n            idx += 1\n        if idx >= len(data):\n            break\n        s = data[idx]\n        idx += 1\n        out.append(str(len(set(s))))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').split('\\n');\nlet t = parseInt(input[0].trim(),10);\nlet idx = 1;\nlet res = [];\nfor(let caseNum=0; caseNum<t; ++caseNum){\n    while(idx < input.length && input[idx].length===0) idx++;\n    if(idx>=input.length) break;\n    const s = input[idx];\n    idx++;\n    const set = new Set();\n    for(let i=0;i<s.length;++i) set.add(s[i]);\n    res.push(String(set.size));\n}\nconsole.log(res.join('\\n'));\n"
     }
   }
 }

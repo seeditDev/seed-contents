@@ -4,14 +4,15 @@
   "slug": "count-pairs",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Two Pointers",
+      "Sorting",
+      "Counting Pairs"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +22,32 @@
   "content": {
     "problemStatement": "Given a sorted array of integers and a value xxx, count the number of pairs (i,j)(i, j)(i,j) such that i&lt;ji &lt; ji&lt;j and the sum of arr[i]arr[i]arr[i] +++ arr[j]arr[j]arr[j] is less than xxx.\n\n\nInput Format\n\nThe first line contains an integer nnn, the number of elements in the array.\nThe second line contains nnn integers representing the elements of the sorted array.\nThe third line contains the integer xxx.\n\n\nOutput Format\nOutput a single integer, the number of pairs whose sum is less than xxx.",
     "constraints": [
-      "1≤n≤1051 \\leq n \\leq 10^51≤n≤105",
-      "0≤arr[i]≤1050 \\leq arr[i] \\leq 10^50≤arr[i]≤105",
-      "0≤x≤1080 \\leq x \\leq 10^80≤x≤108"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "0 <= a[i] <= 100000",
+      "0 <= X <= 100000000",
+      "The array a is sorted in non‑decreasing order."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: first line contains an integer N, the size of the sorted array. Second line contains N space‑separated integers in non‑decreasing order. Third line contains the integer X.",
+    "outputFormat": "For each test case output a single line containing the number of pairs (i, j) with i < j and a[i] + a[j] < X.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n1 2 3 4 5\n7",
+        "input": "1\n5\n1 2 3 4 5\n7",
         "output": "6",
-        "explanation": "Explanation:\nThe pairs that have a sum less than 7 are:\n\n(1, 2), sum = 3\n(1, 3), sum = 4\n(1, 4), sum = 5\n(1, 5), sum = 6\n(2, 3), sum = 5\n(2, 4), sum = 6\n\nThus, the total number of such pairs is 6."
+        "explanation": "Pairs with sum < 7 are (1,2),(1,3),(1,4),(1,5),(2,3),(2,4) → 6 pairs."
       },
       {
         "id": "sample_2",
-        "input": "6\n2 3 4 5 6 8\n10",
+        "input": "1\n6\n2 3 4 5 6 8\n10",
         "output": "8",
-        "explanation": "Explanation:\nThe pairs that have a sum less than 10 are:\n\n(2, 3), sum = 5\n(2, 4), sum = 6\n(2, 5), sum = 7\n(2, 6), sum = 8\n(3, 4), sum = 7\n(3, 5), sum = 8\n(3, 6), sum = 9\n(4, 5), sum = 9\n\nThus, the total number of such pairs is 9."
+        "explanation": "Valid pairs: (2,3),(2,4),(2,5),(2,6),(3,4),(3,5),(3,6),(4,5) → 8 pairs."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n1 2 3 4\n5",
+        "output": "2",
+        "explanation": "Pairs with sum < 5 are (1,2),(1,3) → 2 pairs."
       }
     ]
   },
@@ -46,27 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n1 2 3 4 5\n7",
-        "expectedOutput": "6",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1\n0\n0",
+        "expectedOutput": "0",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "6\n2 3 4 5 6 8\n10",
-        "expectedOutput": "8",
-        "weight": 50
+        "label": "maximum boundary (compact)",
+        "input": "1\n15\n100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000\n200001",
+        "expectedOutput": "105",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case (all zeros)",
+        "input": "1\n5\n0 0 0 0 0\n1",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case (no valid pairs)",
+        "input": "1\n3\n1 2 3\n0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general (multiple test cases)",
+        "input": "3\n4\n1 2 3 4\n5\n6\n2 3 4 5 6 8\n10\n5\n1 5 9 10 12\n15",
+        "expectedOutput": "2\\n8\\n5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea to solve this problem is to use a two-pointer technique on the sorted array to efficiently count the pairs. We initialize two pointers: one at the start of the array (`left`) and the other at the end (`right`). By checking the sum of the elements at these pointers, we can determine if it is less than **X**. If it is, all elements between the `left` and `right` pointers also form valid pairs with the element at the `left` pointer, so we count those pairs and move the `left` pointer to the right. If the sum is not less than **X**, we move the `right` pointer to the left to try and reduce the sum. We repeat this process until the `left` pointer meets the `right` pointer.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "Because the array is sorted we can use the two‑pointer technique. Keep a left pointer l at the start and a right pointer r at the end. If a[l] + a[r] < X, then for this l all elements between l+1 and r form valid pairs with a[l]; we add (r‑l) to the answer and move l forward. Otherwise the sum is too large, so we move r backward. This scans the array once, giving O(N) time per test case and O(1) extra space.",
+    "timeComplexity": "O(N) per test case, O(total N) for the whole input.",
+    "spaceComplexity": "O(1) auxiliary space (besides the input array).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countPairsLessThanX(vector<int>& arr, int x) {\n    long long count = 0;\n    int left = 0, right = arr.size() - 1;\n    while (left < right) {\n        if (arr[left] + arr[right] < x) {\n            count += (right - left);\n            left++;\n        } else {\n            right--;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int n, x;\n    cin >> n;\n    vector<int> arr(n);\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n    cin >> x;\n    cout << countPairsLessThanX(arr, x) << endl;\n    return 0;\n}",
-      "Python3": "def count_pairs_less_than_x(arr, x):\n    count = 0\n    left, right = 0, len(arr) - 1\n    while left < right:\n        if arr[left] + arr[right] < x:\n            count += (right - left)\n            left += 1\n        else:\n            right -= 1\n    return count\n\nif __name__ == \"__main__\":\n    n = int(input())\n    arr = list(map(int, input().split()))\n    x = int(input())\n    print(count_pairs_less_than_x(arr, x))",
-      "C": "#include <stdio.h>\n\nlong long countPairsLessThanX(int arr[], int n, int x) {\n    long long count = 0;\n    int left = 0, right = n - 1;\n    while (left < right) {\n        if (arr[left] + arr[right] < x) {\n            count += (right - left);\n            left++;\n        } else {\n            right--;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int n, x;\n    scanf(\"%d\", &n);\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    scanf(\"%d\", &x);\n    printf(\"%lld\\n\", countPairsLessThanX(arr, n, x));\n    return 0;\n}",
-      "Java": "import java.util.*;\n\npublic class Main {\n    public static long countPairsLessThanX(int[] arr, int x) {\n        long count = 0;\n        int left = 0, right = arr.length - 1;\n        while (left < right) {\n            if (arr[left] + arr[right] < x) {\n                count += (right - left);\n                left++;\n            } else {\n                right--;\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            arr[i] = sc.nextInt();\n        }\n        int x = sc.nextInt();\n        System.out.println(countPairsLessThanX(arr, x));\n    }\n}",
-      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const n = parseInt(input[0]);\n    const arr = input[1].split(' ').map(Number);\n    const x = parseInt(input[2]);\n\n    console.log(countPairsLessThanX(arr, x));\n});\n\nfunction countPairsLessThanX(arr, x) {\n    let count = 0;\n    let left = 0,\n        right = arr.length - 1;\n\n    while (left < right) {\n        if (arr[left] + arr[right] < x) {\n            count += (right - left);\n            left += 1;\n        } else {\n            right -= 1;\n        }\n    }\n    return count;\n}"
+      "C": "#include <stdio.h>\n\nlong long countPairs(int arr[], int n, int x) {\n    long long cnt = 0;\n    int l = 0, r = n - 1;\n    while (l < r) {\n        if (arr[l] + arr[r] < x) {\n            cnt += (r - l);\n            ++l;\n        } else {\n            --r;\n        }\n    }\n    return cnt;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, x;\n        scanf(\"%d\", &n);\n        int arr[100000];\n        for (int i = 0; i < n; ++i) {\n            scanf(\"%d\", &arr[i]);\n        }\n        scanf(\"%d\", &x);\n        printf(\"%lld\\n\", countPairs(arr, n, x));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countPairs(const vector<int>& a, int x) {\n    long long ans = 0;\n    int l = 0, r = (int)a.size() - 1;\n    while (l < r) {\n        if (a[l] + a[r] < x) {\n            ans += (r - l);\n            ++l;\n        } else {\n            --r;\n        }\n    }\n    return ans;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int n, x;\n        cin >> n;\n        vector<int> a(n);\n        for (int &v : a) cin >> v;\n        cin >> x;\n        cout << countPairs(a, x) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static long countPairs(int[] a, int x) {\n        long ans = 0;\n        int l = 0, r = a.length - 1;\n        while (l < r) {\n            if (a[l] + a[r] < x) {\n                ans += (r - l);\n                l++;\n            } else {\n                r--;\n            }\n        }\n        return ans;\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int n = Integer.parseInt(br.readLine().trim());\n            int[] a = new int[n];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());\n            int x = Integer.parseInt(br.readLine().trim());\n            sb.append(countPairs(a, x)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef count_pairs(arr, x):\n    cnt = 0\n    l, r = 0, len(arr) - 1\n    while l < r:\n        if arr[l] + arr[r] < x:\n            cnt += r - l\n            l += 1\n        else:\n            r -= 1\n    return cnt\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        n = int(next(it))\n        arr = [int(next(it)) for _ in range(n)]\n        x = int(next(it))\n        out.append(str(count_pairs(arr, x)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nfunction countPairs(arr, x) {\n    let cnt = 0;\n    let l = 0, r = arr.length - 1;\n    while (l < r) {\n        if (arr[l] + arr[r] < x) {\n            cnt += r - l;\n            l++;\n        } else {\n            r--;\n        }\n    }\n    return cnt;\n}\nif (input.length === 0) process.exit(0);\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n    const n = Number(input[idx++]);\n    const arr = new Array(n);\n    for (let i = 0; i < n; i++) arr[i] = Number(input[idx++]);\n    const x = Number(input[idx++]);\n    outputs.push(String(countPairs(arr, x)));\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }

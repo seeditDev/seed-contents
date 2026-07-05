@@ -4,14 +4,15 @@
   "slug": "all-possible-subsets",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Recursion",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "recursion & backtracking",
-      "data structures and algorithms"
+      "Backtracking",
+      "DFS",
+      "Sorting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +22,25 @@
   "content": {
     "problemStatement": "You are given an Array and you have to output all possible subsets of that array.\n\nFor Example:\nLet the array Arr = [1, 2, 3], It's possible subsets include:\n\n\n{}\n{1}\n{2}\n{3}\n{1, 2}\n{2, 3}\n{1, 3}\n{1, 2, 3}\n**Note** - Print the subsets in sorted order.\n\n\nInput Format\n\nThe first line of input will contain a single integer NNN, denoting the number of integers in the array.\nThe second line contains NNN integers.\n\n\nOutput Format\nOutput All the possible subsets of the given array.",
     "constraints": [
-      "1≤N≤101 \\leq N \\leq 101≤N≤10",
-      "1≤Ai≤1051 \\leq A_i \\leq 10^51≤Ai​≤105",
-      "There are no duplicate values in the array."
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 15",
+      "1 ≤ Ai ≤ 10^5",
+      "All Ai are distinct"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (1 ≤ N ≤ 15), the size of the array. The second line contains N distinct integers Ai (1 ≤ Ai ≤ 10^5) separated by spaces.",
+    "outputFormat": "For each test case, output all non‑empty subsets of the given array, one subset per line. Elements inside a subset are printed in increasing order and separated by a single space. Subsets are printed in the order produced by a depth‑first recursion that first decides to include the current element and then to exclude it (after sorting the original array). Do not print the empty subset. No extra blank lines are required between test cases.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n1 2 3",
-        "output": "1\n1 2\n1 2 3\n1 3\n2\n2 3\n3",
-        "explanation": ""
+        "input": "1\n3\n1 2 3",
+        "output": "1 2 3\n1 2\n1 3\n1\n2 3\n2\n3",
+        "explanation": "The array is sorted as [1,2,3]. The DFS that includes the current element before excluding it generates subsets in the shown order, skipping the empty set."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n2\n1 2",
+        "output": "1 2\n1\n2",
+        "explanation": "Sorted array [1,2] yields subsets {1,2}, {1}, {2} in the required order."
       }
     ]
   },
@@ -40,20 +48,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n1 2 3",
-        "expectedOutput": "1\n1 2\n1 2 3\n1 3\n2\n2 3\n3",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +108,15 @@
     ]
   },
   "solution": {
-    "approach": "**Recursive Function**: The `allPossibleSubsets` function takes the current index, the original array, the current subset being built, and a reference to all subsets found so far.\n**Base Case**: If the `index` reaches the size of the array, the current subset is added to the list of all subsets.\n**Recursive Cases**:\n\nFirst, it explores the case where the current element is not included.\nThen, it includes the current element in the subset and recursively explores further.\nAfter including the element, it backtracks by removing the last added element to ensure the next iteration starts with the correct state.\n\n\n**Backtracking**: The use of backtracking ensures that we explore all combinations without skipping any potential subsets.\n**Sorting**: After generating all subsets, we sort them to maintain the required order in the output.",
-    "timeComplexity": "The time complexity is O(2^N) because there are 2^N possible subsets for an array of size N. Each subset takes O(N) time to copy into the result.",
-    "spaceComplexity": "The space complexity is O(N) for the recursive call stack at maximum depth and O(2^N) for storing the subsets in the result. Thus, the overall space complexity is O(N+2^N).",
+    "approach": "For each test case we first sort the array so that every subset is generated in increasing order. Then we run a simple depth‑first recursion that processes the elements from left to right. At each index we first *include* the current element, recurse, then *exclude* it and recurse again. When the index reaches N we have built one subset; if it is non‑empty we output it. This traversal visits the leaves of the recursion tree in the order of decreasing binary numbers (1 = include, 0 = exclude), which matches the required output order. The algorithm visits every non‑empty subset exactly once, so the time complexity is O(2^N) per test case and the auxiliary space is O(N) for the recursion stack and current subset storage.",
+    "timeComplexity": "O(2^N) per test case (worst‑case number of subsets).",
+    "spaceComplexity": "O(N) auxiliary space for the recursion stack and temporary subset storage.",
     "code": {
-      "C++": "class Solution {\npublic:\n    // Recursive helper function\n    vector<vector<int>> generateSubsets(vector<int>& arr, int index) {\n        if (index == arr.size()) {\n            return {{}};\n        }\n\n        // Get subsets for the rest of the array\n        vector<vector<int>> subsets = generateSubsets(arr, index + 1);\n        vector<vector<int>> newSubsets;\n\n        for (auto subset : subsets) {\n            newSubsets.push_back(subset); // Without current element\n            subset.push_back(arr[index]); // Include current element\n            newSubsets.push_back(subset);\n        }\n\n        return newSubsets;\n    }\n\n    vector<vector<int>> getAllSubsets(vector<int>& arr) {\n        vector<vector<int>> subsets = generateSubsets(arr, 0);\n\n        for (auto& subset : subsets) {\n            sort(subset.begin(), subset.end());\n        }\n\n        sort(subsets.begin(), subsets.end());\n        return subsets;\n    }\n};\n",
-      "Python3": "class Solution:\n    def getAllSubsets(self, arr):\n        all_subsets = []\n\n        # Generate subsets of all sizes\n        for r in range(len(arr) + 1):\n            for combo in combinations(arr, r):\n                all_subsets.append(list(combo))\n\n        # Sort elements in each subset\n        for subset in all_subsets:\n            subset.sort()\n\n        # Sort all subsets\n        all_subsets.sort()\n        return all_subsets\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Sorts individual elements (already in your code)\nint compareInt(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\n// NEW: Sorts the subsets against each other in dictionary (lexicographical) order\nint compareSubsets(const void *a, const void *b) {\n    // Cast the void pointers to int pointers (representing our subsets)\n    int *subsetA = *(int**)a;\n    int *subsetB = *(int**)b;\n    \n    int i = 0;\n    // Compare element by element until one subset ends (hits the -1 sentinel)\n    while (subsetA[i] != -1 && subsetB[i] != -1) {\n        if (subsetA[i] != subsetB[i]) {\n            return subsetA[i] - subsetB[i];\n        }\n        i++;\n    }\n    \n    // If they are identical up to this point, the shorter subset should come first\n    if (subsetA[i] == -1 && subsetB[i] == -1) return 0;\n    if (subsetA[i] == -1) return -1;\n    return 1;\n}\n\nint** getAllSubsets(int *arr, int n, int *totalCount) {\n    int total = 1 << n;\n    *totalCount = total;\n    int **allSubsets = malloc(total * sizeof(int*));\n\n    for (int mask = 0; mask < total; mask++) {\n        int *subset = malloc((n + 1) * sizeof(int)); // +1 for sentinel -1\n        int k = 0;\n        for (int i = 0; i < n; i++) {\n            if (mask & (1 << i)) subset[k++] = arr[i];\n        }\n        \n        // Sort the individual subset\n        qsort(subset, k, sizeof(int), compareInt);\n        subset[k] = -1; // sentinel\n        allSubsets[mask] = subset;\n    }\n    \n    // FIX: Sort the entire array of subsets lexicographically before returning\n    qsort(allSubsets, total, sizeof(int*), compareSubsets);\n\n    return allSubsets;\n}",
-      "Java": "class Solution {\n\n    // Recursive function to generate subsets\n    private List<List<Integer>> generateSubsets(int[] arr, int index) {\n        if (index == arr.length) {\n            List<List<Integer>> base = new ArrayList<>();\n            base.add(new ArrayList<>()); // Empty subset\n            return base;\n        }\n\n        List<List<Integer>> subsets = generateSubsets(arr, index + 1);\n        List<List<Integer>> newSubsets = new ArrayList<>();\n\n        for (List<Integer> subset : subsets) {\n            newSubsets.add(new ArrayList<>(subset)); // Without current element\n\n            List<Integer> withCurrent = new ArrayList<>(subset);\n            withCurrent.add(arr[index]); // Include current element\n            newSubsets.add(withCurrent);\n        }\n\n        return newSubsets;\n    }\n\n    public List<List<Integer>> getAllSubsets(int[] arr) {\n        List<List<Integer>> subsets = generateSubsets(arr, 0);\n\n        for (List<Integer> subset : subsets) {\n            Collections.sort(subset);\n        }\n\n        subsets.sort((a, b) -> {\n            int minLen = Math.min(a.size(), b.size());\n            for (int i = 0; i < minLen; i++) {\n                if (!a.get(i).equals(b.get(i))) {\n                    return a.get(i) - b.get(i);\n                }\n            }\n            return a.size() - b.size();\n        });\n\n        return subsets;\n    }\n}\n",
-      "JavaScript": "class Solution {\n    // Recursive helper function\n    generateSubsets(arr, index) {\n        if (index === arr.length) {\n            return [[]]; // Base case: empty subset\n        }\n\n        const subsets = this.generateSubsets(arr, index + 1);\n        const newSubsets = [];\n\n        for (const subset of subsets) {\n            newSubsets.push([...subset]); // Without current element\n            newSubsets.push([...subset, arr[index]]); // Include current element\n        }\n\n        return newSubsets;\n    }\n\n    getAllSubsets(arr) {\n        let subsets = this.generateSubsets(arr, 0);\n\n        subsets = subsets.map(subset => subset.sort((a, b) => a - b));\n\n        subsets.sort((a, b) => {\n            const minLen = Math.min(a.length, b.length);\n            for (let i = 0; i < minLen; i++) {\n                if (a[i] !== b[i]) return a[i] - b[i];\n            }\n            return a.length - b.length;\n        });\n\n        return subsets;\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp(const void *a, const void *b) { return (*(int*)a) - (*(int*)b); }\n\nvoid dfs(int idx, int n, int *arr, int *temp, int sz) {\n    if (idx == n) {\n        if (sz == 0) return; // skip empty set\n        for (int i = 0; i < sz; ++i) {\n            if (i) printf(\" \");\n            printf(\"%d\", temp[i]);\n        }\n        printf(\"\\n\");\n        return;\n    }\n    // include arr[idx]\n    temp[sz] = arr[idx];\n    dfs(idx + 1, n, arr, temp, sz + 1);\n    // exclude arr[idx]\n    dfs(idx + 1, n, arr, temp, sz);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int *arr = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        qsort(arr, N, sizeof(int), cmp);\n        int *temp = (int*)malloc(N * sizeof(int));\n        dfs(0, N, arr, temp, 0);\n        free(temp);\n        free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid dfs(int idx, const vector<int>& a, vector<int>& cur) {\n    if (idx == (int)a.size()) {\n        if (cur.empty()) return; // skip empty set\n        for (size_t i = 0; i < cur.size(); ++i) {\n            if (i) cout << ' ';\n            cout << cur[i];\n        }\n        cout << '\\n';\n        return;\n    }\n    // include a[idx]\n    cur.push_back(a[idx]);\n    dfs(idx + 1, a, cur);\n    cur.pop_back();\n    // exclude a[idx]\n    dfs(idx + 1, a, cur);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int N; cin >> N;\n        vector<int> a(N);\n        for (int &x : a) cin >> x;\n        sort(a.begin(), a.end());\n        vector<int> cur;\n        dfs(0, a, cur);\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static void dfs(int idx, int[] arr, List<Integer> cur, StringBuilder out) {\n        if (idx == arr.length) {\n            if (cur.isEmpty()) return; // skip empty set\n            for (int i = 0; i < cur.size(); i++) {\n                if (i > 0) out.append(' ');\n                out.append(cur.get(i));\n            }\n            out.append('\\n');\n            return;\n        }\n        // include\n        cur.add(arr[idx]);\n        dfs(idx + 1, arr, cur, out);\n        cur.remove(cur.size() - 1);\n        // exclude\n        dfs(idx + 1, arr, cur, out);\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] arr = new int[N];\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n            Arrays.sort(arr);\n            dfs(0, arr, new ArrayList<>(), sb);\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef dfs(idx, arr, cur, out):\n    if idx == len(arr):\n        if not cur:\n            return\n        out.append(' '.join(map(str, cur)))\n        return\n    cur.append(arr[idx])\n    dfs(idx + 1, arr, cur, out)\n    cur.pop()\n    dfs(idx + 1, arr, cur, out)\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        arr.sort()\n        dfs(0, arr, [], out_lines)\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(data[pos++]);\nlet output = [];\nfunction dfs(idx, arr, cur) {\n    if (idx === arr.length) {\n        if (cur.length === 0) return; // skip empty set\n        output.push(cur.join(' '));\n        return;\n    }\n    cur.push(arr[idx]);\n    dfs(idx + 1, arr, cur);\n    cur.pop();\n    dfs(idx + 1, arr, cur);\n}\nfor (let t = 0; t < T; t++) {\n    const N = Number(data[pos++]);\n    let arr = [];\n    for (let i = 0; i < N; i++) arr.push(Number(data[pos++]));\n    arr.sort((a, b) => a - b);\n    dfs(0, arr, []);\n}\nconsole.log(output.join('\\n'));\n"
     }
   }
 }

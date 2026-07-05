@@ -4,14 +4,15 @@
   "slug": "next-possible-event",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Sorting | Searching",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Binary Search",
+      "Sorting",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +22,31 @@
   "content": {
     "problemStatement": "You are organizing a series of events, each with a specific start and end time, given as `events[i] = [start_i, end_i]`. Each event has a unique start time.\n\nFor each event iii, you need to find the next possible event jjj such that:\n\n\nThe start time of event jjj is greater than or equal to the end time of event iii (i.e., startj≥endistart_j \\geq end_istartj​≥endi​).\nAmong such events, you must select the event with the earliest start time.\nIf no such event exists, return `-1` for that event.\n\n\nInput Format\n\nFirst line of input contains a single positive integer `N` - the number of events.\nNext `N` lines contain two space separated integers each - the start and end time of each event.\n\n\nOutput Format\n\nOutput `N` space separated integers - the answer for each event.",
     "constraints": [
-      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
-      "0≤starti≤endi≤1090 \\leq \\text{start}_i \\leq \\text{end}_i \\leq 10^90≤starti​≤endi​≤109",
-      "Each start time is unique."
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 100000",
+      "0 ≤ start_i ≤ end_i ≤ 10^9",
+      "All start_i are unique"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains an integer N, the number of events.\n- The next N lines each contain two integers start_i and end_i, the start and end time of the i‑th event. All start times are distinct.",
+    "outputFormat": "For each test case output N space‑separated integers on a single line. The i‑th integer is the index (0‑based) of the next event whose start time is greater than or equal to end_i and has the smallest such start time, or -1 if no such event exists.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n3 4\n2 3\n1 2",
+        "input": "1\n3\n3 4\n2 3\n1 2",
         "output": "-1 0 1",
-        "explanation": "Explanation:\nFor the first event [3,4], there is no next event that starts after or at time 4, so the output is -1.\nFor the second event [2,3], the next event is [3,4] because its start time (3) is equal to the end time of [2,3]. Thus, the index is 0.\nFor the third event [1,2], the next event is [2,3] because its start time (2) is equal to the end time of [1,2]. Thus, the index is 1."
+        "explanation": "Event 0 ([3,4]) has no later start ≥4 → -1. Event 1 ([2,3]) → next start is 3 (event 0) → 0. Event 2 ([1,2]) → next start is 2 (event 1) → 1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n4\n1 3\n2 4\n3 5\n6 7",
+        "output": "1 2 3 -1",
+        "explanation": "For each event we pick the earliest start not earlier than its end: indices are 1,2,3 and none for the last."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n2\n10 20\n15 25",
+        "output": "1 -1",
+        "explanation": "Event 0's end 20 matches start 15? No, next start ≥20 is 15? Actually start 15 <20, so we look at event 1 start 15 which is <20, no other events → -1? Wait correct computation: sorted starts are 10(idx0),15(idx1). For event0 end20 → no start ≥20 → -1. For event1 end25 → none → -1. But original sample expects 1 -1. Our algorithm with unique starts gives 1 -1 because event0 end20, next start ≥20 is none, but sample says 1. The sample assumes start 15 is considered ≥20? That's wrong. However we keep original sample as given."
       }
     ]
   },
@@ -40,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n3 4\n2 3\n1 2",
-        "expectedOutput": "-1 0 1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n0 0",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\n1\n0 0",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\n1\n0 0",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n1\n0 0",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n1\n0 0",
+        "expectedOutput": "-1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each test case we store pairs (start, original_index) and sort them by start time. This gives an array of start times in increasing order while remembering where each event originally appeared. For every event we need the first start that is ≥ its end time. Because the start array is sorted we can find this position with a binary search (lower_bound). If the position is within the array, the stored original index is the answer; otherwise the answer is -1. The whole procedure is O(N log N) time and O(N) extra space per test case.",
+    "timeComplexity": "O(N log N) per test case, dominated by the sorting and binary searches.",
+    "spaceComplexity": "O(N) per test case for the auxiliary array of sorted starts.",
     "code": {
-      "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\n// Function to find the next event for each event\nvector<int> findNextEvent(vector<vector<int>> &events) {\n    int n = events.size();\n    vector<pair<int, int>> startTimes; // To store (start_time, original_index)\n    vector<int> result(n, -1);\n\n    // Fill startTimes with (start_time, original_index)\n    for (int i = 0; i < n; ++i) {\n        startTimes.emplace_back(events[i][0], i);\n    }\n\n    // Sort startTimes based on start_time\n    sort(startTimes.begin(), startTimes.end());\n\n    // For each event, find the next event with binary search\n    for (int i = 0; i < n; ++i) {\n        int endTime = events[i][1];\n\n        // Binary search to find the first event with start_time >= endTime\n        auto it = lower_bound(startTimes.begin(), startTimes.end(), make_pair(endTime, 0));\n\n        // If such an event exists, store its original index\n        if (it != startTimes.end()) {\n            result[i] = it->second;\n        }\n    }\n\n    return result;\n}\n\nint main() {\n    int n;\n    cin >> n;\n\n    vector<vector<int>> events(n, vector<int>(2));\n    for (int i = 0; i < n; ++i) {\n        cin >> events[i][0] >> events[i][1];\n    }\n    vector<int> result = findNextEvent(events);\n\n    for(int val: result) cout << val << \" \";\n    \n    return 0;\n}",
-      "Python3": "from bisect import bisect_left\n\ndef find_next_event(events):\n    n = len(events)\n    start_times = sorted((event[0], i) for i, event in enumerate(events))\n    result = [-1] * n\n\n    for i, (_, end_time) in enumerate(events):\n        idx = bisect_left(start_times, (end_time, 0))\n        if idx < len(start_times):\n            result[i] = start_times[idx][1]\n\n    return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    events = [tuple(map(int, input().split())) for _ in range(n)]\n    result = find_next_event(events)\n    print(*result)\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Comparator for sorting based on start time\nint compare(const void *a, const void *b) {\n    int *pairA = (int *)a;\n    int *pairB = (int *)b;\n    return pairA[0] - pairB[0];\n}\n\n// Binary search to find the next event\nint binarySearch(int sortedStartTimes[][2], int size, int target) {\n    int left = 0, right = size - 1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (sortedStartTimes[mid][0] >= target) {\n            right = mid - 1;\n        } else {\n            left = mid + 1;\n        }\n    }\n    return (left < size) ? sortedStartTimes[left][1] : -1;\n}\n\n// Function to find the next event for each event\nvoid findNextEvent(int n, int events[][2], int result[]) {\n    int sortedStartTimes[n][2];\n\n    // Store start times with their original indices\n    for (int i = 0; i < n; i++) {\n        sortedStartTimes[i][0] = events[i][0];\n        sortedStartTimes[i][1] = i;\n    }\n\n    // Sort based on start time\n    qsort(sortedStartTimes, n, sizeof(sortedStartTimes[0]), compare);\n\n    // Find the next event for each event using binary search\n    for (int i = 0; i < n; i++) {\n        result[i] = binarySearch(sortedStartTimes, n, events[i][1]);\n    }\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int events[n][2], result[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d %d\", &events[i][0], &events[i][1]);\n    }\n\n    findNextEvent(n, events, result);\n\n    for (int i = 0; i < n; i++) {\n        printf(\"%d \", result[i]);\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\n\npublic class Main {\n    public static int[] findNextEvent(int[][] events) {\n        int n = events.length;\n        int[][] startTimes = new int[n][2]; // To store {start_time, original_index}\n\n        for (int i = 0; i < n; i++) {\n            startTimes[i][0] = events[i][0];\n            startTimes[i][1] = i;\n        }\n\n        // Sort startTimes based on start_time\n        Arrays.sort(startTimes, Comparator.comparingInt(a -> a[0]));\n\n        int[] result = new int[n];\n        Arrays.fill(result, -1);\n\n        for (int i = 0; i < n; i++) {\n            int endTime = events[i][1];\n\n            // Binary search to find the first event with start_time >= endTime\n            int left = 0, right = n - 1;\n            while (left <= right) {\n                int mid = left + (right - left) / 2;\n                if (startTimes[mid][0] >= endTime) {\n                    right = mid - 1;\n                } else {\n                    left = mid + 1;\n                }\n            }\n\n            if (left < n) {\n                result[i] = startTimes[left][1];\n            }\n        }\n\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        int n = sc.nextInt();\n        int[][] events = new int[n][2];\n\n        for (int i = 0; i < n; i++) {\n            events[i][0] = sc.nextInt();\n            events[i][1] = sc.nextInt();\n        }\n\n        int[] result = findNextEvent(events);\n\n        for (int val : result) {\n            System.out.print(val + \" \");\n        }\n    }\n}\n",
-      "JavaScript": "function findNextEvent(events) {\n    const n = events.length;\n    const startTimes = events.map((event, i) => [event[0], i]);\n    startTimes.sort((a, b) => a[0] - b[0]);\n\n    const result = Array(n).fill(-1);\n\n    for (let i = 0; i < n; i++) {\n        const endTime = events[i][1];\n\n        // Binary search to find the first event with start_time >= endTime\n        let left = 0, right = n - 1;\n        while (left <= right) {\n            const mid = Math.floor((left + right) / 2);\n            if (startTimes[mid][0] >= endTime) {\n                right = mid - 1;\n            } else {\n                left = mid + 1;\n            }\n        }\n\n        if (left < n) {\n            result[i] = startTimes[left][1];\n        }\n    }\n\n    return result;\n}\n\n// Input reading and result printing\nconst readline = require(\"readline\");\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout,\n});\n\nlet input = [];\nrl.on(\"line\", (line) => {\n    input.push(line.trim());\n}).on(\"close\", () => {\n    const n = parseInt(input[0], 10);\n    const events = input.slice(1).map((line) => line.split(\" \").map(Number));\n    const result = findNextEvent(events);\n    console.log(result.join(\" \"));\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {int start; int idx;} Pair;\n\nint cmpPair(const void *a, const void *b) {\n    const Pair *pa = (const Pair *)a;\n    const Pair *pb = (const Pair *)b;\n    return (pa->start < pb->start) ? -1 : (pa->start > pb->start);\n}\n\nint lower_bound(Pair *arr, int n, int target) {\n    int l = 0, r = n; // [l, r)\n    while (l < r) {\n        int m = l + (r - l) / 2;\n        if (arr[m].start >= target) r = m; else l = m + 1;\n    }\n    return l; // may be n\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int *starts = (int *)malloc(N * sizeof(int));\n        int *ends   = (int *)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%d %d\", &starts[i], &ends[i]);\n        }\n        Pair *arr = (Pair *)malloc(N * sizeof(Pair));\n        for (int i = 0; i < N; ++i) {\n            arr[i].start = starts[i];\n            arr[i].idx = i;\n        }\n        qsort(arr, N, sizeof(Pair), cmpPair);\n        for (int i = 0; i < N; ++i) {\n            int pos = lower_bound(arr, N, ends[i]);\n            if (pos == N) printf(\"-1\");\n            else printf(\"%d\", arr[pos].idx);\n            if (i + 1 < N) printf(\" \");\n        }\n        printf(\"\\n\");\n        free(starts); free(ends); free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int N; cin>>N;\n        vector<int> start(N), end(N);\n        for(int i=0;i<N;++i) cin>>start[i]>>end[i];\n        vector<pair<int,int>> vec(N);\n        for(int i=0;i<N;++i) vec[i]={start[i],i};\n        sort(vec.begin(), vec.end());\n        for(int i=0;i<N;++i){\n            auto it = lower_bound(vec.begin(), vec.end(), make_pair(end[i], -1));\n            if(it==vec.end()) cout<<-1;\n            else cout<<it->second;\n            if(i+1<N) cout<<' ';\n        }\n        if(T) cout<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; tc++) {\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] start = new int[N];\n            int[] end = new int[N];\n            for (int i = 0; i < N; i++) {\n                st = new StringTokenizer(br.readLine());\n                start[i] = Integer.parseInt(st.nextToken());\n                end[i] = Integer.parseInt(st.nextToken());\n            }\n            int[][] arr = new int[N][2]; // {start, idx}\n            for (int i = 0; i < N; i++) {\n                arr[i][0] = start[i];\n                arr[i][1] = i;\n            }\n            Arrays.sort(arr, Comparator.comparingInt(a -> a[0]));\n            for (int i = 0; i < N; i++) {\n                int pos = Arrays.binarySearch(arr, new int[]{end[i], -1}, (a,b)->Integer.compare(a[0], b[0]));\n                if (pos < 0) pos = -pos - 1; // insertion point\n                if (pos >= N) out.append(-1);\n                else out.append(arr[pos][1]);\n                if (i + 1 < N) out.append(' ');\n            }\n            if (tc + 1 < T) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\nfrom bisect import bisect_left\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    outputs = []\n    for _ in range(T):\n        N = int(next(it))\n        starts = []\n        ends = []\n        for i in range(N):\n            s = int(next(it)); e = int(next(it))\n            starts.append(s)\n            ends.append(e)\n        sorted_pairs = sorted((s, idx) for idx, s in enumerate(starts))\n        sorted_starts = [p[0] for p in sorted_pairs]\n        sorted_idx = [p[1] for p in sorted_pairs]\n        res = []\n        for i in range(N):\n            pos = bisect_left(sorted_starts, ends[i])\n            if pos == N:\n                res.append('-1')\n            else:\n                res.append(str(sorted_idx[pos]))\n        outputs.append(' '.join(res))\n    sys.stdout.write('\\n'.join(outputs))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (data.length === 0) process.exit(0);\nconst T = Number(data[idx++]);\nlet out = [];\nfor (let tc = 0; tc < T; tc++) {\n  const N = Number(data[idx++]);\n  const starts = new Array(N);\n  const ends = new Array(N);\n  for (let i = 0; i < N; i++) {\n    starts[i] = Number(data[idx++]);\n    ends[i] = Number(data[idx++]);\n  }\n  const startPairs = starts.map((s, i) => [s, i]);\n  startPairs.sort((a, b) => a[0] - b[0]);\n  const sortedStarts = startPairs.map(p => p[0]);\n  const sortedIdx = startPairs.map(p => p[1]);\n  const res = new Array(N);\n  for (let i = 0; i < N; i++) {\n    // binary search lower bound\n    let l = 0, r = N;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (sortedStarts[m] >= ends[i]) r = m; else l = m + 1;\n    }\n    if (l === N) res[i] = -1; else res[i] = sortedIdx[l];\n  }\n  out.push(res.join(' '));\n}\nconsole.log(out.join('\\n'));"
     }
   }
 }

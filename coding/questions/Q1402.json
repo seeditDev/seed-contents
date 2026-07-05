@@ -4,14 +4,15 @@
   "slug": "finding-the-subarray-with-minimum-sum-of-size-k",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Sliding Window",
+      "Prefix Sum",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +22,31 @@
   "content": {
     "problemStatement": "You are given an array of integers and you need to find a subarray of size KKK that has the minimum sum in all the subarray of size KKK.\n\n\nInput Format\n\nThe first line contains two integers NNN and KKK, representing the size of the array and the size of the subarray, respectively.\nThe second line contains NNN space-separated integers representing the elements of the array.\n\n\nOutput Format\nOutput a single integer representing the minimum sum of a subarray of size KKK.",
     "constraints": [
-      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
-      "1≤K≤N1 \\leq K \\leq N1≤K≤N",
-      "0≤∣A[i]∣≤1090 \\leq |A[i]| \\leq 10^90≤∣A[i]∣≤109"
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 100000",
+      "1 ≤ K ≤ N",
+      "|A[i]| ≤ 10⁹"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and K (1 ≤ K ≤ N). The second line contains N space‑separated integers A[i] (|A[i]| ≤ 10⁹).",
+    "outputFormat": "For each test case, output a single integer – the minimum possible sum of any contiguous subarray of size K.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "10 3\n1 2 3 4 5 6 7 8 9 10",
+        "input": "1\\n10 3\\n1 2 3 4 5 6 7 8 9 10",
         "output": "6",
-        "explanation": "Explanation:\nThe subarray with the minimum sum of size 3 is [1, 2, 3], and the sum is 6."
+        "explanation": "The first three elements (1,2,3) give the smallest sum 6."
       },
       {
         "id": "sample_2",
-        "input": "5 2\n4 3 2 1 5",
+        "input": "1\\n5 2\\n4 3 2 1 5",
         "output": "3",
-        "explanation": "Explanation:\nThe subarray with the minimum sum of size 2 is [1, 2], and the sum is 3."
+        "explanation": "Subarray [1,2] (positions 4 and 5) has sum 3, the minimum."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n7 4\\n1 2 3 4 5 6 7",
+        "output": "10",
+        "explanation": "The first four elements (1,2,3,4) sum to 10, the smallest possible."
       }
     ]
   },
@@ -46,27 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "10 3\n1 2 3 4 5 6 7 8 9 10",
-        "expectedOutput": "6",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\\n1 1\\n5",
+        "expectedOutput": "5",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "5 2\n4 3 2 1 5",
-        "expectedOutput": "3",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\\n15 15\\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000",
+        "expectedOutput": "15000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\n10 3\\n0 0 0 0 0 0 0 0 0 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n5 3\\n-1000000000 -1000000000 1000000000 1000000000 -1000000000",
+        "expectedOutput": "-1000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\\n6 4\\n5 -2 3 1 -1 2\\n8 3\\n10 9 8 7 6 5 4 3\\n4 1\\n-5 -2 -9 -1",
+        "expectedOutput": "1\\n12\\n-9",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,14 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The code idea is to use a sliding window technique to efficiently calculate the sum of each subarray of size **K**. Initially, we compute the sum of the first **K** elements of the array. This sum is stored as the minimum sum found so far. We then slide the window one element at a time; for each step, we add the next element in the array and subtract the element that is no longer in the window (the leftmost element). This allows us to update the sum in constant time, making the process efficient. Throughout this sliding process, we continuously check and update the minimum sum whenever we calculate a new sum. Finally, we return the **minimum sum** found.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The sum of a subarray of length K can be updated in O(1) when the window slides by one position: subtract the element leaving the window and add the new element entering it. Initialise the sum of the first K elements, store it as the current best, then slide the window from left to right updating the sum and the best whenever a smaller sum is found. This linear scan processes each element exactly once, giving O(N) time per test case and O(1) extra space besides the input array.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
+    "spaceComplexity": "O(N) for storing the array (can be O(1) if streamed) – only a few 64‑bit variables besides the input.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long findMinSumSubarray(int n, int k, vector<int>& arr) {\n    long long sum = 0;\n\n    // Calculate the sum of the first 'k' elements\n    for (int i = 0; i < k; i++) {\n        sum += arr[i];\n    }\n\n    long long minsum = sum;\n    int left = 0, right = k;\n\n    // Slide the window over the array\n    while (right < n) {\n        sum += arr[right] - arr[left]; // Update sum by adding the next element and removing the leftmost element\n        right++;\n        left++;\n        minsum = min(minsum, sum); // Update the minimum sum found\n    }\n    \n    return minsum;\n}\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    vector<int> arr(n);\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n    cout << findMinSumSubarray(n, k, arr) << endl;\n    return 0;\n}\n",
-      "Python3": "def findMinSumSubarray(n, k, arr):\n    current_sum = sum(arr[:k])\n    min_sum = current_sum\n\n    for i in range(k, n):\n        current_sum += arr[i] - arr[i - k]\n        if current_sum < min_sum:\n            min_sum = current_sum\n\n    return min_sum\n\nif __name__ == \"__main__\":\n    n, k = map(int, input().split())\n    arr = list(map(int, input().split()))\n    print(findMinSumSubarray(n, k, arr))",
-      "C": "#include <stdio.h>\n#include <limits.h>\n\nlong long findMinSumSubarray(int n, int k, int* arr) {\n    long long current_sum = 0;\n    for (int i = 0; i < k; i++) {\n        current_sum += arr[i];\n    }\n    long long min_sum = current_sum;\n\n    for (int i = k; i < n; i++) {\n        current_sum += arr[i] - arr[i - k];\n        if (current_sum < min_sum) {\n            min_sum = current_sum;\n        }\n    }\n    return min_sum;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    printf(\"%lld\\n\", findMinSumSubarray(n, k, arr));\n    return 0;\n}",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static long findMinSumSubarray(int n, int k, int[] arr) {\n        long current_sum = 0;\n        for (int i = 0; i < k; i++) {\n            current_sum += arr[i];\n        }\n        long min_sum = current_sum;\n\n        for (int i = k; i < n; i++) {\n            current_sum += arr[i] - arr[i - k];\n            if (current_sum < min_sum) {\n                min_sum = current_sum;\n            }\n        }\n        return min_sum;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            arr[i] = scanner.nextInt();\n        }\n        scanner.close();\n        System.out.println(findMinSumSubarray(n, k, arr));\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,K; scanf(\"%d %d\",&N,&K);\n        long long *a = (long long*)malloc(N*sizeof(long long));\n        for(int i=0;i<N;++i) scanf(\"%lld\",&a[i]);\n        long long cur=0;\n        for(int i=0;i<K;++i) cur+=a[i];\n        long long best=cur;\n        for(int i=K;i<N;++i){\n            cur+=a[i]-a[i-K];\n            if(cur<best) best=cur;\n        }\n        printf(\"%lld\\n\",best);\n        free(a);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N,K; cin>>N>>K;\n        vector<long long> a(N);\n        for(int i=0;i<N;++i) cin>>a[i];\n        long long cur=0;\n        for(int i=0;i<K;++i) cur+=a[i];\n        long long best=cur;\n        for(int i=K;i<N;++i){\n            cur+=a[i]-a[i-K];\n            if(cur<best) best=cur;\n        }\n        cout<<best<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int K = Integer.parseInt(st.nextToken());\n            long[] a = new long[N];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; i++) a[i] = Long.parseLong(st.nextToken());\n            long cur = 0;\n            for (int i = 0; i < K; i++) cur += a[i];\n            long best = cur;\n            for (int i = K; i < N; i++) {\n                cur += a[i] - a[i - K];\n                if (cur < best) best = cur;\n            }\n            sb.append(best).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\ndef solve():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); K = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        cur = sum(arr[:K])\n        best = cur\n        for i in range(K, N):\n            cur += arr[i] - arr[i-K]\n            if cur < best:\n                best = cur\n        out.append(str(best))\n    sys.stdout.write('\\n'.join(out))\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0,'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nif (data.length===0) process.exit(0);\nconst T = data[idx++];\nlet res = [];\nfor(let t=0;t<T;t++){\n  const N = data[idx++];\n  const K = data[idx++];\n  const arr = data.slice(idx, idx+N);\n  idx += N;\n  let cur = 0;\n  for(let i=0;i<K;i++) cur += arr[i];\n  let best = cur;\n  for(let i=K;i<N;i++){\n    cur += arr[i] - arr[i-K];\n    if(cur<best) best = cur;\n  }\n  res.push(String(best));\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

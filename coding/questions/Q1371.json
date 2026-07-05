@@ -4,14 +4,14 @@
   "slug": "subarray-with-0-1-2",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Sliding Window",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,23 +21,31 @@
   "content": {
     "problemStatement": "You are given an array arrarrarr consisting of only the integers 000, 111, and 222. Your task is to find the number of contiguous subarrays that contain at least one occurrence of each integer (0, 1, and 2).\n\n\nInput Format\n\nThe first line contains one integer nnn, the size of the array.                                                                                                               - Next line contains nnn integers arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n], representing the elements of the array.\n\n\nOutput Format\n\nPrint the count of all subarrays that contains at least one occurrence of each integer (0,1,2)(0, 1, \n 2)(0,1,2).",
     "constraints": [
-      "1≤n≤1051 \\leq n \\leq 10^51≤n≤105",
-      "0≤arr[i]≤20 \\leq arr[i] \\leq 20≤arr[i]≤2"
+      "1 ≤ T ≤ 10",
+      "1 ≤ n ≤ 10^5",
+      "arr[i] ∈ {0,1,2}",
+      "The sum of n over all test cases does not exceed 10^5"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 ≤ n ≤ 10^5), the size of the array. The second line contains n space‑separated integers arr[i] where each arr[i] is 0, 1 or 2.",
+    "outputFormat": "For each test case, output a single line containing the number of contiguous subarrays that contain at least one occurrence of each of the three values 0, 1 and 2.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n0 1 2 0",
+        "input": "1\n4\n0 1 2 0",
         "output": "3",
-        "explanation": "Explanation:\nThe subarrays are:\n[0, 1, 2], [0, 1, 2, 0], [1, 2, 0]\nEach subarray contains at least one 0, 1, 2."
+        "explanation": "The subarrays that contain at least one 0, 1 and 2 are: [0,1,2], [0,1,2,0] and [1,2,0]."
       },
       {
         "id": "sample_2",
-        "input": "4\n1 2 1 2",
+        "input": "1\n4\n1 2 1 2",
         "output": "0",
-        "explanation": "Explanation:\nThere is no subarray such that each contains all three elements. so the answer is 0."
+        "explanation": "No subarray contains all three values."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5\n0 0 1 2 2",
+        "output": "4",
+        "explanation": "Valid subarrays are: [0,0,1,2], [0,0,1,2,2], [0,1,2] and [0,1,2,2]."
       }
     ]
   },
@@ -45,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n0 1 2 0",
-        "expectedOutput": "3",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "0",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "4\n1 2 1 2",
+        "label": "maximum boundary",
+        "input": "1\n15\n0 1 2 0 1 2 0 1 2 0 1 2 0 1 2",
+        "expectedOutput": "91",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n5\n0 0 0 1 2",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n6\n0 1 0 2 1 2",
+        "expectedOutput": "8",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n7\n2 2 2 2 2 2 2",
         "expectedOutput": "0",
-        "weight": 50
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -79,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we can use the sliding window (two-pointer) technique in combination with a hashmap (or unordered_map) to efficiently count the number of valid subarrays that include at least one `0`, `1`, and `2`. The key idea is to maintain a window that expands to include more elements and contracts when it has included at least one of each of the required numbers.",
-    "timeComplexity": "The algorithm runs in O(N) time, where N is the length of the array. This is because each element is processed at most twice—once by the j pointer and once by the i pointer.",
-    "spaceComplexity": "The space complexity is O(1) in terms of the number of distinct elements (since countMap only stores counts for 0, 1, and 2).",
+    "approach": "Use a sliding‑window (two‑pointer) technique. Keep a left pointer L and a right pointer R (initially 0) and an array cnt[3] storing how many of each value are inside the current window [L, R). While the window does not contain all three values, move R to the right and update cnt. When the window first satisfies the condition, every extension of the window to the right (i.e., any subarray that starts at L and ends at any index ≥ R‑1) is also valid, because adding more elements cannot remove existing values. Therefore we add (n - R + 1) to the answer. Then we shrink the window from the left by decreasing cnt[arr[L]] and increment L, repeating the process. The whole array is scanned at most twice, giving O(n) time per test case.",
+    "timeComplexity": "O(n) per test case, O(total n) over all test cases.",
+    "spaceComplexity": "O(1) extra space (only a few counters).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countSubarrays(vector < long long > & a) {\n    // Write your code here\n    int count[3] = {0, 0, 0};\n    long long subcount = 0;\n    int back=0;\n    int n=a.size();\n    for(int front=0; front<n; front++) {\n        count[a[front]]++;\n        while(min({count[0], count[1],count[2]}) != 0) {\n            subcount += n-front;\n            count[a[back]]--;\n            back++;\n        }\n    }\n    return subcount;\n}\n\nint main() {\n    long long n;\n    cin >> n;\n\n    vector < long long > arr(n);\n    for (long long i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    cout << countSubarrays(arr) << endl;\n\n    return 0;\n}",
-      "Python3": "from collections import defaultdict\n\ndef count_subarrays(arr):\n    n = len(arr)\n    count_map = defaultdict(int)\n    i = 0\n    j = 0\n    count = 0\n\n    while j < n:\n        count_map[arr[j]] += 1\n        \n        while len(count_map) == 3:\n            count += (n - j)\n            count_map[arr[i]] -= 1\n            if count_map[arr[i]] == 0:\n                del count_map[arr[i]]\n            i += 1\n        j += 1\n\n    return count\n\ndef main():\n    n = int(input())\n    arr = list(map(int, input().strip().split()))[:n]\n    print(count_subarrays(arr))\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long countSubarrays(int* arr, int n) {\n    int countMap[3] = {0}; \n    int i = 0, j = 0;\n    long long count = 0, distinctCount = 0;\n\n    while (j < n) {\n        if (countMap[arr[j]] == 0) {\n            distinctCount++;\n        }\n        countMap[arr[j]]++;\n\n        while (distinctCount == 3) {\n            count += (n - j);\n            countMap[arr[i]]--;\n            if (countMap[arr[i]] == 0) {\n                distinctCount--;\n            }\n            i++;\n        }\n        j++;\n    }\n\n    return count;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    int* arr = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"%lld\\n\", countSubarrays(arr, n));\n\n    free(arr);\n    return 0;\n}",
-      "Java": "import java.util.HashMap;\nimport java.util.Map;\nimport java.util.Scanner;\n\npublic class Main {\n\n    public static long countSubarrays(long[] arr) {\n        long n = arr.length;\n        Map<Long, Long> countMap = new HashMap<>();\n        long i = 0, j = 0;\n        long count = 0;\n\n        while (j < n) {\n            countMap.put(arr[(int)j], countMap.getOrDefault(arr[(int)j], 0L) + 1);\n\n            while (countMap.size() == 3) {\n                count += (n - j);\n                countMap.put(arr[(int)i], countMap.get(arr[(int)i]) - 1);\n                if (countMap.get(arr[(int)i]) == 0) {\n                    countMap.remove(arr[(int)i]);\n                }\n                i++;\n            }\n            j++;\n        }\n\n        return count;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        long n = scanner.nextLong();\n\n        long[] arr = new long[(int)n];\n        for (long i = 0; i < n; i++) {\n            arr[(int)i] = scanner.nextLong();\n        }\n\n        System.out.println(countSubarrays(arr));\n\n        scanner.close();\n    }\n}",
-      "JavaScript": "function countSubarrays(arr) {\n    // Initialize count for three distinct values (0, 1, 2)\n    const count = [0, 0, 0];\n    let subcount = 0;\n    let back = 0;\n    const n = arr.length;\n\n    for (let front = 0; front < n; front++) {\n        // Increment the count for the current element\n        count[arr[front]]++;\n\n        // While there is at least one of each element (0, 1, 2)\n        while (Math.min(...count) > 0) {\n            // Increment the subcount by the number of valid subarrays\n            subcount += n - front;\n\n            // Decrease the count of the element at the back pointer\n            count[arr[back]]--;\n            back++;\n        }\n    }\n\n    return subcount;\n}\n\n// Main function to read input and invoke the countSubarrays function\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nrl.on('line', (line) => {\n    const n = parseInt(line.trim(), 10);\n    \n    rl.on('line', (line) => {\n        const arr = line.trim().split(' ').map(Number);\n        console.log(countSubarrays(arr));\n        rl.close();\n    });\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n; scanf(\"%d\", &n);\n        int *arr = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; ++i) scanf(\"%d\", &arr[i]);\n        long long ans = 0;\n        int cnt[3] = {0, 0, 0};\n        int r = 0;\n        for (int l = 0; l < n; ++l) {\n            while (r < n && (cnt[0] == 0 || cnt[1] == 0 || cnt[2] == 0)) {\n                cnt[arr[r]]++;\n                ++r;\n            }\n            if (cnt[0] && cnt[1] && cnt[2]) {\n                ans += (long long)(n - r + 1);\n            }\n            cnt[arr[l]]--;\n        }\n        printf(\"%lld\\n\", ans);\n        free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if (!(cin >> T)) return 0;\n    while (T--) {\n        int n; cin >> n;\n        vector<int> a(n);\n        for (int &x : a) cin >> x;\n        long long ans = 0;\n        int cnt[3] = {0, 0, 0};\n        int r = 0;\n        for (int l = 0; l < n; ++l) {\n            while (r < n && (cnt[0] == 0 || cnt[1] == 0 || cnt[2] == 0)) {\n                cnt[a[r]]++;\n                ++r;\n            }\n            if (cnt[0] && cnt[1] && cnt[2]) {\n                ans += (long long)(n - r + 1);\n            }\n            cnt[a[l]]--;\n        }\n        cout << ans << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int n = Integer.parseInt(br.readLine().trim());\n            int[] a = new int[n];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());\n            long ans = 0;\n            int[] cnt = new int[3];\n            int r = 0;\n            for (int l = 0; l < n; l++) {\n                while (r < n && (cnt[0] == 0 || cnt[1] == 0 || cnt[2] == 0)) {\n                    cnt[a[r]]++;\n                    r++;\n                }\n                if (cnt[0] > 0 && cnt[1] > 0 && cnt[2] > 0) {\n                    ans += (long) (n - r + 1);\n                }\n                cnt[a[l]]--;\n            }\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        n = int(next(it))\n        arr = [int(next(it)) for _ in range(n)]\n        cnt = [0, 0, 0]\n        r = 0\n        ans = 0\n        for l in range(n):\n            while r < n and (cnt[0] == 0 or cnt[1] == 0 or cnt[2] == 0):\n                cnt[arr[r]] += 1\n                r += 1\n            if cnt[0] and cnt[1] and cnt[2]:\n                ans += n - r + 1\n            cnt[arr[l]] -= 1\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nif (data.length === 0) process.exit(0);\nconst T = data[idx++];\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const n = data[idx++];\n  const arr = data.slice(idx, idx + n);\n  idx += n;\n  const cnt = [0, 0, 0];\n  let r = 0;\n  let ans = 0;\n  for (let l = 0; l < n; l++) {\n    while (r < n && (cnt[0] === 0 || cnt[1] === 0 || cnt[2] === 0)) {\n      cnt[arr[r]]++;\n      r++;\n    }\n    if (cnt[0] && cnt[1] && cnt[2]) {\n      ans += n - r + 1;\n    }\n    cnt[arr[l]]--;\n  }\n  results.push(String(ans));\n}\nconsole.log(results.join('\\n'));\n"
     }
   }
 }

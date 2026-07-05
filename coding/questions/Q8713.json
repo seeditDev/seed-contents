@@ -1,0 +1,118 @@
+{
+  "questionId": "Q8713",
+  "title": "Longest subarray with given sum K(positives)",
+  "slug": "longestsubarraywithgivensumkpositives",
+  "version": 1,
+  "createdAt": "2026-07-05",
+  "updatedAt": "2026-07-05",
+  "metadata": {
+    "category": "arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "prefix sum",
+      "hashing"
+    ],
+    "companyTags": [],
+    "topicTags": []
+  },
+  "content": {
+    "problemStatement": "Given an array nums of size n and an integer k, find the length of the longest sub-array that sums to k. If no such sub-array exists, return 0.",
+    "constraints": [
+      "1 <= n <= 10^5",
+      "1 <= nums[i] <= 10^5",
+      "1 <= k <= 10^9"
+    ],
+    "inputFormat": "nums = list of integers, k = integer",
+    "outputFormat": "length of the longest sub-array that sums to k",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "nums = [10, 5, 2, 7, 1, 9], k = 15",
+        "output": "4",
+        "explanation": "The longest sub-array with a sum equal to 15 is [5, 2, 7, 1], which has a length of 4. This sub-array starts at index 1 and ends at index 4, and the sum of its elements (5 + 2 + 7 + 1) equals 15. Therefore, the length of this sub-array is 4.\n\n**Example 2:**"
+      },
+      {
+        "id": "sample_2",
+        "input": "nums = [-3, 2, 1], k = 6",
+        "output": "0",
+        "explanation": "There is no sub-array in the array that sums to 6. Therefore, the output is 0.\n        \n    \n\n\n**Disclaimer**: Here is the practice link to help you assess your knowledge better. It's highly recommend trying to solve it before looking at the solution."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "label": "min boundary",
+        "input": "nums = [1], k = 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "max boundary",
+        "input": "nums = [100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000], k = 900000",
+        "expectedOutput": "9",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge cases",
+        "input": "nums = [5, 5, 5, 5, 5], k = 15",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "nums = [1, 2, 3, 4, 5], k = 15",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general mixed case",
+        "input": "nums = [10, 5, 2, 7, 1, 9], k = 15",
+        "expectedOutput": "4",
+        "weight": 2
+      }
+    ],
+    "totalTestCases": 5,
+    "totalWeight": 10
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "maxScore": 10
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "Use a prefix sum array and a hashmap to store the prefix sums and their indices.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)",
+    "code": {
+      "C": "#include <stdio.h>\nint longestSubarray(int* nums, int numsSize, int k) {\n    int max_len = 0;\n    for (int i = 0; i < numsSize; i++) {\n        int sum = 0;\n        for (int j = i; j < numsSize; j++) {\n            sum += nums[j];\n            if (sum == k) {\n                max_len = (j - i + 1) > max_len ? (j - i + 1) : max_len;\n            }\n        }\n    }\n    return max_len;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nclass Solution {\npublic:\n    int longestSubarray(vector<int>& nums, int k) {\n        int n = nums.size();\n        int maxLength = 0;\n        for (int startIndex = 0; startIndex < n; startIndex++) {\n            for (int endIndex = startIndex; endIndex < n; endIndex++) {\n                int currentSum = 0;\n                for (int i = startIndex; i <= endIndex; i++) {\n                    currentSum += nums[i];\n                }\n                if (currentSum == k)\n                    maxLength = max(maxLength, endIndex - startIndex + 1);\n            }\n        }\n        return maxLength;\n    }\n};",
+      "Java": "class Solution {\n    public int longestSubarray(int[] nums, int k) {\n        int n = nums.length;\n        int maxLength = 0;\n        for (int startIndex = 0; startIndex < n; startIndex++) {\n            for (int endIndex = startIndex; endIndex < n; endIndex++) {\n                int currentSum = 0;\n                for (int i = startIndex; i <= endIndex; i++) {\n                    currentSum += nums[i];\n                }\n                if (currentSum == k) {\n                    maxLength = Math.max(maxLength, endIndex - startIndex + 1);\n                }\n            }\n        }\n        return maxLength;\n    }\n}",
+      "Python3": "class Solution:\n    def longestSubarray(self, nums, k):\n        n = len(nums)\n        maxLength = 0\n        for startIndex in range(n):\n            for endIndex in range(startIndex, n):\n                currentSum = 0\n                for i in range(startIndex, endIndex + 1):\n                    currentSum += nums[i]\n                if currentSum == k:\n                    maxLength = max(maxLength, endIndex - startIndex + 1)\n        return maxLength",
+      "JavaScript": "class Solution {\n    longestSubarray(nums, k) {\n        const n = nums.length;\n        let maxLength = 0;\n        for (let startIndex = 0; startIndex < n; startIndex++) {\n            for (let endIndex = startIndex; endIndex < n; endIndex++) {\n                let currentSum = 0;\n                for (let i = startIndex; i <= endIndex; i++) {\n                    currentSum += nums[i];\n                }\n                if (currentSum === k) {\n                    maxLength = Math.max(maxLength, endIndex - startIndex + 1);\n                }\n            }\n        }\n        return maxLength;\n    }\n}"
+    }
+  }
+}

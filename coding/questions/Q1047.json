@@ -4,14 +4,14 @@
   "slug": "alphabets-extractor",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "strings",
-      "programming languages"
+      "String Filtering",
+      "Implementation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +21,30 @@
   "content": {
     "problemStatement": "Write a program to extract the English alphabetic characters from a string containing a mixture of lowercase, uppercase, and special characters.\n\n\nInput Format\n\nThe first line contains an integer, T, denoting the number of test cases.\nEach of the next T lines contains a string consisting of lowercase and uppercase English letters, along with some other characters. (There shall be no space in the string)\n\n\nOutput Format\n\nFor each test case, print the string with the only English letters of each string in the same order.",
     "constraints": [
-      "1 ≤ T ≤ 20",
-      "1 ≤ Length of each string ≤ 1000"
+      "1 <= T <= 20",
+      "1 <= length of each string <= 1000",
+      "Strings contain printable ASCII characters"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string (no spaces) that may include uppercase letters, lowercase letters, digits and other printable symbols.",
+    "outputFormat": "For each test case output a line consisting only of the English alphabetic characters (A‑Z, a‑z) from the corresponding input string, preserving their original order. If a string contains no letters, output an empty line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\nHel#284!lo23Chef",
         "output": "HelloChef",
-        "explanation": ""
+        "explanation": "The input string contains letters H e l l o C h e f interleaved with digits and symbols. Keeping only the letters yields \"HelloChef\"."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\na1b2c3\nd4e5f6",
+        "output": "abc\ndef",
+        "explanation": "For each line we drop the digits, leaving only the alphabetic characters."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n!@#$%^&*()",
+        "output": "",
+        "explanation": "No alphabetic characters are present, so the output line is empty."
       }
     ]
   },
@@ -39,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\nHel#284!lo23Chef",
-        "expectedOutput": "HelloChef",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\nZ",
+        "expectedOutput": "Z",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact representation)",
+        "input": "1\na1B2c3D4e5F6g7H8i9J0a1B2c3D4e5F6g7H8i9J0a1B2c3D4e5F6g7H8i9J0a1B2c3D4e5F6g7H8i9J0a1B2c3D4e5F6g7H8i9J0",
+        "expectedOutput": "aBcDeFgHiJaBcDeFgHiJaBcDeFgHiJaBcDeFgHiJaBcDeFgHiJ",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform non‑letter input",
+        "input": "1\n1234567890!@#$%^&*()",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "only letters, mixed case",
+        "input": "1\nAbCdEfGhIjK",
+        "expectedOutput": "AbCdEfGhIjK",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general mixed cases",
+        "input": "3\nHelloWorld123\n___ABC___\nxyz!@#",
+        "expectedOutput": "HelloWorld\nABC\nxyz",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,11 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case we scan the input string character by character. If a character lies in the ranges 'a'‑'z' or 'A'‑'Z' we append it to the answer; otherwise we ignore it. This preserves the original order of letters. The procedure is linear in the length of the string, which is optimal because every character must be examined at least once.",
+    "timeComplexity": "O(L) per test case, where L is the length of the string. Overall O(total input size).",
+    "spaceComplexity": "O(1) extra space besides the output string (output is written directly).",
     "code": {
-      "C": "#include <stdio.h>\n\n\nint main() {\n    char str[1002];\n    int t;\n    scanf(\"%d\", &t);\n\n    while(t--){\n        scanf(\"%s\", str);\n        for (int i = 0; str[i] != '\\0'; i++) {\n            if ((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')) {\n                printf(\"%c\", str[i]);\n            }\n        }\n        printf(\"\\n\");\n    }\n\n    return 0;\n}\n"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    char s[1005];\n    while (T--) {\n        if (scanf(\"%s\", s) != 1) break;\n        for (int i = 0; s[i] != '\\0'; ++i) {\n            if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z'))\n                putchar(s[i]);\n        }\n        putchar('\\n');\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    string s;\n    while (T--) {\n        cin >> s;\n        for (char c : s) {\n            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))\n                cout << c;\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            String s = br.readLine();\n            for (int i = 0; i < s.length(); ++i) {\n                char c = s.charAt(i);\n                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {\n                    out.append(c);\n                }\n            }\n            out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().splitlines()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    for i in range(1, T + 1):\n        s = data[i]\n        filtered = ''.join(ch for ch in s if ('a' <= ch <= 'z') or ('A' <= ch <= 'Z'))\n        out.append(filtered)\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').split('\\n');\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const s = input[idx++] ?? '';\n  let res = '';\n  for (const ch of s) {\n    if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {\n      res += ch;\n    }\n  }\n  results.push(res);\n}\nprocess.stdout.write(results.join('\\n'));\n"
     }
   }
 }

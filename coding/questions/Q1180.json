@@ -4,14 +4,15 @@
   "slug": "chef-and-the-xored-number",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "bit manipulation",
-      "data structures and algorithms"
+      "XOR",
+      "All‑ones numbers",
+      "Bitwise"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,29 @@
   "content": {
     "problemStatement": "Given an integer **N**, Chef wants to find the smallest positive integer **M** such that the bitwise XOR of **M** and **M+1** is **N**. If no such **M** exists output **-1**.",
     "constraints": [
-      "**1** ≤ **T** ≤ **5000**",
-      "**1** ≤ **N** ≤ **230**"
+      "1 <= T <= 5000",
+      "1 <= N <= 1073741824 (2^30)"
     ],
-    "inputFormat": "The first line of input contain an integer **T** denoting the number of test cases. Each of the following **T** lines contains an integer **N** for that test case.",
-    "outputFormat": "For each test case, output a single line containing the number **M** or **-1** as described above.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N.",
+    "outputFormat": "For each test case print the smallest positive integer M such that M XOR (M+1) = N. If no such M exists print -1. Each answer on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n3",
+        "input": "1\\n3",
         "output": "1",
-        "explanation": "Explanation:\nFirst Example :  M desired in the problem would be 1. As bitwise XOR of 1 and 2 is equal to 3."
+        "explanation": "3 = 2^2-1, so M = (3-1)/2 = 1. 1 XOR 2 = 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\n4\\n5",
+        "output": "-1\\n-1",
+        "explanation": "4 and 5 are not of the form 2^t-1, therefore no positive M exists."
+      },
+      {
+        "id": "sample_3",
+        "input": "3\\n1\\n2\\n6",
+        "output": "-1\\n-1\\n-1",
+        "explanation": "1 would give M=0 which is not positive; 2 and 6 are not all‑ones numbers."
       }
     ]
   },
@@ -39,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n3",
-        "expectedOutput": "1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\\n1073741823",
+        "expectedOutput": "536870911",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "3\\n3\\n3\\n3",
+        "expectedOutput": "1\\n1\\n1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n8",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\\n3\\n4\\n7\\n15\\n2",
+        "expectedOutput": "1\\n-1\\n3\\n7\\n-1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For any integer M, let k be the number of trailing 1‑bits in its binary representation (k≥0). Adding 1 flips these k bits to 0 and turns the next 0 into 1, so M and M+1 differ exactly in the lowest k+1 bits. Their XOR is therefore a number consisting of k+1 consecutive 1‑bits, i.e. N = 2^{t}-1 for some t≥1. Conversely, every number of the form 2^{t}-1 can be expressed as M XOR (M+1) with M = (2^{t}-2)/2 = (N-1)/2. Hence a solution exists iff N>1 and N+1 is a power of two (equivalently N & (N+1) == 0). The answer is M = (N-1)/2. The algorithm checks the condition in O(1) time per test case.",
+    "timeComplexity": "O(1) per test case, O(T) overall",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C++": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    // your code goes here\n    int t;\n    cin >> t;\n    while (t--) {\n        long n;\n        cin >> n;\n        if (n == 1) {\n            cout << 2;\n        }\n        // 2^k - 1 == 001111\n        //             00111 ^ 01000 = 1111\n        else if (((n / 2) ^ (n / 2 + 1)) == n) {\n            cout << n / 2;\n        }\n        else {\n            cout << -1;\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}",
-      "Python3": "def main():\n    t = int(input())\n    for _ in range(t):\n        n = int(input())\n        if n == 1:\n            print(2)\n        elif ((n // 2) ^ (n // 2 + 1)) == n:\n            print(n // 2)\n        else:\n            print(-1)\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        long n;\n        scanf(\"%ld\", &n);\n\n        if (n == 1) {\n            printf(\"2\\n\");\n        }\n        else if (((n / 2) ^ (n / 2 + 1)) == n) {\n            printf(\"%ld\\n\", n / 2);\n        }\n        else {\n            printf(\"-1\\n\");\n        }\n    }\n    \n    return 0;\n}\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt(); // Number of test cases\n\n        while (t--> 0) {\n            long n = scanner.nextLong();\n            if (n == 1) {\n                System.out.println(2);\n            }\n            // Check if ((n / 2) ^ (n / 2 + 1)) == n\n            else if (((n / 2) ^ (n / 2 + 1)) == n) {\n                System.out.println(n / 2);\n            }\n            else {\n                System.out.println(-1);\n            }\n        }\n        scanner.close();\n    }\n}",
-      "JavaScript": "const readline = require('readline');\n\n// Set up readline to handle input\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\n// Array to store all input lines\nconst inputLines = [];\nrl.on('line', (line) => {\n    inputLines.push(line.trim());\n});\n\nrl.on('close', () => {\n    const t = parseInt(inputLines[0], 10); // Read the number of test cases\n    let result = [];\n\n    for (let i = 1; i <= t; i++) {\n        let n = BigInt(inputLines[i]); // Convert input to BigInt to handle large numbers\n\n        if (n === BigInt(1)) {\n            result.push(\"2\");\n        } else if (((n / BigInt(2)) ^ (n / BigInt(2) + BigInt(1))) === n) {\n            result.push((n / BigInt(2)).toString());\n        } else {\n            result.push(\"-1\");\n        }\n    }\n\n    // Output all results at once\n    console.log(result.join(\"\\n\"));\n});\n"
+      "C": "#include <stdio.h>\n#include <stdint.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        uint64_t N; if(scanf(\"%llu\",&N)!=1) break;\n        if(N>1 && ((N & (N+1))==0)){\n            uint64_t M = (N-1)/2;\n            printf(\"%llu\\n\",M);\n        }else{\n            printf(\"-1\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        unsigned long long N; cin>>N;\n        if(N>1 && ((N & (N+1))==0)){\n            unsigned long long M = (N-1)/2;\n            cout<<M<<'\\n';\n        }else{\n            cout<<-1<<'\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for(int i=0;i<T;i++){\n            long N = Long.parseLong(br.readLine().trim());\n            if(N>1 && ((N & (N+1))==0)){\n                long M = (N-1)/2;\n                sb.append(M);\n            }else{\n                sb.append(-1);\n            }\n            if(i+1<T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\ndef solve():\n    data = sys.stdin.read().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        n = int(data[idx]); idx+=1\n        if n>1 and (n & (n+1))==0:\n            out.append(str((n-1)//2))\n        else:\n            out.append('-1')\n    sys.stdout.write('\\n'.join(out))\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(input[pos++]);\nlet res = [];\nfor(let i=0;i<T;i++){\n  const N = Number(input[pos++]);\n  if(N>1 && ((N & (N+1))===0)){\n    const M = (N-1)/2;\n    res.push(String(M));\n  }else{\n    res.push('-1');\n  }\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

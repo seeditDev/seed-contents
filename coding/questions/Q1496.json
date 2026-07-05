@@ -4,14 +4,16 @@
   "slug": "print-subarray-with-maximum-subarray-sum",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "arrays",
-      "data structures and algorithms"
+      "Kadane's Algorithm",
+      "Maximum Subarray",
+      "Longest Subarray",
+      "Tie-breaking"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,31 @@
   },
   "content": {
     "problemStatement": "Given an integer array numsnumsnums, find the longest contiguous subarray (containing at least one element) with the largest sum and **print the elements of that subarray**.\n\nNote:If two or more sub arrays have the same length and same max sum then you should return the leftmost array.\n\n**Function Declaration****Function Name**maxSubArraymaxSubArraymaxSubArray – This function finds the **longest contiguous subarray** (with at least one element) that has the **maximum possible sum**, and returns the elements of that subarray.\nIf multiple subarrays have the **same maximum sum and same length**, the function returns the **leftmost** such subarray.\n\n**Parameters**\n\nnumsnumsnums : A reference to a vector of integers representing the array.\n\n\n\nEach element can be negative, zero, or positive.\n\n\n**Return Value**\n\nReturns an array containing the elements of the contiguous subarray that:\n\n\n\nHas the **maximum subarray sum**.\nIf multiple subarrays achieve this sum, the function returns the **longest** one.\nIf still tied, returns the **leftmost** such subarray.\n\n\n**Constraints**\n1≤nums.length≤1051 \\leq nums.length \\leq 10^51≤nums.length≤105\n−104≤nums[i]≤104-10^4 \\leq nums[i] \\leq 10^4−104≤nums[i]≤104\nThe solution must run in **O(N)** time due to input size.\n\nInput Format\n\n\nThe first line contains a single integer TTT — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains an integer NNN — the size of the array.\nThe next line contains NNN space-separated integers representing the array elements.\n\n\n\n\nOutput Format\n\nFor each test case, print the elements of the **longest maximum-sum subarray** on a new line.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10^5",
+      "1 <= N <= 10^5",
+      "-10^4 <= nums[i] <= 10^4"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers denoting the array elements.",
+    "outputFormat": "For each test case, output the elements of the longest contiguous subarray having the maximum possible sum. Elements are printed in their original order separated by a single space. Print a newline after each test case.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n6\n4 -1 2 1 -5 4\n5\n1 2 -1 -2 5",
         "output": "4 -1 2 1\n1 2 -1 -2 5",
-        "explanation": "Explanation:\nFor the first test case the subarray from index 0 to 3 has the largest sum = 6.\nThe second test case the subarray from index 0 to 4 has the largest sum = 5."
+        "explanation": "For the first test case, the subarray from index 0 to 3 has the largest sum = 6. For the second test case, the subarray from index 0 to 4 has the largest sum = 5."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\n-2 -3 4 -1 -2",
+        "output": "4",
+        "explanation": "The subarray with the largest sum is [4]."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5\n1 2 3 4 5",
+        "output": "1 2 3 4 5",
+        "explanation": "The subarray with the largest sum is the entire array [1, 2, 3, 4, 5]."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n6\n4 -1 2 1 -5 4\n5\n1 2 -1 -2 5",
-        "expectedOutput": "4 -1 2 1\n1 2 -1 -2 5",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "We use a modified Kadane’s algorithm. While scanning the array we keep:\n- maxEndingHere: maximum sum of a subarray that ends at the current index.\n- maxSoFar: best sum seen so far.\n- start, end: indices of the best subarray.\n- tempStart: potential start index for the current maxEndingHere.\nWhen extending the current subarray gives a sum not larger than starting a new subarray at the current element, we start a new subarray (tempStart = i). After updating maxEndingHere we compare it with maxSoFar. If it is larger, we record the new best interval. If it is equal, we prefer the longer interval (i - tempStart > end - start). If lengths are also equal, the earlier (leftmost) interval is already stored, so we keep it. The algorithm runs in O(N) time and O(1) extra space per test case.",
+    "timeComplexity": "O(N) per test case, where N is the length of the array.",
+    "spaceComplexity": "O(1) auxiliary space.",
+    "code": {
+      "C": "#include <stdio.h>\n\nvoid solveTestCase() {\n    int N;\n    scanf(\"%d\", &N);\n    int nums[N];\n    for (int i = 0; i < N; ++i) scanf(\"%d\", &nums[i]);\n    long long max_so_far = nums[0];\n    long long max_ending_here = nums[0];\n    int start = 0, end = 0, tempStart = 0;\n    for (int i = 1; i < N; ++i) {\n        if ((long long)nums[i] > max_ending_here + nums[i]) {\n            max_ending_here = nums[i];\n            tempStart = i;\n        } else {\n            max_ending_here += nums[i];\n        }\n        if (max_so_far < max_ending_here) {\n            max_so_far = max_ending_here;\n            start = tempStart;\n            end = i;\n        } else if (max_so_far == max_ending_here) {\n            if (i - tempStart > end - start) {\n                start = tempStart;\n                end = i;\n            }\n        }\n    }\n    for (int i = start; i <= end; ++i) {\n        printf(\"%d\", nums[i]);\n        if (i < end) printf(\" \");\n    }\n    printf(\"\\n\");\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) solveTestCase();\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solveTestCase() {\n    int N; cin >> N;\n    vector<int> a(N);\n    for (int &x : a) cin >> x;\n    long long max_so_far = a[0];\n    long long max_ending_here = a[0];\n    int start = 0, end = 0, tempStart = 0;\n    for (int i = 1; i < N; ++i) {\n        if ((long long)a[i] > max_ending_here + a[i]) {\n            max_ending_here = a[i];\n            tempStart = i;\n        } else {\n            max_ending_here += a[i];\n        }\n        if (max_so_far < max_ending_here) {\n            max_so_far = max_ending_here;\n            start = tempStart;\n            end = i;\n        } else if (max_so_far == max_ending_here) {\n            if (i - tempStart > end - start) {\n                start = tempStart;\n                end = i;\n            }\n        }\n    }\n    for (int i = start; i <= end; ++i) {\n        cout << a[i] << (i == end ? '\\n' : ' ');\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) solveTestCase();\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static void solveTestCase(BufferedReader br) throws IOException {\n        int N = Integer.parseInt(br.readLine().trim());\n        int[] a = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) a[i] = Integer.parseInt(st.nextToken());\n        long maxSoFar = a[0];\n        long maxEndingHere = a[0];\n        int start = 0, end = 0, tempStart = 0;\n        for (int i = 1; i < N; i++) {\n            if ((long) a[i] > maxEndingHere + a[i]) {\n                maxEndingHere = a[i];\n                tempStart = i;\n            } else {\n                maxEndingHere += a[i];\n            }\n            if (maxSoFar < maxEndingHere) {\n                maxSoFar = maxEndingHere;\n                start = tempStart;\n                end = i;\n            } else if (maxSoFar == maxEndingHere) {\n                if (i - tempStart > end - start) {\n                    start = tempStart;\n                    end = i;\n                }\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = start; i <= end; i++) {\n            sb.append(a[i]);\n            if (i < end) sb.append(' ');\n        }\n        System.out.println(sb.toString());\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) solveTestCase(br);\n    }\n}",
+      "Python3": "import sys\n\ndef solve_one(nums):\n    max_so_far = nums[0]\n    max_ending = nums[0]\n    start = end = temp_start = 0\n    for i in range(1, len(nums)):\n        if nums[i] > max_ending + nums[i]:\n            max_ending = nums[i]\n            temp_start = i\n        else:\n            max_ending += nums[i]\n        if max_so_far < max_ending:\n            max_so_far = max_ending\n            start, end = temp_start, i\n        elif max_so_far == max_ending:\n            if i - temp_start > end - start:\n                start, end = temp_start, i\n    return ' '.join(map(str, nums[start:end+1]))\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        out_lines.append(solve_one(arr))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  const nums = new Array(N);\n  for (let i = 0; i < N; ++i) nums[i] = Number(input[idx++]);\n  let maxSoFar = nums[0];\n  let maxEnding = nums[0];\n  let start = 0, end = 0, tempStart = 0;\n  for (let i = 1; i < N; ++i) {\n    if (nums[i] > maxEnding + nums[i]) {\n      maxEnding = nums[i];\n      tempStart = i;\n    } else {\n      maxEnding += nums[i];\n    }\n    if (maxSoFar < maxEnding) {\n      maxSoFar = maxEnding;\n      start = tempStart;\n      end = i;\n    } else if (maxSoFar === maxEnding) {\n      if (i - tempStart > end - start) {\n        start = tempStart;\n        end = i;\n      }\n    }\n  }\n  outputs.push(nums.slice(start, end + 1).join(' '));\n}\nconsole.log(outputs.join('\\n'));"
+    }
   }
 }

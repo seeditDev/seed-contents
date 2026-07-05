@@ -4,14 +4,15 @@
   "slug": "predecessor-of-a-node-in-bst",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Binary Search Tree",
+      "Inorder Traversal",
+      "Predecessor"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +22,32 @@
   "content": {
     "problemStatement": "Determine the inorder predecessor of a given node `X` in a binary search tree. The inorder predecessor, denoted as node `Y`, is the node that immediately precedes `X` in the inorder traversal of the binary tree. If no such predecessor exists, return `-1`.\n\nFor eg., the inorder predecessor of node 6 is node 5 in the following BST:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and XXX — the number of nodes in the binary search tree, and the node whose predecessor we're looking for.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on a single line - the predecessor node value of node XXX, if it exists, else `-1`.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
-      "RiR_iRi​ = `L` or `R`",
-      "All pip_ipi​'s and cic_ici​'s are distinct.",
-      "1≤X≤1000001 \\leq X \\leq 1000001≤X≤100000"
+      "1 <= N <= 10000",
+      "1 <= pi, ci <= 100000",
+      "Ri = 'L' or 'R'",
+      "All pi's and ci's are distinct.",
+      "1 <= X <= 100000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line of the input contains two space-separated integers N and X, where N is the number of nodes in the binary search tree and X is the node whose predecessor we're looking for. The next N-1 lines contain three space-separated characters pi, ci, and Ri, describing the tree with edge information - pi is an integer denoting the parent node of the ith edge, ci is the child node, and the letter Ri denotes whether the child is a left child or a right child, it's value is 'L' if ci is a left child of pi, else 'R'.",
+    "outputFormat": "Output on a single line - the predecessor node value of node X, if it exists, else -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "7 6\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
         "output": "5",
-        "explanation": ""
+        "explanation": "The inorder traversal of the binary search tree is 1, 2, 3, 4, 5, 6, 7. The predecessor of node 6 is node 5."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 4\n3 1 L\n3 4 R\n1 2 R\n4 5 R",
+        "output": "3",
+        "explanation": "The inorder traversal of the binary search tree is 1, 2, 3, 4, 5. The predecessor of node 4 is node 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "3 2\n1 2 R\n2 3 R",
+        "output": "1",
+        "explanation": "The inorder traversal of the binary search tree is 1, 2, 3. The predecessor of node 2 is node 1."
       }
     ]
   },
@@ -42,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "7 6\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
-        "expectedOutput": "5",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1 1\n",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "10000 10000\n1 2 L\n1 3 R\n2 4 L\n2 5 R\n3 6 L\n3 7 R",
+        "expectedOutput": "9999",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5 5\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "expectedOutput": "4",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "5 1\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10 5\n1 2 L\n1 3 R\n2 4 L\n2 5 R\n3 6 L\n3 7 R\n4 8 L\n4 9 R\n5 10 L",
+        "expectedOutput": "4",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To find the predecessor of a node X in a binary search tree, we can perform an inorder traversal of the tree and keep track of the last node that is smaller than X. This is because in an inorder traversal of a binary search tree, nodes are visited in ascending order. Therefore, the last node that is smaller than X will be its predecessor.",
+    "timeComplexity": "O(N) per test case, where N is the number of nodes in the binary search tree. This is because in the worst case, we need to traverse all nodes in the tree.",
+    "spaceComplexity": "O(N) - for storing the tree nodes.",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    int getPredecessor(Node* root, int x) {\n        Node* predecessor = NULL;\n\n        while (root) {\n            if (root->val < x) {\n                // Update predecessor and move to the right subtree\n                predecessor = root;\n                root = root->right;\n            } else {\n                // Move to the left subtree\n                root = root->left;\n            }\n        }\n\n        return predecessor == NULL ? -1: predecessor->val;\n    }\n};\n",
-      "Python3": "def in_order(root, nodes):\n    if root is None:\n        return\n    in_order(root.left, nodes)\n    nodes.append(root.val)\n    in_order(root.right, nodes)\n\nclass Solution:\n    def get_predecessor(self, root, x):\n        predecessor = None\n        while root:\n            if root.val < x:\n                predecessor = root\n                root = root.right\n            else:\n                root = root.left\n        return predecessor.val if predecessor else -1\n",
-      "C": "void inOrder(Node* root, int* nodes, int* index) {\n    if (root == NULL) return;\n    inOrder(root->left, nodes, index);\n    nodes[(*index)++] = root->val;\n    inOrder(root->right, nodes, index);\n}\n\nint getPredecessor(Node* root, int x) {\n    Node* predecessor = NULL;\n\n    while (root) {\n        if (root->val < x) {\n            predecessor = root;\n            root = root->right;\n        } else {\n            root = root->left;\n        }\n    }\n\n    return (predecessor == NULL) ? -1 : predecessor->val;\n}\n\nbool validateBST(Node* node, Node** prev) {\n    if (node == NULL) return true;\n    if (!validateBST(node->left, prev)) return false;\n    if (*prev != NULL && (*prev)->val >= node->val) return false;\n    *prev = node;\n    return validateBST(node->right, prev);\n}\n",
-      "Java": "// import java.util.*;\n\n// class Node {\n//     int val;\n//     Node left, right;\n\n//     Node(int val) {\n//         this.val = val;\n//         this.left = this.right = null;\n//     }\n// }\nclass Solution {\n    public int getPredecessor(Node root, int x) {\n        Node predecessor = null;\n\n        while (root != null) {\n            if (root.val < x) {\n                predecessor = root;\n                root = root.right;\n            } else {\n                root = root.left;\n            }\n        }\n\n        return predecessor == null ? -1 : predecessor.val;\n    }\n}\n",
-      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction findPredecessor(root, X) {\n    let predecessor = -1;\n    let current = root;\n    \n    while (current) {\n        if (current.val >= X) {\n            current = current.left;\n        } else {\n            predecessor = current.val;\n            current = current.right;\n        }\n    }\n    return predecessor;\n}\n\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new tree node\nNode* createNode(int val) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    if (!newNode) {\n        printf(\"Memory error\\n\");\n        return NULL;\n    }\n    newNode->val = val;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to find the predecessor of a node X\nint findPredecessor(Node* root, int X) {\n    Node* predecessor = NULL;\n    while (root) {\n        if (root->val < X) {\n            predecessor = root;\n            root = root->right;\n        } else {\n            root = root->left;\n        }\n    }\n    return predecessor ? predecessor->val : -1;\n}\n\nint main() {\n    int N, X;\n    scanf(\"%d %d\", &N, &X);\n    Node* root = NULL;\n    Node* nodes[N];\n    for (int i = 0; i < N; i++) {\n        nodes[i] = createNode(i+1);\n    }\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        scanf(\"%d %d %c\", &pi, &ci, &Ri);\n        if (Ri == 'L') {\n            nodes[pi-1]->left = nodes[ci-1];\n        } else {\n            nodes[pi-1]->right = nodes[ci-1];\n        }\n        if (!root) {\n            root = nodes[0];\n        }\n    }\n    int predecessor = findPredecessor(root, X);\n    printf(\"%d\\n\", predecessor);\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int val;\n    Node* left;\n    Node* right;\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n};\n\n// Function to find the predecessor of a node X\nint findPredecessor(Node* root, int X) {\n    Node* predecessor = NULL;\n    while (root) {\n        if (root->val < X) {\n            predecessor = root;\n            root = root->right;\n        } else {\n            root = root->left;\n        }\n    }\n    return predecessor ? predecessor->val : -1;\n}\n\nint main() {\n    int N, X;\n    cin >> N >> X;\n    Node* root = NULL;\n    Node* nodes[N];\n    for (int i = 0; i < N; i++) {\n        nodes[i] = new Node(i+1);\n    }\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        cin >> pi >> ci >> Ri;\n        if (Ri == 'L') {\n            nodes[pi-1]->left = nodes[ci-1];\n        } else {\n            nodes[pi-1]->right = nodes[ci-1];\n        }\n        if (!root) {\n            root = nodes[0];\n        }\n    }\n    int predecessor = findPredecessor(root, X);\n    cout << predecessor << endl;\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    // Define the structure for a tree node\n    static class Node {\n        int val;\n        Node left;\n        Node right;\n        Node(int node_value) {\n            val = node_value;\n            left = right = null;\n        }\n    }\n\n    // Function to find the predecessor of a node X\n    public static int findPredecessor(Node root, int X) {\n        Node predecessor = null;\n        while (root != null) {\n            if (root.val < X) {\n                predecessor = root;\n                root = root.right;\n            } else {\n                root = root.left;\n            }\n        }\n        return predecessor != null ? predecessor.val : -1;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int N = scanner.nextInt();\n        int X = scanner.nextInt();\n        Node root = null;\n        Node[] nodes = new Node[N];\n        for (int i = 0; i < N; i++) {\n            nodes[i] = new Node(i+1);\n        }\n        for (int i = 0; i < N - 1; i++) {\n            int pi = scanner.nextInt();\n            int ci = scanner.nextInt();\n            char Ri = scanner.next().charAt(0);\n            if (Ri == 'L') {\n                nodes[pi-1].left = nodes[ci-1];\n            } else {\n                nodes[pi-1].right = nodes[ci-1];\n            }\n            if (root == null) {\n                root = nodes[0];\n            }\n        }\n        int predecessor = findPredecessor(root, X);\n        System.out.println(predecessor);\n    }\n}",
+      "Python3": "class Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\n# Function to find the predecessor of a node X\ndef find_predecessor(root, X):\n    predecessor = None\n    while root:\n        if root.val < X:\n            predecessor = root\n            root = root.right\n        else:\n            root = root.left\n    return predecessor.val if predecessor else -1\n\n# Read input\nimport sys\nN, X = map(int, sys.stdin.readline().split())\nroot = None\nnodes = [Node(i+1) for i in range(N)]\nfor _ in range(N - 1):\n    pi, ci, Ri = sys.stdin.readline().split()\n    pi, ci = int(pi), int(ci)\n    if Ri == 'L':\n        nodes[pi-1].left = nodes[ci-1]\n    else:\n        nodes[pi-1].right = nodes[ci-1]\n    if not root:\n        root = nodes[0]\n# Find the predecessor\npredecessor = find_predecessor(root, X)\nprint(predecessor)",
+      "JavaScript": "const lines = require('fs').readFileSync(0,'utf-8').trim().split('\\n');\nlet idx = 0;\n\n// Define the structure for a tree node\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n\n// Function to find the predecessor of a node X\nfunction findPredecessor(root, X) {\n    let predecessor = null;\n    while (root) {\n        if (root.val < X) {\n            predecessor = root;\n            root = root.right;\n        } else {\n            root = root.left;\n        }\n    }\n    return predecessor ? predecessor.val : -1;\n}\n\n// Read input\nlet [N, X] = lines[idx++].trim().split(' ').map(Number);\nlet root = null;\nlet nodes = [];\nfor (let i = 0; i < N; i++) {\n    nodes.push(new Node(i+1));\n}\nfor (let i = 0; i < N - 1; i++) {\n    let [pi, ci, Ri] = lines[idx++].trim().split(' ');\n    pi = Number(pi);\n    ci = Number(ci);\n    if (Ri === 'L') {\n        nodes[pi-1].left = nodes[ci-1];\n    } else {\n        nodes[pi-1].right = nodes[ci-1];\n    }\n    if (!root) {\n        root = nodes[0];\n    }\n}\n// Find the predecessor\nlet predecessor = findPredecessor(root, X);\nconsole.log(predecessor);"
     }
   }
 }

@@ -4,14 +4,14 @@
   "slug": "one-more-weird-game",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Medium",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "Grid",
+      "Maximal Score"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +21,23 @@
   "content": {
     "problemStatement": "Leha is playing a very interesting game. The game will be played on a rectangular grid consisting of **N** rows and **M** columns. Initially all the cells of the grid are uncolored. \n\nLeha's initial score is zero. At each turn, he chooses some cell that is yet not colored, and colors that cell. The score obtained in this step will be number of neighboring colored cells of the cell that Leha colored in this step. Two cells are neighbors of each other if they share a side between them. The game will end when all the cells are colored. Finally, total score obtained at the end of the game will sum of score obtained in each turn.\n\nLeha wants to know what maximum score he can get? Can you please help him in finding this out?",
     "constraints": [
-      "**1** ≤ **T** ≤ **100**",
-      "**1** ≤ **N, M** ≤ **1 000**",
-      "Subtasks",
-      "**Subtask #1[30 points]**: **1** ≤ **N, M** ≤ **3**",
-      "**Subtask #2[70 points]**: **1** ≤ **N, M** ≤ **1 000**"
+      "1 <= T <= 100",
+      "1 <= N, M <= 1000"
     ],
-    "inputFormat": "The first line contains a single integer **T** denoting the number of test cases. **T** test cases follow.\n\nEach of the following **T** lines contains two space-separated integers **N, M** denoting the dimensions of the grid.",
+    "inputFormat": "The first line contains a single integer T denoting the number of test cases. Each of the following T lines contains two space-separated integers N, M denoting the dimensions of the grid.",
     "outputFormat": "For each test case, output a single line containing an integer corresponding to the maximal possible score Leha can obtain.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n2 2",
         "output": "4",
-        "explanation": "Explanation:\nLeha can obtain total score 4 in the following way.\n\nIn the first step, he colors down left cell, all the neighboring cells of this cell are uncolored. So, it adds 0 to total score.\nIn second step, he can color upper right cell, it also adds total 0 to the score.\nIn third step, he can color top left cell. There are two neighboring cell of this cell, both of which are colored. So, this add 2 to the score.\nIn the last step, he can choose the remaining down right cell. There are two neighboring cell of this cell, both of which are colored. So, this also add 2 to the score.\n\n\n\nLeha can't obtain a score more than 4. Hence 4 is the answer."
+        "explanation": "The maximal possible score is obtained by coloring the cells in the following order: top-left, top-right, bottom-left, bottom-right. The score obtained in each step is: 0, 0, 2, 2."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 3",
+        "output": "12",
+        "explanation": "The maximal possible score is obtained by coloring the cells in the following order: top-left, top-right, top-center, middle-left, middle-right, middle-center, bottom-left, bottom-right, bottom-center. The score obtained in each step is: 0, 0, 2, 2, 2, 4, 3, 4, 4."
       }
     ]
   },
@@ -42,20 +45,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n2 2",
-        "expectedOutput": "4",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n1000 1000",
+        "expectedOutput": "1998000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n1 1000",
+        "expectedOutput": "999",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n10 10",
+        "expectedOutput": "180",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n50 50",
+        "expectedOutput": "4900",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,9 +105,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To find the maximal possible score, we can use the fact that the score obtained in each step is equal to the number of neighboring colored cells. We can calculate the total number of neighboring pairs in the grid, which is (N-1)*M + N*(M-1). This is because each cell has 4 neighbors, but cells on the edges have fewer neighbors.",
+    "timeComplexity": "O(T) — because we are simply calculating the score for each test case",
+    "spaceComplexity": "O(1) — because we are using a constant amount of space to store the input and output",
+    "code": {
+      "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        printf(\"%d\\n\", (N-1)*M + N*(M-1));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        cout << (N-1)*M + N*(M-1) << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int M = sc.nextInt();\n            System.out.println((N-1)*M + N*(M-1));\n        }\n    }\n}",
+      "Python3": "T = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    print((N-1)*M + N*(M-1))",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++]);\nfor (let i = 0; i < T; i++) {\n    const [N, M] = lines[idx++].trim().split(' ').map(Number);\n    console.log((N-1)*M + N*(M-1));\n}"
+    }
   }
 }

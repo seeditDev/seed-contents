@@ -4,14 +4,15 @@
   "slug": "complete-the-implementation",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Sorting",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "sorting",
-      "data structures and algorithms"
+      "Quick Sort",
+      "Recursion",
+      "Sorting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "Given a quickSort function that accepts an array as a parameter, sort the array using the **Quick sort** algorithm.\n\nVideo Explanation",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 1000",
+      "1 <= array elements <= 1000"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements in the array. The second line contains N space-separated integers.",
+    "outputFormat": "For each test case output a single line with the N integers of the sorted array in non-decreasing order, separated by a single space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "8\n6 5 3 1 8 7 2 4",
-        "output": "1 2 3 4 5 6 7 8",
-        "explanation": ""
+        "input": "3\n8\n6 5 3 1 8 7 2 4\n5\n1 2 3 4 5\n5\n5 4 3 2 1",
+        "output": "1 2 3 4 5 6 7 8\n1 2 3 4 5\n1 2 3 4 5",
+        "explanation": "Each test case is sorted independently using Quick Sort, producing the arrays in ascending order."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n1\n42",
+        "output": "42",
+        "explanation": "A single element array is already sorted; the algorithm returns it unchanged."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n6\n10 9 8 7 6 5",
+        "output": "5 6 7 8 9 10",
+        "explanation": "The descending array is reordered into ascending order after the recursive partition steps."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "8\n6 5 3 1 8 7 2 4",
-        "expectedOutput": "1 2 3 4 5 6 7 8",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n15\n1000 999 998 997 996 995 994 993 992 991 990 989 988 987 986",
+        "expectedOutput": "986 987 988 989 990 991 992 993 994 995 996 997 998 999 1000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n8\n5 5 5 5 5 5 5 5",
+        "expectedOutput": "5 5 5 5 5 5 5 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n6\n6 5 4 3 2 1",
+        "expectedOutput": "1 2 3 4 5 6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\n4\n2 3 1 4\n5\n10 10 9 8 7\n3\n1000 1 500",
+        "expectedOutput": "1 2 3 4\n7 8 9 10 10\n1 500 1000",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "Average Case: O(n log n), where n is the number of elements in the array. This occurs when the pivot divides the array into two roughly equal halves.\nWorst Case: O(n^2), which can occur if the pivot chosen is the smallest or largest element repeatedly, resulting in highly unbalanced partitions. This is mitigated in practice by choosing better pivot selection strategies (e.g., random pivot).",
-    "spaceComplexity": "O(log n) for the recursive stack space. Quick Sort is an in-place sorting algorithm, meaning it requires only a small amount of extra memory space for recursion, making it memory efficient.",
-    "code": {}
+    "approach": "We implement the classic Quick Sort algorithm using the Lomuto partition scheme. The last element of the current sub-array is chosen as pivot, elements smaller than the pivot are moved to its left and larger ones to its right. The function is called recursively on the two partitions. This runs in O(N log N) average time and O(N^2) worst-case time (which is acceptable for N≤1000). The recursion depth is at most N, so the auxiliary space is O(N) in the worst case and O(log N) on average.",
+    "timeComplexity": "Average case O(N log N) per test case, worst case O(N^2) per test case.",
+    "spaceComplexity": "O(log N) auxiliary stack space on average, O(N) in the worst case (recursion).",
+    "code": {
+      "C": "#include <stdio.h>\n\nvoid swap(int *a, int *b){int t=*a;*a=*b;*b=t;}\nint partition(int arr[], int low, int high){int pivot=arr[high];int i=low-1;for(int j=low;j<high;++j){if(arr[j]<pivot){++i;swap(&arr[i],&arr[j]);}}swap(&arr[i+1],&arr[high]);return i+1;}\nvoid quickSort(int arr[], int low, int high){if(low<high){int pi=partition(arr,low,high);quickSort(arr,low,pi-1);quickSort(arr,pi+1,high);}}\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N; scanf(\"%d\",&N); int arr[1000]; for(int i=0;i<N;++i) scanf(\"%d\",&arr[i]); quickSort(arr,0,N-1); for(int i=0;i<N;++i){printf(\"%d\",arr[i]); if(i+1<N) printf(\" \");} printf(\"\\n\"); } return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint partition(vector<int>&a,int low,int high){int pivot=a[high];int i=low-1;for(int j=low;j<high;++j){if(a[j]<pivot){++i;swap(a[i],a[j]);}}swap(a[i+1],a[high]);return i+1;}\nvoid quickSort(vector<int>&a,int low,int high){if(low<high){int pi=partition(a,low,high);quickSort(a,low,pi-1);quickSort(a,pi+1,high);}}\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T; if(!(cin>>T)) return 0; while(T--){int N;cin>>N;vector<int>a(N);for(int &x:a)cin>>x;quickSort(a,0,N-1);for(int i=0;i<N;++i){cout<<a[i]; if(i+1<N) cout<<' ';}cout<<'\\n';}return 0; }",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static void swap(int[] a,int i,int j){int t=a[i];a[i]=a[j];a[j]=t;}\n    private static int partition(int[] a,int low,int high){int pivot=a[high];int i=low-1;for(int j=low;j<high;++j){if(a[j]<pivot){i++;swap(a,i,j);}}swap(a,i+1,high);return i+1;}\n    private static void quickSort(int[] a,int low,int high){if(low<high){int pi=partition(a,low,high);quickSort(a,low,pi-1);quickSort(a,pi+1,high);}}\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T=Integer.parseInt(br.readLine().trim());\n        StringBuilder sb=new StringBuilder();\n        while(T-- > 0){\n            int N=Integer.parseInt(br.readLine().trim());\n            int[] arr=new int[N];\n            st=new StringTokenizer(br.readLine());\n            for(int i=0;i<N;++i) arr[i]=Integer.parseInt(st.nextToken());\n            quickSort(arr,0,N-1);\n            for(int i=0;i<N;++i){\n                sb.append(arr[i]);\n                if(i+1<N) sb.append(' ');\n            }\n            sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\nsys.setrecursionlimit(1000000)\n\ndef swap(arr,i,j):\n    arr[i],arr[j]=arr[j],arr[i]\n\ndef partition(arr,low,high):\n    pivot=arr[high]\n    i=low-1\n    for j in range(low,high):\n        if arr[j]<pivot:\n            i+=1\n            swap(arr,i,j)\n    swap(arr,i+1,high)\n    return i+1\n\ndef quick_sort(arr,low,high):\n    if low<high:\n        pi=partition(arr,low,high)\n        quick_sort(arr,low,pi-1)\n        quick_sort(arr,pi+1,high)\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        arr=[int(next(it)) for _ in range(N)]\n        quick_sort(arr,0,N-1)\n        out.append(' '.join(map(str,arr)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nfunction swap(arr,i,j){const t=arr[i];arr[i]=arr[j];arr[j]=t;}\nfunction partition(arr,low,high){const pivot=arr[high];let i=low-1;for(let j=low;j<high;++j){if(arr[j]<pivot){i++;swap(arr,i,j);}}swap(arr,i+1,high);return i+1;}\nfunction quickSort(arr,low,high){if(low<high){const pi=partition(arr,low,high);quickSort(arr,low,pi-1);quickSort(arr,pi+1,high);}}\nconst T=Number(input[idx++]);\nlet outputs=[];\nfor(let t=0;t<T;++t){const N=Number(input[idx++]);const arr=[];for(let i=0;i<N;++i)arr.push(Number(input[idx++]));quickSort(arr,0,N-1);outputs.push(arr.join(' '));}\nconsole.log(outputs.join('\\n'));"
+    }
   }
 }

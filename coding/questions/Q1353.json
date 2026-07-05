@@ -4,14 +4,15 @@
   "slug": "search-in-matrix",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Searching",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Binary Search",
+      "Matrix",
+      "Two‑Dimensional Array"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,26 +22,32 @@
   "content": {
     "problemStatement": "You are given an `N x M` integer matrix with the following properties:\n\n\nEach row of the matrix is sorted in non-decreasing order.\nThe first integer of each row is greater than the last integer of the previous row.\nGiven an integer `X`, determine whether it exists in the matrix.\n\nWrite a solution with a time complexity of **O(log(NM))**.\n\n\nInput Format\n\nThe first line of input will contain three space separated integers NNN, MMM and XXX, denoting the no. of rows and columns in the input matrix along with the integer which needs to be searched in matrix.\nNext NNN lines contains MMM space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line `YES` if `X` exists in the the given matrix, else `NO`.",
     "constraints": [
-      "0≤N,M≤1000 \\leq N, M \\leq 1000≤N,M≤100",
-      "0≤X≤1000000 \\leq X \\leq 1000000≤X≤100000",
-      "The elements of the matrix are non-negative and won't exceed 100000100000100000.",
-      "Each row of the matrix is sorted in non-decreasing order.",
-      "The first integer of each row is greater than the last integer of the previous row."
+      "1 <= T <= 10",
+      "1 <= N, M <= 1000",
+      "0 <= X <= 1,000,000",
+      "All matrix elements fit in 32‑bit signed integer range",
+      "Rows are sorted non‑decreasingly and rows are strictly increasing with respect to each other"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three space‑separated integers N, M and X — the number of rows, the number of columns and the target value. Then follow N lines, each containing M space‑separated integers describing the matrix. Each row is sorted in non‑decreasing order and the first element of a row is greater than the last element of the previous row.",
+    "outputFormat": "For each test case output a single line containing \"YES\" if X exists in the matrix, otherwise \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3 4 7\n1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "input": "1\\n3 4 7\\n1 2 3 4\\n5 6 7 8\\n9 10 11 12",
         "output": "YES",
-        "explanation": ""
+        "explanation": "The matrix is globally sorted. The value 7 is located at row 2 column 3 (1‑based), so the answer is YES."
       },
       {
         "id": "sample_2",
-        "input": "3 4 7\n1 2 3 4\n5 6 6 8\n9 10 11 12",
+        "input": "1\\n3 4 7\\n1 2 3 4\\n5 6 6 8\\n9 10 11 12",
         "output": "NO",
-        "explanation": ""
+        "explanation": "All rows are sorted, but the target 7 does not appear in any cell, therefore the answer is NO."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1 1 1\\n1",
+        "output": "YES",
+        "explanation": "Single‑element matrix that equals the target."
       }
     ]
   },
@@ -48,27 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3 4 7\n1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "label": "minimum boundary",
+        "input": "1\\n1 1 0\\n0",
         "expectedOutput": "YES",
-        "weight": 50
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "3 4 7\n1 2 3 4\n5 6 6 8\n9 10 11 12",
+        "label": "maximum boundary within element limit",
+        "input": "1\\n3 4 12\\n1 2 3 4\\n5 6 7 8\\n9 10 11 12",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "target smaller than all elements",
+        "input": "1\\n2 3 1\\n5 6 7\\n8 9 10",
         "expectedOutput": "NO",
-        "weight": 50
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "target absent but within range",
+        "input": "1\\n2 5 8\\n1 3 5 7 9\\n11 13 15 17 19",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "target present in second row",
+        "input": "1\\n2 3 8\\n2 4 6\\n8 10 12",
+        "expectedOutput": "YES",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -82,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "Because the whole matrix is globally sorted (each row is sorted and the first element of a row is larger than the last element of the previous row), we can treat the N×M matrix as a sorted 1‑dimensional array. Using binary search on the virtual array gives O(log(N·M)) time. The index mid is mapped to row = mid / M and col = mid % M to access the actual element. If the element equals X we answer YES, otherwise we continue the binary search. The algorithm is repeated for each test case.",
+    "timeComplexity": "O(log(N·M)) per test case, because binary search halves the search space each step.",
+    "spaceComplexity": "O(1) extra space besides the input matrix.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n\nbool searchInMatrix(vector<vector<int>>& matrix, int target) {\n    int numRows = matrix.size();\n    int numCols = matrix[0].size();\n    \n    int start = 0, end = numRows * numCols - 1;\n    \n    while (start <= end) {\n        int mid = start + (end - start) / 2;\n        int midElement = matrix[mid / numCols][mid % numCols];\n        \n        if (target == midElement)\n            return true;\n        else if (target < midElement)\n            end = mid - 1;\n        else\n            start = mid + 1;\n    }\n    return false;\n}\n\nint main() {\n  int n, m, x;\n  cin >> n >> m >> x;\n  \n  if(n == 0 || m == 0)\n        return cout << \"NO\", 0;\n\n  vector<vector<int> > mat(n, vector<int> (n));\n  int val = 1;\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < n; j++){\n       int val;\n       cin >> val;\n       mat[i][j] = val;\n    }\n  } \n  \n  if(searchInMatrix(mat, x)){\n    cout << \"YES\";\n  } else{\n    cout << \"NO\";\n  }\n\n  return 0;\n} ",
-      "Python3": "def search_in_matrix(matrix, target):\n    numRows = len(matrix)\n    numCols = len(matrix[0])\n    \n    start, end = 0, numRows * numCols - 1\n    \n    while start <= end:\n        mid = start + (end - start) // 2\n        midElement = matrix[mid // numCols][mid % numCols]\n        \n        if target == midElement:\n            return True\n        elif target < midElement:\n            end = mid - 1\n        else:\n            start = mid + 1\n            \n    return False\n\nn, m, x = map(int, input().split())\n\nif n == 0 or m == 0:\n    print(\"NO\")\n    exit()\n\nmat = [list(map(int, input().split())) for _ in range(n)]\n\nif search_in_matrix(mat, x):\n    print(\"YES\")\nelse:\n    print(\"NO\")\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <stdlib.h>\n\nbool searchInMatrix(int matrix[][100], int numRows, int numCols, int target) {\n    int start = 0, end = numRows * numCols - 1;\n    \n    while (start <= end) {\n        int mid = start + (end - start) / 2;\n        int midElement = matrix[mid / numCols][mid % numCols];\n        \n        if (target == midElement)\n            return true;\n        else if (target < midElement)\n            end = mid - 1;\n        else\n            start = mid + 1;\n    }\n    return false;\n}\n\nint main() {\n    int n, m, x;\n    scanf(\"%d %d %d\", &n, &m, &x);\n\n    if (n == 0 || m == 0) {\n        printf(\"NO\");\n        return 0;\n    }\n\n    int mat[100][100];\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            int val;\n            scanf(\"%d\", &val);\n            mat[i][j] = val;\n        }\n    }\n\n    if (searchInMatrix(mat, n, m, x)) {\n        printf(\"YES\");\n    } else {\n        printf(\"NO\");\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    \n    public static boolean searchInMatrix(int[][] matrix, int target) {\n        int numRows = matrix.length;\n        int numCols = matrix[0].length;\n        \n        int start = 0, end = numRows * numCols - 1;\n        \n        while (start <= end) {\n            int mid = start + (end - start) / 2;\n            int midElement = matrix[mid / numCols][mid % numCols];\n            \n            if (target == midElement)\n                return true;\n            else if (target < midElement)\n                end = mid - 1;\n            else\n                start = mid + 1;\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        \n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n        int x = scanner.nextInt();\n        \n        if (n == 0 || m == 0) {\n            System.out.println(\"NO\");\n            return;\n        }\n        \n        int[][] mat = new int[n][m];\n        \n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                int val = scanner.nextInt();\n                mat[i][j] = val;\n            }\n        }\n        \n        if (searchInMatrix(mat, x)) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}\n",
-      "JavaScript": "function searchInMatrix(matrix, target) {\n    const numRows = matrix.length;\n    const numCols = matrix[0].length;\n    \n    let start = 0, end = numRows * numCols - 1;\n\n    while (start <= end) {\n        const mid = Math.floor(start + (end - start) / 2);\n        const midElement = matrix[Math.floor(mid / numCols)][mid % numCols];\n\n        if (target === midElement) {\n            return true;\n        } else if (target < midElement) {\n            end = mid - 1;\n        } else {\n            start = mid + 1;\n        }\n    }\n    return false;\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const [n, m, x] = input[0].split(' ').map(Number);\n\n    if (n === 0 || m === 0) {\n        console.log(\"NO\");\n        return;\n    }\n\n    const matrix = [];\n    for (let i = 1; i <= n; i++) {\n        matrix.push(input[i].split(' ').map(Number));\n    }\n\n    console.log(searchInMatrix(matrix, x) ? \"YES\" : \"NO\");\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, M, X;\n        scanf(\"%d %d %d\", &N, &M, &X);\n        int **mat = (int **)malloc(N * sizeof(int *));\n        for (int i = 0; i < N; ++i) {\n            mat[i] = (int *)malloc(M * sizeof(int));\n            for (int j = 0; j < M; ++j) {\n                scanf(\"%d\", &mat[i][j]);\n            }\n        }\n        long long left = 0, right = (long long)N * M - 1;\n        int found = 0;\n        while (left <= right) {\n            long long mid = left + (right - left) / 2;\n            int r = mid / M;\n            int c = mid % M;\n            int val = mat[r][c];\n            if (val == X) { found = 1; break; }\n            else if (val < X) left = mid + 1;\n            else right = mid - 1;\n        }\n        printf(found ? \"YES\\n\" : \"NO\\n\");\n        for (int i = 0; i < N; ++i) free(mat[i]);\n        free(mat);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int N, M, X; cin >> N >> M >> X;\n        vector<vector<int>> a(N, vector<int>(M));\n        for (int i = 0; i < N; ++i)\n            for (int j = 0; j < M; ++j)\n                cin >> a[i][j];\n        long long left = 0, right = 1LL * N * M - 1;\n        bool ok = false;\n        while (left <= right) {\n            long long mid = left + (right - left) / 2;\n            int r = mid / M;\n            int c = mid % M;\n            int val = a[r][c];\n            if (val == X) { ok = true; break; }\n            else if (val < X) left = mid + 1;\n            else right = mid - 1;\n        }\n        cout << (ok ? \"YES\" : \"NO\") << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int M = Integer.parseInt(st.nextToken());\n            int X = Integer.parseInt(st.nextToken());\n            int[][] mat = new int[N][M];\n            for (int i = 0; i < N; i++) {\n                st = new StringTokenizer(br.readLine());\n                for (int j = 0; j < M; j++) {\n                    mat[i][j] = Integer.parseInt(st.nextToken());\n                }\n            }\n            long left = 0, right = (long) N * M - 1;\n            boolean found = false;\n            while (left <= right) {\n                long mid = left + (right - left) / 2;\n                int r = (int) (mid / M);\n                int c = (int) (mid % M);\n                int val = mat[r][c];\n                if (val == X) { found = true; break; }\n                else if (val < X) left = mid + 1;\n                else right = mid - 1;\n            }\n            sb.append(found ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); M = int(next(it)); X = int(next(it))\n        matrix = [[int(next(it)) for _ in range(M)] for __ in range(N)]\n        left, right = 0, N * M - 1\n        found = False\n        while left <= right:\n            mid = (left + right) // 2\n            r, c = divmod(mid, M)\n            val = matrix[r][c]\n            if val == X:\n                found = True\n                break\n            elif val < X:\n                left = mid + 1\n            else:\n                right = mid - 1\n        out.append('YES' if found else 'NO')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = data[idx++];\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const N = data[idx++];\n  const M = data[idx++];\n  const X = data[idx++];\n  const matrix = new Array(N);\n  for (let i = 0; i < N; i++) {\n    matrix[i] = new Array(M);\n    for (let j = 0; j < M; j++) {\n      matrix[i][j] = data[idx++];\n    }\n  }\n  let left = 0, right = N * M - 1;\n  let found = false;\n  while (left <= right) {\n    const mid = left + Math.floor((right - left) / 2);\n    const r = Math.floor(mid / M);\n    const c = mid % M;\n    const val = matrix[r][c];\n    if (val === X) { found = true; break; }\n    else if (val < X) left = mid + 1;\n    else right = mid - 1;\n  }\n  results.push(found ? 'YES' : 'NO');\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

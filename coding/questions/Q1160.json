@@ -4,14 +4,15 @@
   "slug": "marbles",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "combinatorics & number theory",
-      "data structures and algorithms"
+      "Combinatorics",
+      "Stars and Bars",
+      "Binomial Coefficient"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +22,30 @@
   "content": {
     "problemStatement": "Rohit dreams he is in a shop with an infinite amount of marbles. He is allowed to select nnn marbles. \n\nThere are marbles of kkk different colors. From each color there are also infinitely many marbles. \n\nRohit wants to have at least one marble of each color, but still there are a lot of possibilities for his selection. In his effort to make a decision he wakes up. \n\nNow he asks you how many possibilities for his selection he would have had. \n\nAssume that marbles of equal color can't be distinguished, and the order of the marbles is irrelevant.\n\n\nInput Format\nThe first line of input contains a number T &lt;= 100 that indicates the number of test cases to follow. \n\nEach test case consists of one line containing nnn and kkk, where nnn is the number of marbles Rohit selects and kkk is the number of different colors of the marbles.\n\n\n\nOutput Format\nFor each test case print the number of possibilities that Rohit would have had.\nYou can assume that this number fits into a signed 64 bit integer.",
     "constraints": [
-      "1&lt;=k&lt;=n&lt;=1000000"
+      "1 ≤ T ≤ 100",
+      "1 ≤ k ≤ n ≤ 1,000,000",
+      "Result fits in signed 64‑bit integer"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 100), the number of test cases. Each of the next T lines contains two space‑separated integers n and k (1 ≤ k ≤ n ≤ 1,000,000).",
+    "outputFormat": "For each test case output a single line containing C(n‑1, k‑1), the number of possible selections. The result fits into a signed 64‑bit integer.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n10 10\n30 7",
-        "output": "1\n475020",
-        "explanation": ""
+        "input": "2\\n10 10\\n30 7",
+        "output": "1\\n475020",
+        "explanation": "For (10,10) we need C(9,9)=1. For (30,7) we need C(29,6)=475020."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n5 3",
+        "output": "6",
+        "explanation": "C(4,2)=6 ways to give at least one marble of each of the 3 colors when selecting 5 marbles."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n100 100",
+        "output": "1",
+        "explanation": "When n = k, each color must appear exactly once, so only one possible selection."
       }
     ]
   },
@@ -38,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n10 10\n30 7",
-        "expectedOutput": "1\n475020",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\\n1000000 2",
+        "expectedOutput": "999999",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "3\\n10 5\\n10 5\\n10 5",
+        "expectedOutput": "126\\n126\\n126",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n66 33",
+        "expectedOutput": "3609714217008132870",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\\n5 3\\n20 10\\n30 7\\n34 17\\n1000000 1000000",
+        "expectedOutput": "6\\n92378\\n475020\\n1166803110\\n1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -65,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The requirement of at least one marble of each colour transforms the problem into distributing the remaining (n‑k) indistinguishable marbles into k colour groups. By the stars‑and‑bars theorem the number of ways equals C((n‑k)+k‑1, k‑1) = C(n‑1, k‑1). Computing a single binomial coefficient can be done in O(min(r, n‑r)) time by iteratively multiplying and dividing, keeping the intermediate result integral. Since the answer is guaranteed to fit in 64‑bit, 64‑bit integer arithmetic is sufficient.",
+    "timeComplexity": "O(min(k‑1, n‑k)) per test case, O(T·min(k, n‑k)) total.",
+    "spaceComplexity": "O(1) extra space besides input storage.",
+    "code": {
+      "C": "#include <stdio.h>\n\nstatic long long binom(long long n, long long r){\n    if(r<0||r>n) return 0;\n    if(r>n-r) r=n-r;\n    long long res=1;\n    for(long long i=1;i<=r;++i){\n        res=res*(n-r+i)/i;\n    }\n    return res;\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        long long n,k; scanf(\"%lld %lld\",&n,&k);\n        printf(\"%lld\\n\", binom(n-1,k-1));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic long long binom(long long n, long long r){\n    if(r<0||r>n) return 0;\n    if(r>n-r) r=n-r;\n    long long res=1;\n    for(long long i=1;i<=r;++i){\n        res=res*(n-r+i)/i;\n    }\n    return res;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long n,k; cin>>n>>k;\n        cout<<binom(n-1,k-1)<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static long binom(long n, long r){\n        if(r<0||r>n) return 0;\n        if(r>n-r) r=n-r;\n        long res=1;\n        for(long i=1;i<=r;++i){\n            res=res*(n-r+i)/i;\n        }\n        return res;\n    }\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st=new StringTokenizer(br.readLine());\n        int T=Integer.parseInt(st.nextToken());\n        StringBuilder sb=new StringBuilder();\n        for(int t=0;t<T;++t){\n            st=new StringTokenizer(br.readLine());\n            long n=Long.parseLong(st.nextToken());\n            long k=Long.parseLong(st.nextToken());\n            sb.append(binom(n-1,k-1)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef binom(n,r):\n    if r<0 or r>n:\n        return 0\n    if r>n-r:\n        r=n-r\n    res=1\n    for i in range(1,r+1):\n        res=res*(n-r+i)//i\n    return res\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        n=int(next(it)); k=int(next(it))\n        out.append(str(binom(n-1,k-1)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=Number(input[idx++]);\nlet out=[];\nfunction binom(n,r){\n    if(r<0||r>n) return 0n;\n    if(r>n-r) r=n-r;\n    let res=1n;\n    const bigN=BigInt(n);\n    const bigR=BigInt(r);\n    for(let i=1n;i<=bigR;++i){\n        res=res*(bigN-bigR+i)/i;\n    }\n    return res;\n}\nfor(let t=0;t<T;++t){\n    const n=Number(input[idx++]);\n    const k=Number(input[idx++]);\n    out.push(binom(n-1,k-1).toString());\n}\nconsole.log(out.join('\\n'));"
+    }
   }
 }

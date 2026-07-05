@@ -4,14 +4,14 @@
   "slug": "find-peak-element",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Searching",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Binary Search",
+      "Peak Element"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +20,32 @@
   },
   "content": {
     "problemStatement": "A **peak element** in an array is an element that is **strictly greater** than its adjacent elements.\n\nYou are provided with a **0-based index integer array** numsnumsnums of size NNN. Your task is to identify the index of **any one peak element** in the array and return it. If multiple peak elements exist, returning the index of any one of them is acceptable.\n\nFor simplicity, assume that the elements just outside the boundaries of the array are considered to be negative infinity. That is:\n\n\narr[−1]=−∞arr[-1] = -∞arr[−1]=−∞\narr[arr.length]=−∞arr[arr.length] = -∞arr[arr.length]=−∞\nYour solution **must have a time complexity of O(log N).**\n\nFunction DeclarationFunction NamefindPeakElementfindPeakElementfindPeakElement – This function finds the index of a peak element in the array.\n\nParameters\nnumsnumsnums : A 0-based indexed array of integers where adjacent elements are not equal.\nReturn Value\nReturns a single integer — the **index of any peak element**.\nConstraints\n1≤T≤10001 \\leq T \\leq 10001≤T≤1000\n1≤N≤10001 \\leq N \\leq 10001≤N≤1000\n−231≤nums[i]≤231−1−2^\\text{31} \\leq nums[i] \\leq 2^\\text{31} − 1−231≤nums[i]≤231−1\nnums[i]≠nums[i+1]nums[i] ≠ nums[i + 1]nums[i]=nums[i+1] for all valid indices iii\nTime complexity must be **O(log n)**\n\nInput Format\n\nThe first line contains the number of test cases TTT \n\nEach test case contains:\n\nThe first line contains a single integer NNN — the size of the array.\nThe second line contains NNN space-separated integers representing the array elements.\n\n\n\n\nOutput Format\n\nPrint a single integer — the index of a peak element.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 1000",
+      "1 <= N <= 1000",
+      "-2^31 <= nums[i] <= 2^31-1",
+      "nums[i] != nums[i+1] for all valid i"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N, the size of the array.\n- A line with N space‑separated integers representing the array.\nAll indices are 0‑based.",
+    "outputFormat": "For each test case output a single line containing the 0‑based index of any peak element in the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n5\n5 10 7 3 8\n5\n2 4 3 6 1",
         "output": "1\n3",
-        "explanation": "Explanation:\nIn the first test case element 10 at index 1 is a peak because 10 > 5 and 10 > 7.\nIn the second test case element 6 at index 3 is a peak as 6 > 3 and 6 > 1."
+        "explanation": "First array: 10 at index 1 is a peak (10 > 5 and 10 > 7). Second array: 6 at index 3 is a peak (6 > 3 and 6 > 1). The binary‑search algorithm may also return other valid peaks, but the shown indices satisfy the requirement."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\n1 2 3 4 5",
+        "output": "4",
+        "explanation": "The array is strictly increasing, so the last element (5) is a peak because the virtual element after it is -∞."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5\n5 4 3 2 1",
+        "output": "0",
+        "explanation": "The array is strictly decreasing, so the first element (5) is a peak because the virtual element before it is -∞."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n5\n5 10 7 3 8\n5\n2 4 3 6 1",
-        "expectedOutput": "1\n3",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n42",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (15 elements, strictly increasing)",
+        "input": "1\n15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "14",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case with peak at the end",
+        "input": "1\n5\n10 5 6 7 8",
+        "expectedOutput": "4",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case with peak in the middle",
+        "input": "1\n5\n1 3 2 4 1",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "peak at the start",
+        "input": "1\n5\n9 8 7 6 5",
+        "expectedOutput": "0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "Initialize two pointers:\n\n\n\nleft = 0\nright = n - 1\n\n\n\nPerform the binary search loop:\n\n\n\n\nCompute mid = (left + right) // 2.\n\n\n\n\nCompare arr[mid] and arr[mid + 1]:\n\n\n\nIf arr[mid] &gt; arr[mid + 1]:\nThe peak must be in the left part (including mid), so set right = mid.\nElse:\nThe peak is in the right part, so set left = mid + 1.\n\n\n\n\n\nWhen the loop ends:\n\n\n\nleft and right will converge to the same index, which is a valid peak element.",
-    "timeComplexity": "O(log n) — Each iteration halves the search space.",
-    "spaceComplexity": "O(1) — Constant extra space (only a few variables).",
+    "approach": "Use binary search on the array. At each step compare nums[mid] with nums[mid+1]. If nums[mid] > nums[mid+1] the peak lies on the left side (including mid), otherwise it lies on the right side (mid+1 onward). Shrink the search interval until left == right; that index is a peak. This runs in O(log N) time and O(1) extra space.",
+    "timeComplexity": "O(log N) per test case",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C++": "class Solution {\npublic:\n    int findPeakElement(const vector<int>& nums) {\n        int left = 0;\n        int right = nums.size() - 1;\n\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n\n            if (nums[mid] > nums[mid + 1]) {\n                // Peak is in the left part (including mid)\n                right = mid;\n            } else {\n                // Peak is in the right part\n                left = mid + 1;\n            }\n        }\n\n        return left;  // Peak element index\n    }\n};\n",
-      "Python3": "class Solution:\n    def findPeakElement(self, nums):\n        left = 0\n        right = len(nums) - 1\n\n        while left < right:\n            mid = left + (right - left) // 2\n\n            if nums[mid] > nums[mid + 1]:\n                # Peak is in the left half (including mid)\n                right = mid\n            else:\n                # Peak is in the right half\n                left = mid + 1\n\n        return left  # Index of the peak element\n",
-      "C": "int findPeakElement(int nums[], int n) {\n    int left = 0;\n    int right = n - 1;\n\n    while (left < right) {\n        int mid = left + (right - left) / 2;\n\n        if (nums[mid] > nums[mid + 1]) {\n            // Peak is in the left half (including mid)\n            right = mid;\n        } else {\n            // Peak is in the right half\n            left = mid + 1;\n        }\n    }\n\n    return left;  // Peak element index\n}\n",
-      "Java": "class Solution {\n    public int findPeakElement(int[] nums) {\n        int left = 0;\n        int right = nums.length - 1;\n\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n\n            if (nums[mid] > nums[mid + 1]) {\n                // Peak is in the left half (including mid)\n                right = mid;\n            } else {\n                // Peak is in the right half\n                left = mid + 1;\n            }\n        }\n\n        return left;  // Index of the peak element\n    }\n}\n",
-      "JavaScript": "class Solution {\n    findPeakElement(nums) {\n        let left = 0;\n        let right = nums.length - 1;\n\n        while (left < right) {\n            let mid = Math.floor((left + right) / 2);\n\n            if (nums[mid] > nums[mid + 1]) {\n                // Peak is in the left half (including mid)\n                right = mid;\n            } else {\n                // Peak is in the right half\n                left = mid + 1;\n            }\n        }\n\n        return left; // Index of the peak element\n    }\n}\n"
+      "C": "#include <stdio.h>\n\nint findPeakElement(int *nums, int size) {\n    int left = 0, right = size - 1;\n    while (left < right) {\n        int mid = left + (right - left) / 2;\n        if (nums[mid] > nums[mid + 1])\n            right = mid;\n        else\n            left = mid + 1;\n    }\n    return left;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int nums[1000];\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &nums[i]);\n        printf(\"%d\\n\", findPeakElement(nums, N));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint findPeakElement(const vector<int>& nums) {\n    int left = 0, right = (int)nums.size() - 1;\n    while (left < right) {\n        int mid = left + (right - left) / 2;\n        if (nums[mid] > nums[mid + 1])\n            right = mid;\n        else\n            left = mid + 1;\n    }\n    return left;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if (!(cin >> T)) return 0;\n    while (T--) {\n        int N; cin >> N;\n        vector<int> nums(N);\n        for (int i = 0; i < N; ++i) cin >> nums[i];\n        cout << findPeakElement(nums) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.util.*;\n\npublic class Main {\n    private static int findPeakElement(int[] nums) {\n        int left = 0, right = nums.length - 1;\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] > nums[mid + 1])\n                right = mid;\n            else\n                left = mid + 1;\n        }\n        return left;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int[] nums = new int[N];\n            for (int i = 0; i < N; i++) nums[i] = sc.nextInt();\n            System.out.println(findPeakElement(nums));\n        }\n        sc.close();\n    }\n}",
+      "Python3": "import sys\n\ndef findPeakElement(nums):\n    left, right = 0, len(nums) - 1\n    while left < right:\n        mid = left + (right - left) // 2\n        if nums[mid] > nums[mid + 1]:\n            right = mid\n        else:\n            left = mid + 1\n    return left\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        nums = [int(next(it)) for _ in range(N)]\n        out.append(str(findPeakElement(nums)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nfunction findPeakElement(nums) {\n    let left = 0, right = nums.length - 1;\n    while (left < right) {\n        const mid = Math.floor((left + right) / 2);\n        if (nums[mid] > nums[mid + 1]) {\n            right = mid;\n        } else {\n            left = mid + 1;\n        }\n    }\n    return left;\n}\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; ++t) {\n    const N = Number(input[idx++]);\n    const nums = [];\n    for (let i = 0; i < N; ++i) nums.push(Number(input[idx++]));\n    outputs.push(String(findPeakElement(nums)));\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }

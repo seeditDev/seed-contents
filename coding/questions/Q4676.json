@@ -6,12 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-02",
   "metadata": {
-    "category": "Arrays",
+    "category": "Graphs",
     "difficulty": "Medium",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "Graph Traversal",
+      "DFA"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +21,28 @@
   "content": {
     "problemStatement": "There are 555 cities in the country.\n\nThe map of the country is given below.\n\nThe tour starts from the red city.\n\nEach road is associated with a character.\n\nInitially, there is an empty string.\n\nEvery time a road has been travelled the character associated gets appended to the string.\n\nAt the green city either the string can be printed or the tour can be continued.\n\nIn the problem, you are given a string tell whether it is possible to print the string while following the rules of the country?\n\nInput:\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nEach testcase contains a single line of input, a string ss s. The string consists only of 0′s0's0′s and 1′s1's1′s.\nOutput:For each testcase, output \"YES\" or \"NO\" depending on the input.",
     "constraints": [
-      "1≤T≤100001 \\leq T \\leq 100001≤T≤10000",
-      "1≤length&nbsp;of&nbsp;each&nbsp;string≤100001 \\leq length~of~each~string \\leq 100001≤length&nbsp;of&nbsp;each&nbsp;string≤10000",
-      "1≤Summation&nbsp;length≤105 1 \\leq Summation~length \\leq 10^51≤Summation&nbsp;length≤105"
+      "1 <= T <= 10000",
+      "1 <= length of each string <= 10000",
+      "1 <= Summation length <= 10^5"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T. Each test case contains a single line of input, a string ss s. The string consists only of 0's and 1's.",
+    "outputFormat": "For each test case, output 'YES' or 'NO' depending on the input.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n100",
+        "output": "NO",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n101",
+        "output": "YES",
+        "explanation": ""
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n111",
         "output": "NO",
         "explanation": ""
       }
@@ -40,20 +52,48 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n100",
+        "input": "1\n1",
         "expectedOutput": "NO",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "input": "1\n10000",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "input": "1\n10",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "input": "1\n1010",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "input": "1\n1111",
+        "expectedOutput": "NO",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,11 +107,15 @@
     ]
   },
   "solution": {
-    "approach": "The problem can be represented as a graph traversal, where each city is a node and each road, associated with a character, is an edge between nodes. Starting from the red city (node 1), we move through each character in the input string, treating each character as an instruction that directs us from one city to another according to a predefined adjacency matrix. This matrix defines each city’s possible transitions based on the input character (0 or 1). For each character in the string, we update our current city based on the specified transition in the matrix. By the end of the string, if we arrive at the green city (node 5), we print `\"YES\"`; otherwise, `\"NO\"`. This solution efficiently follows the transition rules to verify if the path is valid.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem can be solved by simulating a DFA on the given string. We start at the red city and move to the next city based on the current character in the string. If we reach the green city, we print 'YES' if the string is printed, otherwise we print 'NO'.",
+    "timeComplexity": "O(n) where n is the length of the string, as we are traversing the string once.",
+    "spaceComplexity": "O(1) as we are using a constant amount of space to store the current city and the string.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n#define int long long\nint32_t main()\n{\n    ios_base::sync_with_stdio(false);\n    cin.tie(0);\n    cout.tie(0);\n    int t;\n    cin >> t;\n    while (t--)\n    {\n        int adj[6][2];\n        adj[1][0] = 1;\n        adj[1][1] = 2;\n        adj[2][0] = 3;\n        adj[2][1] = 2;\n        adj[3][0] = 4;\n        adj[3][1] = 2;\n        adj[4][0] = 5;\n        adj[4][1] = 2;\n        adj[5][0] = 1;\n        adj[5][1] = 2;\n        string s;\n        cin >> s;\n        int curr = 1, n = s.size();\n\n        for (int i = 0; i < n; i++)\n            curr = adj[curr][s[i] - '0'];\n\n        if (curr == 5)\n            cout << \"YES\\n\";\n        else\n            cout << \"NO\\n\";\n    }\n    return 0;\n}"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int adj[6][2] = {{1, 2}, {3, 2}, {4, 2}, {5, 2}, {1, 2}, {5, 2}};\n        char s[10001];\n        scanf(\"%s\", s);\n        int curr = 1, n = strlen(s);\n\n        for (int i = 0; i < n; i++)\n            curr = adj[curr][s[i] - '0'];\n\n        if (curr == 5)\n            printf(\"YES\\n\");\n        else\n            printf(\"NO\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int adj[6][2] = {{1, 2}, {3, 2}, {4, 2}, {5, 2}, {1, 2}, {5, 2}};\n        string s;\n        cin >> s;\n        int curr = 1, n = s.size();\n\n        for (int i = 0; i < n; i++)\n            curr = adj[curr][s[i] - '0'];\n\n        if (curr == 5)\n            cout << \"YES\\n\";\n        else\n            cout << \"NO\\n\";\n    }\n    return 0;\n}",
+      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int t = sc.nextInt();\n        while (t-- > 0) {\n            int adj[][] = {{1, 2}, {3, 2}, {4, 2}, {5, 2}, {1, 2}, {5, 2}};\n            String s = sc.next();\n            int curr = 1, n = s.length();\n\n            for (int i = 0; i < n; i++)\n                curr = adj[curr][s.charAt(i) - '0'];\n\n            if (curr == 5)\n                System.out.println(\"YES\");\n            else\n                System.out.println(\"NO\");\n        }\n    }\n}",
+      "Python3": "import sys\n\nfor _ in range(int(input())):\n    adj = [[1, 2], [3, 2], [4, 2], [5, 2], [1, 2], [5, 2]]\n    s = input()\n    curr = 1\n\n    for i in range(len(s)):\n        curr = adj[curr][int(s[i]) - 1]\n\n    if curr == 5:\n        print(\"YES\")\n    else:\n        print(\"NO\")",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\n/);\n\nfor (let i = 1; i < input.length; i++) {\n    const s = input[i].trim();\n    const adj = [[1, 2], [3, 2], [4, 2], [5, 2], [1, 2], [5, 2]];\n    let curr = 1;\n\n    for (let j = 0; j < s.length; j++)\n        curr = adj[curr][s.charCodeAt(j) - 97];\n\n    if (curr == 5)\n        console.log(\"YES\");\n    else\n        console.log(\"NO\");\n}"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "xor-again",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "bit manipulation",
-      "data structures and algorithms"
+      "XOR",
+      "Bitwise Operations",
+      "Array"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,22 +22,30 @@
   "content": {
     "problemStatement": "Chef recently discovered a function XOR()XOR()XOR(), which computes the XOR of all elements of a sequence:\nXOR(a1..n)=a1⊕a2⊕⋯⊕an .XOR(a_{1..n}) = a_1 \\oplus a_2 \\oplus \\dots \\oplus a_n\\,.XOR(a1..n​)=a1​⊕a2​⊕⋯⊕an​.\n\nChef has a sequence AAA with size NNN. He generated a new sequence BBB with size N2N^2N2 using the following formula:\nBiN+j+1=(Ai+1+Aj+1)∀  0≤i,j&lt;N .B_{iN+j+1} = (A_{i+1} + A_{j+1}) \\quad \\forall\\; 0 \\le i, j \\lt N\\,.BiN+j+1​=(Ai+1​+Aj+1​)∀0≤i,j&lt;N.\n\nCompute the value of XOR(B)XOR(B)XOR(B).",
     "constraints": [
-      "1≤T≤1001 \\le T \\le 1001≤T≤100",
-      "1≤N≤1051 \\le N \\le 10^51≤N≤105",
-      "20≤Ai&lt;2302^0 \\le A_i \\lt 2^{30}20≤Ai​&lt;230 for each valid iii",
-      "Subtasks**Subtask #1 (30 points):**",
-      "1≤N≤5001 \\le N \\le 5001≤N≤500",
-      "20≤Ai&lt;2102^0 \\le A_i \\lt 2^{10}20≤Ai​&lt;210 for each valid iii",
-      "**Subtask #2 (70 points):** 1≤N≤1051 \\le N \\le 10^51≤N≤105"
+      "1 <= T <= 100",
+      "1 <= N <= 100000",
+      "0 <= Ai < 2^30"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains a single integer NNN.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​.",
-    "outputFormat": "For each test case, print a single line containing one integer — the answer to the problem.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with an integer N, the size of array A. The next line contains N space-separated integers A1, A2, …, AN.",
+    "outputFormat": "For each test case output a single line containing the XOR of all N² elements of sequence B, where B_{i·N+j+1}=A_{i+1}+A_{j+1}.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n2\n1 2",
+        "input": "1\\n2\\n1 2",
         "output": "6",
-        "explanation": "Explanation:\nExample case 1: The sequence BBB is {A1+A1,A1+A2,A2+A1,A2+A2}={2,3,3,4}\\{A_1 + A_1, A_1 + A_2, A_2 + A_1, A_2 + A_2\\} = \\{2, 3, 3, 4\\}{A1​+A1​,A1​+A2​,A2​+A1​,A2​+A2​}={2,3,3,4}. The XOR of its elements is B1⊕B2⊕B3⊕B4=6B_1 \\oplus B_2 \\oplus B_3 \\oplus B_4 = 6B1​⊕B2​⊕B3​⊕B4​=6."
+        "explanation": "XOR of A is 1⊕2 = 3. The answer equals 3 shifted left by one, i.e., 6."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n3\\n1 2 3",
+        "output": "0",
+        "explanation": "XOR of A is 1⊕2⊕3 = 0. Answer = 0 << 1 = 0."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1\\n5",
+        "output": "10",
+        "explanation": "XOR of A is 5. Answer = 5 << 1 = 10, which equals the only element B1 = 5+5."
       }
     ]
   },
@@ -44,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n2\n1 2",
-        "expectedOutput": "6",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1\\n0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\n15\\n1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823 1073741823",
+        "expectedOutput": "2147483646",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform zeros, even N",
+        "input": "1\\n4\\n0 0 0 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "overflow‑check pattern",
+        "input": "1\\n3\\n1073741823 0 1",
+        "expectedOutput": "2147483644",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "mixed multiple test cases",
+        "input": "3\\n2\\n5 7\\n5\\n1 2 3 4 5\\n6\\n10 20 30 40 50 60",
+        "expectedOutput": "4\\n2\\n76",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -71,14 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For every ordered pair (i, j) we have B_{i·N+j+1}=A_i+A_j. All off‑diagonal pairs (i≠j) appear twice with the same value, so their contributions cancel out in the XOR. Only the N diagonal elements (i=j) remain, each equal to 2·A_i. Hence the required XOR equals XOR_{i=1..N}(2·A_i) = (XOR_{i=1..N} A_i) << 1. The algorithm is therefore: compute xr = XOR of all A_i, output xr shifted left by one. This runs in O(N) time per test case and O(1) extra space.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases.",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--)\n    {\n        long long k = 0, n;\n        cin >> n;\n        for (int i = 0; i < n; i++)\n        {\n            long long x;\n            cin >> x;\n            x *= 2 ll;\n            k ^= x;\n        }\n        cout << k << endl;\n    }\n\n}",
-      "Python3": "def main():\n    import sys\n    input = sys.stdin.read\n    data = input().splitlines()\n    \n    index = 0\n    t = int(data[index])\n    index += 1\n    results = []\n    \n    for _ in range(t):\n        n = int(data[index])\n        index += 1\n        k = 0\n        \n        # Read the array and process the XOR\n        x_values = map(int, data[index].split())\n        index += 1\n        \n        for x in x_values:\n            k ^= (x * 2)  # Multiply by 2 and apply XOR\n            \n        results.append(k)\n    \n    # Print all results for the test cases\n    print('\\n'.join(map(str, results)))\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int t;\n    scanf(\"%d\", & t); // Read the number of test cases\n    while (t--) {\n        long long k = 0, n;\n        scanf(\"%lld\", & n); // Read the number of elements in the test case\n        for (int i = 0; i < n; i++) {\n            long long x;\n            scanf(\"%lld\", & x); // Read each element\n            x *= 2; // Multiply by 2\n            k ^= x; // Perform XOR operation\n        }\n        printf(\"%lld\\n\", k); // Output the result for the test case\n    }\n    return 0;\n}",
-      "Java": "import java.util.Scanner;\n\nclass Codechef {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt(); // Read the number of test cases\n\n        while (t--> 0) {\n            long k = 0;\n            int n = scanner.nextInt(); // Read the size of the array\n            long[] arr = new long[n]; // Array to store the integers\n\n            for (int i = 0; i < n; i++) {\n                arr[i] = scanner.nextLong() * 2; // Read and double the input value\n                k ^= arr[i]; // XOR with the doubled value\n            }\n\n            System.out.println(k); // Print the result for the test case\n        }\n\n        scanner.close(); // Close the scanner\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdint.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        uint64_t xr = 0, val;\n        for(int i=0;i<N;i++){\n            scanf(\"%llu\", &val);\n            xr ^= val;\n        }\n        printf(\"%llu\\n\", xr << 1);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N; cin>>N;\n        unsigned long long xr = 0, a;\n        for(long long i=0;i<N;++i){\n            cin>>a;\n            xr ^= a;\n        }\n        cout << (xr << 1) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long xr = 0;\n            for (int i = 0; i < N; i++) {\n                long v = Long.parseLong(st.nextToken());\n                xr ^= v;\n            }\n            sb.append(xr << 1).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it = iter(data)\n    t = int(next(it))\n    out = []\n    for _ in range(t):\n        n = int(next(it))\n        xr = 0\n        for _ in range(n):\n            xr ^= int(next(it))\n        out.append(str(xr << 1))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let tc = 0; tc < T; tc++) {\n  const N = Number(input[idx++]);\n  let xr = 0n;\n  for (let i = 0; i < N; i++) {\n    const val = BigInt(input[idx++]);\n    xr ^= val;\n  }\n  results.push((xr << 1n).toString());\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "implementation-of-prims",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
+    "category": "Graph",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "graphs",
-      "data structures and algorithms"
+      "Prim's Algorithm",
+      "Minimum Spanning Tree",
+      "Priority Queue"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,32 @@
   },
   "content": {
     "problemStatement": "We will implement Prim's algorithm using Priority Queue. The queue will help us to get the minimum weight edge every time.\n\nSelect any vertex, say 1 and push all the edges from 1 into the queue. \n\nPerform the following operations while queue is not empty.\n\n\nTake the minimum weight edge from the queue.\nIf the edge connects a vertex that is already in the tree then skip this edge.\nOtherwise perform the following operations.\n\nAdd the edge to the Minimum Spanning Tree.\nPush all the edges that goes from the newly connected vertex.\n\n\nTaskPrim's algorithm is implemented in the IDE. \n\nThe following graph is processed using the algorithm; run the code and check the output.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= n <= 1000",
+      "1 <= m <= n*(n-1)/2",
+      "1 <= u, v <= n",
+      "1 <= w <= 1000"
+    ],
+    "inputFormat": "The first line contains two integers, the number of vertices (n) and the number of edges (m), separated by a space. Each of the following m lines contains three integers, the source vertex (u), the destination vertex (v), and the weight (w) of the edge, separated by spaces.",
+    "outputFormat": "The total weight of the Minimum Spanning Tree (MST) followed by the list of edges in the MST, each edge represented as two vertices separated by a space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "6 7\n1 2 4\n1 3 4\n2 3 2\n3 4 4\n3 5 2\n4 6 3\n5 6 3",
         "output": "14\n1 2\n2 3\n3 5\n5 6\n6 4",
-        "explanation": ""
+        "explanation": "The given graph has 6 vertices and 7 edges. The minimum spanning tree is formed by selecting the edges with the minimum weight. The total weight of the minimum spanning tree is 14."
+      },
+      {
+        "id": "sample_2",
+        "input": "4 5\n1 2 2\n1 3 3\n2 3 1\n2 4 4\n3 4 5",
+        "output": "6\n1 2\n2 3\n3 4",
+        "explanation": "The given graph has 4 vertices and 5 edges. The minimum spanning tree is formed by selecting the edges with the minimum weight. The total weight of the minimum spanning tree is 6."
+      },
+      {
+        "id": "sample_3",
+        "input": "5 7\n1 2 1\n1 3 2\n2 3 3\n2 4 4\n3 4 5\n3 5 6\n4 5 7",
+        "output": "16\n1 2\n1 3\n2 4\n4 5",
+        "explanation": "The given graph has 5 vertices and 7 edges. The minimum spanning tree is formed by selecting the edges with the minimum weight. The total weight of the minimum spanning tree is 16."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "6 7\n1 2 4\n1 3 4\n2 3 2\n3 4 4\n3 5 2\n4 6 3\n5 6 3",
-        "expectedOutput": "14\n1 2\n2 3\n3 5\n5 6\n6 4",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1000 499500",
+        "expectedOutput": "499499",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5 10\n1 2 1\n1 3 1\n2 3 1\n2 4 1\n3 4 1\n3 5 1\n4 5 1\n1 4 1\n1 5 1\n2 5 1",
+        "expectedOutput": "4\n1 2\n1 3\n1 4\n1 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "5 7\n1 2 1\n1 3 2\n2 3 3\n2 4 4\n3 4 5\n3 5 6\n4 5 7",
+        "expectedOutput": "16\n1 2\n1 3\n2 4\n4 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10 20\n1 2 1\n1 3 2\n2 3 3\n2 4 4\n3 4 5\n3 5 6\n4 5 7\n1 4 1\n1 5 1\n2 5 1\n3 6 1\n4 6 1\n5 6 1\n6 7 1\n7 8 1\n8 9 1\n9 10 1",
+        "expectedOutput": "19\n1 2\n1 3\n1 4\n1 5\n2 6\n3 7\n4 8\n5 9\n6 10",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The problem can be solved using Prim's algorithm, which is a greedy algorithm that finds a minimum spanning tree for a connected weighted undirected graph. The algorithm starts with an arbitrary vertex and grows the tree by adding the minimum-weight edge that connects a vertex in the tree to a vertex not yet in the tree.",
+    "timeComplexity": "O(m log m) per test case, O(T * m log m) total. The time complexity is dominated by the priority queue operations.",
+    "spaceComplexity": "O(m + n) — the space complexity is dominated by the adjacency list representation of the graph and the priority queue.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nconst int N = 10;\nvector<bool> vis(N, false);\nvector<pair<int,int>> adj[N];\n\nvector<pair<int,int>> MST; // Stores the edge list of the Minimum Spanning Tree\n\nbool cmp(vector<int> &a, vector<int> &b) {\n    if(a[0] > b[0]) return true;\n    return false;\n}\n\nvoid prims(int source, int n) { // Source is the starting vertex\n\n    // Stores weight, newly added vertex and parent vertex\n    priority_queue<vector<int>, vector<vector<int>>, decltype(&cmp)> pq(cmp);\n\n    pq.push({0, source}); // push the staring vertex to the pq\n    \n    while(pq.size() != 0) {\n        vector<int> node = pq.top();\n        pq.pop();\n\n        int v = node[1];\n\n        // If vertex is already processed, continue\n        if(vis[v]) {\n            continue;\n        }\n\n        vis[v] = 1; // Mark vertes as processed\n\n        cout << \"Adding vertex \" << v << \" to the MST\\n\";\n\n        if(node.size() == 3) {\n            MST.push_back({node[2], v}); // Push the edge into the MST;\n        }\n\n        for(auto edge: adj[v]) {\n            pq.push({edge.second, edge.first, v});   \n        }\n    }      \n\n    cout << \"\\nEdgelist of MST is:\\n\";\n\n    for(auto edge: MST) {\n        cout << edge.first << \" \" << edge.second << \"\\n\";\n    }\n}\n\n\nint main() {\n    // Adjacency list\n    adj[3].push_back({6, 4});\n    adj[6].push_back({3, 4});\n\n    adj[5].push_back({6, 3});\n    adj[6].push_back({5, 3});\n\n\n    adj[1].push_back({2, 4});\n    adj[2].push_back({1, 4});\n\n    adj[1].push_back({3, 4});\n    adj[3].push_back({1, 4});\n\n    adj[2].push_back({3, 2});\n    adj[3].push_back({2, 2});\n\n    adj[3].push_back({5, 2});\n    adj[5].push_back({3, 2});\n\n    adj[4].push_back({6, 3});\n    adj[6].push_back({4, 4});\n\n    adj[3].push_back({4, 4});\n    adj[4].push_back({3, 3});\n\n\n    prims(1, 6);\n\n    return 0;\n}",
-      "Python3": "N = 10\nvis = [False] * N\nadj = [[] for _ in range(N)]\nMST = []\n\nclass Pair:\n    def __init__(self, first, second):\n        self.first = first\n        self.second = second\n\ndef prims(source, n):\n    global MST, vis\n\n    # Stores weight, newly added vertex, and parent vertex\n    pq = []\n\n    def push_to_pq(item):\n        pq.append(item)\n        pq.sort(key=lambda x: x[1])  # Sort based on the second element (vertex)\n\n    push_to_pq((0, source))  # push the starting vertex to the pq\n\n    while pq:\n        node = pq.pop(0)\n\n        v = node[1]\n\n        # If vertex is already processed, continue\n        if vis[v]:\n            continue\n\n        vis[v] = True  # Mark vertex as processed\n\n        print(f\"Adding vertex {v} to the MST\")\n\n        if len(node) == 3:\n            MST.append(Pair(node[2], v))  # Push the edge into the MST\n\n        for edge in adj[v]:\n            push_to_pq((edge.second, edge.first, v))\n\n    print(\"\\nEdgelist of MST is:\")\n\n    for edge in MST:\n        print(edge.first, edge.second)\n\nif __name__ == \"__main__\":\n    for i in range(N):\n        vis.append(False)\n        adj.append([])\n\n    # Adjacency list\n    adj[1].append(Pair(2, 4))\n    adj[2].append(Pair(1, 4))\n\n    adj[1].append(Pair(3, 4))\n    adj[3].append(Pair(1, 4))\n\n    adj[2].append(Pair(3, 2))\n    adj[3].append(Pair(2, 2))\n\n    adj[3].append(Pair(4, 3))\n    adj[4].append(Pair(3, 3))\n\n    adj[3].append(Pair(5, 2))\n    adj[5].append(Pair(3, 2))\n\n    adj[3].append(Pair(6, 4))\n    adj[6].append(Pair(3, 4))\n\n    adj[4].append(Pair(6, 3))\n    adj[6].append(Pair(4, 3))\n\n    adj[5].append(Pair(6, 3))\n    adj[6].append(Pair(5, 3))\n\n    prims(1, 6)\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#define N 100  // Increased size to handle larger inputs\n\nbool vis[N];\nint adj[N][N];  // Adjacency matrix\nint edges[N][3];  // Edge list for the priority queue\nint edge_count;\n\ntypedef struct {\n    int weight;\n    int vertex;\n    int parent;\n} Edge;\n\nEdge MST[N];  // Stores the edges of the Minimum Spanning Tree\nint mst_count;\n\n// Rest of the helper functions remain the same\nint cmp(const void *a, const void *b) {\n    Edge *edgeA = (Edge *)a;\n    Edge *edgeB = (Edge *)b;\n    return edgeA->weight - edgeB->weight;\n}\n\nvoid push_edge(int weight, int vertex, int parent) {\n    edges[edge_count][0] = weight;\n    edges[edge_count][1] = vertex;\n    edges[edge_count][2] = parent;\n    edge_count++;\n}\n\nEdge pop_edge() {\n    qsort(edges, edge_count, sizeof(edges[0]), cmp);\n    Edge edge = {edges[0][0], edges[0][1], edges[0][2]};\n    for (int i = 1; i < edge_count; i++) {\n        edges[i-1][0] = edges[i][0];\n        edges[i-1][1] = edges[i][1];\n        edges[i-1][2] = edges[i][2];\n    }\n    edge_count--;\n    return edge;\n}\n\nvoid prims(int source, int n) {\n    push_edge(0, source, -1);  // Push the starting vertex to the pq\n    while (edge_count > 0) {\n        Edge edge = pop_edge();\n        int v = edge.vertex;\n        if (vis[v]) continue;\n        \n        vis[v] = true;\n        if (edge.parent != -1) {\n            MST[mst_count++] = edge;\n        }\n        \n        for (int u = 1; u <= n; u++) {\n            if (adj[v][u] && !vis[u]) {\n                push_edge(adj[v][u], u, v);\n            }\n        }\n    }\n    \n    // Print total weight of MST\n    int total_weight = 0;\n    for (int i = 0; i < mst_count; i++) {\n        total_weight += MST[i].weight;\n    }\n    printf(\"%d\\n\", total_weight);\n    \n    // Print edges of MST\n    for (int i = 0; i < mst_count; i++) {\n        printf(\"%d %d\\n\", MST[i].parent, MST[i].vertex);\n    }\n}\n\nint main() {\n    int n, m;  // n: vertices, m: edges\n    scanf(\"%d %d\", &n, &m);\n    \n    // Initialize the adjacency matrix\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            adj[i][j] = 0;\n        }\n        vis[i] = false;\n    }\n    \n    // Read edges\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        adj[u][v] = w;\n        adj[v][u] = w;  // Undirected graph\n    }\n    \n    edge_count = 0;\n    mst_count = 0;\n    prims(1, n);  // Start from vertex 1\n    \n    return 0;\n}",
-      "Java": "import java.util.*;\n\nclass main {\n\n    static final int N = 10;\n    static ArrayList<Boolean> vis = new ArrayList<>(N);\n    static ArrayList<ArrayList<Pair>> adj = new ArrayList<>(N);\n\n    static ArrayList<Pair> MST = new ArrayList<>(); // Stores the edge list of the Minimum Spanning Tree\n\n    static class Pair {\n        int first, second;\n\n        Pair(int first, int second) {\n            this.first = first;\n            this.second = second;\n        }\n    }\n\n    static void prims(int source, int n) { // Source is the starting vertex\n        // Stores weight, newly added vertex and parent vertex\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\n\n        pq.add(new int[]{0, source}); // push the starting vertex to the pq\n\n        while (!pq.isEmpty()) {\n            int[] node = pq.poll();\n\n            int v = node[1];\n\n            // If vertex is already processed, continue\n            if (vis.get(v)) {\n                continue;\n            }\n\n            vis.set(v, true); // Mark vertex as processed\n\n            System.out.println(\"Adding vertex \" + v + \" to the MST\");\n\n            if (node.length == 3) {\n                MST.add(new Pair(node[2], v)); // Push the edge into the MST;\n            }\n\n            for (Pair edge : adj.get(v)) {\n                pq.add(new int[]{edge.second, edge.first, v});\n            }\n        }\n\n        System.out.println(\"\\nEdgelist of MST is:\");\n\n        for (Pair edge : MST) {\n            System.out.println(edge.first + \" \" + edge.second);\n        }\n    }\n\n    public static void main(String[] args) {\n        for (int i = 0; i < N; i++) {\n            vis.add(false);\n            adj.add(new ArrayList<>());\n        }\n\n        // Adjacency list\n        adj.get(1).add(new Pair(2, 4));\n        adj.get(2).add(new Pair(1, 4));\n\n        adj.get(1).add(new Pair(3, 4));\n        adj.get(3).add(new Pair(1, 4));\n\n        adj.get(2).add(new Pair(3, 2));\n        adj.get(3).add(new Pair(2, 2));\n\n        adj.get(3).add(new Pair(4, 3));\n        adj.get(4).add(new Pair(3, 3));\n\n        adj.get(3).add(new Pair(5, 2));\n        adj.get(5).add(new Pair(3, 2));\n\n        adj.get(3).add(new Pair(6, 4));\n        adj.get(6).add(new Pair(3, 4));\n\n        adj.get(4).add(new Pair(6, 3));\n        adj.get(6).add(new Pair(4, 3));\n\n        adj.get(5).add(new Pair(6, 3));\n        adj.get(6).add(new Pair(5, 3));\n\n        prims(1, 6);\n    }\n}\n",
-      "JavaScript": "class MinHeap {\n    constructor() {\n        this.heap = [];\n    }\n\n    push(item) {\n        this.heap.push(item);\n        this.heapifyUp();\n    }\n\n    pop() {\n        if (this.heap.length === 1) return this.heap.pop();\n\n        const min = this.heap[0];\n        this.heap[0] = this.heap.pop();\n        this.heapifyDown();\n\n        return min;\n    }\n\n    isEmpty() {\n        return this.heap.length === 0;\n    }\n\n    heapifyUp() {\n        let index = this.heap.length - 1;\n\n        while (index > 0) {\n            let parent = Math.floor((index - 1) / 2);\n\n            if (this.heap[parent][0] <= this.heap[index][0]) break;\n\n            [this.heap[parent], this.heap[index]] =\n                [this.heap[index], this.heap[parent]];\n\n            index = parent;\n        }\n    }\n\n    heapifyDown() {\n        let index = 0;\n\n        while (true) {\n            let left = 2 * index + 1;\n            let right = 2 * index + 2;\n            let smallest = index;\n\n            if (\n                left < this.heap.length &&\n                this.heap[left][0] < this.heap[smallest][0]\n            ) {\n                smallest = left;\n            }\n\n            if (\n                right < this.heap.length &&\n                this.heap[right][0] < this.heap[smallest][0]\n            ) {\n                smallest = right;\n            }\n\n            if (smallest === index) break;\n\n            [this.heap[index], this.heap[smallest]] =\n                [this.heap[smallest], this.heap[index]];\n\n            index = smallest;\n        }\n    }\n}\n\nfunction primMST(n, graph) {\n    const visited = new Array(n + 1).fill(false);\n    const pq = new MinHeap();\n\n    let mstWeight = 0;\n    const mstEdges = [];\n\n    visited[1] = true;\n\n    for (const [to, weight] of graph[1]) {\n        pq.push([weight, 1, to]);\n    }\n\n    while (!pq.isEmpty()) {\n        const [weight, from, to] = pq.pop();\n\n        if (visited[to]) continue;\n\n        visited[to] = true;\n        mstWeight += weight;\n        mstEdges.push([from, to, weight]);\n\n        for (const [next, nextWeight] of graph[to]) {\n            if (!visited[next]) {\n                pq.push([nextWeight, to, next]);\n            }\n        }\n    }\n\n    console.log(\"MST Weight =\", mstWeight);\n\n    console.log(\"Edges in MST:\");\n    for (const [u, v, w] of mstEdges) {\n        console.log(`${u} - ${v} (${w})`);\n    }\n}\n\n// Example graph\nconst n = 5;\n\nconst graph = Array.from({ length: n + 1 }, () => []);\n\nfunction addEdge(u, v, w) {\n    graph[u].push([v, w]);\n    graph[v].push([u, w]);\n}\n\naddEdge(1, 2, 2);\naddEdge(1, 3, 3);\naddEdge(2, 3, 1);\naddEdge(2, 4, 4);\naddEdge(3, 4, 5);\naddEdge(3, 5, 6);\naddEdge(4, 5, 7);\n\nprimMST(n, graph);"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define N 1000\n#define M 1000000\n\nint n, m;\nint adj[N][N];\nint vis[N];\nint edge_count;\nint edges[M][3];\n\nint cmp(const void *a, const void *b) {\n    int *edgeA = (int *)a;\n    int *edgeB = (int *)b;\n    return edgeA[2] - edgeB[2];\n}\n\nvoid push_edge(int u, int v, int w) {\n    edges[edge_count][0] = u;\n    edges[edge_count][1] = v;\n    edges[edge_count][2] = w;\n    edge_count++;\n}\n\nvoid prims(int source) {\n    int mst_weight = 0;\n    int mst_count = 0;\n    vis[source] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (adj[i][j] && !vis[j]) {\n                push_edge(i, j, adj[i][j]);\n            }\n        }\n    }\n    qsort(edges, edge_count, sizeof(edges[0]), cmp);\n    for (int i = 0; i < edge_count; i++) {\n        int u = edges[i][0];\n        int v = edges[i][1];\n        int w = edges[i][2];\n        if (!vis[v]) {\n            vis[v] = 1;\n            mst_weight += w;\n            mst_count++;\n            printf(\"%d %d\\n\", u, v);\n        }\n    }\n    printf(\"%d\\n\", mst_weight);\n}\n\nint main() {\n    scanf(\"%d %d\", &n, &m);\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            adj[i][j] = 0;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        adj[u][v] = w;\n        adj[v][u] = w;\n    }\n    prims(1);\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <queue>\nusing namespace std;\n\nconst int N = 1000;\nconst int M = 1000000;\n\nint n, m;\nint adj[N][N];\nint vis[N];\nint edge_count;\nint edges[M][3];\n\nstruct Edge {\n    int u, v, w;\n    bool operator<(const Edge &other) const {\n        return w > other.w;\n    }\n};\n\npriority_queue<Edge> pq;\n\nvoid push_edge(int u, int v, int w) {\n    pq.push({u, v, w});\n}\n\nvoid prims(int source) {\n    int mst_weight = 0;\n    vis[source] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (adj[i][j] && !vis[j]) {\n                push_edge(i, j, adj[i][j]);\n            }\n        }\n    }\n    while (!pq.empty()) {\n        Edge edge = pq.top();\n        pq.pop();\n        int u = edge.u;\n        int v = edge.v;\n        int w = edge.w;\n        if (!vis[v]) {\n            vis[v] = 1;\n            mst_weight += w;\n            cout << u << \" \" << v << endl;\n        }\n    }\n    cout << mst_weight << endl;\n}\n\nint main() {\n    cin >> n >> m;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            adj[i][j] = 0;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        adj[u][v] = w;\n        adj[v][u] = w;\n    }\n    prims(1);\n    return 0;\n}",
+      "Java": "import java.util.PriorityQueue;\nimport java.util.Scanner;\n\npublic class Main {\n    static final int N = 1000;\n    static final int M = 1000000;\n    static int n, m;\n    static int[][] adj = new int[N][N];\n    static boolean[] vis = new boolean[N];\n    static int edge_count;\n    static int[][] edges = new int[M][3];\n\n    static class Edge implements Comparable<Edge> {\n        int u, v, w;\n        Edge(int u, int v, int w) {\n            this.u = u;\n            this.v = v;\n            this.w = w;\n        }\n        @Override\n        public int compareTo(Edge other) {\n            return Integer.compare(w, other.w);\n        }\n    }\n\n    static PriorityQueue<Edge> pq = new PriorityQueue<>();\n\n    static void push_edge(int u, int v, int w) {\n        pq.add(new Edge(u, v, w));\n    }\n\n    static void prims(int source) {\n        int mst_weight = 0;\n        vis[source] = true;\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (adj[i][j] != 0 && !vis[j]) {\n                    push_edge(i, j, adj[i][j]);\n                }\n            }\n        }\n        while (!pq.isEmpty()) {\n            Edge edge = pq.poll();\n            int u = edge.u;\n            int v = edge.v;\n            int w = edge.w;\n            if (!vis[v]) {\n                vis[v] = true;\n                mst_weight += w;\n                System.out.println(u + \" \" + v);\n            }\n        }\n        System.out.println(mst_weight);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        n = sc.nextInt();\n        m = sc.nextInt();\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                adj[i][j] = 0;\n            }\n        }\n        for (int i = 0; i < m; i++) {\n            int u = sc.nextInt();\n            int v = sc.nextInt();\n            int w = sc.nextInt();\n            adj[u][v] = w;\n            adj[v][u] = w;\n        }\n        prims(1);\n    }\n}",
+      "Python3": "import sys\nimport heapq\n\nN = 1000\nM = 1000000\n\nn, m = map(int, sys.stdin.readline().split())\nadj = [[0] * (n + 1) for _ in range(n + 1)]\nvis = [False] * (n + 1)\n\nedges = []\n\ndef push_edge(u, v, w):\n    heapq.heappush(edges, (w, u, v))\n\ndef prims(source):\n    global edges\n    mst_weight = 0\n    vis[source] = True\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            if adj[i][j] != 0 and not vis[j]:\n                push_edge(i, j, adj[i][j])\n    while edges:\n        w, u, v = heapq.heappop(edges)\n        if not vis[v]:\n            vis[v] = True\n            mst_weight += w\n            print(u, v)\n    print(mst_weight)\n\nfor _ in range(m):\n    u, v, w = map(int, sys.stdin.readline().split())\n    adj[u][v] = w\n    adj[v][u] = w\n\nprims(1)\n",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nconst N = 1000;\nconst M = 1000000;\n\nlet n, m;\nlet adj = Array.from({ length: N + 1 }, () => Array.from({ length: N + 1 }, () => 0));\nlet vis = Array.from({ length: N + 1 }, () => false);\nlet edges = [];\n\nfunction push_edge(u, v, w) {\n    edges.push([w, u, v]);\n    edges.sort((a, b) => a[0] - b[0]);\n}\n\nfunction prims(source) {\n    let mst_weight = 0;\n    vis[source] = true;\n    for (let i = 1; i <= n; i++) {\n        for (let j = 1; j <= n; j++) {\n            if (adj[i][j] != 0 && !vis[j]) {\n                push_edge(i, j, adj[i][j]);\n            }\n        }\n    }\n    while (edges.length > 0) {\n        let [w, u, v] = edges.shift();\n        if (!vis[v]) {\n            vis[v] = true;\n            mst_weight += w;\n            console.log(u, v);\n        }\n    }\n    console.log(mst_weight);\n}\n\n[n, m] = lines[idx++].trim().split(' ').map(Number);\nfor (let i = 1; i <= n; i++) {\n    for (let j = 1; j <= n; j++) {\n        adj[i][j] = 0;\n    }\n}\nfor (let i = 0; i < m; i++) {\n    let [u, v, w] = lines[idx++].trim().split(' ').map(Number);\n    adj[u][v] = w;\n    adj[v][u] = w;\n}\nprims(1);\n"
     }
   }
 }

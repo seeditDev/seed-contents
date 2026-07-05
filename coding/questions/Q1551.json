@@ -4,14 +4,16 @@
   "slug": "chef-and-nested-parentheses",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Stack",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Stack",
+      "Parentheses",
+      "Depth",
+      "String Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,32 @@
   },
   "content": {
     "problemStatement": "Chef is playing with a string **sss** that contains digits, arithmetic operators, and parentheses. He wants to find the **maximum nesting depth** of parentheses in the string.\n\nThe nesting depth is the maximum number of parentheses that are open at the same time. Chef wants you to help him calculate this value.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**maxNestingDepthmaxNestingDepthmaxNestingDepth**\n\n\n\n**Parameters:**\n\n\n\n**sss** (`string`)\nA string that may contain digits, arithmetic operators **`+`**, **`-`**, **`*`**, **`/`**, and parentheses **`(`**, **`)`**.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **maximum nesting depth** of parentheses in the string.\n\n\nConstraints\n1≤T≤1001 \\le T \\le 1001≤T≤100\n1≤∣s∣≤1001 \\le |s| \\le 1001≤∣s∣≤100\n**sss** consists of digits **000–999**, arithmetic operators **`+`**, **`-`**, **`*`**, **`/`**, and parentheses **`(`**, **`)`**\n**sss** is guaranteed to be a valid parentheses string (**VPS**)\n\nInput Format\n\nThe first line contains an integer TTT — the number of test cases.\nEach of the next TTT lines contains a string sss — a valid parentheses string (VPS).\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the maximum nesting depth of parentheses in the string.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 100",
+      "1 <= |s| <= 100",
+      "s contains only characters 0-9, '+', '-', '*', '/', '(' and ')'",
+      "s is a valid parentheses string"
+    ],
+    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100) – the number of test cases. Each of the next T lines contains a non‑empty string s consisting of digits, the operators '+', '-', '*', '/', and parentheses '(' and ')'. The string is guaranteed to be a valid parentheses string (VPS).",
+    "outputFormat": "For each test case output a single integer – the maximum nesting depth of parentheses in the given string.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n((1+2)+3)\n(5+(6*7))\n(1+(2*(3+4)))\n()()()",
-        "output": "2\n2\n3\n1",
-        "explanation": "Explanation:\nTest case 1: Maximum nesting depth is 2.\nTest case 2: Maximum nesting depth is 2.\nTest case 3: Maximum nesting depth is 3 (inside 2*(3+4)).\nTest case 4: Maximum nesting depth is 1 (no nested parentheses)."
+        "input": "4\\n((1+2)+3)\\n(5+(6*7))\\n(1+(2*(3+4)))\\n()()()",
+        "output": "2\\n2\\n3\\n1",
+        "explanation": "Test case 1: depth 2 (outer '(' and inner '(').\\nTest case 2: depth 2.\\nTest case 3: deepest nesting is \"((3+4))\" giving depth 3.\\nTest case 4: three separate pairs, each depth 1, so maximum is 1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n((()))",
+        "output": "3",
+        "explanation": "Three '(' before any ')' → maximum depth 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1+2*3",
+        "output": "0",
+        "explanation": "No parentheses appear, so nesting depth is 0."
       }
     ]
   },
@@ -36,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n((1+2)+3)\n(5+(6*7))\n(1+(2*(3+4)))\n()()()",
-        "expectedOutput": "2\n2\n3\n1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n()",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\\n()",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\\n()",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\\n()",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\\n()",
+        "expectedOutput": "1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "Traverse the string from left to right keeping a counter of currently open '(' characters. Increase the counter when '(' is seen, decrease it when ')' is seen, and keep track of the maximum value the counter attains – that value is the maximum nesting depth. Because the string is a VPS the counter never becomes negative. The algorithm is linear in the length of the string.",
+    "timeComplexity": "O(|s|) per test case, overall O(T * |s|).",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
     "code": {
-      "C++": "int maxNestingDepth(const string &s) {\n    int maxDepth = 0, currentDepth = 0;\n    for (char ch : s) {\n        if (ch == '(') ++currentDepth;\n        else if (ch == ')') --currentDepth;\n        if (currentDepth > maxDepth) maxDepth = currentDepth;\n    }\n    return maxDepth;\n}\n\n",
-      "Python3": "def maxNestingDepth(s):\n    max_depth = 0\n    current_depth = 0\n\n    for ch in s:\n        if ch == '(':\n            current_depth += 1\n            if current_depth > max_depth:\n                max_depth = current_depth\n        elif ch == ')':\n            current_depth -= 1\n    return max_depth\n",
-      "C": "int maxNestingDepth(const char *s) {\n    int maxDepth = 0, currentDepth = 0;\n    for (int i = 0; s[i] != '\\0'; i++) {\n        if (s[i] == '(') currentDepth++;\n        else if (s[i] == ')') currentDepth--;\n        if (currentDepth > maxDepth) maxDepth = currentDepth;\n    }\n    return maxDepth;\n}",
-      "Java": "private static int maxNestingDepth(String s) {\n        int maxDepth = 0;\n        int currentDepth = 0;\n\n        for (char ch : s.toCharArray()) {\n            if (ch == '(') {\n                currentDepth++;\n                if (currentDepth > maxDepth) {\n                    maxDepth = currentDepth;\n                }\n            } else if (ch == ')') {\n                currentDepth--;\n            }\n        }\n\n        return maxDepth;\n    }\n\n",
-      "JavaScript": "function maxNestingDepth(s) {\n    let maxDepth = 0;\n    let currentDepth = 0;\n\n    for (let ch of s) {\n        if (ch === '(') {\n            currentDepth++;\n            if (currentDepth > maxDepth) maxDepth = currentDepth;\n        } else if (ch === ')') {\n            currentDepth--;\n        }\n    }\n\n    return maxDepth;\n}"
+      "C": "#include <stdio.h>\\n#include <string.h>\\nint maxNestingDepth(const char *s){int maxDepth=0,cur=0;for(int i=0;s[i];i++){if(s[i]=='(')cur++;else if(s[i]==')')cur--;if(cur>maxDepth)maxDepth=cur;}return maxDepth;}\\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; char buf[105]; fgets(buf,sizeof(buf),stdin); // consume newline after T\\nfor(int t=0;t<T;t++){if(fgets(buf,sizeof(buf),stdin)==NULL) break; buf[strcspn(buf,\"\\\\n\")]='\\0'; printf(\"%d\\\\n\",maxNestingDepth(buf));}\\nreturn 0;}",
+      "C++": "#include <bits/stdc++.h>\\nusing namespace std;\\nint maxNestingDepth(const string &s){int maxDepth=0,cur=0;for(char ch:s){if(ch=='(')cur++;else if(ch==')')cur--;if(cur>maxDepth)maxDepth=cur;}return maxDepth;}\\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\\nint T; if(!(cin>>T)) return 0; while(T--){string s; cin>>s; cout<<maxNestingDepth(s)<<'\\\\n';}\\nreturn 0;}",
+      "Java": "import java.io.*;\\npublic class Main{\\n    private static int maxNestingDepth(String s){int maxDepth=0,cur=0;for(int i=0;i<s.length();i++){char ch=s.charAt(i);if(ch=='(')cur++;else if(ch==')')cur--;if(cur>maxDepth)maxDepth=cur;}return maxDepth;}\\n    public static void main(String[] args) throws Exception{\\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\\n        int T=Integer.parseInt(br.readLine().trim());\\n        StringBuilder sb=new StringBuilder();\\n        for(int t=0;t<T;t++){\\n            String line=br.readLine();\\n            sb.append(maxNestingDepth(line)).append('\\\\n');\\n        }\\n        System.out.print(sb.toString());\\n    }\\n}",
+      "Python3": "import sys\\ndef maxNestingDepth(s):\\n    maxDepth=0\\n    cur=0\\n    for ch in s:\\n        if ch=='(':\\n            cur+=1\\n            if cur>maxDepth:\\n                maxDepth=cur\\n        elif ch==')':\\n            cur-=1\\n    return maxDepth\\n\\ndata=sys.stdin.read().splitlines()\\nif not data:\\n    sys.exit()\\nT=int(data[0].strip())\\nout=[]\\nfor i in range(1,T+1):\\n    s=data[i].strip()\\n    out.append(str(maxNestingDepth(s)))\\nprint('\\\\n'.join(out))",
+      "JavaScript": "const fs=require('fs');\\\\nconst lines=fs.readFileSync(0,'utf-8').trim().split('\\\\\\\\n');\\\\nlet idx=0;\\\\nfunction maxNestingDepth(s){let maxDepth=0,cur=0;for(const ch of s){if(ch==='('){cur++;if(cur>maxDepth)maxDepth=cur;}else if(ch===')'){cur--;}}return maxDepth;}\\\\nconst T=parseInt(lines[idx++]);\\\\nlet out=[];\\\\nfor(let t=0;t<T;t++){\\\\n    let s=lines[idx++]||'';\\\\n    out.push(String(maxNestingDepth(s)));\\\\n}\\\\nconsole.log(out.join('\\\\\\\\n'));"
     }
   }
 }

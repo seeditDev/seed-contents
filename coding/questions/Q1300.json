@@ -4,14 +4,14 @@
   "slug": "find-the-peak-elements-in-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Linear Scan",
+      "Peaks"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,23 +21,30 @@
   "content": {
     "problemStatement": "Given an array `A` of size `N`, your task is to find and print all the peak elements in the array. A peak element is one that is strictly greater than its neighboring elements. For the first and last elements, only consider their single adjacent element.\n\nIf no peak element exists in the array, print `-1`.\n\n\nInput Format\n\nThe first line contains the integer NNN — the size of array\nThe second line contains all the elements of array AAA\n\n\nOutput Format\nOutput all the peak elements in the array in the order they are present in the original array.",
     "constraints": [
-      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
-      "1≤Ai≤1051 \\leq A_i \\leq 10^51≤Ai​≤105"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "1 <= Ai <= 100000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N — the size of the array. The second line contains N space‑separated integers A1, A2, …, AN.",
+    "outputFormat": "For each test case, print all peak elements of the given array in the order they appear, separated by a single space. If a test case has no peak element, output -1. Print each test case's answer on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n1 2 4 3 1",
+        "input": "1\n5\n1 2 4 3 1",
         "output": "4",
-        "explanation": "Explanation:\n1 is smaller than it's adjacent element 2.\n2 is greater than 1 but smaller than 4.\n4 is greater than both 2 and 3, thus it is a peak element.\nAgain 3 and 1 are also smaller than their adjacent elements.\nThus the output is only 4."
+        "explanation": "Only the element 4 (at index 3) is strictly greater than both neighbours 2 and 3, so it is the sole peak."
       },
       {
         "id": "sample_2",
-        "input": "5\n7 3 5 2 10",
+        "input": "1\n5\n7 3 5 2 10",
         "output": "7 5 10",
-        "explanation": ""
+        "explanation": "7 > 3 (first element), 5 > 3 and > 2, 10 > 2 (last element). All three are peaks."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1\n42",
+        "output": "42",
+        "explanation": "With a single element there are no neighbours, so the element is considered a peak."
       }
     ]
   },
@@ -45,27 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n1 2 4 3 1",
-        "expectedOutput": "4",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1\n1",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "5\n7 3 5 2 10",
-        "expectedOutput": "7 5 10",
-        "weight": 50
+        "label": "maximum boundary (compact)",
+        "input": "1\n15\n100000 99999 100000 99999 100000 99999 100000 99999 100000 99999 100000 99999 100000 99999 100000",
+        "expectedOutput": "100000 100000 100000 100000 100000 100000 100000 100000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform array",
+        "input": "1\n5\n7 7 7 7 7",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "sorted descending",
+        "input": "1\n6\n10 9 8 7 6 5",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "mixed multiple test cases",
+        "input": "3\n4\n1 3 2 4\n3\n2 2 2\n7\n5 1 5 1 5 1 5",
+        "expectedOutput": "3 4\n-1\n5 5 5 5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -79,9 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "A peak element is strictly greater than its immediate neighbours. Scan the array once, checking for each index i whether (i == 0 || A[i] > A[i-1]) && (i == N-1 || A[i] > A[i+1]). Collect all elements satisfying the condition. The scan is O(N) per test case and uses O(1) extra space besides the output list.",
+    "timeComplexity": "O(N) per test case, O(total N) for the whole input.",
+    "spaceComplexity": "O(1) auxiliary space (output list not counted).",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdbool.h>\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int A[100000];\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &A[i]);\n        bool first = true, any = false;\n        for (int i = 0; i < N; ++i) {\n            if ((i == 0 || A[i] > A[i-1]) && (i == N-1 || A[i] > A[i+1])) {\n                if (!first) printf(\" \");\n                printf(\"%d\", A[i]);\n                first = false;\n                any = true;\n            }\n        }\n        if (!any) printf(\"-1\");\n        if (T) printf(\"\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while (T--) {\n        int N; cin>>N;\n        vector<int> A(N);\n        for (int &x : A) cin>>x;\n        bool first=true, any=false;\n        for (int i=0;i<N;++i) {\n            if ((i==0 || A[i]>A[i-1]) && (i==N-1 || A[i]>A[i+1])) {\n                if (!first) cout << ' ';\n                cout << A[i];\n                first=false; any=true;\n            }\n        }\n        if (!any) cout << -1;\n        if (T) cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] A = new int[N];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; ++i) A[i] = Integer.parseInt(st.nextToken());\n            boolean first = true, any = false;\n            for (int i = 0; i < N; ++i) {\n                if ((i == 0 || A[i] > A[i-1]) && (i == N-1 || A[i] > A[i+1])) {\n                    if (!first) out.append(' ');\n                    out.append(A[i]);\n                    first = false; any = true;\n                }\n            }\n            if (!any) out.append(-1);\n            if (tc != T-1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        A = [int(next(it)) for _ in range(N)]\n        peaks = []\n        for i in range(N):\n            if (i == 0 or A[i] > A[i-1]) and (i == N-1 or A[i] > A[i+1]):\n                peaks.append(str(A[i]))\n        out_lines.append(' '.join(peaks) if peaks else '-1')\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (data.length === 0) process.exit(0);\nconst T = Number(data[idx++]);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(data[idx++]);\n  const A = [];\n  for (let i = 0; i < N; ++i) A.push(Number(data[idx++]));\n  const peaks = [];\n  for (let i = 0; i < N; ++i) {\n    if ((i === 0 || A[i] > A[i-1]) && (i === N-1 || A[i] > A[i+1])) {\n      peaks.push(A[i]);\n    }\n  }\n  results.push(peaks.length ? peaks.join(' ') : '-1');\n}\nprocess.stdout.write(results.join('\\n'));\n"
+    }
   }
 }

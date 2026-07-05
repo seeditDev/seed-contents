@@ -4,14 +4,15 @@
   "slug": "multiplication-and-addition",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "control flow",
-      "programming languages"
+      "Array",
+      "Sum",
+      "Product"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "Write a program to input the length and all the elements of an array, then calculate and print the **sum** and **product** of its elements.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 100",
+      "1 <= N <= 6",
+      "1 <= array element <= 1000"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements in the array. The next N lines each contain one integer, the i‑th element of the array.",
+    "outputFormat": "For each test case output two space‑separated integers: the sum of the N elements followed by their product. Print each test case result on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n2 3 4",
+        "input": "1\\n3\\n2\\n3\\n4",
         "output": "9 24",
-        "explanation": ""
+        "explanation": "The three elements are 2, 3 and 4. Sum = 2+3+4 = 9. Product = 2*3*4 = 24."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n2\\n1\\n2",
+        "output": "3 2",
+        "explanation": "Elements are 1 and 2. Sum = 1+2 = 3. Product = 1*2 = 2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1\\n5",
+        "output": "5 5",
+        "explanation": "Only one element 5, so both sum and product equal 5."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n2 3 4",
-        "expectedOutput": "9 24",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1\\n1",
+        "expectedOutput": "1 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\n5\\n1000\\n1000\\n1000\\n1000\\n1000",
+        "expectedOutput": "5000 1000000000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "1\\n4\\n7\\n7\\n7\\n7",
+        "expectedOutput": "28 2401",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky sorted descending",
+        "input": "1\\n3\\n5\\n4\\n3",
+        "expectedOutput": "12 60",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general multiple cases",
+        "input": "3\\n2\\n1\\n2\\n3\\n10\\n20\\n30\\n1\\n999",
+        "expectedOutput": "3 2\\n60 6000\\n999 999",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,11 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case we read N and then iterate over the N numbers, maintaining two variables: sum (initialised to 0) and product (initialised to 1). For every read element x we add x to sum and multiply product by x. After processing all N elements we output sum and product. The algorithm is linear in the size of the input, uses O(1) extra memory, and easily fits within the limits.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin>>n;\n    int arr[n];\n    for(int i = 0; i < n; i++){\n        cin >> arr[i];\n    }\n    int sum = 0;\n    int product = 1;\n    for(int i = 0; i < n; i++){\n        sum += arr[i];\n        product *= arr[i];\n    }\n    cout<< sum << \" \" << product <<\"\\n\";\n\n}\n"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        long long sum = 0;\n        long long product = 1;\n        for (int i = 0; i < N; ++i) {\n            int x;\n            scanf(\"%d\", &x);\n            sum += x;\n            product *= x;\n        }\n        printf(\"%lld %lld\\n\", sum, product);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int N;\n        cin >> N;\n        long long sum = 0;\n        long long product = 1;\n        for (int i = 0; i < N; ++i) {\n            long long x;\n            cin >> x;\n            sum += x;\n            product *= x;\n        }\n        cout << sum << ' ' << product << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            long sum = 0;\n            long product = 1;\n            for (int i = 0; i < N; ++i) {\n                int x = Integer.parseInt(br.readLine().trim());\n                sum += x;\n                product *= x;\n            }\n            sb.append(sum).append(' ').append(product).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        total = 0\n        prod = 1\n        for _ in range(N):\n            x = int(next(it))\n            total += x\n            prod *= x\n        out.append(f\"{total} {prod}\")\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  let sum = 0;\n  let product = 1;\n  for (let i = 0; i < N; ++i) {\n    const x = Number(input[idx++]);\n    sum += x;\n    product *= x;\n  }\n  results.push(`${sum} ${product}`);\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

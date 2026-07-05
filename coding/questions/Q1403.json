@@ -4,14 +4,14 @@
   "slug": "identify-row-with-most-1",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "matrices",
-      "data structures and algorithms"
+      "Arrays",
+      "Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +21,30 @@
   "content": {
     "problemStatement": "You are given a `2D` matrix of size n×mn×mn×m consisting only of 0′s0's0′s and 1′s1's1′s. Your task is to determine the index of the row that contains the maximum number of 1′s1's1′s. In the case of multiple rows having the same maximum count of 1′s1's1′s, return the index of the first such row.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line contains two integers nnn and mmm, representing the number of rows and columns in the matrix,\nrespectively.\nThe next nnn lines each contain mmm integers (000 or 111), representing the elements of the matrix.\n\n\n\n\nOutput Format\n\nFor each test case, output a single integer, the index (000-based) of the row that has the maximum number of 1′s1's1′s. If all rows contain only 0′s0's0′s, output −1-1−1.",
     "constraints": [
-      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
-      "1≤N,M≤10001 \\leq N, M \\leq 10001≤N,M≤1000",
-      "The elements of the matrix are either 000 or 111."
+      "1 <= T <= 100",
+      "1 <= n, m <= 1000",
+      "Each matrix element is either 0 or 1"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case starts with two integers n and m — the number of rows and columns of the matrix. Then follow n lines, each containing m space-separated integers (0 or 1) representing the matrix rows.",
+    "outputFormat": "For each test case output a single integer on its own line: the 0-based index of the row that contains the maximum number of 1's. If every row contains only 0's, output -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n3 4\n0 1 0 0\n1 1 0 0\n0 0 0 1\n4 4\n1 1 1 0\n0 1 1 0\n0 1 1 1\n1 1 1 1\n2 1\n0\n0",
-        "output": "1\n3\n-1",
-        "explanation": "Explanation:\nTest Case 1: The second row (index 111) contains two 1′s1's1′s, which is the maximum count of 1′s1's1′s among all rows.\nTest Case 2: The fourth row (index 333) contains four 1′s1's1′s, which is the maximum count of 1′s1's1′s among all rows.\nTest Case 3: Only 0′s0's0′s are present."
+        "input": "3\\n3 4\\n0 1 0 0\\n1 1 0 0\\n0 0 0 1\\n4 4\\n1 1 1 0\\n0 1 1 0\\n0 1 1 1\\n1 1 1 1\\n2 1\\n0\\n0",
+        "output": "1\\n3\\n-1",
+        "explanation": "Test case 1: Row 1 has two 1's, the most.\\nTest case 2: Row 3 has four 1's, the most.\\nTest case 3: No 1's in any row, so output -1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n2 3\\n1 0 1\\n0 1 0",
+        "output": "0",
+        "explanation": "Row 0 contains two 1's, row 1 contains one. The maximum is at index 0."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n3 2\\n0 0\\n0 0\\n0 0",
+        "output": "-1",
+        "explanation": "All rows consist solely of 0's, therefore the answer is -1."
       }
     ]
   },
@@ -40,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n3 4\n0 1 0 0\n1 1 0 0\n0 0 0 1\n4 4\n1 1 1 0\n0 1 1 0\n0 1 1 1\n1 1 1 1\n2 1\n0\n0",
-        "expectedOutput": "1\n3\n-1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1 1\\n1",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\n3 5\\n1 1 1 1 1\\n1 1 1 1 0\\n1 1 1 1 1",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform all zeros",
+        "input": "1\\n2 3\\n0 0 0\\n0 0 0",
+        "expectedOutput": "-1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "first occurrence tie",
+        "input": "1\\n4 4\\n1 0 1 0\\n1 1 1 0\\n0 1 1 1\\n0 0 0 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "mixed multiple test cases",
+        "input": "3\\n2 2\\n1 0\\n0 1\\n3 3\\n0 0 0\\n1 1 0\\n1 1 1\\n1 4\\n0 0 0 0",
+        "expectedOutput": "0\\n2\\n-1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,9 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "For each test case we scan the matrix row by row. While reading a row we count how many 1's it contains. We keep two variables: maxCount (the largest number of 1's seen so far) and maxIndex (the index of the first row achieving maxCount). After processing a row, if its count is strictly greater than maxCount we update both variables. Because we only update on a strictly larger count, the first row with the maximal count is retained. After all rows are processed we output maxIndex, which stays -1 when no 1 was encountered. The algorithm is linear in the size of the matrix.",
+    "timeComplexity": "O(T * n * m) – each element is read and examined exactly once.",
+    "spaceComplexity": "O(1) extra space besides the input stream.",
+    "code": {
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int maxCount = 0;\n        int maxIndex = -1;\n        for (int i = 0; i < n; ++i) {\n            int cnt = 0;\n            for (int j = 0; j < m; ++j) {\n                int x;\n                scanf(\"%d\", &x);\n                if (x == 1) ++cnt;\n            }\n            if (cnt > maxCount) {\n                maxCount = cnt;\n                maxIndex = i;\n            }\n        }\n        printf(\"%d\\n\", maxIndex);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int n, m;\n        cin >> n >> m;\n        int maxCount = 0;\n        int maxIndex = -1;\n        for (int i = 0; i < n; ++i) {\n            int cnt = 0;\n            for (int j = 0; j < m; ++j) {\n                int x; cin >> x;\n                if (x == 1) ++cnt;\n            }\n            if (cnt > maxCount) {\n                maxCount = cnt;\n                maxIndex = i;\n            }\n        }\n        cout << maxIndex << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int m = Integer.parseInt(st.nextToken());\n            int maxCount = 0;\n            int maxIndex = -1;\n            for (int i = 0; i < n; ++i) {\n                st = new StringTokenizer(br.readLine());\n                int cnt = 0;\n                for (int j = 0; j < m; ++j) {\n                    int x = Integer.parseInt(st.nextToken());\n                    if (x == 1) ++cnt;\n                }\n                if (cnt > maxCount) {\n                    maxCount = cnt;\n                    maxIndex = i;\n                }\n            }\n            sb.append(maxIndex).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        n = int(next(it))\n        m = int(next(it))\n        max_cnt = 0\n        max_idx = -1\n        for i in range(n):\n            cnt = 0\n            for _ in range(m):\n                if int(next(it)) == 1:\n                    cnt += 1\n            if cnt > max_cnt:\n                max_cnt = cnt\n                max_idx = i\n        out_lines.append(str(max_idx))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(input[pos++]);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const n = Number(input[pos++]);\n  const m = Number(input[pos++]);\n  let maxCount = 0;\n  let maxIdx = -1;\n  for (let i = 0; i < n; ++i) {\n    let cnt = 0;\n    for (let j = 0; j < m; ++j) {\n      if (Number(input[pos++]) === 1) cnt++;\n    }\n    if (cnt > maxCount) {\n      maxCount = cnt;\n      maxIdx = i;\n    }\n  }\n  results.push(String(maxIdx));\n}\nconsole.log(results.join('\\n'));"
+    }
   }
 }

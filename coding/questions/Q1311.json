@@ -4,14 +4,15 @@
   "slug": "convert-string-to-number",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Searching",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "searching",
-      "data structures and algorithms"
+      "String parsing",
+      "Simulation",
+      "Implementation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +22,30 @@
   "content": {
     "problemStatement": "You are given a string that represents a positive number. Your task is to write a program that converts this string into its numerical equivalent without using any in-built parsing, conversion libraries, or direct type casting methods. The string will not contain any leading zeros, decimals, or any non-numeric characters.\n\nComplete the function **stringToNumber** in the IDE\n\n\nInput Format\n\nThe first line contains a single integer, T, the number of test cases.\nThe following T lines each contain a single string, S, representing the number.\n\n\nOutput Format\nFor each test case, print the numerical equivalent of the string.",
     "constraints": [
-      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
-      "1≤∣S∣≤101 \\leq |S| \\leq 101≤∣S∣≤10, where ∣S∣|S|∣S∣ is the length of the string.",
-      "S will only contain digits (0-9) and will not have leading zeros."
+      "1 <= T <= 100",
+      "1 <= |S| <= 10",
+      "S contains only characters '0'-'9' and has no leading zeros"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting only of digits (0‑9) without leading zeros.",
+    "outputFormat": "For each test case, output a line containing the integer value represented by S.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n123\n42\n1001",
         "output": "123\n42\n1001",
-        "explanation": ""
+        "explanation": "Each string is converted digit by digit to its integer value."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n5\n10",
+        "output": "5\n10",
+        "explanation": "Single‑digit and two‑digit numbers are handled identically."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n10000",
+        "output": "10000",
+        "explanation": "A larger number still fits within 64‑bit and is correctly reconstructed."
       }
     ]
   },
@@ -40,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n123\n42\n1001",
-        "expectedOutput": "123\n42\n1001",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n9999999999",
+        "expectedOutput": "9999999999",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n2222222222",
+        "expectedOutput": "2222222222",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n9876543210",
+        "expectedOutput": "9876543210",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\n7\n123456789\n100\n9999\n42",
+        "expectedOutput": "7\n123456789\n100\n9999\n42",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "We read each string character by character and build the numeric value using the classic positional method: start with result = 0 and for each digit d update result = result * 10 + d. Because the maximum length is 10, the result always fits into a signed 64‑bit integer. The algorithm is linear in the total number of characters and uses O(1) extra space.",
+    "timeComplexity": "O(total number of characters across all test cases) – at most O(T·10) which is trivial for the given limits.",
+    "spaceComplexity": "O(1) auxiliary space besides the input string.",
     "code": {
-      "C++": "long long stringToNumber(const string& str) {\n    long long num = 0;\n    for (char c : str) {\n        num = num * 10 + (c - '0');\n    }\n    return num;\n}",
-      "Python3": "def string_to_number(s):\n    num = 0\n    for char in s:\n        num = num * 10 + (ord(char) - ord('0'))\n    return num\n\n",
-      "C": "long long stringToNumber(const char* str) {\n    long long num = 0;\n    for (int i = 0; str[i] != '\\0'; i++) {\n        num = num * 10 + (str[i] - '0');\n    }\n    return num;\n}\n",
-      "Java": "public static long stringToNumber(String str) {\n    long num = 0;\n    for (int i = 0; i < str.length(); i++) {\n        num = num * 10 + (str.charAt(i) - '0');\n    }\n    return num;\n}\n",
-      "JavaScript": "function stringToNumber(tests) {\n    let t = parseInt(tests[0]);\n    for (let i = 1; i <= t; i++) {\n        let s = tests[i];\n        let num = 0;\n        for (let j = 0; j < s.length; j++) {\n            num = num * 10 + (s.charCodeAt(j) - '0'.charCodeAt(0)); \n        }\n        console.log(num);\n    }\n}\n"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        char S[12]; // up to 10 digits + '\\0' + safety\n        scanf(\"%11s\",S);\n        long long num=0;\n        for(int i=0; S[i]!='\\0'; ++i){\n            num = num*10 + (S[i]-'0');\n        }\n        printf(\"%lld\\n\",num);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        string S; cin>>S;\n        long long num=0;\n        for(char c: S){\n            num = num*10 + (c-'0');\n        }\n        cout<<num<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws IOException{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if(line==null||line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for(int t=0; t<T; ++t){\n            String S = br.readLine().trim();\n            long num = 0L;\n            for(int i=0;i<S.length();++i){\n                num = num*10 + (S.charAt(i)-'0');\n            }\n            sb.append(num).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(T):\n        S = data[idx]\n        idx += 1\n        num = 0\n        for ch in S:\n            num = num*10 + (ord(ch)-ord('0'))\n        out.append(str(num))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split('\\n');\nlet line = 0;\nconst T = parseInt(input[line++].trim(),10);\nlet results = [];\nfor(let i=0;i<T;++i){\n    const S = input[line++].trim();\n    let num = 0;\n    for(let j=0;j<S.length;++j){\n        num = num*10 + (S.charCodeAt(j)-48);\n    }\n    results.push(String(num));\n}\nconsole.log(results.join('\\n'));\n"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "find-kth-largest-element",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Arrays",
+    "category": "Arrays | Sorting",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "heaps & priority queues",
-      "data structures and algorithms"
+      "Heap",
+      "Sorting",
+      "Kth Largest Element"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "TaskGiven an array A and an integer k. Print the Kth Largest element from the array.\n\nA Heap has already been implemented for your convenience.\n\n\nInput Format\n\nThe first line of input contains two integers NNN and KKK, denoting the number of elements in the array and the integer K.\nNext line contains NNN integers of the array.\n\n\nOutput Format\nIn a single line output the Kth Largest element in the array",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= N <= 10^5",
+      "1 <= K <= N",
+      "1 <= array elements <= 10^9"
+    ],
+    "inputFormat": "The first line of input contains two integers N and K, denoting the number of elements in the array and the integer K. The next line contains N integers of the array.",
+    "outputFormat": "The Kth Largest element in the array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "10 4\n1 78 29 48 19 2 17 134 93 13",
         "output": "48",
-        "explanation": ""
+        "explanation": "The array is [1, 78, 29, 48, 19, 2, 17, 134, 93, 13]. The 4th largest element is 48."
+      },
+      {
+        "id": "sample_2",
+        "input": "5 2\n1 2 3 4 5",
+        "output": "4",
+        "explanation": "The array is [1, 2, 3, 4, 5]. The 2nd largest element is 4."
+      },
+      {
+        "id": "sample_3",
+        "input": "3 1\n10 20 30",
+        "output": "30",
+        "explanation": "The array is [10, 20, 30]. The largest element is 30."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "10 4\n1 78 29 48 19 2 17 134 93 13",
-        "expectedOutput": "48",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1 1\n10",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "100000 100000\n1000000000",
+        "expectedOutput": "1000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "5 1\n1 2 3 4 5",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "10 5\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "15 10\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "6",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea of this solution is to use a **Max Heap** to efficiently find the **k-th largest element** in the array. A Max Heap always has the largest element at the top, which helps us extract the largest elements in descending order.\n\nHere’s how the approach works:\n\n\n\n**Heap Insertion**: Insert each element from the array into the heap using the `insert()` function, maintaining the heap property where the parent is greater than its children.\n\n\n\n\n**Remove Largest Elements**: Remove the largest element from the heap `k-1` times using the `delete_from_heap()` function. This ensures that the root of the heap now holds the **k-th largest element**.\n\n\n\n\n**Heapify**: After removing an element, `Heapify()` restores the heap property by pushing down the swapped element to its correct position.\n\n\n\n\n**Final Output**: The root of the heap now holds the **k-th largest element**, which is printed.\n\n\n\nThis approach leverages heap properties for efficient extraction of the largest elements.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To find the Kth largest element in the array, we can use a max heap. We first build a max heap from the given array. Then, we extract the maximum element from the heap K-1 times. The element left at the root of the heap after K-1 extractions is the Kth largest element.",
+    "timeComplexity": "O(N log N) — building the heap takes O(N log N) time, and extracting the maximum element K-1 times takes O(K log N) time. Since K <= N, the overall time complexity is O(N log N).",
+    "spaceComplexity": "O(N) — we need to store the array elements in the heap.",
     "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Structure for a heap node\ntypedef struct Node {\n    int value;\n} Node;\n\n// Function to swap two nodes\nvoid swap(Node *a, Node *b) {\n    Node temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\n// Function to heapify the array\nvoid heapify(Node *arr, int n, int i) {\n    int largest = i;\n    int left = 2 * i + 1;\n    int right = 2 * i + 2;\n\n    if (left < n && arr[left].value > arr[largest].value)\n        largest = left;\n\n    if (right < n && arr[right].value > arr[largest].value)\n        largest = right;\n\n    if (largest != i) {\n        swap(&arr[i], &arr[largest]);\n        heapify(arr, n, largest);\n    }\n}\n\n// Function to build a max heap\nvoid buildHeap(Node *arr, int n) {\n    for (int i = n / 2 - 1; i >= 0; i--)\n        heapify(arr, n, i);\n}\n\n// Function to extract the maximum element from the heap\nint extractMax(Node *arr, int *n) {\n    int max = arr[0].value;\n    arr[0] = arr[*n - 1];\n    (*n)--;\n    heapify(arr, *n, 0);\n    return max;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n\n    Node *arr = (Node *)malloc(n * sizeof(Node));\n\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i].value);\n    }\n\n    buildHeap(arr, n);\n\n    for (int i = 0; i < k - 1; i++) {\n        extractMax(arr, &n);\n    }\n\n    printf(\"%d\\n\", arr[0].value);\n\n    free(arr);\n\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Heap {\n    public:\n    vector<int> v;\n    void insert(int value){\n        v.push_back(value);\n        int cur_index = v.size()-1;\n        while(cur_index!=0){\n            int parent_index = (cur_index-1)/2;\n            if(v[parent_index]<v[cur_index]){\n                swap(v[parent_index], v[cur_index]);\n            }\n            cur_index = parent_index;\n        }\n    }\n    \n    void Heapify(int index) {\n        int left_child = 2*index+1;\n        int right_child = 2*index+2;\n        if(left_child<v.size() && v[left_child]>v[index]){\n            swap(v[index], v[left_child]);\n            Heapify(left_child);\n        }\n        if(right_child<v.size() && v[right_child]>v[index]){\n            swap(v[index], v[right_child]);\n            Heapify(right_child);\n        }\n    }\n    \n    void delete_from_heap(){\n        int index = 0;\n        swap(v[index], v[v.size()-1]);\n        v.pop_back();\n        Heapify(index);\n    }\n    \n};\n\n\nint main() {\n    Heap* h1 = new Heap();\n    int n, k;\n    cin>>n>>k;\n    for(int i=0; i<n; i++)\n    {\n        int value;\n        cin>>value;\n        h1->insert(value);\n    }\n    for(int i=0; i<k-1; i++)\n    {\n        h1->delete_from_heap();\n    }\n    cout<<h1->v[0]<<endl;\n\n}\n",
-      "Python3": "class Heap:\n    def __init__(self):\n        self.arr = []\n        \n    def insert(self, val):\n        self.arr.append(val)\n        cur_index = len(self.arr)-1\n        while(cur_index!=0):\n            parent_index = (cur_index-1)//2\n            if(self.arr[parent_index]<self.arr[cur_index]):\n                self.arr[parent_index], self.arr[cur_index] = self.arr[cur_index], self.arr[parent_index]\n            cur_index = parent_index\n            \n    \n    def heapify(self, index):\n        left_child = 2 * index + 1\n        right_child = 2 * index + 2\n\n        if left_child < len(self.arr) and self.arr[left_child] > self.arr[index]:\n            self.arr[index], self.arr[left_child] = self.arr[left_child], self.arr[index]\n            self.heapify(left_child)\n\n        if right_child < len(self.arr) and self.arr[right_child] > self.arr[index]:\n            self.arr[index], self.arr[right_child] = self.arr[right_child], self.arr[index]\n            self.heapify(right_child)\n\n    def delete_from_heap(self):\n        index = 0\n        self.arr[index], self.arr[-1] = self.arr[-1], self.arr[index]\n        self.arr.pop()\n        self.heapify(index)\n        \nif __name__== '__main__':\n    h1 = Heap()\n    n, k = map(int, input().split())\n\n    values = list(map(int, input().split()))\n    for value in values:\n        h1.insert(value)\n\n    for _ in range(k - 1):\n        h1.delete_from_heap()\n\n    print(h1.arr[0])",
-      "C": "#include <stdio.h>\nint arr[100];\nint size = 0;\n\nvoid swap(int *x, int *y)\n{\n    int temp = *x;\n    *x = *y;\n    *y = temp;\n}\n\nvoid insert(val){\n    arr[size] = val;\n    size++;\n    int cur_index = size-1;\n    while(cur_index!=0){\n        int parent_index = (cur_index-1)/2;\n        if(arr[parent_index]<arr[cur_index]){\n            swap(&arr[parent_index], &arr[cur_index]);\n        }\n        cur_index = parent_index;\n    }\n}\n\nvoid Heapify(int index) {\n    int left_child = 2*index+1;\n    int right_child = 2*index+2;\n    if(left_child<size && arr[left_child]>arr[index]){\n        swap(&arr[index], &arr[left_child]);\n        Heapify(left_child);\n    }\n    if(right_child<size && arr[right_child]>arr[index]){\n        swap(&arr[index], &arr[right_child]);\n        Heapify(right_child);\n    }\n}\n\nvoid delete_from_heap(){\n    int index = 0;\n    swap(&arr[index], &arr[size-1]);\n    size--;\n    Heapify(index);\n}\n\nvoid print(){\n    for(int i=0; i<size; i++){\n        printf(\"%d \", arr[i]);\n    }\n    printf(\"\\n\");\n}\nint main(void) {\n    int n, k;\n    scanf(\"%d\", &n);\n    scanf(\"%d\", &k);\n    for (int i=0; i<n; i++)\n    {\n        int a;\n        scanf(\"%d\", &a);\n        insert(a);\n    }\n    for(int i=0; i<k-1; i++)\n    {\n        delete_from_heap();\n    }\n    printf(\"%d \", arr[0]);\n}\n\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Heap {\n    Vector<Integer> v = new Vector<>();\n\n    void insert(int value) {\n        v.add(value);\n        int curIndex = v.size() - 1;\n\n        while (curIndex != 0) {\n            int parentIndex = (curIndex - 1) / 2;\n            if (v.get(parentIndex) < v.get(curIndex)) {\n                int temp = v.get(parentIndex);\n                v.set(parentIndex, v.get(curIndex));\n                v.set(curIndex, temp);\n            }\n            curIndex = parentIndex;\n        }\n    }\n\n    void heapify(int index) {\n        int leftChild = 2 * index + 1;\n        int rightChild = 2 * index + 2;\n\n        if (leftChild < v.size() && v.get(leftChild) > v.get(index)) {\n            int temp = v.get(leftChild);\n            v.set(leftChild, v.get(index));\n            v.set(index, temp);\n            heapify(leftChild);\n        }\n\n        if (rightChild < v.size() && v.get(rightChild) > v.get(index)) {\n            int temp = v.get(rightChild);\n            v.set(rightChild, v.get(index));\n            v.set(index, temp);\n            heapify(rightChild);\n        }\n    }\n\n    void deleteFromHeap() {\n        int index = 0;\n        int lastIndex = v.size() - 1;\n        v.set(index, v.get(lastIndex));\n        v.remove(lastIndex);\n        heapify(index);\n    }\n}\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Heap h1 = new Heap();\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n\n        for (int i = 0; i < n; i++) {\n            int value = scanner.nextInt();\n            h1.insert(value);\n        }\n\n        for (int i = 0; i < k - 1; i++) {\n            h1.deleteFromHeap();\n        }\n\n        System.out.println(h1.v.get(0));\n    }\n}\n",
-      "JavaScript": "class Heap {\n    constructor() {\n        this.v = [];\n    }\n\n    insert(value) {\n        this.v.push(value);\n        let curIndex = this.v.length - 1;\n\n        while (curIndex !== 0) {\n            let parentIndex = Math.floor((curIndex - 1) / 2);\n            if (this.v[parentIndex] < this.v[curIndex]) {\n                [this.v[parentIndex], this.v[curIndex]] = [this.v[curIndex], this.v[parentIndex]];\n            }\n            curIndex = parentIndex;\n        }\n    }\n\n    heapify(index) {\n        let leftChild = 2 * index + 1;\n        let rightChild = 2 * index + 2;\n        let largest = index;\n\n        if (leftChild < this.v.length && this.v[leftChild] > this.v[largest]) {\n            largest = leftChild;\n        }\n\n        if (rightChild < this.v.length && this.v[rightChild] > this.v[largest]) {\n            largest = rightChild;\n        }\n\n        if (largest !== index) {\n            [this.v[index], this.v[largest]] = [this.v[largest], this.v[index]];\n            this.heapify(largest);\n        }\n    }\n\n    deleteFromHeap() {\n        let index = 0;\n        let lastIndex = this.v.length - 1;\n        this.v[index] = this.v[lastIndex];\n        this.v.pop();\n        this.heapify(index);\n    }\n}\n\nfunction findKthLargest(N, K, array) {\n    const h1 = new Heap();\n\n    for (let i = 0; i < N; i++) {\n        h1.insert(array[i]);\n    }\n\n    for (let i = 0; i < K - 1; i++) {\n        h1.deleteFromHeap();\n    }\n\n    return h1.v[0];\n}\n\nfunction main() {\n    const readline = require('readline');\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let inputLines = [];\n    rl.on('line', (line) => {\n        inputLines.push(line);\n    });\n\n    rl.on('close', () => {\n        const firstLine = inputLines[0];\n        const secondLine = inputLines[1];\n\n        const [N, K] = firstLine.split(' ').map(Number);\n        const array = secondLine.split(' ').map(Number);\n\n        const result = findKthLargest(N, K, array);\n        console.log(result);\n    });\n}\n\nmain();\n"
+      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Heap {\n    Vector<Integer> v = new Vector<>();\n\n    void insert(int value) {\n        v.add(value);\n        int curIndex = v.size() - 1;\n\n        while (curIndex != 0) {\n            int parentIndex = (curIndex - 1) / 2;\n            if (v.get(parentIndex) < v.get(curIndex)) {\n                int temp = v.get(parentIndex);\n                v.set(parentIndex, v.get(curIndex));\n                v.set(curIndex, temp);\n            }\n            curIndex = parentIndex;\n        }\n    }\n\n    void heapify(int index) {\n        int leftChild = 2 * index + 1;\n        int rightChild = 2 * index + 2;\n\n        if (leftChild < v.size() && v.get(leftChild) > v.get(index)) {\n            int temp = v.get(leftChild);\n            v.set(leftChild, v.get(index));\n            v.set(index, temp);\n            heapify(leftChild);\n        }\n\n        if (rightChild < v.size() && v.get(rightChild) > v.get(index)) {\n            int temp = v.get(rightChild);\n            v.set(rightChild, v.get(index));\n            v.set(index, temp);\n            heapify(rightChild);\n        }\n    }\n\n    void deleteFromHeap() {\n        int index = 0;\n        int lastIndex = v.size() - 1;\n        v.set(index, v.get(lastIndex));\n        v.remove(lastIndex);\n        heapify(index);\n    }\n}\n\nclass Main\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Heap h1 = new Heap();\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n\n        for (int i = 0; i < n; i++) {\n            int value = scanner.nextInt();\n            h1.insert(value);\n        }\n\n        for (int i = 0; i < k - 1; i++) {\n            h1.deleteFromHeap();\n        }\n\n        System.out.println(h1.v.get(0));\n    }\n}\n",
+      "Python3": "class Heap:\n    def __init__(self):\n        self.arr = []\n        \n    def insert(self, val):\n        self.arr.append(val)\n        cur_index = len(self.arr)-1\n        while(cur_index!=0):\n            parent_index = (cur_index-1)//2\n            if(self.arr[parent_index]<self.arr[cur_index]):\n                self.arr[parent_index], self.arr[cur_index] = self.arr[cur_index], self.arr[parent_index]\n            cur_index = parent_index\n            \n    \n    def heapify(self, index):\n        left_child = 2 * index + 1\n        right_child = 2 * index + 2\n\n        if left_child < len(self.arr) and self.arr[left_child] > self.arr[index]:\n            self.arr[index], self.arr[left_child] = self.arr[left_child], self.arr[index]\n            self.heapify(left_child)\n\n        if right_child < len(self.arr) and self.arr[right_child] > self.arr[index]:\n            self.arr[index], self.arr[right_child] = self.arr[right_child], self.arr[index]\n            self.heapify(right_child)\n\n    def delete_from_heap(self):\n        index = 0\n        self.arr[index], self.arr[-1] = self.arr[-1], self.arr[index]\n        self.arr.pop()\n        self.heapify(index)\n        \nif __name__== '__main__':\n    h1 = Heap()\n    n, k = map(int, input().split())\n\n    values = list(map(int, input().split()))\n    for value in values:\n        h1.insert(value)\n\n    for _ in range(k - 1):\n        h1.delete_from_heap()\n\n    print(h1.arr[0])\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction readline() {\n    return input[idx++];\n}\n\nclass Heap {\n    constructor() {\n        this.v = [];\n    }\n\n    insert(value) {\n        this.v.push(value);\n        let curIndex = this.v.length - 1;\n\n        while (curIndex !== 0) {\n            let parentIndex = Math.floor((curIndex - 1) / 2);\n            if (this.v[parentIndex] < this.v[curIndex]) {\n                [this.v[parentIndex], this.v[curIndex]] = [this.v[curIndex], this.v[parentIndex]];\n            }\n            curIndex = parentIndex;\n        }\n    }\n\n    heapify(index) {\n        let leftChild = 2 * index + 1;\n        let rightChild = 2 * index + 2;\n        let largest = index;\n\n        if (leftChild < this.v.length && this.v[leftChild] > this.v[largest]) {\n            largest = leftChild;\n        }\n\n        if (rightChild < this.v.length && this.v[rightChild] > this.v[largest]) {\n            largest = rightChild;\n        }\n\n        if (largest !== index) {\n            [this.v[index], this.v[largest]] = [this.v[largest], this.v[index]];\n            this.heapify(largest);\n        }\n    }\n\n    deleteFromHeap() {\n        let index = 0;\n        let lastIndex = this.v.length - 1;\n        this.v[index] = this.v[lastIndex];\n        this.v.pop();\n        this.heapify(index);\n    }\n}\n\nfunction findKthLargest(N, K, array) {\n    const h1 = new Heap();\n\n    for (let i = 0; i < N; i++) {\n        h1.insert(array[i]);\n    }\n\n    for (let i = 0; i < K - 1; i++) {\n        h1.deleteFromHeap();\n    }\n\n    return h1.v[0];\n}\n\nfunction main() {\n    const firstLine = readline().split(' ').map(Number);\n    const N = firstLine[0];\n    const K = firstLine[1];\n    const array = readline().split(' ').map(Number);\n\n    const result = findKthLargest(N, K, array);\n    console.log(result);\n}\n\nmain();\n"
     }
   }
 }

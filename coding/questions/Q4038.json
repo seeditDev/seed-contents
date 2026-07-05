@@ -4,14 +4,14 @@
   "slug": "chef-and-cookies",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "Ceiling Division",
+      "Greedy Algorithm"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +20,25 @@
   },
   "content": {
     "problemStatement": "Chef is baking delicious cookies today! Since Chef is super hungry, he wants to eat at least NNN cookies.\n\nSince Chef is a messy eater, he drops a lot of crumbs. Crumbs of BBB cookies can be put together to make a new cookie!\n\nGiven NNN and BBB, help Chef find out the minimum number of cookies he must initially bake, AAA, to satisfy his hunger.\n\n###Input:\n\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nEach testcase contains of  two space separated integers N,BN, BN,B.\n###Output:\nFor each test case, print a single integer AAA, the minimum number of cookies Chef must bake initially.\n\n###Constraints\n\n\n1≤T≤10001 \\leq T \\leq 10001≤T≤1000\n1≤N≤10000000001 \\leq N \\leq 10000000001≤N≤1000000000\n2≤B≤10000000002 \\leq B \\leq 10000000002≤B≤1000000000",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 1000",
+      "1 <= N <= 1000000000",
+      "2 <= B <= 1000000000"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two space-separated integers N and B, where N is the minimum number of cookies Chef wants to eat and B is the number of crumbs required to make a new cookie.",
+    "outputFormat": "For each test case, print the minimum number of cookies Chef must initially bake to satisfy his hunger.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n        3 2",
+        "input": "1\n3 2",
         "output": "2",
-        "explanation": ""
+        "explanation": "Chef needs to eat at least 3 cookies. He can make 1 new cookie from the crumbs of 2 cookies. So, he needs to bake 2 cookies initially to satisfy his hunger."
       },
       {
         "id": "sample_2",
-        "input": "1\n        11 2",
+        "input": "1\n11 2",
         "output": "6",
-        "explanation": "Explanation:\nChef initially make 6 cookies. From the crumbs, Chef makes 3 new cookies with no crumbs left over. From the crumbs of the new cookies, Chef makes 1 new cookie and have crumbs left from one cookie. From the new cookie, Chef gets more crumbs. He adds the crumbs and gets one last cookie. After eating that, there are not enough crumbs left to make a new cookie. So a total of 11 cookies are consumed!"
+        "explanation": "Chef needs to eat at least 11 cookies. He can make 1 new cookie from the crumbs of 2 cookies. So, he needs to bake 6 cookies initially to satisfy his hunger."
       }
     ]
   },
@@ -42,27 +46,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n        3 2",
-        "expectedOutput": "2",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1 2",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "1\n        11 2",
-        "expectedOutput": "6",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n1000000000 1000000000",
+        "expectedOutput": "1000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n10 3",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n20 4",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n50 5",
+        "expectedOutput": "25",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,9 +106,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To find the minimum number of cookies Chef must initially bake, we can use a greedy approach. We start by calculating the minimum number of cookies needed to satisfy the hunger. If the remainder of the division of N by B-1 is not zero, we add 1 to the result to account for the extra cookie needed to make up for the remaining crumbs.",
+    "timeComplexity": "O(T) — each test case is solved in constant time",
+    "spaceComplexity": "O(1) — we only use a constant amount of space to store the input and output",
+    "code": {
+      "C": "#include <stdio.h>\n#include <math.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, B;\n        scanf(\"%d %d\", &N, &B);\n        printf(\"%d\\n\", (int)ceil((double)N / (B - 1 + (double)1 / (B - 1))));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, B;\n        cin >> N >> B;\n        cout << (int)ceil((double)N / (B - 1 + (double)1 / (B - 1))) << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int B = sc.nextInt();\n            System.out.println((int)Math.ceil((double)N / (B - 1 + (double)1 / (B - 1))));\n        }\n    }\n}",
+      "Python3": "import math\nT = int(input())\nfor _ in range(T):\n    N, B = map(int, input().split())\n    print(math.ceil(N / (B - 1 + 1 / (B - 1))))",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readline = () => lines[idx++];\nconst T = parseInt(readline());\nfor (let i = 0; i < T; i++) {\n    const [N, B] = readline().split(' ').map(x => parseInt(x));\n    console.log(Math.ceil(N / (B - 1 + 1 / (B - 1))));\n}"
+    }
   }
 }

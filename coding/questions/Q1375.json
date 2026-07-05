@@ -4,14 +4,15 @@
   "slug": "k-sum",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Two Pointers",
+      "Prefix Sum",
+      "Sliding Window"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +22,31 @@
   "content": {
     "problemStatement": "Given an array arr of positive integers and an integer kkk, write a program that returns the maximum possible sum of kkk elements taken from either the start of the array, the end of the array, or a combination of both.\n\n\nInput Format\n\nThe first line contains two positive integers nnn and kkk representing the size of arrarrarr and number of elements whose sum is to be taken.\nNext line contains nnn elements of the array.\n\n\nOutput Format\nPrint the maximum sum that can be achieved by taking kkk elements.",
     "constraints": [
-      "1≤n≤1051 \\leq n \\leq 10^51≤n≤105",
-      "1≤k≤n1 \\leq k \\leq n1≤k≤n",
-      "1≤arr[i]≤1061 \\leq arr[i] \\leq 10^61≤arr[i]≤106"
+      "1 <= T <= 10",
+      "1 <= n <= 100000",
+      "1 <= k <= n",
+      "1 <= arr[i] <= 1000000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers n and k (1 ≤ k ≤ n ≤ 10^5). The second line contains n positive integers denoting the array elements.",
+    "outputFormat": "For each test case output a single line containing the maximum possible sum of exactly k elements taken from the beginning of the array, the end of the array, or a combination of both.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 3\n4 2 1 5 1",
+        "input": "1\\n5 3\\n4 2 1 5 1",
         "output": "10",
-        "explanation": "Explanation:\nTake one element from the start of the array and take 2 elements from the end of the array. the sum will be 4+1+5=10."
+        "explanation": "Take 1 element from the start (4) and 2 elements from the end (5 and 1). Sum = 4+5+1 = 10."
       },
       {
         "id": "sample_2",
-        "input": "3 3\n1 2 3",
+        "input": "1\n3 3\n1 2 3",
         "output": "6",
-        "explanation": "Explanation:\nTake all three elements from the array, the sum will be 1+2+3=6."
+        "explanation": "k equals n, so we must take all elements. Sum = 1+2+3 = 6."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n5 1\\n1 2 3 4 5",
+        "output": "5",
+        "explanation": "With k = 1 we can only pick the first or the last element. The last element (5) is larger."
       }
     ]
   },
@@ -46,27 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 3\n4 2 1 5 1",
-        "expectedOutput": "10",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1 1\n5",
+        "expectedOutput": "5",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "3 3\n1 2 3",
-        "expectedOutput": "6",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n15 15\n1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000 1000000",
+        "expectedOutput": "15000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n6 3\n7 7 7 7 7 7",
+        "expectedOutput": "21",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n1 1\n5",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n1 1\n5",
+        "expectedOutput": "5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,14 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The core idea of the solution is to utilize a **two-pointer technique** to explore all possible combinations of selecting `k` elements from both ends of the array. By carefully shifting elements from the start of the array to the end, we can efficiently determine the maximum sum that can be obtained.\n\n\n\n**Initial Sum Calculation**:\n\n\n\nStart by calculating the sum of the first `k` elements from the beginning of the array. This initial sum represents the scenario where all `k` elements are selected from the start.\nThis sum is stored as the `current_sum` and is also set as the initial `max_sum`.\n\nFor example, if `arr = [1, 2, 3, 4, 5]` and `k = 3`, the initial sum would be `1 + 2 + 3 = 6`.\n\n\n\n\n**Two-Pointer Technique**:\n\n\n\nAfter calculating the initial sum, we consider other possible combinations by gradually replacing elements from the start of the array with elements from the end.\nWe maintain two pointers:\n\nOne pointer (`i`) moves backward from the `k-1` index of the array, indicating the elements being subtracted from the `current_sum`.\nThe other pointer simultaneously moves forward from the last element of the array, adding these elements to the `current_sum`.\n\n\nIn each iteration, we update the `current_sum` by subtracting the `i-th` element from the start and adding the `i-th` element from the end.\nAfter each update, we compare the `current_sum` with `max_sum` and update `max_sum` if `current_sum` is greater.\n\nContinuing from our example, the iterations would be:\n\n\n\nFirst, subtract `3` and add `5`: `current_sum = 6 - 3 + 5 = 8`.\nNext, subtract `2` and add `4`: `current_sum = 8 - 2 + 4 = 10`.\n\nIn this case, the maximum sum of `10` is obtained by taking `2` from the start and `4, 5` from the end.\n\n\n\n\n**Result**:\n\n\n\nAfter iterating through all possible combinations, the `max_sum` will contain the maximum possible sum of `k` elements.",
-    "timeComplexity": "The solution runs in O(k), since it involves a fixed number of operations (k iterations) regardless of the size of the array.",
-    "spaceComplexity": "The space complexity is O(1) as the solution only uses a few extra variables for calculations.",
+    "approach": "The optimal choice is to take i elements from the start and k‑i elements from the end for some i (0 ≤ i ≤ k). Compute the sum of the first k elements as the initial window. Then slide the window by removing one element from the left side of the window and adding one element from the right side (the array end). Keep the maximum sum encountered. This runs in O(k) per test case, which is O(n) because k ≤ n, and uses O(1) extra space.",
+    "timeComplexity": "O(n) per test case (overall O(∑n) for all test cases)",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nlong long maxSumKElements(vector<long long>& arr, int k) {\n    int n = arr.size();\n    \n    // Calculate the sum of the first k elements\n    long long current_sum = 0;\n    for (int i = 0; i < k; ++i) {\n        current_sum += arr[i];\n    }\n    \n    // This is the initial maximum sum (taking all k elements from the start)\n    long long max_sum = current_sum;\n\n    // Two-pointer technique: start from the end of the array and replace elements from the start\n    for (int i = 0; i < k; ++i) {\n        current_sum = current_sum - arr[k - 1 - i] + arr[n - 1 - i];\n        max_sum = max(max_sum, current_sum);\n    }\n    \n    return max_sum;\n}\n\nint main() {\n    int n, k;\n    \n    // Taking user input for size of the array\n    cin >> n;\n    \n    // Taking user input for the value of k\n    cin >> k;\n    \n    vector<long long> arr(n);\n    \n    // Taking user input for the array elements\n    for (int i = 0; i < n; ++i) {\n        cin >> arr[i];\n    }\n    \n    // Calling the function and printing the result\n    cout << maxSumKElements(arr, k) << endl;\n    \n    return 0;\n}",
-      "Python3": "def max_sum_k_elements(arr, k):\n    n = len(arr)\n    \n    # Calculate the sum of the first k elements\n    current_sum = sum(arr[:k])\n    \n    # This is the initial maximum sum (taking all k elements from the start)\n    max_sum = current_sum\n    \n    # Two-pointer technique: start from the end of the array and replace elements from the start\n    for i in range(k):\n        current_sum = current_sum - arr[k - 1 - i] + arr[n - 1 - i]\n        max_sum = max(max_sum, current_sum)\n    \n    return max_sum\n\nif __name__ == \"__main__\":\n    n, k = list(map(int, input().split()))\n    arr = list(map(int, input().split()))\n    \n    print(max_sum_k_elements(arr, k))\n",
-      "C": "#include <stdio.h>\n\nlong long maxSumKElements(long long arr[], int n, int k) {\n    // Calculate the sum of the first k elements\n    long long currentSum = 0;\n    for (int i = 0; i < k; ++i) {\n        currentSum += arr[i];\n    }\n    \n    // This is the initial maximum sum (taking all k elements from the start)\n    long long maxSum = currentSum;\n\n    // Two-pointer technique: start from the end of the array and replace elements from the start\n    for (int i = 0; i < k; ++i) {\n        currentSum = currentSum - arr[k - 1 - i] + arr[n - 1 - i];\n        if (currentSum > maxSum) {\n            maxSum = currentSum;\n        }\n    }\n    \n    return maxSum;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    long long arr[n];\n    for (int i = 0; i < n; ++i) {\n        scanf(\"%lld\", &arr[i]);\n    }\n    \n    printf(\"%lld\\n\", maxSumKElements(arr, n, k));\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static long maxSumKElements(long[] arr, int k) {\n        int n = arr.length;\n        \n        // Calculate the sum of the first k elements\n        long currentSum = 0;\n        for (int i = 0; i < k; ++i) {\n            currentSum += arr[i];\n        }\n        \n        // This is the initial maximum sum (taking all k elements from the start)\n        long maxSum = currentSum;\n\n        // Two-pointer technique: start from the end of the array and replace elements from the start\n        for (int i = 0; i < k; ++i) {\n            currentSum = currentSum - arr[k - 1 - i] + arr[n - 1 - i];\n            maxSum = Math.max(maxSum, currentSum);\n        }\n        \n        return maxSum;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int k = scanner.nextInt();\n        long[] arr = new long[n];\n        for (int i = 0; i < n; ++i) {\n            arr[i] = scanner.nextLong();\n        }\n        \n        System.out.println(maxSumKElements(arr, k));\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long maxSumK(long long *a,int n,int k){\n    long long cur=0;\n    for(int i=0;i<k;i++) cur+=a[i];\n    long long best=cur;\n    for(int i=1;i<=k;i++){\n        cur=cur-a[i-1]+a[n-i];\n        if(cur>best) best=cur;\n    }\n    return best;\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int n,k; scanf(\"%d %d\",&n,&k);\n        long long *arr=malloc(sizeof(long long)*n);\n        for(int i=0;i<n;i++) scanf(\"%lld\",&arr[i]);\n        printf(\"%lld\\n\",maxSumK(arr,n,k));\n        free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long maxSumK(const vector<long long>& a,int k){\n    int n=a.size();\n    long long cur=0;\n    for(int i=0;i<k;i++) cur+=a[i];\n    long long best=cur;\n    for(int i=1;i<=k;i++){\n        cur=cur-a[i-1]+a[n-i];\n        best=max(best,cur);\n    }\n    return best;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int n,k; cin>>n>>k;\n        vector<long long>a(n);\n        for(int i=0;i<n;i++) cin>>a[i];\n        cout<<maxSumK(a,k)<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static long maxSumK(long[] arr, int k) {\n        int n = arr.length;\n        long cur = 0;\n        for (int i = 0; i < k; i++) cur += arr[i];\n        long best = cur;\n        for (int i = 1; i <= k; i++) {\n            cur = cur - arr[i - 1] + arr[n - i];\n            if (cur > best) best = cur;\n        }\n        return best;\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int k = Integer.parseInt(st.nextToken());\n            long[] arr = new long[n];\n            int idx = 0;\n            while (idx < n) {\n                if (st == null || !st.hasMoreTokens()) {\n                    st = new StringTokenizer(br.readLine());\n                }\n                while (st.hasMoreTokens() && idx < n) {\n                    arr[idx++] = Long.parseLong(st.nextToken());\n                }\n            }\n            sb.append(maxSumK(arr, k)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef max_sum(arr, k):\n    cur = sum(arr[:k])\n    best = cur\n    n = len(arr)\n    for i in range(1, k + 1):\n        cur = cur - arr[i - 1] + arr[n - i]\n        if cur > best:\n            best = cur\n    return best\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        n = int(next(it))\n        k = int(next(it))\n        arr = [int(next(it)) for _ in range(n)]\n        out.append(str(max_sum(arr, k)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == '__main__':\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet res = [];\nfor (let t = 0; t < T; t++) {\n  const n = Number(input[idx++]);\n  const k = Number(input[idx++]);\n  const arr = new Array(n);\n  for (let i = 0; i < n; i++) arr[i] = Number(input[idx++]);\n  let cur = 0;\n  for (let i = 0; i < k; i++) cur += arr[i];\n  let best = cur;\n  for (let i = 1; i <= k; i++) {\n    cur = cur - arr[i - 1] + arr[n - i];\n    if (cur > best) best = cur;\n  }\n  res.push(String(best));\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "cool-numbers",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "Cool Numbers",
+      "Divisibility",
+      "Number Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,33 +22,30 @@
   "content": {
     "problemStatement": "Consider a positive integer **N**. Denote its decimal digits by **X1**, **X2**,..., **XK**. **N** is called a **Cool Number** if you can select at most three (but at least one) of its digits such that the following number is divisible by **N**:\n\n\n(**X1** + **X2** + ... + **XK** – **S**)**S**where **S** is the sum of the selected digits.\n\n\n\nLet **LC(N)** be the largest Cool Number which is not greater than **N**, and **UC(N)** be the smallest Cool Number which is greater than **N**. So the following inequalities hold\n\n\n **LC(N)** ≤ **N** &lt; **UC(N)**.\n\nYour task is to find for the given positive integer **N** the values of **LC(N)** and **UC(N)**. As you will see from the examples **LC(N)** and **UC(N)** exist for every positive integer **N**.\n\nConsider some examples.\n\n\n**1458** is a Cool Number since ((**1** + **4** + **5** + **8**) – (**1** + **5**))**1** + **5** = **126** = **2985984** is divisible by **1458**. Note that here we select two digits: **1** and **5**.\nAll numbers of the form **10n** (**n** = **0**, **1**, **2**, ...) are Cool. Indeed, if we select just one digit **1** (the first digit of **10n**) in the definition of Cool Number we obtain the number (**1** + **0** + ... + **0** – **1**)**1** = **01** = **0** and it is divisible by **10n** (recall that **0** is divisible by every positive integer). Now consider some positive integer **N** of **n** digits. Then, clearly, **10n-1** ≤ **N** &lt; **10n** where both **10n-1** and **10n** are Cool Numbers. Hence **LC(N)** and **UC(N)** always exist and, moreover, **LC(N)** ≥ **10n-1** and **UC(N)** ≤ **10n**.",
     "constraints": [
-      "**1** ≤ **T** ≤ **100000**",
-      "**1** ≤ **N** ≤ **101000**",
-      "The total number of digits in all numbers **N** in the input file does not exceed **4000000**.",
-      "Example**Input:**",
-      "4",
-      "2",
-      "999",
-      "1459",
-      "18898888",
-      "**Output:**",
-      "2 3",
-      "999 1000",
-      "1458 1460",
-      "18895680 18900000",
-      "Explanation**Case 1.** The number **2** is the largest integer which is not greater than **N = 2**, the number **3** is the smallest integer which is greater than **N = 2**, and they both are Cool Numbers, which can be shown similar to the case of **10n** in the example above.",
-      "**Case 2.** It is very similar to the first test case and we already know that **1000** is a Cool Number. So we just have to show that **999** is a Cool number. But it is clear, since we can select all the three digits so ((**9** + **9** + **9**) – (**9** + **9** + **9**))**9** + **9** + **9** = **027** = **0** which is divisible by **999**.",
-      "**Unfortunately, we can't provide you with the explanation of the third and the fourth test cases. You should figure it out by yourself. Please, don't ask about this in comments.**",
-      "Warning!**There are large input and output files in this problem. Make sure you use fast enough I/O methods.**"
+      "1 <= T <= 100000",
+      "1 <= N <= 10^1000",
+      "The total number of digits in all numbers N in the input file does not exceed 4000000"
     ],
-    "inputFormat": "The first line of the input file contains an integer **T**, the number of test cases. Each of the following **T** lines contains a positive integer **N**.",
-    "outputFormat": "For each test case output on a single line values of **LC(N)** and **UC(N)** separated by a single space.",
+    "inputFormat": "The first line contains T, the number of test cases. Each test case contains a single integer N.",
+    "outputFormat": "For each test case, print the largest Cool Number less than or equal to N and the smallest Cool Number greater than N, separated by a space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
-        "output": "Input:\n4\n2\n999\n1459\n18898888\nOutput:\r\n2 3\r\n999 1000\r\n1458 1460\r\n18895680 18900000",
-        "explanation": ""
+        "input": "4\n2\n999\n1459\n18898888",
+        "output": "2 3\n999 1000\n1458 1460\n18895680 18900000",
+        "explanation": "For each test case, we find the largest Cool Number less than or equal to N and the smallest Cool Number greater than N."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n12345",
+        "output": "12321 12345",
+        "explanation": "The largest Cool Number less than or equal to 12345 is 12321 and the smallest Cool Number greater than 12345 is 12345 itself."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1000000",
+        "output": "999999 1000000",
+        "explanation": "The largest Cool Number less than or equal to 1000000 is 999999 and the smallest Cool Number greater than 1000000 is 1000000 itself."
       }
     ]
   },
@@ -55,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "Input:\n4\n2\n999\n1459\n18898888\nOutput:\r\n2 3\r\n999 1000\r\n1458 1460\r\n18895680 18900000",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "1 2",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n999999999999999999",
+        "expectedOutput": "999999999999999999 1000000000000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n1111111111",
+        "expectedOutput": "1111111111 1111111111",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n12345678901234567890",
+        "expectedOutput": "12345678901234567890 12345678901234567890",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+        "expectedOutput": "1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8\n8 9\n9 10\n10 11",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -82,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "As discussed above, the maximum value of S can be 684. We can see that S can’t have more than 4 distinct prime factors. This is because even 5 of the smallest distinct prime factors give a product of more than 684 i.e. 2 * 3 * 5 * 7 * 11 &gt; 684. Hence, we know that S will have &lt;= 4 prime factors. So for now we should check only those numbers whose radical is no more than 684. To do this, our pseudocode will look something like this:\n\n`  \nfor(i=2;i is prim and i&lt;684; ++i)  \nfor(poweri=1;i^poweri&lt;10^77;++poweri)  \n{  \ncandidate_num=i^poweri  \n check this candidate is it cool  \n\tfor(j=i+1;j is prim and i*j&lt;684; ++j)  \n\tfor(powerj=1;i^poweri*j^powerj&lt;10^77;++powerj)  \n\t{  \n\t\tcandidate_num=i^poweri*j^powerj  \n\t\tcheck this candidate is it cool  \n\t\tfor(k=j+1;k is prim and i*j*k&lt;684; ++k)  \n\t\tfor(powerk=1;i^poweri*j^powerj*k^powerk&lt;10^77;++powerk)  \n\t\t{  \n\t\t\tcandidate_num=i^poweri*j^powerj*k^powerk  \n\t\t\tcheck this candidate is it cool  \n\t\t\tfor(t=k+1;t is prim and t&lt;684; ++t)  \n\t\t\tfor(powert=1;i^poweri*j^powerj*k^powerk*t^powert&lt;10^77;++powert)  \n\t\t\t{  \n\t\t\t\tcandidate_num=i^poweri*j^powerj*k^powerk*t^powert  \n\t\t\t\tcheck this candidate is it cool  \n\t\t\t}  \n\t\t}  \n\t}  \n}  \n```\n\n\n\nTo know how to check if a number is cool or not, please refer to the tester’s approach.\n\nClearly, the above procedure take a lot of time. So we try to “hack” the solution in such a way that it runs in time. The approach taken by the setter in this solution is to divide the solution into two parts: fast calculation of a portion of Cool Numbers, and stored Cool Numbers. A few hacks are introduced into the solution in such a way that the program runs in time. But to do this, we sacrifice calculating a few Cool Numbers. The missed out cool numbers which can’t be calculated are stored in some container. This process can be achieved by running a brute force program on your maching and calculating **all** the cool numbers and storing them in a file. Then we run our hacked program and see which all cool number we can generate. After comparing with the previously generated list of **all** cool numbers, we get to know which numbers cannot be generated. Such numbers are stored in a container.\n\nThe hacks can be of a lot of types. The setter used the following hacks to improve the runtime of his code:\n\n\ncalculate only those numbers which have &lt;= 3 divisors\ncalculate only those numbers which have &lt;= 60 digits\ncalculate only those numbers whose radical &lt;= 260\nThe rest of the “ungenerated” numbers are stored manually inside an array. Now, we can have the list of all the cool numbers during the program run. Now, we have both the NTCN’s and we know to calculate the TCN’s. We can easily get the answer as mentioned earlier.\n\nTESTER’S SOLUTION:Can be viewed here.\n\nIn this solution, let’s fix S and try to find all NTCN for which we can select at most 3 digits with sum of the remaining digits equal to S such that our NTCN divides **SD**. Since **D&lt;=27**, we simply iterate over divisors  of **S27** and check for each divisor. Let’s look into it in more detail.\n\nIt is obvious that generating the divisors of **S27** for all **S** will give us all the NTCN’s. Note that we are only talking about NTCN’s because the upper bounds we got was only for NTCN’s.\n\nWe can factorize S into prime factors. Suppose S = Aa x Bb x Cc. Then S^27 will be equal to A27aB27bC27c. Now we can generate all the divisors, Ai BjCk using simple recursion and satisfying the conditions 0&lt;=i&lt;=27a, 0&lt;=j&lt;=27b and 0&lt;=k&lt;=27c. The pseudocode of such a function can look like:\n\n`generate(index_of_factor, divisor) { // check for Coolness of divisor here for i = 0 to max_power_of_factor[index_of_factor] divisor *= factor[index_of_factor] generate(index_of_factor + 1, temp) }`\n\nIt is clear that these numbers can be quite large. To handle these, use a BigInt Class. For a better and faster implementation of handling these large numbers, please go through the tester’s code. It is interesting to note here that S cannot have more than 4 distinct prime factors. This is because the product of even the least 5 primes (2,3,5,7,11) exceeds the maximum value of S(684). Thus we can safely assume that there won’t be more than 4 distinct prime factors. Now once we have all the divisors, we check if each divisor is an NTCN or not. Suppose we are checking for a particular value of **S = s**. And the divisor we are considering for it is div. Let sum be defined as the sum of all the digits in div. This implies that **d = sum – s**. Thus, the sum of selected digits comes out to be **sum – s**. If div is an NTCN, there must be a group of at most 3 digits in d whose sum is equal to d. If we find such a group, we can say that div is a cool number and add it to the set of NTCN’s. We perform these calculations for all values of **S (&lt;=684)**. And finally we have all the values of NTCN’s in our hand. These operations can be performed and the numbers can be pre-calculated.\n\nNow arriving at the answer is very easy. For any given value of **N**, we perform a binary search on the array of stored NTCN’s as we showed and get the candidates for NTLC(N) and NTUC(N). And as we showed earlier, we calculate the values of TLC(N) and TUC(N) in **O(K)** time. Once we have all the 4 values, we calculate the values of LC(N) and UC(N) as shown earlier.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we need to understand the concept of Cool Numbers and how to check if a number is Cool. A Cool Number is a number that can be divided by the product of the sum of its digits minus the sum of a subset of its digits and the sum of that subset of digits. We can use a brute force approach to check all possible subsets of digits and see if the number is divisible by the product. We also need to find the largest Cool Number less than or equal to N and the smallest Cool Number greater than N.",
+    "timeComplexity": "O(T * 2^k * k) per test case, where k is the number of digits in N. The total time complexity is O(T * 2^k * k) since we are doing this for T test cases.",
+    "spaceComplexity": "O(k) — the space used to store the digits of N and the subsets of digits.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint is_cool_number(char *num) {\n    int sum = 0;\n    for (int i = 0; i < strlen(num); i++) {\n        sum += num[i] - '0';\n    }\n    for (int mask = 1; mask < (1 << strlen(num)); mask++) {\n        int selected_sum = 0;\n        for (int i = 0; i < strlen(num); i++) {\n            if ((mask & (1 << i)) != 0) {\n                selected_sum += num[i] - '0';\n            }\n        }\n        if (__builtin_popcount(mask) <= 3) {\n            int product = (sum - selected_sum) * selected_sum;\n            if (product % atoi(num) == 0) {\n                return 1;\n            }\n        }\n    }\n    return 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char num[1001];\n        scanf(\"%s\", num);\n        int N = atoi(num);\n        int lower = N;\n        while (!is_cool_number(num)) {\n            lower--;\n            sprintf(num, \"%d\", lower);\n        }\n        int upper = N + 1;\n        sprintf(num, \"%d\", upper);\n        while (!is_cool_number(num)) {\n            upper++;\n            sprintf(num, \"%d\", upper);\n        }\n        printf(\"%d %d\\n\", lower, upper);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nbool is_cool_number(string num) {\n    int sum = 0;\n    for (char c : num) {\n        sum += c - '0';\n    }\n    for (int mask = 1; mask < (1 << num.size()); mask++) {\n        int selected_sum = 0;\n        for (int i = 0; i < num.size(); i++) {\n            if ((mask & (1 << i)) != 0) {\n                selected_sum += num[i] - '0';\n            }\n        }\n        if (__builtin_popcount(mask) <= 3) {\n            int product = (sum - selected_sum) * selected_sum;\n            if (product % stoi(num) == 0) {\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string num;\n        cin >> num;\n        int N = stoi(num);\n        int lower = N;\n        while (!is_cool_number(num)) {\n            lower--;\n            num = to_string(lower);\n        }\n        int upper = N + 1;\n        num = to_string(upper);\n        while (!is_cool_number(num)) {\n            upper++;\n            num = to_string(upper);\n        }\n        cout << lower << \" \" << upper << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static boolean is_cool_number(String num) {\n        int sum = 0;\n        for (char c : num.toCharArray()) {\n            sum += c - '0';\n        }\n        for (int mask = 1; mask < (1 << num.length()); mask++) {\n            int selected_sum = 0;\n            for (int i = 0; i < num.length(); i++) {\n                if ((mask & (1 << i)) != 0) {\n                    selected_sum += num.charAt(i) - '0';\n                }\n            }\n            if (Integer.bitCount(mask) <= 3) {\n                int product = (sum - selected_sum) * selected_sum;\n                if (product % Integer.parseInt(num) == 0) {\n                    return true;\n                }\n            }\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            String num = scanner.next();\n            int N = Integer.parseInt(num);\n            int lower = N;\n            while (!is_cool_number(num)) {\n                lower--;\n                num = String.valueOf(lower);\n            }\n            int upper = N + 1;\n            num = String.valueOf(upper);\n            while (!is_cool_number(num)) {\n                upper++;\n                num = String.valueOf(upper);\n            }\n            System.out.println(lower + \" \" + upper);\n        }\n    }\n}",
+      "Python3": "def is_cool_number(num):\n    sum_num = sum(int(digit) for digit in num)\n    for mask in range(1, 1 << len(num)):\n        selected_sum = sum(int(num[i]) for i in range(len(num)) if (mask & (1 << i)) != 0)\n        if bin(mask).count('1') <= 3:\n            product = (sum_num - selected_sum) * selected_sum\n            if product % int(num) == 0:\n                return True\n    return False\n\nT = int(input())\nfor _ in range(T):\n    num = input()\n    N = int(num)\n    lower = N\n    while not is_cool_number(num):\n        lower -= 1\n        num = str(lower)\n    upper = N + 1\n    num = str(upper)\n    while not is_cool_number(num):\n        upper += 1\n        num = str(upper)\n    print(lower, upper)",
+      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nlet lines = [];\nrl.on('line', (input) => {\n    lines.push(input);\n});\nrl.on('close', () => {\n    let T = +lines[0];\n    let index = 1;\n    for (let i = 0; i < T; i++) {\n        let num = lines[index++];\n        let N = +num;\n        let lower = N;\n        while (!is_cool_number(num)) {\n            lower--;\n            num = lower.toString();\n        }\n        let upper = N + 1;\n        num = upper.toString();\n        while (!is_cool_number(num)) {\n            upper++;\n            num = upper.toString();\n        }\n        console.log(lower + ' ' + upper);\n    }\n});\n\nfunction is_cool_number(num) {\n    let sum = 0;\n    for (let i = 0; i < num.length; i++) {\n        sum += +num[i];\n    }\n    for (let mask = 1; mask < (1 << num.length); mask++) {\n        let selected_sum = 0;\n        for (let i = 0; i < num.length; i++) {\n            if ((mask & (1 << i)) != 0) {\n                selected_sum += +num[i];\n            }\n        }\n        if (countBits(mask) <= 3) {\n            let product = (sum - selected_sum) * selected_sum;\n            if (product % +num == 0) {\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\nfunction countBits(n) {\n    let count = 0;\n    while (n) {\n        count += n & 1;\n        n >>= 1;\n    }\n    return count;\n}"
+    }
   }
 }

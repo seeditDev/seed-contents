@@ -4,14 +4,16 @@
   "slug": "maximal-square-of-all-ones",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "DP",
+      "Matrix",
+      "Maximum Square",
+      "2D DP"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +23,30 @@
   "content": {
     "problemStatement": "Given a `N x N` binary matrix, find the area of maximal square submatrix in it which has all 1s.\n\nFor eg. in the following matrix, the area of maximal submatrix with all 1's is: **4** (2x2 submatrix)\n\n\n\n\nInput Format\n\nThe first line of input will contain a single integer NNN, denoting the no. of rows and columns in the binary matrix.\nNext NNN lines contains NNN space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line the area of maximal square submatrix having all 1's",
     "constraints": [
-      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
-      "The elements of the matrix are either `0` or `1`."
+      "1 <= T <= 100",
+      "1 <= N <= 100",
+      "Each matrix element is either 0 or 1"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: first line contains an integer N, the size of the square binary matrix. The next N lines each contain N space-separated integers (0 or 1) representing the matrix rows.",
+    "outputFormat": "For each test case, output a single line containing the area of the largest square sub-matrix that consists only of 1s.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n0 1 0\n0 1 1\n0 1 1",
+        "input": "1\n3\n0 1 0\n0 1 1\n0 1 1",
         "output": "4",
-        "explanation": ""
+        "explanation": "The only test case has a 3×3 matrix. The largest all-1 square is the 2×2 block formed by rows 2‑3 and columns 2‑3, giving area 4."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n2\n1 1\n1 1",
+        "output": "4",
+        "explanation": "A 2×2 matrix of all 1s forms a square of side 2, area 4."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1\n0",
+        "output": "0",
+        "explanation": "The single cell is 0, so no square of 1s exists; the maximal area is 0."
       }
     ]
   },
@@ -39,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n0 1 0\n0 1 1\n0 1 1",
-        "expectedOutput": "4",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n5\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1",
+        "expectedOutput": "25",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform zeros",
+        "input": "1\n4\n0 0 0 0\n0 0 0 0\n0 0 0 0\n0 0 0 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "single isolated one",
+        "input": "1\n3\n1 0 0\n0 0 0\n0 0 0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general multiple cases",
+        "input": "3\n2\n1 0\n0 1\n3\n0 1 0\n0 1 1\n0 1 1\n4\n0 0 0 0\n0 1 1 1\n0 1 1 1\n0 1 1 1",
+        "expectedOutput": "1\n4\n9",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each cell (i,j) we compute dp[i][j] = size of the largest all-1 square whose bottom-right corner is at (i,j). If the cell itself is 0, dp[i][j]=0. Otherwise, dp[i][j]=1+min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]). While filling the DP table we keep the maximum side length seen; the answer is its square. This works because a square of side k ending at (i,j) requires three neighboring squares of side at least k-1. The algorithm runs in O(N^2) time and O(N^2) extra space per test case.",
+    "timeComplexity": "O(N^2) per test case, O(T·N^2) total.",
+    "spaceComplexity": "O(N^2) auxiliary space per test case (the DP table).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n\nint maximalSquare(vector<vector<int>>& mat) {\n   \n    int m = mat.size(), n = mat[0].size(), maxside = 0;\n    vector<vector<int>> dp(m, vector<int>(n, 0));\n    for (int i = 0; i < m; i++) {\n        for (int j = 0; j < n; j++) {\n            if (!i || !j || mat[i][j] == 0) {\n                dp[i][j] = mat[i][j];\n            } else {\n                dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1]));\n            }\n            maxside = max(maxside, dp[i][j]);\n        }\n    }\n    return maxside * maxside;\n}\n\n\nint main() {\n\n  int n, m;\n  cin >> n;\n\n  assert(1 <= n && n <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (n));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < n; j++){\n        cin >> mat[i][j];\n        assert(mat[i][j] == 0 || mat[i][j] == 1);\n    }\n  } \n  \n  cout << maximalSquare(mat);\n\n\n  return 0;\n} ",
-      "Python3": "def maximalSquare(mat):\n    m = len(mat)\n    n = len(mat[0])\n    \n    maxside = 0\n    dp = [[0] * n for _ in range(m)]\n    \n    for i in range(m):\n        for j in range(n):\n            if i == 0 or j == 0 or mat[i][j] == 0:\n                dp[i][j] = mat[i][j]\n            else:\n                dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1]))\n            \n            maxside = max(maxside, dp[i][j])\n    \n    return maxside * maxside\n\nif __name__ == \"__main__\":\n    n = int(input())\n    \n    assert 1 <= n <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n    for row in mat:\n        assert all(x == 0 or x == 1 for x in row)\n\n    print(maximalSquare(mat))\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <assert.h>\n\nint min(int a, int b) {\n    return (a < b) ? a : b;\n}\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint maximalSquare(int mat[][100], int m, int n) {\n    int maxside = 0;\n    int dp[100][100] = {0};\n    \n    for (int i = 0; i < m; i++) {\n        for (int j = 0; j < n; j++) {\n            if (!i || !j || mat[i][j] == 0) {\n                dp[i][j] = mat[i][j];\n            } else {\n                dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1]));\n            }\n            maxside = max(maxside, dp[i][j]);\n        }\n    }\n    \n    return maxside * maxside;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    \n    assert(1 <= n && n <= 100);\n\n    int mat[100][100];\n    \n    for(int i = 0; i < n; i++) {\n        for(int j = 0; j < n; j++) {\n            scanf(\"%d\", &mat[i][j]);\n            assert(mat[i][j] == 0 || mat[i][j] == 1);\n        }\n    }\n\n    printf(\"%d\\n\", maximalSquare(mat, n, n));\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static int maximalSquare(int[][] mat) {\n        int m = mat.length;\n        int n = mat[0].length;\n        \n        int maxside = 0;\n        int[][] dp = new int[m][n];\n        \n        for (int i = 0; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                if (i == 0 || j == 0 || mat[i][j] == 0) {\n                    dp[i][j] = mat[i][j];\n                } else {\n                    dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n                }\n                \n                maxside = Math.max(maxside, dp[i][j]);\n            }\n        }\n        \n        return maxside * maxside;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        \n        assert (1 <= n && n <= 100);\n\n        int[][] mat = new int[n][n];\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                mat[i][j] = scanner.nextInt();\n                assert (mat[i][j] == 0 || mat[i][j] == 1);\n            }\n        }\n\n        System.out.println(maximalSquare(mat));\n    }\n}\n",
-      "JavaScript": "function maximalSquare(mat) {\n    const m = mat.length;\n    const n = mat[0].length;\n    let maxSide = 0;\n\n    const dp = Array.from({ length: m }, () => Array(n).fill(0));\n\n    for (let i = 0; i < m; i++) {\n        for (let j = 0; j < n; j++) {\n            if (i === 0 || j === 0 || mat[i][j] === 0) {\n                dp[i][j] = mat[i][j];\n            } else {\n                dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n            maxSide = Math.max(maxSide, dp[i][j]);\n        }\n    }\n    return maxSide * maxSide;\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const n = parseInt(input[0]);\n    const mat = [];\n    for (let i = 1; i <= n; i++) {\n        mat.push(input[i].split(' ').map(Number));\n    }\n    \n    console.log(maximalSquare(mat)); \n});\n"
+      "C": "#include <stdio.h>\n#include <assert.h>\n\nint min3(int a, int b, int c) { return a < b ? (a < c ? a : c) : (b < c ? b : c); }\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    assert(1 <= T && T <= 100);\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        assert(1 <= N && N <= 100);\n        int mat[100][100];\n        for (int i = 0; i < N; ++i) {\n            for (int j = 0; j < N; ++j) {\n                scanf(\"%d\", &mat[i][j]);\n                assert(mat[i][j] == 0 || mat[i][j] == 1);\n            }\n        }\n        int dp[100][100];\n        int maxSide = 0;\n        for (int i = 0; i < N; ++i) {\n            for (int j = 0; j < N; ++j) {\n                if (i == 0 || j == 0) dp[i][j] = mat[i][j];\n                else if (mat[i][j] == 1) dp[i][j] = 1 + min3(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);\n                else dp[i][j] = 0;\n                if (dp[i][j] > maxSide) maxSide = dp[i][j];\n            }\n        }\n        printf(\"%d\\n\", maxSide * maxSide);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint min3(int a,int b,int c){return min(a,min(b,c));}\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; assert(1<=T && T<=100);\n    while(T--){\n        int N; cin>>N; assert(1<=N && N<=100);\n        vector<vector<int>> mat(N, vector<int>(N));\n        for(int i=0;i<N;++i) for(int j=0;j<N;++j){cin>>mat[i][j]; assert(mat[i][j]==0||mat[i][j]==1);}        \n        vector<vector<int>> dp(N, vector<int>(N,0));\n        int maxSide=0;\n        for(int i=0;i<N;++i){\n            for(int j=0;j<N;++j){\n                if(i==0||j==0) dp[i][j]=mat[i][j];\n                else if(mat[i][j]==1) dp[i][j]=1+min3(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);\n                else dp[i][j]=0;\n                maxSide=max(maxSide,dp[i][j]);\n            }\n        }\n        cout<<maxSide*maxSide<<\"\\n\";\n    }\n    return 0; }",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static int min3(int a, int b, int c) { return Math.min(a, Math.min(b, c)); }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        if (T < 1 || T > 100) throw new AssertionError();\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            int N = Integer.parseInt(br.readLine().trim());\n            if (N < 1 || N > 100) throw new AssertionError();\n            int[][] mat = new int[N][N];\n            for (int i = 0; i < N; ++i) {\n                st = new StringTokenizer(br.readLine());\n                for (int j = 0; j < N; ++j) {\n                    mat[i][j] = Integer.parseInt(st.nextToken());\n                    if (mat[i][j] != 0 && mat[i][j] != 1) throw new AssertionError();\n                }\n            }\n            int[][] dp = new int[N][N];\n            int maxSide = 0;\n            for (int i = 0; i < N; ++i) {\n                for (int j = 0; j < N; ++j) {\n                    if (i == 0 || j == 0) dp[i][j] = mat[i][j];\n                    else if (mat[i][j] == 1) dp[i][j] = 1 + min3(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);\n                    else dp[i][j] = 0;\n                    if (dp[i][j] > maxSide) maxSide = dp[i][j];\n                }\n            }\n            out.append(maxSide * maxSide).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    assert 1 <= T <= 100\n    outputs = []\n    for _ in range(T):\n        N = int(next(it))\n        assert 1 <= N <= 100\n        mat = [[int(next(it)) for _ in range(N)] for _ in range(N)]\n        dp = [[0]*N for _ in range(N)]\n        max_side = 0\n        for i in range(N):\n            for j in range(N):\n                if i == 0 or j == 0:\n                    dp[i][j] = mat[i][j]\n                elif mat[i][j] == 1:\n                    dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])\n                else:\n                    dp[i][j] = 0\n                if dp[i][j] > max_side:\n                    max_side = dp[i][j]\n        outputs.append(str(max_side * max_side))\n    sys.stdout.write('\\n'.join(outputs))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(data[idx++]);\nif (T < 1 || T > 100) throw new Error('Invalid T');\nlet results = [];\nfor (let tc = 0; tc < T; ++tc) {\n  const N = Number(data[idx++]);\n  if (N < 1 || N > 100) throw new Error('Invalid N');\n  const mat = Array.from({ length: N }, () => Array(N).fill(0));\n  for (let i = 0; i < N; ++i) {\n    for (let j = 0; j < N; ++j) {\n      const val = Number(data[idx++]);\n      if (val !== 0 && val !== 1) throw new Error('Invalid cell');\n      mat[i][j] = val;\n    }\n  }\n  const dp = Array.from({ length: N }, () => Array(N).fill(0));\n  let maxSide = 0;\n  for (let i = 0; i < N; ++i) {\n    for (let j = 0; j < N; ++j) {\n      if (i === 0 || j === 0) dp[i][j] = mat[i][j];\n      else if (mat[i][j] === 1) dp[i][j] = 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);\n      else dp[i][j] = 0;\n      if (dp[i][j] > maxSide) maxSide = dp[i][j];\n    }\n  }\n  results.push(String(maxSide * maxSide));\n}\nconsole.log(results.join('\\n'));\n"
     }
   }
 }

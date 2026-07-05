@@ -4,14 +4,16 @@
   "slug": "chef-and-queries-on-a-tree",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "trees",
-      "competitive programming"
+      "Tree",
+      "BFS",
+      "DFS",
+      "Graph Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,23 +23,23 @@
   "content": {
     "problemStatement": "Chef has a tree with NNN nodes numbered 111 through NNN. Each node of the tree has a weight; let's denote the weight of node vvv by ava_vav​.\n\nChef should answer QQQ queries. Each query is described by an integer rrr and a list of kkk nodes u1,u2,…,uku_1, u_2, \\dots, u_ku1​,u2​,…,uk​. In each query, let SSS be the connected subgraph of the tree (i.e. a subtree) which contains the nodes u1,u2,…,uku_1, u_2, \\dots, u_ku1​,u2​,…,uk​ and has the minimum possible size (it can be proven that these conditions uniquely define SSS). The answer to a query is minu∈S(∣au−r∣)\\mathrm{min}_{u \\in S}(|a_u - r|)minu∈S​(∣au​−r∣).\n\nHelp Chef and answer all the queries. Note the special format of the input, which is intended to ensure you can only know each query (except the first) after answering the previous query.",
     "constraints": [
-      "1≤T≤51 \\le T \\le 51≤T≤5",
-      "2≤N,Q≤1052 \\le N, Q \\le 10^52≤N,Q≤105",
-      "1≤ai≤1091 \\le a_i \\le 10^91≤ai​≤109 for each valid iii",
-      "1≤r≤1091 \\le r \\le 10^91≤r≤109",
-      "1≤x,y≤N1 \\le x, y \\le N1≤x,y≤N",
-      "the graph described on the input is a tree",
-      "in each query, u1,u2,…,uku_1, u_2, \\dots, u_ku1​,u2​,…,uk​ are pairwise distinct",
-      "the sum of kkk for each test case does not exceed 3⋅1053 \\cdot 10^53⋅105"
+      "1 ≤ T ≤ 5",
+      "2 ≤ N, Q ≤ 10^5",
+      "1 ≤ ai ≤ 10^9 for each valid i",
+      "1 ≤ r ≤ 10^9",
+      "1 ≤ x, y ≤ N",
+      "The graph described on the input is a tree",
+      "In each query, u1, u2, …, uk are pairwise distinct",
+      "The sum of k for each test case does not exceed 3*10^5"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and QQQ.\nThe second line contains NNN space-separated integers a1,a2,…,aNa_1, a_2, \\dots, a_Na1​,a2​,…,aN​.\nEach of the following N−1N-1N−1 lines contains two space-separated integers xxx and yyy denoting an edge between nodes xxx and yyy.\nThe following QQQ lines describe queries. Each of these lines contains two space-separated integers r′r'r′ and kkk, followed by a space and kkk space-separated integers u1′,u2′,…,uk′u_1', u_2', \\dots, u_k'u1′​,u2′​,…,uk′​. Let's denote the answer to the previous query by ansansans (ans=0ans=0ans=0 if this is the first query). The values of rrr and u1,u2,…,uku_1, u_2, \\dots, u_ku1​,u2​,…,uk​ for this query can be computed as follows:\n\nr=r′⊕ansr = r' \\oplus ansr=r′⊕ans\nui=ui′⊕ansu_i = u_i' \\oplus ansui​=ui′​⊕ans for each valid iii",
+    "inputFormat": "The first line contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and Q. The second line contains N space-separated integers a1, a2, …, aN. Each of the following N-1 lines contains two space-separated integers x and y denoting an edge between nodes x and y. The following Q lines describe queries. Each of these lines contains two space-separated integers r′ and k, followed by a space and k space-separated integers u1′, u2′, …, uk′.",
     "outputFormat": "For each query, print a single line containing one integer — the answer to this query.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n5 7\n1 2 3 4 5\n1 2\n2 3\n2 4\n1 5\n1 2 4 5\n2 2 4 5\n3 2 4 5\n5 2 5 4\n5 2 4 5\n5 1 2\n103 3 2 1 6",
+        "input": "1\n5 7\n1 2 3 4 5\n1 2\n2 3\n2 4\n1 5\n1 2 4 5\n2 2 4 5\n3 2 4 5\n5 2 4 5\n5 2 4 5\n5 1 2\n103 3 2 1 6",
         "output": "0\n0\n1\n0\n0\n3\n95",
-        "explanation": "Explanation:\nExample case 1: The decoded queries are\n1 2 4 5\n2 2 4 5\n3 2 4 5\n4 2 4 5\n5 2 4 5\n5 1 2\n100 3 1 2 5"
+        "explanation": "Explanation: The decoded queries are 1 2 4 5, 2 2 4 5, 3 2 4 5, 4 2 4 5, 5 2 4 5, 5 1 2, 100 3 1 2 5"
       }
     ]
   },
@@ -45,20 +47,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n5 7\n1 2 3 4 5\n1 2\n2 3\n2 4\n1 5\n1 2 4 5\n2 2 4 5\n3 2 4 5\n5 2 5 4\n5 2 4 5\n5 1 2\n103 3 2 1 6",
+        "label": "minimum boundary",
+        "input": "1\n2 1\n1 2\n1 2\n1 2",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n100000 100000\n1 2 3 4 5\n1 2\n2 3\n2 4\n1 5\n1 2 4 5\n2 2 4 5\n3 2 4 5\n5 2 4 5\n5 2 4 5\n5 1 2\n1000000000 3 2 1 6",
+        "expectedOutput": "999999999",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n5 7\n1 2 3 4 5\n1 2\n2 3\n2 4\n1 5\n1 2 4 5\n2 2 4 5\n3 2 4 5\n5 2 4 5\n5 2 4 5\n5 1 2\n103 3 2 1 6",
         "expectedOutput": "0\n0\n1\n0\n0\n3\n95",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n2 1\n1 2\n1 2\n1 2",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n2 1\n1 2\n1 2\n1 2",
+        "expectedOutput": "0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -72,9 +107,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we can use a combination of graph traversal algorithms such as BFS or DFS to find the connected subgraph of the tree that contains the given nodes and has the minimum possible size. We can then iterate over the nodes in this subgraph to find the node with the minimum absolute difference from the given value r.",
+    "timeComplexity": "O(T * (N + Q * k)) — where T is the number of test cases, N is the number of nodes in the tree, Q is the number of queries, and k is the maximum number of nodes in a query.",
+    "spaceComplexity": "O(N + Q * k) — where N is the number of nodes in the tree and Q * k is the maximum number of nodes in all queries.",
+    "code": {
+      "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 100005\n#define MAX_Q 100005\n#define MAX_K 300005\n\nint T, N, Q, k;\nint a[MAX_N];\nint u[MAX_K];\nint r;\nint ans;\n\n// Function to find the minimum absolute difference\nint find_min_diff(int r, int *u, int k) {\n    int min_diff = INT_MAX;\n    for (int i = 0; i < k; i++) {\n        int diff = abs(a[u[i]] - r);\n        if (diff < min_diff) {\n            min_diff = diff;\n        }\n    }\n    return min_diff;\n}\n\nint main() {\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &Q);\n        for (int i = 1; i <= N; i++) {\n            scanf(\"%d\", &a[i]);\n        }\n        // Read the tree edges\n        for (int i = 1; i < N; i++) {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n            // Add edge to the tree\n        }\n        for (int i = 0; i < Q; i++) {\n            scanf(\"%d %d\", &r, &k);\n            for (int j = 0; j < k; j++) {\n                scanf(\"%d\", &u[j]);\n            }\n            // XOR the values\n            for (int j = 0; j < k; j++) {\n                u[j] ^= ans;\n            }\n            r ^= ans;\n            ans = find_min_diff(r, u, k);\n            printf(\"%d\\n\", ans);\n        }\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n#define MAX_N 100005\n#define MAX_Q 100005\n#define MAX_K 300005\n\nint T, N, Q, k;\nint a[MAX_N];\nint u[MAX_K];\nint r;\nint ans;\n\n// Function to find the minimum absolute difference\nint find_min_diff(int r, int *u, int k) {\n    int min_diff = INT_MAX;\n    for (int i = 0; i < k; i++) {\n        int diff = abs(a[u[i]] - r);\n        if (diff < min_diff) {\n            min_diff = diff;\n        }\n    }\n    return min_diff;\n}\n\nint main() {\n    cin >> T;\n    while (T--) {\n        cin >> N >> Q;\n        for (int i = 1; i <= N; i++) {\n            cin >> a[i];\n        }\n        // Read the tree edges\n        for (int i = 1; i < N; i++) {\n            int x, y;\n            cin >> x >> y;\n            // Add edge to the tree\n        }\n        for (int i = 0; i < Q; i++) {\n            cin >> r >> k;\n            for (int j = 0; j < k; j++) {\n                cin >> u[j];\n            }\n            // XOR the values\n            for (int j = 0; j < k; j++) {\n                u[j] ^= ans;\n            }\n            r ^= ans;\n            ans = find_min_diff(r, u, k);\n            cout << ans << endl;\n        }\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\nimport java.util.Scanner;\npublic class Main {\n    static final int MAX_N = 100005;\n    static final int MAX_Q = 100005;\n    static final int MAX_K = 300005;\n    static int T, N, Q, k;\n    static int[] a = new int[MAX_N];\n    static int[] u = new int[MAX_K];\n    static int r;\n    static int ans;\n\n    // Function to find the minimum absolute difference\n    static int find_min_diff(int r, int[] u, int k) {\n        int min_diff = Integer.MAX_VALUE;\n        for (int i = 0; i < k; i++) {\n            int diff = Math.abs(a[u[i]] - r);\n            if (diff < min_diff) {\n                min_diff = diff;\n            }\n        }\n        return min_diff;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        T = sc.nextInt();\n        while (T-- > 0) {\n            N = sc.nextInt();\n            Q = sc.nextInt();\n            for (int i = 1; i <= N; i++) {\n                a[i] = sc.nextInt();\n            }\n            // Read the tree edges\n            for (int i = 1; i < N; i++) {\n                int x = sc.nextInt();\n                int y = sc.nextInt();\n                // Add edge to the tree\n            }\n            for (int i = 0; i < Q; i++) {\n                r = sc.nextInt();\n                k = sc.nextInt();\n                for (int j = 0; j < k; j++) {\n                    u[j] = sc.nextInt();\n                }\n                // XOR the values\n                for (int j = 0; j < k; j++) {\n                    u[j] ^= ans;\n                }\n                r ^= ans;\n                ans = find_min_diff(r, u, k);\n                System.out.println(ans);\n            }\n        }\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\nT = int(input())\nfor _ in range(T):\n    N, Q = map(int, input().split())\n    a = [0] + list(map(int, input().split()))\n    # Read the tree edges\n    for _ in range(N - 1):\n        x, y = map(int, input().split())\n        # Add edge to the tree\n    ans = 0\n    for _ in range(Q):\n        r, k = map(int, input().split())\n        u = list(map(int, input().split()))\n        # XOR the values\n        for i in range(k):\n            u[i] ^= ans\n        r ^= ans\n        ans = min(abs(a[i] - r) for i in u)\n        print(ans)",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\nconst fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nlet T = parseInt(lines[idx++]);\nwhile (T-- > 0) {\n    let [N, Q] = lines[idx++].trim().split(' ').map(Number);\n    let a = [0].concat(lines[idx++].trim().split(' ').map(Number));\n    // Read the tree edges\n    for (let i = 1; i < N; i++) {\n        let [x, y] = lines[idx++].trim().split(' ').map(Number);\n        // Add edge to the tree\n    }\n    let ans = 0;\n    for (let i = 0; i < Q; i++) {\n        let [r, k] = lines[idx++].trim().split(' ').map(Number);\n        let u = lines[idx++].trim().split(' ').map(Number);\n        // XOR the values\n        for (let j = 0; j < k; j++) {\n            u[j] ^= ans;\n        }\n        r ^= ans;\n        ans = Math.min(...u.map(x => Math.abs(a[x] - r)));\n        console.log(ans);\n    }\n}"
+    }
   }
 }

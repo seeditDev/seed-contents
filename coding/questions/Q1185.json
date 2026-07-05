@@ -4,14 +4,16 @@
   "slug": "longest-increasing-subsequence",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Longest Increasing Subsequence",
+      "Binary Search",
+      "Patience Sorting",
+      "Non‑decreasing subsequence"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +23,30 @@
   "content": {
     "problemStatement": "The longest Increasing Subsequence (LIS) problem is to find the length of the longest subsequence of a given sequence such that all elements of the subsequence are sorted in non-decreasing order. That is, it should be in increasing order, but we can have equal elements as well.\n\n\n\n\nInput:\nThe first line of input contains a number  T, which is the number of Test Cases. The second line contains a number  N which is the size of the array. The next line contains  N  space separated integers.\n\n\n\nOutput:\nOutput the length of longest increasing subsequence.",
     "constraints": [
-      "1≤T≤201 \\leq T \\leq 201≤T≤20",
-      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
-      "−109≤A[i]≤109-10^9 \\leq A[i] \\leq 10^9−109≤A[i]≤109 where A[i] is the array element"
+      "1 <= T <= 20",
+      "1 <= N <= 100",
+      "-10^9 <= A[i] <= 10^9"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers.",
+    "outputFormat": "For each test case, output a single line containing the length of the longest non‑decreasing subsequence of the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n9\n10 22 9 33 21 50 41 60 80",
         "output": "6",
-        "explanation": "Explanation:\nLIS is {10,22,33,50,60,80}"
+        "explanation": "The longest non‑decreasing subsequence is 10, 22, 33, 50, 60, 80, giving length 6."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\n1 2 3 4 5",
+        "output": "5",
+        "explanation": "All elements are already non‑decreasing, so the LIS length is 5."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n10\n1 2 3 4 5 6 7 8 9 10",
+        "output": "10",
+        "explanation": "The whole array forms a non‑decreasing subsequence of length 10."
       }
     ]
   },
@@ -40,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n9\n10 22 9 33 21 50 41 60 80",
-        "expectedOutput": "6",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n15\n-1000000000 -999999999 -999999998 -999999997 -999999996 -999999995 -999999994 -999999993 -999999992 -999999991 -999999990 -999999989 -999999988 -999999987 -999999986",
+        "expectedOutput": "15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n10\n5 5 5 5 5 5 5 5 5 5",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky descending case",
+        "input": "1\n8\n8 7 6 5 4 3 2 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general mixed cases",
+        "input": "3\n6\n3 1 2 1 2 3\n5\n-1 -2 -3 -4 -5\n7\n1 2 2 3 2 4 5",
+        "expectedOutput": "4\n1\n6",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The code uses a dynamic programming approach to find the length of the longest increasing subsequence. It initializes a `dp` array where `dp[i]` stores the length of the longest increasing subsequence ending at index `i`. Starting from the second-to-last element, it checks all subsequent elements to see if they can extend the subsequence. If an element at index `j` is greater than or equal to the element at index `i`, it updates `dp[i]` to be the maximum of its current value or `dp[j] + 1`. Finally, the maximum value in the `dp` array gives the length of the LIS.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem asks for the length of the longest subsequence whose elements are in non‑decreasing order. A classic O(N log N) solution uses the \"patience sorting\" technique: maintain an array `tails` where `tails[i]` is the smallest possible tail value of a non‑decreasing subsequence of length i+1 seen so far. For each element x, binary‑search the first position in `tails` that is greater than x (i.e., upper bound). If such a position exists, replace `tails[pos]` with x; otherwise append x, increasing the length. The size of `tails` after processing the whole array equals the required length. This works because keeping the minimal possible tail for each length leaves maximal room for future elements, and the binary search guarantees O(log N) per element.",
+    "timeComplexity": "O(N log N) per test case, where N is the size of the array. Overall O(T * N log N).",
+    "spaceComplexity": "O(N) auxiliary space for the `tails` array.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main() {\n    // your code goes here\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        int arr[n];\n        for (int i = 0; i < n; i++) {\n            cin >> arr[i];\n        }\n\n        int dp[n] = {0};\n\n        dp[n - 1] = 1;\n\n        for (int i = n - 2; i >= 0; i--) {\n            bool is_lt = false;\n            for (int j = i + 1; j < n; j++) {\n                if (arr[i] <= arr[j]) {\n                    dp[i] = max(dp[j] + 1, dp[i]);\n                    is_lt = true;\n                }\n            }\n            if (is_lt == false) {\n                dp[i] = 1;\n            }\n        }\n        sort(dp, dp + n);\n        cout << dp[n - 1] << endl;\n    }\n\n}",
-      "Python3": "def main():\n    t = int(input())  # Read number of test cases\n    for _ in range(t):\n        n = int(input())  # Read size of array\n        arr = list(map(int, input().split()))  # Read array elements\n\n        dp = [0] * n  # Initialize dp array\n\n        dp[n - 1] = 1  # Last element is the base case\n\n        for i in range(n - 2, -1, -1):\n            is_lt = False  # Flag to check if any valid elements are found\n            for j in range(i + 1, n):\n                if arr[i] <= arr[j]:\n                    dp[i] = max(dp[j] + 1, dp[i])\n                    is_lt = True\n            if not is_lt:\n                dp[i] = 1  # No valid elements, set to 1\n\n        dp.sort()  # Sort the dp array\n        print(dp[n - 1])  # Print the maximum length of non-decreasing subsequence\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int t;\n    scanf(\"%d\", &t); // Read number of test cases\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n); // Read the size of the array\n        int arr[n]; // Declare an array with a fixed size, assuming a max of 1000 elements\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &arr[i]); // Read array elements\n        }\n\n        int dp[101] = {0}; // Declare dp array with fixed size, initialized to 0\n        dp[n - 1] = 1; // The last element can always form a subsequence of length 1\n\n        // Fill the dp array\n        for (int i = n - 2; i >= 0; i--) {\n            int is_lt = 0; // Use an integer for boolean comparison\n            for (int j = i + 1; j < n; j++) {\n                if (arr[i] <= arr[j]) {\n                    dp[i] = dp[j] + 1 > dp[i] ? dp[j] + 1 : dp[i];\n                    is_lt = 1; // Set flag to indicate there is a valid greater element\n                }\n            }\n            if (is_lt == 0) {\n                dp[i] = 1; // No greater element found, set length to 1\n            }\n        }\n\n        // Find the maximum value in the dp array\n        int max_length = 0;\n        for (int i = 0; i < n; i++) {\n            if (dp[i] > max_length) {\n                max_length = dp[i];\n            }\n        }\n\n        printf(\"%d\\n\", max_length); // Output the result\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        \n        int t = scanner.nextInt(); // Read number of test cases\n        while (t-- > 0) {\n            int n = scanner.nextInt(); // Read the size of the array\n            int[] arr = new int[n];\n            for (int i = 0; i < n; i++) {\n                arr[i] = scanner.nextInt(); // Read array elements\n            }\n\n            int[] dp = new int[n]; // Create a dp array to store lengths\n            Arrays.fill(dp, 0); // Initialize dp array to 0\n\n            dp[n - 1] = 1; // The last element is a subsequence of length 1\n\n            for (int i = n - 2; i >= 0; i--) {\n                boolean is_lt = false; // Flag to check if any larger element found\n                for (int j = i + 1; j < n; j++) {\n                    if (arr[i] <= arr[j]) { // Check for non-decreasing condition\n                        dp[i] = Math.max(dp[j] + 1, dp[i]); // Update dp[i]\n                        is_lt = true; // Found a larger or equal element\n                    }\n                }\n                if (!is_lt) {\n                    dp[i] = 1; // No larger or equal element found\n                }\n            }\n            Arrays.sort(dp); // Sort dp array to find the largest length\n            System.out.println(dp[n - 1]); // Output the result\n        }\n        scanner.close(); // Close scanner\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet inputLines = [];\nlet currentLine = 0;\n\n// Function to process the input\nfunction processInput() {\n    let t = parseInt(inputLines[currentLine++]); // Number of test cases\n\n    while (t--) {\n        let n = parseInt(inputLines[currentLine++]); // Size of the array\n        let arr = inputLines[currentLine++].split(' ').map(Number); // Array input\n\n        let dp = new Array(n).fill(0);\n\n        dp[n - 1] = 1;\n\n        // Compute the DP array values\n        for (let i = n - 2; i >= 0; i--) {\n            let is_lt = false;\n            for (let j = i + 1; j < n; j++) {\n                if (arr[i] <= arr[j]) {\n                    dp[i] = Math.max(dp[j] + 1, dp[i]);\n                    is_lt = true;\n                }\n            }\n            if (!is_lt) {\n                dp[i] = 1;\n            }\n        }\n\n        // Sort the DP array and print the result\n        dp.sort((a, b) => a - b);\n        console.log(dp[n - 1]);\n    }\n}\n\n// Reading the input\nrl.on('line', (line) => {\n    inputLines.push(line);\n}).on('close', () => {\n    processInput(); // Call the function after input reading is done\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *a = (int*)malloc(N * sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%d\", &a[i]);\n        int *tails = (int*)malloc(N * sizeof(int));\n        int len = 0;\n        for(int i=0;i<N;i++){\n            int x = a[i];\n            int l = 0, r = len;\n            while(l < r){\n                int m = (l + r) / 2;\n                if(tails[m] > x) r = m; else l = m + 1;\n            }\n            tails[l] = x;\n            if(l == len) len++;\n        }\n        printf(\"%d\\n\", len);\n        free(a);\n        free(tails);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        for(int &v: a) cin>>v;\n        vector<int> tails;\n        tails.reserve(N);\n        for(int x: a){\n            auto it = upper_bound(tails.begin(), tails.end(), x);\n            if(it==tails.end()) tails.push_back(x);\n            else *it = x;\n        }\n        cout << tails.size() << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N = Integer.parseInt(br.readLine().trim());\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int[] tails = new int[N];\n            int len = 0;\n            for(int i=0;i<N;i++){\n                int x = Integer.parseInt(st.nextToken());\n                int l = 0, r = len;\n                while(l < r){\n                    int m = (l + r) >>> 1;\n                    if(tails[m] > x) r = m; else l = m + 1;\n                }\n                tails[l] = x;\n                if(l == len) len++;\n            }\n            sb.append(len).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys, bisect\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        tails = []\n        for _ in range(N):\n            x = int(next(it))\n            idx = bisect.bisect_right(tails, x)\n            if idx == len(tails):\n                tails.append(x)\n            else:\n                tails[idx] = x\n        out_lines.append(str(len(tails)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = parseInt(data[idx++], 10);\nlet outputs = [];\nfor(let t = 0; t < T; t++){\n  const N = parseInt(data[idx++], 10);\n  const tails = [];\n  for(let i = 0; i < N; i++){\n    const x = parseInt(data[idx++], 10);\n    let l = 0, r = tails.length;\n    while(l < r){\n      const m = (l + r) >> 1;\n      if(tails[m] > x) r = m; else l = m + 1;\n    }\n    if(l === tails.length) tails.push(x); else tails[l] = x;\n  }\n  outputs.push(String(tails.length));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }

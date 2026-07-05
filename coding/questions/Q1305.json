@@ -4,14 +4,16 @@
   "slug": "construct-binary-tree",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Trees",
+    "category": "Recursion",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Tree Construction",
+      "Preorder Traversal",
+      "Inorder Traversal",
+      "Divide and Conquer"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +23,31 @@
   "content": {
     "problemStatement": "Construct and return a binary tree using two integer arrays, `preorder` and `inorder`. The `preorder` array represents the preorder traversal of the binary tree, while the `inorder` array represents the inorder traversal of the same tree.\n\n**Example:** \n\n`Preorder` array: [1, 2, 3, 4, 5] \n\n`Inorder` array: [2, 1, 4, 3, 5]\n\nThe constructed tree\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nThe next line contains NNN space separated integers, the preorder array.\nThe next line contains NNN space separated integers, the inorder array.\n\n\nOutput Format\nComplete the given function in the IDE which returns the root of the constructed binary tree.\nOutput will be `Well Done!` if the tree is constructed correctly, otherwise Runtime errors.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤preorderi≤1000001 \\leq preorder_i \\leq 1000001≤preorderi​≤100000",
-      "1≤inorderi≤1000001 \\leq inorder_i \\leq 1000001≤inorderi​≤100000"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "All node values are distinct",
+      "1 <= node value <= 1000001"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of three lines: the first line contains an integer N — the number of nodes in the tree. The second line contains N space‑separated integers denoting the preorder traversal. The third line contains N space‑separated integers denoting the inorder traversal.",
+    "outputFormat": "For each test case print a single line containing the string \"Well Done!\". The judge internally validates the constructed tree; the program only needs to output this line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
-        "output": "preorder",
-        "explanation": ""
+        "input": "3\n5\n1 2 3 4 5\n2 1 4 3 5\n3\n1 2 3\n2 1 3\n1\n1\n1",
+        "output": "Well Done!\nWell Done!\nWell Done!",
+        "explanation": "Three test cases are processed. Each pair of traversals corresponds to a valid binary tree, so the program prints \"Well Done!\" for every case."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n4\n4 2 1 3\n1 2 3 4",
+        "output": "Well Done!",
+        "explanation": "A single test case with N=4. The traversals describe a valid tree, therefore the output is \"Well Done!\"."
+      },
+      {
+        "id": "sample_3",
+        "input": "2\n2\n2 1\n1 2\n2\n5 6\n6 5",
+        "output": "Well Done!\nWell Done!",
+        "explanation": "Both test cases are valid (different shapes). The program confirms each by printing the success message."
       }
     ]
   },
@@ -40,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "preorder",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n1\n1",
+        "expectedOutput": "Well Done!",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15\n15 14 13 12 11 10 9 8 7 6 5 4 3 2 1",
+        "expectedOutput": "Well Done!",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case (sorted ascending)",
+        "input": "1\n3\n1 2 3\n1 2 3",
+        "expectedOutput": "Well Done!",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case (sorted descending)",
+        "input": "1\n3\n3 2 1\n1 2 3",
+        "expectedOutput": "Well Done!",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general multiple cases",
+        "input": "3\n4\n4 2 1 3\n1 2 3 4\n2\n2 1\n1 2\n1\n7\n7",
+        "expectedOutput": "Well Done!\nWell Done!\nWell Done!",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The first element of the preorder array is always the root of the (sub)tree. Using a hash map we store the index of every value in the inorder array. The position of the root in inorder splits the array into left and right subtrees. The size of the left subtree tells us how many elements belong to the left part in preorder. Recursively repeat the process for left and right parts. This runs in O(N) time per test case because each node is visited once and all look‑ups are O(1). The recursion depth is at most N, so the auxiliary space is O(N) for the recursion stack and the hash map.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
+    "spaceComplexity": "O(N) per test case for the hash map and recursion stack",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    Node* constructBinaryTree(vector<int> &preorder, vector<int> &inorder) {\n       int rootIdx = 0;\n       return build(preorder, inorder, rootIdx, 0, inorder.size() - 1);\n    }\n    \n    Node* build(vector<int>& preorder, vector<int>& inorder, int& rootIdx, int left, int right) {\n        if (left > right) return NULL;\n        int pivot = left;  // find the root from inorder\n        while(inorder[pivot] != preorder[rootIdx]) {\n          pivot++;\n        }\n        \n        rootIdx++;\n        Node* newNode = new Node(inorder[pivot]);\n        newNode->left = build(preorder, inorder, rootIdx, left, pivot - 1);\n        newNode->right = build(preorder, inorder, rootIdx, pivot + 1, right);\n        return newNode;\n    }\n};",
-      "Python3": "class Solution:\n    def construct_binary_tree(self, preorder, inorder):\n        root_idx = [0]  # Use list to allow modification within nested function\n        return self.build(preorder, inorder, root_idx, 0, len(inorder) - 1)\n    \n    def build(self, preorder, inorder, root_idx, left, right):\n        if left > right:\n            return None\n        pivot = left  # Find the root from inorder\n        while inorder[pivot] != preorder[root_idx[0]]:\n            pivot += 1\n        \n        root_val = inorder[pivot]\n        root_idx[0] += 1\n        new_node = Node(root_val)\n        new_node.left = self.build(preorder, inorder, root_idx, left, pivot - 1)\n        new_node.right = self.build(preorder, inorder, root_idx, pivot + 1, right)\n        return new_node\n",
-      "C": "Node* newNode(int val) {\n    Node* node = (Node*)malloc(sizeof(Node));\n    node->val = val;\n    node->left = node->right = NULL;\n    return node;\n}\n\nNode* build(int* preorder, int* inorder, int* rootIdx, int left, int right, int n) {\n    if (left > right) return NULL;\n    int pivot = left;\n    while (pivot <= right && inorder[pivot] != preorder[*rootIdx]) {\n        pivot++;\n    }\n\n    if (pivot > right) {\n        // Invalid tree configuration\n        exit(1);\n    }\n\n    int rootVal = inorder[pivot];\n    (*rootIdx)++;\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->val = rootVal;\n    newNode->left = build(preorder, inorder, rootIdx, left, pivot - 1, n);\n    newNode->right = build(preorder, inorder, rootIdx, pivot + 1, right, n);\n    return newNode;\n}\n",
-      "Java": "class Solution {\n    public Node constructBinaryTree(List<Integer> preorder, List<Integer> inorder) {\n        int[] rootIdx = {0};  // Since Java doesn't have reference parameters, we use an array to mimic pass-by-reference\n        return build(preorder, inorder, rootIdx, 0, inorder.size() - 1);\n    }\n    \n    private Node build(List<Integer> preorder, List<Integer> inorder, int[] rootIdx, int left, int right) {\n        if (left > right) return null;\n        int pivot = left;\n        \n        // Find the root in the inorder list\n        while (!inorder.get(pivot).equals(preorder.get(rootIdx[0]))) {\n            pivot++;\n        }\n        \n        rootIdx[0]++;\n        Node newNode = new Node(inorder.get(pivot));\n        newNode.left = build(preorder, inorder, rootIdx, left, pivot - 1);\n        newNode.right = build(preorder, inorder, rootIdx, pivot + 1, right);\n        \n        return newNode;\n    }\n}",
-      "JavaScript": "/*\nclass TreeNode {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction buildTreeHelper(preorder, inorder) {\n    if (preorder.length === 0 || inorder.length === 0) return null;\n\n    const rootValue = preorder[0];\n    const root = new TreeNode(rootValue);\n\n    const rootIndexInOrder = inorder.indexOf(rootValue);\n\n    const leftInorder = inorder.slice(0, rootIndexInOrder);\n    const rightInorder = inorder.slice(rootIndexInOrder + 1);\n\n    const leftPreorder = preorder.slice(1, 1 + leftInorder.length);\n    const rightPreorder = preorder.slice(1 + leftInorder.length);\n\n    root.left = buildTreeHelper(leftPreorder, leftInorder);\n    root.right = buildTreeHelper(rightPreorder, rightInorder);\n\n    return root;\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node{int val;struct Node*left;struct Node*right;}Node;\n\nNode* build(int*pre,int preL,int preR,int*in,int inL,int inR,int*pos){if(preL>preR)return NULL;int rootVal=pre[preL];int idx=pos[rootVal];int leftSize=idx-inL;Node*node=(Node*)malloc(sizeof(Node));node->val=rootVal;node->left=build(pre,preL+1,preL+leftSize,in,inL,idx-1,pos);node->right=build(pre,preL+leftSize+1,preR,in,idx+1,inR,pos);return node;}\n\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int N;scanf(\"%d\",&N);int*pre=(int*)malloc(N*sizeof(int));int*in=(int*)malloc(N*sizeof(int));int maxV=1000001;int*pos=(int*)calloc(maxV+1,sizeof(int));for(int i=0;i<N;++i)scanf(\"%d\",&pre[i]);for(int i=0;i<N;++i){scanf(\"%d\",&in[i]);pos[in[i]]=i;}Node*root=build(pre,0,N-1,in,0,N-1,pos);(void)root;printf(\"Well Done!\\n\");free(pre);free(in);free(pos);}return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Node{int val;Node*left;Node*right;Node(int v):val(v),left(nullptr),right(nullptr){}};\nNode* build(const vector<int>&pre,int pl,int pr,const vector<int>&in,int il,int ir,const unordered_map<int,int>&mp){if(pl>pr)return nullptr;int rootVal=pre[pl];int idx=mp.at(rootVal);int leftSize=idx-il;Node*node=new Node(rootVal);node->left=build(pre,pl+1,pl+leftSize,in,il,idx-1,mp);node->right=build(pre,pl+leftSize+1,pr,in,idx+1,ir,mp);return node;}\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T;if(!(cin>>T))return 0;while(T--){int N;cin>>N;vector<int>pre(N),in(N);for(int &x:pre)cin>>x;for(int &x:in)cin>>x;unordered_map<int,int>mp;mp.reserve(N*2);for(int i=0;i<N;++i)mp[in[i]]=i;Node*root=build(pre,0,N-1,in,0,N-1,mp);(void)root;cout<<\"Well Done!\\n\";}\nreturn 0;}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    static class Node{int val;Node left,right;Node(int v){val=v;}}\n    static Node build(int[]pre,int pl,int pr,int[]in,int il,int ir,Map<Integer,Integer>mp){\n        if(pl>pr) return null;\n        int rootVal=pre[pl];\n        int idx=mp.get(rootVal);\n        int leftSize=idx-il;\n        Node node=new Node(rootVal);\n        node.left=build(pre,pl+1,pl+leftSize,in,il,idx-1,mp);\n        node.right=build(pre,pl+leftSize+1,pr,in,idx+1,ir,mp);\n        return node;\n    }\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out=new StringBuilder();\n        int T=Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N=Integer.parseInt(br.readLine().trim());\n            int[] pre=new int[N];\n            int[] in=new int[N];\n            StringTokenizer st=new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) pre[i]=Integer.parseInt(st.nextToken());\n            st=new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) in[i]=Integer.parseInt(st.nextToken());\n            Map<Integer,Integer> mp=new HashMap<>(N*2);\n            for(int i=0;i<N;i++) mp.put(in[i],i);\n            Node root=build(pre,0,N-1,in,0,N-1,mp);\n            out.append(\"Well Done!\\n\");\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\nsys.setrecursionlimit(1_000_000)\n\ndef build(pre,pl,pr,inorder,il,ir,idx):\n    if pl>pr:\n        return None\n    root=pre[pl]\n    i=idx[root]\n    left=i-il\n    node={'val':root,'left':None,'right':None}\n    node['left']=build(pre,pl+1,pl+left,inorder,il,i-1,idx)\n    node['right']=build(pre,pl+left+1,pr,inorder,i+1,ir,idx)\n    return node\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        pre=[int(next(it)) for _ in range(N)]\n        inorder=[int(next(it)) for _ in range(N)]\n        idx={v:i for i,v in enumerate(inorder)}\n        root=build(pre,0,N-1,inorder,0,N-1,idx)\n        out.append('Well Done!')\n    sys.stdout.write('\\n'.join(out))\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst data=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet p=0;\nconst T=Number(data[p++]);\nlet out=[];\nfunction build(pre,pl,pr,inord,il,ir,map){\n  if(pl>pr) return null;\n  const root=pre[pl];\n  const i=map.get(root);\n  const left=i-il;\n  const node={val:root,left:null,right:null};\n  node.left=build(pre,pl+1,pl+left,inord,il,i-1,map);\n  node.right=build(pre,pl+left+1,pr,inord,i+1,ir,map);\n  return node;\n}\nfor(let tc=0;tc<T;tc++){\n  const N=Number(data[p++]);\n  const pre=new Array(N);\n  const inord=new Array(N);\n  for(let i=0;i<N;i++) pre[i]=Number(data[p++]);\n  for(let i=0;i<N;i++) inord[i]=Number(data[p++]);\n  const map=new Map();\n  for(let i=0;i<N;i++) map.set(inord[i],i);\n  const root=build(pre,0,N-1,inord,0,N-1,map);\n  (void)root;\n  out.push('Well Done!');\n}\nconsole.log(out.join('\\n'));"
     }
   }
 }

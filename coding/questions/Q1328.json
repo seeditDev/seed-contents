@@ -4,14 +4,15 @@
   "slug": "creating-prefix-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "prefix sums & difference arrays",
-      "data structures and algorithms"
+      "Prefix Sum",
+      "Array",
+      "Implementation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,30 @@
   "content": {
     "problemStatement": "A \"prefix array\" is a data structure commonly used in programming, particularly in algorithms related to strings or arrays. Also known as a \"prefix sum array\", it stores cumulative sums of elements in an array.\n\nWe generally use it to optimize the time complexity of a given algorithm.\n\nUsing a prefix array in an array of integers: -\n\n`array (a)        -&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\nprefix array (b) -&gt; [1, 3, 6, 10, 15, 21, 28, 36, 45, 55]\n`We created a prefix array, which stores a cumulative sum of all the previous indexes of the array. This is our prefix array for **a**.\n\nSimilarly, we also have prefix arrays for strings:\n\n`string s = \"codechef\";\nprefixOfs = [c,co,cod,code,codec,codech,codeche,codechef]; \n`We created a prefix array for \"codechef\". In strings, we use the prefix array in a different manner. We concatenate characters in our prefix array of strings.\n\n**Pseudo Code for prefix sum**\n\n`PrefixSum(arr)\nInput: Array arr of size N\nOutput: Prefix sum array prefixSum of size N\n\nInitialize an array prefixSum of size N\n\nprefixSum[0] = arr[0]\nfor i = 1 to N-1 do\n    prefixSum[i] = prefixSum[i-1] + arr[i]\nreturn prefixSum\n`Task\nIn the first line, given an integer N, the length of an array.\nIn the second line, given N integers in an array A1, A2,... AN,.\nPrint the prefix sum of the array.",
     "constraints": [
-      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
-      "1≤Ai≤10001 \\leq Ai \\leq 10001≤Ai≤1000"
+      "1 <= N <= 100000",
+      "1 <= Ai <= 1000",
+      "The sum of N over all test files does not exceed 100000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer N, the length of the array. The second line contains N space‑separated integers A1, A2, …, AN.",
+    "outputFormat": "Print N space‑separated integers – the prefix sum array where the i‑th value is the sum of the first i+1 elements of the original array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n5 3 3 13",
+        "input": "4\\n5 3 3 13",
         "output": "5 8 11 24",
-        "explanation": ""
+        "explanation": "Only one test case. Prefix sums are computed as 5, 5+3=8, 8+3=11, 11+13=24."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\\n1 2 3",
+        "output": "1 3 6",
+        "explanation": "Prefix sums: 1, 1+2=3, 3+3=6."
+      },
+      {
+        "id": "sample_3",
+        "input": "5\\n10 20 30 40 50",
+        "output": "10 30 60 100 150",
+        "explanation": "Prefix sums: 10, 10+20=30, 30+30=60, 60+40=100, 100+50=150."
       }
     ]
   },
@@ -39,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n5 3 3 13",
-        "expectedOutput": "5 8 11 24",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "15\\n1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000",
+        "expectedOutput": "1000 2000 3000 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "5\\n5 5 5 5 5",
+        "expectedOutput": "5 10 15 20 25",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "descending order",
+        "input": "5\\n5 4 3 2 1",
+        "expectedOutput": "5 9 12 14 15",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general multiple cases",
+        "input": "3\\n1 2 3\\n4\\n10 20 30 40\\n2\\n1000 1",
+        "expectedOutput": "1 3 6\\n10 30 60 100\\n1000 1001",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {}
+    "approach": "A prefix sum can be built by scanning the array from left to right while maintaining a running total. For each element Ai add it to the running total sum and output the current sum. This produces the required prefix sums in O(N) time and O(1) extra space (besides the output).",
+    "timeComplexity": "O(N) per test case, O(total N) over all test files.",
+    "spaceComplexity": "O(1) extra space besides the output.",
+    "code": {
+      "C": "#include <stdio.h>\nint main(){\n    int N; if(scanf(\"%d\",&N)!=1) return 0;\n    long long sum=0;\n    for(int i=0;i<N;++i){\n        int x; scanf(\"%d\",&x);\n        sum+=x;\n        printf(\"%lld\",sum);\n        if(i+1<N) printf(\" \");\n    }\n    printf(\"\\n\");\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N; if(!(cin>>N)) return 0;\n    long long sum=0;\n    for(int i=0;i<N;++i){\n        long long x; cin>>x;\n        sum+=x;\n        cout<<sum;\n        if(i+1<N) cout<<' ';\n    }\n    cout<<\"\\n\";\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        String line=br.readLine();\n        if(line==null) return;\n        int N=Integer.parseInt(line.trim());\n        StringTokenizer st=new StringTokenizer(br.readLine());\n        StringBuilder out=new StringBuilder();\n        long sum=0;\n        for(int i=0;i<N;++i){\n            sum+=Long.parseLong(st.nextToken());\n            out.append(sum);\n            if(i+1<N) out.append(' ');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    N=int(next(it))\n    s=0\n    vals=[]\n    for _ in range(N):\n        s+=int(next(it))\n        vals.append(str(s))\n    sys.stdout.write(' '.join(vals))\n\nif __name__==\"__main__\":\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst data=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nif(data.length===0) process.exit(0);\nlet idx=0;\nconst N=parseInt(data[idx++],10);\nlet sum=0;\nlet out=[];\nfor(let i=0;i<N;++i){\n  sum+=parseInt(data[idx++],10);\n  out.push(sum);\n}\nconsole.log(out.join(' '));"
+    }
   }
 }

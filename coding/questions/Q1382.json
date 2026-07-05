@@ -4,14 +4,15 @@
   "slug": "chef-square-tile-problem",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Perfect Square",
+      "Sum",
+      "Integer Square Root"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,23 +22,31 @@
   "content": {
     "problemStatement": "The chef buys square tiles of size 1∗11*11∗1  from N shops. The ith shop sells a[i]a[i]a[i] tiles. The chef wants to know if he can create a large, tiled square area using all the tiles he bought.\n\n\nInput Format\n\nThe first line contains a single integer NNN.\nThe second line contains NNN space-separated integers a[i]a[i]a[i].\n\n\nOutput Format\n\nOutput \"Yes\" if the Chef can create a square area using all the tiles.\nOutput \"No\" otherwise.",
     "constraints": [
-      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
-      "0≤a[i]≤1090 \\leq a[i] \\leq 10^90≤a[i]≤109"
+      "1 <= T <= 10",
+      "1 <= N <= 15",
+      "0 <= a[i] <= 10^9",
+      "The sum of all a[i] in a test case fits in a signed 64‑bit integer"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of shops. The second line contains N space‑separated integers a[i], the number of tiles bought from the i‑th shop.",
+    "outputFormat": "For each test case, print \"Yes\" if the total number of tiles can form a perfect square area, otherwise print \"No\". Each answer must be on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n4 9 7",
-        "output": "No",
-        "explanation": "Explanation:\nThe sum of tiles is 20, which is not a perfect square."
+        "input": "1\n3\n4 9 7\n",
+        "output": "No\n",
+        "explanation": "Sum = 4+9+7 = 20, which is not a perfect square."
       },
       {
         "id": "sample_2",
-        "input": "2\n16 9",
-        "output": "Yes",
-        "explanation": "Explanation:\nThe sum of tiles is 25, which is a perfect square (5x5)."
+        "input": "1\n2\n16 9\n",
+        "output": "Yes\n",
+        "explanation": "Sum = 16+9 = 25 = 5^2, a perfect square."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1\n25\n",
+        "output": "Yes\n",
+        "explanation": "Sum = 25 = 5^2, a perfect square."
       }
     ]
   },
@@ -45,27 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n4 9 7",
-        "expectedOutput": "No",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1\n0\n",
+        "expectedOutput": "Yes\n",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "2\n16 9",
-        "expectedOutput": "Yes",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n15\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+        "expectedOutput": "No\n",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform zeros",
+        "input": "1\n5\n0 0 0 0 0\n",
+        "expectedOutput": "Yes\n",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "perfect square sum with several numbers",
+        "input": "1\n4\n1 3 5 7\n",
+        "expectedOutput": "Yes\n",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "multiple varied test cases",
+        "input": "3\n2\n10 6\n3\n1 2 3\n5\n4 4 4 4 4\n",
+        "expectedOutput": "Yes\nNo\nNo\n",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -79,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The only property that matters is the total number of tiles. If the sum S of all a[i] is a perfect square, i.e., there exists an integer r such that r*r = S, then the tiles can fill a square of side r. We compute S with 64‑bit arithmetic, obtain r = floor(sqrt(S)) using an integer square‑root routine (or built‑in floating sqrt followed by a cast, which is safe for the given constraints), and compare r*r with S. This yields an O(N) solution per test case with O(1) extra memory.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases.",
+    "spaceComplexity": "O(1) additional space.",
     "code": {
-      "C++": "#include <iostream>\n\nusing namespace std;\n\nint main() {\n    // Fast I/O\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int n;\n    if (cin >> n) {\n        long long total_sum = 0;\n        for (int i = 0; i < n; i++) {\n            long long a;\n            cin >> a;\n            total_sum += a;\n        }\n        \n        // Pure integer binary search\n        long long left = 0, right = 10000000; // sqrt(10^14) is 10^7\n        bool is_square = false;\n        \n        while (left <= right) {\n            long long mid = left + (right - left) / 2;\n            long long square = mid * mid;\n            \n            if (square == total_sum) {\n                is_square = true;\n                break;\n            } else if (square < total_sum) {\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n        \n        if (is_square) {\n            cout << \"Yes\\n\";\n        } else {\n            cout << \"No\\n\";\n        }\n    }\n    \n    return 0;\n}",
-      "Python3": "import sys\n\ndef main():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    \n    n = int(input_data[0])\n    total_sum = sum(int(x) for x in input_data[1:n+1])\n    \n    left, right = 0, 10000000\n    is_square = False\n    \n    while left <= right:\n        mid = left + (right - left) // 2\n        square = mid * mid\n        \n        if square == total_sum:\n            is_square = True\n            break\n        elif square < total_sum:\n            left = mid + 1\n        else:\n            right = mid - 1\n            \n    if is_square:\n        print(\"Yes\")\n    else:\n        print(\"No\")\n\nif __name__ == '__main__':\n    main()# Write your code here\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    \n    long long total_sum = 0;\n    for (int i = 0; i < n; i++) {\n        long long a;\n        scanf(\"%lld\", &a);\n        total_sum += a;\n    }\n    \n    long long left = 0, right = 10000000;\n    int is_square = 0;\n    \n    while (left <= right) {\n        long long mid = left + (right - left) / 2;\n        long long square = mid * mid;\n        \n        if (square == total_sum) {\n            is_square = 1;\n            break;\n        } else if (square < total_sum) {\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    \n    if (is_square) {\n        printf(\"Yes\\n\");\n    } else {\n        printf(\"No\\n\");\n    }\n    \n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\nclass Codechef{\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        \n        int n = Integer.parseInt(line.trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        \n        long totalSum = 0;\n        for (int i = 0; i < n; i++) {\n            totalSum += Long.parseLong(st.nextToken());\n        }\n        \n        long left = 0, right = 10000000;\n        boolean isSquare = false;\n        \n        while (left <= right) {\n            long mid = left + (right - left) / 2;\n            long square = mid * mid;\n            \n            if (square == totalSum) {\n                isSquare = true;\n                break;\n            } else if (square < totalSum) {\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n        \n        if (isSquare) {\n            System.out.println(\"Yes\");\n        } else {\n            System.out.println(\"No\");\n        }\n    }\n}",
-      "JavaScript": "const fs = require('fs');\n\nfunction main() {\n    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\n    if (input.length < 2) return;\n    \n    let n = parseInt(input[0], 10);\n    \n    let totalSum = 0n;\n    for (let i = 1; i <= n; i++) {\n        totalSum += BigInt(input[i]);\n    }\n    \n    let left = 0n;\n    let right = 10000000n;\n    let isSquare = false;\n    \n    while (left <= right) {\n        let mid = left + (right - left) / 2n;\n        let square = mid * mid;\n        \n        if (square === totalSum) {\n            isSquare = true;\n            break;\n        } else if (square < totalSum) {\n            left = mid + 1n;\n        } else {\n            right = mid - 1n;\n        }\n    }\n    \n    if (isSquare) {\n        console.log(\"Yes\");\n    } else {\n        console.log(\"No\");\n    }\n}\n\nmain();"
+      "C": "#include <stdio.h>\n#include <math.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        long long sum = 0;\n        for(int i=0;i<N;++i){\n            long long x; scanf(\"%lld\", &x);\n            sum += x;\n        }\n        long long r = (long long)sqrt((double)sum);\n        if(r*r == sum) printf(\"Yes\\n\");\n        else printf(\"No\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        long long sum = 0;\n        for(int i=0;i<N;++i){\n            long long x; cin>>x; sum+=x;\n        }\n        long long r = sqrt((long double)sum);\n        if(r*r == sum) cout << \"Yes\\n\";\n        else cout << \"No\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for(int tc=0; tc<T; ++tc){\n            int N = Integer.parseInt(br.readLine().trim());\n            st = new StringTokenizer(br.readLine());\n            long sum = 0L;\n            for(int i=0;i<N;++i){\n                sum += Long.parseLong(st.nextToken());\n            }\n            long r = (long)Math.sqrt((double)sum);\n            sb.append(r*r == sum ? \"Yes\" : \"No\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys, math\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        total = 0\n        for _ in range(N):\n            total += int(next(it))\n        r = math.isqrt(total)\n        out.append('Yes' if r*r == total else 'No')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = Number(input[idx++]);\nlet results = [];\nfunction isPerfectSquare(n) {\n  let low = 0n, high = n;\n  while (low <= high) {\n    const mid = (low + high) >> 1n;\n    const sq = mid * mid;\n    if (sq === n) return true;\n    if (sq < n) low = mid + 1n;\n    else high = mid - 1n;\n  }\n  return false;\n}\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  let sum = 0n;\n  for (let i = 0; i < N; ++i) {\n    sum += BigInt(input[idx++]);\n  }\n  results.push(isPerfectSquare(sum) ? 'Yes' : 'No');\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

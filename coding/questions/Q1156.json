@@ -4,14 +4,15 @@
   "slug": "function-overloading-in-c",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "oop in c++",
-      "programming languages"
+      "Function Overloading",
+      "Basic I/O",
+      "Formatting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "Write a C++ program to:\n\n\nCreate a class Calculator\nOverload function `add()` for:\n\nTwo integers\nTwo float numbers\n\n\nCall both functions in `main()` and display result",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 100",
+      "1 <= a, b <= 1000",
+      "1.0 <= x, y <= 1000.0"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains two integers a and b separated by a space. The second line contains two floating-point numbers x and y separated by a space.",
+    "outputFormat": "For each test case output a single line containing two numbers separated by a space. The first number is the sum of a and b (integer). The second number is the sum of x and y rounded to three decimal places.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 7\n3.5 2.5",
-        "output": "12 6.00",
-        "explanation": ""
+        "input": "1\n5 7\n3.5 2.5",
+        "output": "12 6.000",
+        "explanation": "5+7=12 (integer) and 3.5+2.5=6.0, printed as 6.000."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n10 20\n1.2 3.4",
+        "output": "30 4.600",
+        "explanation": "10+20=30 and 1.2+3.4=4.6, formatted to three decimal places as 4.600."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n100 200\n0.1 0.2",
+        "output": "300 0.300",
+        "explanation": "100+200=300 and 0.1+0.2=0.3, printed as 0.300."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 7\n3.5 2.5",
-        "expectedOutput": "12 6.00",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1\n1.0 1.0",
+        "expectedOutput": "2 2.000",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n1000 1000\n1000.0 1000.0",
+        "expectedOutput": "2000 2000.000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "1\n500 500\n500.5 500.5",
+        "expectedOutput": "1000 1001.000",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky rounding case",
+        "input": "1\n123 877\n1.333 2.667",
+        "expectedOutput": "1000 4.000",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general mixed cases",
+        "input": "3\n10 20\n1.2 3.4\n7 8\n5.555 4.445\n999 1\n999.999 1.001",
+        "expectedOutput": "30 4.600\n15 10.000\n1000 1001.000",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,11 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "Create a class Calculator with two overloaded add() methods: one taking two ints and returning their sum, another taking two floats (or doubles) and returning their sum. For each test case read the integer pair and the floating-point pair, use the appropriate add() method, and print the integer sum followed by the floating-point sum formatted to three decimal places. The algorithm runs in O(T) time and uses O(1) extra space.",
+    "timeComplexity": "O(T) total, O(1) per test case.",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C++": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nclass Calculator\n{\npublic:\n    int add(int a, int b)\n    {\n        return a + b;\n    }\n\n    float add(float a, float b)\n    {\n        return a + b;\n    }\n};\n\nint main()\n{\n    int a, b;\n    float x, y;\n\n    cin >> a >> b;\n    cin >> x >> y;\n\n    Calculator c;\n\n    cout << c.add(a, b) << \" \";\n    cout << fixed << setprecision(3) << c.add(x, y);\n\n    return 0;\n}"
+      "C": "#include <stdio.h>\n\nint add_int(int a, int b) { return a + b; }\nfloat add_float(float a, float b) { return a + b; }\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int a, b;\n        float x, y;\n        scanf(\"%d %d\", &a, &b);\n        scanf(\"%f %f\", &x, &y);\n        printf(\"%d %.3f\\n\", add_int(a, b), add_float(x, y));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Calculator {\npublic:\n    int add(int a, int b) { return a + b; }\n    float add(float a, float b) { return a + b; }\n};\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int a, b;\n        float x, y;\n        cin >> a >> b;\n        cin >> x >> y;\n        Calculator calc;\n        cout << calc.add(a, b) << ' ' << fixed << setprecision(3) << calc.add(x, y);\n        if (T) cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Calculator {\n        int add(int a, int b) { return a + b; }\n        float add(float a, float b) { return a + b; }\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        Calculator calc = new Calculator();\n        for (int t = 0; t < T; t++) {\n            st = new StringTokenizer(br.readLine());\n            int a = Integer.parseInt(st.nextToken());\n            int b = Integer.parseInt(st.nextToken());\n            st = new StringTokenizer(br.readLine());\n            float x = Float.parseFloat(st.nextToken());\n            float y = Float.parseFloat(st.nextToken());\n            sb.append(calc.add(a, b)).append(' ');\n            sb.append(String.format(Locale.US, \"%.3f\", calc.add(x, y)));\n            if (t + 1 < T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef add_int(a, b):\n    return a + b\n\ndef add_float(a, b):\n    return a + b\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        a = int(next(it)); b = int(next(it))\n        x = float(next(it)); y = float(next(it))\n        out.append(f\"{add_int(a, b)} {add_float(x, y):.3f}\")\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = parseInt(input[idx++], 10);\nlet results = [];\nfunction add(a, b) { return a + b; }\nfor (let t = 0; t < T; t++) {\n  const a = parseInt(input[idx++], 10);\n  const b = parseInt(input[idx++], 10);\n  const x = parseFloat(input[idx++]);\n  const y = parseFloat(input[idx++]);\n  const intSum = add(a, b);\n  const floatSum = add(x, y);\n  results.push(intSum + ' ' + floatSum.toFixed(3));\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

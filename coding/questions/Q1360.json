@@ -4,14 +4,15 @@
   "slug": "leader-of-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "prefix sums & difference arrays",
-      "data structures and algorithms"
+      "Leaders",
+      "Array Traversal",
+      "Linear Scan"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +21,31 @@
   },
   "content": {
     "problemStatement": "Write a program to print all the **leaders** in the array. An element is a leader if it is strictly greater than all the elements to its right side. And the rightmost element is always a leader.\n\n\nInput Format\n\nThe first line contains NNN, the number of elements in an array.\nThe second line contains NNN integers, denoting the elements in the array.\n\n\nOutput Format\nIn a single line output all the leaders in the given array.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 1000",
+      "0 <= array elements <= 10000"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements in the array. The second line contains N space-separated integers denoting the array.",
+    "outputFormat": "For each test case, output a single line containing all leaders of the given array in the order they appear from left to right, separated by a single space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "6\n16 17 4 3 5 2",
+        "input": "1\n6\n16 17 4 3 5 2",
         "output": "17 5 2",
-        "explanation": ""
+        "explanation": "Scanning from right, leaders are 2, then 5 (greater than 2), then 17 (greater than 5). Reversing gives 17 5 2."
       },
       {
         "id": "sample_2",
-        "input": "5 \n5 5 5 5 5",
+        "input": "1\n5\n5 5 5 5 5",
         "output": "5",
-        "explanation": ""
+        "explanation": "Only the rightmost element is a leader because all others are not strictly greater than the elements to their right."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n1 2 3 4",
+        "output": "4",
+        "explanation": "The array is strictly increasing, so only the last element 4 is greater than all elements to its right."
       }
     ]
   },
@@ -42,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "6\n16 17 4 3 5 2",
-        "expectedOutput": "17 5 2",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "0",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "5 \n5 5 5 5 5",
-        "expectedOutput": "5",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\n15\n10000 9999 9998 9997 9996 9995 9994 9993 9992 9991 9990 9989 9988 9987 9986",
+        "expectedOutput": "10000 9999 9998 9997 9996 9995 9994 9993 9992 9991 9990 9989 9988 9987 9986",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5\n7 7 7 7 7",
+        "expectedOutput": "7",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n6\n1 2 3 4 5 6",
+        "expectedOutput": "6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\n8\n16 17 4 3 5 2 2 1\n4\n0 0 0 0\n7\n9 8 7 6 5 4 3",
+        "expectedOutput": "17 5 2 1\n0\n9 8 7 6 5 4 3",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "For each element `A[i]` in the array:\n\nThe inner loop checks if there is any element to the right of `A[i]` that is greater than or equal to `A[i]`. If such an element exists, the loop breaks.\nIf no element to the right is greater than or equal to `A[i]`, it means `A[i]` is a leader.",
-    "timeComplexity": "O(N^2) using two nested loops",
-    "spaceComplexity": "O(1) No extra space is used to store the result.",
+    "approach": "Scanning the array from right to left keeps track of the maximum element seen so far. The rightmost element is always a leader. While moving left, an element is a leader if it is strictly greater than the current maximum; in that case we update the maximum and store the element. The collected leaders are in reverse order, so we output them after reversing. This runs in O(N) time per test case and uses O(N) extra space for the list of leaders (which can be avoided by printing on the fly, but the list keeps the code simple).",
+    "timeComplexity": "O(N) per test case, O(total N) for all test cases combined.",
+    "spaceComplexity": "O(N) auxiliary space for storing leaders of a single test case.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    int n;\n    cin>>n;\n    int a[n];\n    for(int i=0;i<n;i++)\n    {\n        cin>>a[i];\n    }\n    for(int i=0;i<n;i++)\n    {\n        int j;\n        for(j=i+1;j<n;j++)\n        {\n            if(a[i]<=a[j])\n            break;\n        }\n        if(j==n)\n            cout<<a[i]<<\" \";\n    }\n    cout<<\"\\n\";\n}\n\n",
-      "Python3": "# Input the size of the array\nn = int(input())\n\n# Input the elements of the array\narr = list(map(int, input().split()))\n\n# Find and print the largest elements in the array\nfor i in range(n):\n    is_largest = True\n    for j in range(i + 1, n):\n        if arr[j] >= arr[i]:\n            is_largest = False\n            break\n    if is_largest:\n        print(arr[i], end=\" \")\nprint()\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int arr[n];\n    for(int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    for(int i = 0; i < n; i++) {\n        bool isLargest = true;\n        for(int j = i + 1; j < n; j++) {\n            if(arr[j] >= arr[i]) {\n                isLargest = false;\n                break;\n            }\n        }\n        if(isLargest) {\n            printf(\"%d \", arr[i]);\n        }\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        // your code goes here\n        Scanner sc = new Scanner(System.in);\n            // Input the size of the array\n            int n = sc.nextInt();\n            int[] arr = new int[n];\n\n            // Input the elements of the array\n            for (int i = 0; i < n; i++) {\n                arr[i] = sc.nextInt();\n            }\n\n            // Find and print the largest elements in the array\n            for (int i = 0; i < n; i++) {\n                boolean isLargest = true;\n                for (int j = i + 1; j < n; j++) {\n                    if (arr[j] >= arr[i]) {\n                        isLargest = false;\n                        break;\n                    }\n                }\n                if (isLargest) {\n                    System.out.print(arr[i] + \" \");\n                }\n            }\n        System.out.println();\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nfunction main() {\n    let input = '';\n    \n    // Read data from stdin\n    rl.on('line', (line) => {\n        input += line + '\\n'; // Accumulate input\n    });\n\n    rl.on('close', () => {\n        // Split the accumulated input into lines\n        const lines = input.trim().split('\\n');\n        \n        // Parse the number of elements\n        const n = parseInt(lines[0].trim(), 10);\n        \n        // Parse the array elements\n        const arr = lines[1].trim().split(' ').map(Number);\n        \n        // Find the leaders\n        const leaders = [];\n        let maxFromRight = arr[n - 1]; // Start with the last element as a leader\n        leaders.push(maxFromRight);\n\n        // Traverse the array from right to left\n        for (let i = n - 2; i >= 0; i--) {\n            if (arr[i] > maxFromRight) {\n                maxFromRight = arr[i];\n                leaders.push(maxFromRight);\n            }\n        }\n\n        // Print leaders in the same order as they appear from left to right\n        console.log(leaders.reverse().join(' '));\n    });\n}\n\nmain();\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int *arr = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        int *leaders = (int*)malloc(N * sizeof(int));\n        int cnt = 0;\n        int maxFromRight = arr[N-1];\n        leaders[cnt++] = maxFromRight;\n        for (int i = N-2; i >= 0; --i) {\n            if (arr[i] > maxFromRight) {\n                maxFromRight = arr[i];\n                leaders[cnt++] = maxFromRight;\n            }\n        }\n        for (int i = cnt-1; i >= 0; --i) {\n            printf(\"%d\", leaders[i]);\n            if (i) printf(\" \");\n        }\n        printf(\"\\n\");\n        free(arr);\n        free(leaders);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int N; cin >> N;\n        vector<int> a(N);\n        for (int &x : a) cin >> x;\n        vector<int> leaders;\n        int maxFromRight = a.back();\n        leaders.push_back(maxFromRight);\n        for (int i = N - 2; i >= 0; --i) {\n            if (a[i] > maxFromRight) {\n                maxFromRight = a[i];\n                leaders.push_back(maxFromRight);\n            }\n        }\n        for (int i = (int)leaders.size() - 1; i >= 0; --i) {\n            cout << leaders[i];\n            if (i) cout << ' ';\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] arr = new int[N];\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n            int[] leaders = new int[N];\n            int cnt = 0;\n            int maxFromRight = arr[N-1];\n            leaders[cnt++] = maxFromRight;\n            for (int i = N-2; i >= 0; i--) {\n                if (arr[i] > maxFromRight) {\n                    maxFromRight = arr[i];\n                    leaders[cnt++] = maxFromRight;\n                }\n            }\n            for (int i = cnt-1; i >= 0; i--) {\n                sb.append(leaders[i]);\n                if (i != 0) sb.append(' ');\n            }\n            sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        leaders = []\n        max_from_right = arr[-1]\n        leaders.append(max_from_right)\n        for x in reversed(arr[:-1]):\n            if x > max_from_right:\n                max_from_right = x\n                leaders.append(x)\n        out_lines.append(' '.join(map(str, reversed(leaders))))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = parseInt(input[idx++], 10);\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n  const N = parseInt(input[idx++], 10);\n  const arr = new Array(N);\n  for (let i = 0; i < N; i++) arr[i] = parseInt(input[idx++], 10);\n  const leaders = [];\n  let maxFromRight = arr[N - 1];\n  leaders.push(maxFromRight);\n  for (let i = N - 2; i >= 0; i--) {\n    if (arr[i] > maxFromRight) {\n      maxFromRight = arr[i];\n      leaders.push(maxFromRight);\n    }\n  }\n  outputs.push(leaders.reverse().join(' '));\n}\nprocess.stdout.write(outputs.join('\\n'));"
     }
   }
 }

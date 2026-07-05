@@ -4,14 +4,15 @@
   "slug": "chef-shortest-route",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "graphs",
-      "data structures and algorithms"
+      "BFS",
+      "Shortest Path",
+      "Unweighted Graph"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +22,33 @@
   "content": {
     "problemStatement": "A Cloud Provider's network spans across n locations with m connections between them. Your task is to determine whether Chef can send a message to Chefina. If possible, you need to find the minimum number of servers on such a route.\n\n\nInput Format\n\nThe first line consists of two integers, `N` and `M`, representing the number of servers and connections.\nServers are numbered from `1` to `N`, with Chef's server being `1` and Chefina's server being `N`.\nThe subsequent `M` lines describe the connections, each containing two integers, `a` and `b`, indicating a connection between those servers.\nEach connection links two distinct servers, and at most one connection exists between any two servers.\n\n\nOutput Format\n\nIf it is possible to send a message, return the minimum number of servers on the shortest route from `Chef` to `Chefina`.\nIf no routes exist, return `-1`.",
     "constraints": [
-      "1≤N≤2000001 \\leq N \\leq 2000001≤N≤200000",
-      "1≤M≤N(N−1)/21 \\leq M \\leq N(N-1)/21≤M≤N(N−1)/2",
-      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
-      "ui≠viu_i \\neq v_iui​=vi​ for each 1≤i≤M1 \\leq i \\leq M1≤i≤M."
+      "1 <= T <= 10",
+      "1 <= N <= 200000",
+      "0 <= M <= N*(N-1)/2",
+      "1 <= a, b <= N",
+      "a != b",
+      "There is at most one connection between any pair of servers."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M — the number of servers (nodes) and the number of connections (edges). The next M lines each contain two integers a and b denoting an undirected connection between servers a and b. Servers are numbered from 1 to N, where server 1 is Chef and server N is Chefina.",
+    "outputFormat": "For each test case output a single integer on its own line: the minimum number of servers on the shortest route from server 1 to server N (i.e., number of edges on the shortest path plus one). If no route exists, output -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 6\n1 2\n2 3\n1 3\n3 5\n2 4\n4 5",
+        "input": "1\\n5 6\\n1 2\\n2 3\\n1 3\\n3 5\\n2 4\\n4 5",
         "output": "3",
-        "explanation": ""
+        "explanation": "The shortest path from server 1 to server 5 uses 2 edges (1‑3‑5), therefore the number of servers on the route is 2+1 = 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n4 4\\n1 2\\n2 3\\n3 4\\n1 4",
+        "output": "2",
+        "explanation": "Direct connection 1‑4 gives distance 1 edge, so the route contains 1+1 = 2 servers."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n6 7\\n1 2\\n2 3\\n3 4\\n4 5\\n5 6\\n1 3\\n2 4",
+        "output": "3",
+        "explanation": "Shortest path 1‑3‑6 uses 2 edges, thus 2+1 = 3 servers."
       }
     ]
   },
@@ -41,20 +56,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 6\n1 2\n2 3\n1 3\n3 5\n2 4\n4 5",
-        "expectedOutput": "3",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1 0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\\n1 0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\\n1 0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\\n1 0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\\n1 0",
+        "expectedOutput": "1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,15 +116,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The graph is unweighted, so the shortest path in terms of number of edges can be found with a Breadth‑First Search (BFS) starting from node 1. BFS visits vertices in increasing distance order, guaranteeing that the first time we reach node N we have the minimal number of edges. We store distances in an array initialized to INF; distance[1] = 0. While processing the queue, for each neighbour we relax the distance if a shorter one is found and push the neighbour into the queue. After BFS, if distance[N] is still INF there is no path, otherwise the answer is distance[N] + 1 (edges + the starting server). The algorithm runs in O(N+M) time and O(N+M) memory per test case.",
+    "timeComplexity": "O(N + M) per test case, because each vertex and each edge is processed at most once during BFS.",
+    "spaceComplexity": "O(N + M) for the adjacency list, distance array and BFS queue.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    // Method to find the minimum number of servers needed to connect server 1 to server n\n    int getMinimumServers(int n, vector<pair<int, int>> serverConnections) {\n        // Number of connections (edges)\n        int m = serverConnections.size();\n\n        // Initialize distance array with a large number\n        vector<int> distance(n + 1, 1e9);\n\n        // Create an adjacency list for the graph\n        vector<int> graph[n + 1];\n        for (auto& connection : serverConnections) {\n            int a = connection.first;\n            int b = connection.second;\n            graph[a].push_back(b);\n            graph[b].push_back(a);\n        }\n\n        // BFS setup\n        queue<int> q;\n        q.push(1); // Start from server 1\n        distance[1] = 0; // Distance to itself is 0\n\n        // Array to track parent nodes (not used in this simple version)\n        vector<int> parent(n + 1, -1);\n\n        // Perform BFS to find the shortest path\n        while (!q.empty()) {\n            int v = q.front();\n            q.pop();\n\n            // If we reached server n, return the distance\n            if (v == n) break;\n\n            // Check all adjacent servers\n            for (int neighbor : graph[v]) {\n                // If visiting this neighbor is better, update its distance and enqueue it\n                if (1 + distance[v] < distance[neighbor]) {\n                    distance[neighbor] = 1 + distance[v];\n                    parent[neighbor] = v; // Track the path (not used here)\n                    q.push(neighbor);\n                }\n            }\n        }\n\n        // If we can't reach server n, return -1\n        if (distance[n] == 1e9)\n            return -1;\n\n        // Return the minimum number of servers needed\n        return 1 + distance[n];\n    }\n};\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(0);\n\n    int n, m;\n    cin >> n >> m;\n\n    // Vector to store the server connections\n    vector<pair<int, int>> edges;\n\n    // Read in the server connections\n    for (int i = 0; i < m; i++) {\n        int a, b;\n        cin >> a >> b;\n        edges.push_back({a, b});\n    }\n\n    // Create a Solution object and get the minimum number of servers needed\n    Solution sol;\n    int result = sol.getMinimumServers(n, edges);\n\n    // Output the result\n    cout << result << endl;\n\n    return 0;\n}\n",
-      "Python3": "from collections import deque, defaultdict\nimport sys\ninput = sys.stdin.read\n\nclass Solution:\n    def getMinimumServers(self, n, serverConnections):\n        # Initialize the distance array with a large number\n        distance = [float('inf')] * (n + 1)\n        \n        # Create an adjacency list for the graph\n        graph = defaultdict(list)\n        for a, b in serverConnections:\n            graph[a].append(b)\n            graph[b].append(a)\n        \n        # BFS setup\n        queue = deque([1])  # Start from server 1\n        distance[1] = 0  # Distance to itself is 0\n        \n        # Perform BFS to find the shortest path\n        while queue:\n            v = queue.popleft()\n            \n            # If we reached server n, return the distance\n            if v == n:\n                return 1 + distance[n]\n            \n            # Check all adjacent servers\n            for neighbor in graph[v]:\n                # If visiting this neighbor is better, update its distance and enqueue it\n                if 1 + distance[v] < distance[neighbor]:\n                    distance[neighbor] = 1 + distance[v]\n                    queue.append(neighbor)\n        \n        # If we can't reach server n, return -1\n        return -1\n\ndef main():\n    data = input().strip().split('\\n')\n    n, m = map(int, data[0].split())\n    \n    # List to store server connections\n    serverConnections = []\n    for line in data[1:m+1]:\n        a, b = map(int, line.split())\n        serverConnections.append((a, b))\n    \n    # Create a Solution object and get the minimum number of servers needed\n    sol = Solution()\n    result = sol.getMinimumServers(n, serverConnections)\n    \n    # Output the result\n    print(result)\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <limits.h>\n\n#define INF INT_MAX\n\n// Queue structure for BFS\ntypedef struct {\n    int *data;\n    int front, rear, size, capacity;\n} Queue;\n\n// Initialize a queue\nQueue* createQueue(int capacity) {\n    Queue *q = (Queue*)malloc(sizeof(Queue));\n    q->data = (int*)malloc(capacity * sizeof(int));\n    q->front = 0;\n    q->rear = -1;\n    q->size = 0;\n    q->capacity = capacity;\n    return q;\n}\n\n// Enqueue operation\nvoid enqueue(Queue *q, int item) {\n    q->rear = (q->rear + 1) % q->capacity;\n    q->data[q->rear] = item;\n    q->size++;\n}\n\n// Dequeue operation\nint dequeue(Queue *q) {\n    int item = q->data[q->front];\n    q->front = (q->front + 1) % q->capacity;\n    q->size--;\n    return item;\n}\n\n// Check if the queue is empty\nbool isEmpty(Queue *q) {\n    return q->size == 0;\n}\n\n// Free the queue memory\nvoid freeQueue(Queue *q) {\n    free(q->data);\n    free(q);\n}\n\n// Method to find the minimum number of servers needed to connect server 1 to server n\nint getMinimumServers(int n, int m, int edges[][2]) {\n    int distance[n + 1];\n    int **graph = (int**)malloc((n + 1) * sizeof(int*));\n    int *graphSize = (int*)malloc((n + 1) * sizeof(int));\n    \n    // Initialize distance array and adjacency list\n    for (int i = 1; i <= n; i++) {\n        distance[i] = INF;\n        graph[i] = (int*)malloc(n * sizeof(int));\n        graphSize[i] = 0;\n    }\n\n    // Create the graph from edges\n    for (int i = 0; i < m; i++) {\n        int a = edges[i][0];\n        int b = edges[i][1];\n        graph[a][graphSize[a]++] = b;\n        graph[b][graphSize[b]++] = a;\n    }\n\n    // BFS setup\n    Queue *q = createQueue(n + 1);\n    enqueue(q, 1); // Start from server 1\n    distance[1] = 0;\n\n    // Perform BFS to find the shortest path\n    while (!isEmpty(q)) {\n        int v = dequeue(q);\n\n        // If we reached server n, return the distance\n        if (v == n) {\n            freeQueue(q);\n            for (int i = 1; i <= n; i++) {\n                free(graph[i]);\n            }\n            free(graph);\n            free(graphSize);\n            return 1 + distance[n];\n        }\n\n        // Check all adjacent servers\n        for (int i = 0; i < graphSize[v]; i++) {\n            int neighbor = graph[v][i];\n            // If visiting this neighbor is better, update its distance and enqueue it\n            if (1 + distance[v] < distance[neighbor]) {\n                distance[neighbor] = 1 + distance[v];\n                enqueue(q, neighbor);\n            }\n        }\n    }\n\n    // If we can't reach server n, return -1\n    freeQueue(q);\n    for (int i = 1; i <= n; i++) {\n        free(graph[i]);\n    }\n    free(graph);\n    free(graphSize);\n    return -1;\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    // Array to store server connections\n    int edges[m][2];\n    \n    // Read in the server connections\n    for (int i = 0; i < m; i++) {\n        int a, b;\n        scanf(\"%d %d\", &a, &b);\n        edges[i][0] = a;\n        edges[i][1] = b;\n    }\n\n    // Get the minimum number of servers needed\n    int result = getMinimumServers(n, m, edges);\n\n    // Output the result\n    printf(\"%d\\n\", result);\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\n\nclass Solution {\n    // Method to find the minimum number of servers needed to connect server 1 to server n\n    public int getMinimumServers(int n, List<int[]> serverConnections) {\n        // Number of connections (edges)\n        int m = serverConnections.size();\n        \n        // Initialize distance array with a large number\n        int[] distance = new int[n + 1];\n        Arrays.fill(distance, Integer.MAX_VALUE);\n        \n        // Create an adjacency list for the graph\n        List<Integer>[] graph = new ArrayList[n + 1];\n        for (int i = 1; i <= n; i++) {\n            graph[i] = new ArrayList<>();\n        }\n        \n        for (int[] connection : serverConnections) {\n            int a = connection[0];\n            int b = connection[1];\n            graph[a].add(b);\n            graph[b].add(a);\n        }\n        \n        // BFS setup\n        Queue<Integer> q = new LinkedList<>();\n        q.add(1); // Start from server 1\n        distance[1] = 0; // Distance to itself is 0\n        \n        // Perform BFS to find the shortest path\n        while (!q.isEmpty()) {\n            int v = q.poll();\n            \n            // If we reached server n, return the distance\n            if (v == n) break;\n            \n            // Check all adjacent servers\n            for (int neighbor : graph[v]) {\n                // If visiting this neighbor is better, update its distance and enqueue it\n                if (1 + distance[v] < distance[neighbor]) {\n                    distance[neighbor] = 1 + distance[v];\n                    q.add(neighbor);\n                }\n            }\n        }\n        \n        // If we can't reach server n, return -1\n        if (distance[n] == Integer.MAX_VALUE)\n            return -1;\n        \n        // Return the minimum number of servers needed\n        return 1 + distance[n];\n    }\n}\n\nclass Codechef {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n\n        // List to store the server connections\n        List<int[]> edges = new ArrayList<>();\n        \n        // Read in the server connections\n        for (int i = 0; i < m; i++) {\n            int a = sc.nextInt();\n            int b = sc.nextInt();\n            edges.add(new int[]{a, b});\n        }\n\n        // Create a Solution object and get the minimum number of servers needed\n        Solution sol = new Solution();\n        int result = sol.getMinimumServers(n, edges);\n        \n        // Output the result\n        System.out.println(result);\n\n        sc.close();\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\n// Function to find the shortest path from node 1 to node N\nfunction findShortestPath(N, M, edges) {\n    // Create an adjacency list for the graph\n    const adjList = Array.from({ length: N + 1 }, () => []);\n    for (const [u, v] of edges) {\n        adjList[u].push(v); // Add edge u -> v\n        adjList[v].push(u); // Add edge v -> u (undirected graph)\n    }\n\n    // BFS setup\n    const queue = [1]; // Start BFS from node 1\n    const visited = new Array(N + 1).fill(false); // Track visited nodes\n    const distance = new Array(N + 1).fill(Infinity); // Initialize distances to Infinity\n    \n    visited[1] = true; // Mark node 1 as visited\n    distance[1] = 1; // Starting node counts as the first server in the route\n\n    // Perform BFS\n    while (queue.length > 0) {\n        const node = queue.shift(); // Dequeue the front node\n\n        // Process all neighbors of the current node\n        for (const neighbor of adjList[node]) {\n            if (!visited[neighbor]) {\n                visited[neighbor] = true; // Mark neighbor as visited\n                distance[neighbor] = distance[node] + 1; // Update distance to this neighbor\n                queue.push(neighbor); // Enqueue the neighbor\n\n                // If we've reached node N, return the distance\n                if (neighbor === N) {\n                    return distance[neighbor];\n                }\n            }\n        }\n    }\n\n    // Return -1 if node N is not reachable\n    return -1;\n}\n\n// Read input from standard input\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nconst input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    // Parse the number of nodes (N) and edges (M)\n    const [N, M] = input[0].split(' ').map(Number);\n    \n    // Parse each edge from the input\n    const edges = input.slice(1).map(line => line.split(' ').map(Number));\n\n    // Find the shortest path and print the result\n    const result = findShortestPath(N, M, edges);\n    console.log(result);\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\ntypedef struct {\n    int *data;\n    int front, rear, size, capacity;\n} Queue;\n\nQueue* createQueue(int capacity) {\n    Queue *q = (Queue*)malloc(sizeof(Queue));\n    q->data = (int*)malloc(capacity * sizeof(int));\n    q->front = 0;\n    q->rear = -1;\n    q->size = 0;\n    q->capacity = capacity;\n    return q;\n}\n\nvoid enqueue(Queue *q, int x) {\n    q->rear = (q->rear + 1) % q->capacity;\n    q->data[q->rear] = x;\n    q->size++;\n}\n\nint dequeue(Queue *q) {\n    int x = q->data[q->front];\n    q->front = (q->front + 1) % q->capacity;\n    q->size--;\n    return x;\n}\n\nint isEmpty(Queue *q) { return q->size == 0; }\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, M; scanf(\"%d %d\", &N, &M);\n        int *adjSize = (int*)calloc(N + 1, sizeof(int));\n        int **adj = (int**)malloc((N + 1) * sizeof(int*));\n        for (int i = 1; i <= N; ++i) adj[i] = (int*)malloc((M + 1) * sizeof(int));\n        for (int i = 0; i < M; ++i) {\n            int a, b; scanf(\"%d %d\", &a, &b);\n            adj[a][adjSize[a]++] = b;\n            adj[b][adjSize[b]++] = a;\n        }\n        int *dist = (int*)malloc((N + 1) * sizeof(int));\n        for (int i = 1; i <= N; ++i) dist[i] = INT_MAX;\n        Queue *q = createQueue(N + 5);\n        enqueue(q, 1);\n        dist[1] = 0;\n        while (!isEmpty(q)) {\n            int v = dequeue(q);\n            if (v == N) break;\n            for (int i = 0; i < adjSize[v]; ++i) {\n                int nb = adj[v][i];\n                if (dist[v] + 1 < dist[nb]) {\n                    dist[nb] = dist[v] + 1;\n                    enqueue(q, nb);\n                }\n            }\n        }\n        if (dist[N] == INT_MAX) printf(\"-1\\n\");\n        else printf(\"%d\\n\", dist[N] + 1);\n        for (int i = 1; i <= N; ++i) free(adj[i]);\n        free(adj);\n        free(adjSize);\n        free(dist);\n        free(q->data);\n        free(q);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int N, M; cin >> N >> M;\n        vector<vector<int>> g(N + 1);\n        for (int i = 0; i < M; ++i) {\n            int a, b; cin >> a >> b;\n            g[a].push_back(b);\n            g[b].push_back(a);\n        }\n        const int INF = INT_MAX;\n        vector<int> dist(N + 1, INF);\n        queue<int> q;\n        dist[1] = 0;\n        q.push(1);\n        while (!q.empty()) {\n            int v = q.front(); q.pop();\n            if (v == N) break;\n            for (int nb : g[v]) {\n                if (dist[v] + 1 < dist[nb]) {\n                    dist[nb] = dist[v] + 1;\n                    q.push(nb);\n                }\n            }\n        }\n        if (dist[N] == INF) cout << -1 << '\\n';\n        else cout << dist[N] + 1 << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int M = Integer.parseInt(st.nextToken());\n            List<Integer>[] g = new ArrayList[N + 1];\n            for (int i = 1; i <= N; i++) g[i] = new ArrayList<>();\n            for (int i = 0; i < M; i++) {\n                st = new StringTokenizer(br.readLine());\n                int a = Integer.parseInt(st.nextToken());\n                int b = Integer.parseInt(st.nextToken());\n                g[a].add(b);\n                g[b].add(a);\n            }\n            int[] dist = new int[N + 1];\n            Arrays.fill(dist, Integer.MAX_VALUE);\n            Queue<Integer> q = new ArrayDeque<>();\n            dist[1] = 0;\n            q.add(1);\n            while (!q.isEmpty()) {\n                int v = q.poll();\n                if (v == N) break;\n                for (int nb : g[v]) {\n                    if (dist[v] + 1 < dist[nb]) {\n                        dist[nb] = dist[v] + 1;\n                        q.add(nb);\n                    }\n                }\n            }\n            if (dist[N] == Integer.MAX_VALUE) sb.append(-1).append('\\n');\n            else sb.append(dist[N] + 1).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\nfrom collections import deque\n\ndef main():\n    data = sys.stdin.read().strip().split('\\n')\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N, M = map(int, next(it).split())\n        g = [[] for _ in range(N + 1)]\n        for __ in range(M):\n            a, b = map(int, next(it).split())\n            g[a].append(b)\n            g[b].append(a)\n        dist = [float('inf')] * (N + 1)\n        q = deque([1])\n        dist[1] = 0\n        while q:\n            v = q.popleft()\n            if v == N:\n                break\n            for nb in g[v]:\n                if dist[v] + 1 < dist[nb]:\n                    dist[nb] = dist[v] + 1\n                    q.append(nb)\n        out_lines.append(str(-1 if dist[N] == float('inf') else dist[N] + 1))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const [Nstr, Mstr] = input[idx++].trim().split(/\\s+/);\n  const N = parseInt(Nstr, 10);\n  const M = parseInt(Mstr, 10);\n  const graph = Array.from({ length: N + 1 }, () => []);\n  for (let i = 0; i < M; i++) {\n    const [aStr, bStr] = input[idx++].trim().split(/\\s+/);\n    const a = parseInt(aStr, 10);\n    const b = parseInt(bStr, 10);\n    graph[a].push(b);\n    graph[b].push(a);\n  }\n  const dist = new Array(N + 1).fill(Infinity);\n  const queue = [];\n  let head = 0;\n  queue.push(1);\n  dist[1] = 0;\n  while (head < queue.length) {\n    const v = queue[head++];\n    if (v === N) break;\n    for (const nb of graph[v]) {\n      if (dist[v] + 1 < dist[nb]) {\n        dist[nb] = dist[v] + 1;\n        queue.push(nb);\n      }\n    }\n  }\n  results.push(dist[N] === Infinity ? '-1' : String(dist[N] + 1));\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

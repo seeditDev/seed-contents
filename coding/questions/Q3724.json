@@ -4,14 +4,14 @@
   "slug": "coordinate-compression",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Arrays | Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "competitive programming"
+      "Coordinate Compression",
+      "Sliding Window"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +21,19 @@
   "content": {
     "problemStatement": "You are given a sequence of integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​. For an integer KKK, let's define a KKK-compressed sequence B1,B2,…,BNB_1, B_2, \\dots, B_NB1​,B2​,…,BN​ as follows:\n\n\nfor each valid iii, BiB_iBi​ is a positive integer\nfor each valid iii, if there are exactly XXX numbers smaller than or equal to AiA_iAi​ in the subsequence Amax(1,i−K),…,Amin(N,i+K)A_{\\mathop{max}(1, i-K)}, \\dots, A_{\\mathop{min}(N, i+K)}Amax(1,i−K)​,…,Amin(N,i+K)​, then there must be exactly XXX numbers smaller than or equal to BiB_iBi​ in the subsequence Bmax(1,i−K),…,Bmin(N,i+K)B_{\\mathop{max}(1, i-K)}, \\dots, B_{\\mathop{min}(N, i+K)}Bmax(1,i−K)​,…,Bmin(N,i+K)​\nB1+B2+⋯+BNB_1 + B_2 + \\dots + B_NB1​+B2​+⋯+BN​ is minimum possible\nYou may notice that for K=N−1K = N-1K=N−1 or K=NK = NK=N, this becomes the well-known technique of coordinate compression.\n\nFor example, consider the sequence A=[4,2,8,1,4,3,8,1]A = [4, 2, 8, 1, 4, 3, 8, 1]A=[4,2,8,1,4,3,8,1]. If we choose K=1K = 1K=1, then the KKK-compressed sequence will be B=[2,1,2,1,2,1,2,1]B = [2, 1, 2, 1, 2, 1, 2, 1]B=[2,1,2,1,2,1,2,1]. The sum of its elements is 121212, which is the minimum.\n\nFor a given integer SSS, find the number of values of KKK (0≤K≤N0 \\le K \\le N0≤K≤N) such that the sum of elements of the KKK-compressed sequence does not exceed SSS.",
     "constraints": [
-      "1≤T≤31 \\le T \\le 31≤T≤3",
-      "1≤N≤1051 \\le N \\le 10^51≤N≤105",
-      "1≤S≤1091 \\le S \\le 10^91≤S≤109",
-      "0≤Ai≤1090 \\le A_i \\le 10^90≤Ai​≤109 for each valid iii",
-      "Subtasks**Subtask #1 (10 points):** 1≤N≤1001 \\le N \\le 1001≤N≤100",
-      "**Subtask #2 (30 points):** 1≤N≤1,0001 \\le N \\le 1,0001≤N≤1,000"
+      "1 ≤ T ≤ 3",
+      "1 ≤ N ≤ 10^5",
+      "1 ≤ S ≤ 10^9",
+      "0 ≤ Ai ≤ 10^9 for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and SSS.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of values of KKK such that the sum of the compressed sequence is ≤S\\le S≤S.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and S. The second line contains N space-separated integers A1, A2, …, AN.",
+    "outputFormat": "For each test case, print a single line containing one integer — the number of values of K such that the sum of the compressed sequence is ≤ S.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n4 8\n2 7 1 12\n8 20\n4 2 8 1 4 3 8 1",
         "output": "2\n4",
-        "explanation": "Explanation:\nExample case 1: The possible values of KKK are 000 and 111."
+        "explanation": "Explanation: Example case 1: The possible values of K are 0 and 1."
       }
     ]
   },
@@ -43,20 +41,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n4 8\n2 7 1 12\n8 20\n4 2 8 1 4 3 8 1",
-        "expectedOutput": "2\n4",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n100000 1000000000\n100000",
+        "expectedOutput": "100001",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n5 10\n1 2 3 4 5",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n10 20\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n10 30\n10 9 8 7 6 5 4 3 2 1",
+        "expectedOutput": "5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -70,9 +101,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we need to iterate over all possible values of K and calculate the sum of the compressed sequence for each K. We can use a sliding window approach to efficiently calculate the sum of the compressed sequence for each K.",
+    "timeComplexity": "O(T * N^2) — explain: per query is O(N^2), total is O(T * N^2)",
+    "spaceComplexity": "O(N) — explain: we need to store the input array and the compressed sequence",
+    "code": {
+      "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, S;\n        scanf(\"%d %d\", &N, &S);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        int count = 0;\n        for (int K = 0; K <= N; K++) {\n            int sum = 0;\n            for (int i = 0; i < N; i++) {\n                int left = (i - K < 0) ? 0 : i - K;\n                int right = (i + K >= N) ? N - 1 : i + K;\n                int rank = 0;\n                for (int j = left; j <= right; j++) {\n                    if (A[j] <= A[i]) {\n                        rank++;\n                    }\n                }\n                sum += rank;\n            }\n            if (sum <= S) {\n                count++;\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, S;\n        cin >> N >> S;\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        int count = 0;\n        for (int K = 0; K <= N; K++) {\n            int sum = 0;\n            for (int i = 0; i < N; i++) {\n                int left = (i - K < 0) ? 0 : i - K;\n                int right = (i + K >= N) ? N - 1 : i + K;\n                int rank = 0;\n                for (int j = left; j <= right; j++) {\n                    if (A[j] <= A[i]) {\n                        rank++;\n                    }\n                }\n                sum += rank;\n            }\n            if (sum <= S) {\n                count++;\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\nimport java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int S = sc.nextInt();\n            int[] A = new int[N];\n            for (int i = 0; i < N; i++) {\n                A[i] = sc.nextInt();\n            }\n            int count = 0;\n            for (int K = 0; K <= N; K++) {\n                int sum = 0;\n                for (int i = 0; i < N; i++) {\n                    int left = (i - K < 0) ? 0 : i - K;\n                    int right = (i + K >= N) ? N - 1 : i + K;\n                    int rank = 0;\n                    for (int j = left; j <= right; j++) {\n                        if (A[j] <= A[i]) {\n                            rank++;\n                        }\n                    }\n                    sum += rank;\n                }\n                if (sum <= S) {\n                    count++;\n                }\n            }\n            System.out.println(count);\n        }\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\ninput = sys.stdin.readline\nT = int(input())\nfor _ in range(T):\n    N, S = map(int, input().split())\n    A = list(map(int, input().split()))\n    count = 0\n    for K in range(N + 1):\n        sum = 0\n        for i in range(N):\n            left = max(0, i - K)\n            right = min(N - 1, i + K)\n            rank = 0\n            for j in range(left, right + 1):\n                if A[j] <= A[i]:\n                    rank += 1\n            sum += rank\n        if sum <= S:\n            count += 1\n    print(count)",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\nconst fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst input = () => lines[idx++];\nconst T = parseInt(input());\nfor (let i = 0; i < T; i++) {\n    const [N, S] = input().split(' ').map(Number);\n    const A = input().split(' ').map(Number);\n    let count = 0;\n    for (let K = 0; K <= N; K++) {\n        let sum = 0;\n        for (let j = 0; j < N; j++) {\n            let left = Math.max(0, j - K);\n            let right = Math.min(N - 1, j + K);\n            let rank = 0;\n            for (let k = left; k <= right; k++) {\n                if (A[k] <= A[j]) {\n                    rank++;\n                }\n            }\n            sum += rank;\n        }\n        if (sum <= S) {\n            count++;\n        }\n    }\n    console.log(count);\n}"
+    }
   }
 }

@@ -4,14 +4,16 @@
   "slug": "longest-consecutive-numbers-in-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Arrays | Sorting | Searching",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "hashing",
-      "data structures and algorithms"
+      "Hash Set",
+      "Consecutive Sequence",
+      "Sorting",
+      "Set"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,31 @@
   },
   "content": {
     "problemStatement": "You are given an array numsnumsnums containing integers.\n\nYour task is to find the **size of the largest subset of consecutive integers**.\nThe order of elements in the original array does not matter — they can be rearranged to form the consecutive sequence.\nThe test cases may contain duplicate values.\n\nFunction DeclarationFunction NamelongestConsecutivelongestConsecutivelongestConsecutive – This function returns the length of the longest sequence of consecutive integers in the array.\n\nParameters\nnumsnumsnums : An array of integers (may contain duplicates and negative values).\nReturn Value\nReturns a single integer — the **length of the longest consecutive integer sequence**.\nConstraints\n1≤nums.length≤1051 \\leq nums.length \\leq 10^51≤nums.length≤105\n−109≤nums[i]≤109−10^9 \\leq nums[i] \\leq 10^9−109≤nums[i]≤109\nDuplicate values may exist\n\nInput Format\n\n\nThe first line of input contains a single integer TTT, denoting the number of test cases.\n\n\n\n\nEach test case consists of multiple lines of input:\n\n\n\nThe first line of each test case contains a single integer NNN — the number of elements in the array.\nThe next line contains NNN space-separated integers nums[i]nums[i]nums[i] — the elements of the array.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the size of the longest consecutive sequence.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 15",
+      "-10^9 <= nums[i] <= 10^9"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements in the array. The second line contains N space‑separated integers.",
+    "outputFormat": "For each test case output a single line with the length of the longest consecutive integer sequence that can be formed from the given numbers (duplicates are ignored).",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n5\n15 12 14 16 13\n7\n50 3 2 1 4 9 6\n6\n100 300 101 103 102 105",
-        "output": "5\n4\n4",
-        "explanation": "Explanation:\nFor the first test case the longest run of consecutive numbers is [12, 13, 14, 15, 16], which has length 5.\nFor the second test case the longest consecutive sequence is [1, 2, 3, 4], giving us length 4.\nFor the third test case the longest consecutive group is [100, 101, 102, 103]."
+        "input": "3\\n5\\n15 12 14 16 13\\n7\\n50 3 2 1 4 9 6\\n6\\n100 300 101 103 102 105",
+        "output": "5\\n4\\n4",
+        "explanation": "First test case: numbers 12‑13‑14‑15‑16 form a run of length 5. Second test case: 1‑2‑3‑4 is the longest run (length 4). Third test case: 100‑101‑102‑103 is the longest run (length 4)."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\n6\\n-1 -2 -3 -4 -5 -6\\n8\\n1 2 2 3 4 5 5 6",
+        "output": "6\\n6",
+        "explanation": "Negative numbers -6 to -1 are consecutive (length 6). After removing duplicates, the second array contains 1‑6 consecutively (length 6)."
+      },
+      {
+        "id": "sample_3",
+        "input": "2\\n1\\n42\\n5\\n10 12 14 16 18",
+        "output": "1\\n1",
+        "explanation": "A single element always yields length 1. In the second case no two numbers are consecutive, so the maximum length is also 1."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n5\n15 12 14 16 13\n7\n50 3 2 1 4 9 6\n6\n100 300 101 103 102 105",
-        "expectedOutput": "5\n4\n4",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1\\n0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\\n15\\n5 3 4 2 1 0 -1 -2 -3 -4 -5 10 10 11 12",
+        "expectedOutput": "11",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case duplicates",
+        "input": "1\\n10\\n7 7 7 7 7 7 7 7 7 7",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\\n8\\n-10 -9 -8 -6 -5 0 1 2",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\\n12\\n100 4 5 6 7 8 9 10 200 201 202 203",
+        "expectedOutput": "7",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "For each test case we insert all numbers into a hash set to eliminate duplicates and allow O(1) look‑ups. Then we iterate over the set; a number x is the start of a consecutive run if x‑1 is not in the set. From each start we extend forward while x+1, x+2, … are present, counting the length of that run. The maximum length over all runs is the answer. This runs in linear time on the number of distinct elements and uses linear extra space.",
+    "timeComplexity": "O(N) per test case, where N is the number of elements (duplicates are ignored). Overall O(T·N).",
+    "spaceComplexity": "O(N) for the hash set storing distinct numbers.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\nint compare(const void *a, const void *b){\n    long long av = *(const long long*)a;\n    long long bv = *(const long long*)b;\n    if(av < bv) return -1;\n    if(av > bv) return 1;\n    return 0;\n}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        long long *arr = malloc(N * sizeof(long long));\n        for(int i=0;i<N;i++) scanf(\"%lld\", &arr[i]);\n        qsort(arr, N, sizeof(long long), compare);\n        int maxLen = 0, curLen = 0;\n        long long prev = 0; bool first = true;\n        for(int i=0;i<N;i++){\n            if(first || arr[i] != prev){\n                if(first || arr[i] != prev + 1){\n                    if(!first && curLen > maxLen) maxLen = curLen;\n                    curLen = 1;\n                } else {\n                    curLen++;\n                }\n                prev = arr[i];\n                first = false;\n            }\n        }\n        if(curLen > maxLen) maxLen = curLen;\n        printf(\"%d\\n\", maxLen);\n        free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        unordered_set<long long> s; s.reserve(N*2);\n        for(int i=0;i<N;i++){\n            long long x; cin>>x; s.insert(x);\n        }\n        int best = 0;\n        for(const long long &x : s){\n            if(s.find(x-1) == s.end()){\n                int len = 1;\n                long long cur = x+1;\n                while(s.find(cur) != s.end()){\n                    ++len; ++cur;\n                }\n                if(len > best) best = len;\n            }\n        }\n        cout << best << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            st = new StringTokenizer(br.readLine());\n            HashSet<Long> set = new HashSet<>(N * 2);\n            for (int i = 0; i < N; i++) {\n                set.add(Long.parseLong(st.nextToken()));\n            }\n            int best = 0;\n            for (Long val : set) {\n                if (!set.contains(val - 1)) {\n                    int len = 1;\n                    long cur = val + 1;\n                    while (set.contains(cur)) {\n                        ++len; ++cur;\n                    }\n                    if (len > best) best = len;\n                }\n            }\n            sb.append(best).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        s = set()\n        for _ in range(N):\n            s.add(int(next(it)))\n        best = 0\n        for x in s:\n            if x - 1 not in s:\n                cur = x\n                length = 0\n                while cur in s:\n                    length += 1\n                    cur += 1\n                if length > best:\n                    best = length\n        out.append(str(best))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(data[idx++]);\nlet results = [];\nfor(let t=0; t<T; t++){\n  const N = Number(data[idx++]);\n  const set = new Set();\n  for(let i=0;i<N;i++) set.add(Number(data[idx++]));\n  let best = 0;\n  for(const val of set){\n    if(!set.has(val-1)){\n      let cur = val;\n      let len = 0;\n      while(set.has(cur)){\n        len++; cur++;\n      }\n      if(len>best) best = len;\n    }\n  }\n  results.push(String(best));\n}\nconsole.log(results.join('\\n'));\n"
+    }
   }
 }

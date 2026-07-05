@@ -4,14 +4,14 @@
   "slug": "reverse",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Strings",
     "difficulty": "Medium",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "strings",
-      "competitive programming"
+      "String Manipulation",
+      "Text Processing"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +21,29 @@
   "content": {
     "problemStatement": "In this problem the input will consist of a number of lines of English text consisting of the letters of the English alphabet, the punctuation marks `'` (apostrophe), `.` (full stop), `,` (comma), `;` (semicolon), `:`(colon) and white space characters (blank, newline). Your task is print the words in the text in reverse order without any punctuation marks.\n\nFor example consider the following candidate for the input text:\n\n \n\n`  This is a sample piece of text to illustrate this \n  problem.  If you are smart you will solve this right.\n` \n\nThe corresponding output would read as:\n\n \n\n`  right this solve will you smart are you If problem\n  this illustrate to text of piece sample a is This\n` \n\nThat is, the lines are printed in reverse order and in each line the words are printed in reverse order.\n\nInput:The first line of input contains a single integer NNN, indicating the number of lines in the input. This is followed by NNN lines of input text.\n\nOutput:NNN lines of output text containing the input lines in reverse order and where each line contains the words in reverse order as illustrated above.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000.",
-      "There are at most 808080 characters in each line"
+      "1 <= N <= 10000",
+      "There are at most 80 characters in each line"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains a single integer N, indicating the number of lines in the input. This is followed by N lines of input text.",
+    "outputFormat": "N lines of output text containing the input lines in reverse order and where each line contains the words in reverse order.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\nThis is a sample piece of text to illustrate this \nproblem.  If you are smart you will solve this right.",
         "output": "right this solve will you smart are you If problem\nthis illustrate to text of piece sample a is This",
-        "explanation": ""
+        "explanation": "The input has 2 lines. The first line is 'This is a sample piece of text to illustrate this ' and the second line is 'problem.  If you are smart you will solve this right.'. The output has the lines in reverse order and the words in each line in reverse order."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\nHello World",
+        "output": "World Hello",
+        "explanation": "The input has 1 line with 2 words. The output has the words in reverse order."
+      },
+      {
+        "id": "sample_3",
+        "input": "3\nLine 1\nLine 2\nLine 3",
+        "output": "Line 3\nLine 2\nLine 1",
+        "explanation": "The input has 3 lines. The output has the lines in reverse order."
       }
     ]
   },
@@ -39,20 +51,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\nThis is a sample piece of text to illustrate this \nproblem.  If you are smart you will solve this right.",
-        "expectedOutput": "right this solve will you smart are you If problem\nthis illustrate to text of piece sample a is This",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\na",
+        "expectedOutput": "a",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "10000\nLine 1\nLine 2\nLine 3",
+        "expectedOutput": "Line 3\nLine 2\nLine 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "0",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "2\nHello World\nThis is a test",
+        "expectedOutput": "test a is This\nWorld Hello",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "3\nLine 1\nLine 2\nLine 3",
+        "expectedOutput": "Line 3\nLine 2\nLine 1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,9 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;sstream&gt;\n#include &lt;cctype&gt;\nusing namespace std;\n \nint main() {\n    int N;\n    cin &gt;&gt; N;\n    cin.ignore();\n    vector&lt;string&gt; lines;\n    for (int i = 0; i &lt; N; i++) {\n        string line;\n        getline(cin, line);\n        lines.push_back(line);\n    }\n \n    // Process lines in reverse order\n    for (int i = N - 1; i &gt;= 0; i--) {\n        string cleaned = \"\";\n        // Remove punctuation by checking each character\n        for (char ch : lines[i]) {\n            if (isalpha(ch) || isspace(ch))\n                cleaned.push_back(ch);\n            else {\n                // Replace punctuation with a space to maintain word separation\n                cleaned.push_back(' ');\n            }\n        }\n \n        // Split the cleaned line into words using stringstream\n        stringstream ss(cleaned);\n        vector&lt;string&gt; words;\n        string word;\n        while(ss &gt;&gt; word) {\n            words.push_back(word);\n        }\n \n        // Reverse the order of words and output them\n        for (int j = words.size() - 1; j &gt;= 0; j--) {\n            cout &lt;&lt; words[j];\n            if (j &gt; 0)\n                cout &lt;&lt; \" \";\n        }\n        cout &lt;&lt; \"\\n\";\n    }\n \n    return 0;\n}\n``def main():\n    import sys\n    input_data = sys.stdin.read().splitlines()\n    if not input_data:\n        return\n    N = int(input_data[0])\n    lines = input_data[1:]\n    result = []\n    punctuation = set([\"'\", \".\", \",\", \";\", \":\"])\n    for line in lines:\n        cleaned = []\n        for ch in line:\n            if ch.isalpha() or ch.isspace():\n                cleaned.append(ch)\n            elif ch in punctuation:\n                # Replace punctuation with a space to ensure separation between words\n                cleaned.append(\" \")\n            else:\n                cleaned.append(ch)\n        cleaned_line = \"\".join(cleaned)\n        words = cleaned_line.split()\n        result.append(words)\n    # Process the list of word lists in reverse order (reverse the lines and reverse each word list)\n    output_lines = []\n    for words in result[::-1]:\n        output_lines.append(\" \".join(words[::-1]))\n    print(\"\\n\".join(output_lines))\n \nif __name__ == \"__main__\":\n    main()\n`Approach 2: Using Regular ExpressionsThis approach leverages regular expressions to simplify punctuation removal. By using a regular expression, we can match and remove all defined punctuation marks in one step.\n\n**Step-by-Step Explanation:**\n\n\n\n**Input Reading and Storage:**\n\nAs in Approach 1, we first read the input lines and store them.\n\n\n\n\n**Punctuation Removal with Regex:**\n\nIn C++, we use the `std::regex_replace` function from the `&lt;regex&gt;` library. In Python, we use `re.sub` to replace any occurrence of the punctuation marks (′'′, ..., ,,,, ;;;, :::) with an empty string.\n\n\n\n\n**Splitting and Reversing:**\n\nAfter cleaning the line, we split it into words (using `stringstream` in C++ or `split()` in Python) and then reverse the order of the words.\n\n\n\n\n**Reversing the Lines:**\n\nFinally, we output the processed lines in reverse order.\n\n\n\n**Advantages:**\n\n\nThis approach simplifies the code that removes punctuation.\nRegular expressions can be more concise and easier to maintain for pattern-based replacements.\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\n#include &lt;sstream&gt;\n#include &lt;regex&gt;\nusing namespace std;\n \nint main() {\n    int N;\n    cin &gt;&gt; N;\n    cin.ignore();\n    vector&lt;string&gt; lines;\n    for (int i = 0; i &lt; N; i++) {\n        string line;\n        getline(cin, line);\n        lines.push_back(line);\n    }\n \n    // Define a regex pattern for the punctuation marks: apostrophe, period, comma, semicolon, colon\n    regex punctuation_regex(\"[',.;:]\");\n \n    // Process lines in reverse order\n    for (int i = N - 1; i &gt;= 0; i--) {\n        // Remove punctuation using regex_replace\n        string no_punct = regex_replace(lines[i], punctuation_regex, \"\");\n \n        // Split the cleaned line into words using stringstream\n        stringstream ss(no_punct);\n        vector&lt;string&gt; words;\n        string word;\n        while (ss &gt;&gt; word) {\n            words.push_back(word);\n        }\n \n        // Reverse the order of words and output them\n        for (int j = words.size() - 1; j &gt;= 0; j--) {\n            cout &lt;&lt; words[j];\n            if (j &gt; 0)\n                cout &lt;&lt; \" \";\n        }\n        cout &lt;&lt; \"\\n\";\n    }\n \n    return 0;\n}\n``import re\nimport sys\n \ndef main():\n    data = sys.stdin.read().splitlines()\n    if not data:\n        return\n    N = int(data[0])\n    lines = data[1:]\n    output_lines = []\n    # Process lines in reverse order\n    for line in lines[::-1]:\n        # Remove punctuation using regex substitution\n        no_punct = re.sub(r\"[',.;:]\", \"\", line)\n        words = no_punct.split()\n        output_lines.append(\" \".join(words[::-1]))\n    print(\"\\n\".join(output_lines))\n \nif __name__ == \"__main__\":\n    main()\n`ConclusionBoth approaches effectively solve the problem. **Approach 1** gives you a deeper understanding of basic string manipulation by iterating over each character, while **Approach 2** demonstrates the power of regular expressions to simplify the process of pattern matching and replacement. Students are encouraged to try both methods and understand the underlying mechanisms to strengthen their grasp of string processing in different programming languages.\n\nHappy Coding!",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we first read the number of lines N. Then, we read each line and store it in an array. After that, we reverse the order of the lines and the order of the words in each line. We use a loop to iterate over each line, split the line into words, reverse the order of the words, and join them back into a line. Finally, we print the modified lines.",
+    "timeComplexity": "O(N * M) — where N is the number of lines and M is the maximum number of words in a line. The reason is that we iterate over each line and each word in the line.",
+    "spaceComplexity": "O(N * M) — where N is the number of lines and M is the maximum number of words in a line. The reason is that we store all the lines and words in memory.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\n#define MAX 10000\n#define MAX_LINE 80\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    getchar(); // consume newline\n    char lines[N][MAX_LINE];\n    for (int i = 0; i < N; i++) {\n        fgets(lines[i], MAX_LINE, stdin);\n        lines[i][strcspn(lines[i], \"\\n\")] = 0; // remove newline\n    }\n    for (int i = N - 1; i >= 0; i--) {\n        char *word = strtok(lines[i], \" \");\n        while (word != NULL) {\n            printf(\"%s \", word);\n            word = strtok(NULL, \" \");\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <vector>\n#include <sstream>\nusing namespace std;\nint main() {\n    int N;\n    cin >> N;\n    cin.ignore(); // ignore newline\n    vector<string> lines(N);\n    for (int i = 0; i < N; i++) {\n        getline(cin, lines[i]);\n    }\n    for (int i = N - 1; i >= 0; i--) {\n        istringstream iss(lines[i]);\n        vector<string> words;\n        string word;\n        while (iss >> word) {\n            words.push_back(word);\n        }\n        for (int j = words.size() - 1; j >= 0; j--) {\n            cout << words[j] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        sc.nextLine(); // consume newline\n        String[] lines = new String[N];\n        for (int i = 0; i < N; i++) {\n            lines[i] = sc.nextLine();\n        }\n        for (int i = N - 1; i >= 0; i--) {\n            String[] words = lines[i].split(\" \");\n            for (int j = words.length - 1; j >= 0; j--) {\n                System.out.print(words[j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}",
+      "Python3": "import sys\nN = int(input())\nlines = [input() for _ in range(N)]\nfor line in reversed(lines):\n    words = line.split()\n    print(' '.join(reversed(words)))",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nlet N = parseInt(lines[idx++]);\nlet inputLines = lines.slice(idx, idx + N);\nidx += N;\nlet output = '';\nfor (let i = N - 1; i >= 0; i--) {\n    let words = inputLines[i].split(' ');\n    let reversedWords = words.reverse().join(' ');\n    output += reversedWords + '\\n';\n}\nconsole.log(output);"
+    }
   }
 }

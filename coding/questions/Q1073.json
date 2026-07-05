@@ -4,14 +4,16 @@
   "slug": "union-memory-overlap",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "structs & unions",
-      "programming languages"
+      "Union",
+      "Simulation",
+      "Basic I/O",
+      "Data Types"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,31 @@
   },
   "content": {
     "problemStatement": "A **union** in C stores different data types in the **same memory location**.\n\nThis means assigning a new member overwrites the previously stored value.\n\nYou must simulate a union `Test` containing:\n\n\nint a\nfloat b\nchar c\nYou will receive:\n\n\nAn integer\nA float\nA character\nAfter assigning each value (in the above order), print the values of all members.\n\nSince a union shares memory, only the **last assigned value** is valid; others become **garbage**.\n\n\nInput Format\nInput contains three lines of inputs:\n\n\n\nFirst line contains an Integer `a`\nSecond line contains a Float `b`\nThird line contains a Character `c`\n\n\nOutput Format\nPrint three lines:\n\n\n`After assigning int: a = &lt;value&gt;, b = &lt;value&gt;, c = &lt;value&gt;\nAfter assigning float: a = &lt;value&gt;, b = &lt;value&gt;, c = &lt;value&gt;\nAfter assigning char: a = &lt;value&gt;, b = &lt;value&gt;, c = &lt;value&gt;\n`\nUse the word `garbage` for invalid values and for float values print it up to two decimal places.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= a <= 1000",
+      "0.0 <= b <= 1000.0",
+      "c is a printable ASCII character"
+    ],
+    "inputFormat": "Three lines of input:\nFirst line contains an integer a.\nSecond line contains a floating‑point number b.\nThird line contains a character c.",
+    "outputFormat": "Print three lines:\nAfter assigning int: a = <value>, b = garbage, c = garbage\nAfter assigning float: a = garbage, b = <value>, c = garbage\nAfter assigning char: a = garbage, b = garbage, c = <value>\nPrint the floating‑point value with exactly two digits after the decimal point.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "10\n3.5\nZ",
-        "output": "After assigning int: a = 10, b = garbage, c = garbage\nAfter assigning float: a = garbage, b = 3.5, c = garbage\nAfter assigning char: a = garbage, b = garbage, c = Z",
-        "explanation": ""
+        "input": "10\\n3.5\\nZ",
+        "output": "After assigning int: a = 10, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 3.50, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = Z",
+        "explanation": "The integer 10 is read first and printed with garbage for the other members. Then 3.5 is read and printed as the valid float. Finally character Z is read and printed as the valid char."
+      },
+      {
+        "id": "sample_2",
+        "input": "1000\\n0.0\\nA",
+        "output": "After assigning int: a = 1000, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 0.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = A",
+        "explanation": "Demonstrates handling of the maximum allowed integer and a zero float."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1.0\\n1",
+        "output": "After assigning int: a = 1, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 1.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = 1",
+        "explanation": "All three values are distinct but look similar; the program treats them according to their type."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "10\n3.5\nZ",
-        "expectedOutput": "After assigning int: a = 10, b = garbage, c = garbage\nAfter assigning float: a = garbage, b = 3.5, c = garbage\nAfter assigning char: a = garbage, b = garbage, c = Z",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n0.0\\na",
+        "expectedOutput": "After assigning int: a = 1, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 0.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = a",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1000\\n1000.0\\n~",
+        "expectedOutput": "After assigning int: a = 1000, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 1000.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = ~",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5\\n5.55\\n5",
+        "expectedOutput": "After assigning int: a = 5, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 5.55, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\\n0.0\\na",
+        "expectedOutput": "After assigning int: a = 1, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 0.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = a",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\\n0.0\\na",
+        "expectedOutput": "After assigning int: a = 1, b = garbage, c = garbage\\nAfter assigning float: a = garbage, b = 0.00, c = garbage\\nAfter assigning char: a = garbage, b = garbage, c = a",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {}
+    "approach": "Read the three values in the given order. After reading each value, output a line that shows the just‑assigned member with its actual value and the other two members as \"garbage\". The float is printed with two decimal places. The algorithm runs in O(1) time and O(1) extra space.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C": "#include <stdio.h>\n\nint main() {\n    int a;\n    float b;\n    char c;\n    if (scanf(\"%d\", &a) != 1) return 0;\n    printf(\"After assigning int: a = %d, b = garbage, c = garbage\\n\", a);\n    if (scanf(\"%f\", &b) != 1) return 0;\n    printf(\"After assigning float: a = garbage, b = %.2f, c = garbage\\n\", b);\n    if (scanf(\" %c\", &c) != 1) return 0; // leading space skips whitespace\n    printf(\"After assigning char: a = garbage, b = garbage, c = %c\\n\", c);\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int a; float b; char c;\n    if (!(cin >> a)) return 0;\n    cout << \"After assigning int: a = \" << a << \", b = garbage, c = garbage\\n\";\n    if (!(cin >> b)) return 0;\n    cout << \"After assigning float: a = garbage, b = \" << fixed << setprecision(2) << b << \", c = garbage\\n\";\n    if (!(cin >> c)) return 0;\n    cout << \"After assigning char: a = garbage, b = garbage, c = \" << c << \"\\n\";\n    return 0;\n}",
+      "Java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line;\n        line = br.readLine();\n        if (line == null) return;\n        int a = Integer.parseInt(line.trim());\n        System.out.println(\"After assigning int: a = \" + a + \", b = garbage, c = garbage\");\n        line = br.readLine();\n        if (line == null) return;\n        float b = Float.parseFloat(line.trim());\n        System.out.printf(\"After assigning float: a = garbage, b = %.2f, c = garbage\\n\", b);\n        line = br.readLine();\n        if (line == null) return;\n        char c = line.trim().charAt(0);\n        System.out.println(\"After assigning char: a = garbage, b = garbage, c = \" + c);\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().splitlines()\n    if len(data) < 3:\n        return\n    a = int(data[0].strip())\n    print(f\"After assigning int: a = {a}, b = garbage, c = garbage\")\n    b = float(data[1].strip())\n    print(f\"After assigning float: a = garbage, b = {b:.2f}, c = garbage\")\n    c = data[2].strip()[0]\n    print(f\"After assigning char: a = garbage, b = garbage, c = {c}\")\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf8').trim().split(/\\n/);\nif (lines.length < 3) process.exit(0);\nconst a = parseInt(lines[0].trim(), 10);\nconsole.log(`After assigning int: a = ${a}, b = garbage, c = garbage`);\nconst b = parseFloat(lines[1].trim());\nconsole.log(`After assigning float: a = garbage, b = ${b.toFixed(2)}, c = garbage`);\nconst c = lines[2].trim()[0];\nconsole.log(`After assigning char: a = garbage, b = garbage, c = ${c}`);"
+    }
   }
 }

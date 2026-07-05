@@ -4,14 +4,15 @@
   "slug": "distance-coloring",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Math",
+    "category": "Combinatorics",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "combinatorics & number theory",
-      "data structures and algorithms"
+      "permutations",
+      "factorial",
+      "combinatorics"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +22,30 @@
   "content": {
     "problemStatement": "You have NNN stones in a row, numbered from 111 to NNN. You also have KKK different colors with you.\n\nWe know that the number of different ways of coloring these NNN stones with these KKK colors is KNK^NKN. But you now add an extra condition:\n\n\nIf ∣j−i∣&lt;K|j - i| &lt; K∣j−i∣&lt;K, then Stone iii and Stone jjj cannot have the same color.\nIn other words, you cannot color two stones with the same color if they are &lt;K\\lt K&lt;K distance apart.\n\nFind the number of different ways of coloring the stones with this extra condition. Since the answer might be large, output it modulo 109+710^9 + 7109+7.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe only line of each test case contains two space-separated integers NNN and KKK — the number of stones and the number of colors that you have, respectively.\n\n\nOutput Format\nFor each test case, output on a new line the number of different ways of coloring, modulo 109+710^9 + 7109+7.",
     "constraints": [
-      "1≤T≤100001 \\leq T \\leq 100001≤T≤10000",
-      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
-      "1≤K≤1001 \\leq K \\leq 1001≤K≤100"
+      "1 <= T <= 10000",
+      "1 <= N <= 100",
+      "1 <= K <= 100"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space-separated integers N and K — the number of stones and the number of available colors.",
+    "outputFormat": "For each test case, output a single line containing the number of valid colorings modulo 1000000007.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n1 1\n1 2\n2 1\n2 2",
         "output": "1\n2\n1\n2",
-        "explanation": "Explanation:\nIf there are KKK colors, we will denote the colors as C1,C2,…,CKC_1, C_2, \\ldots, C_KC1​,C2​,…,CK​.\nTestcase 1: N=1N = 1N=1, and K=1K = 1K=1.\nSo we need to find the number of ways of coloring 111 stone, using the colors {C1}\\{C_1\\}{C1​}, and ensuring that no two stones which are at a distance of <1< 1<1 apart have the same color.\nThe only way to do so is by coloring Stone 111 with C1C_1C1​. So the answer is 111.\nTestcase 2: N=1N = 1N=1, and K=2K = 2K=2.\nSo we need to find the number of ways of coloring 111 stone, using the colors {C1,C2}\\{C_1, C_2\\}{C1​,C2​}, and ensuring that no two stones which are at a distance of <2< 2<2 apart have the same color.\nThe two ways to do so are by coloring Stone 111 with either C1C_1C1​ or C2C_2C2​. So the answer is 222.\nTestcase 3: N=2N = 2N=2, and K=1K = 1K=1.\nSo we need to find the number of ways of coloring 222 stones, using the colors {C1}\\{C_1\\}{C1​}, and ensuring that no two stones which are at a distance of <1< 1<1 apart have the same color.\nThe only way to do so is by coloring both Stones with C1C_1C1​. So the answer is 111.\nTestcase 4: N=2N = 2N=2, and K=2K = 2K=2.\nSo we need to find the number of ways of coloring 222 stones, using the colors {C1,C2}\\{C_1, C_2\\}{C1​,C2​}, and ensuring that no two stones which are at a distance of <2< 2<2 apart have the same color.\nThe two ways to do so are:\n\ncoloring Stone 111 with C1C_1C1​ and Stone 222 with C2C_2C2​\ncoloring Stone 111 with C2C_2C2​ and Stone 222 with C1C_1C1​\n\nNote that you cannot color both Stones with the same color, since 2−1<K2 - 1 < K2−1<K.\nSo, the answer is 222."
+        "explanation": "For N<=K we multiply the decreasing sequence K·(K‑1)…; for N>K the answer is K!."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 2",
+        "output": "2",
+        "explanation": "N=3>K=2, so the answer is 2! = 2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4 3",
+        "output": "6",
+        "explanation": "N=4>K=3, answer = 3! = 6."
       }
     ]
   },
@@ -40,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n1 1\n1 2\n2 1\n2 2",
-        "expectedOutput": "1\n2\n1\n2",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n100 100",
+        "expectedOutput": "437918130",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "3\n5 5\n5 5\n5 5",
+        "expectedOutput": "120\n120\n120",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n10 3",
+        "expectedOutput": "6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\n2 1\n3 5\n7 7\n8 4\n1 100",
+        "expectedOutput": "1\n60\n5040\n24\n100",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "If N <= K we must assign N distinct colors, so the answer is the falling factorial K·(K‑1)…(K‑N+1). If N > K, the first K stones must all be different; thereafter each stone is forced to repeat the color that appeared K positions earlier, making the whole sequence a repetition of the first K colors. Hence the number of colourings equals K! in this case. Pre‑compute factorials up to 100 modulo MOD and answer each test case in O(min(N,K)) time.",
+    "timeComplexity": "O(T * min(N, K)) which is at most O(T * 100).",
+    "spaceComplexity": "O(1) extra per test case, plus O(100) for the factorial table.",
+    "code": {
+      "C": "#include <stdio.h>\n#define MOD 1000000007LL\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    long long fact[101]; fact[0]=1;\n    for(int i=1;i<=100;++i) fact[i]=fact[i-1]*i%MOD;\n    while(T--){\n        int N,K; scanf(\"%d %d\",&N,&K);\n        long long ans;\n        if(N>K) ans=fact[K];\n        else{ ans=1; for(int i=0;i<N;++i) ans=ans*(K-i)%MOD; }\n        printf(\"%lld\\n\",ans);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007LL;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    vector<long long> fact(101,1);\n    for(int i=1;i<=100;++i) fact[i]=fact[i-1]*i%MOD;\n    while(T--){\n        int N,K; cin>>N>>K;\n        long long ans;\n        if(N>K) ans=fact[K];\n        else{ ans=1; for(int i=0;i<N;++i) ans=ans*(K-i)%MOD; }\n        cout<<ans<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    static final long MOD = 1_000_000_007L;\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        long[] fact = new long[101];\n        fact[0]=1;\n        for(int i=1;i<=100;++i) fact[i]=fact[i-1]*i%MOD;\n        for(int tc=0; tc<T; ++tc){\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int K = Integer.parseInt(st.nextToken());\n            long ans;\n            if(N>K) ans = fact[K];\n            else{ ans=1; for(int i=0;i<N;++i) ans = ans * (K - i) % MOD; }\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\nMOD = 1000000007\nfact = [1]*101\nfor i in range(1,101):\n    fact[i] = fact[i-1]*i % MOD\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); K = int(next(it))\n        if N > K:\n            ans = fact[K]\n        else:\n            ans = 1\n            for i in range(N):\n                ans = ans * (K - i) % MOD\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst MOD = 1000000007n;\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nconst fact = Array(101).fill(0n);\nfact[0] = 1n;\nfor(let i=1;i<=100;++i) fact[i] = (fact[i-1] * BigInt(i)) % MOD;\nlet out = [];\nfor(let t=0; t<T; ++t){\n  const N = Number(input[idx++]);\n  const K = Number(input[idx++]);\n  let ans;\n  if(N > K) ans = fact[K];\n  else{ ans = 1n; for(let i=0;i<N;++i) ans = (ans * BigInt(K - i)) % MOD; }\n  out.push(ans.toString());\n}\nconsole.log(out.join('\\n'));"
+    }
   }
 }

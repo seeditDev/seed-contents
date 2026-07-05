@@ -4,14 +4,15 @@
   "slug": "count-uppercase-and-lowercase-characters",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "strings",
-      "programming languages"
+      "String Traversal",
+      "Counting",
+      "Implementation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,29 +21,85 @@
   },
   "content": {
     "problemStatement": "Write a C program that prints the count of uppercase and lowercase alphabets in the given string.\n\nTask\nA string variable **str** is given in the IDE, with some string assigned to it.\nThe string consists of only English alphabets.\nCount the uppercase and lowercase alphabets and print them on console with a space between them.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
-    "sampleTestCases": []
+    "constraints": [
+      "1 <= T <= 100",
+      "1 <= |S| <= 100",
+      "S contains only characters 'A'-'Z' and 'a'-'z'"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting only of English alphabet letters (A‑Z, a‑z).",
+    "outputFormat": "For each test case output two integers separated by a space: the number of uppercase letters and the number of lowercase letters in S. Print each test case result on its own line.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\nChefSaysHi\nHelloWorld",
+        "output": "3 7\n2 8",
+        "explanation": "First string: uppercase letters C, S, H → 3, lowercase letters → 7. Second string: uppercase letters H, W → 2, lowercase letters → 8."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\nABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "output": "26 0",
+        "explanation": "All 26 characters are uppercase, no lowercase letters."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\naaaaaaaaaa",
+        "output": "0 10",
+        "explanation": "All characters are lowercase, so uppercase count is 0 and lowercase count is 10."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\nA",
+        "expectedOutput": "1 0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "expectedOutput": "100 0",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "expectedOutput": "0 50",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\nAbCdEfGhIj",
+        "expectedOutput": "5 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\nCodeChef\nHELLOworld\nz",
+        "expectedOutput": "2 6\n5 5\n0 1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -56,11 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case we scan the string once and maintain two counters: one for uppercase characters (c >= 'A' && c <= 'Z') and one for lowercase characters (c >= 'a' && c <= 'z'). After processing the whole string we output the two counters. The algorithm is linear in the length of the string and uses only constant extra space.",
+    "timeComplexity": "O(|S|) per test case, O(total length of all strings) overall.",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C": "// Solution\n#include <stdio.h>\n\nint main() {\n    char str[] = \"ChefSaysHi\";\n    int upper_case_count = 3; // 'C', 'S', 'H';\n    int lower_case_count = 7; // 'h', 'e', 'f', 'a', 'y', 's', 'i'\n    printf(\"%d %d\", upper_case_count, lower_case_count);\n    return 0;\n}\n"
+      "C": "#include <stdio.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; char str[105]; while(T--){scanf(\"%s\",str); int upper=0, lower=0; for(int i=0; str[i]!='\\0'; ++i){if(str[i]>='A' && str[i]<='Z') ++upper; else if(str[i]>='a' && str[i]<='z') ++lower;} printf(\"%d %d\", upper, lower); if(T) printf(\"\\n\");} return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; string s; while(T--){cin>>s; int upper=0, lower=0; for(char c: s){if(c>='A' && c<='Z') ++upper; else if(c>='a' && c<='z') ++lower;} cout<<upper<<' '<<lower; if(T) cout<<'\\n';} return 0; }",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        int T=Integer.parseInt(br.readLine().trim());\n        StringBuilder sb=new StringBuilder();\n        for(int t=0;t<T;t++){\n            String s=br.readLine().trim();\n            int upper=0, lower=0;\n            for(int i=0;i<s.length();i++){\n                char c=s.charAt(i);\n                if(c>='A' && c<='Z') upper++;\n                else if(c>='a' && c<='z') lower++;\n            }\n            sb.append(upper).append(' ').append(lower);\n            if(t!=T-1) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\ndef main():\n    data=sys.stdin.read().splitlines()\n    if not data:\n        return\n    T=int(data[0])\n    out=[]\n    for i in range(1,T+1):\n        s=data[i].strip()\n        upper=sum(1 for c in s if 'A'<=c<='Z')\n        lower=sum(1 for c in s if 'a'<=c<='z')\n        out.append(f\"{upper} {lower}\")\n    sys.stdout.write('\\n'.join(out))\nif __name__==\"__main__\":\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split('\\n');\nif(input.length===0) process.exit(0);\nlet T=parseInt(input[0].trim(),10);\nlet res=[];\nfor(let i=1;i<=T;i++){\n  const s=input[i].trim();\n  let upper=0, lower=0;\n  for(const ch of s){\n    if(ch>='A' && ch<='Z') upper++;\n    else if(ch>='a' && ch<='z') lower++;\n  }\n  res.push(`${upper} ${lower}`);\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,14 @@
   "slug": "kth-largest-node-in-bst",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Trees",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Binary Search Tree",
+      "Reverse Inorder Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +21,33 @@
   "content": {
     "problemStatement": "Given a binary search tree and an integer KKK, find the KKKth largest node in it.\n\nFor eg., if K = 3, the answer would be 5 for the following BST:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and KKK — the number of nodes in the binary search tree, and the value of KKK.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on a single line - the KKKth largest node in the given BST.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
-      "RiR_iRi​ = `L` or `R`",
-      "All pip_ipi​'s and cic_ici​'s are distinct.",
-      "1≤K≤N1 \\leq K \\leq N1≤K≤N"
+      "1 <= T <= 10",
+      "1 <= N <= 10000",
+      "1 <= K <= N",
+      "1 <= pi, ci <= 100000",
+      "Ri is either 'L' or 'R'",
+      "All node values are distinct and form a valid BST"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains two space-separated integers N and K — the number of nodes in the BST and the required Kth largest value. The next N-1 lines each contain three space-separated entries: pi ci Ri, where pi is the parent node value, ci is the child node value, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi).",
+    "outputFormat": "For each test case, output a single line containing the Kth largest node value in the given BST.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "7 3\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
+        "input": "1\n7 3\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
         "output": "5",
-        "explanation": ""
+        "explanation": "The BST built from the edges is:\n       4\n     /   \\\n    2     6\n   / \\\\   / \\\n  1   3 5   7\nReverse inorder visits nodes as 7,6,5,4,3,2,1. The 3rd visited node is 5."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5 2\n3 2 L\n3 4 R\n2 1 L\n4 5 R",
+        "output": "4",
+        "explanation": "The BST built from the edges is:\n       3\n     /   \\\n    2     4\n   /       \\\n  1         5\nReverse inorder visits nodes as 5,4,3,2,1. The 2nd visited node is 4."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n3 1\n2 1 L\n2 3 R",
+        "output": "3",
+        "explanation": "The BST built from the edges is:\n       2\n     /   \\\n    1     3\nReverse inorder visits nodes as 3,2,1. The 1st visited node is 3."
       }
     ]
   },
@@ -42,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "7 3\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
-        "expectedOutput": "5",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1\n",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n10000 10000\n",
+        "expectedOutput": "10000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5 3\n5 4 L\n5 3 R\n4 2 L\n4 1 R",
+        "expectedOutput": "3",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n10 5\n10 8 L\n10 12 R\n8 6 L\n8 9 R\n12 11 L\n12 13 R\n6 5 L\n6 7 R\n11 10 L\n11 14 R",
+        "expectedOutput": "8",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "2\n5 2\n3 2 L\n3 4 R\n2 1 L\n4 5 R\n10 5\n10 8 L\n10 12 R\n8 6 L\n8 9 R\n12 11 L\n12 13 R\n6 5 L\n6 7 R\n11 10 L\n11 14 R",
+        "expectedOutput": "4\n8",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "To find the Kth largest node in a BST, we can use reverse inorder traversal. In a BST, the reverse inorder traversal visits nodes in descending order. We can use a stack to perform the reverse inorder traversal iteratively. We start by pushing the root node onto the stack and then enter a loop where we keep popping nodes from the stack, incrementing a counter, and checking if the counter is equal to K. If it is, we return the value of the current node. If not, we push the left child of the current node onto the stack and repeat the process.",
+    "timeComplexity": "O(N) per test case, O(T*N) total, where N is the number of nodes in the BST and T is the number of test cases.",
+    "spaceComplexity": "O(N) — for the stack used in the reverse inorder traversal.",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nvoid inOrder(Node* root, vector<int> &nodes){\n    if(root == NULL)\n      return;\n    inOrder(root -> left, nodes);\n    nodes.push_back(root->val);\n    inOrder(root -> right, nodes);\n}\n\nclass Solution {\n  public:\n    int kthLargestNode(Node* root, int k) {\n        vector<int> nodes;\n        inOrder(root, nodes);\n        return nodes[(int)nodes.size() - k];\n    }\n};",
-      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\ndef in_order(root, nodes):\n    if root is None:\n        return\n    in_order(root.left, nodes)\n    nodes.append(root.val)\n    in_order(root.right, nodes)\n\nclass Solution:\n    def kth_largest_node(self, root, k):\n        nodes = []\n        in_order(root, nodes)\n        if k > len(nodes):\n            raise ValueError(\"k is out of bounds\")\n        return nodes[-k]\n",
-      "C": "// #include <stdio.h>\n// #include <stdlib.h>\n// #include <stdbool.h>\n\n// #define MAX_NODES 1000\n\n// typedef struct Node {\n//     int val;\n//     struct Node* left;\n//     struct Node* right;\n// } Node;\n\n// Node* newNode(int val) {\n//     Node* node = (Node*)malloc(sizeof(Node));\n//     node->val = val;\n//     node->left = NULL;\n//     node->right = NULL;\n//     return node;\n// }\n\nvoid inOrder(Node* root, int* nodes, int* index) {\n    if (root == NULL)\n        return;\n    inOrder(root->left, nodes, index);\n    nodes[(*index)++] = root->val;\n    inOrder(root->right, nodes, index);\n}\n\nint kthLargestNode(Node* root, int k) {\n    int nodes[MAX_NODES];\n    int index = 0;\n    inOrder(root, nodes, &index);\n    if (k > index) {\n        printf(\"Invalid k\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return nodes[index - k];\n}\n",
-      "Java": "// import java.util.*;\n\n// class Node {\n//     int val;\n//     Node left, right;\n\n//     Node(int val) {\n//         this.val = val;\n//         left = right = null;\n//     }\n// }\nclass Solution {\n    public int kthLargestNode(Node root, int k) {\n        List<Integer> nodes = new ArrayList<>();\n        inOrder(root, nodes);\n        if (k > nodes.size()) {\n            throw new IllegalArgumentException(\"k is out of bounds\");\n        }\n        return nodes.get(nodes.size() - k);\n    }\n\n    private void inOrder(Node root, List<Integer> nodes) {\n        if (root == null) return;\n        inOrder(root.left, nodes);\n        nodes.add(root.val);\n        inOrder(root.right, nodes);\n    }\n}\n",
-      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nfunction findKthLargest(root, K) {\n    let count = 0;\n    let result = null;\n\n    function reverseInOrder(node) {\n        if (node === null || count >= K) return;\n\n        reverseInOrder(node.right);\n\n        count++;\n        if (count === K) {\n            result = node.val;\n            return;\n        }\n\n        reverseInOrder(node.left);\n    }\n\n    reverseInOrder(root);\n    return result;\n}\n\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n#define MAXV 100000\nstatic Node* nodeMap[MAXV + 1];\nstatic int isChild[MAXV + 1];\n\nNode* getNode(int v) {\n    if (nodeMap[v] == NULL) {\n        nodeMap[v] = (Node*)malloc(sizeof(Node));\n        nodeMap[v]->val = v;\n        nodeMap[v]->left = nodeMap[v]->right = NULL;\n    }\n    return nodeMap[v];\n}\n\nint kthLargest(Node* root, int k) {\n    Node* stack[10000];\n    int top = -1;\n    Node* cur = root;\n    int cnt = 0;\n    while (top != -1 || cur != NULL) {\n        while (cur != NULL) {\n            stack[++top] = cur;\n            cur = cur->right;\n        }\n        cur = stack[top--];\n        cnt++;\n        if (cnt == k) return cur->val;\n        cur = cur->left;\n    }\n    return -1; // should never happen for valid k\n}\n\nint main() {\n    int T; \n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        // reset maps for this test case\n        memset(nodeMap, 0, sizeof(nodeMap));\n        memset(isChild, 0, sizeof(isChild));\n        for (int i = 0; i < N - 1; ++i) {\n            int p, c; char dir;\n            scanf(\"%d %d %c\", &p, &c, &dir);\n            Node* parent = getNode(p);\n            Node* child  = getNode(c);\n            if (dir == 'L') parent->left = child; else parent->right = child;\n            isChild[c] = 1;\n        }\n        Node* root = NULL;\n        for (int v = 1; v <= MAXV; ++v) {\n            if (nodeMap[v] && !isChild[v]) { root = nodeMap[v]; break; }\n        }\n        int ans = kthLargest(root, K);\n        printf(\"%d\\n\", ans);\n        // free allocated nodes (optional for contest environment)\n        for (int v = 1; v <= MAXV; ++v) {\n            if (nodeMap[v]) free(nodeMap[v]);\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node* left = nullptr;\n    Node* right = nullptr;\n    Node(int v) : val(v) {}\n};\n\nint kthLargest(Node* root, int k) {\n    stack<Node*> st;\n    Node* cur = root;\n    int cnt = 0;\n    while (!st.empty() || cur) {\n        while (cur) { st.push(cur); cur = cur->right; }\n        cur = st.top(); st.pop();\n        ++cnt;\n        if (cnt == k) return cur->val;\n        cur = cur->left;\n    }\n    return -1; // unreachable for valid k\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while (T--) {\n        int N, K; cin >> N >> K;\n        unordered_map<int, Node*> mp;\n        unordered_set<int> childSet;\n        for (int i = 0; i < N-1; ++i) {\n            int p, c; char dir; cin >> p >> c >> dir;\n            if (!mp.count(p)) mp[p] = new Node(p);\n            if (!mp.count(c)) mp[c] = new Node(c);\n            if (dir == 'L') mp[p]->left = mp[c]; else mp[p]->right = mp[c];\n            childSet.insert(c);\n        }\n        Node* root = nullptr;\n        for (auto &kv : mp) if (!childSet.count(kv.first)) { root = kv.second; break; }\n        int ans = kthLargest(root, K);\n        cout << ans << '\\n';\n        // optional cleanup\n        for (auto &kv : mp) delete kv.second;\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\nclass Node {\n    int val;\n    Node left, right;\n    Node(int v) { this.val = v; }\n}\n\npublic class Main {\n    private static int kthLargest(Node root, int k) {\n        Deque<Node> stack = new ArrayDeque<>();\n        Node cur = root;\n        int cnt = 0;\n        while (!stack.isEmpty() || cur != null) {\n            while (cur != null) { stack.push(cur); cur = cur.right; }\n            cur = stack.pop();\n            cnt++;\n            if (cnt == k) return cur.val;\n            cur = cur.left;\n        }\n        return -1; // should not happen\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int K = Integer.parseInt(st.nextToken());\n            Map<Integer, Node> map = new HashMap<>();\n            Set<Integer> childSet = new HashSet<>();\n            for (int i = 0; i < N - 1; i++) {\n                st = new StringTokenizer(br.readLine());\n                int p = Integer.parseInt(st.nextToken());\n                int c = Integer.parseInt(st.nextToken());\n                char dir = st.nextToken().charAt(0);\n                map.putIfAbsent(p, new Node(p));\n                map.putIfAbsent(c, new Node(c));\n                Node parent = map.get(p);\n                Node child = map.get(c);\n                if (dir == 'L') parent.left = child; else parent.right = child;\n                childSet.add(c);\n            }\n            Node root = null;\n            for (int val : map.keySet()) if (!childSet.contains(val)) { root = map.get(val); break; }\n            int ans = kthLargest(root, K);\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef kth_largest(root, k):\n    stack = []\n    cur = root\n    cnt = 0\n    while stack or cur:\n        while cur:\n            stack.append(cur)\n            cur = cur.right\n        cur = stack.pop()\n        cnt += 1\n        if cnt == k:\n            return cur.val\n        cur = cur.left\n    return None\n\nclass Node:\n    __slots__ = ('val', 'left', 'right')\n    def __init__(self, v):\n        self.val = v\n        self.left = None\n        self.right = None\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it)); K = int(next(it))\n        nodes = {}\n        children = set()\n        for __ in range(N-1):\n            p = int(next(it)); c = int(next(it)); d = next(it)\n            if p not in nodes:\n                nodes[p] = Node(p)\n            if c not in nodes:\n                nodes[c] = Node(c)\n            if d == 'L':\n                nodes[p].left = nodes[c]\n            else:\n                nodes[p].right = nodes[c]\n            children.add(c)\n        root = None\n        for v in nodes:\n            if v not in children:\n                root = nodes[v]\n                break\n        ans = kth_largest(root, K)\n        out_lines.append(str(ans))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nfunction next() { return input[idx++]; }\nif (input.length === 0) process.exit(0);\nconst T = parseInt(next(), 10);\nlet outputs = [];\nclass Node {\n    constructor(v) { this.val = v; this.left = null; this.right = null; }\n}\nfor (let t = 0; t < T; ++t) {\n    const N = parseInt(next(), 10);\n    const K = parseInt(next(), 10);\n    const map = new Map();\n    const childSet = new Set();\n    function getNode(v) {\n        if (!map.has(v)) map.set(v, new Node(v));\n        return map.get(v);\n    }\n    for (let i = 0; i < N - 1; ++i) {\n        const p = parseInt(next(), 10);\n        const c = parseInt(next(), 10);\n        const dir = next();\n        const parent = getNode(p);\n        const child = getNode(c);\n        if (dir === 'L') parent.left = child; else parent.right = child;\n        childSet.add(c);\n    }\n    let root = null;\n    for (let [val, node] of map.entries()) {\n        if (!childSet.has(val)) { root = node; break; }\n    }\n    // reverse inorder iterative\n    let stack = [];\n    let cur = root;\n    let cnt = 0;\n    let answer = -1;\n    while (stack.length || cur) {\n        while (cur) { stack.push(cur); cur = cur.right; }\n        cur = stack.pop();\n        cnt++;\n        if (cnt === K) { answer = cur.val; break; }\n        cur = cur.left;\n    }\n    outputs.push(String(answer));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }

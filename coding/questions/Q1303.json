@@ -4,14 +4,14 @@
   "slug": "boundary-of-the-binary-tree",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Tree Traversal",
+      "Boundary Nodes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +21,31 @@
   "content": {
     "problemStatement": "Given a binary tree, print the boundary nodes of it in an **Anti-Clockwise** direction, starting from the root. The boundary encompasses:\n\n\nLeft boundary (nodes on the left, excluding leaf nodes).\nLeaves (comprising solely the leaf nodes).\nRight boundary (nodes on the right, excluding leaf nodes).\nFor eg., in the above tree: \n\n**root:** 1 \n\n**left boundary nodes:** 2 \n\n**leaf nodes:** 6 8 4 5 \n\n**right boundary nodes:** 3 \n\nHence the output should be: 1 2 6 8 4 5 3\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nPrint on the single line, KKK (if there are KKK nodes in the tree's boundary) space separated nodes values - the boundary nodes of the given binary tree in an **Anti-Clockwise** direction",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
-      "RiR_iRi​ = `L` or `R`",
-      "All pip_ipi​'s and cic_ici​'s are distinct."
+      "1 <= N <= 10000",
+      "1 <= pi, ci <= N",
+      "Ri = 'L' or 'R'",
+      "All pi's and ci's are distinct"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains N, the number of nodes in the binary tree. Each of the next N-1 lines contains three space-separated values: pi, ci, and Ri, where pi is the parent node, ci is the child node, and Ri is 'L' if ci is the left child of pi, and 'R' otherwise.",
+    "outputFormat": "Print the boundary nodes of the binary tree in an anti-clockwise direction, starting from the root node, separated by spaces.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
         "output": "1 2 6 8 4 5 3",
-        "explanation": ""
+        "explanation": "The boundary of the binary tree is printed in an anti-clockwise direction, starting from the root node."
+      },
+      {
+        "id": "sample_2",
+        "input": "5\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "output": "1 2 4 5 3",
+        "explanation": "The boundary of the binary tree is printed in an anti-clockwise direction, starting from the root node."
+      },
+      {
+        "id": "sample_3",
+        "input": "3\n1 2 L\n1 3 R",
+        "output": "1 2 3",
+        "explanation": "The boundary of the binary tree is printed in an anti-clockwise direction, starting from the root node."
       }
     ]
   },
@@ -41,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
+        "label": "minimum boundary",
+        "input": "1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "10000\n1 2 L\n1 3 R\n2 4 L\n2 5 R\n3 6 L\n3 7 R\n4 8 L\n4 9 R\n5 10 L\n5 11 R\n6 12 L\n6 13 R\n7 14 L\n7 15 R",
+        "expectedOutput": "1 2 4 8 9 5 10 11 3 6 7 12 13 14 15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5\n1 2 L\n1 3 R\n2 4 L\n2 5 R",
+        "expectedOutput": "1 2 4 5 3",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
         "input": "8\n1 2 L\n1 3 R\n3 4 L\n3 5 R\n2 6 L\n2 7 R\n7 8 R",
         "expectedOutput": "1 2 6 8 4 5 3",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1",
+        "expectedOutput": "1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To solve this problem, we first construct the binary tree based on the given input. Then, we perform three separate traversals: one for the left boundary nodes, one for the leaf nodes, and one for the right boundary nodes. We combine the results of these traversals to obtain the final output.",
+    "timeComplexity": "O(N) per test case, where N is the number of nodes in the binary tree.",
+    "spaceComplexity": "O(N) for storing the tree nodes.",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n    // Function to print leaf nodes of a binary tree\n    void printLeaves(Node* root) {\n        if (root == NULL)\n            return;\n    \n        printLeaves(root->left);\n    \n        // Print it if it is a leaf node\n        if (!root->left && !root->right)\n            cout << root->val << \" \";\n    \n        printLeaves(root->right);\n    }\n    \n    // Function to print the left boundary nodes in TOP DOWN manner\n    void printBoundaryLeft(Node* root) {\n        if (!root)\n            return;\n    \n        if (root->left) {\n            // To ensure top-down order, print the node\n            // before calling itself for the left subtree\n            cout << root->val << \" \";\n            printBoundaryLeft(root->left);\n        } else if (root->right) {\n            cout << root->val << \" \";\n            printBoundaryLeft(root->right);\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n    \n    // Function to print the right boundary nodes in BOTTOM UP manner\n    void printBoundaryRight(Node* root) {\n        if (!root)\n            return;\n    \n        if (root->right) {\n            // To ensure bottom-up order, first call for the right\n            // subtree, then print this node\n            printBoundaryRight(root->right);\n            cout << root->val << \" \";\n        } else if (root->left) {\n            printBoundaryRight(root->left);\n            cout << root->val << \" \";\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n  public:\n    void printBoundary(Node* root) {\n        if (root == NULL)\n            return;\n \n        cout << root->val << \" \";\n     \n        // Print the left boundary in top-down manner.\n        printBoundaryLeft(root->left);\n     \n        // Print all leaf nodes\n        printLeaves(root->left);\n        printLeaves(root->right);\n     \n        // Print the right boundary in bottom-up manner\n        printBoundaryRight(root->right);\n    }\n   \n};",
-      "Python3": "# class Node:\n#     def __init__(self, val):\n#         self.val = val\n#         self.left = None\n#         self.right = None\n\nclass Solution:\n    def print_leaves(self, root):\n        if root is None:\n            return\n\n        self.print_leaves(root.left)\n        \n        if root.left is None and root.right is None:\n            print(root.val, end=\" \")\n\n        self.print_leaves(root.right)\n\n    def print_boundary_left(self, root):\n        if root is None:\n            return\n\n        if root.left is not None:\n            print(root.val, end=\" \")\n            self.print_boundary_left(root.left)\n        elif root.right is not None:\n            print(root.val, end=\" \")\n            self.print_boundary_left(root.right)\n\n    def print_boundary_right(self, root):\n        if root is None:\n            return\n\n        if root.right is not None:\n            self.print_boundary_right(root.right)\n            print(root.val, end=\" \")\n        elif root.left is not None:\n            self.print_boundary_right(root.left)\n            print(root.val, end=\" \")\n\n    def print_boundary(self, root):\n        if root is None:\n            return\n\n        print(root.val, end=\" \")\n        self.print_boundary_left(root.left)\n        self.print_leaves(root.left)\n        self.print_leaves(root.right)\n        self.print_boundary_right(root.right)\n",
-      "C": "void printLeaves(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    printLeaves(root->left);\n\n    if (root->left == NULL && root->right == NULL)\n        printf(\"%d \", root->val);\n\n    printLeaves(root->right);\n}\n\nvoid printBoundaryLeft(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    if (root->left) {\n        printf(\"%d \", root->val);\n        printBoundaryLeft(root->left);\n    } else if (root->right) {\n        printf(\"%d \", root->val);\n        printBoundaryLeft(root->right);\n    }\n}\n\nvoid printBoundaryRight(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    if (root->right) {\n        printBoundaryRight(root->right);\n        printf(\"%d \", root->val);\n    } else if (root->left) {\n        printBoundaryRight(root->left);\n        printf(\"%d \", root->val);\n    }\n}\n\nvoid printBoundary(struct Node* root) {\n    if (root == NULL)\n        return;\n\n    printf(\"%d \", root->val);\n\n    printBoundaryLeft(root->left);\n    printLeaves(root->left);\n    printLeaves(root->right);\n    printBoundaryRight(root->right);\n}\n",
-      "Java": "class Solution {\n    void printLeaves(Node root) {\n        if (root == null)\n            return;\n\n        printLeaves(root.left);\n\n        if (root.left == null && root.right == null)\n            System.out.print(root.val + \" \");\n\n        printLeaves(root.right);\n    }\n\n    void printBoundaryLeft(Node root) {\n        if (root == null)\n            return;\n\n        if (root.left != null) {\n            System.out.print(root.val + \" \");\n            printBoundaryLeft(root.left);\n        } else if (root.right != null) {\n            System.out.print(root.val + \" \");\n            printBoundaryLeft(root.right);\n        }\n    }\n\n    void printBoundaryRight(Node root) {\n        if (root == null)\n            return;\n\n        if (root.right != null) {\n            printBoundaryRight(root.right);\n            System.out.print(root.val + \" \");\n        } else if (root.left != null) {\n            printBoundaryRight(root.left);\n            System.out.print(root.val + \" \");\n        }\n    }\n\n    void printBoundary(Node root) {\n        if (root == null)\n            return;\n\n        System.out.print(root.val + \" \");\n        printBoundaryLeft(root.left);\n        printLeaves(root.left);\n        printLeaves(root.right);\n        printBoundaryRight(root.right);\n    }\n}\n",
-      "JavaScript": "/*\nclass Node {\n    constructor(value) {\n        this.val = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\n\nclass Solution {\n    // Function to print leaf nodes of a binary tree\n    printLeaves(root) {\n        if (root === null) return;\n\n        this.printLeaves(root.left);\n\n        // Print it if it is a leaf node\n        if (root.left === null && root.right === null) {\n            process.stdout.write(root.val + \" \");\n        }\n\n        this.printLeaves(root.right);\n    }\n\n    // Function to print the left boundary nodes in TOP DOWN manner\n    printBoundaryLeft(root) {\n        if (root === null) return;\n\n        if (root.left !== null) {\n            // To ensure top-down order, print the node\n            // before calling itself for the left subtree\n            process.stdout.write(root.val + \" \");\n            this.printBoundaryLeft(root.left);\n        } else if (root.right !== null) {\n            process.stdout.write(root.val + \" \");\n            this.printBoundaryLeft(root.right);\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n    // Function to print the right boundary nodes in BOTTOM UP manner\n    printBoundaryRight(root) {\n        if (root === null) return;\n\n        if (root.right !== null) {\n            // To ensure bottom-up order, first call for the right\n            // subtree, then print this node\n            this.printBoundaryRight(root.right);\n            process.stdout.write(root.val + \" \");\n        } else if (root.left !== null) {\n            this.printBoundaryRight(root.left);\n            process.stdout.write(root.val + \" \");\n        }\n        // Do nothing if it is a leaf node to avoid duplicates in output\n    }\n\n    // Main function to print boundary of a binary tree\n    printBoundary(root) {\n        if (root === null) return;\n\n        process.stdout.write(root.val + \" \");\n\n        // Print the left boundary in top-down manner.\n        this.printBoundaryLeft(root.left);\n\n        // Print all leaf nodes\n        this.printLeaves(root.left);\n        this.printLeaves(root.right);\n\n        // Print the right boundary in bottom-up manner\n        this.printBoundaryRight(root.right);\n    }\n}\n\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new node\nNode* newNode(int val) {\n    Node* node = (Node*)malloc(sizeof(Node));\n    node->val = val;\n    node->left = node->right = NULL;\n    return node;\n}\n\n// Function to print leaf nodes\nvoid printLeaves(Node* root) {\n    if (root == NULL)\n        return;\n\n    printLeaves(root->left);\n\n    if (root->left == NULL && root->right == NULL)\n        printf(\"%d \", root->val);\n\n    printLeaves(root->right);\n}\n\n// Function to print the left boundary nodes\nvoid printBoundaryLeft(Node* root) {\n    if (root == NULL || (root->left == NULL && root->right == NULL))\n        return;\n\n    printf(\"%d \", root->val);\n\n    if (root->left)\n        printBoundaryLeft(root->left);\n    else\n        printBoundaryLeft(root->right);\n}\n\n// Function to print the right boundary nodes\nvoid printBoundaryRight(Node* root) {\n    if (root == NULL || (root->left == NULL && root->right == NULL))\n        return;\n\n    if (root->right)\n        printBoundaryRight(root->right);\n    else\n        printBoundaryRight(root->left);\n\n    printf(\"%d \", root->val);\n}\n\n// Function to print the boundary of the binary tree\nvoid printBoundary(Node* root) {\n    if (root == NULL)\n        return;\n\n    printf(\"%d \", root->val);\n\n    printBoundaryLeft(root->left);\n\n    printLeaves(root->left);\n    printLeaves(root->right);\n\n    printBoundaryRight(root->right);\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n\n    Node* nodes[N];\n    for (int i = 0; i < N; i++)\n        nodes[i] = newNode(i + 1);\n\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        scanf(\"%d %d %c\", &pi, &ci, &Ri);\n\n        if (Ri == 'L')\n            nodes[pi - 1]->left = nodes[ci - 1];\n        else\n            nodes[pi - 1]->right = nodes[ci - 1];\n    }\n\n    printBoundary(nodes[0]);\n\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int val;\n    Node* left;\n    Node* right;\n};\n\n// Function to create a new node\nNode* newNode(int val) {\n    Node* node = new Node();\n    node->val = val;\n    node->left = node->right = NULL;\n    return node;\n}\n\n// Function to print leaf nodes\nvoid printLeaves(Node* root) {\n    if (root == NULL)\n        return;\n\n    printLeaves(root->left);\n\n    if (root->left == NULL && root->right == NULL)\n        cout << root->val << \" \";\n\n    printLeaves(root->right);\n}\n\n// Function to print the left boundary nodes\nvoid printBoundaryLeft(Node* root) {\n    if (root == NULL || (root->left == NULL && root->right == NULL))\n        return;\n\n    cout << root->val << \" \";\n\n    if (root->left)\n        printBoundaryLeft(root->left);\n    else\n        printBoundaryLeft(root->right);\n}\n\n// Function to print the right boundary nodes\nvoid printBoundaryRight(Node* root) {\n    if (root == NULL || (root->left == NULL && root->right == NULL))\n        return;\n\n    if (root->right)\n        printBoundaryRight(root->right);\n    else\n        printBoundaryRight(root->left);\n\n    cout << root->val << \" \";\n}\n\n// Function to print the boundary of the binary tree\nvoid printBoundary(Node* root) {\n    if (root == NULL)\n        return;\n\n    cout << root->val << \" \";\n\n    printBoundaryLeft(root->left);\n\n    printLeaves(root->left);\n    printLeaves(root->right);\n\n    printBoundaryRight(root->right);\n}\n\nint main() {\n    int N;\n    cin >> N;\n\n    Node* nodes[N];\n    for (int i = 0; i < N; i++)\n        nodes[i] = newNode(i + 1);\n\n    for (int i = 0; i < N - 1; i++) {\n        int pi, ci;\n        char Ri;\n        cin >> pi >> ci >> Ri;\n\n        if (Ri == 'L')\n            nodes[pi - 1]->left = nodes[ci - 1];\n        else\n            nodes[pi - 1]->right = nodes[ci - 1];\n    }\n\n    printBoundary(nodes[0]);\n\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    static class Node {\n        int val;\n        Node left;\n        Node right;\n\n        Node(int val) {\n            this.val = val;\n            left = right = null;\n        }\n    }\n\n    // Function to print leaf nodes\n    static void printLeaves(Node root) {\n        if (root == null)\n            return;\n\n        printLeaves(root.left);\n\n        if (root.left == null && root.right == null)\n            System.out.print(root.val + \" \");\n\n        printLeaves(root.right);\n    }\n\n    // Function to print the left boundary nodes\n    static void printBoundaryLeft(Node root) {\n        if (root == null || (root.left == null && root.right == null))\n            return;\n\n        System.out.print(root.val + \" \");\n\n        if (root.left != null)\n            printBoundaryLeft(root.left);\n        else\n            printBoundaryLeft(root.right);\n    }\n\n    // Function to print the right boundary nodes\n    static void printBoundaryRight(Node root) {\n        if (root == null || (root.left == null && root.right == null))\n            return;\n\n        if (root.right != null)\n            printBoundaryRight(root.right);\n        else\n            printBoundaryRight(root.left);\n\n        System.out.print(root.val + \" \");\n    }\n\n    // Function to print the boundary of the binary tree\n    static void printBoundary(Node root) {\n        if (root == null)\n            return;\n\n        System.out.print(root.val + \" \");\n\n        printBoundaryLeft(root.left);\n\n        printLeaves(root.left);\n        printLeaves(root.right);\n\n        printBoundaryRight(root.right);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n\n        Node[] nodes = new Node[N];\n        for (int i = 0; i < N; i++)\n            nodes[i] = new Node(i + 1);\n\n        for (int i = 0; i < N - 1; i++) {\n            int pi = sc.nextInt(), ci = sc.nextInt();\n            char Ri = sc.next().charAt(0);\n\n            if (Ri == 'L')\n                nodes[pi - 1].left = nodes[ci - 1];\n            else\n                nodes[pi - 1].right = nodes[ci - 1];\n        }\n\n        printBoundary(nodes[0]);\n    }\n}",
+      "Python3": "import sys\n\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.left = None\n        self.right = None\n\n# Function to print leaf nodes\ndef printLeaves(root):\n    if root is None:\n        return\n\n    printLeaves(root.left)\n\n    if root.left is None and root.right is None:\n        print(root.val, end=\" \")\n\n    printLeaves(root.right)\n\n# Function to print the left boundary nodes\ndef printBoundaryLeft(root):\n    if root is None or (root.left is None and root.right is None):\n        return\n\n    print(root.val, end=\" \")\n\n    if root.left is not None:\n        printBoundaryLeft(root.left)\n    else:\n        printBoundaryLeft(root.right)\n\n# Function to print the right boundary nodes\ndef printBoundaryRight(root):\n    if root is None or (root.left is None and root.right is None):\n        return\n\n    if root.right is not None:\n        printBoundaryRight(root.right)\n    else:\n        printBoundaryRight(root.left)\n\n    print(root.val, end=\" \")\n\n# Function to print the boundary of the binary tree\ndef printBoundary(root):\n    if root is None:\n        return\n\n    print(root.val, end=\" \")\n\n    printBoundaryLeft(root.left)\n\n    printLeaves(root.left)\n    printLeaves(root.right)\n\n    printBoundaryRight(root.right)\n\n# Read input\nN = int(input())\n\nnodes = [Node(i + 1) for i in range(N)]\n\nfor i in range(N - 1):\n    pi, ci, Ri = input().split()\n    pi, ci = int(pi), int(ci)\n\n    if Ri == 'L':\n        nodes[pi - 1].left = nodes[ci - 1]\n    else:\n        nodes[pi - 1].right = nodes[ci - 1]\n\nprintBoundary(nodes[0])",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction readLine() {\n    return input[idx++];\n}\n\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n\n// Function to print leaf nodes\nfunction printLeaves(root) {\n    if (root === null)\n        return;\n\n    printLeaves(root.left);\n\n    if (root.left === null && root.right === null)\n        process.stdout.write(root.val + \" \");\n\n    printLeaves(root.right);\n}\n\n// Function to print the left boundary nodes\nfunction printBoundaryLeft(root) {\n    if (root === null || (root.left === null && root.right === null))\n        return;\n\n    process.stdout.write(root.val + \" \");\n\n    if (root.left !== null)\n        printBoundaryLeft(root.left);\n    else\n        printBoundaryLeft(root.right);\n}\n\n// Function to print the right boundary nodes\nfunction printBoundaryRight(root) {\n    if (root === null || (root.left === null && root.right === null))\n        return;\n\n    if (root.right !== null)\n        printBoundaryRight(root.right);\n    else\n        printBoundaryRight(root.left);\n\n    process.stdout.write(root.val + \" \");\n}\n\n// Function to print the boundary of the binary tree\nfunction printBoundary(root) {\n    if (root === null)\n        return;\n\n    process.stdout.write(root.val + \" \");\n\n    printBoundaryLeft(root.left);\n\n    printLeaves(root.left);\n    printLeaves(root.right);\n\n    printBoundaryRight(root.right);\n}\n\n// Read input\nlet N = parseInt(readLine());\n\nlet nodes = [];\nfor (let i = 0; i < N; i++)\n    nodes.push(new Node(i + 1));\n\nfor (let i = 0; i < N - 1; i++) {\n    let [pi, ci, Ri] = readLine().split(' ');\n    pi = parseInt(pi);\n    ci = parseInt(ci);\n\n    if (Ri === 'L')\n        nodes[pi - 1].left = nodes[ci - 1];\n    else\n        nodes[pi - 1].right = nodes[ci - 1];\n}\n\nprintBoundary(nodes[0]);"
     }
   }
 }

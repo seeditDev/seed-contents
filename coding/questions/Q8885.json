@@ -1,0 +1,118 @@
+{
+  "questionId": "Q8885",
+  "title": "Sum of Subarray Minimums",
+  "slug": "sum-of-subarray-minimums",
+  "version": 1,
+  "createdAt": "2026-07-05",
+  "updatedAt": "2026-07-05",
+  "metadata": {
+    "category": "arrays",
+    "difficulty": "Medium",
+    "isPremium": false,
+    "tags": [
+      "subarrays",
+      "minimum value",
+      "modulo operation"
+    ],
+    "companyTags": [],
+    "topicTags": []
+  },
+  "content": {
+    "problemStatement": "Given an array of integers arr of size n, calculate the sum of the minimum value in each (contiguous) subarray of arr. Since the result may be large, return the answer modulo 10⁹ +7.",
+    "constraints": [
+      "1 <= arr.length <= 10^3",
+      "1 <= arr[i] <= 10^5"
+    ],
+    "inputFormat": "arr = list of integers",
+    "outputFormat": "integer representing the sum of minimum values in each subarray modulo 10^9 + 7",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "arr = [3, 1, 2, 5]",
+        "output": "18",
+        "explanation": "The minimum of subarrays: [3], [1], [2], [5], [3, 1], [1, 2], [2, 5], [3, 1, 2], [1, 2, 5], [3, 1, 2, 5] are 3, 1, 2, 5, 1, 1, 2, 1, 1, 1 respectively and their sum is 18.\n\n**Example 2:**"
+      },
+      {
+        "id": "sample_2",
+        "input": "arr = [2, 3, 1]",
+        "output": "10",
+        "explanation": "The minimum of subarrays: [2], [3], [1], [2,3], [3,1], [2,3,1] are 2, 3, 1, 2, 1, 1 respectively and their sum is 10.\n        \n    \n\n\n\n**Disclaimer**: Here is the practice link to help you assess your knowledge better. It's highly recommend trying to solve it before looking at the solution."
+      }
+    ]
+  },
+  "testCases": {
+    "hidden": [
+      {
+        "id": "tc_1",
+        "label": "min boundary",
+        "input": "[1]",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "max boundary",
+        "input": "[100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000]",
+        "expectedOutput": "500000000000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform case",
+        "input": "[5, 5, 5, 5, 5]",
+        "expectedOutput": "25",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "[1, 2, 3, 4, 5]",
+        "expectedOutput": "35",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "mixed case",
+        "input": "[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]",
+        "expectedOutput": "285",
+        "weight": 2
+      }
+    ],
+    "totalTestCases": 5,
+    "totalWeight": 10
+  },
+  "scoring": {
+    "defaultScoringType": "PARTIAL_SCORE",
+    "testCaseWeights": [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "maxScore": 10
+  },
+  "judging": {
+    "timeLimitMs": 2000,
+    "memoryLimitMb": 256,
+    "supportedLanguages": [
+      "C",
+      "C++",
+      "Java",
+      "Python3",
+      "JavaScript"
+    ]
+  },
+  "solution": {
+    "approach": "brute force",
+    "timeComplexity": "O(n^2)",
+    "spaceComplexity": "O(1)",
+    "code": {
+      "C": "#include <stdio.h>\nint sumSubarrayMins(int* arr, int arrSize) {\n    int sum = 0;\n    int mod = 1000000007;\n    for (int i = 0; i < arrSize; i++) {\n        int mini = arr[i];\n        for (int j = i; j < arrSize; j++) {\n            mini = (mini < arr[j]) ? mini : arr[j];\n            sum = (sum + mini) % mod;\n        }\n    }\n    return sum;\n}\nint main() {\n    int arr[] = {3, 1, 2, 5};\n    int arrSize = sizeof(arr) / sizeof(arr[0]);\n    printf(\"%d\\n\", sumSubarrayMins(arr, arrSize));\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nclass Solution {\npublic:\n   int sumSubarrayMins(vector<int> &arr) {\n       int n = arr.size();\n       int mod = 1e9 + 7;\n       int sum = 0;\n       for(int i=0; i < n; i++) {\n           int mini = arr[i];\n           for(int j=i; j < n; j++) {\n               mini = min(mini, arr[j]);\n               sum = (sum + mini) % mod;\n           }\n       }\n       return sum;\n   }\n};\nint main() {\n   vector<int> arr = {3, 1, 2, 5};\n   Solution sol;\n   int ans = sol.sumSubarrayMins(arr);\n   cout << ans;\n   return 0;\n}",
+      "Java": "import java.util.*;\nclass Solution {\n    public int sumSubarrayMins(int[] arr) {\n        int n = arr.length;\n        int mod = (int)1e9 + 7;\n        int sum = 0;\n        for (int i = 0; i < n; i++) {\n            int mini = arr[i];\n            for (int j = i; j < n; j++) {\n                mini = Math.min(mini, arr[j]);\n                sum = (sum + mini) % mod;\n            }\n        }\n        return sum;\n    }\n}\npublic class Main {\n    public static void main(String[] args) {\n        int[] arr = {3, 1, 2, 5};\n        Solution sol = new Solution();\n        int ans = sol.sumSubarrayMins(arr);\n        System.out.println(ans);\n    }\n}",
+      "Python3": "class Solution:\n   def sumSubarrayMins(self, arr):\n       n = len(arr)\n       mod = int(1e9 + 7)\n       total_sum = 0\n       for i in range(n):\n           mini = arr[i]\n           for j in range(i, n):\n               mini = min(mini, arr[j])\n               total_sum = (total_sum + mini) % mod\n       return total_sum\n\nif __name__ == \"__main__\":\n   arr = [3, 1, 2, 5]\n   sol = Solution()\n   ans = sol.sumSubarrayMins(arr)\n   print(ans)",
+      "JavaScript": "class Solution {\n   sumSubarrayMins(arr) {\n       let n = arr.length;\n       let mod = 1e9 + 7;\n       let sum = 0;\n       for (let i = 0; i < n; i++) {\n           let mini = arr[i];\n           for (let j = i; j < n; j++) {\n               mini = Math.min(mini, arr[j]);\n               sum = (sum + mini) % mod;\n           }\n       }\n       return sum;\n   }\n}\nconst arr = [3, 1, 2, 5];\nconst sol = new Solution();\nconst ans = sol.sumSubarrayMins(arr);\nconsole.log(ans);"
+    }
+  }
+}

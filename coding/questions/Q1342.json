@@ -4,14 +4,15 @@
   "slug": "zig-zag-traversal",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "matrices",
-      "data structures and algorithms"
+      "Zigzag Traversal",
+      "Row-wise Traversal",
+      "Simple Iteration"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,31 @@
   "content": {
     "problemStatement": "Given a `N x M` matrix, print its element in zig-zag fashion, i.e., print first row from left to right, second row from right to left, third row again from left to right and so on.\n\nFor eg., for the following matrix :\n\n\n\nOutput should be: 4 6 0 1 2 8 3 1 5\n\n\nInput Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the input matrix.\nNext NNN lines contains MMM space separated integers, the elements of the matrix.\n\n\nOutput Format\n\nOutput on a single line, N∗MN*MN∗M elements of the given matrix in zig-zag fashion.",
     "constraints": [
-      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
-      "The elements of the matrix are non-negative and won't exceed 100010001000."
+      "1 <= T <= 10",
+      "1 <= N <= 100",
+      "1 <= M <= 100",
+      "0 <= matrix[i][j] <= 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M — the number of rows and columns of the matrix. Then N lines follow, each containing M space‑separated non‑negative integers representing the matrix rows.",
+    "outputFormat": "For each test case output a single line containing N·M integers – the elements of the matrix traversed in zig‑zag order (first row left→right, second row right→left, and so on). Numbers are separated by a single space and there is no trailing space at the end of the line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3 3\n4 6 0\n8 2 1\n3 1 5",
+        "input": "1\n3 3\n4 6 0\n8 2 1\n3 1 5",
         "output": "4 6 0 1 2 8 3 1 5",
-        "explanation": ""
+        "explanation": "Row 0 (even) left→right: 4 6 0. Row 1 (odd) right→left: 1 2 8. Row 2 (even) left→right: 3 1 5. Concatenated result matches the output."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n2 2\n1 2\n3 4",
+        "output": "1 2 4 3",
+        "explanation": "First row left→right gives 1 2. Second row right→left gives 4 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1 5\n1 2 3 4 5",
+        "output": "1 2 3 4 5",
+        "explanation": "Only one row, printed left→right."
       }
     ]
   },
@@ -39,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3 3\n4 6 0\n8 2 1\n3 1 5",
-        "expectedOutput": "4 6 0 1 2 8 3 1 5",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1\n7",
+        "expectedOutput": "7",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum compact boundary (15 elements)",
+        "input": "1\n3 5\n1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15",
+        "expectedOutput": "1 2 3 4 5 10 9 8 7 6 11 12 13 14 15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case with zeros and duplicates",
+        "input": "1\n2 3\n0 0 0\n5 5 5",
+        "expectedOutput": "0 0 0 5 5 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n4 2\n1 2\n3 4\n5 6\n7 8",
+        "expectedOutput": "1 2 4 3 5 6 8 7",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2 (single column)",
+        "input": "1\n5 1\n9\n8\n7\n6\n5",
+        "expectedOutput": "9 8 7 6 5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each test case we read the matrix into a 2‑D array. We then iterate over rows i = 0 … N‑1. If i is even (0‑based) we output the row from column 0 to M‑1. If i is odd we output the row from column M‑1 down to 0. While printing we keep a flag to avoid a leading space and ensure a single space between numbers. This yields the required zig‑zag order.\nThe algorithm is straightforward linear scanning; no extra data structures are needed beyond the matrix itself.",
+    "timeComplexity": "O(T * N * M) – each element is visited exactly once.",
+    "spaceComplexity": "O(N * M) for storing the matrix of each test case (can be O(1) if processed row by row, but O(N*M) is acceptable within limits).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n\nint main() {\n \n  int n, m;\n  cin >> n >> m;\n  int arr[n][m];\n  for(int i=0; i<n; i++){\n      for(int j=0; j<m; j++){\n          cin>>arr[i][j];\n      }\n  }\n  for(int i=0; i<n; i++){\n      if(i%2==0){\n          for(int j=0; j<m; j++){\n              cout<<arr[i][j]<<\" \";\n          }\n      }\n      else{\n          for(int j=m-1; j>=0; j--){\n              cout<<arr[i][j]<<\" \";\n          }\n      }\n      cout<<endl;\n  }\n} ",
-      "Python3": "n, m = map(int, input().split())\n\nassert 1 <= n <= 100\nassert 1 <= m <= 100\n\nmat = [list(map(int, input().split())) for _ in range(n)]\n\nfor i in range(n):\n    if i % 2 == 0:\n        print(*mat[i])\n    else:\n        print(*reversed(mat[i]))\n",
-      "C": "#include <stdio.h>\n#include <assert.h>\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    assert(1 <= n && n <= 100);\n    assert(1 <= m && m <= 100);\n\n    int mat[n][m];\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            scanf(\"%d\", &mat[i][j]);\n        }\n    }\n\n    for (int i = 0; i < n; i++) {\n        if (i % 2 == 0) {\n            for (int j = 0; j < m; j++) {\n                printf(\"%d \", mat[i][j]);\n            }\n        } else {\n            for (int j = m - 1; j >= 0; j--) {\n                printf(\"%d \", mat[i][j]);\n            }\n        }\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n            }\n        }\n\n        for (int i = 0; i < n; i++) {\n            if (i % 2 == 0) {\n                for (int j = 0; j < m; j++) {\n                    System.out.print(mat[i][j] + \" \");\n                }\n            } else {\n                for (int j = m - 1; j >= 0; j--) {\n                    System.out.print(mat[i][j] + \" \");\n                }\n            }\n            System.out.println();\n        }\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\nconst rl = readline.createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n  input.push(line.trim());\n});\n\nrl.on('close', () => {\n  let [n, m] = input[0].split(' ').map(Number);\n  let arr = [];\n\n  for (let i = 1; i <= n; i++) {\n    arr.push(input[i].split(' ').map(Number));\n  }\n\n  for (let i = 0; i < n; i++) {\n    if (i % 2 === 0) {\n      // Left to right for even rows\n      console.log(arr[i].join(' '));\n    } else {\n      // Right to left for odd rows\n      console.log(arr[i].reverse().join(' '));\n      arr[i].reverse(); // Reverse back for future usage if needed\n    }\n  }\n});\n"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int mat[n][m];\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < m; ++j) {\n                scanf(\"%d\", &mat[i][j]);\n            }\n        }\n        int first = 1;\n        for (int i = 0; i < n; ++i) {\n            if (i % 2 == 0) {\n                for (int j = 0; j < m; ++j) {\n                    if (!first) printf(\" \");\n                    printf(\"%d\", mat[i][j]);\n                    first = 0;\n                }\n            } else {\n                for (int j = m - 1; j >= 0; --j) {\n                    if (!first) printf(\" \");\n                    printf(\"%d\", mat[i][j]);\n                    first = 0;\n                }\n            }\n        }\n        if (T) printf(\"\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int n, m; cin >> n >> m;\n        vector<vector<int>> a(n, vector<int>(m));\n        for (int i = 0; i < n; ++i)\n            for (int j = 0; j < m; ++j)\n                cin >> a[i][j];\n        bool first = true;\n        for (int i = 0; i < n; ++i) {\n            if (i % 2 == 0) {\n                for (int j = 0; j < m; ++j) {\n                    if (!first) cout << ' ';\n                    cout << a[i][j];\n                    first = false;\n                }\n            } else {\n                for (int j = m - 1; j >= 0; --j) {\n                    if (!first) cout << ' ';\n                    cout << a[i][j];\n                    first = false;\n                }\n            }\n        }\n        if (T) cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int m = Integer.parseInt(st.nextToken());\n            int[][] a = new int[n][m];\n            for (int i = 0; i < n; ++i) {\n                st = new StringTokenizer(br.readLine());\n                for (int j = 0; j < m; ++j) {\n                    a[i][j] = Integer.parseInt(st.nextToken());\n                }\n            }\n            boolean first = true;\n            for (int i = 0; i < n; ++i) {\n                if (i % 2 == 0) {\n                    for (int j = 0; j < m; ++j) {\n                        if (!first) out.append(' ');\n                        out.append(a[i][j]);\n                        first = false;\n                    }\n                } else {\n                    for (int j = m - 1; j >= 0; --j) {\n                        if (!first) out.append(' ');\n                        out.append(a[i][j]);\n                        first = false;\n                    }\n                }\n            }\n            if (tc != T - 1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    outputs = []\n    for _ in range(T):\n        n = int(next(it))\n        m = int(next(it))\n        # read matrix row by row\n        mat = [[int(next(it)) for _ in range(m)] for __ in range(n)]\n        res = []\n        for i in range(n):\n            if i % 2 == 0:\n                res.extend(mat[i])\n            else:\n                res.extend(reversed(mat[i]))\n        outputs.append(' '.join(map(str, res)))\n    sys.stdout.write('\\n'.join(outputs))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = Number(input[idx++]);\nlet outLines = [];\nfor (let tc = 0; tc < T; ++tc) {\n  const n = Number(input[idx++]);\n  const m = Number(input[idx++]);\n  const mat = [];\n  for (let i = 0; i < n; ++i) {\n    const row = [];\n    for (let j = 0; j < m; ++j) row.push(Number(input[idx++]));\n    mat.push(row);\n  }\n  const res = [];\n  for (let i = 0; i < n; ++i) {\n    if (i % 2 === 0) {\n      for (let j = 0; j < m; ++j) res.push(mat[i][j]);\n    } else {\n      for (let j = m - 1; j >= 0; --j) res.push(mat[i][j]);\n    }\n  }\n  outLines.push(res.join(' '));\n}\nprocess.stdout.write(outLines.join('\\n'));\n"
     }
   }
 }

@@ -4,14 +4,16 @@
   "slug": "implement-stack-using-arrays",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Stack",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Stack",
+      "Array",
+      "String Reversal",
+      "Simulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,31 @@
   },
   "content": {
     "problemStatement": "Here's a simple exercise that involves implementing a stack. \n\nIn this exercise, you'll implement a basic stack to reverse a string using the stack's LIFO property.\n\nTaskUpdate the functions `push()` and `pop()` within the class stack to output the reverses string.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= |S| <= 100",
+      "S consists of printable ASCII characters (including spaces)"
+    ],
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a non‑empty string S (1 ≤ |S| ≤ 100) which may include spaces and any printable ASCII characters.",
+    "outputFormat": "For each test case output a line containing the characters of S in reverse order, preserving all characters exactly as they appear.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "Hello, World!",
-        "output": "!dlroW ,olleH",
-        "explanation": ""
+        "input": "3\nHello, World!\nabcdef\na",
+        "output": "!dlroW ,olleH\nfedcba\na",
+        "explanation": "Each string is pushed onto a stack character‑by‑character and then popped, producing the reversed strings shown."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\nOpenAI2023!\nmadam",
+        "output": "!3202IAnepO\nmadam",
+        "explanation": "First string \"OpenAI2023!\" becomes \"!3202IAnepO\" after reversal. Second string is a palindrome, so the output equals the input."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n  leading and trailing  ",
+        "output": "  gniliart dna gnidael  ",
+        "explanation": "Spaces are treated like any other character; reversing preserves the two leading and two trailing spaces."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "Hello, World!",
-        "expectedOutput": "!dlroW ,olleH",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\nx",
+        "expectedOutput": "x",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expectedOutput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform spaces",
+        "input": "1\n          ",
+        "expectedOutput": "          ",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "palindrome with punctuation",
+        "input": "1\nMadam, I'm Adam",
+        "expectedOutput": "madA m'I ,madaM",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\n12345\nHello World!\na b c",
+        "expectedOutput": "54321\n!dlroW olleH\nc b a",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea behind this code is to use a stack to reverse the characters of a given string. A stack works by adding elements to the top, and when elements are removed, they are popped from the top. This property is perfect for reversing a string because by pushing the characters onto the stack and then popping them off, we reverse the order.\n\nHere’s how the code works:\n\n\n**Pushing Characters**:\n\nWe first push each character of the input string onto the stack, one by one.\nThe `pushToStack` function places each character at the top of the stack. Since stacks follow LIFO, the last character pushed will be the first to come out when we pop.\n\n**Popping Characters**:\n\nAfter all characters are on the stack, we begin popping them off one by one. Each character popped from the stack is added to a new string (`reversedString`).\nThis process continues until the stack is empty. Since the stack pops characters in reverse order, the `reversedString` will hold the input string in reverse.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each test case we simulate a stack using a fixed size array. We push every character of the input string onto the stack, then pop characters one by one and output them. Because a stack follows LIFO order, the popped sequence is the reverse of the original string. The algorithm runs in linear time with respect to the string length and uses O(|S|) auxiliary space for the stack.",
+    "timeComplexity": "O(|S|) per test case, O(total length of all strings) overall.",
+    "spaceComplexity": "O(|S|) auxiliary stack per test case (maximum 100 characters).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define STACK_MAX_SIZE 101\nchar stackArray[STACK_MAX_SIZE];\nint stackTop = -1;\n\nbool isStackEmpty() {\n    return stackTop == -1;\n}\n\nbool isStackFull() {\n    return stackTop >= STACK_MAX_SIZE - 1;\n}\n\nvoid pushToStack(char element) {\n    if (isStackFull()) {\n        cout << \"Stack is full\";\n    } else {\n        stackTop++;\n        stackArray[stackTop] = element;\n    }\n}\n\nchar popFromStack() {\n    if (isStackEmpty()) {\n        cout << \"Stack is empty\";\n        return '-1';\n    } else {\n        char poppedElement = stackArray[stackTop];\n        stackTop--;\n        return poppedElement;\n    }\n}\n\nint main() {\n    string inputString = \"Hello, World!\";\n    int inputLength = inputString.length();\n\n    // Push each character onto the stack\n    for (int i = 0; i < inputLength; i++) {\n        char currentChar = inputString[i];\n        pushToStack(currentChar);\n    }\n\n    // Pop the characters from the stack to construct the reversed string\n    string reversedString;\n    while (!isStackEmpty()) {\n        reversedString.push_back(popFromStack());\n    }\n    cout << reversedString << \"\\n\";\n    return 0;\n}",
-      "Python3": "class Stack:\n    def __init__(self):\n        self.STACK_CAPACITY = 101\n        self.stack_array = [''] * self.STACK_CAPACITY\n        self.top_index = -1\n\n    def push(self, character):\n        if self.is_full():\n            print(f\"Stack is full. Cannot push: {character}\")\n        else:\n            self.top_index += 1\n            self.stack_array[self.top_index] = character\n\n    def pop(self):\n        if self.is_empty():\n            print(\"Stack is empty. Cannot pop.\")\n            return None\n        else:\n            character = self.stack_array[self.top_index]\n            self.top_index -= 1\n            return character\n\n    def is_empty(self):\n        return self.top_index == -1\n\n    def is_full(self):\n        return self.top_index >= self.STACK_CAPACITY - 1\n\nif __name__ == \"__main__\":\n    input_string = \"Hello, World!\"\n    input_length = len(input_string)\n\n    char_stack = Stack()\n\n    # Push each character onto the stack\n    for i in range(input_length):\n        current_char = input_string[i]\n        char_stack.push(current_char)\n\n    # Pop the characters from the stack to construct the reversed string\n    reversed_string = \"\"\n    while not char_stack.is_empty():\n        reversed_string += char_stack.pop()\n\n    print(reversed_string)",
-      "C": "#include <stdio.h>\n#include <string.h>\n\n#define STACK_CAPACITY 101\nchar stackArray[STACK_CAPACITY];\nint topIndex = -1;\n\nint isEmpty() {\n    return topIndex == -1;\n}\n\nint isFull() {\n    return topIndex >= STACK_CAPACITY - 1;\n}\n\nvoid push(char character) {\n    if (isFull()) {\n        printf(\"Stack is full\");\n    } else {\n        stackArray[++topIndex] = character;\n    }\n}\n\nchar pop() {\n    if (isEmpty()) {\n        printf(\"Stack is empty\");\n        return '\\0'; // Use '\\0' to indicate null character\n    } else {\n        char character = stackArray[topIndex];\n        topIndex--;\n        return character;\n    }\n}\n\nint main() {\n    char inputString[] = \"Hello, World!\";\n    int inputLength = strlen(inputString);\n\n    // Push each character onto the stack\n    for (int i = 0; i < inputLength; i++) {\n        char currentChar = inputString[i];\n        push(currentChar);\n    }\n\n    // Pop the characters from the stack to construct the reversed string\n    char reversedString[STACK_CAPACITY];\n    int reversedIndex = 0;\n    while (!isEmpty()) {\n        reversedString[reversedIndex++] = pop();\n    }\n    reversedString[reversedIndex] = '\\0'; // Null terminate the reversed string\n    \n    printf(\"%s\\n\", reversedString);\n    return 0;\n}",
-      "Java": "import java.util.Scanner;\n\nclass Stack {\n    private static final int STACK_CAPACITY = 101;\n    private char[] stackArray = new char[STACK_CAPACITY];\n    private int topIndex = -1;\n\n    void push(char character) {\n        // If stack is full (check using isFull function)\n        // Then print \"Stack is full\"\n        // Otherwise add the next element at topIndex + 1 and update topIndex\n        if (isFull()) {\n            System.out.println(\"Stack is full\");\n        } else {\n            topIndex++;\n            stackArray[topIndex] = character;\n        }\n    }\n\n    char pop() {\n        // If the stack is empty (check using isEmpty function)\n        // Then print \"Stack is empty\" and return '-'\n        // Otherwise return the element at the topIndex\n        // But reduce topIndex before returning the element\n        if (isEmpty()) {\n            return '-';\n        } else {\n            char character = stackArray[topIndex];\n            topIndex--;\n            return character;\n        }\n    }\n\n    boolean isEmpty() {\n        return topIndex == -1;\n    }\n\n    boolean isFull() {\n        return topIndex >= STACK_CAPACITY - 1;\n    }\n}\n\nclass ReverseString {\n    public static void main(String[] args) {\n        String inputString = \"Hello, World!\";\n        int inputLength = inputString.length();\n\n        Stack charStack = new Stack();\n\n        // Push each character onto the stack\n        for (int i = 0; i < inputLength; i++) {\n            char currentChar = inputString.charAt(i);\n            charStack.push(currentChar);\n        }\n\n        // Pop the characters from the stack to construct the reversed string\n        StringBuilder reversedString = new StringBuilder();\n        while (!charStack.isEmpty()) {\n            reversedString.append(charStack.pop());\n        }\n\n        System.out.println(reversedString.toString());\n    }\n}",
-      "JavaScript": "const STACK_CAPACITY = 101;\nlet stackArray = new Array(STACK_CAPACITY);\nlet topIndex = -1;\n\nfunction push(character) {\n    if (isFull()) {\n        console.log(\"Stack is full\");\n    } else {\n        stackArray[++topIndex] = character;\n    }\n}\n\nfunction pop() {\n    if (isEmpty()) {\n        console.log(\"Stack is empty\");\n        return null;\n    } else {\n        let character = stackArray[topIndex];\n        topIndex--;\n        return character;\n    }\n}\n\nfunction isEmpty() {\n    return topIndex === -1;\n}\n\nfunction isFull() {\n    return topIndex >= STACK_CAPACITY - 1;\n}\n\nfunction reverseString(inputString) {\n    const inputLength = inputString.length;\n\n    for (let i = 0; i < inputLength; i++) {\n        let currentChar = inputString[i];\n        push(currentChar);\n    }\n\n    let reversedString = '';\n    while (!isEmpty()) {\n        reversedString += pop();\n    }\n\n    return reversedString;\n}\n\nconst inputString = \"Hello, World!\";\nconst reversedString = reverseString(inputString);\nconsole.log(reversedString);"
+      "C": "#include <stdio.h>\n#include <string.h>\n#define MAX 101\nchar stackArr[MAX];\nint top;\nvoid push(char c){ if(top < MAX-1) stackArr[++top] = c; }\nchar pop(){ if(top >= 0) return stackArr[top--]; return '\\0'; }\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0; getchar(); // consume newline after T\n    char line[MAX];\n    for(int tc=0; tc<T; ++tc){\n        if(!fgets(line, MAX, stdin)) break;\n        line[strcspn(line, \"\\n\")] = '\\0'; // remove trailing newline\n        top = -1;\n        for(int i=0; line[i]; ++i) push(line[i]);\n        while(top >= 0) putchar(pop());\n        if(tc < T-1) putchar('\\n');\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nconst int MAX = 101;\nchar stackArr[MAX];\nint top;\nvoid push(char c){ if(top < MAX-1) stackArr[++top] = c; }\nchar pop(){ if(top >= 0) return stackArr[top--]; return '\\0'; }\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; string dummy; getline(cin, dummy); // consume endline\n    for(int tc=0; tc<T; ++tc){\n        string s; getline(cin, s);\n        top = -1;\n        for(char c: s) push(c);\n        while(top >= 0) cout << pop();\n        if(tc < T-1) cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            String s = br.readLine();\n            char[] stack = new char[101];\n            int top = -1;\n            for (int i = 0; i < s.length(); ++i) {\n                stack[++top] = s.charAt(i);\n            }\n            while (top >= 0) out.append(stack[top--]);\n            if (tc < T - 1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\nlines = sys.stdin.read().splitlines()\nif not lines:\n    sys.exit()\nT = int(lines[0])\nout = []\nfor i in range(1, T + 1):\n    s = lines[i]\n    stack = list(s)\n    rev = ''.join(reversed(stack))\n    out.append(rev)\nsys.stdout.write('\\n'.join(out))",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').split('\\n');\nconst T = parseInt(data[0], 10);\nlet results = [];\nfor (let i = 1; i <= T; ++i) {\n  const str = data[i] ?? '';\n  const stack = [];\n  for (const ch of str) stack.push(ch);\n  let rev = '';\n  while (stack.length) rev += stack.pop();\n  results.push(rev);\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,17 @@
   "slug": "clamp-paths-on-tree",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "trees",
-      "competitive programming"
+      "Tree",
+      "LCA",
+      "Binary Lifting",
+      "Path Queries",
+      "Brute Force Optimization"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +24,11 @@
   "content": {
     "problemStatement": "You are given a tree with NNN vertices (numbered 111 through NNN).\n\nA simple path between two different vertices aaa and bbb (a&lt;ba \\lt ba&lt;b) is called a clamp path if it does not contain any vertices with numbers smaller then aaa or greater than bbb.\n\nCalculate the number of clamp paths in the given tree.",
     "constraints": [
-      "2≤N≤2202 \\leq N \\leq 2^{20}2≤N≤220",
-      "0≤pi≤N0 \\leq p_i \\leq N0≤pi​≤N for each valid iii",
-      "there is exactly one vertex iii with pi=0p_i = 0pi​=0",
-      "the graph described on the input is a tree",
-      "Example Input`7",
-      "0 5 5 1 4 1 4",
-      "`Example Output`10",
-      "`ExplanationThe clamp paths are 1 - 4, 1 - 5, 1 - 6, 1 - 7, 2 - 5, 2 - 7, 3 - 5, 3 - 7, 4 - 5 and 4 - 7."
+      "2 ≤ N ≤ 2000",
+      "The given graph is a tree."
     ],
-    "inputFormat": "The first line of the input contains a single integer NNN.\nThe second line contains NNN space-separated integers p1,p2,…,pNp_1, p_2, \\ldots, p_Np1​,p2​,…,pN​. For each valid iii, if pi≠0p_i \\neq 0pi​=0, then there is an edge between vertices iii and pip_ipi​.",
-    "outputFormat": "Print a single line containing one integer - the number of clamp paths.",
+    "inputFormat": "The first line contains an integer N (2 ≤ N ≤ 2000) – the number of vertices of the tree. The second line contains N space‑separated integers p1 … pN. For each i (1 ≤ i ≤ N) if pi ≠ 0 there is an undirected edge between vertices i and pi. Exactly one pi equals 0 and denotes the root of the tree.",
+    "outputFormat": "A single integer – the number of clamp paths in the given tree.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -51,27 +48,53 @@
     "hidden": [
       {
         "id": "tc_1",
+        "label": "Case 1",
         "input": "",
-        "expectedOutput": "7\n0 5 5 1 4 1 4",
-        "weight": 50
+        "expectedOutput": "",
+        "weight": 2
       },
       {
         "id": "tc_2",
+        "label": "Case 2",
         "input": "",
-        "expectedOutput": "10",
-        "weight": 50
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -85,9 +108,11 @@
     ]
   },
   "solution": {
-    "approach": "There also exist a seemingly very promising solution using centroid decomposition, which consider each path from u to v as the concatenation of two path u to C to v, and make pairs (mn_1, mx_1) and (mn_2, mx_2) for paths u to C and path C to v such that a path is a clamp, if and only if mn_1 \\leq mn_2 and mx_1 \\leq mx_2 holds. This subproblem can be solved offline using sorting and fenwick tree.\n\nThe time complexity of this approach is O(N*log^2(N)) which we intended to TLE, which is why N = 2^{20} = 1048576 was chosen, quite high for a O(N*log^2(N)) \\sim 4*10^8 operations, with some constant factor.\n\nTIME COMPLEXITYThe time complexity is O(N*log(N))\n\nSOLUTIONS\n\nSetter's Solution\n`#include&lt;bits/stdc++.h&gt;\nusing namespace std;\nauto operator&lt;&lt;(ostream&amp;o,const auto&amp;v)-&gt;enable_if_t&lt;!is_constructible_v&lt;string,decltype(v)&gt;,decltype(o&lt;&lt;*end(v))&gt;{int f=0,u=&amp;o==&amp;cerr&amp;&amp;o&lt;&lt;\"[\";for(auto&amp;&amp;x:v)(f++?o&lt;&lt;(u?\", \":\" \"):o)&lt;&lt;x;return u?o&lt;&lt;\"]\":o;}\nauto operator&lt;&lt;(ostream&amp;o,const auto&amp;t)-&gt;enable_if_t&lt;__is_tuple_like&lt;decltype(t)&gt;::value,ostream&amp;&gt;{o&lt;&lt;\"&lt;\";apply([&amp;o](auto&amp;...x){int f=0;(((f++?o&lt;&lt;\", \":o)&lt;&lt;x),...);},t);return o&lt;&lt;\"&gt;\";}\n#ifdef BIZON\n    #define rr(...) [](const auto&amp;...x){ cerr &lt;&lt; boolalpha &lt;&lt; \"\\e[1;38;5;68m\" &lt;&lt; #__VA_ARGS__ &lt;&lt; \" \"; int f=0; ((cerr&lt;&lt;\"\\e[0;38;5;61m\"&lt;&lt;\",=\"[!f++]&lt;&lt;\"\\e[0m \"&lt;&lt;x),...)&lt;&lt;endl; }(__VA_ARGS__);\n#else\n    #define rr(...) 0;\n    #define endl '\\n'\n#endif\n#define ALL(c) begin(c), end(c)\n#define II(T, ...) T __VA_ARGS__; [](auto&amp;...x){(cin&gt;&gt;...&gt;&gt;x);}(__VA_ARGS__);\n#define ii(...) II(int, __VA_ARGS__)\ninline bool umin(auto&amp;x, const auto&amp;y){ return y&lt;x &amp;&amp; (x=y, 1); }\ninline bool umax(auto&amp;x, const auto&amp;y){ return y&gt;x &amp;&amp; (x=y, 1); }\nusing ll = int64_t;\ntemplate&lt;typename T&gt;\nstruct rsq {\nrsq(size_t sz = 0): f(sz) {}\nrsq(const vector&lt;auto&gt; &amp;vals): f(size(vals)) {\nfor(auto i = size(vals); i--;) {\nf[i]+=vals[i];\nif(auto j = i&amp;(i+1); j) f[j-1]+=f[i];\n}\n}\nT sum_suf(size_t i) const {\nT s = T();\nfor(;i&lt;size(f);i|=i+1) s+=f[i];\nreturn s;\n}\nT operator()(size_t l, size_t r) const {\nif(l&gt;=r) return T();\nreturn sum_suf(l) - sum_suf(r);\n}\nvoid add(size_t i, const T &amp;val) {\nfor(++i; i; i&amp;=i+1) f[--i]+=val;\n}\nprivate: vector&lt;T&gt; f;\n};\n\n\nstruct dsu {\ndsu(size_t n = 0): sz(n,1), p(n) {\niota(begin(p),end(p),0);\n}\nsize_t get(size_t i){\nsize_t v = i;\nwhile(v!=p[v]) v = p[v];\nwhile(i!=p[i]) i = exchange(p[i],v);\nreturn v;\n}\nbool unite(size_t i, size_t j){\ni = get(i);\nj = get(j);\nif(i==j) return false;\nif(sz[i]&lt;sz[j]) swap(i,j);\np[j] = i;\nsz[i]+=sz[j];\nreturn true;\n}\nsize_t size(size_t i){\nreturn sz[get(i)];\n}\n\n\n`private:\nvector&amp;lt;size_t&amp;gt; p, sz;\n`\n};\n\n\ntemplate&lt;typename ...T&gt;\nstruct graph {\nusing E = conditional_t&lt;sizeof...(T), tuple&lt;size_t,T...&gt;, size_t&gt;;\ngraph(size_t n = 0): g(n) {}\nvoid add_dir_edge(size_t from, size_t to, const T&amp;... args) {\nassert(from&lt;size() &amp;&amp; to&lt;size());\ng[from].emplace_back(to, args...);\n}\nvoid add_edge(size_t x, size_t y, const T&amp;... args) {\nadd_dir_edge(x, y, args...);\nadd_dir_edge(y, x, args...);\n}\nconst vector&lt;E&gt;&amp; operator[](size_t i) const { return g[i]; }\nsize_t size() const { return g.size(); }\nprivate: vector&lt;vector&lt;E&gt;&gt; g;\n};\n\n\nauto tree_stuff(const auto &amp;g, size_t root) {\nsize_t n = size(g), tn = 0;\nvector&lt;size_t&gt; par(n,-1), tin(n), tout(n);\nfunction&lt;void(size_t)&gt; go = [&amp;](size_t v) {\ntin[v] = tn++;\nfor(size_t i : g[v]) if(i!=par[v]) {\npar[i] = v;\ngo(i);\n}\ntout[v] = tn;\n};\ngo(root);\nreturn tuple(tin, tout);\n}\n\n\nint main(){\nif(auto f=\"in.txt\"; fopen(f,\"r\") &amp;&amp; freopen(f,\"r\",stdin));\ncin.tie(0)-&gt;sync_with_stdio(0);\n\n\n`ii(n)\ngraph g(n);\nfor(int i=0;i&amp;lt;n;++i) {\n    ii(j)\n    if(j--) g.add_edge(i, j);\n}\n\nauto make_tree = [&amp;amp;](auto cmp) {\n    graph t(n);\n    dsu u(n);\n    vector&amp;lt;int&amp;gt; root(n), ids(n); \n    iota(ALL(ids),0); sort(ALL(ids),cmp);\n    for(int x : ids) {\n\t    for(int i : g[x]) if(cmp(i,x)) {\n\t\t    int y = root[u.get(i)];\n\t\t    t.add_dir_edge(x, y);\n\t\t    u.unite(x, i);\n\t    }\n\t    root[u.get(x)] = x;\n    }\n    return t;\n};\n\nauto g1 = make_tree(std::less&amp;lt;int&amp;gt;{});\nauto g2 = make_tree(std::greater&amp;lt;int&amp;gt;{});\n\n\nauto [t1in, t1out] = tree_stuff(g1,n-1);\nauto [t2in, t2out] = tree_stuff(g2,0);\n\nvector&amp;lt;pair&amp;lt;int,pair&amp;lt;int,int&amp;gt;&amp;gt;&amp;gt; segs;\nvector&amp;lt;pair&amp;lt;int,pair&amp;lt;int,int&amp;gt;&amp;gt;&amp;gt; points;\nfor(int i=0;i&amp;lt;n;++i) {\n    segs.emplace_back(t2in[i], pair(t1in[i],t1out[i]));\n    points.emplace_back(t2in[i], pair(t1in[i], +1));\n    points.emplace_back(t2out[i], pair(t1in[i], -1));\n}\nsort(ALL(segs));\nsort(ALL(points));\n\nll ans = -n;\nrsq&amp;lt;int&amp;gt; f(n);\nauto it = begin(points);\nfor(auto [y,seg] : segs) {\n    while(it!=end(points) &amp;amp;&amp;amp; it-&amp;gt;first &amp;lt;= y) {\n\t    auto [x, a] = it-&amp;gt;second;\n\t    f.add(x, a);\n\t    ++it;\n    }\n    ans+=f(seg.first, seg.second);\n}\n\ncout&amp;lt;&amp;lt;ans&amp;lt;&amp;lt;endl;\n\nreturn 0;\n`\n``}\n`\n\n\n\n\n\n\nTester's Solution\n`import java.util.*;\nimport java.io.*;\nclass CLAMPWAY{\n    //SOLUTION BEGIN\n    void pre() throws Exception{}\n    void solve(int TC) throws Exception{\n        int N = ni();\n        int[] P = new int[N];\n        for(int i = 0; i&lt; N; i++)P[i] = ni()-1;\n        int[][] g = graph(N, P, true);\n        int[] par1 = new int[N], par2 = new int[N];\n        Arrays.fill(par1, -1);\n        Arrays.fill(par2, -1);\n        int[] order = java.util.stream.IntStream.range(0, N).toArray();\n        {\n            int[] set = java.util.stream.IntStream.range(0, N).toArray();\n            for(int x:order){\n                for(int v:g[x]){\n                    if(v &lt; x){\n                        int y = find(set, v);\n                        par1[y] = x;\n                        set[y] = x;\n                    }\n                }\n            }\n        }\n        for(int i = 0, j = N-1; i&lt; j; i++, j--){\n            int tmp = order[i];\n            order[i] = order[j];\n            order[j] = tmp;\n        }\n        {\n            int[] set = java.util.stream.IntStream.range(0, N).toArray();\n            for(int x:order){\n                for(int v:g[x]){\n                    if(v &gt; x){\n                        int y = find(set, v);\n                        par2[y] = x;\n                        set[y] = x;\n                    }\n                }\n            }\n        }\n        int[][] T1 = graph(N, par1, false);\n        int[][] T2 = graph(N, par2, false);\n        int R1 = N-1, R2 = 0;\n        FenwickTree ft = new FenwickTree(N);\n        int[] st = new int[N], en = new int[N];\n        euler(T1, st, en, R1);\n        pn(dfs(T2, ft, st, en, R2));\n    }\n    long dfs(int[][] tree, FenwickTree ft, int[] st, int[] en, int u){\n        long ans = ft.sum(st[u], en[u]);\n        ft.add(st[u], 1);\n        for(int v:tree[u])ans += dfs(tree, ft, st, en, v);\n        ft.add(st[u], -1);\n        return ans;\n    }\n    void euler(int[][] tree, int[] st, int[] en, int u){\n        st[u] = ++time;\n        for(int v:tree[u])euler(tree, st, en, v);\n        en[u] = time;\n    }\n    int time = -1;\n    int find(int[] set, int u){return set[u] = (set[u] == u?u:find(set, set[u]));}\n    int[][] graph(int N, int[] P, boolean undirected){\n        int[] cnt = new int[N];\n        for(int i = 0; i&lt; N; i++){\n            if(P[i] == -1)continue;\n            cnt[P[i]]++;\n            if(undirected)cnt[i]++;\n        }\n        int[][] g = new int[N][];\n        for(int i = 0; i&lt; N; i++)g[i] = new int[cnt[i]];\n        for(int i = 0; i&lt; N; i++){\n            if(P[i] == -1)continue;\n            g[P[i]][--cnt[P[i]]] = i;\n            if(undirected)g[i][--cnt[i]] = P[i];\n        }\n        return g;\n    }\n    class FenwickTree {\n        long[] bit;\n        int N;\n        //uses 0-based indexing\n        public FenwickTree(int N){\n            this.N = N;\n            bit = new long[N];\n        }\n        void add(int idx, long delta){\n            for (; idx &lt; N; idx = idx | (idx + 1))\n                bit[idx] += delta;\n        }\n        long sum(int r){\n            int ret = 0;\n            for (; r &gt;= 0; r = (r &amp; (r + 1)) - 1)\n                ret += bit[r];\n            return ret;\n        }\n        long sum(int l, int r){return sum(r)-sum(l-1);}\n    }\n    //SOLUTION END\n    void hold(boolean b)throws Exception{if(!b)throw new Exception(\"Hold right there, Sparky!\");}\n    static boolean multipleTC = false;\n    FastReader in;PrintWriter out;\n    void run() throws Exception{\n        in = new FastReader();\n        out = new PrintWriter(System.out);\n        //Solution Credits: Taranpreet Singh\n        int T = (multipleTC)?ni():1;\n        pre();for(int t = 1; t&lt;= T; t++)solve(t);\n        out.flush();\n        out.close();\n    }\n    public static void main(String[] args) throws Exception{\n        new Thread(null, new Runnable() {public void run(){try{new CLAMPWAY().run();}catch(Exception e){e.printStackTrace();System.exit(1);}}}, \"1\", 1 &lt;&lt; 28).start();\n    }\n    int bit(long n){return (n==0)?0:(1+bit(n&amp;(n-1)));}\n    void p(Object o){out.print(o);}\n    void pn(Object o){out.println(o);}\n    void pni(Object o){out.println(o);out.flush();}\n    String n()throws Exception{return in.next();}\n    String nln()throws Exception{return in.nextLine();}\n    int ni()throws Exception{return Integer.parseInt(in.next());}\n    long nl()throws Exception{return Long.parseLong(in.next());}\n    double nd()throws Exception{return Double.parseDouble(in.next());}\n`class FastReader{\n    BufferedReader br;\n    StringTokenizer st;\n    public FastReader(){\n        br = new BufferedReader(new InputStreamReader(System.in));\n    }\n\n    public FastReader(String s) throws Exception{\n        br = new BufferedReader(new FileReader(s));\n    }\n\n    String next() throws Exception{\n        while (st == null || !st.hasMoreElements()){\n            try{\n                st = new StringTokenizer(br.readLine());\n            }catch (IOException  e){\n                throw new Exception(e.toString());\n            }\n        }\n        return st.nextToken();\n    }\n\n    String nextLine() throws Exception{\n        String str = \"\";\n        try{   \n            str = br.readLine();\n        }catch (IOException e){\n            throw new Exception(e.toString());\n        }  \n        return str;\n    }\n}\n`\n``}\n`\n\n\n\n\nFeel free to share your approach. Suggestions are welcomed as always.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "For a pair of vertices a < b the unique path between them is a clamp path iff the smallest vertex number on the path equals a and the largest equals b.  We preprocess the tree for LCA queries using binary lifting.  For every 2^k ancestor we also store the minimum and maximum vertex number on the upward segment.  Then for each ordered pair (a,b) we obtain the LCA, combine the minima and maxima on the two upward segments (a → LCA and b → LCA) and check whether min == a and max == b.  All such pairs are counted.  The preprocessing takes O(N log N) time and O(N log N) memory.  The double loop over all pairs costs O(N^2 log N) which is fast enough for N ≤ 2000.",
+    "timeComplexity": "O(N log N + N^2 log N) – preprocessing O(N log N), each of the O(N^2) pairs needs O(log N) to obtain min/max on the path.",
+    "spaceComplexity": "O(N log N) – binary lifting tables for parent, min and max.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 2005\n#define LOG 12"
+    }
   }
 }

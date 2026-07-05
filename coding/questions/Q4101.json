@@ -4,14 +4,14 @@
   "slug": "find-the-numbers",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Recursion",
+    "category": "Math | Backtracking",
     "difficulty": "Medium",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "recursion & backtracking",
-      "competitive programming"
+      "Integer Partitioning",
+      "Backtracking"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +21,24 @@
   "content": {
     "problemStatement": "This is a rather simple problem to describe. You will be given three numbers S,PS, PS,P and kkk. Your task is to find if there are integers n1,n2,...,nkn_1, n_2,...,n_kn1​,n2​,...,nk​ such that n1+n2+...+nk=Sn_1 + n_2 +...+ n_k = Sn1​+n2​+...+nk​=S, n1⋅n2⋅...⋅nk=Pn_1 \\cdot n_2 \\cdot ... \\cdot n_k = Pn1​⋅n2​⋅...⋅nk​=P. If such integers exist, print them out. If no such sequence of integers exist, then print `\"NO\"`.\n\nFor example if S=11,P=48S=11, P=48S=11,P=48 and k=3k=3k=3 then 3,43, 43,4 and 444 is a solution. On the other hand, if S=11,P=100S=11, P=100S=11,P=100 and k=3k=3k=3, there is no solution and you should print `\"NO\"`.\n\nInput:A single line with three integers S,PS, PS,P and kkk.\n\nOutput:A single word `\"NO\"` or a seqence of kkk integers n1,n2,...,nkn_1, n_2,..., n_kn1​,n2​,...,nk​ on a single line. (The nin_ini​'s must add up to SSS and their product must be PPP).",
     "constraints": [
-      "1≤k≤41 \\leq k \\leq 41≤k≤4.",
-      "1≤S≤10001 \\leq S \\leq 10001≤S≤1000.",
-      "1≤P≤10001 \\leq P \\leq 10001≤P≤1000."
+      "1 <= k <= 4",
+      "1 <= S <= 1000",
+      "1 <= P <= 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "A single line with three integers S, P, and k.",
+    "outputFormat": "A single word 'NO' or a sequence of k integers n1, n2, ..., nk on a single line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "11 48 3",
         "output": "3 4 4",
-        "explanation": ""
+        "explanation": "The numbers 3, 4, and 4 sum up to 11 and multiply to 48."
       },
       {
         "id": "sample_2",
         "input": "11 100 3",
         "output": "NO",
-        "explanation": ""
+        "explanation": "There are no three numbers that sum up to 11 and multiply to 100."
       }
     ]
   },
@@ -46,27 +46,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "11 48 3",
-        "expectedOutput": "3 4 4",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1 1 1",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "11 100 3",
+        "label": "maximum boundary",
+        "input": "1000 1000 4",
         "expectedOutput": "NO",
-        "weight": 50
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "10 10 2",
+        "expectedOutput": "2 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "20 20 3",
+        "expectedOutput": "2 2 10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "30 30 4",
+        "expectedOutput": "1 1 5 5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,9 +106,15 @@
     ]
   },
   "solution": {
-    "approach": "`#include &lt;iostream&gt;\nusing namespace std;\n \nint main() {\n    int S, P, k;\n    cin &gt;&gt; S &gt;&gt; P &gt;&gt; k;\n    \n    if(k == 1) {\n        if(S == P) cout &lt;&lt; S;\n        else cout &lt;&lt; \"NO\";\n        return 0;\n    }\n    if(k == 2) {\n        for (int n1 = 1; n1 &lt; S; n1++) {\n            int n2 = S - n1;\n            if(n1 * n2 == P) {\n                cout &lt;&lt; n1 &lt;&lt; \" \" &lt;&lt; n2;\n                return 0;\n            }\n        }\n        cout &lt;&lt; \"NO\";\n        return 0;\n    }\n    if(k == 3) {\n        for(int n1 = 1; n1 &lt; S; n1++){\n            for(int n2 = 1; n2 &lt; S - n1; n2++){\n                int n3 = S - n1 - n2;\n                if(n3 &lt; 1) continue;\n                if(n1 * n2 * n3 == P){\n                    cout &lt;&lt; n1 &lt;&lt; \" \" &lt;&lt; n2 &lt;&lt; \" \" &lt;&lt; n3;\n                    return 0;\n                }\n            }\n        }\n        cout &lt;&lt; \"NO\";\n        return 0;\n    }\n    if(k == 4) {\n        for(int n1 = 1; n1 &lt; S; n1++){\n            for(int n2 = 1; n2 &lt; S - n1; n2++){\n                for(int n3 = 1; n3 &lt; S - n1 - n2; n3++){\n                    int n4 = S - n1 - n2 - n3;\n                    if(n4 &lt; 1) continue;\n                    if(n1 * n2 * n3 * n4 == P){\n                        cout &lt;&lt; n1 &lt;&lt; \" \" &lt;&lt; n2 &lt;&lt; \" \" &lt;&lt; n3 &lt;&lt; \" \" &lt;&lt; n4;\n                        return 0;\n                    }\n                }\n            }\n        }\n        cout &lt;&lt; \"NO\";\n        return 0;\n    }\n    return 0;\n}\n``S, P, k = map(int, input().split())\n\nif k == 1:\n    if S == P:\n        print(S)\n    else:\n        print(\"NO\")\n    exit()\n\nif k == 2:\n    for n1 in range(1, S):\n        n2 = S - n1\n        if n1 * n2 == P:\n            print(n1, n2)\n            exit()\n    print(\"NO\")\n    exit()\n\nif k == 3:\n    for n1 in range(1, S):\n        for n2 in range(1, S - n1):\n            n3 = S - n1 - n2\n            if n3 &lt; 1:\n                continue\n            if n1 * n2 * n3 == P:\n                print(n1, n2, n3)\n                exit()\n    print(\"NO\")\n    exit()\n\nif k == 4:\n    for n1 in range(1, S):\n        for n2 in range(1, S - n1):\n            for n3 in range(1, S - n1 - n2):\n                n4 = S - n1 - n2 - n3\n                if n4 &lt; 1:\n                    continue\n                if n1 * n2 * n3 * n4 == P:\n                    print(n1, n2, n3, n4)\n                    exit()\n    print(\"NO\")\n`Approach 2: Recursive BacktrackingThis approach uses recursive backtracking to construct a valid sequence by selecting one candidate number at a time. We assume that the numbers are positive integers. At each step:\n\n\nWe choose a candidate number and update the remaining sum and product.\nWe only consider candidates that evenly divide the current remaining product.\nOnce we have selected kkk numbers, we check whether the remaining sum is 000 and the remaining product is 111.\nBelow are the implementations for the Recursive Backtracking approach in C++ and Python.\n\n`#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n \nbool backtrack(int idx, int k, int remainingSum, int remainingProduct, vector&lt;int&gt;&amp; nums) {\n    if(idx == k) {\n        return (remainingSum == 0 &amp;&amp; remainingProduct == 1);\n    }\n    for (int val = 1; val &lt;= remainingSum; val++) {\n        if(remainingProduct % val != 0) continue;\n        nums.push_back(val);\n        if(backtrack(idx + 1, k, remainingSum - val, remainingProduct / val, nums))\n            return true;\n        nums.pop_back();\n    }\n    return false;\n}\n \nint main(){\n    int S, P, k;\n    cin &gt;&gt; S &gt;&gt; P &gt;&gt; k;\n    vector&lt;int&gt; nums;\n    if(backtrack(0, k, S, P, nums)) {\n        for(auto num : nums) cout &lt;&lt; num &lt;&lt; \" \";\n    } else {\n        cout &lt;&lt; \"NO\";\n    }\n    return 0;\n}\n``def backtrack(idx, k, remainingSum, remainingProduct, current):\n    if idx == k:\n        return remainingSum == 0 and remainingProduct == 1, current\n    for val in range(1, remainingSum+1):\n        if remainingProduct % val != 0:\n            continue\n        current.append(val)\n        found, sol = backtrack(idx+1, k, remainingSum - val, remainingProduct // val, current)\n        if found:\n            return True, sol\n        current.pop()\n    return False, None\n\nS, P, k = map(int, input().split())\nfound, sol = backtrack(0, k, S, P, [])\nif found:\n    print(\" \".join(map(str, sol)))\nelse:\n    print(\"NO\")\n`ConclusionWe explored two effective approaches for solving the problem:\n\n\n**Brute Force Iteration** leverages nested loops to try all possible combinations, making it simple and direct for small values of kkk.\n**Recursive Backtracking** provides a flexible method to build the solution incrementally, ensuring that at each step the selected candidate adheres to the constraints.\nBy mastering these techniques, you are well-prepared to tackle similar sum and product problems in DSA interviews.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The problem can be solved using a backtracking approach. We start by trying to find a combination of k numbers that sum up to S and multiply to P. We can use a recursive function to try all possible combinations.",
+    "timeComplexity": "O(k * S) — explain: per query is O(k * S), total is O(T * k * S)",
+    "spaceComplexity": "O(k) — explain: we need to store the current combination of k numbers",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid find_numbers(int S, int P, int k, int current_sum, int current_product, int* current_numbers, int current_index) {\n    if (current_index == k) {\n        if (current_sum == S && current_product == P) {\n            for (int i = 0; i < k; i++) {\n                printf(\"%d \", current_numbers[i]);\n            }\n            printf(\"\\n\");\n            exit(0);\n        }\n        return;\n    }\n    for (int i = 1; i <= S; i++) {\n        if (current_sum + i <= S && current_product * i <= P) {\n            current_numbers[current_index] = i;\n            find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n        }\n    }\n}\n\nint main() {\n    int S, P, k;\n    scanf(\"%d %d %d\", &S, &P, &k);\n    int* current_numbers = (int*) malloc(k * sizeof(int));\n    find_numbers(S, P, k, 0, 1, current_numbers, 0);\n    printf(\"NO\\n\");\n    free(current_numbers);\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\nvoid find_numbers(int S, int P, int k, int current_sum, int current_product, int* current_numbers, int current_index) {\n    if (current_index == k) {\n        if (current_sum == S && current_product == P) {\n            for (int i = 0; i < k; i++) {\n                cout << current_numbers[i] << \" \";\n            }\n            cout << endl;\n            exit(0);\n        }\n        return;\n    }\n    for (int i = 1; i <= S; i++) {\n        if (current_sum + i <= S && current_product * i <= P) {\n            current_numbers[current_index] = i;\n            find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n        }\n    }\n}\n\nint main() {\n    int S, P, k;\n    cin >> S >> P >> k;\n    int* current_numbers = new int[k];\n    find_numbers(S, P, k, 0, 1, current_numbers, 0);\n    cout << \"NO\" << endl;\n    delete[] current_numbers;\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void find_numbers(int S, int P, int k, int current_sum, int current_product, int[] current_numbers, int current_index) {\n        if (current_index == k) {\n            if (current_sum == S && current_product == P) {\n                for (int i = 0; i < k; i++) {\n                    System.out.print(current_numbers[i] + \" \");\n                }\n                System.out.println();\n                System.exit(0);\n            }\n            return;\n        }\n        for (int i = 1; i <= S; i++) {\n            if (current_sum + i <= S && current_product * i <= P) {\n                current_numbers[current_index] = i;\n                find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n            }\n        }\n    }\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int S = scanner.nextInt();\n        int P = scanner.nextInt();\n        int k = scanner.nextInt();\n        int[] current_numbers = new int[k];\n        find_numbers(S, P, k, 0, 1, current_numbers, 0);\n        System.out.println(\"NO\");\n    }\n}",
+      "Python3": "def find_numbers(S, P, k, current_sum, current_product, current_numbers, current_index):\n    if current_index == k:\n        if current_sum == S and current_product == P:\n            print(' '.join(map(str, current_numbers)))\n            exit(0)\n        return\n    for i in range(1, S + 1):\n        if current_sum + i <= S and current_product * i <= P:\n            current_numbers[current_index] = i\n            find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1)\n\nS, P, k = map(int, input().split())\nfind_numbers(S, P, k, 0, 1, [0] * k, 0)\nprint('NO')",
+      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nlet input = '';\nrl.on('line', (line) => {\n    input += line + ' '; \n});\nrl.on('close', () => {\n    let [S, P, k] = input.trim().split(' ').map(Number);\n    function find_numbers(S, P, k, current_sum, current_product, current_numbers, current_index) {\n        if (current_index == k) {\n            if (current_sum == S && current_product == P) {\n                console.log(current_numbers.join(' '));\n                process.exit(0);\n            }\n            return;\n        }\n        for (let i = 1; i <= S; i++) {\n            if (current_sum + i <= S && current_product * i <= P) {\n                current_numbers[current_index] = i;\n                find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n            }\n        }\n    }\n    find_numbers(S, P, k, 0, 1, new Array(k).fill(0), 0);\n    console.log('NO');\n});"
+    }
   }
 }

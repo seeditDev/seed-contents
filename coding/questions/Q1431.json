@@ -4,14 +4,16 @@
   "slug": "fractional-knapsack",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
+    "category": "Greedy | Sorting",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "greedy algorithms",
-      "data structures and algorithms"
+      "Fractional Knapsack",
+      "Greedy",
+      "Sorting by ratio",
+      "Floating point"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +23,31 @@
   "content": {
     "problemStatement": "Given arrays of values and weights of items, and a knapsack capacity, find the maximum value achievable by selecting items (allowing fractional parts) such that total weight doesn't exceed capacity.\n\n\nInput Format\n\nFirst line contains TTT, the number of test cases\nFor each test case:\n\nFirst line contains NNN and capacity\nSecond line contains NNN values\nThird line contains NNN weights\n\n\n\n\nOutput Format\n\nFor each test case, print maximum value possible, rounded to 6 decimal places.",
     "constraints": [
-      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
-      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
-      "1≤capacity≤1091 \\leq capacity \\leq 10^91≤capacity≤109",
-      "1≤vali,wti≤1041 \\leq val_i, wt_i \\leq 10^41≤vali​,wti​≤104"
+      "1 <= T <= 100",
+      "1 <= N <= 100000",
+      "1 <= C <= 10^9",
+      "1 <= value_i, weight_i <= 10000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and C, where N is the number of items and C is the knapsack capacity.\n- The second line contains N integers, the values of the items.\n- The third line contains N integers, the weights of the items.",
+    "outputFormat": "For each test case output a single line containing the maximum total value that can be obtained, rounded to exactly 6 decimal places.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n3 50\n60 100 120\n10 20 30\n2 50\n60 100\n10 20\n3 100\n10 20 30\n5 10 15",
         "output": "240.000000\n160.000000\n60.000000",
-        "explanation": "Explanation:\nTest Case 1: Take first two items completely and third item partially ((120/30)*20 = 80). Total = 60 + 100 + 80 = 240 \nTest Case 2: Take both items completely. Total = 60 + 100 = 160 \nTest Case 3: All items can be taken completely as total weight (30) < capacity (100). Total = 10 + 20 + 30 = 60"
+        "explanation": "Test case 1: items sorted by ratio 6,5,4. Take first two completely (weights 10+20). Remaining capacity 20 allows 2/3 of third item (value 120*20/30 = 80). Total 60+100+80 = 240.\\nTest case 2: both items fit entirely, total 160.\\nTest case 3: total weight of all items (30) is less than capacity (100), so all values sum to 60."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n4 10\n60 100 120 80\n10 20 30 40",
+        "output": "60.000000",
+        "explanation": "Only the first item (ratio 6, weight 10) fits exactly into capacity 10. No other item can be taken."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5 50\n10 20 30 40 50\n5 10 15 20 25",
+        "output": "100.000000",
+        "explanation": "All items have the same ratio 2. Greedy picks them in input order until capacity 50 is reached: weights 5+10+15+20 = 50, values 10+20+30+40 = 100."
       }
     ]
   },
@@ -41,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n3 50\n60 100 120\n10 20 30\n2 50\n60 100\n10 20\n3 100\n10 20 30\n5 10 15",
-        "expectedOutput": "240.000000\n160.000000\n60.000000",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 1\n1\n1",
+        "expectedOutput": "1.000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n15 200\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "120.000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case – capacity too small",
+        "input": "1\n3 2\n100 200 300\n5 5 5",
+        "expectedOutput": "0.000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1 – single full item",
+        "input": "1\n4 10\n60 100 120 80\n10 20 30 40",
+        "expectedOutput": "60.000000",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2 – equal ratios",
+        "input": "1\n5 50\n10 20 30 40 50\n5 10 15 20 25",
+        "expectedOutput": "100.000000",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,11 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case compute the value‑to‑weight ratio of every item. Sort items in decreasing order of this ratio. Iterate over the sorted list, taking whole items while the remaining capacity allows. When an item does not fit completely, take the fraction that fits and stop. The sum of taken values is the optimal answer for the fractional knapsack problem.",
+    "timeComplexity": "O(N log N) per test case for sorting, plus O(N) for the greedy scan.",
+    "spaceComplexity": "O(N) to store the items for each test case.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\ndouble getMaxValue(int n, vector<int>& val, vector<int>& wt, int capacity) {\n    vector<pair<double, int>> ratio(n);\n    \n    // Calculate value/weight ratio for each item\n    for(int i = 0; i < n; i++) {\n        ratio[i] = {(double)val[i]/wt[i], i};\n    }\n    \n    // Sort by ratio in descending order\n    sort(ratio.rbegin(), ratio.rend());\n    \n    double totalValue = 0.0;\n    int currentWeight = 0;\n    \n    // Process items in decreasing order of ratio\n    for(int i = 0; i < n; i++) {\n        int idx = ratio[i].second;\n        \n        if(currentWeight + wt[idx] <= capacity) {\n            currentWeight += wt[idx];\n            totalValue += val[idx];\n        }\n        else {\n            int remainingWeight = capacity - currentWeight;\n            totalValue += val[idx] * ((double)remainingWeight/wt[idx]);\n            break;\n        }\n    }\n    \n    return totalValue;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        int n, capacity;\n        cin >> n >> capacity;\n        \n        vector<int> val(n), wt(n);\n        \n        for(int i = 0; i < n; i++) cin >> val[i];\n        for(int i = 0; i < n; i++) cin >> wt[i];\n        \n        cout << fixed << setprecision(6) << getMaxValue(n, val, wt, capacity) << endl;\n    }\n    return 0;\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {\n    int value;\n    int weight;\n    double ratio;\n} Item;\n\nint cmp(const void *a, const void *b) {\n    const Item *i1 = (const Item *)a;\n    const Item *i2 = (const Item *)b;\n    if (i1->ratio < i2->ratio) return 1;\n    if (i1->ratio > i2->ratio) return -1;\n    return 0;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; long long C; scanf(\"%d %lld\", &N, &C);\n        Item *items = (Item *)malloc(N * sizeof(Item));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &items[i].value);\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%d\", &items[i].weight);\n            items[i].ratio = (double)items[i].value / items[i].weight;\n        }\n        qsort(items, N, sizeof(Item), cmp);\n        double total = 0.0;\n        long long used = 0;\n        for (int i = 0; i < N; ++i) {\n            if (used + items[i].weight <= C) {\n                used += items[i].weight;\n                total += items[i].value;\n            } else {\n                long long remain = C - used;\n                if (remain > 0) total += items[i].value * ((double)remain / items[i].weight);\n                break;\n            }\n        }\n        printf(\"%.6f\\n\", total);\n        free(items);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Item {\n    int value;\n    int weight;\n    double ratio;\n};\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int N; long long C; cin>>N>>C;\n        vector<Item> items(N);\n        for(int i=0;i<N;++i) cin>>items[i].value;\n        for(int i=0;i<N;++i){\n            cin>>items[i].weight;\n            items[i].ratio = (double)items[i].value / items[i].weight;\n        }\n        sort(items.begin(), items.end(), [](const Item& a, const Item& b){\n            return a.ratio > b.ratio;\n        });\n        double total = 0.0;\n        long long used = 0;\n        for(const auto &it: items){\n            if(used + it.weight <= C){\n                used += it.weight;\n                total += it.value;\n            } else {\n                long long remain = C - used;\n                if(remain>0) total += it.value * ((double)remain / it.weight);\n                break;\n            }\n        }\n        cout.setf(ios::fixed);\n        cout<<setprecision(6)<<total<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Item {\n        int value;\n        int weight;\n        double ratio;\n        Item(int v, int w){value=v; weight=w; ratio=(double)v/w;}\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        while(T-- > 0){\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            long C = Long.parseLong(st.nextToken());\n            int[] vals = new int[N];\n            int[] wts = new int[N];\n            st = new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) vals[i]=Integer.parseInt(st.nextToken());\n            st = new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) wts[i]=Integer.parseInt(st.nextToken());\n            Item[] items = new Item[N];\n            for(int i=0;i<N;i++) items[i]=new Item(vals[i], wts[i]);\n            Arrays.sort(items, (a,b)->Double.compare(b.ratio, a.ratio));\n            double total=0.0;\n            long used=0;\n            for(Item it: items){\n                if(used + it.weight <= C){\n                    used += it.weight;\n                    total += it.value;\n                } else {\n                    long remain = C - used;\n                    if(remain>0) total += it.value * ((double)remain / it.weight);\n                    break;\n                }\n            }\n            sb.append(String.format(java.util.Locale.US, \"%.6f\\n\", total));\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it)); C = int(next(it))\n        values = [int(next(it)) for _ in range(N)]\n        weights = [int(next(it)) for _ in range(N)]\n        items = [(v / w, v, w) for v, w in zip(values, weights)]\n        items.sort(key=lambda x: x[0], reverse=True)\n        total = 0.0\n        used = 0\n        for _, v, w in items:\n            if used + w <= C:\n                used += w\n                total += v\n            else:\n                remain = C - used\n                if remain > 0:\n                    total += v * (remain / w)\n                break\n        out_lines.append(f\"{total:.6f}\")\n    sys.stdout.write(\"\\n\".join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  const C = Number(input[idx++]);\n  const values = new Array(N);\n  const weights = new Array(N);\n  for (let i = 0; i < N; ++i) values[i] = Number(input[idx++]);\n  for (let i = 0; i < N; ++i) weights[i] = Number(input[idx++]);\n  const items = [];\n  for (let i = 0; i < N; ++i) {\n    items.push({ ratio: values[i] / weights[i], value: values[i], weight: weights[i] });\n  }\n  items.sort((a, b) => b.ratio - a.ratio);\n  let total = 0.0;\n  let used = 0;\n  for (const it of items) {\n    if (used + it.weight <= C) {\n      used += it.weight;\n      total += it.value;\n    } else {\n      const remain = C - used;\n      if (remain > 0) total += it.value * (remain / it.weight);\n      break;\n    }\n  }\n  outputs.push(total.toFixed(6));\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }

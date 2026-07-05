@@ -4,14 +4,15 @@
   "slug": "houses-and-restaurants",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "competitive programming"
+      "Minimum Spanning Tree",
+      "Kruskal's Algorithm",
+      "Union-Find"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +22,19 @@
   "content": {
     "problemStatement": "There is a city where people are fond of visiting restaurants. In fact, any building in this town is either a house or a restaurant. There are N buildings in the city and they are conveniently numerated by integer numbers from 1 to N. To move from some building to others there are M two-way roads. Each road connects two buildings. It is possible that there are several roads that connect the same pair of buildings, but there won't be a road that connects a building to itself. Chef wants to make the ways to his restaurants more interesting. To do that he is going to decorate some roads. Each road has its own integer cost of decorating. Some costs may be negative. If the cost is negative Chef will get some reward for decorating this road. Now Chef doesn't have much money so he wants to decorate roads in such a way that from each house, at least one restaurant is reachable using only decorated roads. The total cost of decorated roads should be minimal. So, your task is to help him to calculate the minimal cost of any satisfactory subset. It might be negative if Chef's rewards for decorating some roads are greater than his spent money.",
     "constraints": [
-      "i"
+      "1 <= T <= 100",
+      "1 <= N <= 1000",
+      "1 <= M <= 10000",
+      "-1000 <= Zi <= 1000"
     ],
-    "inputFormat": "There first line of input contains an integer T - the number of test cases.\n\nThen T test cases follow.\nFor each test case there will be integers N and M - the number of buildings and the number of roads.\n\nThen a string of N letter follows. I-th symbol of this string is \"R\" if the corresponding building is a restaurant and \"H\" if it is a house.\n\nThen there are M lines. Each line consists of three integers - Xi Yi Zi. They describe a road that connects buildings Xi and Yi with the cost of decorating equal to Zi.",
-    "outputFormat": "For each test case output the minimal cost of any satisfactory subset of roads.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Then T test cases follow. For each test case, the first line contains two integers N and M, the number of buildings and the number of roads. The second line contains a string of N characters, where 'H' represents a house and 'R' represents a restaurant. Then M lines follow, each containing three integers Xi, Yi, and Zi, describing a road that connects buildings Xi and Yi with the cost of decorating equal to Zi.",
+    "outputFormat": "For each test case, output the minimal cost of any satisfactory subset of roads.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n3 5\nHHR\n1 2 3\n1 2 5\n1 3 10\n3 2 -1\n3 1 7\n2 2\nRR\n1 2 1\n2 1 2\n3 3\nHRR\n1 2 1\n1 3 2\n2 3 3",
         "output": "2\n0\n1",
-        "explanation": ""
+        "explanation": "For the first test case, the minimum cost is 2, which is achieved by decorating the roads between buildings 1 and 2, and between buildings 3 and 2. For the second test case, the minimum cost is 0, which is achieved by not decorating any roads. For the third test case, the minimum cost is 1, which is achieved by decorating the road between buildings 1 and 2."
       }
     ]
   },
@@ -38,20 +42,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n3 5\nHHR\n1 2 3\n1 2 5\n1 3 10\n3 2 -1\n3 1 7\n2 2\nRR\n1 2 1\n2 1 2\n3 3\nHRR\n1 2 1\n1 3 2\n2 3 3",
-        "expectedOutput": "2\n0\n1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 0\nH",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\\n1000 10000\\nH\".repeat(1000)",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n2 1\nHR\n1 2 0",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n5 10\nHHHRR\n1 2 1\n1 3 2\n1 4 3\n1 5 4\n2 3 5\n2 4 6\n2 5 7\n3 4 8\n3 5 9",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n10 20\nHHHHHHHRRR\n1 2 1\n1 3 2\n1 4 3\n1 5 4\n1 6 5\n1 7 6\n1 8 7\n1 9 8\n1 10 9\n2 3 10\n2 4 11\n2 5 12\n2 6 13\n2 7 14\n2 8 15\n2 9 16\n2 10 17",
+        "expectedOutput": "45",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -65,14 +102,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To solve this problem, we can use a modified version of Kruskal's algorithm for finding the minimum spanning tree. We first sort all the edges by their weights. Then, we iterate over the sorted edges and add them to the minimum spanning tree if they do not form a cycle. We use a union-find data structure to keep track of the connected components. We also need to consider the case where the cost of decorating a road is negative, in which case we should always add it to the minimum spanning tree.",
+    "timeComplexity": "O(M log M + M alpha(N))",
+    "spaceComplexity": "O(N + M)",
     "code": {
-      "C++": "#include<stdio.h>\n#include<stdlib.h>\n#include<math.h>\n#include<string.h>\n#define REP(i,a,b) for(i=a;i<b;i++)\n#define rep(i,n) REP(i,0,n)\n\n#define ll long long\n\nvoid unionInit(int d[],int s){int i;rep(i,s)d[i]=i;}\nint unionGet(int d[],int n){int t=n,k;while(d[t]!=t)t=d[t];while(d[n]!=n)k=d[n],d[n]=t,n=k;return n;}\nint unionConnect(int d[],int a,int b){a=unionGet(d,a);b=unionGet(d,b);if(a==b)return 0;d[a]=b;return 1;}\n\nvoid intIntIntSort(int d[],int m1[],int m2[],int s){int i=-1,j=s,k,t;if(s<=1)return;k=(d[0]+d[s-1])/2;for(;;){while(d[++i]<k);while(d[--j]>k);if(i>=j)break;t=d[i];d[i]=d[j];d[j]=t;t=m1[i];m1[i]=m1[j];m1[j]=t;t=m2[i];m2[i]=m2[j];m2[j]=t;}intIntIntSort(d,m1,m2,i);intIntIntSort(d+j+1,m1+j+1,m2+j+1,s-j-1);}\n\nint a[410000], b[410000], z[410000];\nchar kinds[110000];\nint ind[110000];\n\nint main(){\n  int i,j,k,l;\n  int T;\n  int N, M;\n  ll res;\n  \n  scanf(\"%d\",&T);\n  while(T--){\n    scanf(\"%d%d%s\",&N,&M,kinds);\n    rep(i,M) scanf(\"%d%d%d\",a+i,b+i,z+i), a[i]--, b[i]--;\n    intIntIntSort(z,a,b,M); /* sorting: z[0] <= z[1] <= ... */\n    \n    unionInit(ind, N);\n\n    /* connecting all Restaurants (with cost 0) */\n    res = 0;\n    rep(i,N) if(kinds[i]=='R') break;\n    REP(j,i+1,N) if(kinds[j]=='R') unionConnect(ind, i, j);\n\n    /* calculating ordinary MST */\n    rep(i,M){\n      if(z[i] <= 0 || unionGet(ind,a[i]) != unionGet(ind,b[i])){ /* If an edge's cost is negative, this edge must be used */\n        res += z[i];\n        unionConnect(ind, a[i], b[i]);\n      }\n    }\n    \n    printf(\"%lld\\n\",res);\n  }\n  \n  return 0;\n}\n",
-      "Python3": "import sys\ninput = sys.stdin.readline\n\n# Iterative DSU with path compression\ndef find(parent, x):\n    while parent[x] != x:\n        parent[x] = parent[parent[x]]\n        x = parent[x]\n    return x\n\ndef union(parent, a, b):\n    pa = find(parent, a)\n    pb = find(parent, b)\n    if pa == pb:\n        return False\n    parent[pa] = pb\n    return True\n\n\nT = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    kinds = input().strip()\n\n    edges = []\n    for _ in range(M):\n        x, y, w = map(int, input().split())\n        edges.append((w, x - 1, y - 1))\n\n    edges.sort()  # sort by cost\n\n    parent = list(range(N))\n    res = 0\n\n    # Connect all restaurants with cost 0\n    first_r = -1\n    for i in range(N):\n        if kinds[i] == 'R':\n            first_r = i\n            break\n\n    for i in range(first_r + 1, N):\n        if kinds[i] == 'R':\n            union(parent, first_r, i)\n\n    # Modified MST\n    for w, u, v in edges:\n        if w <= 0:\n            res += w\n            union(parent, u, v)\n        else:\n            if find(parent, u) != find(parent, v):\n                res += w\n                union(parent, u, v)\n\n    print(res)",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef long long ll;\n\ntypedef struct {\n    int u, v, w;\n} Edge;\n\n/* ---------- DSU ---------- */\n\nint find(int parent[], int x) {\n    while (parent[x] != x) {\n        parent[x] = parent[parent[x]];  // path compression\n        x = parent[x];\n    }\n    return x;\n}\n\nint unite(int parent[], int a, int b) {\n    int pa = find(parent, a);\n    int pb = find(parent, b);\n    if (pa == pb) return 0;\n    parent[pa] = pb;\n    return 1;\n}\n\n/* ---------- Comparator for qsort ---------- */\n\nint cmp(const void *a, const void *b) {\n    Edge *e1 = (Edge *)a;\n    Edge *e2 = (Edge *)b;\n    if (e1->w < e2->w) return -1;\n    if (e1->w > e2->w) return 1;\n    return 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n\n        char kinds[N + 5];\n        scanf(\"%s\", kinds);\n\n        Edge *edges = (Edge *)malloc(sizeof(Edge) * M);\n\n        for (int i = 0; i < M; i++) {\n            scanf(\"%d %d %d\", &edges[i].u, &edges[i].v, &edges[i].w);\n            edges[i].u--;  // 0-based\n            edges[i].v--;\n        }\n\n        /* Sort edges by weight */\n        qsort(edges, M, sizeof(Edge), cmp);\n\n        int *parent = (int *)malloc(sizeof(int) * N);\n        for (int i = 0; i < N; i++)\n            parent[i] = i;\n\n        ll res = 0;\n\n        /* Connect all restaurants first (cost 0) */\n        int firstR = -1;\n        for (int i = 0; i < N; i++) {\n            if (kinds[i] == 'R') {\n                firstR = i;\n                break;\n            }\n        }\n\n        for (int i = firstR + 1; i < N; i++) {\n            if (kinds[i] == 'R') {\n                unite(parent, firstR, i);\n            }\n        }\n\n        /* Modified Kruskal */\n        for (int i = 0; i < M; i++) {\n            int u = edges[i].u;\n            int v = edges[i].v;\n            int w = edges[i].w;\n\n            if (w <= 0) {\n                res += w;\n                unite(parent, u, v);\n            } else {\n                if (find(parent, u) != find(parent, v)) {\n                    res += w;\n                    unite(parent, u, v);\n                }\n            }\n        }\n\n        printf(\"%lld\\n\", res);\n\n        free(edges);\n        free(parent);\n    }\n\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n\n    // Fast Scanner\n    static class FastScanner {\n        private final InputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n\n        FastScanner(InputStream is) {\n            in = is;\n        }\n\n        private int read() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n\n        int nextInt() throws IOException {\n            int c, s = 1, x = 0;\n            while ((c = read()) <= ' ') if (c == -1) return -1;\n            if (c == '-') {\n                s = -1;\n                c = read();\n            }\n            while (c > ' ') {\n                x = x * 10 + c - '0';\n                c = read();\n            }\n            return x * s;\n        }\n\n        String next() throws IOException {\n            StringBuilder sb = new StringBuilder();\n            int c;\n            while ((c = read()) <= ' ') if (c == -1) return \"\";\n            while (c > ' ') {\n                sb.append((char) c);\n                c = read();\n            }\n            return sb.toString();\n        }\n    }\n\n    static int find(int[] parent, int x) {\n        while (parent[x] != x) {\n            parent[x] = parent[parent[x]]; // path compression\n            x = parent[x];\n        }\n        return x;\n    }\n\n    static boolean union(int[] parent, int a, int b) {\n        int pa = find(parent, a);\n        int pb = find(parent, b);\n        if (pa == pb) return false;\n        parent[pa] = pb;\n        return true;\n    }\n\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        StringBuilder out = new StringBuilder();\n\n        int T = fs.nextInt();\n        while (T-- > 0) {\n\n            int N = fs.nextInt();\n            int M = fs.nextInt();\n            String kinds = fs.next();\n\n            int[][] edges = new int[M][3];\n\n            for (int i = 0; i < M; i++) {\n                edges[i][0] = fs.nextInt() - 1;\n                edges[i][1] = fs.nextInt() - 1;\n                edges[i][2] = fs.nextInt();\n            }\n\n            // Sort by weight\n            Arrays.sort(edges, Comparator.comparingInt(a -> a[2]));\n\n            int[] parent = new int[N];\n            for (int i = 0; i < N; i++) parent[i] = i;\n\n            long res = 0;\n\n            // Connect all restaurants first (cost 0)\n            int firstR = -1;\n            for (int i = 0; i < N; i++) {\n                if (kinds.charAt(i) == 'R') {\n                    firstR = i;\n                    break;\n                }\n            }\n\n            for (int i = firstR + 1; i < N; i++) {\n                if (kinds.charAt(i) == 'R') {\n                    union(parent, firstR, i);\n                }\n            }\n\n            // Modified Kruskal\n            for (int i = 0; i < M; i++) {\n                int u = edges[i][0];\n                int v = edges[i][1];\n                int w = edges[i][2];\n\n                if (w <= 0) {\n                    res += w;\n                    union(parent, u, v);\n                } else {\n                    if (find(parent, u) != find(parent, v)) {\n                        res += w;\n                        union(parent, u, v);\n                    }\n                }\n            }\n\n            out.append(res).append('\\n');\n        }\n\n        System.out.print(out);\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_N 1000\n#define MAX_M 10000\n\nint find(int *parent, int x) {\n    if (parent[x] != x) {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nint unionSet(int *parent, int x, int y) {\n    int px = find(parent, x);\n    int py = find(parent, y);\n    if (px != py) {\n        parent[px] = py;\n        return 1;\n    }\n    return 0;\n}\n\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return x[2] - y[2];\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        char kinds[N + 1];\n        scanf(\"%s\", kinds);\n        int edges[M][3];\n        for (int i = 0; i < M; i++) {\n            scanf(\"%d %d %d\", &edges[i][0], &edges[i][1], &edges[i][2]);\n            edges[i][0]--;\n            edges[i][1]--;\n        }\n        qsort(edges, M, sizeof(edges[0]), compare);\n        int parent[N];\n        for (int i = 0; i < N; i++) {\n            parent[i] = i;\n        }\n        long long res = 0;\n        int firstR = -1;\n        for (int i = 0; i < N; i++) {\n            if (kinds[i] == 'R') {\n                firstR = i;\n                break;\n            }\n        }\n        for (int i = firstR + 1; i < N; i++) {\n            if (kinds[i] == 'R') {\n                unionSet(parent, firstR, i);\n            }\n        }\n        for (int i = 0; i < M; i++) {\n            if (edges[i][2] <= 0 || find(parent, edges[i][0]) != find(parent, edges[i][1])) {\n                res += edges[i][2];\n                unionSet(parent, edges[i][0], edges[i][1]);\n            }\n        }\n        printf(\"%lld\\n\", res);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nconst int MAX_N = 1000;\nconst int MAX_M = 10000;\n\nint find(int *parent, int x) {\n    if (parent[x] != x) {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nint unionSet(int *parent, int x, int y) {\n    int px = find(parent, x);\n    int py = find(parent, y);\n    if (px != py) {\n        parent[px] = py;\n        return 1;\n    }\n    return 0;\n}\n\nstruct Edge {\n    int u, v, w;\n};\n\nbool compare(const Edge &x, const Edge &y) {\n    return x.w < y.w;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        string kinds;\n        cin >> kinds;\n        Edge edges[M];\n        for (int i = 0; i < M; i++) {\n            cin >> edges[i].u >> edges[i].v >> edges[i].w;\n            edges[i].u--;\n            edges[i].v--;\n        }\n        sort(edges, edges + M, compare);\n        int parent[N];\n        for (int i = 0; i < N; i++) {\n            parent[i] = i;\n        }\n        long long res = 0;\n        int firstR = -1;\n        for (int i = 0; i < N; i++) {\n            if (kinds[i] == 'R') {\n                firstR = i;\n                break;\n            }\n        }\n        for (int i = firstR + 1; i < N; i++) {\n            if (kinds[i] == 'R') {\n                unionSet(parent, firstR, i);\n            }\n        }\n        for (int i = 0; i < M; i++) {\n            if (edges[i].w <= 0 || find(parent, edges[i].u) != find(parent, edges[i].v)) {\n                res += edges[i].w;\n                unionSet(parent, edges[i].u, edges[i].v);\n            }\n        }\n        cout << res << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Arrays;\nimport java.util.Scanner;\n\npublic class Main {\n    static int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]);\n        }\n        return parent[x];\n    }\n\n    static int unionSet(int[] parent, int x, int y) {\n        int px = find(parent, x);\n        int py = find(parent, y);\n        if (px != py) {\n            parent[px] = py;\n            return 1;\n        }\n        return 0;\n    }\n\n    static class Edge implements Comparable<Edge> {\n        int u, v, w;\n\n        public Edge(int u, int v, int w) {\n            this.u = u;\n            this.v = v;\n            this.w = w;\n        }\n\n        @Override\n        public int compareTo(Edge o) {\n            return Integer.compare(this.w, o.w);\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            int N = scanner.nextInt();\n            int M = scanner.nextInt();\n            String kinds = scanner.next();\n            Edge[] edges = new Edge[M];\n            for (int i = 0; i < M; i++) {\n                edges[i] = new Edge(scanner.nextInt() - 1, scanner.nextInt() - 1, scanner.nextInt());\n            }\n            Arrays.sort(edges);\n            int[] parent = new int[N];\n            for (int i = 0; i < N; i++) {\n                parent[i] = i;\n            }\n            long res = 0;\n            int firstR = -1;\n            for (int i = 0; i < N; i++) {\n                if (kinds.charAt(i) == 'R') {\n                    firstR = i;\n                    break;\n                }\n            }\n            for (int i = firstR + 1; i < N; i++) {\n                if (kinds.charAt(i) == 'R') {\n                    unionSet(parent, firstR, i);\n                }\n            }\n            for (int i = 0; i < M; i++) {\n                if (edges[i].w <= 0 || find(parent, edges[i].u) != find(parent, edges[i].v)) {\n                    res += edges[i].w;\n                    unionSet(parent, edges[i].u, edges[i].v);\n                }\n            }\n            System.out.println(res);\n        }\n    }\n}",
+      "Python3": "import sys\ninput = sys.stdin.readline\n\ndef find(parent, x):\n    if parent[x] != x:\n        parent[x] = find(parent, parent[x])\n    return parent[x]\n\ndef unionSet(parent, x, y):\n    px = find(parent, x)\n    py = find(parent, y)\n    if px != py:\n        parent[px] = py\n        return 1\n    return 0\n\nT = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    kinds = input().strip()\n    edges = []\n    for _ in range(M):\n        u, v, w = map(int, input().split())\n        edges.append((u - 1, v - 1, w))\n    edges.sort(key=lambda x: x[2])\n    parent = list(range(N))\n    res = 0\n    firstR = -1\n    for i in range(N):\n        if kinds[i] == 'R':\n            firstR = i\n            break\n    for i in range(firstR + 1, N):\n        if kinds[i] == 'R':\n            unionSet(parent, firstR, i)\n    for u, v, w in edges:\n        if w <= 0 or find(parent, u) != find(parent, v):\n            res += w\n            unionSet(parent, u, v)\n    print(res)",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction find(parent, x) {\n    if (parent[x] !== x) {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nfunction unionSet(parent, x, y) {\n    let px = find(parent, x);\n    let py = find(parent, y);\n    if (px !== py) {\n        parent[px] = py;\n        return 1;\n    }\n    return 0;\n}\n\nlet T = +lines[idx++];\nwhile (T--) {\n    let [N, M] = lines[idx++].trim().split(' ').map(Number);\n    let kinds = lines[idx++].trim();\n    let edges = [];\n    for (let i = 0; i < M; i++) {\n        let [u, v, w] = lines[idx++].trim().split(' ').map(Number);\n        edges.push([u - 1, v - 1, w]);\n    }\n    edges.sort((a, b) => a[2] - b[2]);\n    let parent = Array(N).fill(0).map((_, i) => i);\n    let res = 0;\n    let firstR = -1;\n    for (let i = 0; i < N; i++) {\n        if (kinds[i] === 'R') {\n            firstR = i;\n            break;\n        }\n    }\n    for (let i = firstR + 1; i < N; i++) {\n        if (kinds[i] === 'R') {\n            unionSet(parent, firstR, i);\n        }\n    }\n    for (let [u, v, w] of edges) {\n        if (w <= 0 || find(parent, u) !== find(parent, v)) {\n            res += w;\n            unionSet(parent, u, v);\n        }\n    }\n    console.log(res);\n}"
     }
   }
 }

@@ -4,14 +4,14 @@
   "slug": "subset-sum-problem",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Subset Sum",
+      "0/1 Knapsack"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +21,31 @@
   "content": {
     "problemStatement": "You have NNN positive integers, ithi^{th}ith of them being AiA_iAi​ and an positive integer XXX. \n\nYou need to answer if you can pick a subset of these elements such that the sum of the subset is equal to xxx.\n\nHintJust like the 0/1 knapsack problem, we have to pick or not pick the integers, but instead of maximising the value, we need to check if we can make the required sum or not.\n\n\nInput Format\n\nThe first line contains a two integers NNN and XXX, denoting the length of array AAA and the target sum value.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ — denoting the array AAA.\n\n\nOutput Format\nOutput `YES` if you can pick a subset with sum equal to XXX, otherwise output `NO`.",
     "constraints": [
-      "2≤N≤1032 \\leq N \\leq 10^32≤N≤103",
-      "0≤X≤1030 \\leq X \\leq 10^30≤X≤103",
-      "1≤Ai≤1031 \\leq A_i \\leq 10^31≤Ai​≤103"
+      "1 <= T <= 10",
+      "2 <= N <= 1000",
+      "0 <= X <= 1000",
+      "1 <= Ai <= 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers N and X — the number of elements and the required sum. The second line contains N space‑separated positive integers A1, A2, …, AN.",
+    "outputFormat": "For each test case output a single line containing \"YES\" if there exists a subset of the given numbers whose sum equals X, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 5\n1 1 4 9 1",
+        "input": "1\\n5 5\\n1 1 4 9 1",
         "output": "YES",
-        "explanation": ""
+        "explanation": "The subset {1,4} sums to 5, so the answer is YES."
       },
       {
         "id": "sample_2",
-        "input": "5 8\n1 1 4 9 1",
+        "input": "1\\n5 8\\n1 1 4 9 1",
         "output": "NO",
-        "explanation": ""
+        "explanation": "No combination of the given numbers adds up to 8, therefore the answer is NO."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n3 5\\n1 2 3",
+        "output": "YES",
+        "explanation": "The subset {2,3} gives the required sum 5, so the output is YES."
       }
     ]
   },
@@ -46,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 5\n1 1 4 9 1",
+        "label": "minimum boundary",
+        "input": "1\\n2 0\\n1 2",
         "expectedOutput": "YES",
-        "weight": 50
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "5 8\n1 1 4 9 1",
+        "label": "maximum boundary",
+        "input": "1\\n15 1000\\n1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\n5 7\\n5 5 5 5 5",
         "expectedOutput": "NO",
-        "weight": 50
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n4 15\\n8 4 2 1",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\\n3 6\\n1 2 3\\n6 10\\n2 2 2 2 2 2\\n5 9\\n5 5 5 5 5",
+        "expectedOutput": "YES\\nYES\\nNO",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "We use the classic 0/1 knapsack DP for subset sum. Maintain a boolean array dp[0…X] where dp[s] is true if a subset of the processed elements can achieve sum s. Initialise dp[0]=true (empty subset). For each element a, iterate s from X down to a and set dp[s]|=dp[s‑a]. After processing all elements, dp[X] tells whether the target sum is reachable. This runs in O(N·X) time and O(X) extra space per test case, which easily fits the limits (N≤1000, X≤1000).",
+    "timeComplexity": "O(N·X) per test case",
+    "spaceComplexity": "O(X) auxiliary space",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int n, x;\n    cin >> n >> x;\n\n    int A[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        cin >> A[i];\n    }   \n\n    // We will use 2-d array to store the solution \n    int dp[n + 1][x + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base case, can make sum = 0 alwaus\n        dp[i][0] = 1; \n    }\n    for(int j = 1; j <= x; j++) {\n        // Base case, can never make any sum with no elements\n        dp[0][j] = 0; \n    }   \n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= x; j++) {\n            if(j >= A[i]) {\n                // Either can be true\n                dp[i][j] = dp[i - 1][j] | dp[i - 1][j - A[i]];\n            }\n            else {\n                dp[i][j] = dp[i - 1][j];\n            }\n        }\n    }\n\n    if(dp[n][x]) {\n        cout << \"YES\\n\";\n    }\n    else {\n        cout << \"NO\\n\";\n    }\n\n    return 0;\n}",
-      "Python3": "def subset_sum_exists(n, x, A):\n    dp = [[0] * (x + 1) for _ in range(n + 1)]\n\n    for i in range(n + 1):\n        # Base case: can make sum = 0 always\n        dp[i][0] = 1\n\n    for j in range(1, x + 1):\n        # Base case: can never make any sum with no elements\n        dp[0][j] = 0\n\n    for i in range(1, n + 1):\n        for j in range(1, x + 1):\n            if j >= A[i]:\n                # Either can be true\n                dp[i][j] = dp[i - 1][j] or dp[i - 1][j - A[i]]\n            else:\n                dp[i][j] = dp[i - 1][j]\n\n    return \"YES\" if dp[n][x] else \"NO\"\n\nif __name__ == \"__main__\":\n    n, x = map(int, input().split())\n    A = [0] + list(map(int, input().split()))  # Using one-based indexing\n\n    result = subset_sum_exists(n, x, A)\n    print(result)\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int n, x;\n    scanf(\"%d %d\", &n, &x);\n\n    int A[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n\n    // We will use a 2-d array to store the solution\n    int dp[n + 1][x + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base case, can make sum = 0 always\n        dp[i][0] = 1;\n    }\n    for(int j = 1; j <= x; j++) {\n        // Base case, can never make any sum with no elements\n        dp[0][j] = 0;\n    }\n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= x; j++) {\n            if(j >= A[i]) {\n                // Either can be true\n                dp[i][j] = dp[i - 1][j] || dp[i - 1][j - A[i]];\n            } else {\n                dp[i][j] = dp[i - 1][j];\n            }\n        }\n    }\n\n    if(dp[n][x]) {\n        printf(\"YES\\n\");\n    } else {\n        printf(\"NO\\n\");\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int x = sc.nextInt();\n\n        int[] A = new int[n + 1];\n\n        // Using one-based indexing\n        for (int i = 1; i <= n; i++) {\n            A[i] = sc.nextInt();\n        }\n\n        // We will use a 2D array to store the solution\n        int[][] dp = new int[n + 1][x + 1];\n\n        for (int i = 0; i <= n; i++) {\n            // Base case: can make sum = 0 always\n            dp[i][0] = 1;\n        }\n        for (int j = 1; j <= x; j++) {\n            // Base case: can never make any sum with no elements\n            dp[0][j] = 0;\n        }\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= x; j++) {\n                if (j >= A[i]) {\n                    // Either can be true\n                    dp[i][j] = dp[i - 1][j] | dp[i - 1][j - A[i]];\n                } else {\n                    dp[i][j] = dp[i - 1][j];\n                }\n            }\n        }\n\n        if (dp[n][x] == 1) {\n            System.out.println(\"YES\");\n        } else {\n            System.out.println(\"NO\");\n        }\n    }\n}\n",
-      "JavaScript": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int n, x;\n    cin >> n >> x;\n\n    int A[n + 1];\n\n    // Using one-based indexing\n    for(int i = 1; i <= n; i++) {\n        cin >> A[i];\n    }   \n\n    // We will use 2-d array to store the solution \n    int dp[n + 1][x + 1];\n\n    for(int i = 0; i <= n; i++) {\n        // Base case, can make sum = 0 alwaus\n        dp[i][0] = 1; \n    }\n    for(int j = 1; j <= x; j++) {\n        // Base case, can never make any sum with no elements\n        dp[0][j] = 0; \n    }   \n\n    for(int i = 1; i <= n; i++) {\n        for(int j = 1; j <= x; j++) {\n            if(j >= A[i]) {\n                // Either can be true\n                dp[i][j] = dp[i - 1][j] | dp[i - 1][j - A[i]];\n            }\n            else {\n                dp[i][j] = dp[i - 1][j];\n            }\n        }\n    }\n\n    if(dp[n][x]) {\n        cout << \"YES\\n\";\n    }\n    else {\n        cout << \"NO\\n\";\n    }\n\n    return 0;\n}"
+      "C": "#include <stdio.h>\n#include <string.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N,X; scanf(\"%d %d\",&N,&X); int A[1005]; for(int i=0;i<N;++i) scanf(\"%d\",&A[i]); char dp[1005]; memset(dp,0,sizeof(dp)); dp[0]=1; for(int i=0;i<N;++i){int a=A[i]; for(int s=X;s>=a;--s){if(dp[s-a]) dp[s]=1;}} printf(dp[X]?\"YES\\n\":\"NO\\n\"); } return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; while(T--){int N,X;cin>>N>>X; vector<int>A(N); for(int &v:A)cin>>v; vector<char>dp(X+1,0); dp[0]=1; for(int a:A){for(int s=X;s>=a;--s){if(dp[s-a]) dp[s]=1;}} cout<<(dp[X]?\"YES\":\"NO\")<<'\\n'; } return 0; }",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws IOException{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st=new StringTokenizer(br.readLine());\n        int T=Integer.parseInt(st.nextToken());\n        StringBuilder sb=new StringBuilder();\n        while(T-- > 0){\n            st=new StringTokenizer(br.readLine());\n            int N=Integer.parseInt(st.nextToken());\n            int X=Integer.parseInt(st.nextToken());\n            int[] A=new int[N];\n            st=new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) A[i]=Integer.parseInt(st.nextToken());\n            boolean[] dp=new boolean[X+1];\n            dp[0]=true;\n            for(int a:A){\n                for(int s=X;s>=a;--s){\n                    if(dp[s-a]) dp[s]=true;\n                }\n            }\n            sb.append(dp[X]?\"YES\":\"NO\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\ndef solve():\n    data=list(map(int,sys.stdin.read().strip().split()))\n    if not data:\n        return\n    it=iter(data)\n    T=next(it)\n    out=[]\n    for _ in range(T):\n        N=next(it); X=next(it)\n        A=[next(it) for _ in range(N)]\n        dp=[False]*(X+1)\n        dp[0]=True\n        for a in A:\n            for s in range(X, a-1, -1):\n                if dp[s-a]:\n                    dp[s]=True\n        out.append('YES' if dp[X] else 'NO')\n    sys.stdout.write('\\n'.join(out))\nif __name__=='__main__':\n    solve()\n",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/).map(Number);\nlet idx=0;\nconst T=input[idx++];\nlet res=[];\nfor(let t=0;t<T;++t){\n  const N=input[idx++];\n  const X=input[idx++];\n  const A=input.slice(idx, idx+N);\n  idx+=N;\n  const dp=new Array(X+1).fill(false);\n  dp[0]=true;\n  for(const a of A){\n    for(let s=X;s>=a;--s){\n      if(dp[s-a]) dp[s]=true;\n    }\n  }\n  res.push(dp[X]?\"YES\":\"NO\");\n}\nconsole.log(res.join('\\n'));\n"
     }
   }
 }

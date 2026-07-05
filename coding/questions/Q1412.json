@@ -4,14 +4,15 @@
   "slug": "pyramid-of-bricks",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "binary search",
-      "data structures and algorithms"
+      "Binary Search",
+      "Mathematical Formula",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,30 @@
   "content": {
     "problemStatement": "You are given NNN bricks and want to construct a **pyramid**. A pyramid is built in layers where the iii-th layer (from the top) requires **i** bricks.\n\n\nThe **1st** layer requires 111 brick.\nThe **2nd** layer requires 222 bricks.\nThe **3rd** layer requires 333 bricks.\nAnd so on.\nFor example, following is a pyramid of 444 layers:\n\nYour task is to determine the maximum number of **complete layers** you can build using the given NNN bricks.\n\n\nInput Format\n\nThe first line of the input contains the number of test cases, TTT.\nFor each test case, a single integer, NNN, represents the number of bricks available.\n\n\nOutput Format\n\nA single integer representing the maximum number of complete layers you can build.",
     "constraints": [
-      "1≤T≤501 \\leq T \\leq 501≤T≤50",
-      "1≤N≤1091 \\leq N \\leq 10^91≤N≤109"
+      "1 <= T <= 50",
+      "1 <= N <= 1000000000",
+      "All values are integers"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N, the number of bricks available.",
+    "outputFormat": "For each test case, print a single line containing the maximum number of complete layers that can be built.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n8\n15",
-        "output": "3\n5",
-        "explanation": "Explanation:\nTest Case 1: We can build 3 complete layers. Layer 1 requires 1 brick, Layer 2 requires 2 bricks, Layer 3 requires 3 bricks.\nTotal bricks used = 1 + 2 + 3 = 6.\nThe 4th layer requires 4 bricks, but only 2 are left. Therefore, the maximum number of complete layers is 3.\nTest Case 2: We can build 5 complete layers:\nLayer 1: Requires 1 brick, Layer 2 requires 2 bricks, Layer 3 requires 3 bricks, Layer 4 requires 4 bricks, Layer 5 requires 5 bricks\nTotal bricks used = 1 + 2 + 3 + 4 + 5 = 15.\nAll bricks are used, so the maximum number of complete layers is 5."
+        "input": "2\\n8\\n15",
+        "output": "3\\n5",
+        "explanation": "For N=8 the largest k with k(k+1)/2 <= 8 is k=3 (3*4/2=6). For N=15 the sum of first 5 layers is exactly 15, so k=5."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\\n1\\n2\\n100",
+        "output": "1\\n1\\n13",
+        "explanation": "N=1 -> only layer 1 fits. N=2 -> still only layer 1 fits because 1+2=3 exceeds 2. N=100 -> k=13 because 13*14/2=91 <=100 and 14*15/2=105 >100."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1000000000",
+        "output": "44720",
+        "explanation": "Using the formula k = floor((sqrt(8*10^9+1)-1)/2) gives 44720. The sum of first 44720 layers is 999961560 which is <= 1e9, while adding the 44721‑st layer would exceed the limit."
       }
     ]
   },
@@ -39,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n8\n15",
-        "expectedOutput": "3\n5",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary with varied values",
+        "input": "3\\n1000000000\\n999916840\\n999880000",
+        "expectedOutput": "44720\\n44719\\n44718",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The total bricks needed for k complete layers is the triangular number S(k)=k*(k+1)/2. We need the largest k such that S(k)≤N. Solving k^2+k-2N≤0 gives k=floor((sqrt(8N+1)-1)/2). Because of possible floating‑point rounding we adjust k by at most one step up or down. This yields O(1) time per test case.",
+    "timeComplexity": "O(1) per test case, O(T) overall.",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint max_complete_layers(int N) {\n    int left = 0, right = N, result = 0;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        long long total_bricks = (long long)mid * (mid + 1) / 2;\n\n        if (total_bricks <= N) {\n            result = mid;\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    return result;\n}\n\nint main() {\n    int T;\n    cin >> T;\n\n    while (T--) {\n        int N;\n        cin >> N;\n        cout << max_complete_layers(N) << endl;\n    }\n\n    return 0;\n}\n",
-      "Python3": "def max_complete_layers(N):\n    left, right = 0, N  \n    result = 0\n\n    while left <= right:\n        mid = (left + right) // 2\n        total_bricks = mid * (mid + 1) // 2  \n\n        if total_bricks <= N:\n            result = mid  \n            left = mid + 1  \n        else:\n            right = mid - 1  \n\n    return result\n\ndef main():\n    T = int(input(\"\"))\n\n    for _ in range(T):\n        N = int(input(\" \"))\n        print(max_complete_layers(N))\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n\nint max_complete_layers(int N) {\n    int left = 0, right = N, result = 0;\n\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        long long total_bricks = (long long)mid * (mid + 1) / 2;\n\n        if (total_bricks <= N) {\n            result = mid;\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    return result;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        printf(\"%d\\n\", max_complete_layers(N));\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\npublic class Main {\n    public static int maxCompleteLayers(int N) {\n        int left = 0, right = N, result = 0;\n\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            long totalBricks = (long) mid * (mid + 1) / 2;\n\n            if (totalBricks <= N) {\n                result = mid;\n                left = mid + 1;\n            } else {\n                right = mid - 1;\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            System.out.println(maxCompleteLayers(N));\n        }\n    }\n}\n",
-      "JavaScript": "function maxCompleteLayers(N) {\n    let left = 0, right = N, result = 0;\n\n    while (left <= right) {\n        let mid = Math.floor((left + right) / 2);\n        let totalBricks = (mid * (mid + 1)) / 2;\n\n        if (totalBricks <= N) {\n            result = mid;\n            left = mid + 1;\n        } else {\n            right = mid - 1;\n        }\n    }\n    return result;\n}\n\n// Input and Output\nconst readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nrl.question(\" \", T => {\n    T = parseInt(T);\n    let testCaseCount = 0;\n    const inputs = [];\n\n    rl.on('line', line => {\n        inputs.push(parseInt(line));\n        testCaseCount++;\n\n        if (testCaseCount === T) {\n            inputs.forEach(N => {\n                console.log(maxCompleteLayers(N));\n            });\n            rl.close();\n        }\n    });\n});\n"
+      "C": "#include <stdio.h>\n#include <math.h>\n\nlong long maxLayers(long long N) {\n    long long k = (long long)((sqrt(8.0 * N + 1) - 1) / 2);\n    while ((k + 1) * (k + 2) / 2 <= N) ++k;\n    while (k * (k + 1) / 2 > N) --k;\n    return k;\n}\n\nint main(void) {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long N;\n        scanf(\"%lld\", &N);\n        printf(\"%lld\\n\", maxLayers(N));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long maxLayers(long long N) {\n    long long k = (long long)((sqrt(8.0 * N + 1) - 1) / 2);\n    while ((k + 1) * (k + 2) / 2 <= N) ++k;\n    while (k * (k + 1) / 2 > N) --k;\n    return k;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if(!(cin >> T)) return 0;\n    while (T--) {\n        long long N;\n        cin >> N;\n        cout << maxLayers(N) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\n\npublic class Main {\n    private static long maxLayers(long N) {\n        long k = (long)((Math.sqrt(8.0 * N + 1) - 1) / 2);\n        while ((k + 1) * (k + 2) / 2 <= N) k++;\n        while (k * (k + 1) / 2 > N) k--;\n        return k;\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int i = 0; i < T; i++) {\n            long N = Long.parseLong(br.readLine().trim());\n            sb.append(maxLayers(N)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys, math\n\ndef max_layers(N: int) -> int:\n    # Use integer sqrt to avoid floating point errors\n    k = (math.isqrt(8 * N + 1) - 1) // 2\n    while (k + 1) * (k + 2) // 2 <= N:\n        k += 1\n    while k * (k + 1) // 2 > N:\n        k -= 1\n    return k\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        N = int(data[idx]); idx += 1\n        out.append(str(max_layers(N)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(input[pos++]);\nlet results = [];\nfunction maxLayers(N) {\n    let k = Math.floor((Math.sqrt(8 * N + 1) - 1) / 2);\n    while ((k + 1) * (k + 2) / 2 <= N) k++;\n    while (k * (k + 1) / 2 > N) k--;\n    return k;\n}\nfor (let i = 0; i < T; i++) {\n    const N = Number(input[pos++]);\n    results.push(String(maxLayers(N)));\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

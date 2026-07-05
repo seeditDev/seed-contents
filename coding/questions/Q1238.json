@@ -4,14 +4,16 @@
   "slug": "possible-or-not",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "bit manipulation",
-      "data structures and algorithms"
+      "Bitwise AND",
+      "Subsequence",
+      "Greedy",
+      "Bitmask"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +23,32 @@
   "content": {
     "problemStatement": "Om has an array AAA of size NNN and an integer BBB.\n\nHe wants to find whether there exists a **non-empty** subsequence of AAA such that the bitwise AND of all elements in the subsequence is equal to BBB.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains two space-separated integers NNN and BBB — the size of array and the target integer, respectively.\nThe second line of each test case contains NNN space-separated integers, the ithi^{th}ith integer representing the element at the ithi^{th}ith index.\n\n\n\n\nOutput Format\nFor each test case, output `YES` if any such subsequence exists and `NO` otherwise.\n\n\nYou may print each character in uppercase or lowercase. For example `YES`, `Yes`, `yes`, and `yES` are all considered the same.",
     "constraints": [
-      "1≤T≤1051 \\leq T \\leq 10^{5}1≤T≤105",
-      "1≤N≤1051 \\leq N \\leq 10^{5}1≤N≤105",
-      "0≤B&lt;2300 \\leq B \\lt 2^{30}0≤B&lt;230",
-      "0≤Ai&lt;2300 \\leq A_i \\lt 2^{30}0≤Ai​&lt;230",
-      "The sum of NNN over all test cases won't exceed 6⋅1056\\cdot 10^{5}6⋅105."
+      "1 <= T <= 100000",
+      "1 <= N <= 100000",
+      "Sum of N over all test cases does not exceed 100000",
+      "0 <= B < 2^30",
+      "0 <= Ai < 2^30"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and B — the size of the array and the target value. The second line contains N space‑separated integers A1, A2, ..., AN.",
+    "outputFormat": "For each test case, output a single line containing \"YES\" if there exists a non‑empty subsequence whose bitwise AND equals B, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n6 5\n1 7 3 4 2 13\n3 2\n1 3 4",
-        "output": "YES\nNO",
-        "explanation": "Explanation:\nTest case 111: Consider the subsequence [A2,A6][A_2, A_6][A2​,A6​]. The bitwise AND of the elements is 7&13=57\\& 13 = 57&13=5.\nTest case 222: It can be shown that no subsequence satisfies the condition."
+        "input": "2\\n6 5\\n1 7 3 4 2 13\\n3 2\\n1 3 4",
+        "output": "YES\\nNO",
+        "explanation": "Test case 1: Elements 7 (111) and 13 (1101) both contain bits of 5 (101). Their AND is 7 & 13 = 5, so answer YES.\\nTest case 2: No element contains both bits of 2, therefore any subsequence fails."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n5 3\\n1 2 3 4 5",
+        "output": "YES",
+        "explanation": "Element 3 itself already satisfies (3 & 3) == 3 and the AND of the single‑element subsequence {3} equals 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n3 7\\n1 2 3",
+        "output": "NO",
+        "explanation": "Bit 2 (value 4) of B is not present in any array element, so no subsequence can produce AND 7."
       }
     ]
   },
@@ -42,20 +56,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n6 5\n1 7 3 4 2 13\n3 2\n1 3 4",
-        "expectedOutput": "YES\nNO",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1 0\\n0",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\n5 1073741823\\n1073741823 1073741823 1073741823 1073741823 1073741823",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\n4 1\\n0 0 0 0",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case where extra bits cannot be cleared",
+        "input": "1\\n2 2\\n6 14",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general multiple cases",
+        "input": "3\\n3 5\\n5 7 13\\n4 0\\n1 2 3 4\\n5 6\\n7 14 6 15 31",
+        "expectedOutput": "YES\\nYES\\nYES",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,9 +116,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "For the AND of a subsequence to be exactly B, every chosen element must contain all bits that are set in B, i.e., (x & B) == B. Consider only those elements. Let cur be the bitwise AND of all such elements. If at least one element satisfies the condition and cur equals B, we can pick the whole set and obtain AND = B. Otherwise it is impossible. The algorithm scans the array once, counts qualifying elements and maintains cur using a 30‑bit mask.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases.",
+    "spaceComplexity": "O(1) additional memory.",
+    "code": {
+      "C": "#include <stdio.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, B; scanf(\"%d %d\", &N, &B);\n        int cnt = 0;\n        int cur = (1 << 30) - 1; // all lower 30 bits set\n        for (int i = 0; i < N; ++i) {\n            int x; scanf(\"%d\", &x);\n            if ((x & B) == B) {\n                ++cnt;\n                cur &= x;\n            }\n        }\n        if (cnt > 0 && cur == B) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int T; if (!(cin >> T)) return 0;\n    while (T--) {\n        int N, B; cin >> N >> B;\n        int cnt = 0;\n        int cur = (1 << 30) - 1; // 30 lower bits set\n        for (int i = 0; i < N; ++i) {\n            int x; cin >> x;\n            if ((x & B) == B) {\n                ++cnt;\n                cur &= x;\n            }\n        }\n        if (cnt > 0 && cur == B) cout << \"YES\\n\";\n        else cout << \"NO\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int B = Integer.parseInt(st.nextToken());\n            st = new StringTokenizer(br.readLine());\n            int cnt = 0;\n            int cur = (1 << 30) - 1;\n            for (int i = 0; i < N; ++i) {\n                int x = Integer.parseInt(st.nextToken());\n                if ((x & B) == B) {\n                    cnt++;\n                    cur &= x;\n                }\n            }\n            sb.append((cnt > 0 && cur == B) ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = list(map(int, sys.stdin.buffer.read().split()))\n    it = iter(data)\n    T = next(it)\n    out_lines = []\n    for _ in range(T):\n        N = next(it); B = next(it)\n        cnt = 0\n        cur = (1 << 30) - 1\n        for _ in range(N):\n            x = next(it)\n            if (x & B) == B:\n                cnt += 1\n                cur &= x\n        out_lines.append('YES' if cnt > 0 and cur == B else 'NO')\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet answers = [];\nfor (let t = 0; t < T; ++t) {\n  const N = input[idx++];\n  const B = input[idx++];\n  let cnt = 0;\n  let cur = (1 << 30) - 1;\n  for (let i = 0; i < N; ++i) {\n    const x = input[idx++];\n    if ((x & B) === B) {\n      cnt++;\n      cur &= x;\n    }\n  }\n  answers.push(cnt > 0 && cur === B ? 'YES' : 'NO');\n}\nconsole.log(answers.join('\\n'));\n"
+    }
   }
 }

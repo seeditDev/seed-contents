@@ -4,14 +4,14 @@
   "slug": "optimization-using-prefix-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "prefix sums & difference arrays",
-      "data structures and algorithms"
+      "Prefix Sum",
+      "Range Sum Query"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +21,32 @@
   "content": {
     "problemStatement": "Given an array of length nnn, we need to perform mmm query over the array.\n\nIn each query you need to find the sum of the element in the range aaa to bbb.\n\nWithout using prefix sum\nFor each query we need to iterate over the length of array, which will take O(n)O(n)O(n) time.\nTotal m query will make the time complexity O(n∗m)O(n*m)O(n∗m)\nUsing prefix sum\nCreate an prefix sum array in O(n)O(n)O(n) time.\nFor each query we can find the sum of a range in O(1)O(1)O(1) time, using prefix[b]−prefix[a−1]prefix[b] - prefix[a-1]prefix[b]−prefix[a−1] as the sum of range from aaa to bbb\nTotal mmm query will make the time complexity m∗O(1)+O(n)m * O(1) + O(n)m∗O(1)+O(n) =&gt; O(m)+O(n)O(m) + O(n)O(m)+O(n)\nWe can see above clearly how prefix sum help us to optimize the time complexity of our code.\n\nTaskUse the optimized algorithm to solve the problem.\n\n\nInput Format\n\nFirst line contains an integer NNN, the length of the array.\nSecond line contains NNN elements a1, a2, a3 . . . . arNNN.\nThird line gives an integer KKK, the number of queries.\nNext KKK line contains queries with integer aiii and biii.",
     "constraints": [
-      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
-      "1≤arri≤1000001 \\leq arr_i \\leq 1000001≤arri​≤100000",
-      "1≤K≤1000001 \\leq K \\leq 1000001≤K≤100000",
-      "1≤ai,bi≤N1 \\leq a_i, b_i \\leq N1≤ai​,bi​≤N"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "1 <= K <= 100000",
+      "1 <= array element <= 100000",
+      "1 <= ai, bi <= N"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case:- A line with integer N, the length of the array.- A line with N space‑separated integers a1 … aN.- A line with integer K, the number of queries.- K lines each containing two integers ai and bi (1‑based indices) describing a query for the sum of the sub‑array from ai to bi inclusive. If ai > bi the range should be considered after swapping them.",
+    "outputFormat": "For each query of each test case output a single line containing the sum of the elements in the requested range.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n1 2 3 4 5 \n5\n1 2\n2 3\n2 4\n4 4\n1 5",
+        "input": "1\n5\n1 2 3 4 5\n5\n1 2\n2 3\n2 4\n4 4\n1 5",
         "output": "3\n5\n9\n4\n15",
-        "explanation": ""
+        "explanation": "The array is [1,2,3,4,5]. Queries: (1,2)->1+2=3, (2,3)->2+3=5, (2,4)->2+3+4=9, (4,4)->4, (1,5)->15."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n3\n10 20 30\n2\n1 3\n2 2\n4\n5 5 5 5\n3\n1 4\n2 3\n4 4",
+        "output": "60\n20\n20\n10\n5",
+        "explanation": "First test case sums: 1‑3=60, 2‑2=20. Second test case array of four 5s gives sums 1‑4=20, 2‑3=10, 4‑4=5."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1\n99999\n1\n1 1",
+        "output": "99999",
+        "explanation": "Only one element, the query asks for the whole array."
       }
     ]
   },
@@ -41,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n1 2 3 4 5 \n5\n1 2\n2 3\n2 4\n4 4\n1 5",
-        "expectedOutput": "3\n5\n9\n4\n15",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n1\n1\n1 1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n15\n100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000 100000\n3\n1 15\n5 10\n15 1",
+        "expectedOutput": "1500000\n600000\n1500000",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "1\n5\n7 7 7 7 7\n2\n2 4\n5 5",
+        "expectedOutput": "21\n7",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "descending order with swaps",
+        "input": "1\n10\n10 9 8 7 6 5 4 3 2 1\n3\n10 1\n3 7\n5 5",
+        "expectedOutput": "55\n30\n6",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "multiple test cases, varied queries",
+        "input": "2\n3\n1 2 3\n2\n1 3\n2 2\n4\n4 3 2 1\n3\n1 4\n3 2\n4 4",
+        "expectedOutput": "6\n2\n10\n5\n1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The prefix sum technique preprocesses the array so that each element at index **i** in the **prefix_sum** array represents the sum of elements from the start to index **i**. For a query with range **a** to **b**, the sum is calculated as `prefix_sum[b] - prefix_sum[a-1]`, with special handling when **a = 0**.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each test case we build a prefix sum array pref where pref[i] = sum of the first i elements (pref[0] = 0). The sum of any sub‑array [l, r] can then be obtained in O(1) as pref[r] - pref[l-1]. If a query gives l > r we simply swap them. Building the prefix array costs O(N) and answering each of the K queries costs O(1), so the total per test case is O(N + K) time and O(N) extra space.",
+    "timeComplexity": "O(N + K) per test case, O(total N + total K) for the whole input.",
+    "spaceComplexity": "O(N) per test case for the prefix sum array.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin>>n;\n    vector<int>v1;\n    for(int i = 0;i<n;i++){\n        int n1;\n        cin>>n1;\n        v1.push_back(n1);\n    }\n    vector<long long>pre(n,0);\n    for(int i = 0;i<n;i++){\n        if(i!=0){\n            pre[i] += pre[i-1];\n        }\n        pre[i] += v1[i];\n    }\n    int q;\n    cin>>q;\n    while(q--){\n        int n1,n2;\n        cin>>n1>>n2;\n        n1--;\n        n2--;\n        if(n1==0){\n            cout<<pre[n2]<<\"\\n\";\n        }\n        else{\n            cout<<(pre[n2]-pre[n1-1])<<\"\\n\";\n        }\n    }\n    cout<<\"\\n\";\n}\n",
-      "Python3": "# cook your dish here\ndef main():\n    len = int(input())\n    ar = list(map(int, input().split()))\n    \n    pre = [0] * len\n    for i in range(len):\n        if i != 0:\n            pre[i] += pre[i - 1]\n        pre[i] += ar[i]\n    \n    q = int(input())\n    while q > 0:\n        a, b = map(int, input().split())\n        a -= 1\n        b -= 1\n        if a == 0:\n            print(pre[b])\n        else:\n            print(pre[b] - pre[a - 1])\n        q -= 1\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int n;\n    scanf(\"%d\", &n); // Read the number of elements\n\n    int v1[n]; // Declare the array\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &v1[i]); // Read each element of the array\n    }\n\n    long long pre[n]; // Declare the prefix sum array\n    pre[0] = v1[0]; // Initialize the first element\n    for (int i = 1; i < n; i++) {\n        pre[i] = pre[i - 1] + v1[i]; // Compute prefix sums\n    }\n\n    int q;\n    scanf(\"%d\", &q); // Read the number of queries\n    while (q--) {\n        int n1, n2;\n        scanf(\"%d %d\", &n1, &n2); // Read the query indices\n        n1--; // Convert to 0-based index\n        n2--; // Convert to 0-based index\n        \n        // Calculate the sum based on the query indices\n        if (n1 == 0) {\n            printf(\"%lld\\n\", pre[n2]); // Output the sum from start to n2\n        } else {\n            printf(\"%lld\\n\", (pre[n2] - pre[n1 - 1])); // Output the sum from n1 to n2\n        }\n    }\n\n    printf(\"\\n\"); // Print a new line at the end\n    return 0; // Return success\n}\n",
-      "Java": "import java.util.Scanner;\nimport java.util.Vector;\n\nclass Codechef {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int len = scanner.nextInt();\n        Vector<Integer> ar = new Vector<>();\n        for (int i = 0; i < len; i++) {\n            int n1 = scanner.nextInt();\n            ar.add(n1);\n        }\n        \n        long[] pre = new long[len];\n        for (int i = 0; i < len; i++) {\n            if (i != 0) {\n                pre[i] += pre[i - 1];\n            }\n            pre[i] += ar.get(i);\n        }\n        \n        int q = scanner.nextInt();\n        while (q-- > 0) {\n            int n1 = scanner.nextInt();\n            int n2 = scanner.nextInt();\n            n1--;\n            n2--;\n            if (n1 == 0) {\n                System.out.println(pre[n2]);\n            } else {\n                System.out.println(pre[n2] - pre[n1 - 1]);\n            }\n        }\n        \n        scanner.close();\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\n// Create interface for input\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet inputLines = [];\nrl.on('line', (line) => {\n    inputLines.push(line.trim());\n});\n\nrl.on('close', () => {\n    // Parse inputs\n    let idx = 0;\n\n    const n = parseInt(inputLines[idx++]); // First line: length of array\n    const v1 = inputLines[idx++].split(' ').map(Number); // Second line: array elements\n\n    // Create prefix sum array\n    const pre = new Array(n).fill(0);\n    for (let i = 0; i < n; i++) {\n        pre[i] = v1[i] + (i > 0 ? pre[i - 1] : 0);\n    }\n\n    const q = parseInt(inputLines[idx++]); // Third line: number of queries\n\n    // Process queries\n    let results = [];\n    for (let i = 0; i < q; i++) {\n        const [n1, n2] = inputLines[idx++].split(' ').map(Number);\n        const l = n1 - 1; // Convert to zero-based index\n        const r = n2 - 1; // Convert to zero-based index\n        const sum = l === 0 ? pre[r] : pre[r] - pre[l - 1];\n        results.push(sum);\n    }\n\n    // Print results\n    console.log(results.join('\\n'));\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        long long *pref = (long long*)malloc((N+1)*sizeof(long long));\n        pref[0] = 0;\n        for(int i=1;i<=N;++i){\n            int x; scanf(\"%d\", &x);\n            pref[i] = pref[i-1] + x;\n        }\n        int K; scanf(\"%d\", &K);\n        while(K--){\n            int l, r; scanf(\"%d %d\", &l, &r);\n            if(l > r){ int tmp = l; l = r; r = tmp; }\n            printf(\"%lld\\n\", pref[r] - pref[l-1]);\n        }\n        free(pref);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<long long> pref(N+1,0);\n        for(int i=1;i<=N;++i){\n            int x; cin>>x;\n            pref[i]=pref[i-1]+x;\n        }\n        int K; cin>>K;\n        while(K--){\n            int l,r; cin>>l>>r;\n            if(l>r) swap(l,r);\n            cout<<pref[r]-pref[l-1]<<'\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            long[] pref = new long[N+1];\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            for (int i = 1; i <= N; i++) {\n                pref[i] = pref[i-1] + Long.parseLong(st.nextToken());\n            }\n            int K = Integer.parseInt(br.readLine().trim());\n            for (int q = 0; q < K; q++) {\n                st = new StringTokenizer(br.readLine());\n                int l = Integer.parseInt(st.nextToken());\n                int r = Integer.parseInt(st.nextToken());\n                if (l > r) { int tmp = l; l = r; r = tmp; }\n                out.append(pref[r] - pref[l-1]).append('\\n');\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        pref = [0]\n        for _ in range(N):\n            pref.append(pref[-1] + int(next(it)))\n        K = int(next(it))\n        for _ in range(K):\n            l = int(next(it))\n            r = int(next(it))\n            if l > r:\n                l, r = r, l\n            out_lines.append(str(pref[r] - pref[l-1]))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nfunction nextInt(){return Number(data[idx++]);}\nlet T = nextInt();\nlet out = [];\nfor(let t=0; t<T; t++){\n  const N = nextInt();\n  const pref = new Array(N+1);\n  pref[0] = 0;\n  for(let i=1;i<=N;i++) pref[i] = pref[i-1] + nextInt();\n  const K = nextInt();\n  for(let q=0;q<K;q++){\n    let l = nextInt();\n    let r = nextInt();\n    if(l>r){let tmp=l;l=r;r=tmp;}\n    out.push(String(pref[r]-pref[l-1]));\n  }\n}\nconsole.log(out.join('\\n'));"
     }
   }
 }

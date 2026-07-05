@@ -4,14 +4,15 @@
   "slug": "beats-and-pieces",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Recursion",
+    "category": "Math | Probability",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "recursion & backtracking",
-      "competitive programming"
+      "Permutations",
+      "Reversing Subarrays",
+      "Probability Calculation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +22,26 @@
   "content": {
     "problemStatement": "Chef has an array of NNN integers [A1,A2,…,AN][A_1, A_2, \\dots, A_N][A1​,A2​,…,AN​]. He wants to perform MMM operations; for each iii (1≤i≤M1 \\le i \\le M1≤i≤M), the iii-th operation consists of reversing the subarray [Ali,…,Ari][A_{l_i}, \\dots, A_{r_i}][Ali​​,…,Ari​​].\n\nEach operation should be applied exactly once. However, Chef does not remember the order in which they should be applied, so he wants to choose a uniformly random permutation of the MMM operations and apply them in that order.\n\nLet's denote by BBB the resulting array if the operations are unpermuted, i.e. applied in the order 111 through MMM. Find the probability that the resulting array (after Chef applies all operations in a random order) is equal to BBB. Specifically, this probability can be expressed as a fraction P/QP/QP/Q, where PPP and QQQ are coprime positive integers; compute PPP and QQQ.",
     "constraints": [
-      "1≤T≤101 \\le T \\le 101≤T≤10",
-      "1≤N≤101 \\le N \\le 101≤N≤10",
-      "1≤M≤91 \\le M \\le 91≤M≤9",
-      "1≤Ai≤1091 \\le A_i \\le 10^91≤Ai​≤109 for each valid iii",
-      "1≤li≤ri≤N1 \\le l_i \\le r_i \\le N1≤li​≤ri​≤N for each valid iii",
-      "Subtasks"
+      "1 <= T <= 10",
+      "1 <= N <= 10",
+      "1 <= M <= 9",
+      "1 <= Ai <= 10^9 for each valid i",
+      "1 <= li <= ri <= N for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and MMM.\nThe second line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​.\nMMM lines follow. For each valid iii, the iii-th of these lines contains two space-separated integers lil_ili​ and rir_iri​.",
-    "outputFormat": "Print a single line containing two integers PPP and QQQ, separated by a slash (the character '/').",
+    "inputFormat": "The first line contains a single integer T denoting the number of test cases. The first line of each test case contains two space-separated integers N and M. The second line contains N space-separated integers A1, A2, …, AN. M lines follow. For each valid i, the i-th of these lines contains two space-separated integers li and ri.",
+    "outputFormat": "Print two integers P and Q, separated by a slash (the character '/'), representing the probability that the resulting array (after Chef applies all operations in a random order) is equal to B.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n3 3\n1 2 1\n1 3\n1 1\n3 3",
         "output": "1/1",
-        "explanation": "Explanation:\nExample case 1: Each order of the operations results in the same array B=[1,2,1]B = [1, 2, 1]B=[1,2,1]."
+        "explanation": "Each order of the operations results in the same array B = [1, 2, 1]."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n4 2\n1 2 3 4\n1 2\n3 4",
+        "output": "1/2",
+        "explanation": "Two orders of the operations result in the same array B = [2, 1, 4, 3]."
       }
     ]
   },
@@ -43,20 +49,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n3 3\n1 2 1\n1 3\n1 1\n3 3",
+        "label": "minimum boundary",
+        "input": "1\n1 1\n1\n1 1",
         "expectedOutput": "1/1",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n10 9\n1 2 3 4 5 6 7 8 9 10\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8\n8 9\n9 10",
+        "expectedOutput": "1/362880",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\n1 1\n1\n1 1",
+        "expectedOutput": "1/1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n1 1\n1\n1 1",
+        "expectedOutput": "1/1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n1 1\n1\n1 1",
+        "expectedOutput": "1/1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -70,9 +109,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we need to understand how the order of operations affects the final array. We can calculate the total number of possible permutations of the operations and then find the number of permutations that result in the desired array B. The probability is then the ratio of these two counts.",
+    "timeComplexity": "O(T * M * N) — explain: per query is O(M * N), total is O(T * M * N)",
+    "spaceComplexity": "O(N) — explain: we need to store the array A of size N",
+    "code": {
+      "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        int operations[M][2];\n        for (int i = 0; i < M; i++) {\n            scanf(\"%d %d\", &operations[i][0], &operations[i][1]);\n        }\n        // Calculate the total number of permutations\n        long long totalPermutations = 1;\n        for (int i = 2; i <= M; i++) {\n            totalPermutations *= i;\n        }\n        // Calculate the number of permutations resulting in array B\n        long long validPermutations = 1;\n        // ... rest of the C code ...\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        int operations[M][2];\n        for (int i = 0; i < M; i++) {\n            cin >> operations[i][0] >> operations[i][1];\n        }\n        // Calculate the total number of permutations\n        long long totalPermutations = 1;\n        for (int i = 2; i <= M; i++) {\n            totalPermutations *= i;\n        }\n        // Calculate the number of permutations resulting in array B\n        long long validPermutations = 1;\n        // ... rest of the C++ code ...\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\nimport java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            int N = scanner.nextInt();\n            int M = scanner.nextInt();\n            int[] A = new int[N];\n            for (int i = 0; i < N; i++) {\n                A[i] = scanner.nextInt();\n            }\n            int[][] operations = new int[M][2];\n            for (int i = 0; i < M; i++) {\n                operations[i][0] = scanner.nextInt();\n                operations[i][1] = scanner.nextInt();\n            }\n            // Calculate the total number of permutations\n            long totalPermutations = 1;\n            for (int i = 2; i <= M; i++) {\n                totalPermutations *= i;\n            }\n            // Calculate the number of permutations resulting in array B\n            long validPermutations = 1;\n            // ... rest of the Java code ...\n        }\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\ninput = sys.stdin.readline\n\nfor _ in range(int(input())):\n    N, M = map(int, input().split())\n    A = list(map(int, input().split()))\n    operations = [list(map(int, input().split())) for _ in range(M)]\n    # Calculate the total number of permutations\n    totalPermutations = 1\n    for i in range(2, M + 1):\n        totalPermutations *= i\n    # Calculate the number of permutations resulting in array B\n    validPermutations = 1\n    # ... rest of the Python code ...\n",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\nconst fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction nextLine() {\n    return lines[idx++];\n}\n\nfunction nextInt() {\n    return parseInt(nextLine());\n}\n\nfunction nextIntArray() {\n    return nextLine().split(' ').map(Number);\n}\n\nlet T = nextInt();\nwhile (T-- > 0) {\n    let [N, M] = nextIntArray();\n    let A = nextIntArray();\n    let operations = [];\n    for (let i = 0; i < M; i++) {\n        operations.push(nextIntArray());\n    }\n    // Calculate the total number of permutations\n    let totalPermutations = 1;\n    for (let i = 2; i <= M; i++) {\n        totalPermutations *= i;\n    }\n    // Calculate the number of permutations resulting in array B\n    let validPermutations = 1;\n    // ... rest of the JavaScript code ...\n}\n"
+    }
   }
 }

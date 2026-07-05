@@ -4,14 +4,14 @@
   "slug": "special-substring",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Two Pointers",
+      "Sliding Window"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,22 +21,31 @@
   "content": {
     "problemStatement": "Chef gave you a string SSS of size NNN which contains only lowercase English letters  and asked you to find the length of the longest substring of the string which satisfies the following condition:\n\n\nEach character β\\betaβ should appear at most f(β)f(\\beta)f(β) times.\nHere f(β)f(\\beta)f(β) denotes the index of the character β\\betaβ in the alphabet series. For example f(′a′)f('a')f(′a′) = 111, f(′b′)f('b')f(′b′) = 222 and so on.\n\n**Note:** A substring of a string is a contiguous subsequence of that string.\n\n\nInput Format\n\nFirst-line will contain TTT - the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the size of the string.\nThe second line of every test case contains a string SSS of size NNN.\n\n\nOutput Format\nFor each testcase, output in a single line - the answer to the iii-th test case.",
     "constraints": [
-      "1≤T≤25001 \\leq T \\leq 25001≤T≤2500",
-      "1≤N≤105,∑N≤5⋅1051 \\leq N \\leq 10^5, \\sum N \\leq 5\\cdot10^51≤N≤105,∑N≤5⋅105",
-      "The string contains only lowercase english letters",
-      "Subtasks",
-      "**Subtask #1:** 10 points : 1≤N≤102,∑N≤5⋅1021 \\leq N \\leq 10^2, \\sum N \\leq 5\\cdot10^21≤N≤102,∑N≤5⋅102",
-      "**Subtask #2:** 20 points : 1≤N≤103,∑N≤5⋅1031 \\leq N \\leq 10^3, \\sum N \\leq 5\\cdot10^31≤N≤103,∑N≤5⋅103",
-      "**Subtask #3:** 70 points : 1≤N≤105,∑N≤5⋅1051 \\leq N \\leq 10^5, \\sum N \\leq 5\\cdot10^51≤N≤105,∑N≤5⋅105"
+      "1 <= T <= 2500",
+      "1 <= N <= 100000",
+      "The sum of N over all test cases does not exceed 5*10^5",
+      "S contains only lowercase English letters"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Then T test cases follow. Each test case consists of two lines: the first line contains an integer N, the length of the string. The second line contains a string S of length N consisting only lowercase English letters.",
+    "outputFormat": "For each test case, output a single integer – the maximum length of a contiguous substring of S in which every character β appears at most f(β) times, where f(β) is the position of β in the alphabet (a→1, b→2, …, z→26).",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n6\njyjerm\n4\nabbb",
         "output": "6\n3",
-        "explanation": "Explanation:\nTest Case 111: Every character appears less than its index in the English alphabet so we can consider the entire string.\n\n\nTest Case 222: We can consider 'b' at most 2 times, therefore, the answer is 333."
+        "explanation": "In the first test case every character appears fewer times than its alphabet index, so the whole string of length 6 is valid. In the second test case the longest valid substring is \"abb\" (one 'a' and two 'b'), giving length 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5\naaaaa",
+        "output": "1",
+        "explanation": "Character 'a' may appear at most once, therefore any valid substring can contain only a single 'a'. The maximum length is 1."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n10\nabcabcabcd",
+        "output": "4",
+        "explanation": "The substring \"abcd\" (positions 6‑9) contains one 'a', one 'b', one 'c' and one 'd', all within their limits. No longer contiguous substring satisfies the constraints, so the answer is 4."
       }
     ]
   },
@@ -44,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n6\njyjerm\n4\nabbb",
-        "expectedOutput": "6\n3",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\na",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n15\nabcdefghijklmno",
+        "expectedOutput": "15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5\nbbbbb",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n9\naaabbbccc",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\n6\nabccba\n4\nzzzz\n7\nabcabca",
+        "expectedOutput": "5\n4\n5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -71,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "The code uses the **sliding window** technique to find the longest valid **substring**. It maintains a frequency map to count occurrences of characters while expanding the right pointer. For each character added, it checks if any character exceeds its allowed frequency based on its position in the alphabet. If so, it adjusts the left pointer to shrink the window until the substring becomes valid again. At each valid state, it updates the **maximum** length found. This efficiently finds the longest substring meeting the character frequency condition.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The condition for a substring depends only on the frequencies of the 26 letters. For each letter β its allowed frequency is f(β)=position in alphabet (1‑based). Using a sliding window we maintain the current counts of all letters. We extend the right end of the window one character at a time and increase its count. If the count of the newly added character exceeds its allowed limit, we shrink the window from the left until the constraint is satisfied again (decreasing counts of the leftmost characters). At every step the window is the longest valid substring ending at the current right index, so the maximum window size seen during the scan is the answer. The algorithm runs in O(N) per test case because each character is added and removed at most once. The auxiliary memory is a fixed array of size 26.",
+    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
+    "spaceComplexity": "O(1) – only a 26‑element integer array is used",
     "code": {
-      "C++": "class Solution {\npublic:\n    int findMaxSubstring(string &s) {\n        int n = s.size();\n        int left = 0, right = 0;\n        map<char, int> mp;\n        int max_size = INT_MIN;\n        \n        while (right < n) {\n            mp[s[right]]++;\n            while (mp[s[right]] > s[right] - 'a' + 1) {\n                mp[s[left]]--;\n                left++;\n            }\n            max_size = max(max_size, right - left + 1);\n            right++;\n        }\n        return max_size;\n    }\n};\n",
-      "Python3": "class Solution:\n    def findMaxSubstring(self, s: str) -> int:\n        n = len(s)\n        left = 0\n        right = 0\n        mp = {}\n        max_size = float('-inf')\n        \n        while right < n:\n            mp[s[right]] = mp.get(s[right], 0) + 1\n            \n            while mp[s[right]] > (ord(s[right]) - ord('a') + 1):\n                mp[s[left]] -= 1\n                left += 1\n            \n            max_size = max(max_size, right - left + 1)\n            right += 1\n        \n        return max_size\n",
-      "C": "int findMaxSubstring(char *s) {\n    int n = strlen(s);\n    int left = 0, right = 0;\n    int mp[26] = {0};\n    int max_size = INT_MIN;\n\n    while (right < n) {\n        char ch = s[right];\n        mp[ch - 'a']++;\n\n        while (mp[ch - 'a'] > (ch - 'a' + 1)) {\n            char leftChar = s[left];\n            mp[leftChar - 'a']--;\n            left++;\n        }\n\n        int window_size = right - left + 1;\n        if (window_size > max_size)\n            max_size = window_size;\n\n        right++;\n    }\n\n    return max_size;\n}\n",
-      "Java": "class Solution {\n    public int findMaxSubstring(String s) {\n        int n = s.length();\n        int left = 0, right = 0;\n        Map<Character, Integer> mp = new HashMap<>();\n        int maxSize = Integer.MIN_VALUE;\n\n        while (right < n) {\n            char ch = s.charAt(right);\n            mp.put(ch, mp.getOrDefault(ch, 0) + 1);\n\n            while (mp.get(ch) > (ch - 'a' + 1)) {\n                char leftChar = s.charAt(left);\n                mp.put(leftChar, mp.get(leftChar) - 1);\n                left++;\n            }\n\n            maxSize = Math.max(maxSize, right - left + 1);\n            right++;\n        }\n\n        return maxSize;\n    }\n}\n",
-      "JavaScript": "class Solution {\n    findMaxSubstring(s) {\n        const n = s.length;\n        let left = 0, right = 0;\n        const mp = new Map();\n        let maxSize = -Infinity;\n\n        while (right < n) {\n            const ch = s[right];\n            mp.set(ch, (mp.get(ch) || 0) + 1);\n\n            while (mp.get(ch) > (ch.charCodeAt(0) - 'a'.charCodeAt(0) + 1)) {\n                const leftChar = s[left];\n                mp.set(leftChar, mp.get(leftChar) - 1);\n                left++;\n            }\n\n            maxSize = Math.max(maxSize, right - left + 1);\n            right++;\n        }\n\n        return maxSize;\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint maxSubstring(const char *s){\n    int n=strlen(s);\n    int cnt[26]={0};\n    int left=0,best=0;\n    for(int right=0;right<n;++right){\n        int idx=s[right]-'a';\n        ++cnt[idx];\n        while(cnt[idx]>idx+1){\n            int lidx=s[left]-'a';\n            --cnt[lidx];\n            ++left;\n        }\n        int len=right-left+1;\n        if(len>best) best=len;\n    }\n    return best;\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char s[100005];\n        scanf(\"%s\",s);\n        printf(\"%d\\n\",maxSubstring(s));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint maxSubstring(const string &s){\n    int n=s.size();\n    int cnt[26]={0};\n    int left=0,best=0;\n    for(int right=0;right<n;++right){\n        int idx=s[right]-'a';\n        ++cnt[idx];\n        while(cnt[idx]>idx+1){\n            int lidx=s[left]-'a';\n            --cnt[lidx];\n            ++left;\n        }\n        best=max(best,right-left+1);\n    }\n    return best;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;cin>>T;\n    while(T--){\n        int N;cin>>N;string s;cin>>s;\n        cout<<maxSubstring(s)<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static int maxSubstring(String s){\n        int n=s.length();\n        int[] cnt=new int[26];\n        int left=0,best=0;\n        for(int right=0;right<n;++right){\n            int idx=s.charAt(right)-'a';\n            cnt[idx]++;\n            while(cnt[idx]>idx+1){\n                int lidx=s.charAt(left)-'a';\n                cnt[lidx]--;\n                left++;\n            }\n            best=Math.max(best,right-left+1);\n        }\n        return best;\n    }\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out=new StringBuilder();\n        int T=Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N=Integer.parseInt(br.readLine().trim());\n            String s=br.readLine().trim();\n            out.append(maxSubstring(s)).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef max_substring(s):\n    cnt=[0]*26\n    left=0\n    best=0\n    for right,ch in enumerate(s):\n        idx=ord(ch)-97\n        cnt[idx]+=1\n        while cnt[idx]>idx+1:\n            lidx=ord(s[left])-97\n            cnt[lidx]-=1\n            left+=1\n        best=max(best,right-left+1)\n    return best\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        s=next(it)\n        out.append(str(max_substring(s)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()\n",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=Number(input[idx++]);\nlet outputs=[];\nfor(let t=0;t<T;++t){\n    const N=Number(input[idx++]);\n    const s=input[idx++];\n    const cnt=new Array(26).fill(0);\n    let left=0,best=0;\n    for(let right=0;right<s.length;++right){\n        const chIdx=s.charCodeAt(right)-97;\n        cnt[chIdx]++;\n        while(cnt[chIdx]>chIdx+1){\n            const lIdx=s.charCodeAt(left)-97;\n            cnt[lIdx]--;\n            left++;\n        }\n        const len=right-left+1;\n        if(len>best) best=len;\n    }\n    outputs.push(String(best));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }

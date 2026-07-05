@@ -4,14 +4,14 @@
   "slug": "product-of-two-numbers",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "language fundamentals",
-      "programming languages"
+      "Floating point",
+      "Formatting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,30 +21,29 @@
   "content": {
     "problemStatement": "Write a C program that takes two floating-point numbers as input and calculates their product. Print the result with two decimal places.",
     "constraints": [
-      "The input numbers are floating-point numbers.",
-      "-1000.0 <= num1, num2 <= 1000.0",
-      "The product of the two numbers does not exceed the maximum limit of a float data type."
+      "1 <= T <= 1000",
+      "-1000.0 <= num1, num2 <= 1000.0"
     ],
-    "inputFormat": "Two floating-point numbers separated by a space.",
-    "outputFormat": "Print the product of the two numbers with two decimal places, prefixed by 'Product: ' and followed by a newline.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains two floating-point numbers num1 and num2 separated by a single space.",
+    "outputFormat": "For each test case, output a line in the format \"Product: X\" where X is the product of num1 and num2 rounded to exactly two decimal places.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "0.2 2.1",
-        "output": "Product: 0.42\n",
-        "explanation": "Basic multiplication"
+        "input": "1\n0.2 2.1",
+        "output": "Product: 0.42",
+        "explanation": "Multiplying 0.2 by 2.1 gives 0.42."
       },
       {
         "id": "sample_2",
-        "input": "10.5 2.0",
-        "output": "Product: 21.00\n",
-        "explanation": "Multiplication with integer factor"
+        "input": "1\n10.5 2.0",
+        "output": "Product: 21.00",
+        "explanation": "10.5 multiplied by 2.0 equals 21.00."
       },
       {
         "id": "sample_3",
-        "input": "-5.0 3.0",
-        "output": "Product: -15.00\n",
-        "explanation": "Multiplication with negative number"
+        "input": "1\n-5.0 3.0",
+        "output": "Product: -15.00",
+        "explanation": "-5.0 times 3.0 results in -15.00."
       }
     ]
   },
@@ -52,32 +51,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "-1000.0 -1000.0",
-        "expectedOutput": "Product: 1000000.00\n",
+        "label": "minimum boundary",
+        "input": "1\n-1000.0 -1000.0",
+        "expectedOutput": "Product: 1000000.00",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "1000.0 1000.0",
-        "expectedOutput": "Product: 1000000.00\n",
+        "label": "maximum boundary",
+        "input": "1\n1000 1000",
+        "expectedOutput": "Product: 1000000.00",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "0.0 5.0",
-        "expectedOutput": "Product: 0.00\n",
+        "label": "uniform/edge case",
+        "input": "3\n0 0\n0 0\n0 0",
+        "expectedOutput": "Product: 0.00\nProduct: 0.00\nProduct: 0.00",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "input": "2.5 3.7",
-        "expectedOutput": "Product: 9.25\n",
+        "label": "tricky case",
+        "input": "1\n1.005 1",
+        "expectedOutput": "Product: 1.01",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "input": "-2.5 -3.7",
-        "expectedOutput": "Product: 9.25\n",
+        "label": "stress/general",
+        "input": "5\n2.5 4\n-3.333 3\n0.12345 8\n-0.5 -0.5\n999.99 0.01",
+        "expectedOutput": "Product: 10.00\nProduct: -10.00\nProduct: 0.99\nProduct: 0.25\nProduct: 10.00",
         "weight": 2
       }
     ],
@@ -107,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "Read two floating-point numbers from the input, multiply them, and print the result with two decimal places.",
-    "timeComplexity": "O(1) because the algorithm performs a constant number of operations regardless of the input size.",
-    "spaceComplexity": "O(1) because the algorithm uses a constant amount of space to store the input numbers and the result.",
+    "approach": "The problem only requires multiplying two numbers for each test case and printing the result with two decimal places. No special algorithm is needed – just read the inputs, compute a*b using double precision, and format the output using standard I/O manipulators (printf, cout with fixed<<setprecision, String.format, f-strings, toFixed). The only subtlety is correct rounding to two decimal places, which the standard library functions handle correctly. The overall complexity is O(T) time and O(1) extra space.",
+    "timeComplexity": "O(T) – one multiplication per test case.",
+    "spaceComplexity": "O(1) – only a few variables are used irrespective of T.",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    float num1, num2, product;\n    scanf(\"%f %f\", &num1, &num2);\n    product = num1 * num2;\n    printf(\"Product: %.2f\\n\", product);\n    return 0;\n}",
-      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    float num1, num2, product;\n    cin >> num1 >> num2;\n    product = num1 * num2;\n    cout << \"Product: \" << fixed << setprecision(2) << product << endl;\n    return 0;\n}",
-      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        float num1 = scanner.nextFloat();\n        float num2 = scanner.nextFloat();\n        float product = num1 * num2;\n        System.out.printf(\"Product: %.2f%n\", product);\n    }\n}",
-      "Python3": "num1, num2 = map(float, input().split())\nproduct = num1 * num2\nprint(f\"Product: {product:.2f}\")",
-      "JavaScript": "const readline = require('readline').createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nreadline.on('line', (input) => {\n    const [num1, num2] = input.split(' ').map(Number);\n    const product = num1 * num2;\n    console.log(`Product: ${product.toFixed(2)}`);\n    readline.close();\n});"
+      "C": "#include <stdio.h>\nint main(){\n    int T;\n    if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        double a,b;\n        if(scanf(\"%lf %lf\", &a, &b)!=2) return 0;\n        double prod = a*b;\n        printf(\"Product: %.2f\\n\", prod);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if(!(cin>>T)) return 0;\n    while(T--){\n        double a,b;\n        cin>>a>>b;\n        double prod = a*b;\n        // Use rounding that matches half-up behavior\n        long long scaled = llround(prod * 100.0 + (prod >= 0 ? 1e-9 : -1e-9));\n        double rounded = scaled / 100.0;\n        cout<<\"Product: \"<<fixed<<setprecision(2)<<rounded<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\nimport java.math.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if(line==null || line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for(int i=0;i<T;i++){\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            BigDecimal a = new BigDecimal(st.nextToken());\n            BigDecimal b = new BigDecimal(st.nextToken());\n            BigDecimal prod = a.multiply(b);\n            prod = prod.setScale(2, RoundingMode.HALF_UP);\n            sb.append(\"Product: \").append(prod.toPlainString());\n            if(i<T-1) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\nfrom decimal import Decimal, ROUND_HALF_UP, getcontext\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    idx = 1\n    getcontext().prec = 28\n    for _ in range(T):\n        a_str = data[idx]\n        b_str = data[idx+1]\n        idx += 2\n        a = Decimal(a_str)\n        b = Decimal(b_str)\n        prod = (a * b).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)\n        out.append(f\"Product: {prod:.2f}\")\n    sys.stdout.write(\"\\n\".join(out))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet out = [];\nfor(let i = 0; i < T; i++){\n    const a = parseFloat(input[idx++]);\n    const b = parseFloat(input[idx++]);\n    const prod = a * b;\n    // Apply half-up rounding to two decimal places\n    const eps = prod >= 0 ? 1e-9 : -1e-9;\n    const rounded = Math.round((prod + eps) * 100) / 100;\n    out.push(`Product: ${rounded.toFixed(2)}`);\n}\nconsole.log(out.join('\\n'));\n"
     }
   }
 }

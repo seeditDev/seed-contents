@@ -4,14 +4,15 @@
   "slug": "chef-solves-house-robber-iii",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Tree",
+      "House Robber",
+      "Memoization"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,39 +21,31 @@
   },
   "content": {
     "problemStatement": "Chef has discovered a new neighborhood where houses are arranged in a binary tree structure.\nChef wants to maximize the total money robbed without triggering the alarm.\nThe alarm is triggered if two directly connected houses (parent and child) are robbed on the same night.\n**Task** - Given the binary tree, determine the maximum amount of money Chef can rob.\n\n**Function Declaration****Function Name**`calculateMaxRob` — calculates the **maximum amount of money** Chef can rob from the **binary tree** without robbing two **directly connected houses**.\n\n**Parameters**\n`rootHouse` (`houseNode*`) — pointer to the **root node** of the **binary tree**.\nEach `houseNode` contains an integer value representing the **money in that house**.\nThe tree follows the standard **binary tree structure**, and Missing children are represented using **null**.\n**Return Value**\nReturns an **int** representing the **maximum sum of money** Chef can rob.\nThe returned value is the **highest possible total** such that **no parent and child** are both robbed.\nThe result is a **non-negative integer**.\n**Input Format**\nThe first line contains a single integer **TTT** — the number of **test cases**.\nEach test case describes one **binary tree** in a suitable format (for example, **Level order traversal** using null for missing nodes.).\nEach node stores an integer representing the **house value**.\n**Output Format**\nFor each test case, print a single line containing the **maximum amount of money** Chef can rob without triggering the **alarm**.\n**Constraints**\n**1≤T≤1051 \\le T \\le 10^51≤T≤105**\n**1≤1 \\le1≤ number of nodes in each house tree ≤104\\le 10^4≤104**\n**0≤0 \\le0≤ house value of each house ≤104\\le 10^4≤104**",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10^5",
+      "1 <= n <= 10^4",
+      "0 <= node value <= 10^4"
+    ],
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer n, representing the number of nodes in the binary tree, followed by n space-separated integers representing the values of the nodes in level order traversal.",
+    "outputFormat": "For each test case, print the maximum amount of money that can be robbed without triggering the alarm.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n7\n3 2 3 null 3 null 1\n5\n3 4 5 1 3",
         "output": "7\n9",
-        "explanation": "Explanation:\nFor the first test case, rob the root (3), skip its children, then rob the grandchildren (3 + 1), total = 3 + 3 + 1 = 7.\nFor the second test case, rob nodes with values 4 and 5 (children), total = 4 + 5 = 9 since robbing root and its children together is not allowed."
+        "explanation": "For the first test case, rob the root (3), skip its children, then rob the grandchildren (3 + 1), total = 3 + 3 + 1 = 7. For the second test case, rob nodes with values 4 and 5 (children), total = 4 + 5 = 9 since robbing root and its children together is not allowed."
       },
       {
         "id": "sample_2",
         "input": "1\n1\n10",
         "output": "10",
-        "explanation": "Explanation:\nOnly one house (root) with value 10. Robbing it gives 10. There are no children to worry about."
+        "explanation": "Only one house (root) with value 10. Robbing it gives 10. There are no children to worry about."
       },
       {
         "id": "sample_3",
         "input": "1\n1\n10000",
         "output": "10000",
-        "explanation": "Explanation:\nFor the single-node tree with value 10000, robbing that node gives the maximum amount since there are no adjacent nodes to consider. Hence, output is 10000."
-      },
-      {
-        "id": "sample_4",
-        "input": "1\n7\n3 2 3 null 3 null 1",
-        "output": "7",
-        "explanation": "Explanation:\nOption 1:\nRob the root (3). Then we must skip its children (2 and 3),\nbut we can rob their children.\nTotal = 3 + 3 + 1 = 7.\nOption 2:\nSkip the root. Then we can rob its children (2 and 3),\nbut if we rob them, we must skip their children.\nTotal = 2 + 3 = 5.\nSo the maximum amount is 7."
-      },
-      {
-        "id": "sample_5",
-        "input": "1\n7\n6 1 2 null null 3 4",
-        "output": "13",
-        "explanation": "Explanation:\nFor the tree with nodes [6, 1, 2, null, null, 3, 4], robbing nodes 6, 3, and 4 yields the maximum amount 13 without robbing directly connected houses."
+        "explanation": "For the single-node tree with value 10000, robbing that node gives the maximum amount since there are no adjacent nodes to consider. Hence, output is 10000."
       }
     ]
   },
@@ -60,48 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n7\n3 2 3 null 3 null 1\n5\n3 4 5 1 3",
-        "expectedOutput": "7\n9",
-        "weight": 20
+        "label": "minimum boundary",
+        "input": "1\n1\n0",
+        "expectedOutput": "0",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "1\n1\n10",
-        "expectedOutput": "10",
-        "weight": 20
+        "label": "maximum boundary",
+        "input": "1\n1\n10000",
+        "expectedOutput": "10000",
+        "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "1\n1\n10000",
-        "expectedOutput": "10000",
-        "weight": 20
+        "label": "uniform/edge case",
+        "input": "1\n3\n1 1 1",
+        "expectedOutput": "2",
+        "weight": 2
       },
       {
         "id": "tc_4",
-        "input": "1\n7\n3 2 3 null 3 null 1",
-        "expectedOutput": "7",
-        "weight": 20
+        "label": "tricky case",
+        "input": "1\n5\n1 2 3 4 5",
+        "expectedOutput": "9",
+        "weight": 2
       },
       {
         "id": "tc_5",
-        "input": "1\n7\n6 1 2 null null 3 4",
-        "expectedOutput": "13",
-        "weight": 20
+        "label": "stress/general",
+        "input": "2\n3\n1 2 3\n5\n1 2 3 4 5",
+        "expectedOutput": "4\n9",
+        "weight": 2
       }
     ],
     "totalTestCases": 5,
-    "totalWeight": 100
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      20,
-      20,
-      20,
-      20,
-      20
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -115,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem can be solved using dynamic programming. For each node, we have two options: either rob the node or not rob the node. If we rob the node, we cannot rob its children. If we do not rob the node, we can rob its children. We use a recursive approach to calculate the maximum amount of money that can be robbed for each node.",
+    "timeComplexity": "O(n) per test case, O(T*n) total. The time complexity is linear because we visit each node once.",
+    "spaceComplexity": "O(n) — the dominant structure is the recursive call stack.",
     "code": {
-      "C++": "#include <algorithm>\nusing namespace std;\n\nclass Codechef {\n\n    static pair<int, int> solve(houseNode* node) {\n        if (!node) return {0, 0};\n\n        auto left = solve(node->leftChild);\n        auto right = solve(node->rightChild);\n\n        // Rob this node → skip children\n        int rob = node->houseValue + left.second + right.second;\n\n        // Do not rob → children choose best\n        int notRob = max(left.first, left.second)\n                   + max(right.first, right.second);\n\n        return {rob, notRob};\n    }\n\npublic:\n    static int calculateMaxRob(houseNode* rootHouse) {\n        auto ans = solve(rootHouse);\n        return max(ans.first, ans.second);\n    }\n};\n",
-      "Python3": "class Codechef:\n    @staticmethod\n    def calculateMaxRob(rootHouse):\n\n        def dfs(node):\n            if node is None:\n                return (0, 0)          # (skip, rob)\n\n            ls, lr = dfs(node.leftChild)\n            rs, rr = dfs(node.rightChild)\n\n            rob = node.houseValue + ls + rs\n            skip = max(ls, lr) + max(rs, rr)\n\n            return (skip, rob)\n\n        s, r = dfs(rootHouse)\n        return max(s, r)\n",
-      "C": "#include <stdio.h>\n\ntypedef struct Pair {\n    int rob;\n    int notRob;\n} Pair;\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nPair solve(houseNode* node) {\n\n    Pair res;\n\n    if (node == NULL) {\n        res.rob = 0;\n        res.notRob = 0;\n        return res;\n    }\n\n    Pair left = solve(node->leftChild);\n    Pair right = solve(node->rightChild);\n\n    // Rob this node → skip children\n    res.rob = node->houseValue + left.notRob + right.notRob;\n\n    // Do not rob → children choose best\n    res.notRob = max(left.rob, left.notRob)\n               + max(right.rob, right.notRob);\n\n    return res;\n}\n\nint calculateMaxRob(houseNode* rootHouse)\n{\n    Pair ans = solve(rootHouse);\n    return max(ans.rob, ans.notRob);\n}\n",
-      "Java": "class Codechef {\n\n    static class Pair {\n        int rob;\n        int notRob;\n\n        Pair(int rob, int notRob) {\n            this.rob = rob;\n            this.notRob = notRob;\n        }\n    }\n\n    static Pair solve(houseNode node) {\n        if (node == null) return new Pair(0, 0);\n\n        Pair left = solve(node.leftChild);\n        Pair right = solve(node.rightChild);\n\n        int rob = node.houseValue + left.notRob + right.notRob;\n        int notRob = Math.max(left.rob, left.notRob)\n                   + Math.max(right.rob, right.notRob);\n\n        return new Pair(rob, notRob);\n    }\n\n    public static int calculateMaxRob(houseNode rootHouse) {\n        Pair ans = solve(rootHouse);\n        return Math.max(ans.rob, ans.notRob);\n    }\n}\n",
-      "JavaScript": "class Codechef {\n    static calculateMaxRob(rootHouse) {\n\n        function dfs(node) {\n            if (node === null) {\n                return [0, 0]; // [skip, rob]\n            }\n\n            const [ls, lr] = dfs(node.leftChild);\n            const [rs, rr] = dfs(node.rightChild);\n\n            const rob = node.houseValue + ls + rs;\n            const skip = Math.max(ls, lr) + Math.max(rs, rr);\n\n            return [skip, rob];\n        }\n\n        const res = dfs(rootHouse);\n        return Math.max(res[0], res[1]);\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int value;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new tree node\nNode* createNode(int value) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    if (!newNode) {\n        printf(\"Memory error\\n\");\n        return NULL;\n    }\n    newNode->value = value;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to calculate the maximum amount of money that can be robbed\nint* calculateMaxRob(Node* root) {\n    if (root == NULL) {\n        int* result = (int*) malloc(2 * sizeof(int));\n        result[0] = 0;\n        result[1] = 0;\n        return result;\n    }\n\n    int* leftResult = calculateMaxRob(root->left);\n    int* rightResult = calculateMaxRob(root->right);\n\n    int* result = (int*) malloc(2 * sizeof(int));\n    result[0] = root->value + leftResult[1] + rightResult[1];\n    result[1] = (leftResult[0] > leftResult[1] ? leftResult[0] : leftResult[1]) + (rightResult[0] > rightResult[1] ? rightResult[0] : rightResult[1]);\n\n    free(leftResult);\n    free(rightResult);\n\n    return result;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        Node* root = NULL;\n        // Read the tree nodes and construct the tree\n        for (int i = 0; i < n; i++) {\n            int value;\n            scanf(\"%d\", &value);\n            Node* newNode = createNode(value);\n            if (root == NULL) {\n                root = newNode;\n            } else {\n                // Add the new node to the tree\n                Node* current = root;\n                Node* parent = NULL;\n                while (current != NULL) {\n                    parent = current;\n                    if (i % 2 == 1) {\n                        current = current->left;\n                    } else {\n                        current = current->right;\n                    }\n                }\n                if (i % 2 == 1) {\n                    parent->left = newNode;\n                } else {\n                    parent->right = newNode;\n                }\n            }\n        }\n        // Calculate and print the maximum amount of money that can be robbed\n        int* result = calculateMaxRob(root);\n        printf(\"%d\\n\", result[0] > result[1] ? result[0] : result[1]);\n        free(result);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int value;\n    Node* left;\n    Node* right;\n};\n\n// Function to create a new tree node\nNode* createNode(int value) {\n    Node* newNode = new Node;\n    newNode->value = value;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to calculate the maximum amount of money that can be robbed\nint* calculateMaxRob(Node* root) {\n    if (root == NULL) {\n        int* result = new int[2];\n        result[0] = 0;\n        result[1] = 0;\n        return result;\n    }\n\n    int* leftResult = calculateMaxRob(root->left);\n    int* rightResult = calculateMaxRob(root->right);\n\n    int* result = new int[2];\n    result[0] = root->value + leftResult[1] + rightResult[1];\n    result[1] = (leftResult[0] > leftResult[1] ? leftResult[0] : leftResult[1]) + (rightResult[0] > rightResult[1] ? rightResult[0] : rightResult[1]);\n\n    delete[] leftResult;\n    delete[] rightResult;\n\n    return result;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        Node* root = NULL;\n        // Read the tree nodes and construct the tree\n        for (int i = 0; i < n; i++) {\n            int value;\n            cin >> value;\n            Node* newNode = createNode(value);\n            if (root == NULL) {\n                root = newNode;\n            } else {\n                // Add the new node to the tree\n                Node* current = root;\n                Node* parent = NULL;\n                while (current != NULL) {\n                    parent = current;\n                    if (i % 2 == 1) {\n                        current = current->left;\n                    } else {\n                        current = current->right;\n                    }\n                }\n                if (i % 2 == 1) {\n                    parent->left = newNode;\n                } else {\n                    parent->right = newNode;\n                }\n            }\n        }\n        // Calculate and print the maximum amount of money that can be robbed\n        int* result = calculateMaxRob(root);\n        cout << (result[0] > result[1] ? result[0] : result[1]) << endl;\n        delete[] result;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\n// Define the structure for a tree node\nclass Node {\n    int value;\n    Node left;\n    Node right;\n\n    public Node(int value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n\npublic class Main {\n    // Function to calculate the maximum amount of money that can be robbed\n    public static int[] calculateMaxRob(Node root) {\n        if (root == null) {\n            int[] result = new int[2];\n            result[0] = 0;\n            result[1] = 0;\n            return result;\n        }\n\n        int[] leftResult = calculateMaxRob(root.left);\n        int[] rightResult = calculateMaxRob(root.right);\n\n        int[] result = new int[2];\n        result[0] = root.value + leftResult[1] + rightResult[1];\n        result[1] = (leftResult[0] > leftResult[1] ? leftResult[0] : leftResult[1]) + (rightResult[0] > rightResult[1] ? rightResult[0] : rightResult[1]);\n\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            int n = scanner.nextInt();\n            Node root = null;\n            // Read the tree nodes and construct the tree\n            for (int i = 0; i < n; i++) {\n                int value = scanner.nextInt();\n                Node newNode = new Node(value);\n                if (root == null) {\n                    root = newNode;\n                } else {\n                    // Add the new node to the tree\n                    Node current = root;\n                    Node parent = null;\n                    while (current != null) {\n                        parent = current;\n                        if (i % 2 == 1) {\n                            current = current.left;\n                        } else {\n                            current = current.right;\n                        }\n                    }\n                    if (i % 2 == 1) {\n                        parent.left = newNode;\n                    } else {\n                        parent.right = newNode;\n                    }\n                }\n            }\n            // Calculate and print the maximum amount of money that can be robbed\n            int[] result = calculateMaxRob(root);\n            System.out.println(result[0] > result[1] ? result[0] : result[1]);\n        }\n    }\n}",
+      "Python3": "class Node:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n        self.right = None\n\n# Function to calculate the maximum amount of money that can be robbed\ndef calculateMaxRob(root):\n    if root is None:\n        return [0, 0]\n\n    leftResult = calculateMaxRob(root.left)\n    rightResult = calculateMaxRob(root.right)\n\n    result = [0, 0]\n    result[0] = root.value + leftResult[1] + rightResult[1]\n    result[1] = max(leftResult[0], leftResult[1]) + max(rightResult[0], rightResult[1])\n\n    return result\n\n# Read the number of test cases\nT = int(input())\nwhile T > 0:\n    # Read the number of nodes in the tree\n    n = int(input())\n    root = None\n    # Read the tree nodes and construct the tree\n    nodes = list(map(int, input().split()))\n    queue = []\n    if n > 0:\n        root = Node(nodes[0])\n        queue.append(root)\n    i = 1\n    while i < n and queue:\n        current = queue.pop(0)\n        if i < n:\n            current.left = Node(nodes[i])\n            queue.append(current.left)\n            i += 1\n        if i < n:\n            current.right = Node(nodes[i])\n            queue.append(current.right)\n            i += 1\n    # Calculate and print the maximum amount of money that can be robbed\n    result = calculateMaxRob(root)\n    print(max(result[0], result[1]))\n    T -= 1",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\n// Define the structure for a tree node\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.left = null;\n        this.right = null;\n    }\n}\n\n// Function to calculate the maximum amount of money that can be robbed\nfunction calculateMaxRob(root) {\n    if (root === null) {\n        return [0, 0];\n    }\n\n    let leftResult = calculateMaxRob(root.left);\n    let rightResult = calculateMaxRob(root.right);\n\n    let result = [0, 0];\n    result[0] = root.value + leftResult[1] + rightResult[1];\n    result[1] = Math.max(leftResult[0], leftResult[1]) + Math.max(rightResult[0], rightResult[1]);\n\n    return result;\n}\n\n// Read the number of test cases\nlet T = parseInt(input[idx++]);\nwhile (T-- > 0) {\n    // Read the number of nodes in the tree\n    let n = parseInt(input[idx++]);\n    let root = null;\n    // Read the tree nodes and construct the tree\n    let nodes = input[idx++].split(' ').map(Number);\n    let queue = [];\n    if (n > 0) {\n        root = new Node(nodes[0]);\n        queue.push(root);\n    }\n    let i = 1;\n    while (i < n && queue.length > 0) {\n        let current = queue.shift();\n        if (i < n) {\n            current.left = new Node(nodes[i]);\n            queue.push(current.left);\n            i++;\n        }\n        if (i < n) {\n            current.right = new Node(nodes[i]);\n            queue.push(current.right);\n            i++;\n        }\n    }\n    // Calculate and print the maximum amount of money that can be robbed\n    let result = calculateMaxRob(root);\n    console.log(Math.max(result[0], result[1]));\n}"
     }
   }
 }

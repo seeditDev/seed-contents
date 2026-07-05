@@ -4,14 +4,15 @@
   "slug": "queue-print-numbers-with-a-given-pattern",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Stack",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Queue",
+      "Simulation",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "Let us see if you have understood 'Queues' with an implementation problem.\n\nTaskWrite a program to print numbers in a specific pattern using a queue.\n\nThe pattern starts with 1 and alternates between printing one number and enqueueing the next number.\nThe pattern follows these rules:\n\n\nPrint 1.\nEnqueue 2.\nPrint 3.\nEnqueue 4.\nPrint 5.\nEnqueue 6.\nPrint 7.\n... and so on.\nOnce all numbers are completed - dequeue the remaining numbers\nCheck the sample output below for N=10N = 10N=10.\n\nUpdate the `NumberPattern` class in the IDE to solve this problem.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 1000",
+      "All numbers fit in 32‑bit signed integer"
+    ],
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 1000).",
+    "outputFormat": "For each test case output a line with N space‑separated integers: first all odd numbers from 1 to N in increasing order, then all even numbers from 1 to N in increasing order.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
+        "input": "1\n10",
         "output": "1 3 5 7 9 2 4 6 8 10",
-        "explanation": ""
+        "explanation": "Odds up to 10 are printed first (1,3,5,7,9) then evens (2,4,6,8,10)."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n1\n5",
+        "output": "1\n1 3 5 2 4",
+        "explanation": "First test case N=1 prints only 1. Second test case N=5 prints odds 1 3 5 followed by evens 2 4."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n7",
+        "output": "1 3 5 7 2 4 6",
+        "explanation": "Odds up to 7 (1,3,5,7) then evens up to 7 (2,4,6)."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "1 3 5 7 9 2 4 6 8 10",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\n15",
+        "expectedOutput": "1 3 5 7 9 11 13 15 2 4 6 8 10 12 14",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "multiple small test cases",
+        "input": "3\n1\n2\n3",
+        "expectedOutput": "1\n1 2\n1 3 2",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "even N",
+        "input": "1\n8",
+        "expectedOutput": "1 3 5 7 2 4 6 8",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general mix",
+        "input": "5\n5\n9\n10\n7\n1",
+        "expectedOutput": "1 3 5 2 4\n1 3 5 7 9 2 4 6 8\n1 3 5 7 9 2 4 6 8 10\n1 3 5 7 2 4 6\n1",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The required pattern is exactly the list of odd numbers followed by the list of even numbers up to N. No real queue simulation is needed – we can generate the two sequences directly. For each test case we iterate i from 1 to N with step 2 to collect odds, then i from 2 to N with step 2 to collect evens, printing them in order. This runs in O(N) time and O(1) extra space.",
+    "timeComplexity": "O(N) per test case, O(total N) for the whole input.",
+    "spaceComplexity": "O(1) auxiliary space (output buffer excluded).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define maxSize 101\nint a[maxSize];\nint front = 0; // Index of the front element\nint rear = -1;  // Index of the rear element\nint currentSize;\n\nbool isEmpty(){\n    return currentSize == 0;\n}\n\nbool isFull(){\n    return currentSize == maxSize;\n}\n\nint size(){\n    return currentSize;\n}\n\nvoid enqueue(int item) {\n    if (isFull()) {\n        cout<<\"Queue is full. Cannot enqueue.\\n\";\n        return;\n    }\n    rear = (rear + 1) % maxSize; // Circular increment\n    a[rear] = item;\n    currentSize++;\n}\n\nint dequeue(){\n    if (isEmpty()) {\n        cout<<\"Queue is empty. Cannot dequeue.\\n\";\n        return -1; // Return a sentinel value or throw an exception\n    }\n    int removedItem = a[front];\n    front = (front + 1) % maxSize; // Circular increment\n    currentSize--;\n    return removedItem;\n}\n\nint main(){\n    int n = 10;\n    // Your code goes here\n    for(int i = 1 ; i <= n ; i++){\n        if(i%2){\n            cout<< i << \" \";\n        } \n        else {\n            enqueue(i);\n        }\n    }\n\n    while(!isEmpty()){\n        cout<<dequeue() << \" \";\n    }\n    return 0;\n}",
-      "Python3": "class CircularQueue:\n    def __init__(self, max_size):\n        self.max_size = max_size\n        self.a = [0] * max_size\n        self.front = 0\n        self.rear = -1\n        self.current_size = 0\n\n    def is_empty(self):\n        return self.current_size == 0\n\n    def is_full(self):\n        return self.current_size == self.max_size\n\n    def size(self):\n        return self.current_size\n\n    def enqueue(self, item):\n        if self.is_full():\n            print(\"Queue is full. Cannot enqueue.\")\n            return\n        self.rear = (self.rear + 1) % self.max_size  # Circular increment\n        self.a[self.rear] = item\n        self.current_size += 1\n\n    def dequeue(self):\n        if self.is_empty():\n            print(\"Queue is empty. Cannot dequeue.\")\n            return -1  # Return a sentinel value or throw an exception\n        removed_item = self.a[self.front]\n        self.front = (self.front + 1) % self.max_size  # Circular increment\n        self.current_size -= 1\n        return removed_item\n\n\nif __name__ == \"__main__\":\n    n = 10\n    queue = CircularQueue(101)\n\n    for i in range(1, n + 1):\n        if i % 2 == 1:\n            print(i, end=\" \")\n        else:\n            queue.enqueue(i)\n\n    while not queue.is_empty():\n        print(queue.dequeue(), end=\" \")\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define maxSize 101\nint a[maxSize];\nint front=0; // Index of the front element\nint rear=-1;  // Index of the rear element\nint currentSize;\n\nint isEmpty(){\n    return currentSize==0;\n}\n\nint isFull(){\n    return currentSize==maxSize;\n}\n\nint size(){\n    return currentSize;\n}\n\nvoid enqueue(int item) {\n    if (isFull()) {\n        printf(\"Queue is full. Cannot enqueue.\\n\");\n        return;\n    }\n    rear=(rear+1)%maxSize; // Circular increment\n    a[rear]=item;\n    currentSize++;\n}\n\nint dequeue(){\n    if (isEmpty()) {\n        printf(\"Queue is empty. Cannot dequeue.\\n\");\n        return -1; // Return a sentinel value or throw an exception\n    }\n    int removedItem = a[front];\n    front = (front + 1) % maxSize; // Circular increment\n    currentSize--;\n    return removedItem;\n}\n\nint main(){\n    int n = 10;\n    // Your code goes here\n    for(int i = 1 ; i <= n ; i++){\n        if(i % 2){\n            printf(\"%d \", i);\n        } \n        else {\n            enqueue(i);\n        }\n    }\n\n    while(!isEmpty()){\n        printf(\"%d \", dequeue());\n    }\n    return 0;\n}",
-      "Java": "public class Main {\n    private static final int maxSize = 101;\n    private static int[] a = new int[maxSize];\n    private static int front = 0; // Index of the front element\n    private static int rear = -1;  // Index of the rear element\n    private static int currentSize;\n\n    private static boolean isEmpty() {\n        return currentSize == 0;\n    }\n\n    private static boolean isFull() {\n        return currentSize == maxSize;\n    }\n\n    private static int size() {\n        return currentSize;\n    }\n\n    private static void enqueue(int item) {\n        if (isFull()) {\n            System.out.println(\"Queue is full. Cannot enqueue.\");\n            return;\n        }\n        rear = (rear + 1) % maxSize; // Circular increment\n        a[rear] = item;\n        currentSize++;\n    }\n\n    private static int dequeue() {\n        if (isEmpty()) {\n            System.out.println(\"Queue is empty. Cannot dequeue.\");\n            return -1; // Return a sentinel value or throw an exception\n        }\n        int removedItem = a[front];\n        front = (front + 1) % maxSize; // Circular increment\n        currentSize--;\n        return removedItem;\n    }\n\n    public static void main(String[] args) {\n        int n = 10;\n\n        for (int i = 1; i <= n; i++) {\n            if (i % 2 == 1) {\n                System.out.print(i + \" \");\n            } else {\n                enqueue(i);\n            }\n        }\n\n        while (!isEmpty()) {\n            System.out.print(dequeue() + \" \");\n        }\n    }\n}\n",
-      "JavaScript": "class Queue {\n    constructor(maxSize = 101) {\n        this.maxSize = maxSize;\n        this.a = new Array(maxSize);\n        this.front = 0; // Index of the front element\n        this.rear = -1; // Index of the rear element\n        this.currentSize = 0;\n    }\n\n    isEmpty() {\n        return this.currentSize === 0;\n    }\n\n    isFull() {\n        return this.currentSize === this.maxSize;\n    }\n\n    size() {\n        return this.currentSize;\n    }\n\n    enqueue(item) {\n        if (this.isFull()) {\n            console.log(\"Queue is full. Cannot enqueue.\");\n            return;\n        }\n        this.rear = (this.rear + 1) % this.maxSize;  \n        this.a[this.rear] = item;\n        this.currentSize++;\n    }\n\n    dequeue() {\n        if (this.isEmpty()) {\n            console.log(\"Queue is empty. Cannot dequeue.\");\n            return -1; \n        }\n        const removedItem = this.a[this.front];\n        this.front = (this.front + 1) % this.maxSize; \n        this.currentSize--;\n        return removedItem;\n    }\n}\n\nfunction main() {\n    const queue = new Queue();\n    const n = 10;\n\n    for (let i = 1; i <= n; i++) {\n        if (i % 2 !== 0) {\n            console.log(i + \" \");\n        } else {\n            queue.enqueue(i);\n        }\n    }\n\n    while (!queue.isEmpty()) {\n        console.log(queue.dequeue() + \" \");\n    }\n}\n\n"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int first = 1;\n        for(int i=1;i<=N;i+=2){\n            if(!first) printf(\" \");\n            printf(\"%d\", i);\n            first = 0;\n        }\n        for(int i=2;i<=N;i+=2){\n            printf(\" %d\", i);\n        }\n        if(T) printf(\"\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        bool first = true;\n        for(int i=1;i<=N;i+=2){\n            if(!first) cout << ' ';\n            cout << i;\n            first = false;\n        }\n        for(int i=2;i<=N;i+=2){\n            cout << ' ' << i;\n        }\n        if(T) cout << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for(int tc = 0; tc < T; tc++){\n            int N = Integer.parseInt(br.readLine().trim());\n            boolean first = true;\n            for(int i = 1; i <= N; i += 2){\n                if(!first) sb.append(' ');\n                sb.append(i);\n                first = false;\n            }\n            for(int i = 2; i <= N; i += 2){\n                sb.append(' ').append(i);\n            }\n            if(tc < T-1) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    idx = 1\n    out_lines = []\n    for _ in range(t):\n        n = int(data[idx]); idx += 1\n        parts = [str(i) for i in range(1, n+1, 2)] + [str(i) for i in range(2, n+1, 2)]\n        out_lines.append(' '.join(parts))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(input[pos++]);\nlet results = [];\nfor(let tc = 0; tc < T; tc++){\n  const N = Number(input[pos++]);\n  const arr = [];\n  for(let i = 1; i <= N; i += 2) arr.push(i);\n  for(let i = 2; i <= N; i += 2) arr.push(i);\n  results.push(arr.join(' '));\n}\nconsole.log(results.join('\\n'));\n"
     }
   }
 }

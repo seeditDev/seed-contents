@@ -4,14 +4,14 @@
   "slug": "search-an-element-in-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Searching",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "searching",
-      "data structures and algorithms"
+      "Linear Search",
+      "Array"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,23 +21,31 @@
   "content": {
     "problemStatement": "You are given an array AAA of size NNN and an element XXX. Your task is to find whether the array AAA contains the element XXX or not.\n\n**Function Declaration****Function Name**solvesolvesolve – This function checks whether a given element **X** is present in the array **A**.\n\n**Parameters**\nNNN : An integer representing the number of elements in the array.\nXXX : An integer representing the element to be searched.\nAAA : A list/array of integers of length **N**, representing the input array.\n**Return Value**\n\nReturns a **string**:\n\n\n\n`\"YES\"` if the element XXX exists in the array AAA.\n`\"NO\"` if the element XXX is not present in the array.\n\n\n\nInput Format\n\nThe first line contains two space-separated integers NNN and XXX — the size of array and the element to be searched.\nThe second line contains all the elements of array AAA\n\n\nOutput Format\nOutput \"YES\" if the element XXX is present in AAA, otherwise output \"NO\".",
     "constraints": [
-      "1≤N,X≤1051 \\leq N , X \\leq 10^51≤N,X≤105",
-      "1≤Ai≤1051 \\leq A_i \\leq 10^51≤Ai​≤105"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "1 <= X <= 100000",
+      "1 <= Ai <= 100000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two space‑separated integers N and X — the size of the array and the element to search for. The second line contains N space‑separated integers A1, A2, ..., AN — the elements of the array.",
+    "outputFormat": "For each test case, output a single line containing \"YES\" if X appears in the array, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 3\n7 3 5 2 1",
-        "output": "YES",
-        "explanation": ""
+        "input": "2\\n5 3\\n7 3 5 2 1\\n5 10\\n7 3 5 2 1",
+        "output": "YES\\nNO",
+        "explanation": "First test case: 3 is present in the array, so output YES. Second test case: 10 is absent, so output NO."
       },
       {
         "id": "sample_2",
-        "input": "5 10\n7 3 5 2 1",
+        "input": "1\\n1 5\\n5",
+        "output": "YES",
+        "explanation": "The single element equals X, therefore YES."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n4 7\\n1 2 3 4",
         "output": "NO",
-        "explanation": ""
+        "explanation": "7 does not appear in the array, so the answer is NO."
       }
     ]
   },
@@ -45,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 3\n7 3 5 2 1",
+        "label": "minimum boundary",
+        "input": "1\\n1 1\\n1",
         "expectedOutput": "YES",
-        "weight": 50
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "5 10\n7 3 5 2 1",
+        "label": "maximum boundary",
+        "input": "1\\n15 100000\\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 100000",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\n5 3\\n5 5 5 5 5",
         "expectedOutput": "NO",
-        "weight": 50
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n6 9\\n10 9 8 7 6 5",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\\n3 2\\n1 2 3\\n4 5\\n1 2 3 4\\n2 100\\n100 100",
+        "expectedOutput": "YES\\nNO\\nYES",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -79,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "We iterate through the array and check whether any element in the array is equal to X.\nIf we find X in the array, we can stop the search and output “YES”.\nIf we complete the iteration without finding X, we output “NO”.",
-    "timeComplexity": "O(N) Iterated through the whole array.",
-    "spaceComplexity": "O(1) No extra space is used.",
+    "approach": "The task is to check the presence of a value X in an array. The simplest and optimal method for an unsorted array is a linear scan: iterate over the N elements and stop as soon as X is found. If the scan finishes without a match, X is absent. This runs in O(N) time per test case, which is optimal because every element may need to be examined in the worst case. The algorithm uses O(1) extra space besides the input storage.",
+    "timeComplexity": "O(N) per test case, O(ΣN) over all test cases",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C++": "string solve(int N, int X, const vector<int>& A) {\n    for (int i = 0; i < N; i++) {\n        if (A[i] == X) {\n            return \"YES\";\n        }\n    }\n    return \"NO\";\n}\n",
-      "Python3": "def solve(N, X, A):\n    if X in A:\n        return \"YES\"\n    else:\n        return \"NO\"\n",
-      "C": "char* solve(int N, int X, int A[]) {\n    for (int i = 0; i < N; i++) {\n        if (A[i] == X) {\n            return \"YES\";\n        }\n    }\n    return \"NO\";\n}",
-      "Java": "public static String solve(int N, int X, int[] A) {\n    for (int i = 0; i < N; i++) {\n        if (A[i] == X) {\n            return \"YES\";\n        }\n    }\n    return \"NO\";\n}",
-      "JavaScript": "function searchElement(N,X,A) {\n    return A.includes(X) ? \"YES\" : \"NO\";\n}\n"
+      "C": "#include <stdio.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N,X; scanf(\"%d %d\",&N,&X); int found=0; for(int i=0;i<N;++i){int v; scanf(\"%d\",&v); if(v==X) found=1; } printf(found?\"YES\\n\":\"NO\\n\"); } return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T; if(!(cin>>T)) return 0; while(T--){int N,X;cin>>N>>X; bool found=false; for(int i=0;i<N;++i){int v;cin>>v; if(v==X) found=true;} cout<<(found?\"YES\":\"NO\")<<'\\n';}\nreturn 0; }",
+      "Java": "import java.io.*;import java.util.*;\npublic class Main{public static void main(String[] args) throws IOException{BufferedReader br=new BufferedReader(new InputStreamReader(System.in));StringTokenizer st=new StringTokenizer(br.readLine());int T=Integer.parseInt(st.nextToken());StringBuilder sb=new StringBuilder();for(int t=0;t<T;++t){st=new StringTokenizer(br.readLine());int N=Integer.parseInt(st.nextToken());int X=Integer.parseInt(st.nextToken());st=new StringTokenizer(br.readLine());boolean found=false;for(int i=0;i<N;++i){int v=Integer.parseInt(st.nextToken());if(v==X) found=true;} sb.append(found?\"YES\":\"NO\");if(t<T-1) sb.append('\\n');}\nSystem.out.print(sb.toString());}}",
+      "Python3": "import sys\ndef solve():\n    data=sys.stdin.buffer.read().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it)); X=int(next(it))\n        found=False\n        for _ in range(N):\n            if int(next(it))==X:\n                found=True\n        out.append('YES' if found else 'NO')\n    sys.stdout.write('\\n'.join(out))\nif __name__=='__main__':\n    solve()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=Number(input[idx++]);\nlet res=[];\nfor(let t=0;t<T;++t){\n  const N=Number(input[idx++]);\n  const X=Number(input[idx++]);\n  let found=false;\n  for(let i=0;i<N;++i){\n    const v=Number(input[idx++]);\n    if(v===X) found=true;\n  }\n  res.push(found?'YES':'NO');\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

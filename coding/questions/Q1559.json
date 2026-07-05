@@ -4,14 +4,14 @@
   "slug": "minimum-insertions-to-make-parentheses-valid",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Stack",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Stack",
+      "Parentheses Validation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +20,31 @@
   },
   "content": {
     "problemStatement": "Chef is given a string **SSS** consisting only of the characters **`(`** and **`)`**. Chef wants to make this parentheses string valid by performing the **minimum number of insertions**.\n\nA parentheses string is considered **valid** if and only if one of the following conditions holds:\n\n\nIt is an empty string, or\nIt can be written as **ABABAB**, where both **AAA** and **BBB** are valid parentheses strings, or\nIt can be written as **(A)(A)(A)**, where **AAA** is a valid parentheses string.\nIn one move, Chef is allowed to **insert one parenthesis**, either **`(`** or **`)`**, at **any position** in the string.\n\nChef wants to know the **minimum number of insertions** required to make the given string valid.\n\nYour task is to help Chef compute this minimum number for each test case.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**minAddToMakeValidNaiveminAddToMakeValidNaiveminAddToMakeValidNaive**\n\n\n\n**Parameters:**\n\n\n\n**sss** (`string`)\nA string consisting only of the characters **`(`** and **`)`**.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **minimum number of insertions** required to make the parentheses string valid.\n\n\nInput FormatThe first line contains a single integer **TTT** — the number of test cases.\n\nEach of the next **TTT** lines contains a string **SSS**, consisting only of the characters **`(`** and **`)`**.\n\nOutput FormatFor each test case, print a single integer — the **minimum number of insertions** required to make the parentheses string valid.\n\nConstraints\n1≤T≤1001 \\le T \\le 1001≤T≤100\n1≤∣S∣≤10001 \\le |S| \\le 10001≤∣S∣≤1000\nS[i]∈′(′,′)′S[i] \\in { '(', ')' }S[i]∈′(′,′)′",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 100",
+      "1 <= |S| <= 1000",
+      "S[i] ∈ {'(', ')'}"
+    ],
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a string S consisting only of the characters '(' and ')'.",
+    "outputFormat": "For each test case, print the minimum number of insertions required to make the parentheses string valid.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n())(\n((((\n)()())\n(())",
         "output": "2\n4\n2\n0",
         "explanation": "Explanation:\nTest Case 1 : Input String: ())(\nChef scans the string from left to right:\n\nThe first '(' is matched correctly.\nThe second ')' is extra and needs one '(' to match.\nThe last '(' is unmatched and needs one ')'.\n\nSo, 2 insertions are required to make the string valid.\nTest Case 2 : Input String: ((((\nAll characters are '(' and none of them are closed.\nEach '(' requires a corresponding ')' to form a valid pair.\nSo, 4 insertions of ')' are needed.\nTest Case 3 : Input String: )()())\n\nThe first ')' has no matching '(', so one '(' must be inserted.\nLater, there is one extra ')' that remains unmatched.\nIn total, 2 insertions are required to make the string valid.\n\nTest Case 4 : All opening parentheses have matching closing parentheses, and the structure is already valid.\nSo, no insertions are required.\nHence, the output is 0."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n()",
+        "output": "0",
+        "explanation": "The string is already valid, so no insertions are needed."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n(",
+        "output": "1",
+        "explanation": "One closing parenthesis is needed to match the opening parenthesis."
       }
     ]
   },
@@ -36,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n())(\n((((\n)()())\n(())",
-        "expectedOutput": "2\n4\n2\n0",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\n",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\n",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n",
+        "expectedOutput": "0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "We can simulate **removing valid pairs** `'()'` until no more exist.\n\nThe remaining unmatched parentheses count = number of insertions needed.\n\nAlgorithm:Loop through the string:\n\n\nWhenever `'()'` is found, remove it.\nRepeat until no `'()'` pairs remain.\n\nThe leftover length = **number of insertions required **.\n\nTime Complexity:Worst case: O(N²) because each removal shifts characters.\n\nWorks fine for small strings.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem can be solved using a stack data structure. We iterate through the string and push every opening parenthesis into the stack. When we encounter a closing parenthesis, we check if the stack is empty. If it is, we increment the count of insertions needed. If the stack is not empty, we pop the opening parenthesis from the stack. Finally, we add the remaining size of the stack to the count of insertions needed, as these opening parentheses do not have corresponding closing parentheses.",
+    "timeComplexity": "O(T * |S|) per test case, O(T * |S|) total.",
+    "spaceComplexity": "O(|S|) — for the stack.",
     "code": {
-      "C++": "int minAddToMakeValidNaive(string s) {\n    int moves = 0;\n    while (!s.empty()) {\n        bool removed = false;\n        for (size_t i = 0; i < s.size() - 1; i++) {\n            if (s[i] == '(' && s[i + 1] == ')') {\n                // Remove the valid pair\n                s.erase(i, 2);\n                removed = true;\n                break;\n            }\n        }\n        if (!removed) {\n            // If no pairs found, remaining length = number of insertions needed\n            moves += s.size();\n            break;\n        }\n    }\n    return moves;\n}\n\n",
-      "Python3": "def minAddToMakeValidNaive(s):\n    s = list(s)\n    moves = 0\n\n    while s:\n        removed = False\n        for i in range(len(s) - 1):\n            if s[i] == '(' and s[i + 1] == ')':\n                # Remove valid pair\n                s.pop(i)\n                s.pop(i)  # i-th index shifted after first pop\n                removed = True\n                break\n        if not removed:\n            # Remaining characters = insertions needed\n            moves += len(s)\n            break\n\n    return moves\n\n",
-      "C": "int minAddToMakeValidNaive(char *s) {\n    int moves = 0;\n    int len = strlen(s);\n    char temp[2000]; // large enough buffer\n    strcpy(temp, s);\n\n    while (len > 0) {\n        int removed = 0;\n        for (int i = 0; i < len - 1; i++) {\n            if (temp[i] == '(' && temp[i + 1] == ')') {\n                // remove the valid pair\n                for (int j = i; j < len - 2; j++) {\n                    temp[j] = temp[j + 2];\n                }\n                len -= 2;\n                removed = 1;\n                break;\n            }\n        }\n        if (!removed) {\n            // If no pairs found, remaining length is the number of insertions needed\n            moves += len;\n            break;\n        }\n    }\n\n    return moves;\n}\n\n",
-      "Java": "public static int minAddToMakeValidNaive(String s) {\n        StringBuilder sb = new StringBuilder(s);\n        int moves = 0;\n\n        // Keep scanning until no more changes\n        while (sb.length() > 0) {\n            boolean removed = false;\n            for (int i = 0; i < sb.length() - 1; i++) {\n                if (sb.charAt(i) == '(' && sb.charAt(i + 1) == ')') {\n                    sb.delete(i, i + 2); // remove the valid pair\n                    removed = true;\n                    break;\n                }\n            }\n            if (!removed) {\n                // If no pairs found, we must insert brackets\n                moves += sb.length();\n                break;\n            }\n        }\n        return moves;\n    }\n\n  ",
-      "JavaScript": "function minAddToMakeValidNaive(s) {\n    let moves = 0;\n    s = s.split(''); // convert to array for easier manipulation\n\n    while (s.length > 0) {\n        let removed = false;\n        for (let i = 0; i < s.length - 1; i++) {\n            if (s[i] === '(' && s[i + 1] === ')') {\n                // remove the pair\n                s.splice(i, 2);\n                removed = true;\n                break;\n            }\n        }\n        if (!removed) {\n            // If no pairs found, remaining length = insertions needed\n            moves += s.length;\n            break;\n        }\n    }\n\n    return moves;\n}\n\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint minAddToMakeValidNaive(char *s) {\n    int moves = 0;\n    int len = strlen(s);\n    int *stack = (int *)malloc(len * sizeof(int));\n    int top = -1;\n\n    for (int i = 0; i < len; i++) {\n        if (s[i] == '(') {\n            stack[++top] = s[i];\n        } else {\n            if (top == -1) {\n                moves++;\n            } else {\n                top--;\n            }\n        }\n    }\n\n    moves += top + 1;\n    free(stack);\n    return moves;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    getchar();\n\n    for (int i = 0; i < T; i++) {\n        char s[1001];\n        fgets(s, 1001, stdin);\n        s[strcspn(s, \"\\n\")] = 0;\n        printf(\"%d\\n\", minAddToMakeValidNaive(s));\n    }\n\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint minAddToMakeValidNaive(string s) {\n    int moves = 0;\n    stack<char> st;\n\n    for (char c : s) {\n        if (c == '(') {\n            st.push(c);\n        } else {\n            if (st.empty()) {\n                moves++;\n            } else {\n                st.pop();\n            }\n        }\n    }\n\n    moves += st.size();\n    return moves;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    cin.ignore();\n\n    for (int i = 0; i < T; i++) {\n        string s;\n        getline(cin, s);\n        cout << minAddToMakeValidNaive(s) << endl;\n    }\n\n    return 0;\n}",
+      "Java": "import java.util.Stack;\nimport java.util.Scanner;\n\npublic class Main {\n    public static int minAddToMakeValidNaive(String s) {\n        int moves = 0;\n        Stack<Character> st = new Stack<>();\n\n        for (char c : s.toCharArray()) {\n            if (c == '(') {\n                st.push(c);\n            } else {\n                if (st.isEmpty()) {\n                    moves++;\n                } else {\n                    st.pop();\n                }\n            }\n        }\n\n        moves += st.size();\n        return moves;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        sc.nextLine();\n\n        for (int i = 0; i < T; i++) {\n            String s = sc.nextLine();\n            System.out.println(minAddToMakeValidNaive(s));\n        }\n    }\n}",
+      "Python3": "def minAddToMakeValidNaive(s):\n    moves = 0\n    st = []\n\n    for c in s:\n        if c == '(':\n            st.append(c)\n        else:\n            if not st:\n                moves += 1\n            else:\n                st.pop()\n\n    moves += len(st)\n    return moves\n\nT = int(input())\n\nfor _ in range(T):\n    s = input().strip()\n    print(minAddToMakeValidNaive(s))",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction minAddToMakeValidNaive(s) {\n    let moves = 0;\n    let st = [];\n\n    for (let c of s) {\n        if (c === '(') {\n            st.push(c);\n        } else {\n            if (st.length === 0) {\n                moves++;\n            } else {\n                st.pop();\n            }\n        }\n    }\n\n    moves += st.length;\n    return moves;\n}\n\nlet T = parseInt(lines[idx++]);\n\nfor (let i = 0; i < T; i++) {\n    let s = lines[idx++].trim();\n    console.log(minAddToMakeValidNaive(s));\n}"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "valid-parenthesis",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Stack",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Stack",
+      "String",
+      "Simulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n\nOpen brackets must be closed using the same type of brackets.\nOpen brackets must be closed in the correct order.\nEvery close bracket has a corresponding open bracket of the same type.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 1000",
+      "1 <= length of s <= 1000",
+      "s contains only '(' , ')' , '{' , '}' , '[' and ']'"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string s consisting only of the characters '(' , ')' , '{' , '}' , '[' and ']'.",
+    "outputFormat": "For each test case output a single line containing \"true\" if the string is a valid parentheses sequence, otherwise output \"false\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n((()))\n()[]{}\n(]",
-        "output": "true\ntrue\nfalse",
-        "explanation": ""
+        "input": "3\\n((()))\\n()[]{}\\n(]",
+        "output": "true\\ntrue\\nfalse",
+        "explanation": "First string is perfectly nested, second mixes three types correctly, third has a mismatched closing bracket."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\n({[]})\\n([)]",
+        "output": "true\\nfalse",
+        "explanation": "First string is valid across all three bracket types, second violates the required order."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n()",
+        "output": "true",
+        "explanation": "A single pair of parentheses is valid."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n((()))\n()[]{}\n(]",
-        "expectedOutput": "true\ntrue\nfalse",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n(",
+        "expectedOutput": "false",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact but long)",
+        "input": "1\\n(((((((((())))))))))",
+        "expectedOutput": "true",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform valid pattern",
+        "input": "1\\n[][]",
+        "expectedOutput": "true",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky mismatched order",
+        "input": "1\\n([)]",
+        "expectedOutput": "false",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress general multiple cases",
+        "input": "5\\n()\\n({[()]})\\n({[([)])]})\\n[]{}()\\n({)}",
+        "expectedOutput": "true\\ntrue\\nfalse\\ntrue\\nfalse",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "Use a stack to keep track of opening brackets. Scan the string from left to right. When an opening bracket is seen, push it onto the stack. When a closing bracket is seen, the stack must be non‑empty and its top must be the matching opening bracket; otherwise the string is invalid. Pop the matched opening bracket. After processing the whole string the stack must be empty for the string to be valid. This runs in linear time and uses linear extra space in the worst case.",
+    "timeComplexity": "O(|s|) per test case, O(total length of all strings) overall.",
+    "spaceComplexity": "O(|s|) auxiliary stack space in the worst case.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int t;\n    cin>>t;\n    while(t--){\n        string s;\n        cin>>s;\n        stack<char> st;\n        bool valid = true;\n        for(int i=0; i<s.length(); i++){\n            if(s[i]=='(' || s[i]=='{' || s[i]=='['){\n                st.push(s[i]);\n            }\n            else {\n                if(st.empty()){\n                    valid = false;\n                    break;\n                }\n                if((s[i]==')' && st.top()=='(') ||\n                    (s[i]=='}' && st.top()=='{') ||\n                    (s[i]==']' && st.top()=='['))\n                    st.pop();\n                else {\n                    valid = false;\n                    break;\n                }\n                \n            }\n        }\n        if(valid && st.size()==0) cout<<\"true\"<<endl;\n        else cout<<\"false\"<<endl;\n    }\n}\n",
-      "Python3": "# cook your dish here\nMAX_SIZE = 101\na = [''] * MAX_SIZE\ntop = -1\n\ndef push(ele):\n    global top\n    if top <= MAX_SIZE - 1:\n        top += 1\n        a[top] = ele\n    else:\n        print(f\"Stack is full. Cannot push: {ele}\")\n\ndef pop():\n    global top\n    if top >= 0:\n        ele = a[top]\n        top -= 1\n        return ele\n    else:\n        print(\"Stack is empty. Cannot pop.\")\n        return '-1'\n\ndef is_empty():\n    return top == -1\n\ndef is_full():\n    return top >= MAX_SIZE\n\ndef is_matching_pair(open_char, close_char):\n    return (open_char == '(' and close_char == ')')\n\ndef is_balanced(expression):\n    for i in range(len(expression)):\n        c = expression[i]\n        if c == '(':\n            push(c)\n        elif c == ')':\n            if is_empty():\n                return False\n            top_char = pop()\n            if not is_matching_pair(top_char, c):\n                return False\n    return is_empty()  # Stack should be empty if expression is balanced\n\ndef main():\n    t = int(input())\n\n    while t > 0:\n        expression = input()\n        print(f\"{expression} : {str(is_balanced(expression)).lower()}\")\n        t -= 1\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n\n#define MAX_SIZE 101\nchar a[MAX_SIZE];\nint top = -1;\n\nvoid push(char ele){\n    if(top <= MAX_SIZE - 1){\n        a[++top] = ele;\n    }\n    else{\n        printf(\"Stack is full. Cannot push: %c\\n\", ele);\n    }\n}\n\nchar pop(){\n    if(top >= 0){\n        char ele = a[top];\n        top--;\n        return ele;\n    }\n    else{\n        printf(\"Stack is empty. Cannot pop.\\n\");\n        return '\\0'; // Use '\\0' to indicate null character instead of '-1'\n    }\n}\n\nbool isEmpty(){\n    return top == -1;\n}\n\nbool isFull(){\n    return top >= MAX_SIZE - 1;\n}\n\nbool isMatchingPair(char open, char close) {\n    return (open == '(' && close == ')');\n}\n\nbool isBalanced(char expression[]) {\n    int length = strlen(expression);\n    for (int i = 0; i < length; i++){\n        char c = expression[i];\n        if (c == '(') {\n            push(c);\n        } \n        else if (c == ')'){\n            if (isEmpty()){\n                return false;\n            }\n            char topChar = pop();\n            if (!isMatchingPair(topChar, c)) {\n                return false;\n            }\n        }\n    }\n    return isEmpty(); // Stack should be empty if expression is balanced\n}\n\nint main(){\n    int t;\n    scanf(\"%d\", &t);\n\n    while(t--){\n        char str[MAX_SIZE];\n        scanf(\"%s\", str);\n        printf(\"%s : \", str);\n        bool ans = isBalanced(str);\n        if(ans)\n            printf(\"true\\n\");\n        else\n            printf(\"false\\n\");\n    }\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\nclass BalancedParentheses {\n    static final int MAX_SIZE = 101;\n    static char[] a = new char[MAX_SIZE];\n    static int top = -1;\n\n    static void push(char ele) {\n        if (top <= MAX_SIZE - 1) {\n            a[++top] = ele;\n        } else {\n            System.out.println(\"Stack is full. Cannot push: \" + ele);\n        }\n    }\n\n    static char pop() {\n        if (top >= 0) {\n            char ele = a[top];\n            top--;\n            return ele;\n        } else {\n            System.out.println(\"Stack is empty. Cannot pop.\");\n            return '-';\n        }\n    }\n\n    static boolean isEmpty() {\n        return top == -1;\n    }\n\n    static boolean isFull() {\n        return top >= MAX_SIZE;\n    }\n\n    static boolean isMatchingPair(char open, char close) {\n        return (open == '(' && close == ')');\n    }\n\n    static boolean isBalanced(String expression) {\n        for (int i = 0; i < expression.length(); i++) {\n            char c = expression.charAt(i);\n            if (c == '(') {\n                push(c);\n            } else if (c == ')') {\n                if (isEmpty()) {\n                    return false;\n                }\n                char topChar = pop();\n                if (!isMatchingPair(topChar, c)) {\n                    return false;\n                }\n            }\n        }\n        return isEmpty(); // Stack should be empty if expression is balanced\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            String str = scanner.next();\n            System.out.println(str + \" : \" + isBalanced(str));\n        }\n    }\n}\n",
-      "JavaScript": "/*\nclass Stack {\n    constructor(maxSize = 101) {\n        this.items = new Array(maxSize);\n        this.top = -1;\n        this.maxSize = maxSize;\n    }\n}\n*/\n\nfunction isMatchingPair(open, close) {\n    return open === '(' && close === ')';\n}\n\nfunction isBalanced(expression) {\n    let stack = new Stack(expression.length);\n\n    for (let i = 0; i < expression.length; i++) {\n        let char = expression[i];\n\n        if (char === '(') {\n            stack.push(char);\n        } else if (char === ')') {\n            if (stack.isEmpty() || !isMatchingPair(stack.pop(), char)) {\n                return false;\n            }\n        }\n    }\n\n    return stack.isEmpty();\n}\n\n"
+      "C": "#include <stdio.h>\\n#include <stdbool.h>\\n#define MAX_LEN 1005\\n\\nbool isValid(const char *s){\\n    char stack[MAX_LEN];\\n    int top=-1;\\n    for(int i=0;s[i]!='\\\\0';++i){\\n        char c=s[i];\\n        if(c=='('||c=='{'||c=='['){\\n            stack[++top]=c;\\n        }else{\\n            if(top==-1) return false;\\n            if((c==')'&&stack[top]!='(')||\\n               (c=='}'&&stack[top]!='{')||\\n               (c==']'&&stack[top]!='[')) return false;\\n            --top;\\n        }\\n    }\\n    return top==-1;\\n}\\n\\nint main(){\\n    int T;\\n    if(scanf(\"%d\",&T)!=1) return 0;\\n    char buf[MAX_LEN];\\n    while(T--){\\n        if(scanf(\"%s\",buf)!=1) break;\\n        printf(\"%s\\\\n\",isValid(buf)?\"true\":\"false\");\\n    }\\n    return 0;\\n}",
+      "C++": "#include <bits/stdc++.h>\\nusing namespace std;\\n\\nbool isValid(const string &s){\\n    stack<char> st;\\n    for(char c:s){\\n        if(c=='('||c=='{'||c=='[') st.push(c);\\n        else{\\n            if(st.empty()) return false;\\n            if((c==')'&&st.top()!='(')||\\n               (c=='}'&&st.top()!='{')||\\n               (c==']'&&st.top()!='[')) return false;\\n            st.pop();\\n        }\\n    }\\n    return st.empty();\\n}\\n\\nint main(){\\n    ios::sync_with_stdio(false);\\n    cin.tie(nullptr);\\n    int T;\\n    if(!(cin>>T)) return 0;\\n    while(T--){\\n        string s;\\n        cin>>s;\\n        cout<<(isValid(s)?\"true\":\"false\")<<'\\\\n';\\n    }\\n    return 0;\\n}",
+      "Java": "import java.io.*;\\nimport java.util.*;\\n\\npublic class Main{\\n    private static boolean isValid(String s){\\n        Deque<Character> stack=new ArrayDeque<>();\\n        for(char c:s.toCharArray()){\\n            if(c=='('||c=='{'||c=='[') stack.push(c);\\n            else{\\n                if(stack.isEmpty()) return false;\\n                char top=stack.pop();\\n                if((c==')'&&top!='(')||\\n                   (c=='}'&&top!='{')||\\n                   (c==']'&&top!='[')) return false;\\n            }\\n        }\\n        return stack.isEmpty();\\n    }\\n    public static void main(String[] args) throws Exception{\\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\\n        int T=Integer.parseInt(br.readLine().trim());\\n        StringBuilder sb=new StringBuilder();\\n        for(int i=0;i<T;i++){\\n            String s=br.readLine().trim();\\n            sb.append(isValid(s)?\"true\":\"false\");\\n            if(i+1<T) sb.append('\\\\n');\\n        }\\n        System.out.print(sb.toString());\\n    }\\n}",
+      "Python3": "import sys\\n\\ndef is_valid(s:str)->bool:\\n    stack=[]\\n    for c in s:\\n        if c in '({[':\\n            stack.append(c)\\n        else:\\n            if not stack:\\n                return False\\n            top=stack.pop()\\n            if (c==')' and top!='(') or \\\\n               (c=='}' and top!='{') or \\\\n               (c==']' and top!='['):\\n                return False\\n    return not stack\\n\\nlines=sys.stdin.read().splitlines()\\nif not lines:\\n    sys.exit()\\nT=int(lines[0].strip())\\nout=[]\\nfor i in range(1,T+1):\\n    s=lines[i].strip()\\n    out.append('true' if is_valid(s) else 'false')\\nprint('\\\\n'.join(out))",
+      "JavaScript": "const fs=require('fs');\\nconst lines=fs.readFileSync(0,'utf-8').trim().split('\\n');\\nlet idx=0;\\nfunction isValid(s){\\n    const stack=[];\\n    for(const c of s){\\n        if(c==='('||c==='{'||c==='[') stack.push(c);\\n        else{\\n            if(stack.length===0) return false;\\n            const top=stack.pop();\\n            if((c===')'&&top!=='(')||\\n               (c==='}'&&top!=='{')||\\n               (c===']'&&top!=='[')) return false;\\n        }\\n    }\\n    return stack.length===0;\\n}\\nconst T=parseInt(lines[idx++]);\\nlet results=[];\\nfor(let t=0;t<T;t++){\\n    const s=lines[idx++]||'';\\n    results.push(isValid(s)?'true':'false');\\n}\\nconsole.log(results.join('\\n'));"
     }
   }
 }

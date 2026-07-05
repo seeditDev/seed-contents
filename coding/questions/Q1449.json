@@ -4,14 +4,14 @@
   "slug": "nodes-at-kth-level",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "BFS",
+      "Tree Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,18 +21,32 @@
   "content": {
     "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, rooted at node **1**, and a positive integer **K**. Print all the nodes at the level **K** from root node in sorted order.\n\nFor example, in the following tree, root node `1` is at level `0`. Similarly, nodes `2` and `4` are at level `1` from the root. Similarly, nodes 5, 3, 6 and 7 are at level 2 from the root node.\n\n\n\n\nInput Format\n\nThe first line of the input contains two space-separated integers NNN and KKK— the number of vertices and level at which we need to find the nodes.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\nOutput on the single line, the space separated nodes (in sorted order) which are present at the **Kth** level from root node **1**,",
     "constraints": [
-      "1≤N≤1000001 \\leq N \\leq 1000001≤N≤100000",
-      "1≤ui,vi≤N1 \\leq u_i, v_i \\leq N1≤ui​,vi​≤N",
-      "0≤K≤maxLevelInTree0 \\leq K \\leq maxLevelInTree 0≤K≤maxLevelInTree"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "1 <= u, v <= N",
+      "0 <= K <= N-1",
+      "The given graph is a connected tree."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: The first line contains two integers N and K, the number of nodes in the tree and the required level (root is at level 0). The next N-1 lines each contain two integers u and v, denoting an undirected edge between nodes u and v.",
+    "outputFormat": "For each test case, output a single line containing the nodes that are exactly at level K from the root, sorted in increasing order and separated by a single space. If no node exists at that level, output an empty line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "8 2\n1 2\n1 3\n3 4\n3 5\n3 6\n2 7 \n2 8",
+        "input": "1\n8 2\n1 2\n1 3\n3 4\n3 5\n3 6\n2 7\n2 8",
         "output": "4 5 6 7 8",
-        "explanation": ""
+        "explanation": "The tree has root 1. Nodes at distance 2 from the root are 4,5,6 (through node 3) and 7,8 (through node 2). After sorting they are printed as \"4 5 6 7 8\"."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n5 1\n1 2\n1 3\n2 4\n3 5",
+        "output": "2 3",
+        "explanation": "Level 1 from the root consists of the direct children of node 1, which are nodes 2 and 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n3 0\n1 2\n1 3",
+        "output": "1",
+        "explanation": "Level 0 always contains only the root node itself."
       }
     ]
   },
@@ -40,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "8 2\n1 2\n1 3\n3 4\n3 5\n3 6\n2 7 \n2 8",
-        "expectedOutput": "4 5 6 7 8",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 0\n",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n100000 99999\n",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5 2\n1 2\n1 3\n1 4\n1 5",
+        "expectedOutput": "2 3 4 5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n10 3\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n4 8\n4 9\n5 10",
+        "expectedOutput": "8 9 10",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "2\n10 2\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n4 8\n4 9\n5 10\n5 1\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n4 8\n4 9\n5 10",
+        "expectedOutput": "4 5 6 7\n4 5 6 7",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "To solve this problem, we use a Breadth-First Search (BFS) algorithm to traverse the tree level by level. We start from the root node (level 0) and explore all its neighbors, then move on to the next level. We keep track of the current level and the nodes at each level. Once we reach the desired level K, we add all the nodes at that level to our result list.",
+    "timeComplexity": "O(T * (N + M)) where T is the number of test cases, N is the number of nodes, and M is the number of edges. The BFS traversal takes O(N + M) time for each test case.",
+    "spaceComplexity": "O(N) for storing the adjacency list representation of the tree and the queue for BFS traversal.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nvector<int> adj[100002];\nvector<int> nodes_at_level_k;\nvoid dfs(int u, int par, int k, int level){\n    if(level == k){\n        nodes_at_level_k.push_back(u);\n    }\n    for(int v: adj[u]){\n        if(v == par) continue;\n        dfs(v, u, k, level + 1);\n    }\n}\nint main() {\n    // your code goes here\n    int n, k;\n    cin >> n >> k;\n    assert(k >= 0 && k < n);\n    for(int i = 1; i < n; i++){\n        int u, v;\n        cin >> u >> v;\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n    \n    dfs(1, 0, k, 0);\n    sort(nodes_at_level_k.begin(), nodes_at_level_k.end());\n    for(int node: nodes_at_level_k)\n      cout << node << \" \";\n      \n    return 0;\n} \n",
-      "Python3": "class Codechef:\n    \n    adj = [[] for _ in range(100001)]\n    nodes_at_level_k = []\n\n    @staticmethod\n    def dfs(u, parent, k, level):\n        if level == k:\n            Codechef.nodes_at_level_k.append(u)\n        for v in Codechef.adj[u]:\n            if v != parent:\n                Codechef.dfs(v, u, k, level + 1)\n\n    @staticmethod\n    def main():\n        import sys\n        input = sys.stdin.read\n        data = input().split()\n        \n        index = 0\n        n = int(data[index])\n        k = int(data[index + 1])\n        index += 2\n        \n        if k < 0 or k >= n:\n            print(f\"Invalid value for k: {k}\", file=sys.stderr)\n            return\n        \n        # Initialize adjacency list\n        for i in range(1, n):\n            u = int(data[index])\n            v = int(data[index + 1])\n            if u >= len(Codechef.adj) or v >= len(Codechef.adj):\n                print(f\"Node index out of bounds: u = {u}, v = {v}\", file=sys.stderr)\n                return\n            Codechef.adj[u].append(v)\n            Codechef.adj[v].append(u)\n            index += 2\n\n        Codechef.dfs(1, 0, k, 0)\n        Codechef.nodes_at_level_k.sort()\n\n        print(' '.join(map(str, Codechef.nodes_at_level_k)))\n\nif __name__ == \"__main__\":\n    Codechef.main()\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_NODES 100002\n\ntypedef struct Node {\n    int vertex;\n    struct Node* next;\n} Node;\n\nNode* adj[MAX_NODES];\nint* nodes_at_level_k;\nint nodes_count;\n\nvoid add_edge(int u, int v) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->vertex = v;\n    newNode->next = adj[u];\n    adj[u] = newNode;\n}\n\nvoid dfs(int u, int par, int k, int level) {\n    if (level == k) {\n        nodes_at_level_k[nodes_count++] = u;\n    }\n    Node* current = adj[u];\n    while (current != NULL) {\n        int v = current->vertex;\n        if (v != par) {\n            dfs(v, u, k, level + 1);\n        }\n        current = current->next;\n    }\n}\n\nint cmpfunc(const void* a, const void* b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n\n    // Input validation\n    if (k < 0 || k >= n) {\n        return 1; // Invalid input, exit the program\n    }\n\n    // Initialize adjacency list\n    for (int i = 0; i <= n; i++) {\n        adj[i] = NULL;\n    }\n\n    // Initialize nodes_at_level_k\n    nodes_at_level_k = (int*)malloc(n * sizeof(int));\n    nodes_count = 0;\n\n    // Read edges and build adjacency list\n    for (int i = 1; i < n; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        add_edge(u, v);\n        add_edge(v, u);\n    }\n\n    // Start DFS from node 1\n    dfs(1, 0, k, 0);\n\n    // Sort the nodes at level k\n    qsort(nodes_at_level_k, nodes_count, sizeof(int), cmpfunc);\n\n    // Print the nodes at level k\n    for (int i = 0; i < nodes_count; i++) {\n        printf(\"%d \", nodes_at_level_k[i]);\n    }\n    printf(\"\\n\");\n\n    // Free the allocated memory\n    free(nodes_at_level_k);\n    for (int i = 0; i <= n; i++) {\n        Node* current = adj[i];\n        while (current != NULL) {\n            Node* temp = current;\n            current = current->next;\n            free(temp);\n        }\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.ArrayList;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Scanner;\n\nclass Codechef {\n\n    static List<Integer>[] adj = new ArrayList[100001];\n    static List<Integer> nodesAtLevelK = new ArrayList<>();\n\n    public static void dfs(int u, int par, int k, int level) {\n        if (level == k) {\n            nodesAtLevelK.add(u);\n        }\n        for (int v : adj[u]) {\n            if (v != par) {\n                dfs(v, u, k, level + 1);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int k = sc.nextInt();\n\n        if (k < 0 || k >= n) {\n            System.err.println(\"Invalid value for k: \" + k);\n            return;\n        }\n\n        // Initialize adjacency list\n        for (int i = 0; i < adj.length; i++) {\n            adj[i] = new ArrayList<>();\n        }\n\n        for (int i = 1; i < n; i++) {\n            int u = sc.nextInt();\n            int v = sc.nextInt();\n            if (u >= adj.length || v >= adj.length) {\n                System.err.println(\"Node index out of bounds: u = \" + u + \", v = \" + v);\n                return;\n            }\n            adj[u].add(v);\n            adj[v].add(u);\n        }\n\n        dfs(1, 0, k, 0);\n        Collections.sort(nodesAtLevelK);\n\n        for (int node : nodesAtLevelK) {\n            System.out.print(node + \" \");\n        }\n        System.out.println();\n    }\n}\n",
-      "JavaScript": "const readline = require('readline');\n\nconst adj = [];\nconst nodesAtLevelK = [];\n\nfunction dfs(u, par, k, level) {\n    if (level === k) {\n        nodesAtLevelK.push(u);\n    }\n    for (let v of adj[u]) {\n        if (v === par) continue;\n        dfs(v, u, k, level + 1);\n    }\n}\n\nfunction main() {\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout\n    });\n\n    let n = 0, k = 0;\n    let edgeCount = 0;\n\n    rl.on('line', (line) => {\n        if (n === 0) {\n            [n, k] = line.trim().split(' ').map(Number);\n            for (let i = 0; i <= n; i++) {\n                adj.push([]);\n            }\n        } else {\n            const [u, v] = line.trim().split(' ').map(Number);\n            adj[u].push(v);\n            adj[v].push(u);\n            edgeCount++;\n            if (edgeCount === n - 1) {\n                rl.close();\n            }\n        }\n    });\n\n    rl.on('close', () => {\n        dfs(1, 0, k, 0);\n        nodesAtLevelK.sort((a, b) => a - b);\n        console.log(nodesAtLevelK.join(' '));\n        process.exit(0);\n    });\n}\n\n// Run the main function\nmain();\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a queue node\ntypedef struct QueueNode {\n    int data;\n    struct QueueNode* next;\n} QueueNode;\n\n// Define the structure for a graph node\ntypedef struct GraphNode {\n    int data;\n    struct GraphNode* next;\n} GraphNode;\n\n// Function to create a new queue node\nQueueNode* createQueueNode(int data) {\n    QueueNode* newNode = (QueueNode*) malloc(sizeof(QueueNode));\n    if (!newNode) {\n        printf(\"Memory error\n\");\n        return NULL;\n    }\n    newNode->data = data;\n    newNode->next = NULL;\n    return newNode;\n}\n\n// Function to create a new graph node\nGraphNode* createGraphNode(int data) {\n    GraphNode* newNode = (GraphNode*) malloc(sizeof(GraphNode));\n    if (!newNode) {\n        printf(\"Memory error\n\");\n        return NULL;\n    }\n    newNode->data = data;\n    newNode->next = NULL;\n    return newNode;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(GraphNode** adjList, int src, int dest, int n) {\n    GraphNode* newNode = createGraphNode(dest);\n    if (adjList[src] == NULL) {\n        adjList[src] = newNode;\n    } else {\n        GraphNode* lastNode = adjList[src];\n        while (lastNode->next) {\n            lastNode = lastNode->next;\n        }\n        lastNode->next = newNode;\n    }\n}\n\n// Function to perform BFS traversal\nvoid bfs(GraphNode** adjList, int* visited, int* level, int src, int n) {\n    QueueNode* queue = createQueueNode(src);\n    visited[src] = 1;\n    level[src] = 0;\n    while (queue) {\n        int currentNode = queue->data;\n        GraphNode* temp = adjList[currentNode];\n        while (temp) {\n            if (!visited[temp->data]) {\n                QueueNode* newNode = createQueueNode(temp->data);\n                newNode->next = queue;\n                queue = newNode;\n                visited[temp->data] = 1;\n                level[temp->data] = level[currentNode] + 1;\n            }\n            temp = temp->next;\n        }\n        QueueNode* tempQueue = queue;\n        queue = queue->next;\n        free(tempQueue);\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n, k;\n        scanf(\"%d %d\", &n, &k);\n        GraphNode** adjList = (GraphNode**) malloc(n * sizeof(GraphNode*));\n        for (int i = 0; i < n; i++) {\n            adjList[i] = NULL;\n        }\n        for (int i = 0; i < n - 1; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            addEdge(adjList, u - 1, v - 1, n);\n            addEdge(adjList, v - 1, u - 1, n);\n        }\n        int* visited = (int*) malloc(n * sizeof(int));\n        int* level = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            visited[i] = 0;\n            level[i] = -1;\n        }\n        bfs(adjList, visited, level, 0, n);\n        for (int i = 0; i < n; i++) {\n            if (level[i] == k) {\n                printf(\"%d \", i + 1);\n            }\n        }\n        printf(\"\\n\");\n        for (int i = 0; i < n; i++) {\n            GraphNode* temp = adjList[i];\n            while (temp) {\n                GraphNode* next = temp->next;\n                free(temp);\n                temp = next;\n            }\n        }\n        free(adjList);\n        free(visited);\n        free(level);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Function to perform BFS traversal\nvoid bfs(vector<vector<int>>& adjList, vector<int>& visited, vector<int>& level, int src, int n) {\n    queue<int> q;\n    q.push(src);\n    visited[src] = 1;\n    level[src] = 0;\n    while (!q.empty()) {\n        int currentNode = q.front();\n        q.pop();\n        for (int neighbor : adjList[currentNode]) {\n            if (!visited[neighbor]) {\n                q.push(neighbor);\n                visited[neighbor] = 1;\n                level[neighbor] = level[currentNode] + 1;\n            }\n        }\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    while (t--) {\n        int n, k;\n        cin >> n >> k;\n        vector<vector<int>> adjList(n);\n        for (int i = 0; i < n - 1; i++) {\n            int u, v;\n            cin >> u >> v;\n            adjList[u - 1].push_back(v - 1);\n            adjList[v - 1].push_back(u - 1);\n        }\n        vector<int> visited(n, 0);\n        vector<int> level(n, -1);\n        bfs(adjList, visited, level, 0, n);\n        for (int i = 0; i < n; i++) {\n            if (level[i] == k) {\n                cout << i + 1 << \" \";\n            }\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    // Function to perform BFS traversal\n    public static void bfs(List<List<Integer>> adjList, int[] visited, int[] level, int src, int n) {\n        Queue<Integer> q = new LinkedList<>();\n        q.add(src);\n        visited[src] = 1;\n        level[src] = 0;\n        while (!q.isEmpty()) {\n            int currentNode = q.poll();\n            for (int neighbor : adjList.get(currentNode)) {\n                if (visited[neighbor] == 0) {\n                    q.add(neighbor);\n                    visited[neighbor] = 1;\n                    level[neighbor] = level[currentNode] + 1;\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int t = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        while (t-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int k = Integer.parseInt(st.nextToken());\n            List<List<Integer>> adjList = new ArrayList<>();\n            for (int i = 0; i < n; i++) {\n                adjList.add(new ArrayList<>());\n            }\n            for (int i = 0; i < n - 1; i++) {\n                st = new StringTokenizer(br.readLine());\n                int u = Integer.parseInt(st.nextToken());\n                int v = Integer.parseInt(st.nextToken());\n                adjList.get(u - 1).add(v - 1);\n                adjList.get(v - 1).add(u - 1);\n            }\n            int[] visited = new int[n];\n            int[] level = new int[n];\n            Arrays.fill(level, -1);\n            bfs(adjList, visited, level, 0, n);\n            for (int i = 0; i < n; i++) {\n                if (level[i] == k) {\n                    out.append(i + 1).append(\" \");\n                }\n            }\n            out.append(\"\\n\");\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\nfrom collections import deque\n\n# Function to perform BFS traversal\ndef bfs(adj_list, visited, level, src, n):\n    q = deque([src])\n    visited[src] = 1\n    level[src] = 0\n    while q:\n        current_node = q.popleft()\n        for neighbor in adj_list[current_node]:\n            if not visited[neighbor]:\n                q.append(neighbor)\n                visited[neighbor] = 1\n                level[neighbor] = level[current_node] + 1\n\n# Read input\ninput_data = sys.stdin.read().strip().split()\ninput_index = 0\n\nt = int(input_data[input_index])\ninput_index += 1\n\nfor _ in range(t):\n    n = int(input_data[input_index])\n    input_index += 1\n    k = int(input_data[input_index])\n    input_index += 1\n    adj_list = [[] for _ in range(n)]\n    for _ in range(n - 1):\n        u = int(input_data[input_index]) - 1\n        input_index += 1\n        v = int(input_data[input_index]) - 1\n        input_index += 1\n        adj_list[u].append(v)\n        adj_list[v].append(u)\n    visited = [0] * n\n    level = [-1] * n\n    bfs(adj_list, visited, level, 0, n)\n    for i in range(n):\n        if level[i] == k:\n            print(i + 1, end=\" \")\n    print()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst t = data[idx++];\nlet outputs = [];\nfor (let i = 0; i < t; i++) {\n  const n = data[idx++];\n  const k = data[idx++];\n  const adjList = Array.from({ length: n }, () => []);\n  for (let j = 0; j < n - 1; j++) {\n    const u = data[idx++] - 1;\n    const v = data[idx++] - 1;\n    adjList[u].push(v);\n    adjList[v].push(u);\n  }\n  const visited = new Array(n).fill(0);\n  const level = new Array(n).fill(-1);\n  const queue = [0];\n  visited[0] = 1;\n  level[0] = 0;\n  while (queue.length) {\n    const currentNode = queue.shift();\n    for (const neighbor of adjList[currentNode]) {\n      if (!visited[neighbor]) {\n        queue.push(neighbor);\n        visited[neighbor] = 1;\n        level[neighbor] = level[currentNode] + 1;\n      }\n    }\n  }\n  const result = [];\n  for (let j = 0; j < n; j++) {\n    if (level[j] === k) {\n      result.push(j + 1);\n    }\n  }\n  outputs.push(result.join(' '));\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }

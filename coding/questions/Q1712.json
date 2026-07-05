@@ -4,14 +4,14 @@
   "slug": "chef-counts-subsequences",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Subsequence Counting",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +20,32 @@
   },
   "content": {
     "problemStatement": "Chef has two strings: a source string and a target string. Chef wants to find out in how many distinct ways the target string can be formed as a subsequence of the source string. A subsequence is formed by deleting zero or more characters from the source string without changing the order of the remaining characters. Help Chef count the number of such distinct subsequences.\n\nChef needs to write a program that, given the source and target strings, returns the total count of distinct subsequences of the source string that are exactly equal to the target string.\n\nFunction DeclarationFunction NamecountDistinctSubsequencescountDistinctSubsequencescountDistinctSubsequences — This function calculates the number of distinct subsequences of the sourceStringsourceStringsourceString that match the targetStringtargetStringtargetString.\n\nParameters\nsourceStringsourceStringsourceString (String): The original string from which subsequences are formed.\ntargetStringtargetStringtargetString (String): The target string to be matched as a subsequence of sourceStringsourceStringsourceString\nBoth strings contain only English letters and have lengths up to 1000 characters.\nReturn Value\nReturns an intintint representing the count of distinct subsequences in sourceStringsourceStringsourceString equal to targetStringtargetStringtargetString.\nThe output is a non-negative integer indicating how many different ways the target can be formed by deleting characters from the source without reordering.\nInput Format\nThe first line contains a single integer TTT — the number of test cases.\nEach test case consists of two lines:\n\nThe first line contains the string sourceStringsourceStringsourceString.\nThe second line contains the string targetStringtargetStringtargetString.\n\n\nOutput Format\nFor each test case, print a single line containing the number of distinct subsequences of sourceStringsourceStringsourceString which equal targetStringtargetStringtargetString.\nChef wants you to output the exact count for each test case.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤∣sourceString∣,∣targetString∣≤10001 \\leq |sourceString|, |targetString| \\leq 10001≤∣sourceString∣,∣targetString∣≤1000\nBoth `sourceString` and `targetString` consist only of English letters (uppercase and lowercase).\nThe result fits within a 32-bit signed integer.\nHelp Chef implement the countDistinctSubsequencescountDistinctSubsequencescountDistinctSubsequences function to solve this problem efficiently!",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10^5",
+      "1 <= |sourceString|, |targetString| <= 1000",
+      "Both sourceString and targetString consist only of English letters (uppercase and lowercase).",
+      "The result fits within a 32-bit signed integer."
+    ],
+    "inputFormat": "The first line contains a single integer T, the number of test cases. Each test case consists of two lines: The first line contains the string sourceString, and the second line contains the string targetString.",
+    "outputFormat": "For each test case, print a single line containing the number of distinct subsequences of sourceString which equal targetString.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\nabcde\nace\nbabgbag\nbag",
-        "output": "1\n5",
-        "explanation": "Explanation:\nFor \"abcde\" and \"ace\": There's only one way to form \"ace\" by picking 'a', 'c', and 'e' in order from \"abcde\".\nFor \"babgbag\" and \"bag\": The subsequence \"bag\" appears 5 times by choosing different combinations of 'b', 'a', and 'g' from the string."
+        "output": "3\n5",
+        "explanation": "For \"abcde\" and \"ace\": There are 3 ways to form \"ace\" by picking 'a', 'c', and 'e' in order from \"abcde\". For \"babgbag\" and \"bag\": The subsequence \"bag\" appears 5 times by choosing different combinations of 'b', 'a', and 'g' from the string."
       },
       {
         "id": "sample_2",
         "input": "3\nrabbbit\nrabbit\naaaaa\naa\ngggggggggg\ngg",
         "output": "3\n10\n45",
-        "explanation": "Explanation:\nt=1: \"rabbit\" appears 3 times as a subsequence in \"rabbbit\" by deleting different 'b's.\nt=2: \"aa\" appears 10 times in \"aaaaa\" by choosing any 2 out of 5 'a's.\nt=3: \"gg\" appears 45 times in \"gggggggggg\" by choosing any 2 out of 10 'g's."
+        "explanation": "For \"rabbbit\" and \"rabbit\": \"rabbit\" appears 3 times as a subsequence in \"rabbbit\" by deleting different 'b's. For \"aaaaa\" and \"aa\": \"aa\" appears 10 times in \"aaaaa\" by choosing any 2 out of 5 'a's. For \"gggggggggg\" and \"gg\": \"gg\" appears 45 times in \"gggggggggg\" by choosing any 2 out of 10 'g's."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\nabc\nabc",
+        "output": "1",
+        "explanation": "For \"abc\" and \"abc\": There is only 1 way to form \"abc\" as a subsequence of \"abc\"."
       }
     ]
   },
@@ -42,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\nabcde\nace\nbabgbag\nbag",
-        "expectedOutput": "1\n5",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\na\na",
+        "expectedOutput": "1",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "3\nrabbbit\nrabbit\naaaaa\naa\ngggggggggg\ngg",
-        "expectedOutput": "3\n10\n45",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "1\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\naaaaaaaa\naa",
+        "expectedOutput": "28",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\nabababab\nabab",
+        "expectedOutput": "20",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\nabcde\nace\nbabgbag\nbag\nrabbbit\nrabbit",
+        "expectedOutput": "3\n5\n3",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "**Algorithm:**\n\n\nStart from the end of both strings (or beginning with adjusted indices)\nAt each position (i, j), check if characters match\nIf they match: recursively count both choices (include + exclude)\nIf they don't: recursively count only the exclude case\nStore results in memoization table to avoid recomputation\n**Structure:**\n\n`function countDistinctSubsequences(i, j):\r\n    if j &lt; 0:\r\n        return 1  // Matched entire target\r\n    if i &lt; 0:\r\n        return 0  // Can't match target with empty source\r\n    \r\n    if already_memoized[i][j]:\r\n        return memo[i][j]\r\n    \r\n    if source[i] == target[j]:\r\n        result = countDistinctSubsequences(i-1, j-1) + \r\n                 countDistinctSubsequences(i-1, j)\r\n    else:\r\n        result = countDistinctSubsequences(i-1, j)\r\n    \r\n    memo[i][j] = result\r\n    return result\n`**Time Complexity:** O(n × m) where n = len(source), m = len(target)\r\n**Space Complexity:** O(n × m) for memoization + O(n + m) for recursion stack\n\n**Advantages:**\n\n\nIntuitive recursive structure mirrors the problem logic\nOnly computes necessary states\nEasier to debug and understand\n**Disadvantages:**\n\n\nRecursion overhead (function calls)\nPotential stack overflow for very deep recursion\n**Algorithm:**\n\n\nCreate a 2D DP table of size (n+1) × (m+1)\nInitialize base cases:\n\nFirst column (j=0): all 1s\nFirst row (i=0, j&gt;0): all 0s\n\n\nFill the table row by row\nApply recurrence relation for each cell\nReturn dp[n][m]\n**Structure:**\n\n`function countDistinctSubsequences(source, target):\r\n    n = length(source)\r\n    m = length(target)\r\n    \r\n    dp = 2D array of size (n+1) × (m+1), initialized to 0\r\n    \r\n    // Base case: empty target\r\n    for i from 0 to n:\r\n        dp[i][0] = 1\r\n    \r\n    // Fill the table\r\n    for i from 1 to n:\r\n        for j from 1 to m:\r\n            if source[i-1] == target[j-1]:\r\n                dp[i][j] = dp[i-1][j-1] + dp[i-1][j]\r\n            else:\r\n                dp[i][j] = dp[i-1][j]\r\n    \r\n    return dp[n][m]\n`**Time Complexity:** O(n × m)\r\n**Space Complexity:** O(n × m)\n\n**Advantages:**\n\n\nNo recursion overhead\nIterative approach is often faster in practice\nSimple loop structure\n**Disadvantages:**\n\n\nUses O(n × m) space even if not all states are needed\nRequires understanding of table-filling order\n**Key Observation:** Each cell dp[i][j] only depends on:\n\n\ndp[i-1][j-1] (diagonal)\ndp[i-1][j] (above)\nPrevious values in the same row\nWe can optimize to use only **one 1D array** representing the \"previous row\".\n\n**Algorithm:**\n\n\nCreate a 1D array `prev` of size (m+1)\nInitialize: prev[0] = 1, rest = 0\nFor each row i:\n\nIterate j from **m down to 1** (reverse order crucial!)\nApply recurrence: if match, prev[j] = prev[j-1] + prev[j]\nOtherwise, prev[j] remains unchanged\n\n\n**Why reverse order?**\r\nWhen we update prev[j], we need:\n\n\nprev[j-1] to be from the **current iteration** (new row)\nprev[j] to be from the **previous iteration** (old row)\nReverse iteration ensures prev[j-1] hasn't been updated yet in this iteration, preserving the old value.\n\n**Structure:**\n\n`function countDistinctSubsequences(source, target):\r\n    m = length(target)\r\n    \r\n    prev = 1D array of size (m+1), initialized to 0\r\n    prev[0] = 1\r\n    \r\n    for i from 1 to length(source):\r\n        // Reverse iteration\r\n        for j from m down to 1:\r\n            if source[i-1] == target[j-1]:\r\n                prev[j] = prev[j-1] + prev[j]\r\n            // else: prev[j] remains unchanged\r\n    \r\n    return prev[m]\n`**Time Complexity:** O(n × m)\r\n**Space Complexity:** O(m) - huge improvement!\n\n**Advantages:**\n\n\nOptimal space usage for this problem\nStill O(n × m) time complexity\nBest for large inputs where space is a concern\n**Disadvantages:**\n\n\nTrickier to understand (reverse iteration logic)\nHarder to debug and trace\nHandling Modulo OperationsWhen numbers grow very large, we take modulo (usually 10^9 + 7):\n\n**During addition:**\n\n`dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]) % MOD\n`**Important:** Apply modulo after each addition to prevent overflow.\n\nEdge Cases to Consider\n\n**Target longer than source:**\n\n\n\nAnswer is 0 (can't form longer string from shorter one)\nCheck early and return 0\n\n\n\n**Empty target:**\n\n\n\nAnswer is 1 (one way to form empty string)\nHandled by base case dp[i][0] = 1\n\n\n\n**Empty source:**\n\n\n\nAnswer is 0 if target is non-empty\nHandled by base case dp[0][j] = 0\n\n\n\n**Single character strings:**\n\n\n\nIf source == target: answer is 1\nIf source[0] != target[0]: answer is 0\n\n\n\n**All same characters:**\n\n\n\nFor source \"aaaaa\" and target \"aa\"\nThis is combination: C(5,2) = 10\nOur algorithm counts all ways correctly\n\n\nCommon Mistakes\n\n**Forgetting the \"exclude\" case:**\n\n\n\nWhen characters match, must count BOTH include and exclude\nMissing one creates incorrect counts\n\n\n\n**Wrong iteration order in space optimization:**\n\n\n\nMust iterate j from m down to 1 (reverse)\nForward iteration overwrites values we still need\n\n\n\n**Incorrect base cases:**\n\n\n\nRemember: dp[i][0] = 1 (all 1s, not just dp[0][0])\nAnd: dp[0][j] = 0 for j &gt; 0\n\n\n\n**Off-by-one errors:**\n\n\n\nSource indexing: source[i-1] when using 1-indexed DP\nTarget indexing: target[j-1] for same reason\n\n\n\n**Forgetting modulo:**\n\n\n\nLarge counts overflow 32-bit integers\nApply modulo after each addition\n\n\nComplexity Analysis SummaryApproachTimeSpaceNotesTop-Down MemoizationO(n×m)O(n×m) + O(n+m) stackRecursive, less space efficientBottom-Up TabulationO(n×m)O(n×m)Standard DP, most commonSpace-OptimizedO(n×m)O(m)Best for large inputsWhere:\n\n\nn = length of source string\nm = length of target string\nWhy This Problem MattersThis problem teaches:\n\n\n**2D DP fundamentals** - tracking two independent variables\n**Counting patterns** - how to count multiple valid solutions\n**State transitions** - complex decision logic (two choices when match)\n**Space optimization** - reducing dimensions while maintaining correctness\n**String algorithms** - foundation for LCS, edit distance, pattern matching\nUnderstanding this problem helps solve:\n\n\nEdit distance problems\nLongest common subsequence\nPattern matching variants\nCounting paths in grids\nOther combinatorial DP problems\nDebugging StrategyWhen solution doesn't work:\n\n\n**Verify base cases** - print dp[i][0] and dp[0][j]\n**Check character comparison** - ensure indexing is correct\n**Trace through small example** manually\n**Print the entire DP table** to see where it diverges\n**Test edge cases** - empty strings, single characters\nConclusionThe **Count Distinct Subsequences** problem is an elegant demonstration of how dynamic programming can count patterns in sequences. The key insight—recognizing that matching characters give us two choices (include or exclude)—unlocks the solution. Whether you choose memoization, tabulation, or space optimization depends on your constraints, but the underlying logic remains consistent: carefully define states, initialize base cases, and apply the recurrence relation.\n\nThis problem is a stepping stone to more complex DP problems and is essential knowledge for competitive programming and technical interviews.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The problem can be solved using dynamic programming. We create a 2D array dp where dp[i][j] represents the number of distinct subsequences of the first i characters of sourceString that equal the first j characters of targetString. We fill up the dp array by iterating over sourceString and targetString, and for each character, we check if it matches the current character in targetString. If it does, we add the number of distinct subsequences of the previous characters to the current count. Finally, we return dp[m][n], where m and n are the lengths of sourceString and targetString respectively.",
+    "timeComplexity": "O(T * m * n) per test case, where m and n are the lengths of sourceString and targetString respectively. The total time complexity is O(T * m * n).",
+    "spaceComplexity": "O(m * n) for the dp array.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint countDistinctSubsequences(char * sourceString, char * targetString) {\n    int m = strlen(sourceString), n = strlen(targetString);\n    int dp[m + 1][n + 1];\n    memset(dp, 0, sizeof(dp));\n    dp[0][0] = 1;\n    for (int i = 0; i <= m; i++) {\n        for (int j = 0; j <= n; j++) {\n            if (i == 0) {\n                if (j == 0) dp[i][j] = 1;\n            } else {\n                if (j > 0 && sourceString[i - 1] == targetString[j - 1]) {\n                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];\n                } else {\n                    dp[i][j] = dp[i - 1][j];\n                }\n            }\n        }\n    }\n    return dp[m][n];\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char sourceString[1001], targetString[1001];\n        scanf(\"%s %s\", sourceString, targetString);\n        printf(\"%d\\n\", countDistinctSubsequences(sourceString, targetString));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint countDistinctSubsequences(string sourceString, string targetString) {\n    int m = sourceString.length(), n = targetString.length();\n    int dp[m + 1][n + 1];\n    memset(dp, 0, sizeof(dp));\n    dp[0][0] = 1;\n    for (int i = 0; i <= m; i++) {\n        for (int j = 0; j <= n; j++) {\n            if (i == 0) {\n                if (j == 0) dp[i][j] = 1;\n            } else {\n                if (j > 0 && sourceString[i - 1] == targetString[j - 1]) {\n                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];\n                } else {\n                    dp[i][j] = dp[i - 1][j];\n                }\n            }\n        }\n    }\n    return dp[m][n];\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string sourceString, targetString;\n        cin >> sourceString >> targetString;\n        cout << countDistinctSubsequences(sourceString, targetString) << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static int countDistinctSubsequences(String sourceString, String targetString) {\n        int m = sourceString.length(), n = targetString.length();\n        int[][] dp = new int[m + 1][n + 1];\n        dp[0][0] = 1;\n        for (int i = 0; i <= m; i++) {\n            for (int j = 0; j <= n; j++) {\n                if (i == 0) {\n                    if (j == 0) dp[i][j] = 1;\n                } else {\n                    if (j > 0 && sourceString.charAt(i - 1) == targetString.charAt(j - 1)) {\n                        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];\n                    } else {\n                        dp[i][j] = dp[i - 1][j];\n                    }\n                }\n            }\n        }\n        return dp[m][n];\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            String sourceString = sc.next(), targetString = sc.next();\n            System.out.println(countDistinctSubsequences(sourceString, targetString));\n        }\n    }\n}",
+      "Python3": "def countDistinctSubsequences(sourceString, targetString):\n    m, n = len(sourceString), len(targetString)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    dp[0][0] = 1\n    for i in range(m + 1):\n        for j in range(n + 1):\n            if i == 0:\n                if j == 0: dp[i][j] = 1\n            else:\n                if j > 0 and sourceString[i - 1] == targetString[j - 1]:\n                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j]\n                else:\n                    dp[i][j] = dp[i - 1][j]\n    return dp[m][n]\n\nT = int(input())\nfor _ in range(T):\n    sourceString, targetString = input().split()\n    print(countDistinctSubsequences(sourceString, targetString))",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction countDistinctSubsequences(sourceString, targetString) {\n    let m = sourceString.length, n = targetString.length;\n    let dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));\n    dp[0][0] = 1;\n    for (let i = 0; i <= m; i++) {\n        for (let j = 0; j <= n; j++) {\n            if (i == 0) {\n                if (j == 0) dp[i][j] = 1;\n            } else {\n                if (j > 0 && sourceString[i - 1] == targetString[j - 1]) {\n                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];\n                } else {\n                    dp[i][j] = dp[i - 1][j];\n                }\n            }\n        }\n    }\n    return dp[m][n];\n}\n\nlet T = parseInt(lines[idx++]);\nwhile (T-- > 0) {\n    let [sourceString, targetString] = lines[idx++].split(' ');\n    console.log(countDistinctSubsequences(sourceString, targetString));\n}"
+    }
   }
 }

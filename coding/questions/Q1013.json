@@ -4,14 +4,14 @@
   "slug": "check-range",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "control flow",
-      "programming languages"
+      "Conditional",
+      "Range Check"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,30 +21,29 @@
   "content": {
     "problemStatement": "Write a program that takes an integer as input and determines whether the number lies in the inclusive range of **10 to 20**.\n\nThe program should print:\n\n\n**\"In Range\"** if the number is between 10 and 20 (both inclusive).\n**\"Out of Range\"** otherwise.",
     "constraints": [
-      "10 <= input integer <= 20 for 'In Range' cases",
-      "Input integer is an integer",
-      "Input integer can be outside the range 10 to 20"
+      "1 <= T <= 1000",
+      "-10^9 <= x <= 10^9"
     ],
-    "inputFormat": "The input is a single integer.",
-    "outputFormat": "Print 'In Range' if the number is between 10 and 20 (inclusive), otherwise print 'Out of Range'.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer.",
+    "outputFormat": "For each test case, print \"In Range\" if the integer lies in the inclusive range [10, 20], otherwise print \"Out of Range\". Each answer is printed on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "15",
-        "output": "In Range\n",
-        "explanation": "Number is within the range"
+        "input": "3\n15\n5\n25\n",
+        "output": "In Range\nOut of Range\nOut of Range\n",
+        "explanation": "15 lies within [10,20] → In Range; 5 is below the lower bound → Out of Range; 25 is above the upper bound → Out of Range."
       },
       {
         "id": "sample_2",
-        "input": "5",
-        "output": "Out of Range\n",
-        "explanation": "Number is below the range"
+        "input": "1\n10\n",
+        "output": "In Range\n",
+        "explanation": "10 equals the lower bound, therefore it is considered In Range."
       },
       {
         "id": "sample_3",
-        "input": "25",
-        "output": "Out of Range\n",
-        "explanation": "Number is above the range"
+        "input": "2\n20\n9\n",
+        "output": "In Range\nOut of Range\n",
+        "explanation": "20 equals the upper bound → In Range; 9 is just below the lower bound → Out of Range."
       }
     ]
   },
@@ -52,32 +51,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "10",
-        "expectedOutput": "In Range\n",
+        "label": "minimum boundary",
+        "input": "1\n-1000000000\n",
+        "expectedOutput": "Out of Range\n",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "20",
-        "expectedOutput": "In Range\n",
+        "label": "maximum boundary values mixed",
+        "input": "3\n1000000000\n20\n-1000000000\n",
+        "expectedOutput": "Out of Range\nIn Range\nOut of Range\n",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "0",
-        "expectedOutput": "Out of Range\n",
+        "label": "uniform in‑range values",
+        "input": "5\n15\n15\n15\n15\n15\n",
+        "expectedOutput": "In Range\nIn Range\nIn Range\nIn Range\nIn Range\n",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "input": "15",
-        "expectedOutput": "In Range\n",
+        "label": "boundary edge cases",
+        "input": "4\n9\n10\n20\n21\n",
+        "expectedOutput": "Out of Range\nIn Range\nIn Range\nOut of Range\n",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "input": "-5",
-        "expectedOutput": "Out of Range\n",
+        "label": "mixed general case",
+        "input": "7\n-5\n0\n10\n11\n19\n20\n30\n",
+        "expectedOutput": "Out of Range\nOut of Range\nIn Range\nIn Range\nIn Range\nIn Range\nOut of Range\n",
         "weight": 2
       }
     ],
@@ -107,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "Read the input integer and use conditional statements to check if it falls within the specified range. If it does, print 'In Range'; otherwise, print 'Out of Range'.",
-    "timeComplexity": "O(1) because the algorithm performs a constant number of operations regardless of the input size",
-    "spaceComplexity": "O(1) because the algorithm uses a constant amount of space to store the input and the result",
+    "approach": "For each test case we only need to check whether the given integer x satisfies 10 <= x <= 20. This is a direct constant‑time comparison. If the condition holds we output \"In Range\", otherwise we output \"Out of Range\". The algorithm processes each test case independently, so the total complexity is linear in the number of test cases.",
+    "timeComplexity": "O(T) overall, O(1) per test case.",
+    "spaceComplexity": "O(1) extra space (output buffer excluded).",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int number;\n    scanf(\"%d\", &number);\n\n    // Check if the number is in the range 10 to 20 using logical operators\n    if (number >= 10 && number <= 20) {\n        printf(\"In Range\\n\");\n    } else {\n        printf(\"Out of Range\\n\");\n    }\n\n    return 0;\n}",
-      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int number;\n    cin >> number;\n\n    if (number >= 10 && number <= 20) {\n        cout << \"In Range\" << endl;\n    } else {\n        cout << \"Out of Range\" << endl;\n    }\n\n    return 0;\n}",
-      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        int number = scanner.nextInt();\n        scanner.close();\n\n        if (number >= 10 && number <= 20) {\n            System.out.println(\"In Range\");\n        } else {\n            System.out.println(\"Out of Range\");\n        }\n    }\n}",
-      "Python3": "number = int(input())\nif 10 <= number <= 20:\n    print(\"In Range\")\nelse:\n    print(\"Out of Range\")",
-      "JavaScript": "const readline = require('readline').createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nreadline.question('', (number) => {\n  number = parseInt(number);\n  if (number >= 10 && number <= 20) {\n    console.log(\"In Range\");\n  } else {\n    console.log(\"Out of Range\");\n  }\n  readline.close();\n});"
+      "C": "#include <stdio.h>\nint main() {\n    int T, x;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        if (scanf(\"%d\", &x) != 1) break;\n        if (x >= 10 && x <= 20) {\n            printf(\"In Range\\n\");\n        } else {\n            printf(\"Out of Range\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T, x;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        cin >> x;\n        if (x >= 10 && x <= 20) cout << \"In Range\" << '\\n';\n        else cout << \"Out of Range\" << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            int x = Integer.parseInt(br.readLine().trim());\n            if (x >= 10 && x <= 20) sb.append(\"In Range\");\n            else sb.append(\"Out of Range\");\n            if (i + 1 < T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit()\nT = int(data[0])\nout = []\nidx = 1\nfor _ in range(T):\n    x = int(data[idx])\n    idx += 1\n    if 10 <= x <= 20:\n        out.append('In Range')\n    else:\n        out.append('Out of Range')\nprint('\\n'.join(out))",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit(0);\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet res = [];\nfor (let i = 0; i < T; i++) {\n    const x = parseInt(input[idx++], 10);\n    if (x >= 10 && x <= 20) res.push('In Range');\n    else res.push('Out of Range');\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "beautiful-subsequence",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
+    "category": "Arrays | Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "competitive programming"
+      "DP on runs",
+      "Sliding maximum over values",
+      "O(N·K) solution"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,13 +22,13 @@
   "content": {
     "problemStatement": "An array AAA consisting of NNN integers is called KKK-beautiful if it holds the following property:\nThe number of adjacent indices with different values is at most KKK. More formally, there are at most KKK indices iii (1≤i&lt;N1\\le i\\lt N1≤i&lt;N) such that Ai≠Ai+1A_i\\ne A_{i+1}Ai​=Ai+1​. Note that according to this definition, if an array AAA is KKK-beautiful, then AAA is also (K+1)(K+1)(K+1)-beautiful.\n\nYou are given an array AAA consisting of NNN integers and an integer KKK. Find the length of the longest KKK-beautiful subsequence of AAA, where a subsequence is defined below.\n\nFor example, consider the array A=[1,1,2,3,2,4]A = [1 , 1, 2, 3, 2 , 4]A=[1,1,2,3,2,4]. The subsequences [1,1][1, 1][1,1] and [1,1,2][1, 1, 2][1,1,2] are 111-beautiful, and the subsequences [1,2,3][1, 2, 3][1,2,3] and [1,2,2,4][1, 2, 2, 4][1,2,2,4] are 222-beautiful.\n\n**Note:** A sequence aaa is a subsequence of a sequence bbb if aaa can be obtained from bbb by deletion of several (possibly, zero) elements. For example, [3,1][3,1][3,1] is a subsequence of [3,2,1][3,2,1][3,2,1] and [4,3,1][4,3,1][4,3,1], but not a subsequence of [1,3,3,7][1,3,3,7][1,3,3,7] and [3,10,4][3,10,4][3,10,4].\n\n\nInput Format\nThe first line contains an integer TTT - the number of test cases. Then TTT test cases follow.\n\n\nThe first line of each test case contains two integers NNN, KKK - the length of array AAA and the parameter for a beautiful sequence.\n\n\nThe second line of each testcase contains NNN integers A1,…,ANA_1,\\ldots, A_NA1​,…,AN​.\n\n\n\nOutput Format\nFor each test case, output the maximum possible length of a KKK-beautiful subsequence of AAA.",
     "constraints": [
-      "1≤T≤1001 \\leq T \\leq 1001≤T≤100",
-      "1≤N≤1031 \\leq N \\leq 10^31≤N≤103",
-      "1≤K≤1031 \\leq K \\leq 10^31≤K≤103",
-      "1≤Ai≤1031 \\leq A_i \\leq 10^31≤Ai​≤103"
+      "1 ≤ T ≤ 100",
+      "1 ≤ N ≤ 1000",
+      "1 ≤ K ≤ 1000",
+      "1 ≤ Ai ≤ 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with a line containing two integers N and K. The next line contains N integers A1 … AN, the elements of the array.",
+    "outputFormat": "For each test case output a single line with the maximum possible length of a K‑beautiful subsequence of the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -41,20 +42,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n4 1\n1 1 2 3\n9 2\n1 2 3 2 4 5 6 7 5\n5 5\n1 1 1 1 1\n10 1\n1 2 1 2 1 2 1 2 1 2",
-        "expectedOutput": "3\n5\n5\n6",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,9 +102,15 @@
     ]
   },
   "solution": {
-    "approach": "Let’s define our dp states slightly differently. Let \\mathrm{dp}[a][k] denote the length of the longest k beautiful subsequence ending with an element whose value is a. Initially all states are 0.\n\nNow for each i and k (say a = A_i), we can either start a new subsequence at i and set \\mathrm{dp}[a][k] = 1, or try to extend some existing subsequence (1 + \\mathrm{dp}[a][k]) or \\displaystyle (1 + \\max_{\\forall a' \\neq a} \\mathrm{dp}[a'][k-1]).\n\nThe second type of transition can be reduced to \\mathcal{O}(1) in a way similar to the one described in the section above (maintain \\mathrm{pref}[k]).\n\nThis solution also has time complexity \\mathcal{O}(NK) and space complexity \\mathcal{O}(NK). You may find the implementation in one of the solutions below.\n\n\nTIME COMPLEXITY\\mathcal{O}(NK) per test case\n\n\nSOLUTIONS\n\nSetter's Solution\n`#include&lt;bits/stdc++.h&gt;\nusing namespace std;\nvoid solve() {\nint n, k; cin &gt;&gt; n &gt;&gt; k;\nvector&lt;int&gt; a(n);\nfor (int i = 0; i &lt; n; i++) {\ncin &gt;&gt; a[i];\na[i]--;\n}\nint maxi = *max_element(a.begin(), a.end()), ans = 0;\nvector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; dp(n, vector&amp;lt;int&amp;gt;(k + 1, 1));\nvector&amp;lt;int&amp;gt; last_idx(maxi + 1, -1);\nvector&amp;lt;int&amp;gt; mx_ans(k + 1); // maximum answer upto (i-1) th index with j bad indices\nfor (int i = 0; i &amp;lt; n; i++) {\n    for (int j = k; j &amp;gt;= 0; j--) {\n        if (j &amp;gt;= 1) {\n            dp[i][j] = mx_ans[j - 1] + 1;\n        }\n        if (last_idx[a[i]] != -1) {\n            dp[i][j] = max(dp[i][j], dp[last_idx[a[i]]][j] + 1);\n        }\n        mx_ans[j] = max(mx_ans[j], dp[i][j]);\n        ans = max(ans, dp[i][j]);\n    }\n    last_idx[a[i]] = i;\n}\ncout &amp;lt;&amp;lt; ans &amp;lt;&amp;lt; '\\n';\n\n}\n``signed main() {\nios_base :: sync_with_stdio(0); cin.tie(0); cout.tie(0);\nint t; cin &gt;&gt; t;\nwhile (t--) {\nsolve();\n}\nreturn 0;\n}\n`\n\n\n\n\n\n\nTester's Solution\n`#!/usr/bin/env python\nimport os\nimport sys\nfrom io import BytesIO, IOBase\ndef main():\nfor _ in range(int(input())):\nn,k=map(int,input().split())\na=[int(x)-1 for x in input().split()]\nN=1000\ndp=[[0](k+1) for _ in range(N)]\ndp2=[0](k+1)\nfor x in a:\nb=dp[x]\nb[0]+=1\nfor i in range(k):\nb[i+1]+=1\nb[i+1]=max(b[i+1],1+dp2[i])\ndp2[i]=max(dp2[i],b[i])\ndp2[k]=max(dp2[k],b[k])\nprint(dp2[-1])\nregion fastio\nBUFSIZE = 8192\nclass FastIO(IOBase):\nnewlines = 0\ndef __init__(self, file):\n    self._fd = file.fileno()\n    self.buffer = BytesIO()\n    self.writable = \"x\" in file.mode or \"r\" not in file.mode\n    self.write = self.buffer.write if self.writable else None\n\ndef read(self):\n    while True:\n        b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))\n        if not b:\n            break\n        ptr = self.buffer.tell()\n        self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)\n    self.newlines = 0\n    return self.buffer.read()\n\ndef readline(self):\n    while self.newlines == 0:\n        b = os.read(self._fd, max(os.fstat(self._fd).st_size, BUFSIZE))\n        self.newlines = b.count(b\"\\n\") + (not b)\n        ptr = self.buffer.tell()\n        self.buffer.seek(0, 2), self.buffer.write(b), self.buffer.seek(ptr)\n    self.newlines -= 1\n    return self.buffer.readline()\n\ndef flush(self):\n    if self.writable:\n        os.write(self._fd, self.buffer.getvalue())\n        self.buffer.truncate(0), self.buffer.seek(0)\n\nclass IOWrapper(IOBase):\ndef init(self, file):\nself.buffer = FastIO(file)\nself.flush = self.buffer.flush\nself.writable = self.buffer.writable\nself.write = lambda s: self.buffer.write(s.encode(\"ascii\"))\nself.read = lambda: self.buffer.read().decode(\"ascii\")\nself.readline = lambda: self.buffer.readline().decode(\"ascii\")\nsys.stdin, sys.stdout = IOWrapper(sys.stdin), IOWrapper(sys.stdout)\ninput = lambda: sys.stdin.readline().rstrip(\"\\r\\n\")\nendregion\n``if name == \"main\":\nmain()\n`\n\n\n\n\n\n\nEditorialist's Solution\n`/**\n ???? the_hyp0cr1t3\n ???? 28.07.2021 00:37:21\n**/\n#ifdef W\n    #include \"k_II.h\"\n#else\n    #include &lt;bits/stdc++.h&gt;\n    using namespace std;\n#endif\n#define pb emplace_back\n#define all(x) x.begin(), x.end()\n#define sz(x) static_cast&lt;int32_t&gt;(x.size())\nauto chmax = [](auto&amp; A, auto&amp;&amp; B) { return B &gt; A? A = B, true : false; };\nauto chmin = [](auto&amp; A, auto&amp;&amp; B) { return B &lt; A? A = B, true : false; };\nconst int64_t k_II = 2e18;\nconst int INF = 2e9, MOD = 1e9+7;\nconst int N = 1000 + 5;\nint main() {\nios_base::sync_with_stdio(false), cin.tie(nullptr);\nint Q; cin &gt;&gt; Q;\nwhile(Q--) []() {\n    int i, n, k;\n    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; k; ++k;\n    vector&amp;lt;int&amp;gt; a(n);\n    for(auto&amp;amp; x: a) cin &amp;gt;&amp;gt; x;\n\n    vector&amp;lt;int&amp;gt; dp(n + 1), cur(N, n), nxt(n);\n    for(i = n-1; ~i; i--)\n        nxt[i] = cur[a[i]], cur[a[i]] = i;\n\n    while(k--) {\n        for(i = n; i; i--)\n            chmax(dp[i], dp[i-1] + 1);\n        for(i = 0; i &amp;lt; n; i++) {\n            if(nxt[i] &amp;lt; n)\n                chmax(dp[nxt[i] + 1], dp[i + 1] + 1);\n            chmax(dp[i + 1], dp[i]);\n        }\n    }\n\n    cout &amp;lt;&amp;lt; *max_element(all(dp)) &amp;lt;&amp;lt; '\\n';\n}();\n\n``} // ~W\n`\n\n\n\n\nFeel free to share your approach. Suggestions are welcomed.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "Let dp[t][v] be the maximum length of a subsequence that ends with value v and uses exactly t runs (t‑1 changes). While scanning the array from left to right we can extend a subsequence in two ways:\n1. Take the current element a and continue a subsequence that already ends with a (same run). This adds 1 to dp[t][a].\n2. Start a new run with a after any subsequence that used t‑1 runs and ends with a different value. The best length among all values for t‑1 runs is stored in best[t‑1]. Adding the current a gives best[t‑1] + 1.\nFor each element we update dp[t][a] for t = K+1 … 1 (descending to avoid using the just‑updated values). After each update we also refresh best[t] = max(best[t], dp[t][a]). The answer for a test case is max_{1≤t≤K+1} best[t].\nThe algorithm runs in O(N·K) time and O(K·V) memory, where V = 1000 is the maximum possible value of Ai.",
+    "timeComplexity": "O(N·K) per test case (N ≤ 1000, K ≤ 1000).",
+    "spaceComplexity": "O(K·V) where V = 1001 (≈ 1e6 integers, well within limits).",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\n\n#define MAXV 1001\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N, K; scanf(\"%d %d\", &N, &K);\n        int A[1005];\n        for(int i=0;i<N;i++) scanf(\"%d\", &A[i]);\n        int runs = K+1;\n        static int dp[1002][MAXV]; // dp[t][v]\n        static int best[1002];\n        memset(dp, 0, sizeof(dp));\n        memset(best, 0, sizeof(best));\n        for(int idx=0; idx<N; ++idx){\n            int a = A[idx];\n            for(int t=runs; t>=1; --t){\n                int old = dp[t][a];\n                int cand = old + 1; // continue same run\n                if(t>1) cand = cand > best[t-1]+1 ? cand : best[t-1]+1;\n                else cand = cand > 1 ? cand : 1; // start new subsequence\n                if(cand > dp[t][a]) dp[t][a] = cand;\n                if(dp[t][a] > best[t]) best[t] = dp[t][a];\n            }\n        }\n        int ans = 0;\n        for(int t=1; t<=runs; ++t) if(best[t] > ans) ans = best[t];\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}\n",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    const int MAXV = 1001;\n    while(T--){\n        int N,K; cin>>N>>K;\n        vector<int> A(N);\n        for(int &x: A) cin>>x;\n        int runs = K+1;\n        vector<vector<int>> dp(runs+1, vector<int>(MAXV,0));\n        vector<int> best(runs+1,0);\n        for(int a: A){\n            for(int t=runs; t>=1; --t){\n                int old = dp[t][a];\n                int cand = old + 1; // continue same value\n                if(t>1) cand = max(cand, best[t-1] + 1);\n                else cand = max(cand, 1);\n                dp[t][a] = max(dp[t][a], cand);\n                best[t] = max(best[t], dp[t][a]);\n            }\n        }\n        int ans = 0;\n        for(int t=1; t<=runs; ++t) ans = max(ans, best[t]);\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}\n",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final int MAXV = 1001;\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = fs.nextInt();\n            int K = fs.nextInt();\n            int[] A = new int[N];\n            for (int i = 0; i < N; i++) A[i] = fs.nextInt();\n            int runs = K + 1;\n            int[][] dp = new int[runs + 1][MAXV];\n            int[] best = new int[runs + 1];\n            for (int a : A) {\n                for (int t = runs; t >= 1; t--) {\n                    int old = dp[t][a];\n                    int cand = old + 1; // continue same run\n                    if (t > 1) cand = Math.max(cand, best[t - 1] + 1);\n                    else cand = Math.max(cand, 1);\n                    dp[t][a] = Math.max(dp[t][a], cand);\n                    best[t] = Math.max(best[t], dp[t][a]);\n                }\n            }\n            int ans = 0;\n            for (int t = 1; t <= runs; t++) ans = Math.max(ans, best[t]);\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n\n    // Fast scanner for Java\n    static class FastScanner {\n        private final InputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream in) { this.in = in; }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        int nextInt() throws IOException {\n            int c, sign = 1, val = 0;\n            do { c = readByte(); } while (c <= ' ');\n            if (c == '-') { sign = -1; c = readByte(); }\n            while (c > ' ') {\n                val = val * 10 + (c - '0');\n                c = readByte();\n            }\n            return val * sign;\n        }\n    }\n}\n",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    MAXV = 1001\n    for _ in range(T):\n        N = int(next(it)); K = int(next(it))\n        A = [int(next(it)) for _ in range(N)]\n        runs = K + 1\n        dp = [[0]*MAXV for _ in range(runs+1)]\n        best = [0]*(runs+1)\n        for a in A:\n            for t in range(runs, 0, -1):\n                old = dp[t][a]\n                cand = old + 1  # continue same run\n                if t > 1:\n                    cand = max(cand, best[t-1] + 1)\n                else:\n                    cand = max(cand, 1)\n                if cand > dp[t][a]:\n                    dp[t][a] = cand\n                if dp[t][a] > best[t]:\n                    best[t] = dp[t][a]\n        ans = max(best[1:])\n        out_lines.append(str(ans))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet outputs = [];\nconst MAXV = 1001;\nfor (let tc = 0; tc < T; ++tc) {\n  const N = input[idx++];\n  const K = input[idx++];\n  const A = input.slice(idx, idx + N);\n  idx += N;\n  const runs = K + 1;\n  const dp = Array.from({ length: runs + 1 }, () => new Int32Array(MAXV));\n  const best = new Int32Array(runs + 1);\n  for (const a of A) {\n    for (let t = runs; t >= 1; --t) {\n      const old = dp[t][a];\n      let cand = old + 1; // continue same run\n      if (t > 1) cand = Math.max(cand, best[t - 1] + 1);\n      else cand = Math.max(cand, 1);\n      if (cand > dp[t][a]) dp[t][a] = cand;\n      if (dp[t][a] > best[t]) best[t] = dp[t][a];\n    }\n  }\n  let ans = 0;\n  for (let t = 1; t <= runs; ++t) if (best[t] > ans) ans = best[t];\n  outputs.push(String(ans));\n}\nconsole.log(outputs.join('\\n'));\n"
+    }
   }
 }

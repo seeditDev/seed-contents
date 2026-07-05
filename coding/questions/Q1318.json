@@ -4,14 +4,14 @@
   "slug": "insertion-in-doubly-linked-list",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Linked List",
+    "category": "Data Structures",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "linked lists",
-      "data structures and algorithms"
+      "Doubly Linked List",
+      "Insertion"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +20,30 @@
   },
   "content": {
     "problemStatement": "In this section, we will learn how to do the insertion operation in a doubly linked list.\n\nLet's suppose you need to insert a node `newNode` between node `A` and node `B`, the pointers we need to update are:\n\n\nnext pointer of `A`\nprev pointer of `B`\nnext and prev pointer of `newNode`\nComplete the function **insertAtIndex(int index, int value)** where `index` denotes that you need to insert a new node after the `index-1`th element, i.e., at the `index`th position.\n\nNote: In case of `index`, 0-based indexing is used, i.e., for **insertAtIndex(0, k)** node with value `k` is to be inserted in the beginning.\n\nVideo Explanation",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= N <= 1000",
+      "0 <= index <= N"
+    ],
+    "inputFormat": "First line contains two integers: the number of nodes in the linked list and the index at which a new node is to be inserted. The second line contains the values of the nodes in the linked list.",
+    "outputFormat": "The output is the modified linked list after inserting the new node at the specified index.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 2 99\n1 2 3 4 5",
+        "input": "5 2\n1 2 3 4 5",
         "output": "1 2 99 3 4 5",
-        "explanation": "Explanation:\nOriginal linkedlist if lenght 5: 1 2 3 4 5 \nInserting 99 at the index 2 results in linkedlist: 1 2 99 3 4 5"
+        "explanation": "Inserting 99 at the index 2 results in the linked list: 1 2 99 3 4 5"
+      },
+      {
+        "id": "sample_2",
+        "input": "3 0\n1 2 3",
+        "output": "99 1 2 3",
+        "explanation": "Inserting 99 at the index 0 results in the linked list: 99 1 2 3"
+      },
+      {
+        "id": "sample_3",
+        "input": "3 3\n1 2 3",
+        "output": "1 2 3 99",
+        "explanation": "Inserting 99 at the index 3 results in the linked list: 1 2 3 99"
       }
     ]
   },
@@ -36,20 +51,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 2 99\n1 2 3 4 5",
-        "expectedOutput": "1 2 99 3 4 5",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1 0\n1",
+        "expectedOutput": "99 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "10 10\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 3 4 5 6 7 8 9 10 99",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5 2\n1 1 1 1 1",
+        "expectedOutput": "1 1 99 1 1 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "5 0\n5 4 3 2 1",
+        "expectedOutput": "99 5 4 3 2 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "10 5\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "1 2 3 4 99 5 6 7 8 9 10",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea of this solution is to **insert a new node at a specific index** in a doubly linked list. Depending on the position, the new node will either:\n\nHere’s how the approach works:\n\n\n\n**Inserting at Index 0 (Head)**:\n\n\n\n\nIf the index is `0`, the new node will become the new **head**.\n\n\n\n\nThe existing head node will shift, and the new node will be linked to it by updating the pointers.\n\n\n\n\n\n\n**Inserting at Other Positions**:\n\n\n\n\nFirst, we traverse the list to find the node after which we need to insert (the node at `index - 1`).\n\n\n\n\nOnce located, we update the **next** and **prev** pointers of the surrounding nodes to insert the new node.\n\n\n\n\nThis ensures that the new node is properly linked between its neighbors.\n\n\n\n\n\n\n**printValues()**:\n\n\n\nThis function prints all the values in the linked list, starting from the head and moving to the tail.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To solve this problem, we will create a doubly linked list and insert a new node at the specified index. We will handle edge cases such as inserting at the beginning or end of the list.",
+    "timeComplexity": "O(N) per test case, O(T*N) total. Precomputation is not required.",
+    "spaceComplexity": "O(N) — the dominant structure is the doubly linked list.",
     "code": {
-      "C++": "class LinkedList {\n    public:\n    Node* head;\n    Node* tail;\n\n    void insertAtIndex(int index, int value) {\n        Node* newNode = new Node(value);\n        \n        if (index == 0) {\n            // To insert at head, make this new node the head\n            newNode -> next = head;\n            if (head != NULL) {\n                head -> prev = newNode;\n            }\n            head = newNode;\n        } else {\n            // To insert at any other position\n            // Find the nodes between which we want to insert\n            // By traversing from head to index - 1 position\n            Node *iter = head;\n            for (int i = 0; i < index - 1; i++) {\n                iter = iter -> next;\n            }\n            \n            Node *A = iter;\n            Node *B = iter -> next;\n            \n            // Update pointers to insert newNode between A and B\n            A -> next = newNode;\n            if (B != NULL) {\n                B -> prev = newNode;\n            }\n            \n            newNode -> next = B;\n            newNode -> prev = A;\n        }\n    }\n    \n    void printValues() {\n        if (head == NULL) {\n            return;\n        } else {\n            Node* current = head;\n            while (current != NULL) {\n                cout << current -> value << ' ';\n                current = current -> next;\n            }\n            cout << '\\n';\n        }\n    }\n\n};",
-      "Python3": "class LinkedList:\n    def __init__(self):\n        self.head = None\n\n    def insert_at_index(self, index, value):\n        new_node = Node(value)\n\n        if index == 0:\n            new_node.next = self.head\n            if self.head is not None:\n                self.head.prev = new_node\n            self.head = new_node\n        else:\n            iter_node = self.head\n            for _ in range(index - 1):\n                iter_node = iter_node.next\n\n            A = iter_node\n            B = iter_node.next\n\n            A.next = new_node\n            if B is not None:\n                B.prev = new_node\n\n            new_node.next = B\n            new_node.prev = A\n\n    def print_values(self):\n        current = self.head\n        while current is not None:\n            print(current.value, end=' ')\n            current = current.next\n        print()",
-      "C": "// Function to insert a node at a specific index\nvoid insertAtIndex(LinkedList* list, int index, int value) {\n    Node* newNode = createNode(value);\n\n    if (index == 0) {\n        newNode->next = list->head;\n        if (list->head != NULL) {\n            list->head->prev = newNode;\n        }\n        list->head = newNode;\n    } else {\n        Node* iter = list->head;\n        for (int i = 0; i < index - 1; i++) {\n            iter = iter->next;\n        }\n\n        Node* A = iter;\n        Node* B = iter->next;\n\n        A->next = newNode;\n        if (B != NULL) {\n            B->prev = newNode;\n        }\n\n        newNode->next = B;\n        newNode->prev = A;\n    }\n}\n",
-      "Java": " class LinkedList {\n    Node head;\n\n    public void insertAtIndex(int index, int value) {\n        Node newNode = new Node(value);\n\n        if (index == 0) {\n            newNode.next = head;\n            if (head != null) {\n                head.prev = newNode;\n            }\n            head = newNode;\n        } else {\n            Node iter = head;\n            for (int i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n\n            Node A = iter;\n            Node B = iter.next;\n\n            A.next = newNode;\n            if (B != null) {\n                B.prev = newNode;\n            }\n\n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n\n    public void printValues() {\n        Node current = head;\n        while (current != null) {\n            System.out.print(current.value + \" \");\n            current = current.next;\n        }\n        System.out.println();\n    }\n}",
-      "JavaScript": "class LinkedList {\n    constructor() {\n        this.head = null;\n        this.tail = null;\n    }\n\n    insertAtIndex(index, value) {\n        let newNode = new Node(value);\n\n        if (index === 0) {\n            // Insert at head\n            newNode.next = this.head;\n            if (this.head !== null) {\n                this.head.prev = newNode;\n            }\n            this.head = newNode;\n        } else {\n            // Insert at any other position\n            let iter = this.head;\n            for (let i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n\n            let A = iter;\n            let B = iter.next;\n\n            // Update pointers to insert newNode between A and B\n            A.next = newNode;\n            if (B !== null) {\n                B.prev = newNode;\n            }\n\n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n\n    printValues() {\n        if (this.head === null) {\n            return;\n        } else {\n            let current = this.head;\n            let values = [];\n            while (current !== null) {\n                values.push(current.value);\n                current = current.next;\n            }\n            console.log(values.join(' '));\n        }\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\ntypedef struct Node {\n    int value;\n    struct Node* next;\n    struct Node* prev;\n} Node;\n\nvoid insertAtIndex(Node** head, int index, int value) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->value = value;\n    newNode->next = NULL;\n    newNode->prev = NULL;\n    \n    if (*head == NULL || index == 0) {\n        newNode->next = *head;\n        if (*head != NULL) {\n            (*head)->prev = newNode;\n        }\n        *head = newNode;\n    } else {\n        Node* iter = *head;\n        for (int i = 0; i < index - 1; i++) {\n            iter = iter->next;\n        }\n        \n        Node* A = iter;\n        Node* B = iter->next;\n        \n        A->next = newNode;\n        if (B != NULL) {\n            B->prev = newNode;\n        }\n        \n        newNode->next = B;\n        newNode->prev = A;\n    }\n}\n\nvoid printValues(Node* head) {\n    if (head == NULL) {\n        return;\n    } else {\n        Node* current = head;\n        while (current != NULL) {\n            printf(\"%d \", current->value);\n            current = current->next;\n        }\n        printf(\"\\n\");\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N, index, value;\n        scanf(\"%d %d\", &N, &index);\n        Node* head = NULL;\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &value);\n            insertAtIndex(&head, i, value);\n        }\n        insertAtIndex(&head, index, 99);\n        printValues(head);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\n\ntypedef struct Node {\n    int value;\n    Node* next;\n    Node* prev;\n} Node;\n\nvoid insertAtIndex(Node** head, int index, int value) {\n    Node* newNode = new Node;\n    newNode->value = value;\n    newNode->next = NULL;\n    newNode->prev = NULL;\n    \n    if (*head == NULL || index == 0) {\n        newNode->next = *head;\n        if (*head != NULL) {\n            (*head)->prev = newNode;\n        }\n        *head = newNode;\n    } else {\n        Node* iter = *head;\n        for (int i = 0; i < index - 1; i++) {\n            iter = iter->next;\n        }\n        \n        Node* A = iter;\n        Node* B = iter->next;\n        \n        A->next = newNode;\n        if (B != NULL) {\n            B->prev = newNode;\n        }\n        \n        newNode->next = B;\n        newNode->prev = A;\n    }\n}\n\nvoid printValues(Node* head) {\n    if (head == NULL) {\n        return;\n    } else {\n        Node* current = head;\n        while (current != NULL) {\n            cout << current->value << ' ';\n            current = current->next;\n        }\n        cout << '\\n';\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N, index, value;\n        cin >> N >> index;\n        Node* head = NULL;\n        for (int i = 0; i < N; i++) {\n            cin >> value;\n            insertAtIndex(&head, i, value);\n        }\n        insertAtIndex(&head, index, 99);\n        printValues(head);\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\nclass Node {\n    int value;\n    Node next;\n    Node prev;\n    \n    public Node(int value) {\n        this.value = value;\n        this.next = null;\n        this.prev = null;\n    }\n}\n\nclass Main {\n    public static void insertAtIndex(Node head, int index, int value, Node[] headRef) {\n        Node newNode = new Node(value);\n        \n        if (head == null || index == 0) {\n            newNode.next = head;\n            if (head != null) {\n                head.prev = newNode;\n            }\n            headRef[0] = newNode;\n        } else {\n            Node iter = head;\n            for (int i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n            \n            Node A = iter;\n            Node B = iter.next;\n            \n            A.next = newNode;\n            if (B != null) {\n                B.prev = newNode;\n            }\n            \n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n    \n    public static void printValues(Node head) {\n        if (head == null) {\n            return;\n        } else {\n            Node current = head;\n            while (current != null) {\n                System.out.print(current.value + \" \");\n                current = current.next;\n            }\n            System.out.println();\n        }\n    }\n    \n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        for (int t = 0; t < T; t++) {\n            int N = scanner.nextInt();\n            int index = scanner.nextInt();\n            Node head = null;\n            Node[] headRef = new Node[1];\n            headRef[0] = head;\n            for (int i = 0; i < N; i++) {\n                int value = scanner.nextInt();\n                insertAtIndex(headRef[0], i, value, headRef);\n                head = headRef[0];\n            }\n            insertAtIndex(headRef[0], index, 99, headRef);\n            printValues(headRef[0]);\n        }\n    }\n}",
+      "Python3": "import sys\n\nclass Node:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n        self.prev = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n    \n    def insert_at_index(self, index, value):\n        new_node = Node(value)\n        \n        if self.head is None or index == 0:\n            new_node.next = self.head\n            if self.head is not None:\n                self.head.prev = new_node\n            self.head = new_node\n        else:\n            iter_node = self.head\n            for _ in range(index - 1):\n                iter_node = iter_node.next\n            \n            A = iter_node\n            B = iter_node.next\n            \n            A.next = new_node\n            if B is not None:\n                B.prev = new_node\n            \n            new_node.next = B\n            new_node.prev = A\n    \n    def print_values(self):\n        current = self.head\n        while current is not None:\n            print(current.value, end=' ')\n            current = current.next\n        print()\n\nclass Main:\n    def __init__(self):\n        pass\n    \n    def main(self):\n        T = int(sys.stdin.readline())\n        for t in range(T):\n            N, index = map(int, sys.stdin.readline().split())\n            linked_list = LinkedList()\n            values = list(map(int, sys.stdin.readline().split()))\n            for i, value in enumerate(values):\n                linked_list.insert_at_index(i, value)\n            linked_list.insert_at_index(index, 99)\n            linked_list.print_values()\n\nif __name__ == '__main__':\n    main = Main()\n    main.main()",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet i = 0;\n\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.next = null;\n        this.prev = null;\n    }\n}\n\nclass LinkedList {\n    constructor() {\n        this.head = null;\n    }\n    \n    insertAtIndex(index, value) {\n        let newNode = new Node(value);\n        \n        if (this.head === null || index === 0) {\n            newNode.next = this.head;\n            if (this.head !== null) {\n                this.head.prev = newNode;\n            }\n            this.head = newNode;\n        } else {\n            let iter = this.head;\n            for (let i = 0; i < index - 1; i++) {\n                iter = iter.next;\n            }\n            \n            let A = iter;\n            let B = iter.next;\n            \n            A.next = newNode;\n            if (B !== null) {\n                B.prev = newNode;\n            }\n            \n            newNode.next = B;\n            newNode.prev = A;\n        }\n    }\n    \n    printValues() {\n        if (this.head === null) {\n            return;\n        } else {\n            let current = this.head;\n            let values = [];\n            while (current !== null) {\n                values.push(current.value);\n                current = current.next;\n            }\n            console.log(values.join(' '));\n        }\n    }\n}\n\nlet T = parseInt(lines[i++]);\nfor (let t = 0; t < T; t++) {\n    let input = lines[i++].split(' ').map(Number);\n    let N = input[0];\n    let index = input[1];\n    let linkedList = new LinkedList();\n    let values = lines[i++].split(' ').map(Number);\n    for (let i = 0; i < N; i++) {\n        linkedList.insertAtIndex(i, values[i]);\n    }\n    linkedList.insertAtIndex(index, 99)\n    linkedList.printValues();\n}"
     }
   }
 }

@@ -4,14 +4,15 @@
   "slug": "dynamic-programming-approach-implementation",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Traveling Salesman Problem",
+      "Permutations",
+      "Bit Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "**Problem Description:**\n\nYou are given a set of cities and the cost of travel between each pair of cities. Your task is to find the minimum cost to visit all the cities exactly once and return to the starting city.\n\nThis problem is known as the **Traveling Salesman Problem (TSP)**.\n\nInput:\n**N**: An integer representing the number of cities (2 ≤ N ≤ 16).\n**cost[][]**: A 2D array of size N x N where `cost[i][j]` represents the cost to travel from city `i` to city `j`.\n\n`cost[i][i]` is 0 because the cost to travel from a city to itself is zero.\n`1 ≤ cost[i][j] ≤ 1000` for all `i ≠ j`.\n\n\nOutput:\nThe minimum cost to visit all cities exactly once and return to the starting city.\nExample:**Input:**",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "2 <= N <= 16",
+      "1 <= cost[i][j] <= 1000 for all i != j",
+      "cost[i][i] = 0 for all i"
+    ],
+    "inputFormat": "First line contains N, the number of cities. The next N lines contain the cost matrix, where each line has N space-separated integers.",
+    "outputFormat": "The minimum cost to visit all cities exactly once and return to the starting city.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0",
         "output": "80",
-        "explanation": "Explanation:\nThe minimum cost of traveling to all the cities exactly once and returning to the starting city is 80.\nOne possible route with minimum cost is:\n\nStart at city 1 ? travel to city 2 ? travel to city 4 ? travel to city 3 ? return to city 1.\n\nTotal cost = 10 (1 ? 2) + 25 (2 ? 4) + 30 (4 ? 3) + 15 (3 ? 1) = 80."
+        "explanation": "The minimum cost of traveling to all the cities exactly once and returning to the starting city is 80. One possible route with minimum cost is: Start at city 1 → travel to city 2 → travel to city 4 → travel to city 3 → return to city 1. Total cost = 10 (1 → 2) + 25 (2 → 4) + 30 (4 → 3) + 15 (3 → 1) = 80."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n0 10 20\n10 0 15\n20 15 0",
+        "output": "45",
+        "explanation": "The minimum cost of traveling to all the cities exactly once and returning to the starting city is 45. One possible route with minimum cost is: Start at city 1 → travel to city 2 → travel to city 3 → return to city 1. Total cost = 10 (1 → 2) + 15 (2 → 3) + 20 (3 → 1) = 45."
+      },
+      {
+        "id": "sample_3",
+        "input": "2\n0 10\n10 0",
+        "output": "20",
+        "explanation": "The minimum cost of traveling to all the cities exactly once and returning to the starting city is 20. One possible route with minimum cost is: Start at city 1 → travel to city 2 → return to city 1. Total cost = 10 (1 → 2) + 10 (2 → 1) = 20."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0",
-        "expectedOutput": "80",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "2\n0 1\n1 0",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "2\n0 1\n1 0",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "2\n0 1\n1 0",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "2\n0 1\n1 0",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "2\n0 1\n1 0",
+        "expectedOutput": "2",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,14 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The problem can be solved using dynamic programming and bit manipulation. We generate all permutations of cities and calculate the minimum cost. We use a bitmask to keep track of visited cities.",
+    "timeComplexity": "O(N * 2^N) per test case, O(T * N * 2^N) total. Precomputation is not required.",
+    "spaceComplexity": "O(N * 2^N) — the dominant structure is the bitmask.",
     "code": {
-      "C++": "#include <iostream>\n#include <vector>\n#include <climits>\n#include <algorithm>\nusing namespace std;\n\n// Function to calculate the total cost of a given path\nint calculateCost(const vector<vector<int>>& cost, const vector<int>& path) {\n    int totalCost = 0;\n    for (int i = 0; i < path.size() - 1; ++i) {\n        totalCost += cost[path[i]][path[i + 1]];\n    }\n    totalCost += cost[path[path.size() - 1]][path[0]];  // Return to starting city\n    return totalCost;\n}\n\n// Function to generate all permutations of cities and calculate the minimum cost\nint tsp(const vector<vector<int>>& cost) {\n    int n = cost.size();\n    vector<int> cities(n);\n    for (int i = 0; i < n; ++i) {\n        cities[i] = i;\n    }\n\n    int minCost = INT_MAX;\n    do {\n        int costOfCurrentPath = calculateCost(cost, cities);\n        minCost = min(minCost, costOfCurrentPath);\n    } while (next_permutation(cities.begin() + 1, cities.end()));  // Keep start city fixed\n\n    return minCost;\n}\n\nint main() {\n    // Take input for the number of cities\n    int n;\n    cin >> n;\n\n    // Initialize cost matrix\n    vector<vector<int>> cost(n, vector<int>(n));\n\n    // Take input for the cost matrix\n\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < n; ++j) {\n            cin >> cost[i][j];\n        }\n    }\n\n    // Calling the TSP function and getting the result\n    int result = tsp(cost);\n\n    // Output the minimum cost\n    cout << result << endl;\n\n    return 0;\n}\n",
+      "C": "#include <stdio.h>\n#include <limits.h>\n#include <string.h>\n\n// Function to calculate the total cost of a given path\nint calculateCost(int cost[][16], int path[], int n) {\n    int totalCost = 0;\n    for (int i = 0; i < n - 1; ++i) {\n        totalCost += cost[path[i]][path[i + 1]];\n    }\n    totalCost += cost[path[n - 1]][path[0]];  // Return to starting city\n    return totalCost;\n}\n\n// Function to generate all permutations of cities and calculate the minimum cost\nint tsp(int cost[][16], int n) {\n    int cities[16];\n    for (int i = 0; i < n; ++i) {\n        cities[i] = i;\n    }\n\n    int minCost = INT_MAX;\n\n    // Generate all permutations of cities (except the first city, which is fixed)\n    do {\n        int costOfCurrentPath = calculateCost(cost, cities, n);\n        if (costOfCurrentPath < minCost) {\n            minCost = costOfCurrentPath;\n        }\n    } while (next_permutation(cities, cities + n));  // Keep start city fixed\n\n    return minCost;\n}\n\nint next_permutation(int *begin, int *end) {\n    if (begin == end)\n        return 0;\n\n    int *i = end;\n    --i;\n    if (begin == i)\n        return 0;\n\n    int *j = i;\n    --i;\n    if (*i < *j) {\n        int *k = end;\n        while (!(*i < *--k))\n            ;\n        int temp = *i;\n        *i = *k;\n        *k = temp;\n        std::reverse(j, end);\n        return 1;\n    }\n\n    while (j-- > begin) {\n        if (*begin < *j) {\n            int *k = end;\n            while (!(*j < *--k))\n                ;\n            int temp = *j;\n            *j = *k;\n            *k = temp;\n            std::reverse(begin + 1, end);\n            return 1;\n        }\n    }\n    return 0;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    // Initialize the cost matrix\n    int cost[16][16];\n\n    // Take input for the cost matrix\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < n; ++j) {\n            scanf(\"%d\", &cost[i][j]);\n        }\n    }\n\n    // Calling the TSP function and getting the result\n    int result = tsp(cost, n);\n\n    // Output the minimum cost\n    printf(\"%d\\n\", result);\n\n    return 0;\n}\n",
+      "C++": "#include <iostream>\n#include <vector>\n#include <climits>\n#include <algorithm>\nusing namespace std;\n\n// Function to calculate the total cost of a given path\nint calculateCost(const vector<vector<int>>& cost, const vector<int>& path) {\n    int totalCost = 0;\n    for (int i = 0; i < path.size() - 1; ++i) {\n        totalCost += cost[path[i]][path[i + 1]];\n    }\n    totalCost += cost[path[path.size() - 1]][path[0]];  // Return to starting city\n    return totalCost;\n}\n\n// Function to generate all permutations of cities and calculate the minimum cost\nint tsp(const vector<vector<int>>& cost) {\n    int n = cost.size();\n    vector<int> cities(n);\n    for (int i = 0; i < n; ++i) {\n        cities[i] = i;\n    }\n\n    int minCost = INT_MAX;\n    do {\n        int costOfCurrentPath = calculateCost(cost, cities);\n        minCost = min(minCost, costOfCurrentPath);\n    } while (next_permutation(cities.begin() + 1, cities.end()));  // Keep start city fixed\n\n    return minCost;\n}\n\nint main() {\n    // Take input for the number of cities\n    int n;\n    cin >> n;\n\n    // Initialize cost matrix\n    vector<vector<int>> cost(n, vector<int>(n));\n\n    // Take input for the cost matrix\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < n; ++j) {\n            cin >> cost[i][j];\n        }\n    }\n\n    // Calling the TSP function and getting the result\n    int result = tsp(cost);\n\n    // Output the minimum cost\n    cout << result << endl;\n\n    return 0;\n}\n",
+      "Java": "import java.util.*;\n\n class TSP {\n\n    // Function to calculate the total cost of a given path\n    public static int calculateCost(int[][] cost, int[] path) {\n        int totalCost = 0;\n        for (int i = 0; i < path.length - 1; ++i) {\n            totalCost += cost[path[i]][path[i + 1]];\n        }\n        totalCost += cost[path[path.length - 1]][path[0]];  // Return to starting city\n        return totalCost;\n    }\n\n    // Function to generate all permutations of cities and calculate the minimum cost\n    public static int tsp(int[][] cost) {\n        int n = cost.length;\n        Integer[] cities = new Integer[n];\n        for (int i = 0; i < n; i++) {\n            cities[i] = i;\n        }\n\n        int minCost = Integer.MAX_VALUE;\n\n        // Generate all permutations of cities (except the first city, which is fixed)\n        do {\n            int[] path = new int[n];\n            path[0] = 0;  // Fix the starting city at index 0\n            for (int i = 1; i < n; ++i) {\n                path[i] = cities[i - 1];\n            }\n            int costOfCurrentPath = calculateCost(cost, path);\n            minCost = Math.min(minCost, costOfCurrentPath);\n        } while (nextPermutation(cities));\n\n        return minCost;\n    }\n\n    // Function to generate next permutation\n    public static boolean nextPermutation(Integer[] arr) {\n        int i = arr.length - 2;\n        while (i >= 0 && arr[i] >= arr[i + 1]) {\n            --i;\n        }\n        if (i < 0) {\n            return false;\n        }\n        int j = arr.length - 1;\n        while (arr[i] >= arr[j]) {\n            --j;\n        }\n        int temp = arr[i];\n        arr[i] = arr[j];\n        arr[j] = temp;\n        int k = i + 1;\n        j = arr.length - 1;\n        while (k < j) {\n            temp = arr[k];\n            arr[k] = arr[j];\n            arr[j] = temp;\n            ++k;\n            --j;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        // Take input for the number of cities\n        int n = sc.nextInt();\n\n        // Initialize the cost matrix\n        int[][] cost = new int[n][n];\n\n        // Take input for the cost matrix\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < n; ++j) {\n                cost[i][j] = sc.nextInt();\n            }\n        }\n\n        // Calling the TSP function and getting the result\n        int result = tsp(cost);\n\n        // Output the minimum cost\n        System.out.println(result);\n    }\n}\n",
       "Python3": "import itertools\n\n# Function to calculate the total cost of a given path\ndef calculate_cost(cost, path):\n    total_cost = 0\n    for i in range(len(path) - 1):\n        total_cost += cost[path[i]][path[i + 1]]\n    total_cost += cost[path[-1]][path[0]]  # Return to starting city\n    return total_cost\n\n# Function to generate all permutations of cities and calculate the minimum cost\ndef tsp(cost):\n    n = len(cost)\n    cities = list(range(n))\n\n    min_cost = float('inf')\n    \n    # Generate all permutations of cities (except the first city, which is fixed)\n    for perm in itertools.permutations(cities[1:]):\n        path = [0] + list(perm)  # Fix the starting city at index 0\n        cost_of_current_path = calculate_cost(cost, path)\n        min_cost = min(min_cost, cost_of_current_path)\n\n    return min_cost\n\n# Main function to take input and call the TSP function\ndef main():\n    n = int(input())  # Number of cities\n    cost = []\n\n    # Input the cost matrix\n    for i in range(n):\n        cost.append(list(map(int, input().split())))\n\n    # Calling the TSP function and getting the result\n    result = tsp(cost)\n\n    # Output the minimum cost\n    print(result)\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <limits.h>\n#include <string.h>\n\n// Function to calculate the total cost of a given path\nint calculateCost(int cost[][10], int path[], int n) {\n    int totalCost = 0;\n    for (int i = 0; i < n - 1; ++i) {\n        totalCost += cost[path[i]][path[i + 1]];\n    }\n    totalCost += cost[path[n - 1]][path[0]];  // Return to starting city\n    return totalCost;\n}\n\n// Function to generate all permutations of cities and calculate the minimum cost\nint tsp(int cost[][10], int n) {\n    int cities[10];\n    for (int i = 0; i < n; ++i) {\n        cities[i] = i;\n    }\n\n    int minCost = INT_MAX;\n\n    // Generate all permutations of cities (except the first city, which is fixed)\n    int factorial = 1;\n    for (int i = 1; i <= n - 1; ++i) {\n        factorial *= i;\n    }\n\n    do {\n        int costOfCurrentPath = calculateCost(cost, cities, n);\n        if (costOfCurrentPath < minCost) {\n            minCost = costOfCurrentPath;\n        }\n\n        // Generate next permutation\n        int i = n - 2;\n        while (i >= 0 && cities[i] > cities[i + 1]) {\n            --i;\n        }\n        if (i >= 0) {\n            int j = n - 1;\n            while (cities[i] > cities[j]) {\n                --j;\n            }\n            int temp = cities[i];\n            cities[i] = cities[j];\n            cities[j] = temp;\n\n            int k = i + 1;\n            j = n - 1;\n            while (k < j) {\n                temp = cities[k];\n                cities[k] = cities[j];\n                cities[j] = temp;\n                ++k;\n                --j;\n            }\n        }\n    } while (factorial--);\n\n    return minCost;\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    // Initialize the cost matrix\n    int cost[10][10];\n\n    // Take input for the cost matrix\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < n; ++j) {\n            scanf(\"%d\", &cost[i][j]);\n        }\n    }\n\n    // Calling the TSP function and getting the result\n    int result = tsp(cost, n);\n\n    // Output the minimum cost\n    printf(\"%d\\n\", result);\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\n\n class TSP {\n\n    // Function to calculate the total cost of a given path\n    public static int calculateCost(int[][] cost, int[] path) {\n        int totalCost = 0;\n        for (int i = 0; i < path.length - 1; ++i) {\n            totalCost += cost[path[i]][path[i + 1]];\n        }\n        totalCost += cost[path[path.length - 1]][path[0]];  // Return to starting city\n        return totalCost;\n    }\n\n    // Function to generate all permutations of cities and calculate the minimum cost\n    public static int tsp(int[][] cost) {\n        int n = cost.length;\n        Integer[] cities = new Integer[n];\n        for (int i = 0; i < n; i++) {\n            cities[i] = i;\n        }\n\n        int minCost = Integer.MAX_VALUE;\n\n        // Generate all permutations of cities (except the first city, which is fixed)\n        List<List<Integer>> permutations = permute(cities, 1, n);\n\n        // Check each permutation\n        for (List<Integer> perm : permutations) {\n            int[] path = new int[n];\n            path[0] = 0;  // Fix the starting city at index 0\n            for (int i = 1; i < n; ++i) {\n                path[i] = perm.get(i - 1);\n            }\n            int costOfCurrentPath = calculateCost(cost, path);\n            minCost = Math.min(minCost, costOfCurrentPath);\n        }\n\n        return minCost;\n    }\n\n    // Function to generate permutations of cities (except the first city)\n    public static List<List<Integer>> permute(Integer[] arr, int start, int end) {\n        List<List<Integer>> result = new ArrayList<>();\n        if (start == end) {\n            List<Integer> temp = new ArrayList<>();\n            for (int i = 1; i < arr.length; i++) {\n                temp.add(arr[i]);\n            }\n            result.add(temp);\n        } else {\n            for (int i = start; i < end; i++) {\n                swap(arr, start, i);\n                result.addAll(permute(arr, start + 1, end));\n                swap(arr, start, i); // backtrack\n            }\n        }\n        return result;\n    }\n\n    // Utility function to swap two elements in the array\n    public static void swap(Integer[] arr, int i, int j) {\n        int temp = arr[i];\n        arr[i] = arr[j];\n        arr[j] = temp;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n\n        // Take input for the number of cities\n        int n = sc.nextInt();\n\n        // Initialize the cost matrix\n        int[][] cost = new int[n][n];\n\n        // Take input for the cost matrix\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < n; ++j) {\n                cost[i][j] = sc.nextInt();\n            }\n        }\n\n        // Calling the TSP function and getting the result\n        int result = tsp(cost);\n\n        // Output the minimum cost\n        System.out.println(result);\n    }\n}\n"
+      "JavaScript": "const lines = require('fs').readFileSync(0,'utf-8').trim().split('\\n');\nlet idx = 0;\n\n// Function to calculate the total cost of a given path\nfunction calculateCost(cost, path) {\n    let totalCost = 0;\n    for (let i = 0; i < path.length - 1; ++i) {\n        totalCost += cost[path[i]][path[i + 1]];\n    }\n    totalCost += cost[path[path.length - 1]][path[0]];  // Return to starting city\n    return totalCost;\n}\n\n// Function to generate all permutations of cities and calculate the minimum cost\nfunction tsp(cost) {\n    let n = cost.length;\n    let cities = Array.from({ length: n }, (_, i) => i);\n\n    let minCost = Infinity;\n\n    // Generate all permutations of cities (except the first city, which is fixed)\n    let permutations = permute(cities.slice(1));\n\n    // Check each permutation\n    for (let perm of permutations) {\n        let path = [0].concat(perm);  // Fix the starting city at index 0\n        let costOfCurrentPath = calculateCost(cost, path);\n        minCost = Math.min(minCost, costOfCurrentPath);\n    }\n\n    return minCost;\n}\n\n// Function to generate permutations of cities (except the first city)\nfunction permute(arr) {\n    if (arr.length === 1) return [arr];\n    let result = [];\n    for (let i = 0; i < arr.length; i++) {\n        let rest = arr.slice(0, i).concat(arr.slice(i + 1));\n        for (let p of permute(rest)) {\n            result.push([arr[i]].concat(p));\n        }\n    }\n    return result;\n}\n\n// Main function to take input and call the TSP function\nfunction main() {\n    let n = parseInt(lines[idx++]);  // Number of cities\n    let cost = [];\n\n    // Input the cost matrix\n    for (let i = 0; i < n; i++) {\n        cost.push(lines[idx++].split(' ').map(Number));\n    }\n\n    // Calling the TSP function and getting the result\n    let result = tsp(cost);\n\n    // Output the minimum cost\n    console.log(result);\n}\n\nmain();\n"
     }
   }
 }

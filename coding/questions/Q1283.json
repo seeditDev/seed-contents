@@ -4,14 +4,16 @@
   "slug": "queue-to-do-list",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Stack",
+    "category": "Data Structures",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "stacks & queues",
-      "data structures and algorithms"
+      "Queue",
+      "Set",
+      "Array",
+      "Implementation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +23,30 @@
   "content": {
     "problemStatement": "Create a program that simulates a to-do list manager using a queue. \n\nThe program should allow users to perform the following operations:\n\n\nAdd a task to the to-do list.\nIf the task is already present in the list - then ignore the task\nDisplay the current to-do list once all tasks have been added\nThe code given here has implemented queues using arrays. \n\nUpdate the code to solve the problem.",
     "constraints": [
-      "There are a maximum of 10 tasks in the input."
+      "1 <= T <= 10",
+      "1 <= N <= 10",
+      "1 <= task <= 1000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case starts with an integer N, the number of tasks to be added. The next N lines each contain a single integer task (1 ≤ task ≤ 1000).",
+    "outputFormat": "For each test case, print the distinct tasks in the order of their first appearance, each on its own line. Do not print extra blank lines between test cases.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n2\n4\n5\n1\n2\n3\n9\n4\n9",
-        "output": "1\n2\n4\n5\n3\n9",
-        "explanation": ""
+        "input": "1\\n10\\n1\\n2\\n4\\n5\\n1\\n2\\n3\\n9\\n4\\n9",
+        "output": "1\\n2\\n4\\n5\\n3\\n9",
+        "explanation": "The first occurrence of each distinct task is kept; later repetitions are ignored."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n5\\n1\\n1\\n1\\n1\\n1",
+        "output": "1",
+        "explanation": "All inputs are the same, so only the first one is printed."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n5\\n1\\n2\\n3\\n4\\n5",
+        "output": "1\\n2\\n3\\n4\\n5",
+        "explanation": "All tasks are distinct, so the output mirrors the input."
       }
     ]
   },
@@ -38,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\n2\n4\n5\n1\n2\n3\n9\n4\n9",
-        "expectedOutput": "1\n2\n4\n5\n3\n9",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\\n10\\n1000\\n999\\n998\\n997\\n996\\n995\\n994\\n993\\n992\\n991",
+        "expectedOutput": "1000\\n999\\n998\\n997\\n996\\n995\\n994\\n993\\n992\\n991",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\\n5\\n7\\n7\\n7\\n7\\n7",
+        "expectedOutput": "7",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n8\\n5\\n4\\n3\\n2\\n1\\n2\\n3\\n4",
+        "expectedOutput": "5\\n4\\n3\\n2\\n1",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\\n4\\n1\\n2\\n2\\n3\\n6\\n10\\n20\\n10\\n30\\n20\\n40\\n3\\n5\\n5\\n5",
+        "expectedOutput": "1\\n2\\n3\\n10\\n20\\n30\\n40\\n5",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -65,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The main idea is to manage a to-do list using a queue structure, where tasks are added only if they do not already exist in the list. A separate array tracks the current tasks in the list, while the queue stores and processes the tasks. The queue follows a circular structure, ensuring that both insertion and deletion are handled efficiently.\n\n**`addTask(int task)`**:\n\n\n\nThis function adds a new task to the list if it is not already present.\n\n\n\n\nIt first checks if the current number of tasks (`taskListsize`) is less than the maximum size of the queue (`maxSize`).\n\n\n\n\nThen, it loops through the `taskList` to ensure that the task does not already exist. If the task is already present, it skips adding the task.\n\n\n\n\nIf the task is not found, it enqueues the task using the `enqueue` function and adds it to the `taskList`. The `taskListsize` is incremented to track the number of tasks.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "We maintain a boolean array (size 1001) or a hash set to remember which tasks have already been seen. While reading the N tasks we check the structure; if the task is new we store it in a list preserving the order. After processing a test case we output the stored list. This works because we only need to remember presence, not counts, and the order of first occurrence is naturally kept by appending when a new task appears. The algorithm runs in O(N) time per test case and uses O(1000) extra space for the presence array (or O(K) for a set where K is the number of distinct tasks).",
+    "timeComplexity": "O(N) per test case, O(total N) overall.",
+    "spaceComplexity": "O(1000) auxiliary space (or O(K) for the set), plus O(K) for the output list.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define maxSize 101\nint a[maxSize];\nint front = 0; // Index of the front element\nint rear = -1;  // Index of the rear element\nint currentSize;\n\nbool isEmpty(){\n    return currentSize == 0;\n}\n\nbool isFull(){\n    return currentSize == maxSize;\n}\n\nint size(){\n    return currentSize;\n}\n\nvoid enqueue(int item) {\n    if (isFull()) {\n        cout<<\"Queue is full. Cannot enqueue.\\n\";\n        return;\n    }\n    rear = (rear + 1) % maxSize; // Circular increment\n    a[rear] = item;\n    currentSize++;\n}\n\nint dequeue(){\n    if (isEmpty()) {\n        cout<<\"Queue is empty. Cannot dequeue.\\n\";\n        return -1; // Return a sentinel value or throw an exception\n    }\n    int removedItem = a[front];\n    front = (front + 1) % maxSize; // Circular increment\n    currentSize--;\n    return removedItem;\n}\n\nint taskList[10];\nint taskListsize = 0;\n\nvoid addTask(int task){\n    if(taskListsize < maxSize){\n        // Check if the task is not already present in the list\n        int taskExists = 0;\n        for(int i=0 ; i < taskListsize ; i++){\n            if(task == taskList[i]){\n                taskExists = 1;\n                break;\n            }\n        }\n        if(!taskExists){\n            enqueue(task);\n            taskList[taskListsize] = task;\n            taskListsize++;\n        }\n    }\n}\n\nvoid displayToDoList() {\n    // Implement the method to display the current to-do list.\n    for(int i = 0 ; i < taskListsize ; i++){\n        cout<<taskList[i]<<\"\\n\";\n    }\n}\n\nint main(){\n    int n=10;\n    // Read up to 10 tasks from input and add them to the to-do list\n    for(int i=0 ; i<n ; i++){\n        int task;\n        cin>>task;\n        addTask(task);\n    }\n\n    // Display the current to-do list\n    displayToDoList();\n}",
-      "Python3": "class CircularQueue:\n    def __init__(self, max_size):\n        self.max_size = max_size\n        self.queue = [None] * self.max_size\n        self.front = 0\n        self.rear = -1\n        self.current_size = 0\n\n    def is_empty(self):\n        return self.current_size == 0\n\n    def is_full(self):\n        return self.current_size == self.max_size\n\n    def size(self):\n        return self.current_size\n\n    def enqueue(self, item):\n        if self.is_full():\n            print(\"Queue is full. Cannot enqueue.\")\n            return\n        self.rear = (self.rear + 1) % self.max_size\n        self.queue[self.rear] = item\n        self.current_size += 1\n\n    def dequeue(self):\n        if self.is_empty():\n            print(\"Queue is empty. Cannot dequeue.\")\n            return -1\n        removed_item = self.queue[self.front]\n        self.front = (self.front + 1) % self.max_size\n        self.current_size -= 1\n        return removed_item\n\n\ndef add_task(task, task_list, queue):\n    if len(task_list) < queue.max_size:\n        # Check if the task is not already present in the list\n        if task not in task_list:\n            queue.enqueue(task)\n            task_list.append(task)\n\n\ndef display_to_do_list(task_list):\n    for task in task_list:\n        print(task)\n\n\ndef main():\n    n = 10\n    max_size = 101\n    task_list = []\n    task_queue = CircularQueue(max_size)\n\n    # Read up to 10 tasks from input and add them to the to-do list\n    for _ in range(n):\n        task = int(input())\n        add_task(task, task_list, task_queue)\n\n    # Display the current to-do list\n    display_to_do_list(task_list)\n\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n\n#define maxSize 101\nint a[maxSize];\nint front = 0; // Index of the front element\nint rear = -1;  // Index of the rear element\nint currentSize;\n\nbool isEmpty(){\n    return currentSize == 0;\n}\n\nbool isFull(){\n    return currentSize == maxSize;\n}\n\nint size(){\n    return currentSize;\n}\n\nvoid enqueue(int item) {\n    if (isFull()) {\n        printf(\"Queue is full. Cannot enqueue.\\n\");\n        return;\n    }\n    rear = (rear + 1) % maxSize; // Circular increment\n    a[rear] = item;\n    currentSize++;\n}\n\nint dequeue(){\n    if (isEmpty()) {\n        printf(\"Queue is empty. Cannot dequeue.\\n\");\n        return -1; // Return a sentinel value or throw an exception\n    }\n    int removedItem = a[front];\n    front = (front + 1) % maxSize; // Circular increment\n    currentSize--;\n    return removedItem;\n}\n\nint taskList[10];\nint taskListsize = 0;\n\nvoid addTask(int task){\n    if(taskListsize < maxSize){\n        // Check if the task is not already present in the list\n        int taskExists = 0;\n        for(int i = 0; i < taskListsize; i++){\n            if(task == taskList[i]){\n                taskExists = 1;\n                break;\n            }\n        }\n        if(!taskExists){\n            enqueue(task);\n            taskList[taskListsize] = task;\n            taskListsize++;\n        }\n    }\n}\n\nvoid displayToDoList() {\n    // Implement the method to display the current to-do list.\n    for(int i = 0; i < taskListsize; i++){\n        printf(\"%d\\n\", taskList[i]);\n    }\n}\n\nint main(){\n    int n = 10;\n    // Read up to 10 tasks from input and add them to the to-do list\n    for(int i = 0; i < n; i++){\n        int task;\n        scanf(\"%d\", &task);\n        addTask(task);\n    }\n\n    // Display the current to-do list\n    displayToDoList();\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\nclass CircularQueueExample {\n    static final int maxSize = 101;\n    static int[] a = new int[maxSize];\n    static int front = 0; // Index of the front element\n    static int rear = -1; // Index of the rear element\n    static int currentSize = 0;\n\n    static boolean isEmpty() {\n        return currentSize == 0;\n    }\n\n    static boolean isFull() {\n        return currentSize == maxSize;\n    }\n\n    static int size() {\n        return currentSize;\n    }\n\n    static void enqueue(int item) {\n        if (isFull()) {\n            System.out.println(\"Queue is full. Cannot enqueue.\");\n            return;\n        }\n        rear = (rear + 1) % maxSize;\n        a[rear] = item;\n        currentSize++;\n    }\n\n    static int dequeue() {\n        if (isEmpty()) {\n            System.out.println(\"Queue is empty. Cannot dequeue.\");\n            return -1;\n        }\n        int removedItem = a[front];\n        front = (front + 1) % maxSize;\n        currentSize--;\n        return removedItem;\n    }\n\n    static boolean contains(int task) {\n        int idx = front;\n        for (int i = 0; i < currentSize; i++) {\n            if (a[idx] == task) return true;\n            idx = (idx + 1) % maxSize;\n        }\n        return false;\n    }\n\n    static void addTask(int task) {\n        if (!contains(task)) {\n            enqueue(task);\n        }\n    }\n\n    static void displayToDoList() {\n        int count = currentSize;\n        for (int i = 0; i < count; i++) {\n            int task = dequeue(); // remove and print from queue\n            System.out.println(task);\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = 10;\n        \n\n        for (int i = 0; i < n; i++) {\n            int task = scanner.nextInt();\n            if (task == -1) break;\n            addTask(task);\n        }\n\n        displayToDoList();\n        scanner.close();\n    }\n}\n",
-      "JavaScript": "class CircularQueue {\n    constructor(maxSize = 10) {\n        this.maxSize = maxSize;\n        this.queue = new Array(maxSize);\n        this.front = 0;\n        this.rear = -1;\n        this.currentSize = 0;\n        this.taskSet = new Set();\n    }\n\n    isEmpty() {\n        return this.currentSize === 0;\n    }\n\n    isFull() {\n        return this.currentSize === this.maxSize;\n    }\n\n    enqueue(item) {\n        if (this.isFull()) {\n            console.log(\"Queue is full. Cannot enqueue.\");\n            return;\n        }\n        this.rear = (this.rear + 1) % this.maxSize; // Circular increment\n        this.queue[this.rear] = item;\n        this.currentSize++;\n    }\n\n    dequeue() {\n        if (this.isEmpty()) {\n            console.log(\"Queue is empty. Cannot dequeue.\");\n            return -1; // Return a sentinel value or throw an exception\n        }\n        const removedItem = this.queue[this.front];\n        this.front = (this.front + 1) % this.maxSize; // Circular increment\n        this.currentSize--;\n        return removedItem;\n    }\n\n    addTask(task) {\n        if (!this.taskSet.has(task)) {\n            this.enqueue(task);\n            this.taskSet.add(task);\n        }\n    }\n\n    displayToDoList() {\n        let index = this.front;\n        for (let i = 0; i < this.currentSize; i++) {\n            console.log(this.queue[index]);\n            index = (index + 1) % this.maxSize; // Circular increment\n        }\n    }\n}\n\nfunction main() {\n    const circularQueue = new CircularQueue();\n    const tasks = [1, 2, 4, 5, 1, 2, 3, 9, 4, 9]; \n\n    for (const task of tasks) {\n        circularQueue.addTask(task);\n    }\n\n    circularQueue.displayToDoList();\n}\n\nmain();\n"
+      "C": "#include <stdio.h>\n#include <stdbool.h>\nint main(){int T,N,task;if(scanf(\"%d\",&T)!=1)return 0;while(T--){if(scanf(\"%d\",&N)!=1)break;bool seen[1001]={false};int order[10];int cnt=0;for(int i=0;i<N;++i){scanf(\"%d\",&task);if(!seen[task]){seen[task]=true;order[cnt++]=task;}}for(int i=0;i<cnt;++i){printf(\"%d\\n\",order[i]);}}return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0;while(T--){int N;cin>>N;unordered_set<int> seen;vector<int> order;order.reserve(N);for(int i=0;i<N;++i){int task;cin>>task;if(seen.insert(task).second)order.push_back(task);}for(int x:order) cout<<x<<'\\n';}return 0;}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{public static void main(String[] args) throws Exception{BufferedReader br=new BufferedReader(new InputStreamReader(System.in));StringTokenizer st=new StringTokenizer(br.readLine());int T=Integer.parseInt(st.nextToken());StringBuilder out=new StringBuilder();for(int tc=0;tc<T;++tc){int N=Integer.parseInt(br.readLine().trim());boolean[] seen=new boolean[1001];List<Integer> order=new ArrayList<>();for(int i=0;i<N;++i){int task=Integer.parseInt(br.readLine().trim());if(!seen[task]){seen[task]=true;order.add(task);}}for(int v:order) out.append(v).append('\\n');}System.out.print(out.toString());}}",
+      "Python3": "import sys\ndef main():\n    data=sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    idx=0\n    T=int(data[idx]);idx+=1\n    out=[]\n    for _ in range(T):\n        N=int(data[idx]);idx+=1\n        seen=set()\n        for _ in range(N):\n            task=int(data[idx]);idx+=1\n            if task not in seen:\n                seen.add(task)\n                out.append(str(task))\n    sys.stdout.write('\\n'.join(out))\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst lines=fs.readFileSync(0,'utf-8').trim().split(/\\n/);\nlet idx=0;\nif(lines.length===0) process.exit(0);\nconst T=parseInt(lines[idx].trim(),10);\nidx++;\nlet result=[];\nfor(let t=0;t<T;++t){\n  const N=parseInt(lines[idx].trim(),10);\n  idx++;\n  const seen=new Set();\n  for(let i=0;i<N;++i){\n    const task=parseInt(lines[idx].trim(),10);\n    idx++;\n    if(!seen.has(task)){\n      seen.add(task);\n      result.push(task);\n    }\n  }\n}\nconsole.log(result.join('\\n'));"
     }
   }
 }

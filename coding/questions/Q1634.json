@@ -4,14 +4,15 @@
   "slug": "deletion-from-an-array",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "arrays",
-      "data structures and algorithms"
+      "Array",
+      "Deletion",
+      "Simulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,31 @@
   "content": {
     "problemStatement": "You are given an array of integers and an index position.\n\nYour task is to delete the element present at the given index and then print the updated array.\n\nAfter deleting the element, all the elements to the right of that position should be shifted one step to the left.\n\n\nInput Format\n\nThe first line contains an integer `N` - the number of elements in the array.\nThe second line contains `N` space-separated integers - the elements of the array.\nThe third line contains an integer `P` - the 0-based index of the element to delete.\n\n\nOutput Format\n\nPrint the updated array after deleting the element at index `P`.",
     "constraints": [
-      "1≤N≤1001 \\leq N \\leq 1001≤N≤100",
-      "1≤P&lt;N1 \\leq P \\lt N1≤P&lt;N"
+      "1 <= T <= 10",
+      "1 <= N <= 15",
+      "0 <= P < N",
+      "-10^9 <= array elements <= 10^9"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N, the size of the array.\n- A line with N space‑separated integers, the array elements.\n- A line with integer P, the 0‑based index of the element to delete.",
+    "outputFormat": "For each test case output the array after deleting the element at index P. Elements are printed on one line separated by a single space. Print a newline after each test case. If the resulting array is empty, output an empty line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n2 4 6 8 10\n2",
+        "input": "1\n5\n2 4 6 8 10\n2",
         "output": "2 4 8 10",
-        "explanation": "Explanation:\nElement at index 2 (value = 6) is deleted. The elements after index 2 are shifted left."
+        "explanation": "There is one test case. Deleting the element at index 2 (value 6) shifts the remaining elements left, resulting in the array 2 4 8 10."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3\n1 2 3\n1",
+        "output": "1 3",
+        "explanation": "Delete the element at index 1 (value 2). The array becomes 1 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n10 20 30 40\n0",
+        "output": "20 30 40",
+        "explanation": "Delete the first element (value 10). The remaining elements shift left."
       }
     ]
   },
@@ -39,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n2 4 6 8 10\n2",
-        "expectedOutput": "2 4 8 10",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1\n5\n0",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15\n7",
+        "expectedOutput": "1 2 3 4 5 6 7 9 10 11 12 13 14 15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n2\n-100 100\n0",
+        "expectedOutput": "100",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "2\n3\n10 20 30\n2\n4\n-1 -2 -3 -4\n1",
+        "expectedOutput": "10 20\n-1 -3 -4",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n5\n0 0 0 0 0\n3",
+        "expectedOutput": "0 0 0 0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case read N, the array and the index P. Shift every element to the right of P one position to the left (or simply copy all elements except the one at P into a new list). Finally print the first N‑1 elements. The operation is O(N) per test case and uses O(1) extra memory.",
+    "timeComplexity": "O(N) per test case, where N is the size of the current array. Overall O(T·N).",
+    "spaceComplexity": "O(1) additional space besides the input array.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    int arr[100] = {2, 4, 6, 8, 10}; // Initial array\n    int size = 5; // Current size of the array\n\n    int positionToDelete = 2; // Index of the element to delete\n\n    // Update the code to shift elements to fill the gap left by the deleted element\n    for(int i=positionToDelete ; i<size-1 ; i++){\n        arr[i] = arr[i+1];\n    }\n\n    size--;  // Update the size of the array\n    \n\n    // Print the updated array\n    for (int i=0 ; i<size ; i++){\n        cout<<arr[i]<<\" \";\n    }\n\n    return 0;\n}",
-      "Python3": "# Initial array\narr = [2, 4, 6, 8, 10]\nsize = 5  # Current size of the array\n\nposition_to_delete = 2  # Index of the element to delete\n\n# Shift elements to fill the gap left by the deleted element\nfor i in range(position_to_delete, size - 1):\n    arr[i] = arr[i + 1]\n\nsize -= 1  # Update the size of the array\n\n# Print the updated array\nfor i in range(size):\n    print(arr[i], end=\" \")\n",
-      "C": "#include <stdio.h>\n\nint main() {\n    int arr[100];\n    int size;\n\n    // Read size of the array\n    scanf(\"%d\", &size);\n\n    // Read array elements\n    for (int i = 0; i < size; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    int positionToDelete;\n    // Read the index to delete (0-based)\n    scanf(\"%d\", &positionToDelete);\n\n    // Shift elements to fill the gap\n    for (int i = positionToDelete; i < size - 1; i++) {\n        arr[i] = arr[i + 1];\n    }\n\n    size--; // Reduce size after deletion\n\n    // Print updated array\n    for (int i = 0; i < size; i++) {\n        printf(\"%d \", arr[i]);\n    }\n\n    return 0;\n}\n",
-      "Java": "public class Main {\n    public static void main(String[] args) {\n        int[] arr = new int[100]; // Initial array\n        arr[0] = 2;\n        arr[1] = 4;\n        arr[2] = 6;\n        arr[3] = 8;\n        arr[4] = 10;\n        int size = 5; // Current size of the array\n\n        int positionToDelete = 2; // Index of the element to delete\n\n        // Shift elements to fill the gap left by the deleted element\n        for (int i = positionToDelete; i < size - 1; i++) {\n            arr[i] = arr[i + 1];\n        }\n\n        size--;  // Update the size of the array\n\n        // Print the updated array\n        for (int i = 0; i < size; i++) {\n            System.out.print(arr[i] + \" \");\n        }\n    }\n}\n",
-      "JavaScript": "let arr = [2, 4, 6, 8, 10]; // Initial array\nlet size = 5; // Current size of the array\n\nlet positionToDelete = 2; // Index of the element to delete\n\n// Update the code to shift elements to fill the gap left by the deleted element\nfor (let i = positionToDelete; i < size - 1; i++) {\n    arr[i] = arr[i + 1];\n}\n\n// Update the size of the array\nsize--;\n\n// Remove the last element since it is now a duplicate\narr.pop();\n\n// Print the updated array\nfor (let i = 0; i < size; i++) {\n    console.log(arr[i] + \" \");\n}\n"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N, P; scanf(\"%d\", &N);\n        int arr[16];\n        for(int i=0;i<N;i++) scanf(\"%d\", &arr[i]);\n        scanf(\"%d\", &P);\n        for(int i=P;i<N-1;i++) arr[i]=arr[i+1];\n        for(int i=0;i<N-1;i++){\n            if(i) printf(\" \");\n            printf(\"%d\", arr[i]);\n        }\n        if(T) printf(\"\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N, P; cin>>N;\n        vector<long long> a(N);\n        for(int i=0;i<N;i++) cin>>a[i];\n        cin>>P;\n        for(int i=P;i<N-1;i++) a[i]=a[i+1];\n        for(int i=0;i<N-1;i++){\n            if(i) cout<<' ';\n            cout<<a[i];\n        }\n        if(T) cout<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for(int tc=0; tc<T; tc++){\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] arr = new int[N];\n            st = new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) arr[i] = Integer.parseInt(st.nextToken());\n            int P = Integer.parseInt(br.readLine().trim());\n            for(int i=P;i<N-1;i++) arr[i] = arr[i+1];\n            for(int i=0;i<N-1;i++){\n                if(i>0) out.append(' ');\n                out.append(arr[i]);\n            }\n            if(tc<T-1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    outputs = []\n    for _ in range(T):\n        N = int(next(it))\n        arr = [int(next(it)) for _ in range(N)]\n        P = int(next(it))\n        # shift left from P\n        for i in range(P, N-1):\n            arr[i] = arr[i+1]\n        outputs.append(' '.join(str(arr[i]) for i in range(N-1)))\n    sys.stdout.write('\\n'.join(outputs))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor(let t = 0; t < T; t++){\n    const N = Number(input[idx++]);\n    let arr = new Array(N);\n    for(let i = 0; i < N; i++) arr[i] = Number(input[idx++]);\n    const P = Number(input[idx++]);\n    for(let i = P; i < N - 1; i++) arr[i] = arr[i+1];\n    results.push(arr.slice(0, N-1).join(' '));\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

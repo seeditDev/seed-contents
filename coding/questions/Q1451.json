@@ -4,14 +4,17 @@
   "slug": "height-of-binary-tree",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Tree",
+      "DFS",
+      "Recursion",
+      "Binary Tree",
+      "Height"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +24,32 @@
   "content": {
     "problemStatement": "Given a connected binary tree with **N** nodes, find the height of it. (**Note:** The height of a binary tree is the number of edges between the tree's root and its furthest leaf.)\n\nFor example, the following binary tree has height `2`:\n\n\n\nHint: While traversing the Tree, you will have to store the height of children and use that to calculate the height of parent.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, the height of the given binary tree.",
     "constraints": [
-      "1≤N≤100001 \\leq N \\leq 100001≤N≤10000",
-      "1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000",
-      "RiR_iRi​ = `L` or `R`",
-      "All pip_ipi​'s and cic_ici​'s are distinct."
+      "1 <= T <= 10",
+      "1 <= N <= 10000",
+      "1 <= pi, ci <= N",
+      "Ri is either 'L' or 'R'",
+      "The given edges form a valid binary tree (no cycles, exactly one root)."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains an integer N, the number of nodes in the binary tree.\n- The next N‑1 lines each contain three space‑separated values: pi ci Ri, where pi is the parent node index, ci is the child node index, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi). Nodes are numbered from 1 to N. The tree is guaranteed to be connected, binary, and has exactly one root.",
+    "outputFormat": "For each test case output a single line containing the height of the given binary tree, defined as the number of edges on the longest path from the root to any leaf.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "input": "1\\n5\\n1 2 L\\n1 3 R\\n3 4 L\\n3 5 R",
         "output": "2",
-        "explanation": ""
+        "explanation": "The tree is:\\n      1\\n     / \\\\n    2   3\\n       / \\\\n      4   5\\nThe longest root‑to‑leaf paths are 1→3→4 and 1→3→5, each containing 2 edges, so the height is 2."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n1",
+        "output": "0",
+        "explanation": "A single node is both root and leaf. The number of edges on the longest path is 0."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n7\\n1 2 L\\n1 3 R\\n2 4 L\\n2 5 R\\n3 6 R\\n6 7 L",
+        "output": "3",
+        "explanation": "The deepest leaf is node 7 reached via 1→3→6→7, which uses 3 edges, therefore the height is 3."
       }
     ]
   },
@@ -41,20 +57,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n1 2 L\n1 3 R\n3 4 L\n3 5 R",
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (15 nodes chain)",
+        "input": "1\\n15\\n1 2 L\\n2 3 L\\n3 4 L\\n4 5 L\\n5 6 L\\n6 7 L\\n7 8 L\\n8 9 L\\n9 10 L\\n10 11 L\\n11 12 L\\n12 13 L\\n13 14 L\\n14 15 L",
+        "expectedOutput": "14",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case with non‑1 root",
+        "input": "1\\n3\\n2 1 L\\n2 3 R",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1 – perfect tree of height 2",
+        "input": "1\\n7\\n1 2 L\\n1 3 R\\n2 4 L\\n2 5 R\\n3 6 L\\n3 7 R",
         "expectedOutput": "2",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2 – irregular shape",
+        "input": "1\\n5\\n3 1 L\\n3 2 R\\n1 4 L\\n4 5 R",
+        "expectedOutput": "3",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,14 +117,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case we build two arrays left[] and right[] of size N+1 where left[p] = child that is the left child of p (0 if none) and similarly for right. While reading edges we also mark every child node. After all edges are read, the node that was never marked as a child is the root. The height is then computed by a simple depth‑first recursion: height(node) = max(height(left[node]), height(right[node])) + 1, with the convention that height(0) = -1 so that a leaf node returns 0. This runs in O(N) time per test case and uses O(N) additional memory.",
+    "timeComplexity": "O(N) per test case, because each node is visited once during the DFS.",
+    "spaceComplexity": "O(N) per test case for the left, right and auxiliary arrays.",
     "code": {
-      "C++": "/*\nstruct Node {\n    int val; \n    Node *left;\n    Node *right;\n\n    Node(int node_value) {\n        val = node_value;\n        left = right = NULL;\n    }\n}; */\n\nclass Solution {\n  public:\n    int heightOfBinaryTree(Node* root) {\n       return max(0, depth(root) - 1);\n    }\n    int depth(Node* root){\n        if(root == NULL) return 0;\n        int left = depth(root->left);\n        int right = depth(root->right);\n        return max(left, right) + 1;\n    }\n};",
-      "C": "int max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint depth(Node* root) {\n    if (root == NULL) return 0;\n    int left = depth(root->left);\n    int right = depth(root->right);\n    return max(left, right) + 1;\n}\n\nint heightOfBinaryTree(Node* root) {\n    return max(0, depth(root) - 1);\n}\n",
-      "Java": "class Solution {\n    public int heightOfBinaryTree(Node root) {\n        return Math.max(0, depth(root) - 1);\n    }\n\n    public int depth(Node root) {\n        if (root == null) return 0;\n        int left = depth(root.left);\n        int right = depth(root.right);\n        return Math.max(left, right) + 1;\n    }\n}",
-      "JavaScript": "/*\nclass Node {\n    constructor(val) {\n        this.val = val;\n        this.left = null;\n        this.right = null;\n    }\n}\n*/\nclass Solution {\n    heightOfBinaryTree(root) {\n        return Math.max(0, this.depth(root) - 1);\n    }\n\n    depth(root) {\n        if (root === null) return 0;\n        const left = this.depth(root.left);\n        const right = this.depth(root.right);\n        return Math.max(left, right) + 1;\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint *leftChild;\nint *rightChild;\nint *isChild;\n\nint height(int node) {\n    if (node == 0) return -1; // null contributes -1 so leaf becomes 0\n    int hl = height(leftChild[node]);\n    int hr = height(rightChild[node]);\n    return (hl > hr ? hl : hr) + 1;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        leftChild = (int*)calloc(N + 1, sizeof(int));\n        rightChild = (int*)calloc(N + 1, sizeof(int));\n        isChild = (int*)calloc(N + 1, sizeof(int));\n        for (int i = 0; i < N - 1; ++i) {\n            int p, c; char dir;\n            scanf(\"%d %d %c\", &p, &c, &dir);\n            if (dir == 'L') leftChild[p] = c; else rightChild[p] = c;\n            isChild[c] = 1;\n        }\n        int root = 1;\n        for (int i = 1; i <= N; ++i) if (!isChild[i]) { root = i; break; }\n        int ans = height(root);\n        printf(\"%d\\n\", ans);\n        free(leftChild);\n        free(rightChild);\n        free(isChild);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint dfsHeight(int node, const vector<int>& left, const vector<int>& right) {\n    if (node == 0) return -1; // null contributes -1 so leaf becomes 0\n    int hl = dfsHeight(left[node], left, right);\n    int hr = dfsHeight(right[node], left, right);\n    return max(hl, hr) + 1;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int N; cin >> N;\n        vector<int> left(N + 1, 0), right(N + 1, 0), isChild(N + 1, 0);\n        for (int i = 0; i < N - 1; ++i) {\n            int p, c; char dir; cin >> p >> c >> dir;\n            if (dir == 'L') left[p] = c; else right[p] = c;\n            isChild[c] = 1;\n        }\n        int root = 1;\n        for (int i = 1; i <= N; ++i) if (!isChild[i]) { root = i; break; }\n        int ans = dfsHeight(root, left, right);\n        cout << ans << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int height(int node, int[] left, int[] right) {\n        if (node == 0) return -1; // null contributes -1\n        int hl = height(left[node], left, right);\n        int hr = height(right[node], left, right);\n        return Math.max(hl, hr) + 1;\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            int[] left = new int[N + 1];\n            int[] right = new int[N + 1];\n            boolean[] isChild = new boolean[N + 1];\n            for (int i = 0; i < N - 1; i++) {\n                st = new StringTokenizer(br.readLine());\n                int p = Integer.parseInt(st.nextToken());\n                int c = Integer.parseInt(st.nextToken());\n                char dir = st.nextToken().charAt(0);\n                if (dir == 'L') left[p] = c; else right[p] = c;\n                isChild[c] = true;\n            }\n            int root = 1;\n            for (int i = 1; i <= N; i++) if (!isChild[i]) { root = i; break; }\n            int ans = height(root, left, right);\n            out.append(ans).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef height(node, left, right):\n    if node == 0:\n        return -1  # null contributes -1 so leaf becomes 0\n    hl = height(left[node], left, right)\n    hr = height(right[node], left, right)\n    return max(hl, hr) + 1\n\ndef solve():\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    idx = 0\n    T = int(data[idx].strip()); idx += 1\n    out_lines = []\n    for _ in range(T):\n        N = int(data[idx].strip()); idx += 1\n        left = [0] * (N + 1)\n        right = [0] * (N + 1)\n        is_child = [False] * (N + 1)\n        for __ in range(N - 1):\n            pi, ci, Ri = data[idx].split(); idx += 1\n            pi = int(pi); ci = int(ci)\n            if Ri == 'L':\n                left[pi] = ci\n            else:\n                right[pi] = ci\n            is_child[ci] = True\n        root = 1\n        for i in range(1, N + 1):\n            if not is_child[i]:\n                root = i\n                break\n        out_lines.append(str(height(root, left, right)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nfunction nextLine() { return lines[idx++]; }\nfunction height(node, left, right) {\n    if (node === 0) return -1; // null contributes -1\n    const hl = height(left[node], left, right);\n    const hr = height(right[node], left, right);\n    return (hl > hr ? hl : hr) + 1;\n}\nconst T = parseInt(nextLine());\nlet outputs = [];\nfor (let t = 0; t < T; ++t) {\n    const N = parseInt(nextLine());\n    const left = new Array(N + 1).fill(0);\n    const right = new Array(N + 1).fill(0);\n    const isChild = new Array(N + 1).fill(false);\n    for (let i = 0; i < N - 1; ++i) {\n        const [pStr, cStr, dir] = nextLine().trim().split(' ');\n        const p = parseInt(pStr), c = parseInt(cStr);\n        if (dir === 'L') left[p] = c; else right[p] = c;\n        isChild[c] = true;\n    }\n    let root = 1;\n    for (let i = 1; i <= N; ++i) if (!isChild[i]) { root = i; break; }\n    outputs.push(String(height(root, left, right)));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }

@@ -4,14 +4,14 @@
   "slug": "even-sum",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "control flow",
-      "programming languages"
+      "Parity",
+      "Simple Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +20,31 @@
   },
   "content": {
     "problemStatement": "Given two space separated integers as user inputs, print `YES` if their sum is even else `NO`.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 1000",
+      "-1000 <= a <= 1000",
+      "-1000 <= b <= 1000"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains two space-separated integers a and b.",
+    "outputFormat": "For each test case, print a single line containing \"YES\" if a+b is even, otherwise \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2 3",
+        "input": "1\n2 3",
         "output": "NO",
-        "explanation": "Explanation:\n2 + 3  = 5 (Odd)"
+        "explanation": "2 + 3 = 5 which is odd, so the answer is NO."
       },
       {
         "id": "sample_2",
-        "input": "3 5",
+        "input": "1\n3 5",
         "output": "YES",
-        "explanation": "Explanation:\n3 + 5 = 8 (Even)"
+        "explanation": "3 + 5 = 8 which is even, so the answer is YES."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n-1 1",
+        "output": "YES",
+        "explanation": "-1 + 1 = 0 which is even, so the answer is YES."
       }
     ]
   },
@@ -42,27 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2 3",
-        "expectedOutput": "NO",
-        "weight": 50
+        "label": "minimum boundary",
+        "input": "1\n0 0",
+        "expectedOutput": "YES",
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "3 5",
+        "label": "maximum boundary",
+        "input": "1\n1000 1000",
         "expectedOutput": "YES",
-        "weight": 50
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform values",
+        "input": "3\n0 0\n0 0\n0 0",
+        "expectedOutput": "YES\nYES\nYES",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky edge (odd sum)",
+        "input": "1\n1000 -999",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\n2 2\n-3 5\n7 -8\n-1 -1\n0 1",
+        "expectedOutput": "YES\nYES\nNO\nYES\nNO",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -76,11 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The parity of a sum depends only on the parity of the addends. An integer is even if its least‑significant bit is 0. The sum of two numbers is even exactly when both numbers have the same parity (both even or both odd). For each test case we read a and b, compute (a+b)&1 (or (a+b)%2) and output \"YES\" if the result is 0, otherwise \"NO\". This runs in O(1) per test case.",
+    "timeComplexity": "O(T) total, O(1) per test case",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C": "// Solution\n#include <stdio.h>\n\nint main() {\n    int a, b;\n    scanf(\"%d %d\", &a, &b);\n    int sum = a + b;\n    if(sum % 2 == 0)\n        printf(\"YES\");\n    else \n        printf(\"NO\");\n    return 0;\n}\n"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int a,b; scanf(\"%d %d\",&a,&b);\n        if(((a+b)&1)==0) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long a,b; cin>>a>>b;\n        cout<<(((a+b)%2==0)?\"YES\":\"NO\")<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            st = new StringTokenizer(br.readLine());\n            long a = Long.parseLong(st.nextToken());\n            long b = Long.parseLong(st.nextToken());\n            sb.append(((a + b) % 2 == 0) ? \"YES\" : \"NO\");\n            sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndata = sys.stdin.read().split()\nif not data:\n    sys.exit()\nT = int(data[0])\nout = []\nidx = 1\nfor _ in range(T):\n    a = int(data[idx]); b = int(data[idx+1]); idx += 2\n    out.append('YES' if ((a + b) & 1) == 0 else 'NO')\nsys.stdout.write('\\n'.join(out) + '\\n')",
+      "JavaScript": "const fs = require('fs');\nlet input = fs.readFileSync(0, 'utf8').trim().split(/\\s+/);\nif (input.length === 0) process.exit();\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet out = [];\nfor (let i = 0; i < T; i++) {\n  const a = parseInt(input[idx++], 10);\n  const b = parseInt(input[idx++], 10);\n  out.push(((a + b) & 1) === 0 ? 'YES' : 'NO');\n}\nprocess.stdout.write(out.join('\\n') + '\\n');"
     }
   }
 }

@@ -4,14 +4,16 @@
   "slug": "distance-to-nearest-0",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "graphs",
-      "data structures and algorithms"
+      "BFS",
+      "Multi‑source BFS",
+      "Matrix",
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,24 +23,31 @@
   "content": {
     "problemStatement": "Given is a `N x M` binary matrix, for each cell find its distance from the nearest `0`.",
     "constraints": [
-      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
-      "The elements of the matrix are either `0` or `1`.",
-      "There is at least one `0` in the matrix."
+      "1 ≤ T ≤ 10",
+      "1 ≤ N, M ≤ 1000",
+      "Matrix elements are either 0 or 1",
+      "At least one 0 exists in each test case"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. For each test case, the first line contains two integers N and M (1 ≤ N, M ≤ 1000) – the number of rows and columns of the binary matrix. The next N lines each contain M space‑separated integers (0 or 1) describing the matrix.",
+    "outputFormat": "For each test case output N lines, each containing M space‑separated integers. The integer at position (i, j) is the minimum Manhattan distance from cell (i, j) to any cell containing 0 in the same test case.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "",
-        "output": "",
-        "explanation": "Input Format\n\nThe first line of input will contain two space separated integers NNN and MMM, denoting the no. of rows and columns in the matrix.\nNext NNN lines containing MMM space separated integers, the elements of the matrix.\nOutput Format\n\nOutput NNN lines containing MMM space separated integers, the distance of each cell from nearest 0."
+        "input": "3 3\n0 1 1\n0 1 0\n1 1 1",
+        "output": "0 1 1\n0 1 0\n1 2 1",
+        "explanation": "The distance of each cell from the nearest 0 is calculated using BFS."
       },
       {
         "id": "sample_2",
-        "input": "3 3\n0 1 1\n0 1 0\n1 1 1",
-        "output": "0 1 1\n0 1 0\n1 2 1",
-        "explanation": ""
+        "input": "2 2\n0 0\n0 0",
+        "output": "0 0\n0 0",
+        "explanation": "All cells are 0, so the distance is 0."
+      },
+      {
+        "id": "sample_3",
+        "input": "1 1\n0",
+        "output": "0",
+        "explanation": "There is only one cell, which is 0, so the distance is 0."
       }
     ]
   },
@@ -46,27 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
+        "label": "Case 1",
         "input": "",
         "expectedOutput": "",
-        "weight": 50
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "3 3\n0 1 1\n0 1 0\n1 1 1",
-        "expectedOutput": "0 1 1\n0 1 0\n1 2 1",
-        "weight": 50
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -80,15 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "Treat every cell containing 0 as a source and run a multi‑source Breadth‑First Search. All 0‑cells are initially enqueued with distance 0. While the queue is not empty, pop a cell, examine its four neighbours (up, down, left, right) and, if a neighbour has not been visited yet, set its distance to current distance + 1 and enqueue it. Because BFS expands level by level, the first time a cell is visited we have found its shortest distance to any 0. This runs in O(N·M) time per test case and uses O(N·M) additional space for the queue and distance matrix.",
+    "timeComplexity": "O(N·M) per test case – each cell is enqueued and processed at most once.",
+    "spaceComplexity": "O(N·M) – the queue may hold all cells in the worst case and the matrix itself stores the distances.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> directions = {0, 1, 0, -1, 0};\n\nvoid updateMatrix(vector<vector<int>>& matrix) {\n    int rows = matrix.size(), cols = matrix[0].size();\n    queue<pair<int, int>> to_process;\n    for (int row = 0; row < rows; ++row)\n        for (int col = 0; col < cols; ++col)\n            if (matrix[row][col] == 0) to_process.emplace(row, col);\n            else matrix[row][col] = -1;\n\n    while (!to_process.empty()) {\n        auto it = to_process.front(); \n        int row = it.first;\n        int col = it.second;\n        to_process.pop();\n        for (int i = 0; i < 4; ++i) {\n            int new_row = row + directions[i], new_col = col + directions[i+1];\n            if (new_row < 0 || new_row == rows || new_col < 0 || new_col == cols || matrix[new_row][new_col] != -1) continue;\n            matrix[new_row][new_col] = matrix[row][col] + 1;\n            to_process.emplace(new_row, new_col);\n        }\n    }\n}\n\nint main() {\n\n\n  int n, m;\n  cin >> n >> m;\n\n  assert(1 <= n && n <= 100);\n  assert(1 <= m && m <= 100);\n\n  vector<vector<int> > mat(n, vector<int> (m));\n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n        cin >> mat[i][j];\n        int x = mat[i][j];\n        assert(x == 0 || x == 1);\n    }\n  } \n  \n  updateMatrix(mat);\n  \n  for(int i = 0; i < n; i++){\n    for(int j = 0; j < m; j++){\n       cout << mat[i][j] << ' ';\n    }\n    cout << endl;\n  } \n\n  return 0;\n} ",
-      "Python3": "from collections import deque\n\ndirections = [(0, 1), (1, 0), (0, -1), (-1, 0)]\n\ndef updateMatrix(matrix):\n    rows, cols = len(matrix), len(matrix[0])\n    queue = deque()\n\n    for row in range(rows):\n        for col in range(cols):\n            if matrix[row][col] == 0:\n                queue.append((row, col))\n            else:\n                matrix[row][col] = -1\n\n    while queue:\n        row, col = queue.popleft()\n\n        for dr, dc in directions:\n            new_row, new_col = row + dr, col + dc\n            if 0 <= new_row < rows and 0 <= new_col < cols and matrix[new_row][new_col] == -1:\n                matrix[new_row][new_col] = matrix[row][col] + 1\n                queue.append((new_row, new_col))\n\ndef main():\n    n, m = map(int, input().split())\n\n    assert 1 <= n <= 100\n    assert 1 <= m <= 100\n\n    mat = [list(map(int, input().split())) for _ in range(n)]\n\n    for row in mat:\n        for x in row:\n            assert x == 0 or x == 1\n\n    updateMatrix(mat)\n\n    for row in mat:\n        print(' '.join(map(str, row)))\n\nif __name__ == \"__main__\":\n    main()\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <stdlib.h>\n#include <assert.h>\n\nint directions[] = {0, 1, 0, -1, 0};\n\nvoid updateMatrix(int matrix[][100], int numRows, int numCols) {\n    int rows = numRows, cols = numCols;\n    int queue[rows * cols][2];\n    int front = 0, rear = 0;\n\n    for (int row = 0; row < rows; ++row) {\n        for (int col = 0; col < cols; ++col) {\n            if (matrix[row][col] == 0) {\n                queue[rear][0] = row;\n                queue[rear++][1] = col;\n            } else {\n                matrix[row][col] = -1;\n            }\n        }\n    }\n\n    while (front != rear) {\n        int row = queue[front][0];\n        int col = queue[front][1];\n        front++;\n\n        for (int i = 0; i < 4; ++i) {\n            int new_row = row + directions[i], new_col = col + directions[i+1];\n            if (new_row < 0 || new_row == rows || new_col < 0 || new_col == cols || matrix[new_row][new_col] != -1) continue;\n            matrix[new_row][new_col] = matrix[row][col] + 1;\n            queue[rear][0] = new_row;\n            queue[rear++][1] = new_col;\n        }\n    }\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    assert(1 <= n && n <= 100);\n    assert(1 <= m && m <= 100);\n\n    int mat[100][100];\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            int val;\n            scanf(\"%d\", &val);\n            mat[i][j] = val;\n            int x = mat[i][j];\n            assert(x == 0 || x == 1);\n        }\n    }\n\n    updateMatrix(mat, n, m);\n    \n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            printf(\"%d \", mat[i][j]);\n        }\n        printf(\"\\n\");\n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.*;\n\npublic class Main {\n    static int[] directions = {0, 1, 0, -1, 0};\n\n    public static void updateMatrix(int[][] matrix) {\n        int rows = matrix.length;\n        int cols = matrix[0].length;\n        Queue<int[]> queue = new LinkedList<>();\n\n        for (int row = 0; row < rows; ++row) {\n            for (int col = 0; col < cols; ++col) {\n                if (matrix[row][col] == 0) {\n                    queue.add(new int[]{row, col});\n                } else {\n                    matrix[row][col] = -1;\n                }\n            }\n        }\n\n        while (!queue.isEmpty()) {\n            int[] cell = queue.poll();\n            int row = cell[0], col = cell[1];\n\n            for (int i = 0; i < 4; ++i) {\n                int new_row = row + directions[i], new_col = col + directions[i+1];\n                if (new_row >= 0 && new_row < rows && new_col >= 0 && new_col < cols && matrix[new_row][new_col] == -1) {\n                    matrix[new_row][new_col] = matrix[row][col] + 1;\n                    queue.add(new int[]{new_row, new_col});\n                }\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        assert (1 <= n && n <= 100);\n        assert (1 <= m && m <= 100);\n\n        int[][] mat = new int[n][m];\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                mat[i][j] = scanner.nextInt();\n                assert (mat[i][j] == 0 || mat[i][j] == 1);\n            }\n        }\n\n        updateMatrix(mat);\n\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < m; j++) {\n                System.out.print(mat[i][j] + \" \");\n            }\n            System.out.println();\n        }\n    }\n}\n",
-      "JavaScript": "function updateMatrix(matrix) {\n    const rows = matrix.length;\n    const cols = matrix[0].length;\n    const directions = [0, 1, 0, -1, 0];\n    const toProcess = [];\n    \n    for (let row = 0; row < rows; row++) {\n        for (let col = 0; col < cols; col++) {\n            if (matrix[row][col] === 0) {\n                toProcess.push([row, col]);\n            } else {\n                matrix[row][col] = -1;\n            }\n        }\n    }\n    while (toProcess.length > 0) {\n        const [row, col] = toProcess.shift();\n        for (let i = 0; i < 4; i++) {\n            const newRow = row + directions[i];\n            const newCol = col + directions[i + 1];\n            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && matrix[newRow][newCol] === -1) {\n                matrix[newRow][newCol] = matrix[row][col] + 1;\n                toProcess.push([newRow, newCol]);\n            }\n        }\n    }\n}\n\nconst readline = require('readline');\n\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nlet input = [];\nrl.on('line', (line) => {\n    input.push(line.trim());\n});\n\nrl.on('close', () => {\n    const [n, m] = input[0].split(' ').map(Number);\n\n    const matrix = [];\n    for (let i = 1; i <= n; i++) {\n        const row = input[i].split(' ').map(Number);\n        matrix.push(row);\n    }\n\n    updateMatrix(matrix);\n\n    for (const row of matrix) {\n        console.log(row.join(' '));\n    }\n});\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_NM 1000000  // N*M ≤ 10^6 fits in memory\n\nint dr[4] = {0, 0, 1, -1};\nint dc[4] = {1, -1, 0, 0};\n\nint main() {\n    int T; scanf(\"%d\", &T);\n    while (T--) {\n        int n, m; scanf(\"%d %d\", &n, &m);\n        int **dist = (int**)malloc(n * sizeof(int*));\n        int **mat = (int**)malloc(n * sizeof(int*));\n        for (int i = 0; i < n; ++i) {\n            mat[i] = (int*)malloc(m * sizeof(int));\n            dist[i] = (int*)malloc(m * sizeof(int));\n        }\n        // queue of positions encoded as a single integer idx = r*m + c\n        int *queue = (int*)malloc(n * m * sizeof(int));\n        int front = 0, rear = 0;\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < m; ++j) {\n                scanf(\"%d\", &mat[i][j]);\n                if (mat[i][j] == 0) {\n                    dist[i][j] = 0;\n                    queue[rear++] = i * m + j;\n                } else {\n                    dist[i][j] = -1; // unvisited\n                }\n            }\n        }\n        while (front < rear) {\n            int idx = queue[front++];\n            int r = idx / m;\n            int c = idx % m;\n            for (int k = 0; k < 4; ++k) {\n                int nr = r + dr[k];\n                int nc = c + dc[k];\n                if (nr >= 0 && nr < n && nc >= 0 && nc < m && dist[nr][nc] == -1) {\n                    dist[nr][nc] = dist[r][c] + 1;\n                    queue[rear++] = nr * m + nc;\n                }\n            }\n        }\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < m; ++j) {\n                printf(\"%d\", dist[i][j]);\n                if (j + 1 < m) printf(\" \");\n            }\n            printf(\"\\n\");\n        }\n        for (int i = 0; i < n; ++i) {\n            free(mat[i]);\n            free(dist[i]);\n        }\n        free(mat);\n        free(dist);\n        free(queue);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int n, m; cin >> n >> m;\n        vector<vector<int>> dist(n, vector<int>(m, -1));\n        queue<pair<int,int>> q;\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < m; ++j) {\n                int val; cin >> val;\n                if (val == 0) {\n                    dist[i][j] = 0;\n                    q.emplace(i, j);\n                }\n            }\n        }\n        const int dr[4] = {0,0,1,-1};\n        const int dc[4] = {1,-1,0,0};\n        while (!q.empty()) {\n            auto [r,c] = q.front(); q.pop();\n            for (int k = 0; k < 4; ++k) {\n                int nr = r + dr[k];\n                int nc = c + dc[k];\n                if (nr>=0 && nr<n && nc>=0 && nc<m && dist[nr][nc]==-1) {\n                    dist[nr][nc] = dist[r][c] + 1;\n                    q.emplace(nr,nc);\n                }\n            }\n        }\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < m; ++j) {\n                cout << dist[i][j];\n                if (j + 1 < m) cout << ' ';\n            }\n            cout << '\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int m = Integer.parseInt(st.nextToken());\n            int[][] dist = new int[n][m];\n            for (int[] row : dist) Arrays.fill(row, -1);\n            ArrayDeque<int[]> q = new ArrayDeque<>();\n            for (int i = 0; i < n; ++i) {\n                st = new StringTokenizer(br.readLine());\n                for (int j = 0; j < m; ++j) {\n                    int val = Integer.parseInt(st.nextToken());\n                    if (val == 0) {\n                        dist[i][j] = 0;\n                        q.add(new int[]{i, j});\n                    }\n                }\n            }\n            int[] dr = {0,0,1,-1};\n            int[] dc = {1,-1,0,0};\n            while (!q.isEmpty()) {\n                int[] cur = q.poll();\n                int r = cur[0], c = cur[1];\n                for (int k = 0; k < 4; ++k) {\n                    int nr = r + dr[k];\n                    int nc = c + dc[k];\n                    if (nr>=0 && nr<n && nc>=0 && nc<m && dist[nr][nc]==-1) {\n                        dist[nr][nc] = dist[r][c] + 1;\n                        q.add(new int[]{nr,nc});\n                    }\n                }\n            }\n            for (int i = 0; i < n; ++i) {\n                for (int j = 0; j < m; ++j) {\n                    out.append(dist[i][j]);\n                    if (j + 1 < m) out.append(' ');\n                }\n                out.append('\\n');\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\nfrom collections import deque\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        n = int(next(it)); m = int(next(it))\n        mat = [[int(next(it)) for _ in range(m)] for _ in range(n)]\n        dist = [[-1]*m for _ in range(n)]\n        q = deque()\n        for i in range(n):\n            for j in range(m):\n                if mat[i][j] == 0:\n                    dist[i][j] = 0\n                    q.append((i,j))\n        dr = (0,0,1,-1)\n        dc = (1,-1,0,0)\n        while q:\n            r,c = q.popleft()\n            d = dist[r][c]\n            for k in range(4):\n                nr = r + dr[k]\n                nc = c + dc[k]\n                if 0 <= nr < n and 0 <= nc < m and dist[nr][nc] == -1:\n                    dist[nr][nc] = d + 1\n                    q.append((nr,nc))\n        for row in dist:\n            out_lines.append(' '.join(map(str,row)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet output = [];\nfor (let t = 0; t < T; ++t) {\n  const n = Number(input[idx++]);\n  const m = Number(input[idx++]);\n  const dist = Array.from({length: n}, () => Array(m).fill(-1));\n  const queue = [];\n  let head = 0;\n  for (let i = 0; i < n; ++i) {\n    for (let j = 0; j < m; ++j) {\n      const val = Number(input[idx++]);\n      if (val === 0) {\n        dist[i][j] = 0;\n        queue.push([i, j]);\n      }\n    }\n  }\n  const dr = [0,0,1,-1];\n  const dc = [1,-1,0,0];\n  while (head < queue.length) {\n    const [r,c] = queue[head++];\n    const cur = dist[r][c];\n    for (let k = 0; k < 4; ++k) {\n      const nr = r + dr[k];\n      const nc = c + dc[k];\n      if (nr >= 0 && nr < n && nc >= 0 && nc < m && dist[nr][nc] === -1) {\n        dist[nr][nc] = cur + 1;\n        queue.push([nr, nc]);\n      }\n    }\n  }\n  for (let i = 0; i < n; ++i) {\n    output.push(dist[i].join(' '));\n  }\n}\nconsole.log(output.join('\\n'));\n"
     }
   }
 }

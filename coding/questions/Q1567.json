@@ -4,14 +4,15 @@
   "slug": "maximum-possible-mex-after-operations",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Greedy | Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "hashing",
-      "data structures and algorithms"
+      "Modulo",
+      "Greedy",
+      "Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,32 @@
   },
   "content": {
     "problemStatement": "You are given an integer array nums of length N and an integer value.\n\n\nIn one operation, you may add or subtract value from any element of the array any number of times (including zero).\nEach element can be modified independently, and values may become negative.\nYour task is to determine the maximum possible MEX of the array after performing these operations.\n**The MEX (Minimum EXcluded number) of an array is the smallest non-negative integer that is not present in the array.**\n\nFunction DeclarationFunction NamefindMaxMexfindMaxMexfindMaxMex\n\nParameters\nnumsnumsnums : A reference to an integer array of size NNN.\nvaluevaluevalue : An integer that can be added to or subtracted from any array element any number of times.\nReturn Value\nReturns an integer representing the **maximum possible MEX** that can be achieved after performing any number of operations.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤N,value≤1051 \\leq N, value \\leq 10^51≤N,value≤105\n−109≤nums[i]≤109-10^9 \\leq nums[i] \\leq 10^9−109≤nums[i]≤109\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains two integers NNN and valuevaluevalue — the size of the array and the operation value.\nThe second line contains NNN integers — the elements of the array numsnumsnums.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the **maximum possible MEX** after performing the operations.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "1 <= value <= 100000",
+      "-10^9 <= nums[i] <= 10^9"
+    ],
+    "inputFormat": "The first line contains an integer T, the number of test cases.\nFor each test case:\n- The first line contains two integers N and value.\n- The second line contains N integers, the elements of the array nums.",
+    "outputFormat": "For each test case output a single line containing the maximum possible MEX after any number of allowed operations.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "[1, 0, 2, 3, 6, 8]",
-        "output": "[1, -10, 0, 13, 6, 8]",
-        "explanation": "Explanation:"
+        "input": "1\\n5 3\\n1 2 3 4 5",
+        "output": "3",
+        "explanation": "Residues modulo 3 are [1,2,0,1,2]. We can produce 0 using the element with residue 0, 1 using a residue‑1 element, and 2 using a residue‑2 element. No element remains with residue 0, so 3 cannot be produced. Hence MEX = 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n4 2\\n0 1 2 3",
+        "output": "4",
+        "explanation": "Residues modulo 2 are [0,1,0,1]. We can assign them to 0,1,2,3 respectively. After using all four elements, residue 0 is exhausted, so 4 cannot be produced. MEX = 4."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n6 1\\n5 -2 7 0 3 9",
+        "output": "6",
+        "explanation": "When value = 1 every integer is reachable from any element, so we can create 0…5 using the six elements. The next missing number is 6."
       }
     ]
   },
@@ -36,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "[1, 0, 2, 3, 6, 8]",
-        "expectedOutput": "[1, -10, 0, 13, 6, 8]",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1 1\\n0",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (within element limit)",
+        "input": "1\\n15 100000\\n0 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
+        "expectedOutput": "15",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case – all same residue",
+        "input": "1\\n3 5\\n-5 -10 -15",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1 – missing residue 0",
+        "input": "1\\n6 4\\n1 5 9 13 2 6",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2 – some residues missing later",
+        "input": "1\\n7 3\\n0 3 6 9 12 1 4",
+        "expectedOutput": "2",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "Create a **frequency array** `freq` of size `value` to count how many numbers belong to each remainder class.\n\n`freq[r] = number of elements with (num % value == r)`\n\nStart from **mex = 0**, and for each next number:\n\n\n\nCompute its remainder → `rem = mex % value`\n\n\n\n\nIf we have at least one number with that remainder (`freq[rem] &gt; 0`):\n\n\n\nUse it (decrement `freq[rem]`)\nIncrement `mex`\n\n\n\nOtherwise → we can’t form this number → stop\n\n\n\nReturn `mex`\n\nComplexity AnalysisTypeExplanationComplexity**Time Complexity**One pass for counting + one pass for MEX finding**O(N + MEX)****Space Complexity**Frequency array of size `value`**O(value)**",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "Each element can be increased or decreased by multiples of `value`. Therefore an element can be transformed into any integer that has the same remainder modulo `value` as the original element.  The only thing that matters is how many elements we have for each residue class 0 … value‑1.\n\nWe count the occurrences of each residue. To build the numbers 0,1,2,… we need one element whose residue equals the current number modulo `value`. While the needed residue still has a spare element we consume it and move to the next number. The first number whose required residue is exhausted is the MEX.\n\nAlgorithm per test case:\n1. Initialise an array `cnt[value]` with zeros.\n2. For each array element `x` compute `r = ((x % value) + value) % value` and increment `cnt[r]`.\n3. Set `mex = 0`. While `cnt[mex % value] > 0` decrement that counter and increment `mex`.\n4. Output `mex`.\n\nThe loop runs at most `N + value` iterations, which is O(N) in practice.\n\nEdge cases handled:\n- `value = 1` → every integer is reachable, answer is `N`.\n- Negative numbers are correctly normalised to a non‑negative residue.\n- If a residue class is missing from the start, the answer is 0.\n",
+    "timeComplexity": "O(N) per test case (counting residues) plus O(answer) for the while loop, overall O(N).",
+    "spaceComplexity": "O(value) for the residue counters.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, value;\n        scanf(\"%d %d\", &N, &value);\n        int *cnt = (int *)calloc(value, sizeof(int));\n        for (int i = 0; i < N; ++i) {\n            long long x;\n            scanf(\"%lld\", &x);\n            int r = (int)((x % value + value) % value);\n            cnt[r]++;\n        }\n        int mex = 0;\n        while (1) {\n            int r = mex % value;\n            if (cnt[r] == 0) break;\n            cnt[r]--;\n            ++mex;\n        }\n        printf(\"%d\\n\", mex);\n        free(cnt);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int N, value; cin >> N >> value;\n        vector<int> cnt(value, 0);\n        for (int i = 0; i < N; ++i) {\n            long long x; cin >> x;\n            int r = (int)((x % value + value) % value);\n            ++cnt[r];\n        }\n        int mex = 0;\n        while (true) {\n            int r = mex % value;\n            if (cnt[r] == 0) break;\n            --cnt[r];\n            ++mex;\n        }\n        cout << mex << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int value = Integer.parseInt(st.nextToken());\n            int[] cnt = new int[value];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; ++i) {\n                long x = Long.parseLong(st.nextToken());\n                int r = (int) ((x % value + value) % value);\n                cnt[r]++;\n            }\n            int mex = 0;\n            while (true) {\n                int r = mex % value;\n                if (cnt[r] == 0) break;\n                cnt[r]--;\n                mex++;\n            }\n            sb.append(mex).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        value = int(next(it))\n        cnt = [0] * value\n        for _ in range(N):\n            x = int(next(it))\n            r = (x % value + value) % value\n            cnt[r] += 1\n        mex = 0\n        while True:\n            r = mex % value\n            if cnt[r] == 0:\n                break\n            cnt[r] -= 1\n            mex += 1\n        out_lines.append(str(mex))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  const value = Number(input[idx++]);\n  const cnt = new Array(value).fill(0);\n  for (let i = 0; i < N; ++i) {\n    const x = Number(input[idx++]);\n    const r = ((x % value) + value) % value;\n    cnt[r]++;\n  }\n  let mex = 0;\n  while (true) {\n    const r = mex % value;\n    if (cnt[r] === 0) break;\n    cnt[r]--;\n    mex++;\n  }\n  results.push(String(mex));\n}\nconsole.log(results.join('\\n'));\n"
+    }
   }
 }

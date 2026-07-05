@@ -4,14 +4,14 @@
   "slug": "chef-and-problem-setting",
   "version": 1,
   "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "String Manipulation",
+      "Conditional Statements"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,12 +21,11 @@
   "content": {
     "problemStatement": "Chef wants to set problems for a Lunchtime contest. He already has all the problem ideas and tests for them. Now, he only needs someone to test them, so he asked Hasan to do it.\n\nHasan is now testing the problems, the problem that hasan is currently testing has MMM tests (numbered 111 through MMM). He wrote NNN solutions (numbered 111 through NNN) for this problem; some of the solutions are intended to pass, while other ones are intended to fail on some tests.\n\nHe has submitted all of his solutions to this problem in a testing contest. For each solution, the system returned a (possibly empty) list of tests on which this solution failed as feedback.\n\nThere are three possible outcomes:\n\n\nIf there is a solution which is intended to pass all tests, but fails on some test, the tests are invalid.\nIf the tests are not invalid and there is a solution which is intended to fail on some test, but passes all tests, the tests are weak.\nIf the tests are not invalid or weak, they are fine.\nHelp Hasan determine the outcome for this problem!",
     "constraints": [
-      "1≤T≤1001 \\le T \\le 1001≤T≤100",
-      "2≤N,M≤502 \\le N, M \\le 502≤N,M≤50",
-      "Subtasks"
+      "1 ≤ T ≤ 100",
+      "2 ≤ N, M ≤ 50"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of problems that Hasan wants to test. The description of TTT problems follows.\nThe first line contains two space-separated integers NNN and MMM.\nNNN lines follow. For each iii (1≤i≤N1 \\le i \\le N1≤i≤N), the iii-th of these lines contains the string `\"correct\"` if the iii-th solution is intended to pass or `\"wrong\"` if it is intended to fail, followed by a space and a string with length MMM. For each valid jjj, the jjj-th character of this string is '1' if the iii-th solution passed the jjj-th test or '0' if it failed the jjj-th test.",
-    "outputFormat": "For each test case, print a single line containing one of the strings `\"FINE\"`, `\"INVALID\"` or `\"WEAK\"`.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of problems that Hasan wants to test. The description of T problems follows. The first line contains two space-separated integers N and M. N lines follow. For each i (1≤i≤N), the i-th of these lines contains the string \"correct\" if the i-th solution is intended to pass or \"wrong\" if it is intended to fail, followed by a space and a string with length M. For each valid j, the j-th character of this string is '1' if the i-th solution passed the j-th test or '0' if it failed the j-th test.",
+    "outputFormat": "For each test case, print a single line containing one of the strings \"FINE\", \"INVALID\" or \"WEAK\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -40,20 +39,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n4 5\ncorrect 11111\nwrong 10101\ncorrect 11111\nwrong 01111\n4 5\ncorrect 10110\nwrong 11111\ncorrect 11111\nwrong 01000\n4 5\ncorrect 11111\nwrong 11111\nwrong 10100\nwrong 00000\n4 5\nwrong 10110\ncorrect 01101\ncorrect 11111\nwrong 11000",
-        "expectedOutput": "FINE\nINVALID\nWEAK\nINVALID",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n2 2\ncorrect 11\nwrong 00",
+        "expectedOutput": "FINE",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n50 50\ncorrect 1111111111111111111111111111111111111111\nwrong 0000000000000000000000000000000000000000",
+        "expectedOutput": "FINE",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case",
+        "input": "1\n1 1\ncorrect 0",
+        "expectedOutput": "INVALID",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "1\n3 3\ncorrect 111\nwrong 101\nwrong 110",
+        "expectedOutput": "FINE",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "1\n3 3\ncorrect 101\nwrong 111\nwrong 000",
+        "expectedOutput": "WEAK",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,9 +99,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To solve this problem, we need to iterate over each test case and check the status of each solution. If a solution is intended to pass but fails any test, the tests are invalid. If the tests are not invalid and a solution is intended to fail but passes all tests, the tests are weak. Otherwise, the tests are fine.",
+    "timeComplexity": "O(T * N * M) — where T is the number of test cases, N is the number of solutions, and M is the number of tests.",
+    "spaceComplexity": "O(1) — as we only use a constant amount of space to store the status of the tests.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int invalid = 0, weak = 0;\n        for (int i = 0; i < N; i++) {\n            char status[10], result[M + 1];\n            scanf(\"%s %s\", status, result);\n            if (strcmp(status, \"correct\") == 0) {\n                for (int j = 0; j < M; j++) {\n                    if (result[j] == '0') {\n                        invalid = 1;\n                        break;\n                    }\n                }\n            } else {\n                int allPassed = 1;\n                for (int j = 0; j < M; j++) {\n                    if (result[j] == '0') {\n                        allPassed = 0;\n                        break;\n                    }\n                }\n                if (allPassed) {\n                    weak = 1;\n                }\n            }\n        }\n        if (invalid) {\n            printf(\"INVALID\\n\");\n        } else if (weak) {\n            printf(\"WEAK\\n\");\n        } else {\n            printf(\"FINE\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        int invalid = 0, weak = 0;\n        for (int i = 0; i < N; i++) {\n            string status, result;\n            cin >> status >> result;\n            if (status == \"correct\") {\n                for (int j = 0; j < M; j++) {\n                    if (result[j] == '0') {\n                        invalid = 1;\n                        break;\n                    }\n                }\n            } else {\n                int allPassed = 1;\n                for (int j = 0; j < M; j++) {\n                    if (result[j] == '0') {\n                        allPassed = 0;\n                        break;\n                    }\n                }\n                if (allPassed) {\n                    weak = 1;\n                }\n            }\n        }\n        if (invalid) {\n            cout << \"INVALID\" << endl;\n        } else if (weak) {\n            cout << \"WEAK\" << endl;\n        } else {\n            cout << \"FINE\" << endl;\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt(), M = sc.nextInt();\n            int invalid = 0, weak = 0;\n            for (int i = 0; i < N; i++) {\n                String status = sc.next(), result = sc.next();\n                if (status.equals(\"correct\")) {\n                    for (int j = 0; j < M; j++) {\n                        if (result.charAt(j) == '0') {\n                            invalid = 1;\n                            break;\n                        }\n                    }\n                } else {\n                    int allPassed = 1;\n                    for (int j = 0; j < M; j++) {\n                        if (result.charAt(j) == '0') {\n                            allPassed = 0;\n                            break;\n                        }\n                    }\n                    if (allPassed) {\n                        weak = 1;\n                    }\n                }\n            }\n            if (invalid > 0) {\n                System.out.println(\"INVALID\");\n            } else if (weak > 0) {\n                System.out.println(\"WEAK\");\n            } else {\n                System.out.println(\"FINE\");\n            }\n        }\n    }\n}",
+      "Python3": "import sys\nT = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    invalid = 0\n    weak = 0\n    for _ in range(N):\n        status, result = input().split()\n        if status == \"correct\":\n            for j in range(M):\n                if result[j] == '0':\n                    invalid = 1\n                    break\n        else:\n            allPassed = 1\n            for j in range(M):\n                if result[j] == '0':\n                    allPassed = 0\n                    break\n            if allPassed:\n                weak = 1\n    if invalid:\n        print(\"INVALID\")\n    elif weak:\n        print(\"WEAK\")\n    else:\n        print(\"FINE\")",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readLine = () => input[idx++];\nconst readInt = () => parseInt(readLine());\nconst readInts = () => readLine().split(' ').map(x => parseInt(x));\nconst T = readInt();\nfor (let i = 0; i < T; i++) {\n    let [N, M] = readInts();\n    let invalid = 0, weak = 0;\n    for (let j = 0; j < N; j++) {\n        let [status, result] = readLine().split(' ');\n        if (status === 'correct') {\n            for (let k = 0; k < M; k++) {\n                if (result[k] === '0') {\n                    invalid = 1;\n                    break;\n                }\n            }\n        } else {\n            let allPassed = 1;\n            for (let k = 0; k < M; k++) {\n                if (result[k] === '0') {\n                    allPassed = 0;\n                    break;\n                }\n            }\n            if (allPassed) {\n                weak = 1;\n            }\n        }\n    }\n    if (invalid) {\n        console.log('INVALID');\n    } else if (weak) {\n        console.log('WEAK');\n    } else {\n        console.log('FINE');\n    }\n}"
+    }
   }
 }

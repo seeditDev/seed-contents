@@ -4,14 +4,15 @@
   "slug": "reverse-digits-output",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "language fundamentals",
-      "programming languages"
+      "Digits",
+      "Modular Arithmetic",
+      "Basic Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,29 +22,30 @@
   "content": {
     "problemStatement": "Write a C program that takes a three-digit integer as input and prints its digits in reverse order (With a string message and spaces between the digits. See the sample output).",
     "constraints": [
-      "The input is a three-digit integer (100 <= N <= 999).",
-      "The input is an integer (no decimal points or non-numeric characters)."
+      "1 <= T <= 10",
+      "100 <= N <= 999",
+      "All values are integers"
     ],
-    "inputFormat": "The input is a three-digit integer.",
-    "outputFormat": "Print the digits of the input integer in reverse order, separated by spaces, with the message 'Digits in reverse order: ' before the digits.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a three-digit integer N.",
+    "outputFormat": "For each test case, print a line: \"Digits in reverse order: d1 d2 d3\" where d1, d2, d3 are the units, tens and hundreds digits of N respectively.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "456",
-        "output": "Digits in reverse order: 6 5 4\n",
-        "explanation": "Reversing the digits of 456"
+        "input": "1\\n456",
+        "output": "Digits in reverse order: 6 5 4",
+        "explanation": "456 → units=6, tens=5, hundreds=4; printed in reverse order."
       },
       {
         "id": "sample_2",
-        "input": "123",
-        "output": "Digits in reverse order: 3 2 1\n",
-        "explanation": "Reversing the digits of 123"
+        "input": "1\\n123",
+        "output": "Digits in reverse order: 3 2 1",
+        "explanation": "123 → units=3, tens=2, hundreds=1."
       },
       {
         "id": "sample_3",
-        "input": "999",
-        "output": "Digits in reverse order: 9 9 9\n",
-        "explanation": "Reversing the digits of 999"
+        "input": "1\\n999",
+        "output": "Digits in reverse order: 9 9 9",
+        "explanation": "All digits are 9, reversing does not change the sequence."
       }
     ]
   },
@@ -51,32 +53,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "100",
-        "expectedOutput": "Digits in reverse order: 0 0 1\n",
+        "label": "minimum boundary",
+        "input": "1\\n100",
+        "expectedOutput": "Digits in reverse order: 0 0 1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "999",
-        "expectedOutput": "Digits in reverse order: 9 9 9\n",
+        "label": "maximum boundary",
+        "input": "2\\n999\\n987",
+        "expectedOutput": "Digits in reverse order: 9 9 9\\nDigits in reverse order: 7 8 9",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "111",
-        "expectedOutput": "Digits in reverse order: 1 1 1\n",
+        "label": "uniform values",
+        "input": "3\\n111\\n111\\n111",
+        "expectedOutput": "Digits in reverse order: 1 1 1\\nDigits in reverse order: 1 1 1\\nDigits in reverse order: 1 1 1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "input": "753",
-        "expectedOutput": "Digits in reverse order: 3 5 7\n",
+        "label": "tricky edge with zero digit",
+        "input": "1\\n101",
+        "expectedOutput": "Digits in reverse order: 1 0 1",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "input": "627",
-        "expectedOutput": "Digits in reverse order: 7 2 6\n",
+        "label": "stress/general",
+        "input": "5\\n124\\n457\\n789\\n210\\n345",
+        "expectedOutput": "Digits in reverse order: 4 2 1\\nDigits in reverse order: 7 5 4\\nDigits in reverse order: 9 8 7\\nDigits in reverse order: 0 1 2\\nDigits in reverse order: 5 4 3",
         "weight": 2
       }
     ],
@@ -106,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we first read the input integer. Then, we extract the last digit of the number using the modulus operator (%). Next, we extract the middle digit by first removing the last digit (using integer division by 10) and then taking the remainder when divided by 10. Finally, we extract the first digit by removing the last two digits (using integer division by 100). We then print these digits in reverse order, separated by spaces, with the required message.",
-    "timeComplexity": "O(1) because the number of operations is constant and does not depend on the input size.",
-    "spaceComplexity": "O(1) because we use a constant amount of space to store the input and the extracted digits.",
+    "approach": "The task is purely arithmetic. For a three‑digit number N, the unit digit is N%10, the tens digit is (N/10)%10 and the hundreds digit is N/100. These three values are printed in the order unit, tens, hundreds. The algorithm runs in O(1) per test case and uses only a few integer variables, so the total complexity is O(T) time and O(1) extra space.",
+    "timeComplexity": "O(T) total, O(1) per test case",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int number, digit1, digit2, digit3;\n    scanf(\"%d\", &number);\n    digit1 = number % 10;\n    digit2 = (number / 10) % 10;\n    digit3 = number / 100;\n    printf(\"Digits in reverse order: %d %d %d\\n\", digit1, digit2, digit3);\n    return 0;\n}",
-      "C++": "#include <iostream>\n\nint main() {\n    int number, digit1, digit2, digit3;\n    std::cin >> number;\n    digit1 = number % 10;\n    digit2 = (number / 10) % 10;\n    digit3 = number / 100;\n    std::cout << \"Digits in reverse order: \" << digit1 << \" \" << digit2 << \" \" << digit3 << std::endl;\n    return 0;\n}",
-      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        int number = scanner.nextInt();\n        int digit1 = number % 10;\n        int digit2 = (number / 10) % 10;\n        int digit3 = number / 100;\n        System.out.println(\"Digits in reverse order: \" + digit1 + \" \" + digit2 + \" \" + digit3);\n    }\n}",
-      "Python3": "number = int(input())\ndigit1 = number % 10\ndigit2 = (number // 10) % 10\ndigit3 = number // 100\nprint(\"Digits in reverse order: \" + str(digit1) + \" \" + str(digit2) + \" \" + str(digit3))",
-      "JavaScript": "const readline = require('readline').createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nreadline.question('', (number) => {\n    let digit1 = parseInt(number) % 10;\n    let digit2 = Math.floor(parseInt(number) / 10) % 10;\n    let digit3 = Math.floor(parseInt(number) / 100);\n    console.log(`Digits in reverse order: ${digit1} ${digit2} ${digit3}`);\n    readline.close();\n});"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int d1 = N % 10;\n        int d2 = (N / 10) % 10;\n        int d3 = N / 100;\n        printf(\"Digits in reverse order: %d %d %d\\n\", d1, d2, d3);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        int d1 = N % 10;\n        int d2 = (N / 10) % 10;\n        int d3 = N / 100;\n        cout << \"Digits in reverse order: \" << d1 << ' ' << d2 << ' ' << d3 << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        int processed = 0;\n        while(processed < T){\n            if(!st.hasMoreTokens()){\n                st = new StringTokenizer(br.readLine());\n                continue;\n            }\n            int N = Integer.parseInt(st.nextToken());\n            int d1 = N % 10;\n            int d2 = (N / 10) % 10;\n            int d3 = N / 100;\n            sb.append(\"Digits in reverse order: \").append(d1).append(' ').append(d2).append(' ').append(d3);\n            processed++;\n            if(processed < T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(T):\n        N = int(data[idx]); idx += 1\n        d1 = N % 10\n        d2 = (N // 10) % 10\n        d3 = N // 100\n        out.append(f\"Digits in reverse order: {d1} {d2} {d3}\")\n    sys.stdout.write(\"\\n\".join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit(0);\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet res = [];\nfor (let i = 0; i < T; i++) {\n    const N = parseInt(input[idx++], 10);\n    const d1 = N % 10;\n    const d2 = Math.floor(N / 10) % 10;\n    const d3 = Math.floor(N / 100);\n    res.push(`Digits in reverse order: ${d1} ${d2} ${d3}`);\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

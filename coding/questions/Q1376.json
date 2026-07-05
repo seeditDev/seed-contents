@@ -4,14 +4,16 @@
   "slug": "check-square",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Number Theory",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "two pointers & sliding window",
-      "data structures and algorithms"
+      "Two Pointers",
+      "Math",
+      "Number Theory",
+      "Sum of Squares"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,22 +23,29 @@
   "content": {
     "problemStatement": "Given a positive integer ccc, decide whether it can be represented as sum of two square numbers that is **c = a2 + b2** or not, where a and b are two non-negative integers and a≤ba \\leq ba≤b.\n\n\nInput Format\nFirst line contains positive integers ccc.\n\n\n\nOutput Format\nPrint **true** if it can be represented, else print **false**.",
     "constraints": [
-      "1≤c≤1091 \\leq c \\leq 10^91≤c≤109"
+      "1 <= T <= 10000",
+      "1 <= c <= 1000000000"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10^4), the number of test cases. Each of the next T lines contains a single positive integer c (1 ≤ c ≤ 10^9).",
+    "outputFormat": "For each test case output a line containing \"true\" if c can be expressed as a^2 + b^2 with non‑negative integers a ≤ b, otherwise output \"false\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "25",
-        "output": "true",
-        "explanation": "Explanation:\n25 can be represented in form of 32 + 42 = 9+16=25."
+        "input": "3\n25\n15\n50",
+        "output": "true\nfalse\ntrue",
+        "explanation": "25 = 3^2 + 4^2, 15 cannot be expressed as a sum of two squares, 50 = 5^2 + 5^2."
       },
       {
         "id": "sample_2",
-        "input": "15",
-        "output": "false",
-        "explanation": "Explanation:\n15 can not be represented as the sum of two square numbers."
+        "input": "2\n1\n2",
+        "output": "true\ntrue",
+        "explanation": "1 = 0^2 + 1^2, 2 = 1^2 + 1^2."
+      },
+      {
+        "id": "sample_3",
+        "input": "4\n3\n4\n65\n1000000000",
+        "output": "false\ntrue\ntrue\ntrue",
+        "explanation": "3 has no representation, 4 = 0^2 + 2^2, 65 = 1^2 + 8^2, 10^9 satisfies the sum‑of‑two‑squares theorem."
       }
     ]
   },
@@ -44,27 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "25",
+        "label": "minimum boundary",
+        "input": "1\n1",
         "expectedOutput": "true",
-        "weight": 50
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "15",
-        "expectedOutput": "false",
-        "weight": 50
+        "label": "maximum boundary",
+        "input": "5\n1000000000\n999999937\n999999938\n999999939\n999999940",
+        "expectedOutput": "true\ntrue\ntrue\nfalse\ntrue",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "3\n1000000000\n1000000000\n1000000000",
+        "expectedOutput": "true\ntrue\ntrue",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "3\n999999999\n4\n2",
+        "expectedOutput": "false\ntrue\ntrue",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "7\n1\n2\n3\n5\n10\n25\n65",
+        "expectedOutput": "true\ntrue\nfalse\ntrue\ntrue\ntrue\ntrue",
+        "weight": 2
       }
     ],
-    "totalTestCases": 2,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      50,
-      50
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -78,14 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "This problem can be solved using a two-pointer technique. The idea is based on the observation that if `c = a^2 + b^2`, then `a` and `b` must satisfy the equation for some values between `0` and the square root of `c`.\n\n\n\n**Two-Pointer Technique**:\n\n\n\nInitialize two pointers:\n\n`left` starts at `0` (corresponding to `a`).\n`right` starts at `sqrt(c)` (corresponding to `b`).\n\n\nThe goal is to find if there exists a pair `(a, b)` such that `a^2 + b^2 = c`.\n\n\n\n**Iterative Search**:\n\n\n\nCalculate the sum `sum = left^2 + right^2`.\nCompare `sum` with `c`:\n\nIf `sum == c`, return `true` because we have found the values `a` and `b`.\nIf `sum &lt; c`, increment the `left` pointer to increase the sum.\nIf `sum &gt; c`, decrement the `right` pointer to decrease the sum.\n\n\nContinue this process until `left` exceeds `right`.\n\n\n\n**Return Result**:\n\n\n\nIf no such pair is found by the time `left` exceeds `right`, return `false`.",
-    "timeComplexity": "The time complexity of this solution is O(sqrt(c)). This is because the maximum number of iterations is determined by the value of sqrt(c), as both pointers move towards each other.",
-    "spaceComplexity": "The space complexity is O(1), as the solution only uses a few extra variables for computation.",
+    "approach": "For each c we use the two‑pointer technique on the range of possible squares. Let left = 0 and right = floor(sqrt(c)). While left <= right compute sum = left^2 + right^2. If sum equals c we have a representation. If sum < c we need a larger sum, so increment left; otherwise decrement right. This works because the function f(x)=x^2 is monotonic, so moving the pointers explores all possible pairs (a,b) with a ≤ b in O(sqrt(c)) time. The algorithm uses only O(1) extra memory.",
+    "timeComplexity": "O(T * sqrt(c_max)) per test file, where c_max ≤ 10^9 (sqrt ≈ 31623).",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C++": "#include <iostream>\n#include <cmath>\n\nusing namespace std;\n\nbool judgeSquareSum(long long int c) {\n    int rtc = sqrt(c);\n    int left = 1;\n    int right = rtc;\n    while(left<right){\n        int sum = left*left + right*right;\n        if(sum > c) right--;\n        else if(sum < c)left++;\n        else return true;\n    }\n    return false;\n}\n\nint main() {\n    long long int c;\n    cin >> c;\n\n    if (judgeSquareSum(c)) {\n        cout << \"true\" << endl;\n    } else {\n        cout << \"false\" << endl;\n    }\n    return 0;\n}\n",
-      "Python3": "def check_square_sum(c):\n    left = 0\n    right = int(c ** 0.5)\n\n    while left <= right:\n        _sum = left * left + right * right\n        if _sum == c:\n            return True\n        elif _sum < c:\n            left += 1\n        else:\n            right -= 1\n\n    return False\n\nif __name__ == \"__main__\":\n    c = int(input())\n    if check_square_sum(c):\n        print(\"true\")\n    else:\n        print(\"false\")\n",
-      "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <math.h>\n\nbool checkSquareSum(long long int c) {\n    long long left = 0;\n    long long right = (long long) sqrt(c);\n\n    while (left <= right) {\n        long long sum = left * left + right * right;\n        if (sum == c) {\n            return true;\n        } else if (sum < c) {\n            left++;\n        } else {\n            right--;\n        }\n    }\n\n    return false;\n}\n\nint main() {\n    long long int c;\n    scanf(\"%lld\", &c);\n\n    if (checkSquareSum(c)) {\n        printf(\"true\\n\");\n    } else {\n        printf(\"false\\n\");\n    }\n\n    return 0;\n}",
-      "Java": "import java.util.Scanner;\n\npublic class Main {\n    public static boolean checkSquareSum(long c) {\n        long left = 0;\n        long right = (long) Math.sqrt(c);\n\n        while (left <= right) {\n            long sum = left * left + right * right;\n            if (sum == c) {\n                return true;\n            } else if (sum < c) {\n                left++;\n            } else {\n                right--;\n            }\n        }\n\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        long c = scanner.nextLong();\n\n        if (checkSquareSum(c)) {\n            System.out.println(\"true\");\n        } else {\n            System.out.println(\"false\");\n        }\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <math.h>\n#include <stdbool.h>\n\nbool checkSquareSum(long long c) {\n    long long left = 0;\n    long long right = (long long)sqrt((double)c);\n    while (left <= right) {\n        long long sum = left * left + right * right;\n        if (sum == c) return true;\n        if (sum < c) ++left; else --right;\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long c;\n        scanf(\"%lld\", &c);\n        printf(\"%s\\n\", checkSquareSum(c) ? \"true\" : \"false\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool checkSquareSum(long long c) {\n    long long left = 0;\n    long long right = (long long)sqrt((double)c);\n    while (left <= right) {\n        long long sum = left * left + right * right;\n        if (sum == c) return true;\n        if (sum < c) ++left; else --right;\n    }\n    return false;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        long long c; cin >> c;\n        cout << (checkSquareSum(c) ? \"true\" : \"false\") << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\n\npublic class Main {\n    private static boolean checkSquareSum(long c) {\n        long left = 0;\n        long right = (long)Math.sqrt(c);\n        while (left <= right) {\n            long sum = left * left + right * right;\n            if (sum == c) return true;\n            if (sum < c) left++; else right--;\n        }\n        return false;\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int i = 0; i < T; i++) {\n            long c = Long.parseLong(br.readLine().trim());\n            sb.append(checkSquareSum(c) ? \"true\" : \"false\");\n            if (i + 1 < T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys, math\n\ndef check_square_sum(c: int) -> bool:\n    left = 0\n    right = math.isqrt(c)\n    while left <= right:\n        s = left * left + right * right\n        if s == c:\n            return True\n        if s < c:\n            left += 1\n        else:\n            right -= 1\n    return False\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        c = int(data[idx]); idx += 1\n        out.append('true' if check_square_sum(c) else 'false')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet pos = 0;\nconst T = Number(input[pos++]);\nlet results = [];\nfor (let i = 0; i < T; i++) {\n  const c = Number(input[pos++]);\n  let left = 0;\n  let right = Math.floor(Math.sqrt(c));\n  let ok = false;\n  while (left <= right) {\n    const sum = left * left + right * right;\n    if (sum === c) { ok = true; break; }\n    if (sum < c) left++; else right--;\n  }\n  results.push(ok ? 'true' : 'false');\n}\nconsole.log(results.join('\\n'));"
     }
   }
 }

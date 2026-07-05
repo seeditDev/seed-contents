@@ -4,14 +4,16 @@
   "slug": "knapsack-problem",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
+    "category": "Dynamic Programming | Greedy | Sorting",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Knapsack",
+      "Weight 1 and 2",
+      "Greedy",
+      "Prefix sums"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,12 +23,14 @@
   "content": {
     "problemStatement": "Mike takes part in programming contests. His favourite topic is dynamic programming(DP). As he said, that he likes problems on DP, because \"you spend a lot of time on thinking and a little time on coding\".\n\nIn this problem you are to solve a version of the knapsack problem, one of the most famous examples of DP problem.\n\nYou are given **N** items, each has two parameters: a weight and a cost. Let's define **M** as the sum of the weights of all the items.\n\nYour task is to determine the most expensive cost of a knapsack, which capacity equals to 1, 2, ..., **M**. A cost of a knapsack equals to the sum of the costs of all the elements of the knapsack. Also, when you have a knapsack with a capacity is equal to **C**, then you can fill it with items, whose sum of weights is not greater than **C**.\n\n\nInput Format\nThe first line of the input contains one integer **N**, denoting the number of the items.\n\n\nThe next **N** lines contain two integers **W** and **C** each, denoting the weight and the cost of the corresponding item.\n\n\n\nOutput Format\nFor each capacity **C** (**1 ≤ C ≤ M**) of the knapsack, output a single integer - the most expensive cost for that capacity.",
     "constraints": [
-      "3 ≤ **N** ≤ 100000;",
-      "1 ≤ **W** ≤ 2, for each item;",
-      "1 ≤ **C** ≤ 109, for each item."
+      "1 ≤ T ≤ 10",
+      "3 ≤ N ≤ 100000",
+      "W ∈ {1,2}",
+      "1 ≤ C ≤ 10^9",
+      "The sum of N over all test cases does not exceed 100000."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains an integer N, the number of items.\n- Each of the next N lines contains two integers W and C, the weight (1 or 2) and the cost of an item.\nAll numbers are separated by single spaces or line breaks.",
+    "outputFormat": "For each test case output a single line containing M integers separated by spaces, where M is the sum of the weights of all items in that test case. The i‑th integer (1‑based) is the maximum total cost achievable with a knapsack of capacity i (i.e., total weight of chosen items ≤ i). The sequence must be non‑decreasing.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -40,20 +44,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n1 1\n2 2\n2 3\n2 4\n2 5",
-        "expectedOutput": "1 5 6 9 10 12 13 14 15",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -67,13 +104,14 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "Because every item weighs either 1 or 2, the optimal solution for any capacity can be built by taking the most valuable items of each weight class. Sort all weight‑1 items by cost descending and compute their prefix sums pref1[i] (best i weight‑1 items). Do the same for weight‑2 items obtaining pref2[j]. For a fixed capacity C, if we take j weight‑2 items (using 2·j weight), we can still take at most C‑2·j weight‑1 items, i.e. min(N1, C‑2·j) of them. The total cost is pref2[j] + pref1[min(N1, C‑2·j)]. The function is unimodal in j, so while scanning capacities from 1 to M we can keep the best j and increase it only when it improves the answer. This yields an O(N log N + M) algorithm per test case (sorting dominates). Finally we enforce the non‑decreasing property by a single pass.",
+    "timeComplexity": "O(N log N + M) per test case, where M = sum of all weights (≤ 2·N).",
+    "spaceComplexity": "O(N) for storing the two sorted lists and their prefix sums.",
     "code": {
-      "Python3": "import sys\ninput = sys.stdin.readline\n\nN = int(input())\n\none = []\ntwo = []\n\nfor _ in range(N):\n    w, c = map(int, input().split())\n    if w == 1:\n        one.append(c)\n    else:\n        two.append(c)\n\none.sort(reverse=True)\ntwo.sort(reverse=True)\n\nn1 = len(one)\nn2 = len(two)\n\n# prefix sums\npref1 = [0]*(n1+1)\npref2 = [0]*(n2+1)\n\nfor i in range(n1):\n    pref1[i+1] = pref1[i] + one[i]\n\nfor i in range(n2):\n    pref2[i+1] = pref2[i] + two[i]\n\nM = n1 + 2*n2\nans = [0]*(M+1)\n\nk = 0  # current best number of weight-2 items\n\nfor cap in range(1, M+1):\n\n    # maximum possible k for this capacity\n    max_k = min(n2, cap//2)\n\n    # move k up if possible\n    if k > max_k:\n        k = max_k\n\n    # try increasing k if beneficial\n    while k < max_k:\n        cur = pref2[k] + pref1[min(n1, cap - 2*k)]\n        nxt = pref2[k+1] + pref1[min(n1, cap - 2*(k+1))]\n        if nxt >= cur:\n            k += 1\n        else:\n            break\n\n    ans[cap] = pref2[k] + pref1[min(n1, cap - 2*k)]\n\n# propagate ≤ capacity\nfor i in range(1, M+1):\n    if ans[i] < ans[i-1]:\n        ans[i] = ans[i-1]\n\nprint(*ans[1:])\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAXN 100005\n#define MAXM 200005\n\nlong long one[MAXN], two[MAXN];\nlong long pref1[MAXN], pref2[MAXN];\nlong long ans[MAXM];\n\nint cmp(const void *a, const void *b) {\n    long long x = *(long long*)a;\n    long long y = *(long long*)b;\n    if (x < y) return 1;\n    if (x > y) return -1;\n    return 0;\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n\n    int n1 = 0, n2 = 0;\n    int totalWeight = 0;\n\n    for (int i = 0; i < N; i++) {\n        int w;\n        long long c;\n        scanf(\"%d %lld\", &w, &c);\n\n        totalWeight += w;\n\n        if (w == 1)\n            one[n1++] = c;\n        else\n            two[n2++] = c;\n    }\n\n    qsort(one, n1, sizeof(long long), cmp);\n    qsort(two, n2, sizeof(long long), cmp);\n\n    pref1[0] = 0;\n    for (int i = 0; i < n1; i++)\n        pref1[i + 1] = pref1[i] + one[i];\n\n    pref2[0] = 0;\n    for (int i = 0; i < n2; i++)\n        pref2[i + 1] = pref2[i] + two[i];\n\n    int k = 0;\n\n    for (int cap = 1; cap <= totalWeight; cap++) {\n\n        while (k + 1 <= n2 && 2 * (k + 1) <= cap) {\n            int rem1 = cap - 2 * (k + 1);\n            if (rem1 > n1) break;\n\n            long long val1 = pref2[k + 1] + pref1[rem1];\n            long long val2 = pref2[k] + pref1[cap - 2 * k];\n\n            if (val1 >= val2) k++;\n            else break;\n        }\n\n        int remaining = cap - 2 * k;\n\n        if (remaining >= 0 && remaining <= n1)\n            ans[cap] = pref2[k] + pref1[remaining];\n        else\n            ans[cap] = 0;\n    }\n\n    for (int i = 1; i <= totalWeight; i++) {\n        if (ans[i] < ans[i - 1])\n            ans[i] = ans[i - 1];\n    }\n\n    for (int i = 1; i <= totalWeight; i++)\n        printf(\"%lld \", ans[i]);\n\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int N = fs.nextInt();\n\n        List<Long> one = new ArrayList<>();\n        List<Long> two = new ArrayList<>();\n        int totalWeight = 0;\n\n        for (int i = 0; i < N; i++) {\n            int w = fs.nextInt();\n            long c = fs.nextLong();\n            totalWeight += w;\n\n            if (w == 1) one.add(c);\n            else two.add(c);\n        }\n\n        // Sort descending\n        one.sort(Collections.reverseOrder());\n        two.sort(Collections.reverseOrder());\n\n        int n1 = one.size();\n        int n2 = two.size();\n\n        long[] pref1 = new long[n1 + 1];\n        long[] pref2 = new long[n2 + 1];\n\n        for (int i = 0; i < n1; i++)\n            pref1[i + 1] = pref1[i] + one.get(i);\n\n        for (int i = 0; i < n2; i++)\n            pref2[i + 1] = pref2[i] + two.get(i);\n\n        int M = totalWeight;\n        long[] ans = new long[M + 1];\n\n        int k = 0; // number of weight-2 items\n\n        for (int cap = 1; cap <= M; cap++) {\n\n            // Increase k while it improves answer\n            while (k + 1 <= n2 && 2 * (k + 1) <= cap) {\n\n                long takeMore2 = pref2[k + 1];\n                int remaining1 = cap - 2 * (k + 1);\n                if (remaining1 > n1) break;\n\n                long valMore2 = takeMore2 + pref1[remaining1];\n\n                int remainingCurrent = cap - 2 * k;\n                if (remainingCurrent > n1) {\n                    k++;\n                    continue;\n                }\n\n                long valCurrent = pref2[k] + pref1[remainingCurrent];\n\n                if (valMore2 >= valCurrent) k++;\n                else break;\n            }\n\n            int remaining = cap - 2 * k;\n            if (remaining >= 0 && remaining <= n1)\n                ans[cap] = pref2[k] + pref1[remaining];\n            else\n                ans[cap] = 0;\n        }\n\n        // Capacity allows ≤ C\n        for (int i = 1; i <= M; i++)\n            ans[i] = Math.max(ans[i], ans[i - 1]);\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 1; i <= M; i++)\n            sb.append(ans[i]).append(\" \");\n\n        System.out.println(sb.toString().trim());\n    }\n\n    static class FastScanner {\n        BufferedReader br;\n        StringTokenizer st;\n\n        FastScanner(InputStream is) {\n            br = new BufferedReader(new InputStreamReader(is));\n        }\n\n        String next() throws IOException {\n            while (st == null || !st.hasMoreElements())\n                st = new StringTokenizer(br.readLine());\n            return st.nextToken();\n        }\n\n        int nextInt() throws IOException {\n            return Integer.parseInt(next());\n        }\n\n        long nextLong() throws IOException {\n            return Long.parseLong(next());\n        }\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp_desc(const void *a",
+      "const void *b)": {
+        "n    long long x = *(const long long *)a;\n    long long y = *(const long long *)b;\n    return (x < y) - (x > y);": null
+      }
     }
   }
 }

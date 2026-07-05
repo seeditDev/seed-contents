@@ -4,14 +4,14 @@
   "slug": "day-of-the-week",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Implementation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "control flow",
-      "programming languages"
+      "Switch case",
+      "Conditional statements"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,29 +21,29 @@
   "content": {
     "problemStatement": "Write a C program that takes an integer representing the day of the week (1 to 7) as input and prints the corresponding day's name. \n\nIf the given integer is any number other than 1 to 7 - then you need to output 'Invalid day number'.\n\nUse a switch statement to implement this.\n\nCheck the sample input / output below to for further clarity.",
     "constraints": [
-      "1 <= day <= 7",
-      "day is an integer"
+      "1 ≤ T ≤ 1000",
+      "Day integer fits in a 32‑bit signed integer (may be negative or larger than 7)"
     ],
-    "inputFormat": "The input is a single integer representing the day of the week (1 to 7).",
-    "outputFormat": "Print the corresponding day's name. If the given integer is any number other than 1 to 7, print 'Invalid day number'.",
+    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 1000), the number of test cases. Each of the next T lines contains a single integer representing the day of the week (1 for Monday … 7 for Sunday).",
+    "outputFormat": "For each test case output the corresponding day name (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday) on its own line. If the integer is not between 1 and 7 output \"Invalid day number\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2",
-        "output": "Tuesday\n",
-        "explanation": "Input day is 2, so the output is Tuesday"
+        "input": "3\n2\n7\n10",
+        "output": "Tuesday\nSunday\nInvalid day number\n",
+        "explanation": "Three test cases are processed. 2 maps to Tuesday, 7 maps to Sunday, and 10 is outside 1‑7 so the program prints \"Invalid day number\"."
       },
       {
         "id": "sample_2",
-        "input": "7",
-        "output": "Sunday\n",
-        "explanation": "Input day is 7, so the output is Sunday"
+        "input": "1\n1",
+        "output": "Monday\n",
+        "explanation": "A single test case with day 1 outputs Monday."
       },
       {
         "id": "sample_3",
-        "input": "10",
-        "output": "Invalid day number\n",
-        "explanation": "Input day is 10, which is not between 1 and 7, so the output is Invalid day number"
+        "input": "2\n5\n0",
+        "output": "Friday\nInvalid day number\n",
+        "explanation": "Day 5 maps to Friday; 0 is invalid, so the corresponding message is printed."
       }
     ]
   },
@@ -51,32 +51,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1",
+        "label": "minimum boundary",
+        "input": "1\n1",
         "expectedOutput": "Monday\n",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "7",
-        "expectedOutput": "Sunday\n",
+        "label": "maximum boundary",
+        "input": "5\n7\n2147483647\n-2147483648\n0\n8",
+        "expectedOutput": "Sunday\nInvalid day number\nInvalid day number\nInvalid day number\nInvalid day number\n",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "0",
-        "expectedOutput": "Invalid day number\n",
+        "label": "uniform/edge case",
+        "input": "4\n0\n0\n0\n0",
+        "expectedOutput": "Invalid day number\nInvalid day number\nInvalid day number\nInvalid day number\n",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "input": "3",
-        "expectedOutput": "Wednesday\n",
+        "label": "tricky case",
+        "input": "7\n7\n6\n5\n4\n3\n2\n1",
+        "expectedOutput": "Sunday\nSaturday\nFriday\nThursday\nWednesday\nTuesday\nMonday\n",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "input": "6",
-        "expectedOutput": "Saturday\n",
+        "label": "stress/general",
+        "input": "10\n3\n3\n9\n-1\n5\n2\n7\n1\n6\n4",
+        "expectedOutput": "Wednesday\nWednesday\nInvalid day number\nInvalid day number\nFriday\nTuesday\nSunday\nMonday\nSaturday\nThursday\n",
         "weight": 2
       }
     ],
@@ -106,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "Use a switch statement to map the input day to its corresponding day name. If the input day is not between 1 and 7, print 'Invalid day number'.",
-    "timeComplexity": "O(1) because the switch statement has a constant number of cases",
-    "spaceComplexity": "O(1) because the space used does not grow with the input size",
+    "approach": "The problem is a direct mapping from an integer in the range 1‑7 to a weekday name. Using a switch (or a series of if‑else) we can output the correct string for each valid value and a default message for all other values. The algorithm processes each test case independently in O(1) time, so the total complexity is O(T). No extra memory besides a few variables is required.",
+    "timeComplexity": "O(T) total, O(1) per test case",
+    "spaceComplexity": "O(1) auxiliary space",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int day;\n    scanf(\"%d\", &day);\n\n    // Print the day of the week using a switch statement\n    switch (day) {\n        case 1:\n            printf(\"Monday\\n\");\n            break;\n        case 2:\n            printf(\"Tuesday\\n\");\n            break;\n        case 3:\n            printf(\"Wednesday\\n\");\n            break;\n        case 4:\n            printf(\"Thursday\\n\");\n            break;\n        case 5:\n            printf(\"Friday\\n\");\n            break;\n        case 6:\n            printf(\"Saturday\\n\");\n            break;\n        case 7:\n            printf(\"Sunday\\n\");\n            break;\n        default:\n            printf(\"Invalid day number\\n\");\n    }\n\n    return 0;\n}",
-      "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int day;\n    cin >> day;\n\n    switch (day) {\n        case 1:\n            cout << \"Monday\" << endl;\n            break;\n        case 2:\n            cout << \"Tuesday\" << endl;\n            break;\n        case 3:\n            cout << \"Wednesday\" << endl;\n            break;\n        case 4:\n            cout << \"Thursday\" << endl;\n            break;\n        case 5:\n            cout << \"Friday\" << endl;\n            break;\n        case 6:\n            cout << \"Saturday\" << endl;\n            break;\n        case 7:\n            cout << \"Sunday\" << endl;\n            break;\n        default:\n            cout << \"Invalid day number\" << endl;\n    }\n\n    return 0;\n}",
-      "Java": "public class Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        int day = scanner.nextInt();\n        scanner.close();\n\n        switch (day) {\n            case 1:\n                System.out.println(\"Monday\");\n                break;\n            case 2:\n                System.out.println(\"Tuesday\");\n                break;\n            case 3:\n                System.out.println(\"Wednesday\");\n                break;\n            case 4:\n                System.out.println(\"Thursday\");\n                break;\n            case 5:\n                System.out.println(\"Friday\");\n                break;\n            case 6:\n                System.out.println(\"Saturday\");\n                break;\n            case 7:\n                System.out.println(\"Sunday\");\n                break;\n            default:\n                System.out.println(\"Invalid day number\");\n        }\n    }\n}",
-      "Python3": "day = int(input())\n\nif day == 1:\n    print(\"Monday\")\nelif day == 2:\n    print(\"Tuesday\")\nelif day == 3:\n    print(\"Wednesday\")\nelif day == 4:\n    print(\"Thursday\")\nelif day == 5:\n    print(\"Friday\")\nelif day == 6:\n    print(\"Saturday\")\nelif day == 7:\n    print(\"Sunday\")\nelse:\n    print(\"Invalid day number\")",
-      "JavaScript": "const readline = require('readline').createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\n\nreadline.question('', day => {\n    day = parseInt(day);\n    switch (day) {\n        case 1:\n            console.log('Monday');\n            break;\n        case 2:\n            console.log('Tuesday');\n            break;\n        case 3:\n            console.log('Wednesday');\n            break;\n        case 4:\n            console.log('Thursday');\n            break;\n        case 5:\n            console.log('Friday');\n            break;\n        case 6:\n            console.log('Saturday');\n            break;\n        case 7:\n            console.log('Sunday');\n            break;\n        default:\n            console.log('Invalid day number');\n    }\n    readline.close();\n});"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int day;\n        if (scanf(\"%d\", &day) != 1) day = 0; // safety\n        switch (day) {\n            case 1: printf(\"Monday\\n\"); break;\n            case 2: printf(\"Tuesday\\n\"); break;\n            case 3: printf(\"Wednesday\\n\"); break;\n            case 4: printf(\"Thursday\\n\"); break;\n            case 5: printf(\"Friday\\n\"); break;\n            case 6: printf(\"Saturday\\n\"); break;\n            case 7: printf(\"Sunday\\n\"); break;\n            default: printf(\"Invalid day number\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int day; cin >> day;\n        switch (day) {\n            case 1: cout << \"Monday\\n\"; break;\n            case 2: cout << \"Tuesday\\n\"; break;\n            case 3: cout << \"Wednesday\\n\"; break;\n            case 4: cout << \"Thursday\\n\"; break;\n            case 5: cout << \"Friday\\n\"; break;\n            case 6: cout << \"Saturday\\n\"; break;\n            case 7: cout << \"Sunday\\n\"; break;\n            default: cout << \"Invalid day number\\n\";\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            String s = br.readLine();\n            if (s == null) break;\n            int day = Integer.parseInt(s.trim());\n            switch (day) {\n                case 1: sb.append(\"Monday\\n\"); break;\n                case 2: sb.append(\"Tuesday\\n\"); break;\n                case 3: sb.append(\"Wednesday\\n\"); break;\n                case 4: sb.append(\"Thursday\\n\"); break;\n                case 5: sb.append(\"Friday\\n\"); break;\n                case 6: sb.append(\"Saturday\\n\"); break;\n                case 7: sb.append(\"Sunday\\n\"); break;\n                default: sb.append(\"Invalid day number\\n\");\n            }\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(T):\n        if idx >= len(data):\n            break\n        day = int(data[idx]); idx += 1\n        if day == 1:\n            out.append('Monday')\n        elif day == 2:\n            out.append('Tuesday')\n        elif day == 3:\n            out.append('Wednesday')\n        elif day == 4:\n            out.append('Thursday')\n        elif day == 5:\n            out.append('Friday')\n        elif day == 6:\n            out.append('Saturday')\n        elif day == 7:\n            out.append('Sunday')\n        else:\n            out.append('Invalid day number')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == '__main__':\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit(0);\nlet t = parseInt(input[0], 10);\nlet out = [];\nlet idx = 1;\nfor (let i = 0; i < t; i++) {\n    let day = parseInt(input[idx++] || '0', 10);\n    switch (day) {\n        case 1: out.push('Monday'); break;\n        case 2: out.push('Tuesday'); break;\n        case 3: out.push('Wednesday'); break;\n        case 4: out.push('Thursday'); break;\n        case 5: out.push('Friday'); break;\n        case 6: out.push('Saturday'); break;\n        case 7: out.push('Sunday'); break;\n        default: out.push('Invalid day number');\n    }\n}\nconsole.log(out.join('\\n'));"
     }
   }
 }

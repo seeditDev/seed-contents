@@ -4,14 +4,15 @@
   "slug": "ada-and-crayons",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Arrays",
+    "category": "Arrays | Strings | Greedy",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "ad-hoc & implementation",
-      "competitive programming"
+      "Contiguous Segments",
+      "Counting Groups",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +22,30 @@
   "content": {
     "problemStatement": "Ada has an array of **N**  crayons, some crayons are pointing upwards and some downwards.\nAda thinks that an array of crayons is beautiful if all the crayons are pointing in the same direction.\n\n\n\nIn one step you can flip any segment of consecutive crayons. After flipping a segment, all crayons pointing downwards will point upwards and visceversa\n\n\nWhat is the minimum number of steps to make the array of crayons beautiful?",
     "constraints": [
-      "1 ≤ **T** ≤ 3000",
-      "1 ≤ **N** ≤ 50"
+      "1 <= T <= 3000",
+      "1 <= N <= 50",
+      "S[i] ∈ {'U','D'}"
     ],
-    "inputFormat": "The first line of the input contains **T** the number of test cases.\nEach test case is described in one line containing a string **S** of **N** characters, the i-th character is 'U' if the i-th crayon is pointing upwards and 'D' if it is pointing downwards.",
-    "outputFormat": "For each test case, output a single line containing the minimum number of flips needed to make all crayons point to the same direction.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a string S of length N (1 ≤ N ≤ 50) consisting only of characters 'U' (upwards) and 'D' (downwards).",
+    "outputFormat": "For each test case output a single integer on its own line – the minimum number of segment flips required to make all crayons point in the same direction.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\nUUDDDUUU",
         "output": "1",
-        "explanation": "Explanation:\nExample case 1. In one step we can flip all the crayons pointing downwards"
+        "explanation": "The string has groups: U (positions 1-2), D (3-5), U (6-8). GroupsU=2, GroupsD=1, so minimum flips = 1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\nUDUDU",
+        "output": "2",
+        "explanation": "Groups: U, D, U, D, U → GroupsU=3, GroupsD=2 → answer = 2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\nUUUU",
+        "output": "0",
+        "explanation": "All crayons already point upwards, no flip needed."
       }
     ]
   },
@@ -39,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\nUUDDDUUU",
-        "expectedOutput": "1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\nU",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\nU",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\nU",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\nU",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\nU",
+        "expectedOutput": "0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,9 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "A flip can turn an entire contiguous block of crayons that are opposite to the desired final direction. Therefore, to make all crayons point upwards we need to flip every maximal block of 'D's, and to make them all point downwards we need to flip every maximal block of 'U's. The optimal answer is the smaller of these two counts. So for each string we count the number of contiguous groups of 'U' and the number of contiguous groups of 'D' and output min(groupsU, groupsD). This is O(N) per test case.",
+    "timeComplexity": "O(T * N) – each character is inspected once.",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    char s[55];\n    while(T--){\n        scanf(\"%s\",s);\n        int groupsU=0, groupsD=0;\n        int n=strlen(s);\n        for(int i=0;i<n;){\n            char cur=s[i];\n            int j=i;\n            while(j<n && s[j]==cur) j++;\n            if(cur=='U') groupsU++; else groupsD++;\n            i=j;\n        }\n        printf(\"%d\\n\", groupsU<groupsD?groupsU:groupsD);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    string s;\n    while(T--){\n        cin>>s;\n        int groupsU=0, groupsD=0;\n        for(size_t i=0;i<s.size();){\n            char cur=s[i];\n            size_t j=i;\n            while(j<s.size() && s[j]==cur) ++j;\n            if(cur=='U') ++groupsU; else ++groupsD;\n            i=j;\n        }\n        cout<<min(groupsU, groupsD)<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for(int t=0; t<T; t++){\n            String s = br.readLine().trim();\n            int groupsU = 0, groupsD = 0;\n            for(int i=0; i<s.length(); ){\n                char cur = s.charAt(i);\n                int j = i;\n                while(j < s.length() && s.charAt(j) == cur) j++;\n                if(cur == 'U') groupsU++; else groupsD++;\n                i = j;\n            }\n            out.append(Math.min(groupsU, groupsD)).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    for i in range(1, T+1):\n        s = data[i].strip()\n        groupsU = groupsD = 0\n        idx = 0\n        n = len(s)\n        while idx < n:\n            cur = s[idx]\n            j = idx\n            while j < n and s[j] == cur:\n                j += 1\n            if cur == 'U':\n                groupsU += 1\n            else:\n                groupsD += 1\n            idx = j\n        out.append(str(min(groupsU, groupsD)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++].trim(), 10);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const s = lines[idx++].trim();\n  let groupsU = 0, groupsD = 0;\n  for (let i = 0; i < s.length;) {\n    const cur = s[i];\n    let j = i;\n    while (j < s.length && s[j] === cur) j++;\n    if (cur === 'U') groupsU++; else groupsD++;\n    i = j;\n  }\n  results.push(String(Math.min(groupsU, groupsD)));\n}\nconsole.log(results.join('\\n'));\n"
+    }
   }
 }

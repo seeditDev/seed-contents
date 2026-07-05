@@ -4,14 +4,15 @@
   "slug": "fibonacci-series",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
+    "category": "Recursion | Dynamic Programming | Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "dynamic programming",
-      "data structures and algorithms"
+      "Recursion",
+      "Memoization",
+      "Fibonacci"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,28 +22,29 @@
   "content": {
     "problemStatement": "Given an integer NNN, output the NthN^{th}Nth term in the Fibonacci Series.\n\nThe Fibonacci Series is: `0 1 1 2 3 5 8...`\n\nComplete the function `fib()` function to solve this problem using **recursion**.\n\n\nInput Format\n\nThe input contains a single integer NNN.\n\n\nOutput Format\nOutput the NthN^{th}Nth term in the Fibonacci Series.",
     "constraints": [
-      "1≤N≤1001 \\leq N \\leq 1001≤N≤100"
+      "1 <= T <= 10",
+      "1 <= N <= 30"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases (1 ≤ T ≤ 10). Each of the next T lines contains a single integer N (1 ≤ N ≤ 30) representing the position in the Fibonacci series whose value has to be printed.",
+    "outputFormat": "For each test case, output the Nth term of the Fibonacci series on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1",
+        "input": "1\\n1",
         "output": "0",
-        "explanation": ""
+        "explanation": "There is one test case. N=1 corresponds to the first element of the series, which is 0."
       },
       {
         "id": "sample_2",
-        "input": "2",
+        "input": "1\\n2",
         "output": "1",
-        "explanation": ""
+        "explanation": "One test case with N=2. The second element of the Fibonacci series is 1."
       },
       {
         "id": "sample_3",
-        "input": "7",
-        "output": "8",
-        "explanation": ""
+        "input": "1\\n7",
+        "output": "13",
+        "explanation": "One test case with N=7. The series up to the 7th term is 0,1,1,2,3,5,8,13; thus the 7th term is 13."
       }
     ]
   },
@@ -50,34 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1",
+        "label": "minimum boundary",
+        "input": "1\\n1",
         "expectedOutput": "0",
-        "weight": 33
+        "weight": 2
       },
       {
         "id": "tc_2",
-        "input": "2",
-        "expectedOutput": "1",
-        "weight": 33
+        "label": "maximum boundary",
+        "input": "1\\n30",
+        "expectedOutput": "514229",
+        "weight": 2
       },
       {
         "id": "tc_3",
-        "input": "7",
-        "expectedOutput": "8",
-        "weight": 34
+        "label": "edge case",
+        "input": "1\\n2",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case 1",
+        "input": "2\\n5\\n10",
+        "expectedOutput": "3\\n34",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "general case 2",
+        "input": "3\\n3\\n15\\n20",
+        "expectedOutput": "1\\n377\\n4181",
+        "weight": 2
       }
     ],
-    "totalTestCases": 3,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      33,
-      33,
-      34
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -91,14 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "The Fibonacci series is defined as F(1)=0, F(2)=1 and F(n)=F(n-1)+F(n-2) for n>2. A naive recursive solution repeats the same sub‑problems many times, leading to exponential time. To keep the recursive spirit while achieving linear time, we store already computed values in a memo table (array or map). The recursive function first checks the base cases, then looks up the memo table; if the value is not present it computes it recursively, stores it, and returns it. Because each index from 1 to N is computed at most once, the time per test case is O(N) and the extra space is O(N) for the memo table.",
+    "timeComplexity": "O(N) per test case, where N is the requested position (max 30). Overall O(T * N).",
+    "spaceComplexity": "O(N) for the memoization table (max 30 entries).",
     "code": {
-      "C++": "#include <iostream>\n#include <cstring>\n\nusing namespace std;\n\nlong long int dp[100005];\n\nlong long int fib(int n) {\n    if (n == 1) return 0;\n    if (n == 2) return 1;\n\n    if (dp[n] != -1) return dp[n];\n\n    return dp[n] = fib(n - 1) + fib(n - 2);\n}\n\nint main() {\n    memset(dp, -1, sizeof(dp));\n    int n;\n    cin>>n;\n    cout << fib(n) << endl;\n\n    return 0;\n}\n",
-      "Python3": "dp = {}\n\ndef fib(n):\n    if n == 1:\n        return 0\n    if n == 2:\n        return 1\n\n    if n in dp:\n        return dp[n]\n\n    dp[n] = fib(n - 1) + fib(n - 2)\n    return dp[n]\n\n\nn = int(input())\nprint(fib(n))\n",
-      "C": "#include <stdio.h>\n#include <string.h>  // For memset\n\nlong long int dp[100005];\n\nlong long int fib(int n) {\n    if (n == 1) return 0;\n    if (n == 2) return 1;\n\n    if (dp[n] != -1) {\n        return dp[n];\n    }\n\n    return dp[n] = fib(n - 1) + fib(n - 2);\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n\n    // Initialize dp array to -1\n    memset(dp, -1, sizeof(dp));\n\n    printf(\"%lld\\n\", fib(n));\n    return 0;\n}\n",
-      "Java": "import java.util.*;\n\nclass Codechef {\n\n    static long[] dp = new long[100005];\n\n    static long fib(int n) {\n        if (n == 1) return 0;\n        if (n == 2) return 1;\n\n        if (dp[n] != -1) return dp[n];\n\n        return dp[n] = fib(n - 1) + fib(n - 2);\n    }\n\n    public static void main(String[] args) {\n        Arrays.fill(dp, -1);\n\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n\n        System.out.println(fib(n));\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nlong long dp[31]; // N ≤ 30\n\nlong long fib(int n) {\n    if (n == 1) return 0;\n    if (n == 2) return 1;\n    if (dp[n] != -1) return dp[n];\n    return dp[n] = fib(n - 1) + fib(n - 2);\n}\n\nint main() {\n    memset(dp, -1, sizeof(dp));\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        printf(\"%lld\\n\", fib(n));\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long dp[31]; // N ≤ 30\n\nlong long fib(int n) {\n    if (n == 1) return 0;\n    if (n == 2) return 1;\n    if (dp[n] != -1) return dp[n];\n    return dp[n] = fib(n - 1) + fib(n - 2);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    memset(dp, -1, sizeof(dp));\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int n;\n        cin >> n;\n        cout << fib(n) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.util.*;\n\npublic class Main {\n    static long[] dp = new long[31]; // N ≤ 30\n\n    static long fib(int n) {\n        if (n == 1) return 0;\n        if (n == 2) return 1;\n        if (dp[n] != -1) return dp[n];\n        dp[n] = fib(n - 1) + fib(n - 2);\n        return dp[n];\n    }\n\n    public static void main(String[] args) {\n        Arrays.fill(dp, -1);\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int n = sc.nextInt();\n            System.out.println(fib(n));\n        }\n        sc.close();\n    }\n}",
+      "Python3": "import sys\n\ndp = {}\n\ndef fib(n: int) -> int:\n    if n == 1:\n        return 0\n    if n == 2:\n        return 1\n    if n in dp:\n        return dp[n]\n    dp[n] = fib(n - 1) + fib(n - 2)\n    return dp[n]\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit()\nT = int(data[0])\nidx = 1\nout = []\nfor _ in range(T):\n    n = int(data[idx])\n    idx += 1\n    out.append(str(fib(n)))\nprint('\\n'.join(out))",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit();\nlet pos = 0;\nconst T = parseInt(input[pos++], 10);\nconst dp = {};\nfunction fib(n) {\n    if (n === 1) return 0;\n    if (n === 2) return 1;\n    if (dp[n] !== undefined) return dp[n];\n    dp[n] = fib(n - 1) + fib(n - 2);\n    return dp[n];\n}\nlet out = [];\nfor (let i = 0; i < T; i++) {\n    const n = parseInt(input[pos++], 10);\n    out.push(String(fib(n)));\n}\nconsole.log(out.join('\\n'));\n"
     }
   }
 }

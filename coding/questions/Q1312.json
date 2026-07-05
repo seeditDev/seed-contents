@@ -4,14 +4,14 @@
   "slug": "check-for-bst",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Trees",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "trees",
-      "data structures and algorithms"
+      "Binary Search Tree",
+      "Tree Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +20,34 @@
   },
   "content": {
     "problemStatement": "Check if the given binary tree is a valid Binary Search Tree (BST).\n\nA valid BST adheres to the following criteria:\n\n\nThe left subtree of a node comprises only nodes with keys less than the node's key.\nThe right subtree of a node comprises only nodes with keys greater than the node's key.\nBoth the left and right subtrees must also be valid Binary Search Trees.\nFor eg., the given binary tree is a valid BST.\n\n\n\nFunction DeclarationFunction NameisBSTisBSTisBST – This function checks whether the given binary tree is a valid Binary Search Tree (BST).\n\nParameters\n\nrootrootroot : A pointer to the root node of the binary tree\n\n\n\n\nEach node is defined as:\n\n\n`struct Node {\n    int val;\n    Node *left;\n    Node *right;\n};\n`\n\n\n\nReturn Value\n\nThe function does **not return any value**.\n\n\n\n\nIt should **print**:\n\n\n\n`\"YES\"` if the binary tree is a valid Binary Search Tree\n`\"NO\"` otherwise\n\n\nConstraints\n1≤N≤100001 \\leq N \\leq 100001≤N≤10000\n1≤pi,ci≤1000001 \\leq p_i, c_i \\leq 1000001≤pi​,ci​≤100000\nRi∈L,RR_i \\in {L, R}Ri​∈L,R\nAll node values are **distinct**\nThe input represents a **valid binary tree structure**\n\nInput Format\n\n\nThe first line contains a single integer NNN — the number of nodes in the binary tree.\n\n\n\n\nThe next N−1N - 1N−1 lines each contain three space-separated values:\n\n\n\npip_ipi​ — parent node value\ncic_ici​ — child node value\nRiR_iRi​ — either `L` or `R`, indicating whether the child is a left or right child\n\n\n\n\nOutput Format\n\n\nOutput a single line:\n\n\n\n`\"YES\"` if the binary tree satisfies all Binary Search Tree properties\n`\"NO\"` otherwise",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 100000",
+      "1 ≤ pi, ci ≤ 1000000",
+      "Ri ∈ {L, R}",
+      "All node values are distinct",
+      "The input describes a valid binary tree"
+    ],
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains an integer N, the number of nodes in the binary tree, followed by N-1 lines each containing three space-separated values: pi, ci, and Ri, where pi is the parent node value, ci is the child node value, and Ri is either 'L' or 'R', indicating whether ci is the left or right child of pi.",
+    "outputFormat": "For each test case, print 'YES' if the binary tree satisfies all Binary Search Tree properties, otherwise print 'NO'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "7 \n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
+        "input": "3\n7\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R\n5\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n5\n4 2 L\n4 6 R\n2 3 R\n2 7 L",
+        "output": "YES\nYES\nNO",
+        "explanation": "Test case 1 builds a perfect BST, so output is YES. Test case 2 is the same tree without node 7, still a BST, so YES. Test case 3 places node 7 in the left subtree of node 2, violating the BST rule, thus NO."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n1",
         "output": "YES",
-        "explanation": ""
+        "explanation": "A single node tree trivially satisfies BST properties."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n10 5 L\n10 15 R\n5 2 L\n5 7 R",
+        "output": "YES",
+        "explanation": "The tree is a classic BST: left subtree values (5,2,7) are <10 and right subtree (15) >10, and each subtree respects the ordering."
       }
     ]
   },
@@ -36,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "7 \n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R",
+        "label": "minimum boundary",
+        "input": "1\n1",
         "expectedOutput": "YES",
-        "weight": 100
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n10\n1 2 L\n1 3 R\n2 4 L\n2 5 R\n3 6 L\n3 7 R\n4 8 L\n4 9 L\n5 10 R",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n5\n1 1 L\n1 1 R\n1 1 L\n1 1 R",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n3\n2 1 L\n2 3 R",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "2\n5\n4 2 L\n4 6 R\n2 3 R\n2 1 L\n6 5 L\n6 7 R\n5\n4 2 L\n4 6 R\n2 3 R\n2 1 L",
+        "expectedOutput": "YES\nYES",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,9 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "To check if a binary tree is a valid Binary Search Tree (BST), we can use a recursive approach where we check each node's value against a valid range. The root node should have a value within the range (negative infinity, positive infinity). For the left child of a node, the valid range is updated to (negative infinity, node's value), and for the right child, the valid range is updated to (node's value, positive infinity). If any node's value falls outside its valid range, the tree is not a BST.",
+    "timeComplexity": "O(N) per test case, where N is the number of nodes in the binary tree, because we visit each node once. O(T*N) total, where T is the number of test cases.",
+    "spaceComplexity": "O(N) for storing the tree nodes and the recursion stack in the worst case (when the tree is skewed).",
+    "code": {
+      "C": "// COMPLETE, COMPILABLE C code\n// Handles multiple test cases\n#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#include <limits.h>\n\ntypedef struct Node {\n    int val;\n    struct Node *left;\n    struct Node *right;\n} Node;\n\nNode* newNode(int v) {\n    Node* n = (Node*)malloc(sizeof(Node));\n    n->val = v;\n    n->left = n->right = NULL;\n    return n;\n}\n\nbool isBST(Node* root, long long minVal, long long maxVal) {\n    if (root == NULL) return true;\n    if (root->val <= minVal || root->val >= maxVal) return false;\n    return isBST(root->left, minVal, root->val) && isBST(root->right, root->val, maxVal);\n}\n\nint main() {\n    int T; \n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; \n        scanf(\"%d\", &N);\n        // value range is up to 1e6, allocate static arrays once\n        static Node* nodeMap[1000001];\n        static bool isChild[1000001];\n        // reset only needed entries\n        for (int i = 0; i <= 1000000; ++i) {\n            nodeMap[i] = NULL;\n            isChild[i] = false;\n        }\n        // create nodes for all possible values that appear\n        for (int i = 0; i < N; ++i) {\n            // we don't know values yet, will create lazily when reading edges\n        }\n        for (int i = 0; i < N - 1; ++i) {\n            int pi, ci; char dir;\n            scanf(\"%d %d %c\", &pi, &ci, &dir);\n            if (!nodeMap[pi]) nodeMap[pi] = newNode(pi);\n            if (!nodeMap[ci]) nodeMap[ci] = newNode(ci);\n            if (dir == 'L') nodeMap[pi]->left = nodeMap[ci];\n            else nodeMap[pi]->right = nodeMap[ci];\n            isChild[ci] = true;\n        }\n        // find root (the node that never appeared as child)\n        Node* root = NULL;\n        for (int i = 0; i <= 1000000; ++i) {\n            if (nodeMap[i] && !isChild[i]) { root = nodeMap[i]; break; }\n        }\n        if (isBST(root, LLONG_MIN, LLONG_MAX)) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n        // free allocated nodes\n        for (int i = 0; i <= 1000000; ++i) {\n            if (nodeMap[i]) free(nodeMap[i]);\n        }\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n// Handles multiple test cases\n#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node *left, *right;\n    Node(int v): val(v), left(nullptr), right(nullptr) {}\n};\n\nbool isBST(Node* root, long long minVal, long long maxVal) {\n    if (!root) return true;\n    if (root->val <= minVal || root->val >= maxVal) return false;\n    return isBST(root->left, minVal, root->val) && isBST(root->right, root->val, maxVal);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; \n    if(!(cin>>T)) return 0;\n    while (T--) {\n        int N; cin>>N;\n        unordered_map<int, Node*> mp;\n        unordered_set<int> childSet;\n        for (int i = 0; i < N-1; ++i) {\n            int pi, ci; char dir; \n            cin >> pi >> ci >> dir;\n            if (!mp.count(pi)) mp[pi] = new Node(pi);\n            if (!mp.count(ci)) mp[ci] = new Node(ci);\n            if (dir == 'L') mp[pi]->left = mp[ci];\n            else mp[pi]->right = mp[ci];\n            childSet.insert(ci);\n        }\n        Node* root = nullptr;\n        for (auto &p : mp) {\n            if (!childSet.count(p.first)) { root = p.second; break; }\n        }\n        cout << (isBST(root, LLONG_MIN, LLONG_MAX) ? \"YES\" : \"NO\") << '\\n';\n        // free memory\n        for (auto &p : mp) delete p.second;\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\n// Handles multiple test cases\nimport java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class Node {\n        int val;\n        Node left, right;\n        Node(int v) { val = v; }\n    }\n\n    static boolean isBST(Node node, long min, long max) {\n        if (node == null) return true;\n        if (node.val <= min || node.val >= max) return false;\n        return isBST(node.left, min, node.val) && isBST(node.right, node.val, max);\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            Map<Integer, Node> map = new HashMap<>();\n            Set<Integer> child = new HashSet<>();\n            for (int i = 0; i < N-1; ++i) {\n                st = new StringTokenizer(br.readLine());\n                int pi = Integer.parseInt(st.nextToken());\n                int ci = Integer.parseInt(st.nextToken());\n                char dir = st.nextToken().charAt(0);\n                map.putIfAbsent(pi, new Node(pi));\n                map.putIfAbsent(ci, new Node(ci));\n                Node parent = map.get(pi);\n                Node childNode = map.get(ci);\n                if (dir == 'L') parent.left = childNode; else parent.right = childNode;\n                child.add(ci);\n            }\n            Node root = null;\n            for (int val : map.keySet()) {\n                if (!child.contains(val)) { root = map.get(val); break; }\n            }\n            out.append(isBST(root, Long.MIN_VALUE, Long.MAX_VALUE) ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\nsys.setrecursionlimit(1_000_000)\n\ndef is_bst(node, lo, hi):\n    if node is None:\n        return True\n    if not (lo < node.val < hi):\n        return False\n    return is_bst(node.left, lo, node.val) and is_bst(node.right, node.val, hi)\n\nclass Node:\n    __slots__ = ('val', 'left', 'right')\n    def __init__(self, v):\n        self.val = v\n        self.left = None\n        self.right = None\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        nodes = {}\n        child_set = set()\n        for __ in range(N-1):\n            pi = int(next(it)); ci = int(next(it)); dirc = next(it)\n            if pi not in nodes:\n                nodes[pi] = Node(pi)\n            if ci not in nodes:\n                nodes[ci] = Node(ci)\n            if dirc == 'L':\n                nodes[pi].left = nodes[ci]\n            else:\n                nodes[pi].right = nodes[ci]\n            child_set.add(ci)\n        root = None\n        for val in nodes:\n            if val not in child_set:\n                root = nodes[val]\n                break\n        out_lines.append('YES' if is_bst(root, -float('inf'), float('inf')) else 'NO')\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\n// Handles multiple test cases\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet outputs = [];\nfunction isBST(node, min, max) {\n    if (node === null) return true;\n    if (node.val <= min || node.val >= max) return false;\n    return isBST(node.left, min, node.val) && isBST(node.right, node.val, max);\n}\nfor (let t = 0; t < T; ++t) {\n    const N = Number(input[idx++]);\n    const map = new Map(); // value -> node object\n    const childSet = new Set();\n    function getNode(v) {\n        if (!map.has(v)) map.set(v, {val: v, left: null, right: null});\n        return map.get(v);\n    }\n    for (let i = 0; i < N - 1; ++i) {\n        const pi = Number(input[idx++]);\n        const ci = Number(input[idx++]);\n        const dir = input[idx++];\n        const parent = getNode(pi);\n        const child = getNode(ci);\n        if (dir === 'L') parent.left = child; else parent.right = child;\n        childSet.add(ci);\n    }\n    let root = null;\n    for (let [val, node] of map.entries()) {\n        if (!childSet.has(val)) { root = node; break; }\n    }\n    outputs.push(isBST(root, -Infinity, Infinity) ? 'YES' : 'NO');\n}\nconsole.log(outputs.join('\\n'));\n"
+    }
   }
 }

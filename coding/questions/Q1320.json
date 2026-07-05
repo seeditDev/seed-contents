@@ -4,14 +4,15 @@
   "slug": "practice-josephus-problem",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Linked List",
+    "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "linked lists",
-      "data structures and algorithms"
+      "Josephus",
+      "Bit Manipulation",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,31 @@
   },
   "content": {
     "problemStatement": "You need to solve the famous Josephus problem using circular linked list in this section.\n\nThere are `N` people standing in a circle like 1-&gt;2-&gt;3...-&gt;N-&gt;1 and there is a knife. Whoever has the knife kills the person next to them and hands over the knife, i.e., if `2` has the knife in 1-&gt;2-&gt;3-&gt;1 then `2` kills `3` and hands over the knife to `1`. This process continues until there is only one person left, i.e., there is no one left to kill. This last person is deemed as the winner. Initially the knife is with person `1`.\n\nFor a given `N`, you need to determine the winner.\n\nNote - You are given a circular linked list containing elements from `1` to `N` with head initially at `1`. In the `solution` function, you need to output a single integer denoting the winner.\n\n**Do not make changes anywhere except the solveJosephus() function.**\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. The description of the test cases follows.\nThe first and only line of each test case contains a single integer NNN, denoting the number of people\n\n\nOutput Format\nFor each test case, output on a new line the winner of that game.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 <= T <= 1000",
+      "1 <= N <= 1000",
+      "All values are integers"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 1000) denoting the number of people standing in the circle.",
+    "outputFormat": "For each test case, output on a new line the position (1‑based) of the survivor.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n5\n4",
-        "output": "3\n1",
-        "explanation": "Explanation:\nFor n=5, the moves are as followed (the person in bracket holds the knife):\n(1)->2->3->4->5->1   (1 kills 2 and hands knife to 3)\n1->(3)->4->5->1   (3 kills 4 and hands knife to 5)\n1->3->(5)->1   (5 kills 1 and hands knife to 3)\n(3)->5   (3 kills 5 and is the only person left)\nTherefore, 3 is the winner."
+        "input": "2\\n5\\n4",
+        "output": "3\\n1",
+        "explanation": "For N=5 the highest power of two ≤5 is 4, winner=2*(5-4)+1=3. For N=4 (a power of two) winner=1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n10",
+        "output": "5",
+        "explanation": "10 in binary is 1010; moving the leading 1 to the end gives 0101 which is 5."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1",
+        "output": "1",
+        "explanation": "With only one person, that person is trivially the winner."
       }
     ]
   },
@@ -36,20 +53,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n5\n4",
-        "expectedOutput": "3\n1",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "3\\n1000\\n999\\n512",
+        "expectedOutput": "977\\n975\\n1",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "5\\n256\\n256\\n256\\n256\\n256",
+        "expectedOutput": "1\\n1\\n1\\n1\\n1",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\\n1023",
+        "expectedOutput": "1023",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "7\\n1\\n2\\n3\\n4\\n5\\n6\\n7",
+        "expectedOutput": "1\\n1\\n3\\n1\\n3\\n5\\n7",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +113,15 @@
     ]
   },
   "solution": {
-    "approach": "The key idea of this solution is to use a **circular linked list** to efficiently simulate the process of eliminating every second person until one person remains.\n\n\n\n**Node Structure**:\n\n\n\nA `Node` contains:\n\n**value**: The data of the node, representing a person.\n**next**: A pointer to the next node in the circular list.\n\n\n\n\n\n**LinkedList Class**:\n\n\n\n**head**: A pointer to the first node in the list.\n**tail**: A pointer to the last node in the list.\n\n\n\n**insertAtEnd(int value)**:\n\n\n\nThis function adds a new node to the end of the circular linked list.\nIf the list is empty, the new node becomes the head.\nIf the list already has elements, the new node is added after the tail, and then the tail pointer is updated to the new node.\nThe `next` pointer of the new tail is set to point back to the head, making the list circular.\n\n\n\n**solveJosephus()**:\n\n\n\nThis function simulates the elimination process.\nIt continuously removes every second person until only one remains.\nThe loop runs until there is only one node left in the list.\nIt updates the `head` if the eliminated node is the current head and returns the value of the last remaining node.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "The Josephus problem with step size 2 has a closed form. Let p be the largest power of two not exceeding N. After eliminating every second person repeatedly, the survivor is given by 2·(N−p)+1. This can be derived by observing the binary representation of N: moving the most‑significant bit to the least‑significant position yields the answer. The algorithm for each test case: find p by left‑shifting until (p<<1) > N, compute winner = 2*(N-p)+1, and print it. This runs in O(log N) time per test case and O(1) extra space.",
+    "timeComplexity": "O(log N) per test case (due to finding the highest power of two), O(T·log N) total, which is well within limits for N≤1000.",
+    "spaceComplexity": "O(1) auxiliary space.",
     "code": {
-      "C++": "#include <iostream>\nusing namespace std;\n\nclass Node {\n    public:\n    int value;\n    Node* next;\n    \n    // Constructor to initialize the node with a given value\n    Node(int val): value(val), next(nullptr) {}\n};\n\nclass LinkedList {\n    public:\n    Node* head;\n    Node* tail;\n\n    void insertAtEnd(int value) {\n        Node* newNode = new Node(value);\n        \n        if (head == NULL) {\n            head = newNode;\n        } else {\n            tail -> next = newNode;\n        }\n        \n        // Set newNode as the tail \n        tail = newNode;\n        \n        // Set next of tail to head\n        tail -> next = head;\n    }\n    \n    int solveJosephus() {\n        Node* current = head;\n        \n        // This condition will be true when there is only one element left in the list\n        while (current -> next != current) {\n            Node* knifePass = current -> next -> next;\n            if (current -> next == head) {\n                // We kill the current.next person, therefore if that is the head of the list, then the head needs to be updated to its next element\n                head = knifePass;\n            }\n            \n            // Killing the next person (Removing the pointer pointing to that node)\n            current -> next = knifePass;\n            \n            // Passing the knife\n            current = current -> next;\n        }\n        return current -> value;\n    }\n\n};\n\nint main() {\n    int t, n;\n    cin >> t;\n    \n    while (t--) {\n        cin >> n;\n        \n        LinkedList* list = new LinkedList();\n        for (int i = 1; i <= n; i++) {\n            list -> insertAtEnd(i);    \n        }\n        cout << list -> solveJosephus() << '\\n'; \n    }\n}\n    ",
-      "Python3": "class Node:\n    def __init__(self, val):\n        self.value = val\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def insertAtEnd(self, value):\n        new_node = Node(value)\n\n        if self.head is None:\n            self.head = new_node\n        else:\n            self.tail.next = new_node\n\n        self.tail = new_node\n        self.tail.next = self.head\n\n    def solveJosephus(self):\n        current = self.head\n\n        while current.next != current:\n            knife_pass = current.next.next\n            if current.next == self.head:\n                self.head = knife_pass\n\n            current.next = knife_pass\n            current = current.next\n        return current.value\n\nif __name__ == \"__main__\":\n    t = int(input())\n\n    for _ in range(t):\n        n = int(input())\n\n        ll = LinkedList()\n        for i in range(1, n + 1):\n            ll.insertAtEnd(i)\n        print(ll.solveJosephus())\n",
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Node {\n    int value;\n    struct Node* next;\n};\n\nstruct LinkedList {\n    struct Node* head;\n    struct Node* tail;\n};\n\nvoid insertAtEnd(struct LinkedList* list, int value) {\n    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));\n    newNode->value = value;\n    newNode->next = NULL;\n\n    if (list->head == NULL) {\n        list->head = newNode;\n    } else {\n        list->tail->next = newNode;\n    }\n\n    list->tail = newNode;\n    list->tail->next = list->head;\n}\n\nint solveJosephus(struct LinkedList* list) {\n    struct Node* current = list->head;\n\n    while (current->next != current) {\n        struct Node* knifePass = current->next->next;\n        if (current->next == list->head) {\n            list->head = knifePass;\n        }\n\n        current->next = knifePass;\n        current = current->next;\n    }\n    return current->value;\n}\n\nint main() {\n    int t, n;\n    scanf(\"%d\", &t);\n    \n    while (t--) {\n        scanf(\"%d\", &n);\n        \n        struct LinkedList* list = (struct LinkedList*)malloc(sizeof(struct LinkedList));\n        list->head = NULL;\n        list->tail = NULL;\n        \n        for (int i = 1; i <= n; i++) {\n            insertAtEnd(list, i);\n        }\n        printf(\"%d\\n\", solveJosephus(list)); \n    }\n\n    return 0;\n}\n",
-      "Java": "import java.util.Scanner;\n\nclass Node {\n    int value;\n    Node next;\n\n    Node(int val) {\n        value = val;\n        next = null;\n    }\n}\n\nclass LinkedList {\n    Node head;\n    Node tail;\n\n    void insertAtEnd(int value) {\n        Node newNode = new Node(value);\n\n        if (head == null) {\n            head = newNode;\n        } else {\n            tail.next = newNode;\n        }\n\n        tail = newNode;\n        tail.next = head;\n    }\n\n    int solveJosephus() {\n        Node current = head;\n\n        while (current.next != current) {\n            Node knifePass = current.next.next;\n            if (current.next == head) {\n                head = knifePass;\n            }\n\n            current.next = knifePass;\n            current = current.next;\n        }\n        return current.value;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int t = scanner.nextInt();\n\n        while (t-- > 0) {\n            int n = scanner.nextInt();\n\n            LinkedList list = new LinkedList();\n            for (int i = 1; i <= n; i++) {\n                list.insertAtEnd(i);\n            }\n            System.out.println(list.solveJosephus());\n        }\n    }\n}\n",
-      "JavaScript": "/*\nclass Node {\n    constructor(value) {\n        this.value = value;\n        this.next = null;\n    }\n}\n\nclass LinkedList {\n    constructor() {\n        this.head = null;\n        this.tail = null;\n    }\n}\n*/\nLinkedList.prototype.solveJosephus = function(){\n    //Your code goes here\n    let current = this.head;\n    while (current.next !== current) {\n        const knifePass = current.next.next;\n        if (current.next === this.head) {\n            this.head = knifePass;\n        }\n        current.next = knifePass;\n        current = current.next;\n    }\n    return current.value;\n}"
+      "C": "#include <stdio.h>\nint main(){int T,N; if(scanf(\"%d\",&T)!=1) return 0; while(T--){scanf(\"%d\",&N); int p=1; while((p<<1)<=N) p<<=1; int winner=2*(N-p)+1; printf(\"%d\\n\",winner);} return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T,N; if(!(cin>>T)) return 0; while(T--){cin>>N; int p=1; while((p<<1)<=N) p<<=1; int winner=2*(N-p)+1; cout<<winner<<'\\n';}\nreturn 0;}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        String line=br.readLine();\n        if(line==null||line.isEmpty()) return;\n        int T=Integer.parseInt(line.trim());\n        StringBuilder sb=new StringBuilder();\n        for(int i=0;i<T;i++){\n            int N=Integer.parseInt(br.readLine().trim());\n            int p=1;\n            while((p<<1) <= N) p <<= 1;\n            int winner=2*(N-p)+1;\n            sb.append(winner);\n            if(i<T-1) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        p=1\n        while (p<<1) <= N:\n            p <<= 1\n        winner=2*(N-p)+1\n        out.append(str(winner))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=Number(input[idx++]);\nlet res=[];\nfor(let t=0;t<T;t++){\n  const N=Number(input[idx++]);\n  let p=1;\n  while((p<<1) <= N) p <<= 1;\n  const winner=2*(N-p)+1;\n  res.push(String(winner));\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

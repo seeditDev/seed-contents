@@ -4,14 +4,14 @@
   "slug": "sum-of-digits-ii",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
     "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "strings & streams",
-      "programming languages"
+      "String processing",
+      "Simulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +21,30 @@
   "content": {
     "problemStatement": "Write a program to calculate the sum of the digits present in an alphanumeric string.\n\n\nInput Format\n\nThe first line contains an integer, T, denoting the number of test cases.\nEach of the next T lines contains a string consisting of lowercase/uppercase English letters, along with digits 0 to 9. (There shall be no space in the string)\n\n\nOutput Format\n\nFor each test case, print the sum of digits in each string.",
     "constraints": [
-      "1 ≤ T ≤ 20",
-      "1 ≤ Length of each string ≤ 1000"
+      "1 <= T <= 20",
+      "1 <= length of each string <= 1000",
+      "Strings contain only printable ASCII characters; no spaces."
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty alphanumeric string (letters, digits and possible symbols) without spaces.",
+    "outputFormat": "For each test case, output a single line containing the sum of all decimal digits (0‑9) that appear in the given string.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\nHel#284!lo23Chef",
+        "input": "1\\nHel#284!lo23Chef",
         "output": "19",
-        "explanation": "Explanation:\n2 + 8 + 4 + 2 + 3 = 19"
+        "explanation": "Digits are 2,8,4,2,3; their sum is 2+8+4+2+3=19."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n1234567890",
+        "output": "45",
+        "explanation": "Sum of digits 1 through 9 plus 0 equals 45."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\nabc123def456",
+        "output": "21",
+        "explanation": "Digits 1,2,3,4,5,6 sum to 21."
       }
     ]
   },
@@ -39,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "1\nHel#284!lo23Chef",
-        "expectedOutput": "19",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\\na",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary (compact)",
+        "input": "1\\n9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+        "expectedOutput": "900",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform zeros",
+        "input": "1\\n00000",
+        "expectedOutput": "0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "descending digits",
+        "input": "1\\n9876543210",
+        "expectedOutput": "45",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "3\\nabc0def\\n123abc456\\nNoDigitsHere",
+        "expectedOutput": "0\\n21\\n0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case we scan the string character by character. Whenever a character lies between '0' and '9' we add its numeric value (ch-'0') to a running total. After processing the whole string we output the total. The scan is linear, uses O(1) extra memory and works for any printable ASCII input.",
+    "timeComplexity": "O(total length of all strings) – each character is examined once.",
+    "spaceComplexity": "O(1) besides the input buffer.",
     "code": {
-      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int t;\n    cin >> t;\n\n    while (t--) {\n        string str;\n        cin >> str;\n        int sum = 0; \n        for (char ch : str) {\n            if (ch >= '0' && ch <= '9') {\n                sum += ch - '0'; // Convert character to integer and add to sum\n            }\n        }\n        cout << sum << endl;\n    }\n\n    return 0;\n}\n",
-      "Python3": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n\nvoid capitalizeSentence(char sentence[]) {\n    int len = strlen(sentence);\n    int capitalizeNext = 1;\n\n    for (int i = 0; i < len; i++) {\n        if (sentence[i] == ' ' || sentence[i] == '.' || sentence[i] == ',' || sentence[i] == '!' || sentence[i] == '?' || sentence[i] == ';' || sentence[i] == ':') {\n            capitalizeNext = 1;\n        } else {\n            if (capitalizeNext) {\n                sentence[i] = toupper(sentence[i]);\n                capitalizeNext = 0;\n            } else {\n                sentence[i] = tolower(sentence[i]);\n            }\n        }\n    }\n}\n\nint main() {\n    int testCases;\n    scanf(\"%d\", &testCases);\n    char sentence[1001];\n\n    for (int t = 0; t < testCases; ++t) {\n        scanf(\" %[^\\n]s\", sentence); // Read string with spaces\n\n        capitalizeSentence(sentence);\n        printf(\"%s\\n\", sentence);\n    }\n\n    return 0;\n}\n",
-      "C": "#include <stdio.h>\n\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        char str[1002];\n        scanf(\"%s\", str);\n        int sum = 0; \n        for (int i = 0; str[i] != '\\0'; i++) {\n            char ch = str[i];\n            if (ch >= '0' && ch <= '9') {\n                sum += str[i] - '0'; // Convert character to integer and add to sum\n            }\n        }\n        printf(\"%d\\n\", sum);\n    }\n\n    return 0;\n}\n",
-      "Java": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n\nvoid capitalizeSentence(char sentence[]) {\n    int len = strlen(sentence);\n    int capitalizeNext = 1;\n\n    for (int i = 0; i < len; i++) {\n        if (sentence[i] == ' ' || sentence[i] == '.' || sentence[i] == ',' || sentence[i] == '!' || sentence[i] == '?' || sentence[i] == ';' || sentence[i] == ':') {\n            capitalizeNext = 1;\n        } else {\n            if (capitalizeNext) {\n                sentence[i] = toupper(sentence[i]);\n                capitalizeNext = 0;\n            } else {\n                sentence[i] = tolower(sentence[i]);\n            }\n        }\n    }\n}\n\nint main() {\n    int testCases;\n    scanf(\"%d\", &testCases);\n    char sentence[1001];\n\n    for (int t = 0; t < testCases; ++t) {\n        scanf(\" %[^\\n]s\", sentence); // Read string with spaces\n\n        capitalizeSentence(sentence);\n        printf(\"%s\\n\", sentence);\n    }\n\n    return 0;\n}\n",
-      "JavaScript": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n\nvoid capitalizeSentence(char sentence[]) {\n    int len = strlen(sentence);\n    int capitalizeNext = 1;\n\n    for (int i = 0; i < len; i++) {\n        if (sentence[i] == ' ' || sentence[i] == '.' || sentence[i] == ',' || sentence[i] == '!' || sentence[i] == '?' || sentence[i] == ';' || sentence[i] == ':') {\n            capitalizeNext = 1;\n        } else {\n            if (capitalizeNext) {\n                sentence[i] = toupper(sentence[i]);\n                capitalizeNext = 0;\n            } else {\n                sentence[i] = tolower(sentence[i]);\n            }\n        }\n    }\n}\n\nint main() {\n    int testCases;\n    scanf(\"%d\", &testCases);\n    char sentence[1001];\n\n    for (int t = 0; t < testCases; ++t) {\n        scanf(\" %[^\\n]s\", sentence); // Read string with spaces\n\n        capitalizeSentence(sentence);\n        printf(\"%s\\n\", sentence);\n    }\n\n    return 0;\n}\n"
+      "C": "#include <stdio.h>\n#include <string.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; int c=getchar(); // consume newline\nwhile(T--){char buf[1005]; if(!fgets(buf,sizeof(buf),stdin)) break; size_t len=strlen(buf); if(len && buf[len-1]=='\\n') buf[--len]='\\0'; int sum=0; for(size_t i=0;i<len;++i){if(buf[i]>='0' && buf[i]<='9') sum+=buf[i]-'0';} printf(\"%d\\n\",sum);} return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T; if(!(cin>>T)) return 0; string s; while(T--){cin>>s; int sum=0; for(char ch: s) if(ch>='0' && ch<='9') sum+=ch-'0'; cout<<sum<<'\\n';}\nreturn 0;}",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws IOException{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        int T=Integer.parseInt(br.readLine().trim());\n        StringBuilder sb=new StringBuilder();\n        for(int t=0;t<T;t++){\n            String line=br.readLine();\n            int sum=0;\n            for(int i=0;i<line.length();i++){\n                char ch=line.charAt(i);\n                if(ch>='0' && ch<='9') sum+=ch-'0';\n            }\n            sb.append(sum).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data=sys.stdin.read().splitlines()\n    if not data:\n        return\n    T=int(data[0])\n    out=[]\n    for i in range(1,T+1):\n        s=data[i]\n        total=0\n        for ch in s:\n            if '0'<=ch<='9':\n                total+=ord(ch)-48\n        out.append(str(total))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs=require('fs');\nconst lines=fs.readFileSync(0,'utf-8').trim().split('\\n');\nlet idx=0;\nconst T=parseInt(lines[idx++],10);\nlet res=[];\nfor(let t=0;t<T;t++){\n  const s=lines[idx++]||'';\n  let sum=0;\n  for(const ch of s){\n    if(ch>='0' && ch<='9') sum+=ch.charCodeAt(0)-48;\n  }\n  res.push(String(sum));\n}\nconsole.log(res.join('\\n'));"
     }
   }
 }

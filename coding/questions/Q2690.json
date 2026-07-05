@@ -4,14 +4,14 @@
   "slug": "sereja-and-graph",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
+    "category": "Graph",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "flow & matching",
-      "competitive programming"
+      "Perfect Matching",
+      "Graph Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +21,32 @@
   "content": {
     "problemStatement": "Sereja has an undirected graph consisting of NNN vertices and MMM edges. Sereja is interested in one question: is it possible to delete edges from the graph in a way such that the degree of each vertex in the final graph is exactly 111?\n\nThe degree of any vertex in the graph is defined as the number of edges connected to that vertex.\n\nPlease help Sereja.",
     "constraints": [
-      "1≤T≤101 \\leq T \\leq 101≤T≤10",
-      "1≤N,M≤1001 \\leq N, M \\leq 1001≤N,M≤100",
-      "1≤U,V≤N1 \\leq U, V \\leq N1≤U,V≤N",
-      "There can be multiple edges but no self loops in the graph."
+      "1 <= T <= 10",
+      "1 <= N <= 100",
+      "1 <= M <= 100",
+      "1 <= U, V <= N",
+      "There can be multiple edges but no self-loops in the graph"
     ],
-    "inputFormat": "The first line contains a single integer -  TTT, the number of test cases. TTT test cases follow.\nThe first line of each test case contains two space separated integers - NNN and MMM. The description of the edges follows.\nThe next MMM lines contain two space separated integers — UUU and VVV - representing an edge connecting vertex UUU and vertex VVV.",
-    "outputFormat": "For each test case print YES if it is possible, otherwise print NO.",
+    "inputFormat": "The first line contains a single integer T, the number of test cases. Each test case contains two space-separated integers N and M, representing the number of vertices and edges in the graph, respectively. The next M lines contain two space-separated integers U and V, representing an edge connecting vertex U and vertex V.",
+    "outputFormat": "For each test case, print YES if it is possible to delete edges from the graph in a way such that the degree of each vertex in the final graph is exactly 1, otherwise print NO.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2 2\n1 2\n1 2\n3 2\n1 2\n2 3\n4 6\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
         "output": "YES\nNO\nYES",
-        "explanation": ""
+        "explanation": "For the first test case, we can delete one edge to make the degree of each vertex 1. For the second test case, it is not possible to delete edges to make the degree of each vertex 1. For the third test case, we can delete edges to make the degree of each vertex 1."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n4 4\n1 2\n1 3\n2 4\n3 4",
+        "output": "NO",
+        "explanation": "It is not possible to delete edges to make the degree of each vertex 1."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n2 1\n1 2",
+        "output": "YES",
+        "explanation": "We can delete no edges to make the degree of each vertex 1."
       }
     ]
   },
@@ -41,20 +54,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n2 2\n1 2\n1 2\n3 2\n1 2\n2 3\n4 6\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4",
-        "expectedOutput": "YES\nNO\nYES",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 0",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "1\n1 0",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "1\n1 0",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "1\n1 0",
+        "expectedOutput": "NO",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "1\n1 0",
+        "expectedOutput": "NO",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,14 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "To solve this problem, we can use the concept of perfect matching in graph theory. A perfect matching is a subset of the edges in a graph such that every vertex is incident to exactly one edge in the subset. We can check if a perfect matching exists in the graph by trying to match each vertex with another vertex. If we can match all vertices, then a perfect matching exists, and we can delete edges to make the degree of each vertex 1.",
+    "timeComplexity": "O(T * M * N) per test case, O(T * M * N) total. The time complexity is due to the nested loops used to check for perfect matching.",
+    "spaceComplexity": "O(N) — the dominant structure is the adjacency list representation of the graph.",
     "code": {
-      "C++": "#include <iostream>\n#include <cstring>\n#include <vector>\n#include <cstdlib>\n#include <cstdio>\n#include <iomanip>\n#include <algorithm>\n#include <memory>\n \nusing namespace std; \n \nconst int MAXN = 111;\n \nint n;\nvector<int> g[MAXN];\nint match[MAXN], p[MAXN], base[MAXN], q[MAXN];\nbool used[MAXN], blossom[MAXN];\n \nint lca (int a, int b) {\n    bool used[MAXN] = { 0 };\n    for (;;) {\n        a = base[a];\n        used[a] = true;\n        if (match[a] == -1)  break; // ????? ?? ?????\n        a = p[match[a]];\n    }\n    for (;;) {\n        b = base[b];\n        if (used[b])  return b;\n        b = p[match[b]];\n    }\n}\n \nvoid mark_path (int v, int b, int children) {\n    while (base[v] != b) {\n        blossom[base[v]] = blossom[base[match[v]]] = true;\n        p[v] = children;\n        children = match[v];\n        v = p[match[v]];\n    }\n}\n \nint find_path (int root) {\n    memset (used, 0, sizeof used);\n    memset (p, -1, sizeof p);\n    for (int i=0; i<n; ++i)\n        base[i] = i;\n \n    used[root] = true;\n    int qh=0, qt=0;\n    q[qt++] = root;\n    while (qh < qt) {\n        int v = q[qh++];\n        for (size_t i=0; i<g[v].size(); ++i) {\n            int to = g[v][i];\n            if (base[v] == base[to] || match[v] == to)  continue;\n            if (to == root || match[to] != -1 && p[match[to]] != -1) {\n                int curbase = lca (v, to);\n                memset (blossom, 0, sizeof blossom);\n                mark_path (v, curbase, to);\n                mark_path (to, curbase, v);\n                for (int i=0; i<n; ++i)\n                    if (blossom[base[i]]) {\n                        base[i] = curbase;\n                        if (!used[i]) {\n                            used[i] = true;\n                            q[qt++] = i;\n                        }\n                    }\n            }\n            else if (p[to] == -1) {\n                p[to] = v;\n                if (match[to] == -1)\n                    return to;\n                to = match[to];\n                used[to] = true;\n                q[qt++] = to;\n            }\n        }\n    }\n    return -1;\n}\n \n \nint main() {\n    int T,i,ok;\n    cin >> T;\n    while (T){\n            T--;\n            int m, xx, yy;\n            cin >> n >> m;\n            if (n > 100) exit(0); \n            for (i=0;i<n;i++){\n                g[i].clear();\n            }\n            for (i=1;i<=m;i++){\n                cin >> xx >> yy;\n                xx--;yy--;\n                g[xx].push_back(yy);\n                g[yy].push_back(xx);\n            }\n            \n         \n            memset (match, -1, sizeof match);\n            for (i=0; i<n; ++i)\n                if (match[i] == -1) {\n                    int v = find_path (i);\n                    while (v != -1) {\n                        int pv = p[v],  ppv = match[pv];\n                        match[v] = pv,  match[pv] = v;\n                        v = ppv;\n                    }\n                }\n               ok = 1;\n               for (i=0;i<n;i++)\n                   if (match[i] == -1) ok = 0;\n               if (ok) cout << \"YES\\n\"; else cout << \"NO\\n\";    \n    }\n}\n  \n",
-      "Python3": "# cook your dish here\ncases = int(input())\nfor __ in range(cases):\n    inputs = input().split()\n    total_nodes = int(inputs[0])\n    total_edges = int(inputs[1])\n    connection_set = set()\n    node_pool = set()\n    edge_count = 0\n    link_map = [[] for _ in range(total_nodes + 1)]\n    paired = [0] * (total_nodes + 1)\n\n    for __ in range(total_edges):\n        a, b = map(int, input().split())\n        if a > b:\n            a, b = b, a\n        if (a, b) not in connection_set:\n            connection_set.add((a, b))\n            node_pool.add(a)\n            node_pool.add(b)\n            edge_count += 1\n            link_map[a].append(b)\n            link_map[b].append(a)\n\n    result = 0\n    if total_nodes % 2 == 0 and 2 * edge_count >= total_nodes and len(node_pool) == total_nodes:\n        for index in range(1, total_nodes + 1):\n            if paired[index] == 0:\n                for adj in link_map[index]:\n                    if paired[adj] == 0 and paired[index] == 0:\n                        paired[adj] = index\n                        paired[index] = adj\n\n        result = 1\n        for node in range(1, total_nodes + 1):\n            if result == 1 and paired[node] == 0:\n                path_queue = []\n                for nxt in link_map[node]:\n                    path_queue.append([node, nxt, -1, [node, nxt]])\n                step = 0\n                solved = False\n                while step < len(path_queue) and not solved:\n                    trace = paired[path_queue[step][1]]\n                    if trace not in path_queue[step][3]:\n                        for branch in link_map[trace]:\n                            if not solved and branch not in path_queue[step][3]:\n                                if paired[branch] == 0:\n                                    solved = True\n                                    path_queue.append([trace, branch, step])\n                                    backstep = len(path_queue) - 1\n                                    while backstep > -1:\n                                        left = path_queue[backstep][0]\n                                        right = path_queue[backstep][1]\n                                        paired[left] = right\n                                        paired[right] = left\n                                        backstep = path_queue[backstep][2]\n                                else:\n                                    updated_path = list(path_queue[step][3])\n                                    updated_path.extend([trace, branch])\n                                    path_queue.append([trace, branch, step, updated_path])\n                    step += 1\n                if not solved:\n                    result = 0\n    print('YES' if result else 'NO')",
-      "C": "#include<stdio.h>\nint graph[102][102],mark[102],degree[102],n,m;\nint find1()\n{\n    int i,j,sel=-1,deg=1000;\n    for(j=1;j<=n;j++)\n    {\n        if(mark[j]==0&&degree[j]<deg)\n        {\n            deg=degree[j];\n            sel=j;\n        }\n    }\n    return sel;\n}\nint main()\n{\n    int t;\n    scanf(\"%d\",&t);\n    while(t--)\n    {\n        int i,j,k,x,y,flag;\n        scanf(\"%d%d\",&n,&m);\n        for(j=1;j<=n;j++)\n        {\n            mark[j]=0;\n            degree[j]=0;\n            for(i=1;i<=n;i++)\n                graph[j][i]=0;\n        }\n        for(i=0;i<m;i++)\n        {\n            scanf(\"%d%d\",&x,&y);\n            if(graph[x][y]==0)\n            {\n                degree[x]++;\n                degree[y]++;\n                graph[x][y]=graph[y][x]=1;\n            }\n        }\n        if(n%2!=0||m<n/2)\n        {\n            printf(\"NO\\n\");\n            continue;\n        }\n        flag=0;\n        for(i=1;i<=n;i++)\n        {\n            int sel=find1();\n            if(sel==-1)\n                break;\n            int adj=0,deg=1001;\n            for(k=1;k<=n;k++)\n            {\n                if(graph[sel][k]==1&&degree[k]<deg&&mark[k]==0)\n                {\n                    adj=k;\n                    deg=degree[k];\n                }\n            }\n            if(adj==0)\n            {\n                flag=1;\n                break;\n            }\n            mark[sel]=mark[adj]=1;\n            for(k=1;k<=n;k++)\n            {\n                if(graph[sel][k]==1)\n                {\n                    degree[k]--;\n                    degree[sel]--;\n                    graph[sel][k]=graph[k][sel]=0;\n                }\n                if(graph[adj][k]==1)\n                {\n                    degree[k]--;\n                    degree[adj]--;\n                    graph[adj][k]=graph[k][adj]=0;\n                }\n            }\n        }\n        if(flag==0)\n            printf(\"YES\\n\");\n        else\n            printf(\"NO\\n\");\n    }\n    return 0;\n}",
-      "Java": "import java.util.*;\n\npublic class Main {\n    static int N, M;\n    static ArrayList < Integer > [] adj;\n    static boolean[] visited;\n    static boolean foundMatching;\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n\n        while (T--> 0) {\n            N = sc.nextInt();\n            M = sc.nextInt();\n\n            adj = new ArrayList[N + 1];\n            for (int i = 1; i <= N; i++) {\n                adj[i] = new ArrayList < > ();\n            }\n\n            for (int i = 0; i < M; i++) {\n                int u = sc.nextInt();\n                int v = sc.nextInt();\n                if (u != v) { // skip self-loops\n                    adj[u].add(v);\n                    adj[v].add(u);\n                }\n            }\n\n            if (N % 2 != 0) {\n                System.out.println(\"NO\");\n                continue;\n            }\n\n            visited = new boolean[N + 1];\n            foundMatching = false;\n\n            backtrack(1, 0);\n\n            System.out.println(foundMatching ? \"YES\" : \"NO\");\n        }\n\n        sc.close();\n    }\n\n    static void backtrack(int node, int matchedCount) {\n        if (matchedCount == N / 2) {\n            foundMatching = true;\n            return;\n        }\n\n        while (node <= N && visited[node]) node++; // skip visited\n\n        if (node > N) return;\n\n        for (int neighbor: adj[node]) {\n            if (!visited[neighbor]) {\n                visited[node] = visited[neighbor] = true;\n                backtrack(node + 1, matchedCount + 1);\n                if (foundMatching) return;\n                visited[node] = visited[neighbor] = false;\n            }\n        }\n    }\n}"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Structure to represent a graph\ntypedef struct {\n    int numVertices;\n    int numEdges;\n    int **adjMatrix;\n} Graph;\n\n// Function to create a graph\nGraph *createGraph(int numVertices, int numEdges) {\n    Graph *graph = (Graph *)malloc(sizeof(Graph));\n    graph->numVertices = numVertices;\n    graph->numEdges = numEdges;\n    graph->adjMatrix = (int **)malloc(numVertices * sizeof(int *));\n    for (int i = 0; i < numVertices; i++) {\n        graph->adjMatrix[i] = (int *)malloc(numVertices * sizeof(int));\n        for (int j = 0; j < numVertices; j++) {\n            graph->adjMatrix[i][j] = 0;\n        }\n    }\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph *graph, int u, int v) {\n    graph->adjMatrix[u][v] = 1;\n    graph->adjMatrix[v][u] = 1;\n}\n\n// Function to check if a perfect matching exists\nint hasPerfectMatching(Graph *graph) {\n    int *matched = (int *)malloc(graph->numVertices * sizeof(int));\n    for (int i = 0; i < graph->numVertices; i++) {\n        matched[i] = -1;\n    }\n    for (int i = 0; i < graph->numVertices; i++) {\n        for (int j = 0; j < graph->numVertices; j++) {\n            if (graph->adjMatrix[i][j] == 1 && matched[i] == -1 && matched[j] == -1) {\n                matched[i] = j;\n                matched[j] = i;\n            }\n        }\n    }\n    for (int i = 0; i < graph->numVertices; i++) {\n        if (matched[i] == -1) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        Graph *graph = createGraph(N, M);\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            addEdge(graph, u - 1, v - 1);\n        }\n        if (hasPerfectMatching(graph)) {\n            printf(\"YES\\n\");\n        } else {\n            printf(\"NO\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Structure to represent a graph\nstruct Graph {\n    int numVertices;\n    int numEdges;\n    vector<vector<int>> adjList;\n};\n\n// Function to create a graph\nGraph createGraph(int numVertices, int numEdges) {\n    Graph graph;\n    graph.numVertices = numVertices;\n    graph.numEdges = numEdges;\n    graph.adjList.resize(numVertices);\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph &graph, int u, int v) {\n    graph.adjList[u].push_back(v);\n    graph.adjList[v].push_back(u);\n}\n\n// Function to check if a perfect matching exists\nbool hasPerfectMatching(Graph &graph) {\n    vector<int> matched(graph.numVertices, -1);\n    for (int i = 0; i < graph.numVertices; i++) {\n        for (int j = 0; j < graph.numVertices; j++) {\n            if (find(graph.adjList[i].begin(), graph.adjList[i].end(), j) != graph.adjList[i].end() && matched[i] == -1 && matched[j] == -1) {\n                matched[i] = j;\n                matched[j] = i;\n            }\n        }\n    }\n    for (int i = 0; i < graph.numVertices; i++) {\n        if (matched[i] == -1) {\n            return false;\n        }\n    }\n    return true;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        Graph graph = createGraph(N, M);\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            cin >> u >> v;\n            addEdge(graph, u - 1, v - 1);\n        }\n        if (hasPerfectMatching(graph)) {\n            cout << \"YES\" << endl;\n        } else {\n            cout << \"NO\" << endl;\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\n\npublic class Main {\n    // Structure to represent a graph\n    static class Graph {\n        int numVertices;\n        int numEdges;\n        int[][] adjMatrix;\n\n        public Graph(int numVertices, int numEdges) {\n            this.numVertices = numVertices;\n            this.numEdges = numEdges;\n            this.adjMatrix = new int[numVertices][numVertices];\n        }\n    }\n\n    // Function to add an edge to the graph\n    public static void addEdge(Graph graph, int u, int v) {\n        graph.adjMatrix[u][v] = 1;\n        graph.adjMatrix[v][u] = 1;\n    }\n\n    // Function to check if a perfect matching exists\n    public static boolean hasPerfectMatching(Graph graph) {\n        int[] matched = new int[graph.numVertices];\n        for (int i = 0; i < graph.numVertices; i++) {\n            matched[i] = -1;\n        }\n        for (int i = 0; i < graph.numVertices; i++) {\n            for (int j = 0; j < graph.numVertices; j++) {\n                if (graph.adjMatrix[i][j] == 1 && matched[i] == -1 && matched[j] == -1) {\n                    matched[i] = j;\n                    matched[j] = i;\n                }\n            }\n        }\n        for (int i = 0; i < graph.numVertices; i++) {\n            if (matched[i] == -1) {\n                return false;\n            }\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            int N = scanner.nextInt();\n            int M = scanner.nextInt();\n            Graph graph = new Graph(N, M);\n            for (int i = 0; i < M; i++) {\n                int u = scanner.nextInt() - 1;\n                int v = scanner.nextInt() - 1;\n                addEdge(graph, u, v);\n            }\n            if (hasPerfectMatching(graph)) {\n                System.out.println(\"YES\");\n            } else {\n                System.out.println(\"NO\");\n            }\n        }\n    }\n}",
+      "Python3": "import sys\n\n# Function to create a graph\ndef create_graph(num_vertices, num_edges):\n    graph = [[] for _ in range(num_vertices)]\n    return graph\n\n# Function to add an edge to the graph\ndef add_edge(graph, u, v):\n    graph[u].append(v)\n    graph[v].append(u)\n\n# Function to check if a perfect matching exists\ndef has_perfect_matching(graph):\n    num_vertices = len(graph)\n    matched = [-1] * num_vertices\n    for i in range(num_vertices):\n        for j in range(num_vertices):\n            if j in graph[i] and matched[i] == -1 and matched[j] == -1:\n                matched[i] = j\n                matched[j] = i\n    for i in range(num_vertices):\n        if matched[i] == -1:\n            return False\n    return True\n\nT = int(sys.stdin.readline())\nfor _ in range(T):\n    N, M = map(int, sys.stdin.readline().split())\n    graph = create_graph(N, M)\n    for _ in range(M):\n        u, v = map(int, sys.stdin.readline().split())\n        add_edge(graph, u - 1, v - 1)\n    if has_perfect_matching(graph):\n        print(\"YES\")\n    else:\n        print(\"NO\")",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet i = 0;\n\n// Function to create a graph\nfunction createGraph(numVertices, numEdges) {\n    const graph = Array.from({ length: numVertices }, () => []);\n    return graph;\n}\n\n// Function to add an edge to the graph\nfunction addEdge(graph, u, v) {\n    graph[u].push(v);\n    graph[v].push(u);\n}\n\n// Function to check if a perfect matching exists\nfunction hasPerfectMatching(graph) {\n    const numVertices = graph.length;\n    const matched = Array(numVertices).fill(-1);\n    for (let i = 0; i < numVertices; i++) {\n        for (let j = 0; j < numVertices; j++) {\n            if (graph[i].includes(j) && matched[i] === -1 && matched[j] === -1) {\n                matched[i] = j;\n                matched[j] = i;\n            }\n        }\n    }\n    for (let i = 0; i < numVertices; i++) {\n        if (matched[i] === -1) {\n            return false;\n        }\n    }\n    return true;\n}\n\nconst T = parseInt(lines[i++]);\nfor (let t = 0; t < T; t++) {\n    const [N, M] = lines[i++].split(' ').map(Number);\n    const graph = createGraph(N, M);\n    for (let j = 0; j < M; j++) {\n        const [u, v] = lines[i++].split(' ').map(Number);\n        addEdge(graph, u - 1, v - 1);\n    }\n    if (hasPerfectMatching(graph)) {\n        console.log('YES');\n    } else {\n        console.log('NO');\n    }\n}"
     }
   }
 }

@@ -4,14 +4,16 @@
   "slug": "optimized-implementation-of-dsu",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Arrays",
+    "category": "Data Structures",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "disjoint set union",
-      "data structures and algorithms"
+      "Disjoint Set Union",
+      "Union Find",
+      "Path Compression",
+      "Union by Size"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +22,26 @@
   },
   "content": {
     "problemStatement": "Fill in the blanks to implement the optimizations in the previous lessons in the code editor.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "constraints": [
+      "1 ≤ T ≤ 10",
+      "1 ≤ n ≤ 10^6",
+      "1 ≤ m ≤ 10^6",
+      "0 ≤ a, b < n"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case starts with two integers n and m (1 ≤ n ≤ 10^6, 1 ≤ m ≤ 10^6) – the number of elements and the number of operations. Then m lines follow, each describing an operation. An operation is either \"union a b\" (merge the sets containing a and b) or \"find a\" (output the representative of the set containing a). Elements are numbered from 0 to n‑1.",
+    "outputFormat": "For every \"find\" operation, print the leader (representative) of the set containing the queried element on a separate line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 7\nunion 1 0\nunion 2 1\nfind 0\nfind 1\nfind 2\nfind 3\nfind 4",
-        "output": "2\n2\n2\n3\n4",
-        "explanation": ""
+        "input": "1\\n5 7\\nunion 1 0\\nunion 2 1\\nfind 0\\nfind 1\\nfind 2\\nfind 3\\nfind 4",
+        "output": "1\\n1\\n1\\n3\\n4",
+        "explanation": "The two union operations connect elements 0,1,2 into one set whose leader becomes 1 (the root after union by size). Subsequent finds return 1 for 0,1,2 and each element remains its own leader for 3 and 4."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n10 5\\nfind 0\\nfind 1\\nfind 2\\nfind 3\\nfind 4",
+        "output": "0\\n1\\n2\\n3\\n4",
+        "explanation": "No union operations are performed, so each element is its own set and find returns the element itself."
       }
     ]
   },
@@ -36,20 +49,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5 7\nunion 1 0\nunion 2 1\nfind 0\nfind 1\nfind 2\nfind 3\nfind 4",
-        "expectedOutput": "2\n2\n2\n3\n4",
-        "weight": 100
+        "label": "Case 1",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "Case 2",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "Case 3",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "Case 4",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "Case 5",
+        "input": "",
+        "expectedOutput": "",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -63,15 +109,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "We maintain a parent array and a size array. The function find(x) returns the root of x using path compression (while recursing, we set parent[x] to the root). The function union(a,b) first finds the roots ra and rb. If they are different, we attach the smaller tree to the larger one (union by size) and update the size of the new root. Both operations run in almost constant amortised time, O(α(n)), where α is the inverse Ackermann function. For each test case we initialise the structures, process the m operations sequentially and output the answer for every find query.",
+    "timeComplexity": "O((n + m) · α(n)) per test case, where α(n) is the inverse Ackermann function (practically ≤ 5).",
+    "spaceComplexity": "O(n) for the parent and size arrays per test case.",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint parent[1000000];\nint setSize[1000000];\n\n\nint dsuFind(int a){\n    if(parent[a]==a) return a;\n    //fill in the blanks for the optimized find in DSU\n    return parent[a] = dsuFind(parent[a]);\n}\n\nvoid dsuUnion(int a, int b) {\n    int leader_a = dsuFind(a);\n    int leader_b = dsuFind(b);\n    if(leader_a!=leader_b)\n    {\n        //fill in the blanks for the optimized union in DSU\n        if(setSize[leader_b]<setSize[leader_a])\n        {\n            swap(leader_a, leader_b);\n        }\n        parent[leader_b] = leader_a;\n        setSize[leader_a]+=setSize[leader_b];\n    }\n}\nint main() {\n    int n, m;\n    cin>>n>>m;\n    for(int i=0; i<n; i++)\n    {\n        parent[i] = i;\n        setSize[i] = 1;\n    }\n    for(int i=0; i<m; i++)\n    {\n        string command;\n        cin>>command;\n        if(command == \"union\")\n        {\n            int a, b;\n            cin>>a>>b;\n            dsuUnion(a, b);\n        }\n        else if(command == \"find\"){\n            int a;\n            cin>>a;\n            cout<<dsuFind(a)<<endl;\n        }\n    }\n}\n",
-      "Python3": "parent = []\nsetSize = []\n\ndef dsu_find(a):\n    if parent[a] == a:\n        return a\n    #fill in the blanks for the optimized find in DSU\n    parent[a] = dsu_find(parent[a])\n    return parent[a]\n\ndef dsu_union(a, b):\n    leader_a = dsu_find(a)\n    leader_b = dsu_find(b)\n    if leader_a != leader_b:\n        #fill in the blanks for the optimized union in DSU\n        if setSize[leader_b] < setSize[leader_a]:\n            leader_a, leader_b = leader_b, leader_a\n        parent[leader_b] = leader_a\n        setSize[leader_a] += setSize[leader_b]\n\n\nif __name__ == \"__main__\":\n    n, m = map(int, input().split())\n\n    for i in range(n):\n        parent.append(i)\n        setSize.append(1)\n\n    for i in range(m):\n        command = list(map(str, input().split()))\n        if command[0] == \"union\":\n            a, b = int(command[1]), int(command[2])\n            dsu_union(a, b)\n        elif command[0] == \"find\":\n            a = int(command[1])\n            print(dsu_find(a))\n",
-      "C": "#include <stdio.h>\nint parent[1000000];\nint size[1000000];\n\nvoid swap(int *x, int *y)\n{\n    int temp = *x;\n    *x = *y;\n    *y = temp;\n}\n\nint dsuFind(int a){\n    if(parent[a]==a) return a;\n    //fill in the blanks for the optimized find in DSU\n    return parent[a] = dsuFind(parent[a]);\n}\n\nvoid dsuUnion(int a, int b) {\n    int leader_a = dsuFind(a);\n    int leader_b = dsuFind(b);\n    if(leader_a!=leader_b)\n    {\n        //fill in the blanks for the optimized union in DSU\n        if(size[leader_b]<size[leader_a])\n        {\n            swap(&leader_a, &leader_b);\n        }\n        parent[leader_b] = leader_a;\n        size[leader_a]+=size[leader_b];\n    }\n}\nint main(void) {\n    int n, m;\n    scanf(\"%d\", &n);\n    scanf(\"%d\", &m);\n    for(int i=0; i<n; i++)\n    {\n        parent[i] = i;\n        size[i] = 1;\n    }\n    for(int i=0; i<m; i++)\n    {\n        char command[10];\n        scanf(\"%s\", &command);\n        if(strcmp(command, \"union\")==0){\n            int a, b;\n            scanf(\"%d\", &a);\n            scanf(\"%d\", &b);\n            dsuUnion(a, b);\n        }\n        else if(strcmp(command, \"find\")==0)\n        {\n            int a;\n            scanf(\"%d\", &a);\n            printf(\"%d\\n\", dsuFind(a));\n        }\n    }\n}\n\n",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef\n{\n    static int[] parent;\n    static int[] setSize;\n\n    static int dsuFind(int a) {\n        if (parent[a] == a)\n            return a;\n            //fill in the blanks for the optimized find in DSU\n            \n        return parent[a] = dsuFind(parent[a]);\n    }\n\n    static void dsuUnion(int a, int b) {\n        int leader_a = dsuFind(a);\n        int leader_b = dsuFind(b);\n        if (leader_a != leader_b) {\n            //fill in the blanks for the optimized union in DSU\n            \n            if (setSize[leader_b] < setSize[leader_a]) {\n                int temp = leader_a;\n                leader_a = leader_b;\n                leader_b = temp;\n            }\n            parent[leader_b] = leader_a;\n            setSize[leader_a] += setSize[leader_b];\n        }\n    }\n    public static void main (String[] args) throws java.lang.Exception\n    {\n        Scanner scanner = new Scanner(System.in);\n\n        int n = scanner.nextInt();\n        int m = scanner.nextInt();\n\n        parent = new int[n];\n        setSize = new int[n];\n        for (int i = 0; i < n; i++) {\n            parent[i] = i;\n            setSize[i] = 1;\n        }\n\n        for (int i = 0; i < m; i++) {\n            String command = scanner.next();\n            if (command.equals(\"union\")) {\n                int a = scanner.nextInt();\n                int b = scanner.nextInt();\n                dsuUnion(a, b);\n            } else if (command.equals(\"find\")) {\n                int a = scanner.nextInt();\n                System.out.println(dsuFind(a));\n            }\n        }\n    }\n}\n",
-      "JavaScript": "class DSU {\n    constructor(n) {\n        this.parent = new Array(n);\n        this.setSize = new Array(n);\n        for (let i = 0; i < n; i++) {\n            this.parent[i] = i;\n            this.setSize[i] = 1;\n        }\n    }\n\n    dsuFind(a) {\n        if (this.parent[a] === a) {\n            return a;\n        }\n        // Path compression optimization\n        return this.parent[a] = this.dsuFind(this.parent[a]);\n    }\n\n    dsuUnion(a, b) {\n        let leader_a = this.dsuFind(a);\n        let leader_b = this.dsuFind(b);\n        \n        if (leader_a !== leader_b) {\n            // Union by size optimization\n            if (this.setSize[leader_b] < this.setSize[leader_a]) {\n                [leader_a, leader_b] = [leader_b, leader_a];\n            }\n            this.parent[leader_b] = leader_a;\n            this.setSize[leader_a] += this.setSize[leader_b];\n        }\n    }\n}\n\nfunction main() {\n    const readline = require('readline');\n    const rl = readline.createInterface({\n        input: process.stdin,\n        output: process.stdout,\n        terminal: false\n    });\n\n    let n, m;\n    let dsu;\n\n    rl.on('line', function(line) {\n        const tokens = line.trim().split(' ');\n        if (!n) {\n            n = parseInt(tokens[0]);\n            m = parseInt(tokens[1]);\n            dsu = new DSU(n);\n        } else {\n            const command = tokens[0];\n            if (command === 'union') {\n                const a = parseInt(tokens[1]);\n                const b = parseInt(tokens[2]);\n                dsu.dsuUnion(a, b);\n            } else if (command === 'find') {\n                const a = parseInt(tokens[1]);\n                console.log(dsu.dsuFind(a));\n            }\n        }\n    });\n}\n\nmain();\n"
+      "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nint *parent;\nint *setSize;\n\nint dsuFind(int a) {\n    if (parent[a] == a) return a;\n    return parent[a] = dsuFind(parent[a]);\n}\n\nvoid dsuUnion(int a, int b) {\n    int ra = dsuFind(a);\n    int rb = dsuFind(b);\n    if (ra == rb) return;\n    if (setSize[ra] < setSize[rb]) {\n        int tmp = ra; ra = rb; rb = tmp;\n    }\n    parent[rb] = ra;\n    setSize[ra] += setSize[rb];\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int n, m; scanf(\"%d %d\", &n, &m);\n        parent = (int*)malloc(n * sizeof(int));\n        setSize = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; ++i) { parent[i] = i; setSize[i] = 1; }\n        for (int i = 0; i < m; ++i) {\n            char cmd[10]; scanf(\"%s\", cmd);\n            if (strcmp(cmd, \"union\") == 0) {\n                int a, b; scanf(\"%d %d\", &a, &b);\n                dsuUnion(a, b);\n            } else { // find\n                int a; scanf(\"%d\", &a);\n                printf(\"%d\\n\", dsuFind(a));\n            }\n        }\n        free(parent);\n        free(setSize);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while (T--) {\n        int n, m; cin >> n >> m;\n        vector<int> parent(n), sz(n,1);\n        iota(parent.begin(), parent.end(), 0);\n        function<int(int)> find = [&](int x){\n            return parent[x]==x ? x : parent[x]=find(parent[x]);\n        };\n        auto unite = [&](int a,int b){\n            int ra=find(a), rb=find(b);\n            if(ra==rb) return;\n            if(sz[ra] < sz[rb]) swap(ra,rb);\n            parent[rb]=ra; sz[ra]+=sz[rb];\n        };\n        for(int i=0;i<m;++i){\n            string cmd; cin>>cmd;\n            if(cmd==\"union\"){\n                int a,b; cin>>a>>b; unite(a,b);\n            }else{ // find\n                int a; cin>>a; cout<<find(a) << '\\n';\n            }\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int[] parent;\n    static int[] size;\n\n    static int find(int x) {\n        if (parent[x] == x) return x;\n        parent[x] = find(parent[x]);\n        return parent[x];\n    }\n\n    static void union(int a, int b) {\n        int ra = find(a);\n        int rb = find(b);\n        if (ra == rb) return;\n        if (size[ra] < size[rb]) {\n            int tmp = ra; ra = rb; rb = tmp;\n        }\n        parent[rb] = ra;\n        size[ra] += size[rb];\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            int n = Integer.parseInt(st.nextToken());\n            int m = Integer.parseInt(st.nextToken());\n            parent = new int[n];\n            size = new int[n];\n            for (int i = 0; i < n; i++) { parent[i] = i; size[i] = 1; }\n            for (int i = 0; i < m; i++) {\n                st = new StringTokenizer(br.readLine());\n                String cmd = st.nextToken();\n                if (cmd.equals(\"union\")) {\n                    int a = Integer.parseInt(st.nextToken());\n                    int b = Integer.parseInt(st.nextToken());\n                    union(a, b);\n                } else { // find\n                    int a = Integer.parseInt(st.nextToken());\n                    System.out.println(find(a));\n                }\n            }\n        }\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.buffer.read().splitlines()\n    if not data:\n        return\n    idx = 0\n    T = int(data[idx]); idx += 1\n    out = []\n    for _ in range(T):\n        n, m = map(int, data[idx].split()); idx += 1\n        parent = list(range(n))\n        size = [1]*n\n        def find(x):\n            while parent[x] != x:\n                parent[x] = parent[parent[x]]\n                x = parent[x]\n            return x\n        def union(a,b):\n            ra, rb = find(a), find(b)\n            if ra == rb:\n                return\n            if size[ra] < size[rb]:\n                ra, rb = rb, ra\n            parent[rb] = ra\n            size[ra] += size[rb]\n        for _ in range(m):\n            parts = data[idx].split(); idx += 1\n            if parts[0] == b'union':\n                union(int(parts[1]), int(parts[2]))\n            else:  # find\n                out.append(str(find(int(parts[1]))))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++]);\nlet output = [];\nfor (let tc = 0; tc < T; ++tc) {\n  const [nStr, mStr] = lines[idx++].trim().split(/\\s+/);\n  const n = Number(nStr), m = Number(mStr);\n  const parent = new Array(n);\n  const size = new Array(n).fill(1);\n  for (let i = 0; i < n; ++i) parent[i] = i;\n  const find = (x) => {\n    if (parent[x] === x) return x;\n    parent[x] = find(parent[x]);\n    return parent[x];\n  };\n  const unite = (a, b) => {\n    let ra = find(a), rb = find(b);\n    if (ra === rb) return;\n    if (size[ra] < size[rb]) { const tmp = ra; ra = rb; rb = tmp; }\n    parent[rb] = ra;\n    size[ra] += size[rb];\n  };\n  for (let i = 0; i < m; ++i) {\n    const parts = lines[idx++].trim().split(/\\s+/);\n    if (parts[0] === 'union') {\n      unite(Number(parts[1]), Number(parts[2]));\n    } else { // find\n      output.push(String(find(Number(parts[1]))));\n    }\n  }\n}\nconsole.log(output.join('\\n'));\n"
     }
   }
 }

@@ -4,14 +4,16 @@
   "slug": "product-of-array-except-self",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "arrays",
-      "data structures and algorithms"
+      "Prefix Product",
+      "Suffix Product",
+      "Array",
+      "No Division"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,17 +23,31 @@
   "content": {
     "problemStatement": "You are given an integer array of length NNN.\n\nFor each index iii, construct a new array such that the value at position iii\nis equal to the product of all elements of the array except AiA_iAi​.\n\nFormally, compute an array PPP such that\n\nPi=∏j≠iAjP_i = \\prod_{j \\ne i} A_jPi​=j=i∏​Aj​\nInput Format\n\nThe first line contains a single integer NNN.\nThe second line contains NNN space-separated integers\nA1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​.\n\n\nOutput Format\nPrint NNN space-separated integers representing the array\nP1,P2,…,PNP_1, P_2, \\dots, P_NP1​,P2​,…,PN​.",
     "constraints": [
-      "2≤N≤1052 \\le N \\le 10^52≤N≤105",
-      "−30≤Ai≤30-30 \\le A_i \\le 30−30≤Ai​≤30"
+      "1 <= T <= 10",
+      "2 <= N <= 100000",
+      "The sum of N over all test cases does not exceed 100000",
+      "-30 <= Ai <= 30"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers A1, A2, …, AN.",
+    "outputFormat": "For each test case output a single line with N space‑separated integers P1, P2, …, PN where Pi is the product of all array elements except Ai.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n2 3 4 5 6",
+        "input": "1\n5\n2 3 4 5 6",
         "output": "360 240 180 144 120",
-        "explanation": ""
+        "explanation": "Total product = 2*3*4*5*6 = 720. Each Pi = total product / Ai, giving the listed values."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3\n1 2 3",
+        "output": "6 3 2",
+        "explanation": "Products excluding each element: for 1 -> 2*3=6, for 2 -> 1*3=3, for 3 -> 1*2=2."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n-1 1 0 -3",
+        "output": "0 0 3 0",
+        "explanation": "There is a single zero at position 3. All positions except the zero get product 0. The zero position gets product of the other three numbers: -1*1*-3 = 3."
       }
     ]
   },
@@ -39,20 +55,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "5\n2 3 4 5 6",
-        "expectedOutput": "360 240 180 144 120",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n2\n1 1",
+        "expectedOutput": "1 1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n15\n2 2 2 2 2 2 2 2 2 2 2 2 2 2 2",
+        "expectedOutput": "16384 16384 16384 16384 16384 16384 16384 16384 16384 16384 16384 16384 16384 16384 16384",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "edge case with multiple zeros",
+        "input": "1\n5\n0 0 5 -2 3",
+        "expectedOutput": "0 0 0 0 0",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "general case with negatives",
+        "input": "1\n6\n-1 2 -3 4 -5 6",
+        "expectedOutput": "720 -360 240 -180 144 -120",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "single zero in array",
+        "input": "1\n4\n7 0 -2 5",
+        "expectedOutput": "0 -70 0 0",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -66,14 +115,15 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
+    "approach": "For each test case compute two auxiliary arrays: prefix[i] = product of A[0..i‑1] and suffix[i] = product of A[i+1..N‑1]. The answer for position i is prefix[i] * suffix[i]. This can be done in O(N) time with O(N) extra space (or O(1) extra if we overwrite the answer array). The method works for zeros and negative numbers without using division.",
+    "timeComplexity": "O(N) per test case, total O(sum of N) across all test cases.",
+    "spaceComplexity": "O(N) for the answer array (prefix and suffix are computed on the fly).",
     "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N; \n    cin>>N;\n\n    vector<long long>a(N),ans(N);\n\n    for(int i=0;i<N;i++) cin>>a[i];\n\n    long long pref=1;\n    for(int i=0;i<N;i++){\n        ans[i]=pref;\n        pref*=a[i];\n    }\n\n    long long suff=1;\n    for(int i=N-1;i>=0;i--){\n        ans[i]*=suff;\n        suff*=a[i];\n    }\n\n    for(int i=0;i<N;i++){\n        if(i) cout<<\" \";\n        cout<<ans[i];\n    }\n}\n",
-      "Python3": "import sys\ndata=list(map(int,sys.stdin.read().split()))\nN=data[0]\narr=data[1:]\n\nans=[1]*N\n\npref=1\nfor i in range(N):\n    ans[i]=pref\n    pref*=arr[i]\n\nsuff=1\nfor i in range(N-1,-1,-1):\n    ans[i]*=suff\n    suff*=arr[i]\n\nprint(*ans)\n",
-      "C": "#include <stdio.h>\n\nint main(){\n    int N;\n    scanf(\"%d\",&N);\n\n    long long a[N],ans[N];\n\n    for(int i=0;i<N;i++) scanf(\"%lld\",&a[i]);\n\n    long long pref=1;\n    for(int i=0;i<N;i++){\n        ans[i]=pref;\n        pref*=a[i];\n    }\n\n    long long suff=1;\n    for(int i=N-1;i>=0;i--){\n        ans[i]*=suff;\n        suff*=a[i];\n    }\n\n    for(int i=0;i<N;i++){\n        if(i) printf(\" \");\n        printf(\"%lld\",ans[i]);\n    }\n}\n",
-      "Java": "import java.util.*;\nimport java.io.*;\n\nclass Codechef\n{\n    public static void main (String[] args) throws Exception\n    {\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        int N=Integer.parseInt(br.readLine().trim());\n        String[] s=br.readLine().split(\" \");\n\n        long[] a=new long[N];\n        long[] ans=new long[N];\n\n        for(int i=0;i<N;i++)\n            a[i]=Long.parseLong(s[i]);\n\n        long pref=1;\n        for(int i=0;i<N;i++){\n            ans[i]=pref;\n            pref*=a[i];\n        }\n\n        long suff=1;\n        for(int i=N-1;i>=0;i--){\n            ans[i]*=suff;\n            suff*=a[i];\n        }\n\n        StringBuilder out=new StringBuilder();\n        for(int i=0;i<N;i++){\n            if(i>0) out.append(\" \");\n            out.append(ans[i]);\n        }\n        System.out.print(out.toString());\n    }\n}\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        long long *a = (long long*)malloc(N * sizeof(long long));\n        long long *ans = (long long*)malloc(N * sizeof(long long));\n        for (int i = 0; i < N; ++i) scanf(\"%lld\", &a[i]);\n        long long pref = 1;\n        for (int i = 0; i < N; ++i) {\n            ans[i] = pref;\n            pref *= a[i];\n        }\n        long long suff = 1;\n        for (int i = N - 1; i >= 0; --i) {\n            ans[i] *= suff;\n            suff *= a[i];\n        }\n        for (int i = 0; i < N; ++i) {\n            if (i) printf(\" \");\n            printf(\"%lld\", ans[i]);\n        }\n        printf(\"\\n\");\n        free(a);\n        free(ans);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if(!(cin>>T)) return 0;\n    while(T--) {\n        int N; cin>>N;\n        vector<long long> a(N), ans(N);\n        for(int i=0;i<N;++i) cin>>a[i];\n        long long pref=1;\n        for(int i=0;i<N;++i){\n            ans[i]=pref;\n            pref*=a[i];\n        }\n        long long suff=1;\n        for(int i=N-1;i>=0;--i){\n            ans[i]*=suff;\n            suff*=a[i];\n        }\n        for(int i=0;i<N;++i){\n            if(i) cout<<' ';\n            cout<<ans[i];\n        }\n        if(T) cout<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; ++tc) {\n            int N = Integer.parseInt(br.readLine().trim());\n            long[] a = new long[N];\n            long[] ans = new long[N];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; ++i) a[i] = Long.parseLong(st.nextToken());\n            long pref = 1;\n            for (int i = 0; i < N; ++i) {\n                ans[i] = pref;\n                pref *= a[i];\n            }\n            long suff = 1;\n            for (int i = N - 1; i >= 0; --i) {\n                ans[i] *= suff;\n                suff *= a[i];\n            }\n            for (int i = 0; i < N; ++i) {\n                if (i > 0) out.append(' ');\n                out.append(ans[i]);\n            }\n            if (tc != T - 1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = list(map(int, sys.stdin.read().strip().split()))\n    if not data:\n        return\n    it = iter(data)\n    T = next(it)\n    out_lines = []\n    for _ in range(T):\n        N = next(it)\n        arr = [next(it) for _ in range(N)]\n        ans = [1] * N\n        pref = 1\n        for i in range(N):\n            ans[i] = pref\n            pref *= arr[i]\n        suff = 1\n        for i in range(N - 1, -1, -1):\n            ans[i] *= suff\n            suff *= arr[i]\n        out_lines.append(' '.join(map(str, ans)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet outputs = [];\nfor (let tc = 0; tc < T; ++tc) {\n  const N = input[idx++];\n  const arr = input.slice(idx, idx + N);\n  idx += N;\n  const ans = new Array(N);\n  let pref = 1;\n  for (let i = 0; i < N; ++i) {\n    ans[i] = pref;\n    pref *= arr[i];\n  }\n  let suff = 1;\n  for (let i = N - 1; i >= 0; --i) {\n    ans[i] *= suff;\n    suff *= arr[i];\n  }\n  outputs.push(ans.join(' '));\n}\nconsole.log(outputs.join('\\n'));"
     }
   }
 }
