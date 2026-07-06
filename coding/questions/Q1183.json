@@ -4,14 +4,14 @@
   "slug": "chef-and-special-dishes",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Two Pointers",
-      "String Matching"
+      "Double String",
+      "String Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,8 +26,8 @@
       "Sum of lengths of all Si does not exceed 10^6",
       "All characters are in 'a'-'z'"
     ],
-    "inputFormat": "First line contains an integer D, the number of dishes. Each of the next D lines contains a non‑empty string Si consisting of lowercase English letters.",
-    "outputFormat": "For each dish, output a line containing \"YES\" if the dish name can become a double string after removing at most one character, otherwise output \"NO\".",
+    "inputFormat": "First line contains D, the number of dishes. Each of the next D lines contains a non-empty string Si consisting of lowercase English letters.",
+    "outputFormat": "For each dish, output a line containing 'YES' if the dish name can become a double string after removing at most one character, otherwise output 'NO'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -53,37 +53,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "minimum boundary",
+        "input": "1\na",
+        "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "maximum boundary",
+        "input": "1\nabcdefghijklmnopqrstuvwxyz",
+        "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "uniform/edge case",
+        "input": "1\naaaaaaaaaa",
+        "expectedOutput": "YES",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "tricky case",
+        "input": "1\nabba",
+        "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "stress/general",
+        "input": "5\nabcabc\nabc\nabab\naaaa\nabba",
+        "expectedOutput": "YES\nNO\nYES\nYES\nNO",
         "weight": 2
       }
     ],
@@ -113,9 +113,9 @@
     ]
   },
   "solution": {
-    "approach": "A double string must have even length and its first half must equal its second half. For an even‑length name we simply compare the two halves. For an odd‑length name we may delete one character; after deletion the length becomes even. The deleted character can belong either to the left half or to the right half. We try both possibilities with a two‑pointer scan that allows at most one skip in the corresponding half. If either scan succeeds the string is special. The procedure runs in O(|Si|) time and O(1) extra space.",
-    "timeComplexity": "O(|Si|) per dish, O(total length) overall",
-    "spaceComplexity": "O(1) auxiliary space besides the input string",
+    "approach": "The key insight is to check if a string can be represented as a double string by removing at most one character. This can be done by checking if the string is already a double string, or if removing one character from the left or right side makes it a double string.",
+    "timeComplexity": "O(N) per test case, O(D*N) total, where N is the maximum length of a string.",
+    "spaceComplexity": "O(N) — the dominant structure is the string itself.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint isDouble(const char *s,int len){int half=len/2;return memcmp(s,s+half,half)==0;}\nint canDeleteFromLeft(const char *s,int n){int half=(n-1)/2;int i=0,j=half+1,skipped=0;while(i<half+1 && j<n){if(s[i]==s[j]){i++;j++;}else if(!skipped){skipped=1;i++;}else return 0;}return 1;}\nint canDeleteFromRight(const char *s,int n){int half=(n-1)/2;int i=0,j=half,skipped=0;while(i<half && j<n){if(s[i]==s[j]){i++;j++;}else if(!skipped){skipped=1;j++;}else return 0;}return 1;}\nint isSpecial(const char *s,int n){if(n==1) return 0; if(n%2==0) return isDouble(s,n); return canDeleteFromLeft(s,n)||canDeleteFromRight(s,n);} \nint main(){int D; if(scanf(\"%d\",&D)!=1) return 0; char buf[1000005]; while(D--){scanf(\"%s\",buf); int len=strlen(buf); printf(isSpecial(buf,len)?\"YES\\n\":\"NO\\n\");} return 0; }",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nbool isDouble(const string &s){int n=s.size();int half=n/2;return s.compare(0,half,s,half,half)==0;}\nbool canDeleteFromLeft(const string &s){int n=s.size();int half=(n-1)/2;int i=0,j=half+1;bool skipped=false;while(i<half+1 && j<n){if(s[i]==s[j]){++i;++j;}else if(!skipped){skipped=true;++i;}else return false;}return true;}\nbool canDeleteFromRight(const string &s){int n=s.size();int half=(n-1)/2;int i=0,j=half;bool skipped=false;while(i<half && j<n){if(s[i]==s[j]){++i;++j;}else if(!skipped){skipped=true;++j;}else return false;}return true;}\nbool isSpecial(const string &s){int n=s.size();if(n==1) return false; if(n%2==0) return isDouble(s); return canDeleteFromLeft(s)||canDeleteFromRight(s);} \nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int D; if(!(cin>>D)) return 0; while(D--){string s;cin>>s;cout<<(isSpecial(s)?\"YES\":\"NO\")<<'\\n';} return 0; }",

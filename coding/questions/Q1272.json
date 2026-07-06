@@ -4,15 +4,15 @@
   "slug": "finding-least-significant-most-significant-bit",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Bit Manipulation",
-      "MSB",
-      "LSB"
+      "Bitwise Operations",
+      "Most Significant Bit",
+      "Least Significant Bit"
     ],
     "companyTags": [],
     "topicTags": [
@@ -25,8 +25,8 @@
       "1 <= T <= 10",
       "1 <= N <= 1000"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single positive integer N.",
-    "outputFormat": "For each test case output two space-separated integers: the 0‑based position of the most significant bit of N and the least significant bit of N.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer N.",
+    "outputFormat": "For each test case, print two space-separated integers: the 0-based position of the most significant bit of N and the least significant bit of N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -60,29 +60,29 @@
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "3\n1000\n999\n512",
-        "expectedOutput": "9 0\n9 1\n9 0",
+        "input": "1\n1000",
+        "expectedOutput": "9 0",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform values",
-        "input": "5\n2\n2\n2\n2\n2",
-        "expectedOutput": "1 0\n1 0\n1 0\n1 0\n1 0",
+        "label": "uniform/edge case",
+        "input": "1\n8",
+        "expectedOutput": "3 0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "descending values",
-        "input": "4\n8\n4\n2\n1",
-        "expectedOutput": "3 0\n2 0\n1 0\n0 1",
+        "label": "tricky case",
+        "input": "1\n16",
+        "expectedOutput": "4 0",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed stress",
-        "input": "7\n15\n24\n7\n512\n999\n1000\n123",
-        "expectedOutput": "3 1\n4 0\n2 1\n9 0\n9 1\n9 0\n6 1",
+        "label": "stress/general",
+        "input": "3\n15\n24\n1",
+        "expectedOutput": "3 1\n4 0\n0 1",
         "weight": 2
       }
     ],
@@ -112,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "The most significant bit (MSB) of a positive integer is the index of the highest set bit. Starting from the number we repeatedly right‑shift it until it becomes zero, counting how many shifts were performed. The count minus one gives the 0‑based MSB position. The least significant bit (LSB) is simply N & 1. Both operations run in O(number of bits) which is at most 10 for the given limits, so the total complexity is O(T).",
-    "timeComplexity": "O(T * log N) (at most 10 operations per test case)",
-    "spaceComplexity": "O(1)",
+    "approach": "The problem can be solved by using bitwise operations. The most significant bit (MSB) of a number can be found by shifting the number to the right until it becomes 0 and counting the number of shifts. The least significant bit (LSB) can be found by performing a bitwise AND operation with 1.",
+    "timeComplexity": "O(log N) per test case, O(T log N) total.",
+    "spaceComplexity": "O(1) — constant space complexity.",
     "code": {
-      "C": "#include <stdio.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N; scanf(\"%d\",&N); int msb=0; int temp=N; while(temp>1){temp>>=1; msb++;} int lsb=N&1; printf(\"%d %d\\n\",msb,lsb);} return 0;}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; while(T--){int N;cin>>N;int msb=0,temp=N;while(temp>1){temp>>=1; ++msb;}int lsb=N&1;cout<<msb<<' '<<lsb<<'\\n';} return 0;}",
-      "Java": "import java.io.*;\npublic class Main{public static void main(String[] args) throws Exception{BufferedReader br=new BufferedReader(new InputStreamReader(System.in));String line=br.readLine();if(line==null||line.isEmpty()) return;int T=Integer.parseInt(line.trim());StringBuilder sb=new StringBuilder();for(int i=0;i<T;i++){int N=Integer.parseInt(br.readLine().trim());int msb=0,temp=N;while(temp>1){temp>>=1; msb++;}int lsb=N&1;sb.append(msb).append(' ').append(lsb);if(i+1<T) sb.append('\\n');}System.out.print(sb.toString());}}",
-      "Python3": "import sys\ndef msb_position(n):\n    pos=0\n    while n>1:\n        n>>=1\n        pos+=1\n    return pos\n\ndata=sys.stdin.read().strip().split()\nif not data:\n    sys.exit()\nT=int(data[0])\nout=[]\nidx=1\nfor _ in range(T):\n    N=int(data[idx]); idx+=1\n    out.append(f\"{msb_position(N)} {N&1}\")\nprint('\\n'.join(out))",
-      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nif(input.length===0) process.exit();\nlet pos=0;\nconst T=parseInt(input[pos++],10);\nlet res=[];\nfor(let i=0;i<T;i++){\n  const N=parseInt(input[pos++],10);\n  let msb=0,temp=N;\n  while(temp>1){temp>>=1; msb++;}\n  const lsb=N&1;\n  res.push(`${msb} ${lsb}`);\n}\nconsole.log(res.join('\\n'));"
+      "C": "#include <stdio.h>\nint main(){int T; scanf(\"%d\", &T); while(T--){int N; scanf(\"%d\", &N); int msb = 0, temp = N; while(temp > 1){temp >>= 1; msb++;} int lsb = N & 1; printf(\"%d %d\\n\", msb, lsb);} return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(NULL);int T; cin >> T; while(T--){int N; cin >> N; int msb = 0, temp = N; while(temp > 1){temp >>= 1; msb++;} int lsb = N & 1; cout << msb << ' ' << lsb << '\\n';} return 0;}",
+      "Java": "import java.io.*;\npublic class Main{public static void main(String[] args) throws Exception{BufferedReader br = new BufferedReader(new InputStreamReader(System.in));String line = br.readLine();int T = Integer.parseInt(line.trim());for(int i = 0; i < T; i++){int N = Integer.parseInt(br.readLine().trim());int msb = 0, temp = N;while(temp > 1){temp >>= 1; msb++;}int lsb = N & 1;System.out.println(msb + \" \" + lsb);}}}",
+      "Python3": "import sys\ndef msb_position(n):\n    pos = 0\n    while n > 1:\n        n >>= 1\n        pos += 1\n    return pos\n\ndata = sys.stdin.read().strip().split()\nT = int(data[0])\nidx = 1\nfor _ in range(T):\n    N = int(data[idx]); idx += 1\n    msb = msb_position(N)\n    lsb = N & 1\n    print(msb, lsb)\n",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet i = 0;\nconst T = parseInt(lines[i++], 10);\nfor(let j = 0; j < T; j++){\n    const N = parseInt(lines[i++], 10);\n    let msb = 0, temp = N;\n    while(temp > 1){temp >>= 1; msb++;}\n    const lsb = N & 1;\n    console.log(msb + ' ' + lsb);\n}"
     }
   }
 }

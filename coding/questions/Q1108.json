@@ -4,13 +4,13 @@
   "slug": "print-last-character",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "String manipulation"
+      "String Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -24,26 +24,26 @@
       "1 <= |S| <= 1000",
       "S contains printable ASCII characters"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting of printable ASCII characters.",
-    "outputFormat": "For each test case, output the last character of the given string on its own line.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single string S.",
+    "outputFormat": "For each test case, print the last character of the given string on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\nCodeChef\\nHelloWorld\\na",
-        "output": "f\\nd\\na",
-        "explanation": "There are three test cases. The last characters are 'f' from \"CodeChef\", 'd' from \"HelloWorld\", and 'a' from \"a\"."
+        "input": "3\nCodeChef\nHelloWorld\na",
+        "output": "f\nd\na",
+        "explanation": "The last characters are 'f' from \"CodeChef\", 'd' from \"HelloWorld\", and 'a' from \"a\"."
       },
       {
         "id": "sample_2",
-        "input": "2\\nOpenAI\\nChatGPT",
-        "output": "I\\nT",
+        "input": "2\nOpenAI\nChatGPT",
+        "output": "I\nT",
         "explanation": "For \"OpenAI\" the last character is 'I'; for \"ChatGPT\" it is 'T'."
       },
       {
         "id": "sample_3",
         "input": "1\nZ",
         "output": "Z",
-        "explanation": "A single‑character string returns that character itself."
+        "explanation": "A single-character string returns that character itself."
       }
     ]
   },
@@ -52,36 +52,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\nx",
-        "expectedOutput": "x",
+        "input": "1\na",
+        "expectedOutput": "a",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "1\nx",
-        "expectedOutput": "x",
+        "label": "maximum boundary",
+        "input": "1\nabcdefghijklmnopqrstuvwxyz",
+        "expectedOutput": "z",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "1\nx",
-        "expectedOutput": "x",
+        "label": "uniform/edge case",
+        "input": "1\naaaaaaaa",
+        "expectedOutput": "a",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "1\nx",
-        "expectedOutput": "x",
+        "label": "tricky case",
+        "input": "1\n",
+        "expectedOutput": "",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "1\nx",
-        "expectedOutput": "x",
+        "label": "stress/general",
+        "input": "3\nabc\ndef\nghi",
+        "expectedOutput": "c\nf\ni",
         "weight": 2
       }
     ],
@@ -111,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we read the whole line as a string. The last character is at index length-1 (or using the language's built‑in method like back() in C++ or charAt in Java). No further processing is required. This runs in O(|S|) time per test case, which is optimal because we must at least read the input.",
-    "timeComplexity": "O(total length of all strings) overall, i.e., O(\\sum |S|).",
-    "spaceComplexity": "O(1) extra space besides the buffer used to store each input string.",
+    "approach": "The key insight is to simply access the last character of the input string. This can be done by finding the length of the string and then accessing the character at the index length - 1.",
+    "timeComplexity": "O(1) per test case, O(T) total.",
+    "spaceComplexity": "O(1) — the dominant structure is a single character.",
     "code": {
-      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    getchar(); // consume the newline after T\n    char s[1005];\n    while (T--) {\n        if (!fgets(s, sizeof(s), stdin)) break;\n        s[strcspn(s, \"\\n\")] = '\\0'; // remove trailing newline\n        int len = strlen(s);\n        if (len > 0) {\n            printf(\"%c\\n\", s[len - 1]);\n        }\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    string s;\n    getline(cin, s); // consume end‑of‑line after T\n    while (T--) {\n        getline(cin, s);\n        if (!s.empty()) {\n            cout << s.back() << '\\n';\n        }\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            String s = br.readLine();\n            if (s != null && !s.isEmpty()) {\n                out.append(s.charAt(s.length() - 1)).append('\\n');\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().splitlines()\n    if not data:\n        return\n    t = int(data[0].strip())\n    out = []\n    for i in range(1, t + 1):\n        s = data[i]\n        if s:\n            out.append(s[-1])\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++], 10);\nlet output = [];\nfor (let i = 0; i < T; i++) {\n  const s = lines[idx++] || '';\n  if (s.length > 0) output.push(s[s.length - 1]);\n}\nconsole.log(output.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    getchar();\n    while (T--) {\n        char s[1005];\n        fgets(s, sizeof(s), stdin);\n        s[strcspn(s, \"\\n\")] = '\\0';\n        if (strlen(s) > 0) {\n            printf(\"%c\\n\", s[strlen(s) - 1]);\n        } else {\n            printf(\"\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    cin.ignore();\n    while (T--) {\n        string s;\n        getline(cin, s);\n        if (!s.empty()) {\n            cout << s.back() << '\\n';\n        } else {\n            cout << '\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int i = 0; i < T; i++) {\n            String s = br.readLine();\n            if (s != null && !s.isEmpty()) {\n                System.out.println(s.charAt(s.length() - 1));\n            } else {\n                System.out.println();\n            }\n        }\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    T = int(sys.stdin.readline().strip())\n    for _ in range(T):\n        s = sys.stdin.readline().strip()\n        if s:\n            print(s[-1])\n        else:\n            print()\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nlet T;\nlet i = 0;\nlet output = [];\nrl.on('line', (line) => {\n    if (typeof T === 'undefined') {\n        T = parseInt(line, 10);\n    } else {\n        const s = line.trim();\n        if (s) {\n            output.push(s[s.length - 1]);\n        } else {\n            output.push('');\n        }\n        i++;\n        if (i === T) {\n            console.log(output.join('\\n'));\n            rl.close();\n        }\n    }\n});"
     }
   }
 }

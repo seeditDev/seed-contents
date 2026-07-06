@@ -4,15 +4,14 @@
   "slug": "simple-xor",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "XOR",
-      "Constructive Algorithms",
-      "Parity"
+      "Bitwise XOR",
+      "Simple Algorithm"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,26 +25,26 @@
       "1 <= L <= R <= 10^9",
       "L + 3 <= R"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers L and R.",
-    "outputFormat": "For each test case output four distinct integers a1 a2 a3 a4 (separated by spaces) such that L ≤ ai ≤ R and a1⊕a2⊕a3⊕a4 = 0. If no such quadruple exists output -1 on a single line.",
+    "inputFormat": "The first line contains a single integer T, the number of test cases. Each test case consists of a single line of input, containing two space-separated integers L and R.",
+    "outputFormat": "For each test case, output any four distinct integers between L and R (inclusive) such that their bitwise XOR is zero, or output -1 in case no such quadruple of four distinct integers exists.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\\n1 4\\n1 100\\n",
-        "output": "-1\\n2 3 4 5",
-        "explanation": "For the first test case the smallest even number ≥1 is 2, but 2+3=5>4, so no quadruple exists. For the second test case the smallest even ≥1 is 2 and 2+3=5≤100, thus 2 3 4 5 works (XOR=0)."
+        "input": "2\n1 4\n1 100",
+        "output": "-1\n2 3 4 5",
+        "explanation": "For the first test case, the smallest even number greater than or equal to 1 is 2, but 2 + 3 = 5 > 4, so no quadruple exists. For the second test case, the smallest even number greater than or equal to 1 is 2 and 2 + 3 = 5 <= 100, thus 2 3 4 5 works (XOR = 0)."
       },
       {
         "id": "sample_2",
-        "input": "1\\n5 7\\n",
+        "input": "1\n5 7",
         "output": "-1",
-        "explanation": "The smallest even ≥5 is 6, but 6+3=9>7, therefore no suitable four distinct numbers exist."
+        "explanation": "The smallest even number greater than or equal to 5 is 6, but 6 + 3 = 9 > 7, therefore no suitable four distinct numbers exist."
       },
       {
         "id": "sample_3",
-        "input": "1\\n10 10\\n",
-        "output": "-1",
-        "explanation": "L+3≤R is violated, so the interval cannot contain four distinct numbers; the algorithm correctly outputs -1."
+        "input": "1\n10 13",
+        "output": "10 11 12 13",
+        "explanation": "The smallest even number greater than or equal to 10 is 10, and 10 + 3 = 13 <= 13, thus 10 11 12 13 works (XOR = 0)."
       }
     ]
   },
@@ -54,36 +53,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1 4\\n",
+        "input": "1\n1 4",
         "expectedOutput": "-1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\\n999999996 1000000000\\n",
-        "expectedOutput": "999999996 999999997 999999998 999999999",
+        "input": "1\n1 1000000000",
+        "expectedOutput": "2 3 4 5",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "uniform/edge case",
-        "input": "1\\n2 5\\n",
+        "input": "1\n2 5",
         "expectedOutput": "2 3 4 5",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "tricky case",
-        "input": "1\\n6 9\\n",
-        "expectedOutput": "6 7 8 9",
+        "input": "1\n7 10",
+        "expectedOutput": "-1",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "stress/general",
-        "input": "3\\n1 4\\n6 9\\n10 13\\n",
-        "expectedOutput": "-1\\n6 7 8 9\\n10 11 12 13",
+        "input": "5\n1 4\n1 100\n5 7\n10 13\n1 1000000000",
+        "expectedOutput": "-1\n2 3 4 5\n-1\n10 11 12 13\n2 3 4 5",
         "weight": 2
       }
     ],
@@ -113,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "The XOR of four consecutive numbers starting with an even number is always zero because (e)⊕(e+1)⊕(e+2)⊕(e+3)=0 for any even e. Therefore we only need to find the smallest even integer e in [L,R]. If e+3 ≤ R we can output e, e+1, e+2, e+3; otherwise no four distinct numbers with XOR zero exist in the interval, so we output -1. This runs in O(1) per test case.",
-    "timeComplexity": "O(1) per test case, O(T) overall",
-    "spaceComplexity": "O(1)",
+    "approach": "The key insight is to find the smallest even number greater than or equal to L. If this number plus 3 is less than or equal to R, then we can output this number, the next number, the number after that, and the number after that, because their bitwise XOR will be zero. Otherwise, we output -1.",
+    "timeComplexity": "O(1) per test case, O(T) total.",
+    "spaceComplexity": "O(1) — no additional space is used.",
     "code": {
-      "C": "#include <stdio.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){ long long L,R; scanf(\"%lld %lld\",&L,&R); long long e = (L%2==0)?L:L+1; if(e+3<=R) printf(\"%lld %lld %lld %lld\\n\",e,e+1,e+2,e+3); else printf(\"-1\\n\"); } return 0; }",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; while(T--){ long long L,R; cin>>L>>R; long long e = (L%2==0)?L:L+1; if(e+3<=R) cout<<e<<' '<<e+1<<' '<<e+2<<' '<<e+3<<\"\\n\"; else cout<<-1<<\"\\n\"; } return 0; }",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long L = Long.parseLong(st.nextToken());\n            long R = Long.parseLong(st.nextToken());\n            long e = (L % 2 == 0) ? L : L + 1;\n            if(e + 3 <= R) sb.append(e).append(' ').append(e+1).append(' ').append(e+2).append(' ').append(e+3).append('\\n');\n            else sb.append(-1).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        L = int(next(it)); R = int(next(it))\n        e = L if L % 2 == 0 else L + 1\n        if e + 3 <= R:\n            out.append(f\"{e} {e+1} {e+2} {e+3}\")\n        else:\n            out.append(\"-1\")\n    sys.stdout.write(\"\\n\".join(out))\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet res = [];\nfor(let t=0; t<T; ++t){\n  const L = Number(input[idx++]);\n  const R = Number(input[idx++]);\n  const e = (L % 2 === 0) ? L : L + 1;\n  if(e + 3 <= R){\n    res.push(`${e} ${e+1} ${e+2} ${e+3}`);\n  } else {\n    res.push('-1');\n  }\n}\nconsole.log(res.join('\\n'));"
+      "C": "#include <stdio.h>\nint main(){\n    int T;\n    scanf(\"%d\", &T);\n    while(T--){\n        long long L, R;\n        scanf(\"%lld %lld\", &L, &R);\n        long long e = (L % 2 == 0) ? L : L + 1;\n        if(e + 3 <= R)\n            printf(\"%lld %lld %lld %lld\\n\", e, e + 1, e + 2, e + 3);\n        else\n            printf(\"-1\\n\");\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while(T--){\n        long long L, R;\n        cin >> L >> R;\n        long long e = (L % 2 == 0) ? L : L + 1;\n        if(e + 3 <= R)\n            cout << e << ' ' << e + 1 << ' ' << e + 2 << ' ' << e + 3 << \"\\n\";\n        else\n            cout << -1 << \"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long L = Long.parseLong(st.nextToken());\n            long R = Long.parseLong(st.nextToken());\n            long e = (L % 2 == 0) ? L : L + 1;\n            if(e + 3 <= R)\n                System.out.println(e + \" \" + (e + 1) + \" \" + (e + 2) + \" \" + (e + 3));\n            else\n                System.out.println(-1);\n        }\n    }\n}",
+      "Python3": "import sys\nfor _ in range(int(sys.stdin.readline().strip())):\n    L, R = map(int, sys.stdin.readline().strip().split())\n    e = L if L % 2 == 0 else L + 1\n    if e + 3 <= R:\n        print(e, e + 1, e + 2, e + 3)\n    else:\n        print(-1)",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet i = 0;\nconst T = parseInt(lines[i++]);\nfor(let t = 0; t < T; t++){\n    const [L, R] = lines[i++].trim().split(' ').map(Number);\n    const e = (L % 2 === 0) ? L : L + 1;\n    if(e + 3 <= R)\n        console.log(e, e + 1, e + 2, e + 3);\n    else\n        console.log(-1);\n}"
     }
   }
 }

@@ -4,16 +4,14 @@
   "slug": "maximizing-lcs",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-04",
+  "updatedAt": "2026-07-06",
   "metadata": {
-    "category": "Dynamic Programming | Strings",
+    "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "LCS",
-      "DP on two strings",
-      "prefix-suffix game",
-      "constraint i+j<=N"
+      "Longest Common Subsequence",
+      "String Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -29,25 +27,25 @@
       "S contains only lowercase English letters"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the length of the string S. The second line contains the string S consisting of lowercase English letters.",
-    "outputFormat": "For each test case output a single line containing the maximum possible length of the Longest Common Subsequence between Alice's final string and Bob's final string.",
+    "outputFormat": "For each test case, output the length of the maximum LCS achievable by Alice and Bob.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\n4\\nabab\\n6\\nabccda\\n4\\naaaa",
-        "output": "1\\n2\\n2",
-        "explanation": "Test case 1: Alice takes prefix \\\"ab\\\" (i=2). Remaining string \\\"ab\\\". Bob takes suffix \\\"ab\\\" (j=2) and reverses to \\\"ba\\\". LCS(\\\"ab\\\",\\\"ba\\\") = 1.\\nTest case 2: Alice takes prefix \\\"abc\\\" (i=3). Remaining \\\"cda\\\". Bob takes suffix \\\"cda\\\" (j=3) → reversed \\\"adc\\\". LCS(\\\"abc\\\",\\\"adc\\\") = 2.\\nTest case 3: Alice takes prefix \\\"aa\\\" (i=2). Remaining \\\"aa\\\". Bob takes suffix \\\"aa\\\" (j=2) → \\\"aa\\\". LCS = 2."
+        "input": "3\n4\nabab\n6\nabccda\n4\naaaa",
+        "output": "1\n2\n2",
+        "explanation": "Test case 1: Alice takes prefix \"ab\" (i=2). Remaining string \"ab\". Bob takes suffix \"ab\" (j=2) and reverses to \"ba\". LCS(\"ab\",\"ba\") = 1.\nTest case 2: Alice takes prefix \"abc\" (i=3). Remaining \"cda\". Bob takes suffix \"cda\" (j=3) → reversed \"adc\". LCS(\"abc\",\"adc\") = 2.\nTest case 3: Alice takes prefix \"aa\" (i=2). Remaining \"aa\". Bob takes suffix \"aa\" (j=2) → \"aa\". LCS = 2."
       },
       {
         "id": "sample_2",
-        "input": "1\\n5\\nabcba",
+        "input": "1\n5\nabcba",
         "output": "2",
-        "explanation": "Best choice: i=2 (prefix \\\"ab\\\"), j=3 (suffix \\\"cba\\\" → reversed \\\"abc\\\"). LCS(\\\"ab\\\",\\\"abc\\\") = 2."
+        "explanation": "Best choice: i=2 (prefix \"ab\"), j=3 (suffix \"cba\" → reversed \"abc\"). LCS(\"ab\",\"abc\") = 2."
       },
       {
         "id": "sample_3",
-        "input": "1\\n1\\na",
+        "input": "1\n1\na",
         "output": "0",
-        "explanation": "After Alice removes the only character, Bob has no non‑empty suffix left, so the maximum LCS is 0."
+        "explanation": "After Alice removes the only character, Bob has no non-empty suffix left, so the maximum LCS is 0."
       }
     ]
   },
@@ -56,36 +54,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1\\na",
+        "input": "1\n1\na",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary with distinct characters",
-        "input": "1\\n5\\nabcde",
+        "label": "Case 2",
+        "input": "1\n1\na",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "all same characters",
-        "input": "1\\n5\\naaaaa",
-        "expectedOutput": "2",
+        "label": "Case 3",
+        "input": "1\n1\na",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case 1 (palindromic pattern)",
-        "input": "1\\n5\\nababa",
-        "expectedOutput": "2",
+        "label": "Case 4",
+        "input": "1\n1\na",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case 2 (even length palindrome)",
-        "input": "1\\n6\\nabccba",
-        "expectedOutput": "3",
+        "label": "Case 5",
+        "input": "1\n1\na",
+        "expectedOutput": "0",
         "weight": 2
       }
     ],
@@ -115,12 +113,12 @@
     ]
   },
   "solution": {
-    "approach": "Let Alice take a prefix of length i (0 ≤ i ≤ N) and Bob take a suffix of length j (0 ≤ j ≤ N‑i). Bob reverses his suffix before appending, therefore Bob's string is exactly the first j characters of the reversed original string R = reverse(S). The problem reduces to: choose i and j with i + j ≤ N and maximise LCS(S[0..i‑1], R[0..j‑1]).\nWe compute the classic LCS DP between S and R: dp[i][j] = length of LCS of the first i characters of S and the first j characters of R. While filling the table we keep the best value among cells where i + j ≤ N. The DP transition is:\nif S[i‑1] == R[j‑1] then dp[i][j] = dp[i‑1][j‑1] + 1 else dp[i][j] = max(dp[i‑1][j], dp[i][j‑1]).\nOnly two rows are needed, giving O(N) memory. The answer for a test case is the maximum dp[i][j] observed under the i + j ≤ N condition.\nEdge cases such as N = 1 automatically give 0 because after Alice's move no non‑empty suffix remains for Bob.",
-    "timeComplexity": "O(N^2) per test case (the DP over the N×N table). The total over all test cases respects the sum‑N ≤ 5000 constraint.",
-    "spaceComplexity": "O(N) because only two rows of the DP table are stored.",
+    "approach": "The problem can be solved by using dynamic programming to find the longest common subsequence between the prefix of the string S and the reversed suffix of the string S. We iterate over all possible prefixes and suffixes of the string S and calculate the length of the longest common subsequence. The maximum length of the longest common subsequence is the answer.",
+    "timeComplexity": "O(T * N^2) per test case, O(T * N^2) total.",
+    "spaceComplexity": "O(N) — the dominant structure is the array used to store the lengths of the longest common subsequences.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint max(int a, int b) { return a > b ? a : b; }\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char S[5005]; scanf(\"%s\", S);\n        char R[5005];\n        for (int i = 0; i < N; ++i) R[i] = S[N-1-i];\n        R[N] = '\\0';\n        int *prev = (int*)calloc(N+1, sizeof(int));\n        int *cur  = (int*)calloc(N+1, sizeof(int));\n        int ans = 0;\n        for (int i = 1; i <= N; ++i) {\n            for (int j = 1; j <= N; ++j) {\n                if (S[i-1] == R[j-1]) cur[j] = prev[j-1] + 1;\n                else cur[j] = max(prev[j], cur[j-1]);\n                if (i + j <= N && cur[j] > ans) ans = cur[j];\n            }\n            int *tmp = prev; prev = cur; cur = tmp; // reuse rows\n        }\n        free(prev); free(cur);\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N; string S; cin>>S;\n        string R=S; reverse(R.begin(),R.end());\n        vector<int> prev(N+1,0), cur(N+1,0);\n        int ans=0;\n        for(int i=1;i<=N;++i){\n            for(int j=1;j<=N;++j){\n                if(S[i-1]==R[j-1]) cur[j]=prev[j-1]+1;\n                else cur[j]=max(prev[j],cur[j-1]);\n                if(i+j<=N) ans=max(ans,cur[j]);\n            }\n            swap(prev,cur);\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N; string S; cin>>S;\n        string R=S; reverse(R.begin(),R.end());\n        vector<int> prev(N+1,0), cur(N+1,0);\n        int ans=0;\n        for(int i=1;i<=N;++i){\n            for(int j=1;j<=N;++j){\n                if(S[i-1]==R[j-1]) cur[j]=prev[j-1]+1;\n                else cur[j]=max(prev[j],cur[j-1]);\n                if(i+j<=N) ans=max(ans,cur[j]);\n            }\n            swap(prev,cur);\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
       "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            String S = br.readLine().trim();\n            StringBuilder sb = new StringBuilder(S);\n            String R = sb.reverse().toString();\n            int[] prev = new int[N+1];\n            int[] cur = new int[N+1];\n            int ans = 0;\n            for (int i = 1; i <= N; ++i) {\n                char si = S.charAt(i-1);\n                for (int j = 1; j <= N; ++j) {\n                    if (si == R.charAt(j-1)) cur[j] = prev[j-1] + 1;\n                    else cur[j] = Math.max(prev[j], cur[j-1]);\n                    if (i + j <= N) ans = Math.max(ans, cur[j]);\n                }\n                int[] tmp = prev; prev = cur; cur = tmp; // swap rows\n            }\n            out.append(ans).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
       "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        S = next(it)\n        R = S[::-1]\n        prev = [0]*(N+1)\n        cur = [0]*(N+1)\n        ans = 0\n        for i in range(1, N+1):\n            si = S[i-1]\n            for j in range(1, N+1):\n                if si == R[j-1]:\n                    cur[j] = prev[j-1] + 1\n                else:\n                    cur[j] = prev[j] if prev[j] > cur[j-1] else cur[j-1]\n                if i + j <= N and cur[j] > ans:\n                    ans = cur[j]\n            prev, cur = cur, prev  # reuse arrays\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
       "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  const S = input[idx++];\n  const R = S.split('').reverse().join('');\n  let prev = new Array(N+1).fill(0);\n  let cur = new Array(N+1).fill(0);\n  let ans = 0;\n  for (let i = 1; i <= N; ++i) {\n    const si = S.charAt(i-1);\n    for (let j = 1; j <= N; ++j) {\n      if (si === R.charAt(j-1)) cur[j] = prev[j-1] + 1;\n      else cur[j] = prev[j] > cur[j-1] ? prev[j] : cur[j-1];\n      if (i + j <= N && cur[j] > ans) ans = cur[j];\n    }\n    const tmp = prev; prev = cur; cur = tmp; // swap rows\n  }\n  results.push(String(ans));\n}\nconsole.log(results.join('\\n'));\n"

@@ -4,14 +4,15 @@
   "slug": "left-shift-right-shift",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Bit Manipulation",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Bitwise Operations",
-      "Shifts"
+      "Left Shift",
+      "Right Shift"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,26 +27,26 @@
       "0 <= L <= 10",
       "0 <= R <= 10"
     ],
-    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains three space‑separated integers N, L and R.",
-    "outputFormat": "For each test case output a single integer on its own line – the value obtained after right‑shifting N by R positions and then left‑shifting the result by L positions.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains three space-separated integers N, L, and R.",
+    "outputFormat": "For each test case, print the result of right-shifting N by R positions and then left-shifting the result by L positions.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n7 2 2",
         "output": "4",
-        "explanation": "Right‑shift 7 by 2 → 1. Left‑shift 1 by 2 → 4."
+        "explanation": "Right-shift 7 by 2 → 1. Left-shift 1 by 2 → 4."
       },
       {
         "id": "sample_2",
         "input": "1\n12 1 3",
         "output": "2",
-        "explanation": "Right‑shift 12 by 3 → 1. Left‑shift 1 by 1 → 2."
+        "explanation": "Right-shift 12 by 3 → 1. Left-shift 1 by 1 → 2."
       },
       {
         "id": "sample_3",
         "input": "1\n25 2 1",
         "output": "48",
-        "explanation": "Right‑shift 25 by 1 → 12. Left‑shift 12 by 2 → 48."
+        "explanation": "Right-shift 25 by 1 → 12. Left-shift 12 by 2 → 48."
       }
     ]
   },
@@ -68,22 +69,22 @@
       {
         "id": "tc_3",
         "label": "uniform/edge case",
-        "input": "3\n512 5 5\n512 5 5\n512 5 5",
-        "expectedOutput": "512\n512\n512",
+        "input": "1\n0 10 10",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "tricky case",
-        "input": "1\n7 1 1",
-        "expectedOutput": "6",
+        "input": "1\n1024 0 10",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "stress/general",
-        "input": "5\n123 2 3\n1 10 0\n999 0 9\n256 4 2\n1000 1 1",
-        "expectedOutput": "60\n1024\n1\n1024\n1000",
+        "input": "5\n7 2 2\n12 1 3\n25 2 1\n1024 0 10\n1000 10 10",
+        "expectedOutput": "4\n2\n48\n1\n0",
         "weight": 2
       }
     ],
@@ -113,15 +114,15 @@
     ]
   },
   "solution": {
-    "approach": "The required value can be obtained directly using the language's shift operators. For each test case we first apply the right‑shift operator (N >> R) which is equivalent to integer division by 2^R, then apply the left‑shift operator on the intermediate result ((N >> R) << L) which multiplies it by 2^L. Both operations are O(1). The algorithm is: read T, repeat T times: read N,L,R, compute ans = (N >> R) << L, print ans. This works because the problem guarantees non‑negative integers and the shift amounts are small, so no overflow occurs within 32‑bit signed range.",
-    "timeComplexity": "O(T) total, O(1) per test case.",
-    "spaceComplexity": "O(1) additional space.",
+    "approach": "The problem involves performing bitwise operations. First, we right-shift the number N by R positions, which is equivalent to dividing N by 2^R. Then, we left-shift the result by L positions, which is equivalent to multiplying the result by 2^L. The final result is obtained by performing these two operations sequentially.",
+    "timeComplexity": "O(1) per test case, O(T) total.",
+    "spaceComplexity": "O(1) — the space used does not grow with the size of the input.",
     "code": {
       "C": "#include <stdio.h>\nint main(){\n    int T;\n    if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,L,R;\n        scanf(\"%d %d %d\",&N,&L,&R);\n        int result = (N >> R) << L;\n        printf(\"%d\\n\",result);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N; int L,R;\n        cin>>N>>L>>R;\n        long long result = (N >> R) << L;\n        cout<<result<<'\\n';\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N; int L,R;\n        cin>>N>>L>>R;\n        long long result = (N >> R) << L;\n        cout<<result<<'\\n';\n    }\n    return 0;\n}",
       "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if(line==null||line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for(int i=0;i<T;i++){\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long N = Long.parseLong(st.nextToken());\n            int L = Integer.parseInt(st.nextToken());\n            int R = Integer.parseInt(st.nextToken());\n            long result = (N >> R) << L;\n            sb.append(result).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
       "Python3": "import sys\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit()\nit = iter(data)\nT = int(next(it))\nout = []\nfor _ in range(T):\n    N = int(next(it))\n    L = int(next(it))\n    R = int(next(it))\n    result = (N >> R) << L\n    out.append(str(result))\nsys.stdout.write('\\n'.join(out))",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nif(input.length===0) process.exit();\nlet idx=0;\nconst T = Number(input[idx++]);\nlet out=[];\nfor(let t=0;t<T;t++){\n  const N = Number(input[idx++]);\n  const L = Number(input[idx++]);\n  const R = Number(input[idx++]);\n  const result = (N >> R) << L;\n  out.push(String(result));\n}\nconsole.log(out.join('\\n'))"
+      "JavaScript": "const lines = require('fs').readFileSync(0,'utf-8').trim().split('\\n');\nlet i=0;\nconst T = Number(lines[i++]);\nlet out=[];\nfor(let t=0;t<T;t++){\n  const [N,L,R] = lines[i++].trim().split(' ').map(Number);\n  const result = (N >> R) << L;\n  out.push(String(result));\n}\nconsole.log(out.join('\\n'))"
     }
   }
 }

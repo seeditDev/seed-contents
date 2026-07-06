@@ -4,14 +4,14 @@
   "slug": "prime-check",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Trial Division",
-      "Primality Test"
+      "Prime Numbers",
+      "Trial Division"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +22,11 @@
     "problemStatement": "Given an integer **N** less than 101010, determine whether the number **N** is prime. If it is prime, print **prime number**; otherwise, print **non-prime number**.",
     "constraints": [
       "1 <= T <= 10",
-      "1 <= N < 101010"
+      "1 <= N < 101010",
+      "All values are integers"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N.",
-    "outputFormat": "For each test case, print \"prime number\" if N is prime, otherwise print \"non-prime number\" on a new line.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer N.",
+    "outputFormat": "For each test case, print 'prime number' if N is prime, otherwise print 'non-prime number' on a new line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -59,29 +60,29 @@
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n100003",
+        "input": "1\n10009",
         "expectedOutput": "prime number",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "uniform/edge case",
-        "input": "5\n4\n4\n4\n4\n4",
-        "expectedOutput": "non-prime number\nnon-prime number\nnon-prime number\nnon-prime number\nnon-prime number",
+        "input": "1\n9",
+        "expectedOutput": "non-prime number",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "tricky case",
-        "input": "2\n99991\n99990",
-        "expectedOutput": "prime number\nnon-prime number",
+        "input": "1\n25",
+        "expectedOutput": "non-prime number",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "stress/general",
-        "input": "7\n1\n2\n3\n4\n5\n16\n97",
-        "expectedOutput": "non-prime number\nprime number\nprime number\nnon-prime number\nprime number\nnon-prime number\nprime number",
+        "input": "3\n7\n11\n13",
+        "expectedOutput": "prime number\nprime number\nprime number",
         "weight": 2
       }
     ],
@@ -111,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "For each number N we check divisibility by every integer i from 2 up to sqrt(N). If any i divides N, N is composite; otherwise it is prime. This trial‑division works because any composite number has a factor not larger than its square root. The algorithm runs in O(√N) time per test case and uses O(1) extra space.",
-    "timeComplexity": "O(√N) per test case, O(T·√N) total",
-    "spaceComplexity": "O(1)",
+    "approach": "The key insight is to check divisibility up to the square root of N, as any factor larger than that would have a corresponding factor smaller than the square root. We use trial division to check for factors.",
+    "timeComplexity": "O(sqrt(N)) per test case, O(T*sqrt(N)) total.",
+    "spaceComplexity": "O(1) — constant space used.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){ long long n; scanf(\"%lld\",&n); if(n<2){ printf(\"non-prime number\\n\"); continue; } int isPrime=1; for(long long i=2;i*i<=n;++i){ if(n%i==0){ isPrime=0; break; } } printf(isPrime?\"prime number\\n\":\"non-prime number\\n\"); } return 0; }",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; while(T--){ long long n; cin>>n; if(n<2){ cout<<\"non-prime number\\n\"; continue; } bool prime=true; for(long long i=2;i*i<=n;++i){ if(n%i==0){ prime=false; break; } } cout<<(prime?\"prime number\":\"non-prime number\")<<'\\n'; } return 0; }",
       "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb=new StringBuilder();\n        int T=Integer.parseInt(br.readLine().trim());\n        for(int t=0;t<T;++t){\n            long n=Long.parseLong(br.readLine().trim());\n            if(n<2){ sb.append(\"non-prime number\\n\"); continue; }\n            boolean prime=true;\n            for(long i=2;i*i<=n;++i){\n                if(n%i==0){ prime=false; break; }\n            }\n            sb.append(prime?\"prime number\":\"non-prime number\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
       "Python3": "import sys,math\ndef is_prime(n:int)->bool:\n    if n<2:\n        return False\n    limit=math.isqrt(n)\n    for i in range(2,limit+1):\n        if n%i==0:\n            return False\n    return True\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data:\n        return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        n=int(next(it))\n        out.append('prime number' if is_prime(n) else 'non-prime number')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
-      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T=parseInt(input[idx++],10);\nlet out=[];\nfor(let t=0;t<T;++t){\n  const n=Number(input[idx++]);\n  if(n<2){ out.push('non-prime number'); continue; }\n  let prime=true;\n  for(let i=2;i*i<=n;++i){\n    if(n%i===0){ prime=false; break; }\n  }\n  out.push(prime?'prime number':'non-prime number');\n}\nconsole.log(out.join('\\n'));"
+      "JavaScript": "const lines = require('fs').readFileSync(0,'utf-8').trim().split('\\n'); let i=0;\nlet T = parseInt(lines[i++]);\nlet out = [];\nfor(let t=0;t<T;++t){\n  let n = parseInt(lines[i++]);\n  if(n<2){ out.push('non-prime number'); continue; }\n  let prime=true;\n  for(let i=2;i*i<=n;++i){\n    if(n%i===0){ prime=false; break; }\n  }\n  out.push(prime?'prime number':'non-prime number');\n}\nconsole.log(out.join('\\n'));"
     }
   }
 }

@@ -4,15 +4,14 @@
   "slug": "prime-check",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Prime",
-      "Trial Division",
-      "Math"
+      "Prime Numbers",
+      "Number Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,30 +21,29 @@
   "content": {
     "problemStatement": "Write a program using `while` loop to check if the positive number NNN is prime or not.\n\n**Note:** Prime numbers are the numbers that are divisible by only 1 and the number itself.\n\n\nInput Format\n\nThe first and only line of input will contain a single positive number NNN.\n\n\nOutput Format\n\nOutput on a single line, `YES` if NNN is prime, else `NO`.",
     "constraints": [
-      "1 <= T <= 100",
-      "1 <= N <= 1000000",
+      "1 <= N <= 10^6",
       "All values are integers"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single positive integer N.",
-    "outputFormat": "For each test case, print YES if N is a prime number, otherwise print NO. Each answer should be on its own line.",
+    "inputFormat": "The first and only line of input will contain a single positive number N.",
+    "outputFormat": "Output on a single line, `YES` if N is prime, else `NO`.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\n4\\n11\\n25",
-        "output": "NO\\nYES\\nNO",
-        "explanation": "4 is divisible by 2 → not prime. 11 has no divisor other than 1 and itself → prime. 25 is divisible by 5 → not prime."
+        "input": "4",
+        "output": "NO",
+        "explanation": "4 is divisible by 2 → not prime."
       },
       {
         "id": "sample_2",
-        "input": "2\\n1\\n2",
-        "output": "NO\\nYES",
-        "explanation": "1 is not considered prime. 2 is the smallest prime number."
+        "input": "11",
+        "output": "YES",
+        "explanation": "11 has no divisor other than 1 and itself → prime."
       },
       {
         "id": "sample_3",
-        "input": "4\\n3\\n9973\\n1000000\\n999983",
-        "output": "YES\\nYES\\nNO\\nYES",
-        "explanation": "3 and 9973 are prime. 1,000,000 is even and >2, thus composite. 999983 is a prime close to the upper limit."
+        "input": "25",
+        "output": "NO",
+        "explanation": "25 is divisible by 5 → not prime."
       }
     ]
   },
@@ -54,36 +52,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1",
+        "input": "1",
         "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "5\\n2\\n3\\n5\\n999983\\n1000000",
-        "expectedOutput": "YES\\nYES\\nYES\\nYES\\nNO",
-        "weight": 2
-      },
-      {
-        "id": "tc_3",
-        "label": "Case 3",
-        "input": "1\\n1",
+        "input": "1000000",
         "expectedOutput": "NO",
         "weight": 2
       },
       {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "2",
+        "expectedOutput": "YES",
+        "weight": 2
+      },
+      {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "1\\n1",
+        "label": "tricky case",
+        "input": "4",
         "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "1\\n1",
-        "expectedOutput": "NO",
+        "label": "stress/general",
+        "input": "3",
+        "expectedOutput": "YES",
         "weight": 2
       }
     ],
@@ -113,15 +111,15 @@
     ]
   },
   "solution": {
-    "approach": "A number N is prime if it is greater than 1 and has no divisor other than 1 and itself. For each test case we handle the trivial cases N<=1 (not prime), N==2 (prime) and even numbers >2 (not prime). For the remaining odd numbers we test divisibility by all odd integers i from 3 up to sqrt(N). If any i divides N, the number is composite; otherwise it is prime. This trial‑division algorithm is fast enough because sqrt(10^6) = 1000, so at most ~500 checks per test case.",
-    "timeComplexity": "O(sqrt(N)) per test case, O(T * sqrt(N)) total.",
-    "spaceComplexity": "O(1) auxiliary space.",
+    "approach": "The key insight is to check divisibility from 2 to the square root of N. If N is divisible by any number in this range, it is not a prime number. We use a while loop to check for divisibility.",
+    "timeComplexity": "O(sqrt(N))",
+    "spaceComplexity": "O(1) — the space used does not grow with the size of the input.",
     "code": {
-      "C": "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        if (n <= 1) {\n            printf(\"NO\\n\");\n            continue;\n        }\n        if (n == 2) {\n            printf(\"YES\\n\");\n            continue;\n        }\n        if (n % 2 == 0) {\n            printf(\"NO\\n\");\n            continue;\n        }\n        int isPrime = 1;\n        int limit = (int)sqrt((double)n);\n        for (int i = 3; i <= limit; i += 2) {\n            if (n % i == 0) {\n                isPrime = 0;\n                break;\n            }\n        }\n        printf(isPrime ? \"YES\\n\" : \"NO\\n\");\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        long long n;\n        cin >> n;\n        if (n <= 1) {\n            cout << \"NO\\n\";\n            continue;\n        }\n        if (n == 2) {\n            cout << \"YES\\n\";\n            continue;\n        }\n        if (n % 2 == 0) {\n            cout << \"NO\\n\";\n            continue;\n        }\n        bool isPrime = true;\n        long long limit = sqrt((double)n);\n        for (long long i = 3; i <= limit; i += 2) {\n            if (n % i == 0) {\n                isPrime = false;\n                break;\n            }\n        }\n        cout << (isPrime ? \"YES\" : \"NO\") << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < T; t++) {\n            String s = br.readLine();\n            if (s == null) break;\n            long n = Long.parseLong(s.trim());\n            if (n <= 1) {\n                sb.append(\"NO\\n\");\n                continue;\n            }\n            if (n == 2) {\n                sb.append(\"YES\\n\");\n                continue;\n            }\n            if (n % 2 == 0) {\n                sb.append(\"NO\\n\");\n                continue;\n            }\n            boolean isPrime = true;\n            long limit = (long)Math.sqrt(n);\n            for (long i = 3; i <= limit; i += 2) {\n                if (n % i == 0) {\n                    isPrime = false;\n                    break;\n                }\n            }\n            sb.append(isPrime ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys, math\n\ndef is_prime(n: int) -> bool:\n    if n <= 1:\n        return False\n    if n == 2:\n        return True\n    if n % 2 == 0:\n        return False\n    limit = int(math.isqrt(n))\n    i = 3\n    while i <= limit:\n        if n % i == 0:\n            return False\n        i += 2\n    return True\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(T):\n        n = int(data[idx])\n        idx += 1\n        out.append('YES' if is_prime(n) else 'NO')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()\n",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit(0);\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const n = parseInt(input[idx++], 10);\n  if (n <= 1) {\n    results.push('NO');\n    continue;\n  }\n  if (n === 2) {\n    results.push('YES');\n    continue;\n  }\n  if (n % 2 === 0) {\n    results.push('NO');\n    continue;\n  }\n  let isPrime = true;\n  const limit = Math.floor(Math.sqrt(n));\n  for (let i = 3; i <= limit; i += 2) {\n    if (n % i === 0) {\n      isPrime = false;\n      break;\n    }\n  }\n  results.push(isPrime ? 'YES' : 'NO');\n}\nconsole.log(results.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    if (n <= 1) {\n        printf(\"NO\\n\");\n        return 0;\n    }\n    if (n == 2) {\n        printf(\"YES\\n\");\n        return 0;\n    }\n    if (n % 2 == 0) {\n        printf(\"NO\\n\");\n        return 0;\n    }\n    int isPrime = 1;\n    int limit = (int)sqrt((double)n);\n    int i = 3;\n    while (i <= limit) {\n        if (n % i == 0) {\n            isPrime = 0;\n            break;\n        }\n        i += 2;\n    }\n    printf(isPrime ? \"YES\\n\" : \"NO\\n\");\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    long long n;\n    cin >> n;\n    if (n <= 1) {\n        cout << \"NO\\n\";\n        return 0;\n    }\n    if (n == 2) {\n        cout << \"YES\\n\";\n        return 0;\n    }\n    if (n % 2 == 0) {\n        cout << \"NO\\n\";\n        return 0;\n    }\n    bool isPrime = true;\n    long long limit = sqrt((double)n);\n    long long i = 3;\n    while (i <= limit) {\n        if (n % i == 0) {\n            isPrime = false;\n            break;\n        }\n        i += 2;\n    }\n    cout << (isPrime ? \"YES\" : \"NO\") << '\\n';\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine();\n        if (s == null || s.isEmpty()) return;\n        long n = Long.parseLong(s.trim());\n        if (n <= 1) {\n            System.out.println(\"NO\");\n            return;\n        }\n        if (n == 2) {\n            System.out.println(\"YES\");\n            return;\n        }\n        if (n % 2 == 0) {\n            System.out.println(\"NO\");\n            return;\n        }\n        boolean isPrime = true;\n        long limit = (long)Math.sqrt(n);\n        long i = 3;\n        while (i <= limit) {\n            if (n % i == 0) {\n                isPrime = false;\n                break;\n            }\n            i += 2;\n        }\n        System.out.println(isPrime ? \"YES\" : \"NO\");\n    }\n}",
+      "Python3": "import sys\nimport math\n\ndef is_prime(n):\n    if n <= 1:\n        return False\n    if n == 2:\n        return True\n    if n % 2 == 0:\n        return False\n    limit = int(math.sqrt(n))\n    i = 3\n    while i <= limit:\n        if n % i == 0:\n            return False\n        i += 2\n    return True\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    n = int(data[0])\n    print('YES' if is_prime(n) else 'NO')\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const readline = require('readline').createInterface({\n  input: process.stdin,\n  output: process.stdout\n});\n\nlet i = 0;\nlet input = [];\nreadline.on('line', line => {\n  input.push(line);\n});\nreadline.on('close', () => {\n  main();\n});\n\nfunction main() {\n  let n = parseInt(input[i++]);\n  let isPrime = true;\n  if (n <= 1) {\n    console.log('NO');\n  } else if (n === 2) {\n    console.log('YES');\n  } else if (n % 2 === 0) {\n    console.log('NO');\n  } else {\n    const limit = Math.floor(Math.sqrt(n));\n    let j = 3;\n    while (j <= limit) {\n      if (n % j === 0) {\n        isPrime = false;\n        break;\n      }\n      j += 2;\n    }\n    console.log(isPrime ? 'YES' : 'NO');\n  }\n}"
     }
   }
 }

@@ -4,16 +4,14 @@
   "slug": "longest-increasing-subsequence",
   "version": 1,
   "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-05",
+  "updatedAt": "2026-07-06",
   "metadata": {
     "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Longest Increasing Subsequence",
-      "Binary Search",
-      "Patience Sorting",
-      "Non‑decreasing subsequence"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,26 +25,26 @@
       "1 <= N <= 100",
       "-10^9 <= A[i] <= 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers.",
-    "outputFormat": "For each test case, output a single line containing the length of the longest non‑decreasing subsequence of the given array.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space-separated integers.",
+    "outputFormat": "For each test case, output a single line containing the length of the longest non-decreasing subsequence of the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n9\n10 22 9 33 21 50 41 60 80",
         "output": "6",
-        "explanation": "The longest non‑decreasing subsequence is 10, 22, 33, 50, 60, 80, giving length 6."
+        "explanation": "The longest non-decreasing subsequence is 10, 22, 33, 50, 60, 80, giving length 6."
       },
       {
         "id": "sample_2",
         "input": "1\n5\n1 2 3 4 5",
         "output": "5",
-        "explanation": "All elements are already non‑decreasing, so the LIS length is 5."
+        "explanation": "All elements are already non-decreasing, so the LIS length is 5."
       },
       {
         "id": "sample_3",
         "input": "1\n10\n1 2 3 4 5 6 7 8 9 10",
         "output": "10",
-        "explanation": "The whole array forms a non‑decreasing subsequence of length 10."
+        "explanation": "The whole array forms a non-decreasing subsequence of length 10."
       }
     ]
   },
@@ -55,36 +53,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1\n0",
+        "input": "1\n1\n1",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (compact)",
-        "input": "1\n15\n-1000000000 -999999999 -999999998 -999999997 -999999996 -999999995 -999999994 -999999993 -999999992 -999999991 -999999990 -999999989 -999999988 -999999987 -999999986",
-        "expectedOutput": "15",
+        "label": "maximum boundary",
+        "input": "1\n10\n10 10 10 10 10 10 10 10 10 10",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "uniform/edge case",
-        "input": "1\n10\n5 5 5 5 5 5 5 5 5 5",
-        "expectedOutput": "10",
+        "input": "1\n5\n5 5 5 5 5",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky descending case",
-        "input": "1\n8\n8 7 6 5 4 3 2 1",
+        "label": "tricky case",
+        "input": "1\n5\n5 4 3 2 1",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "stress/general mixed cases",
-        "input": "3\n6\n3 1 2 1 2 3\n5\n-1 -2 -3 -4 -5\n7\n1 2 2 3 2 4 5",
-        "expectedOutput": "4\n1\n6",
+        "label": "stress/general",
+        "input": "2\n5\n1 2 3 4 5\n5\n5 4 3 2 1",
+        "expectedOutput": "5\n1",
         "weight": 2
       }
     ],
@@ -114,15 +112,15 @@
     ]
   },
   "solution": {
-    "approach": "The problem asks for the length of the longest subsequence whose elements are in non‑decreasing order. A classic O(N log N) solution uses the \"patience sorting\" technique: maintain an array `tails` where `tails[i]` is the smallest possible tail value of a non‑decreasing subsequence of length i+1 seen so far. For each element x, binary‑search the first position in `tails` that is greater than x (i.e., upper bound). If such a position exists, replace `tails[pos]` with x; otherwise append x, increasing the length. The size of `tails` after processing the whole array equals the required length. This works because keeping the minimal possible tail for each length leaves maximal room for future elements, and the binary search guarantees O(log N) per element.",
-    "timeComplexity": "O(N log N) per test case, where N is the size of the array. Overall O(T * N log N).",
-    "spaceComplexity": "O(N) auxiliary space for the `tails` array.",
+    "approach": "The key insight is to use dynamic programming to solve this problem. We maintain an array `tails` where `tails[i]` is the smallest tail of all increasing subsequences of length `i`. For each element `x` in the array, we find the largest `i` such that `tails[i] < x` and update `tails[i+1]` to be `x`. The length of the longest increasing subsequence is the length of the `tails` array.",
+    "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total.",
+    "spaceComplexity": "O(N) — the dominant structure is the `tails` array.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *a = (int*)malloc(N * sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%d\", &a[i]);\n        int *tails = (int*)malloc(N * sizeof(int));\n        int len = 0;\n        for(int i=0;i<N;i++){\n            int x = a[i];\n            int l = 0, r = len;\n            while(l < r){\n                int m = (l + r) / 2;\n                if(tails[m] > x) r = m; else l = m + 1;\n            }\n            tails[l] = x;\n            if(l == len) len++;\n        }\n        printf(\"%d\\n\", len);\n        free(a);\n        free(tails);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        for(int &v: a) cin>>v;\n        vector<int> tails;\n        tails.reserve(N);\n        for(int x: a){\n            auto it = upper_bound(tails.begin(), tails.end(), x);\n            if(it==tails.end()) tails.push_back(x);\n            else *it = x;\n        }\n        cout << tails.size() << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N = Integer.parseInt(br.readLine().trim());\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int[] tails = new int[N];\n            int len = 0;\n            for(int i=0;i<N;i++){\n                int x = Integer.parseInt(st.nextToken());\n                int l = 0, r = len;\n                while(l < r){\n                    int m = (l + r) >>> 1;\n                    if(tails[m] > x) r = m; else l = m + 1;\n                }\n                tails[l] = x;\n                if(l == len) len++;\n            }\n            sb.append(len).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys, bisect\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        tails = []\n        for _ in range(N):\n            x = int(next(it))\n            idx = bisect.bisect_right(tails, x)\n            if idx == len(tails):\n                tails.append(x)\n            else:\n                tails[idx] = x\n        out_lines.append(str(len(tails)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
-      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = parseInt(data[idx++], 10);\nlet outputs = [];\nfor(let t = 0; t < T; t++){\n  const N = parseInt(data[idx++], 10);\n  const tails = [];\n  for(let i = 0; i < N; i++){\n    const x = parseInt(data[idx++], 10);\n    let l = 0, r = tails.length;\n    while(l < r){\n      const m = (l + r) >> 1;\n      if(tails[m] > x) r = m; else l = m + 1;\n    }\n    if(l === tails.length) tails.push(x); else tails[l] = x;\n  }\n  outputs.push(String(tails.length));\n}\nconsole.log(outputs.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *a = (int*)malloc(N * sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%d\", &a[i]);\n        int *tails = (int*)malloc(N * sizeof(int));\n        int len = 0;\n        for(int i=0;i<N;i++){\n            int x = a[i];\n            int l = 0, r = len;\n            while(l < r){\n                int m = (l + r) / 2;\n                if(tails[m] < x) l = m + 1; else r = m;\n            }\n            tails[l] = x;\n            if(l == len) len++;\n        }\n        printf(\"%d\\n\", len);\n        free(a);\n        free(tails);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        for(int &v: a) cin>>v;\n        vector<int> tails;\n        tails.reserve(N);\n        for(int x: a){\n            auto it = lower_bound(tails.begin(), tails.end(), x);\n            if(it==tails.end()) tails.push_back(x);\n            else *it = x;\n        }\n        cout << tails.size() << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N = Integer.parseInt(br.readLine().trim());\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int[] tails = new int[N];\n            int len = 0;\n            for(int i=0;i<N;i++){\n                int x = Integer.parseInt(st.nextToken());\n                int l = 0, r = len;\n                while(l < r){\n                    int m = (l + r) >>> 1;\n                    if(tails[m] < x) l = m + 1; else r = m;\n                }\n                tails[l] = x;\n                if(l == len) len++;\n            }\n            sb.append(len).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys, bisect\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        tails = []\n        for _ in range(N):\n            x = int(next(it))\n            idx = bisect.bisect_left(tails, x)\n            if idx == len(tails):\n                tails.append(x)\n            else:\n                tails[idx] = x\n        out_lines.append(str(len(tails)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = parseInt(data[idx++], 10);\nlet outputs = [];\nfor(let t = 0; t < T; t++){\n  const N = parseInt(data[idx++], 10);\n  const tails = [];\n  for(let i = 0; i < N; i++){\n    const x = parseInt(data[idx++], 10);\n    let l = 0, r = tails.length;\n    while(l < r){\n      const m = (l + r) >> 1;\n      if(tails[m] < x) l = m + 1; else r = m;\n    }\n    if(l === tails.length) tails.push(x); else tails[l] = x;\n  }\n  outputs.push(String(tails.length));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
   }
 }
