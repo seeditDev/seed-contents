@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Math",
       "Convex Hull",
-      "Line Segments",
-      "Polygon"
+      "Polygon",
+      "Line Segments"
     ],
     "companyTags": [],
     "topicTags": [
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use the concept of a convex hull. The convex hull of a set of points is the smallest convex polygon that contains all the points. We can find the convex hull of the given polygon and then select pairs of vertices from the convex hull to form line segments that lie completely inside the polygon.",
-    "timeComplexity": "O(T * N * log(N)) — The time complexity is dominated by the convex hull algorithm, which has a time complexity of O(N * log(N)) for each test case.",
-    "spaceComplexity": "O(N) — The space complexity is dominated by the storage of the convex hull, which requires O(N) space.",
+    "timeComplexity": "O(T * N * log(N)) \u2014 The time complexity is dominated by the convex hull algorithm, which has a time complexity of O(N * log(N)) for each test case.",
+    "spaceComplexity": "O(N) \u2014 The space complexity is dominated by the storage of the convex hull, which requires O(N) space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n#define PI 3.14159265358979323846\n#define EPS 1e-9\n\n// Structure to represent a point\ntypedef struct {\n    double x, y;\n} Point;\n\n// Function to calculate the orientation of three points\nint orientation(Point p, Point q, Point r) {\n    double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);\n    if (fabs(val) < EPS) return 0; // Collinear\n    return (val > 0) ? 1 : 2; // Clockwise or counterclockwise\n}\n\n// Function to calculate the convex hull\nvoid convexHull(Point points[], int n, Point hull[]) {\n    int l = 0;\n    for (int i = 1; i < n; i++) {\n        if (points[i].x < points[l].x) l = i;\n    }\n    int p = l, q;\n    do {\n        hull[p] = points[l];\n        q = (p + 1) % n;\n        for (int i = 0; i < n; i++) {\n            if (orientation(points[l], points[i], points[q]) == 2) q = i;\n        }\n        l = q;\n        p++;\n    } while (p < n);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        Point points[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%lf %lf\", &points[i].x, &points[i].y);\n        }\n        Point hull[N];\n        convexHull(points, N, hull);\n        // Select pairs of vertices from the convex hull\n        for (int i = 0; i < 500; i++) {\n            int p = rand() % N;\n            int q = rand() % N;\n            while (p == q) q = rand() % N;\n            printf(\"%d %d\\n\", p + 1, q + 1);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <cmath>\n#include <cstdlib>\n#include <ctime>\nusing namespace std;\n\nstruct Point {\n    double x, y;\n};\n\nint orientation(Point p, Point q, Point r) {\n    double val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);\n    if (fabs(val) < 1e-9) return 0; // Collinear\n    return (val > 0) ? 1 : 2; // Clockwise or counterclockwise\n}\n\nvoid convexHull(vector<Point> points, vector<Point> &hull) {\n    int n = points.size();\n    int l = 0;\n    for (int i = 1; i < n; i++) {\n        if (points[i].x < points[l].x) l = i;\n    }\n    int p = l, q;\n    do {\n        hull.push_back(points[l]);\n        q = (p + 1) % n;\n        for (int i = 0; i < n; i++) {\n            if (orientation(points[l], points[i], points[q]) == 2) q = i;\n        }\n        l = q;\n        p++;\n    } while (p < n);\n}\n\nint main() {\n    srand(time(0));\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<Point> points(N);\n        for (int i = 0; i < N; i++) {\n            cin >> points[i].x >> points[i].y;\n        }\n        vector<Point> hull;\n        convexHull(points, hull);\n        // Select pairs of vertices from the convex hull\n        for (int i = 0; i < 500; i++) {\n            int p = rand() % N;\n            int q = rand() % N;\n            while (p == q) q = rand() % N;\n            cout << p + 1 << \" \" << q + 1 << endl;\n        }\n    }\n    return 0;\n}",

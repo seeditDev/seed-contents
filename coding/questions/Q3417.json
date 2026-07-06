@@ -6,13 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Dynamic Programming | Combinatorics",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Polyhedron",
       "Graph Theory",
       "Combinatorics",
+      "Polyhedron",
       "Dynamic Programming"
     ],
     "companyTags": [],
@@ -23,8 +23,8 @@
   "content": {
     "problemStatement": "Chef likes stereometry a lot. Recently he learned about polyhedrons. During his assignments, he found a problem which he couldn't solve. Can you please help him in solving the problem?\n\n\n\nYou are given a convex polyhedron. Each face of polyhedron is a regular polygon. All polyhedral angles are equal. You have to find number of different ways to paint all the faces of the polyhedron in one of the **C** colors. Note that two painting of the polyhedron are said to be same, if one can be reached from other by a sequence of rotations or mirror reflections of the polyhedron. As this value could be large, output it by modulo **109+7**.",
     "constraints": [
-      "4 ≤ N ≤ 25",
-      "1 ≤ C ≤ 10^9"
+      "4 \u2264 N \u2264 25",
+      "1 \u2264 C \u2264 10^9"
     ],
     "inputFormat": "The first line contains two positive integers - N (number of faces of the polyhedron) and C (number of possible colors). The next N lines contain information about the faces of the polyhedron: the first number of each line contains an integer ki denoting the number of faces adjacent to the i-th face, and the next ki integers denote the faces adjacent to the i-th face.",
     "outputFormat": "The number of ways to color the polyhedron in different ways modulo 10^9 + 7.",
@@ -108,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a combination of graph theory and dynamic programming. First, we need to construct the graph of the polyhedron, where each face is a node, and two nodes are connected if the corresponding faces are adjacent. Then, we can use dynamic programming to count the number of ways to color the polyhedron. We can use a recursive approach, where we try all possible colors for each face, and use memoization to avoid redundant calculations.",
-    "timeComplexity": "O(N * C * 2^N) — the time complexity is exponential in the number of faces, because we need to try all possible colorings. However, the dynamic programming approach reduces the time complexity by avoiding redundant calculations.",
-    "spaceComplexity": "O(N * C) — the space complexity is linear in the number of faces and colors, because we need to store the memoization table.",
+    "timeComplexity": "O(N * C * 2^N) \u2014 the time complexity is exponential in the number of faces, because we need to try all possible colorings. However, the dynamic programming approach reduces the time complexity by avoiding redundant calculations.",
+    "spaceComplexity": "O(N * C) \u2014 the space complexity is linear in the number of faces and colors, because we need to store the memoization table.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MOD 1000000007\n#define MAXN 25\n#define MAXC 1000000000\n\nint N, C;\nint adj[MAXN][MAXN];\nint memo[MAXN][MAXC];\n\nint dp(int face, int color) {\n    if (face == N) return 1;\n    if (memo[face][color] != -1) return memo[face][color];\n    int res = 0;\n    for (int i = 0; i < C; i++) {\n        int valid = 1;\n        for (int j = 0; j < N; j++) {\n            if (adj[face][j] && i == color) valid = 0;\n        }\n        if (valid) res = (res + dp(face + 1, i)) % MOD;\n    }\n    return memo[face][color] = res;\n}\n\nint main() {\n    scanf(\"%d %d\", &N, &C);\n    for (int i = 0; i < N; i++) {\n        int k;\n        scanf(\"%d\", &k);\n        for (int j = 0; j < k; j++) {\n            int x;\n            scanf(\"%d\", &x);\n            adj[i][x - 1] = 1;\n        }\n    }\n    memset(memo, -1, sizeof(memo));\n    printf(\"%d\\n\", dp(0, 0));\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n#define MOD 1000000007\n#define MAXN 25\n#define MAXC 1000000000\n\nusing namespace std;\n\nint N, C;\nvector<vector<int>> adj;\nunordered_map<int, int> memo;\n\nint dp(int face, int color) {\n    if (face == N) return 1;\n    if (memo.find(face * MAXC + color) != memo.end()) return memo[face * MAXC + color];\n    int res = 0;\n    for (int i = 0; i < C; i++) {\n        int valid = 1;\n        for (int j = 0; j < N; j++) {\n            if (adj[face][j] && i == color) valid = 0;\n        }\n        if (valid) res = (res + dp(face + 1, i)) % MOD;\n    }\n    return memo[face * MAXC + color] = res;\n}\n\nint main() {\n    cin >> N >> C;\n    adj.resize(N, vector<int>(N, 0));\n    for (int i = 0; i < N; i++) {\n        int k;\n        cin >> k;\n        for (int j = 0; j < k; j++) {\n            int x;\n            cin >> x;\n            adj[i][x - 1] = 1;\n        }\n    }\n    cout << dp(0, 0) << endl;\n    return 0;\n}",

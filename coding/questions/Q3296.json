@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Sorting",
       "Area Calculation",
-      "Sorting"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,11 +22,11 @@
   "content": {
     "problemStatement": "Today is Chota Mouse's birthday. He wants to celebrate it in a grand style. His brother Mota Chuha immediately contacted a nearby bakery for an online delivery of a cake. The cake is of rectangular shape with height **H** and width **W**. Chota Mouse has invited **F** of his friends to the party. So, he wants to make **F** vertical cuts at distinct positions on the cake, so that the cake will be divided into **F + 1** non-zero area parts (**F** for his friends and one for himself).\n\nLet us assume the cake is placed along the coordinate axis with its left end at **x** coordinate 0 and right end at **W**. Please see the image in the examples for details.\n\nHe will make cuts at positions **Pi** such that **Pi** is strictly greater than zero and strictly less than **W**.\n\nAlso note that, all the positions for cutting are distinct.\n\nChota Mouse is a nice guy. So, he will be keeping the piece with the least area for himself and leave the other pieces for his friends to enjoy.\n\nChota Mouse is weak in mathematics, so can you please help him figure out the area of the piece he is going to have?\n\n\nInput Format\nThe first line of the input contains an integer **T** denoting the number of test cases. The description of **T** test cases follows.\n\n\nFirst line of each test case contains three space separated integers **F, H, W**.\n\n\nSecond line of each test case contains **F** space separated integers, i-th of them denotes **Pi**.\n\n\n\nOutput Format\nFor each test case, print a single integer corresponding to the answer of the problem.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ F ≤ 500",
-      "1 ≤ H ≤ 10000",
-      "F + 1 ≤ W ≤ 10000",
-      "1 ≤ Pi ≤ W - 1"
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 F \u2264 500",
+      "1 \u2264 H \u2264 10000",
+      "F + 1 \u2264 W \u2264 10000",
+      "1 \u2264 Pi \u2264 W - 1"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains three space-separated integers F, H, W. The second line of each test case contains F space-separated integers, i-th of them denotes Pi.",
     "outputFormat": "For each test case, print a single integer corresponding to the area of the piece Chota Mouse is going to have.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To find the area of the piece Chota Mouse is going to have, we first need to calculate the areas of all the pieces after making the cuts. We can do this by sorting the cut positions and then calculating the area of each piece by multiplying the height of the cake with the width of the piece. The width of each piece can be found by subtracting the position of the previous cut from the position of the current cut. Finally, we find the minimum area among all the pieces, which will be the area of the piece Chota Mouse is going to have.",
-    "timeComplexity": "O(T * F log F) — where T is the number of test cases and F is the number of cuts. The sorting operation dominates the time complexity.",
-    "spaceComplexity": "O(F) — for storing the cut positions.",
+    "timeComplexity": "O(T * F log F) \u2014 where T is the number of test cases and F is the number of cuts. The sorting operation dominates the time complexity.",
+    "spaceComplexity": "O(F) \u2014 for storing the cut positions.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int F, H, W;\n        scanf(\"%d %d %d\", &F, &H, &W);\n        int *P = (int*)malloc(F * sizeof(int));\n        for (int i = 0; i < F; i++) {\n            scanf(\"%d\", &P[i]);\n        }\n        qsort(P, F, sizeof(int), compare);\n        int minArea = H * P[0];\n        for (int i = 1; i < F; i++) {\n            int area = H * (P[i] - P[i-1]);\n            if (area < minArea) {\n                minArea = area;\n            }\n        }\n        int area = H * (W - P[F-1]);\n        if (area < minArea) {\n            minArea = area;\n        }\n        printf(\"%d\\n\", minArea);\n        free(P);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int F, H, W;\n        cin >> F >> H >> W;\n        int P[F];\n        for (int i = 0; i < F; i++) {\n            cin >> P[i];\n        }\n        sort(P, P + F);\n        int minArea = H * P[0];\n        for (int i = 1; i < F; i++) {\n            int area = H * (P[i] - P[i-1]);\n            if (area < minArea) {\n                minArea = area;\n            }\n        }\n        int area = H * (W - P[F-1]);\n        if (area < minArea) {\n            minArea = area;\n        }\n        cout << minArea << endl;\n    }\n    return 0;\n}",

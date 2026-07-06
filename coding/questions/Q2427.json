@@ -10,8 +10,9 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Hash Map",
       "Frequency Count",
-      "Hash Map"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an array AAA of length NNN, your task is to find the element which repeats in the array the maximum number of times, along with its exact frequency count.\n\nIf there is a tie (i.e multiple elements have the same maximum frequency), you must choose the **smallest** element among them.\n\nFunction DeclarationFunction NamemostFrequentmostFrequentmostFrequent – This function processes the array and finds the required element and its count.\n\nParametersNNN : An integer representing the length of the array AAA.\n\nAAA : An array (or list) of NNN integers.\n\nReturn ValueReturns an array/pair of two integers:\n\n\nThe most frequent element (the smallest one in case of a tie).\nIts corresponding frequency count.",
+    "problemStatement": "Given an array AAA of length NNN, your task is to find the element which repeats in the array the maximum number of times, along with its exact frequency count.\n\nIf there is a tie (i.e multiple elements have the same maximum frequency), you must choose the **smallest** element among them.\n\nFunction DeclarationFunction NamemostFrequentmostFrequentmostFrequent \u2013 This function processes the array and finds the required element and its count.\n\nParametersNNN : An integer representing the length of the array AAA.\n\nAAA : An array (or list) of NNN integers.\n\nReturn ValueReturns an array/pair of two integers:\n\n\nThe most frequent element (the smallest one in case of a tie).\nIts corresponding frequency count.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 10^5",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a hash map to store the frequency of each element in the array. Then, we can iterate through the hash map to find the element with the maximum frequency. If there are multiple elements with the same maximum frequency, we choose the smallest one.",
     "timeComplexity": "O(N) per test case, O(T * N) total. The hash map operations (insertion and lookup) take constant time on average.",
-    "spaceComplexity": "O(N) — the dominant structure is the hash map used to store the frequency of each element.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the hash map used to store the frequency of each element.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void* a, const void* b) {\n    int int_a = *(const int*)a;\n    int int_b = *(const int*)b;\n    if (int_a < int_b) return -1;\n    if (int_a > int_b) return 1;\n    return 0;\n}\n\nint* mostFrequent(int N, int* A) {\n    // Sort the array first\n    qsort(A, N, sizeof(int), compare);\n    \n    int max_freq = 0;\n    int best_elem = -1;\n    \n    int current_freq = 1;\n    int current_elem = A[0];\n    \n    for (int i = 1; i < N; i++) {\n        if (A[i] == current_elem) {\n            current_freq++;\n        } else {\n            // Update max_freq. Strict '>' ensures we keep the smallest element in a tie\n            if (current_freq > max_freq) {\n                max_freq = current_freq;\n                best_elem = current_elem;\n            }\n            current_elem = A[i];\n            current_freq = 1;\n        }\n    }\n    \n    // Final check for the last group of elements in the array\n    if (current_freq > max_freq) {\n        max_freq = current_freq;\n        best_elem = current_elem;\n    }\n    \n    int* result = (int*)malloc(2 * sizeof(int));\n    result[0] = best_elem;\n    result[1] = max_freq;\n    return result;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N;\n        scanf(\"%d\", &N);\n        int* A = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        int* result = mostFrequent(N, A);\n        printf(\"%d %d\\n\", result[0], result[1]);\n        free(A);\n        free(result);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N;\n        cin >> N;\n        int* A = new int[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        unordered_map<int, int> freq;\n        int max_freq = 0;\n        int best_elem = 2e9; // Initialize larger than 10^9\n        \n        // Build frequency map\n        for (int i = 0; i < N; i++) {\n            freq[A[i]]++;\n        }\n        \n        // Find the most frequent and smallest element\n        for (const auto& pair : freq) {\n            int num = pair.first;\n            int count = pair.second;\n            \n            if (count > max_freq) {\n                max_freq = count;\n                best_elem = num;\n            } else if (count == max_freq && num < best_elem) {\n                best_elem = num;\n            }\n        }\n        \n        cout << best_elem << \" \" << max_freq << endl;\n        delete[] A;\n    }\n    return 0;\n}",

@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graph Traversal",
+      "Graphs",
       "Tree",
       "DFS",
-      "BFS",
-      "Graph Traversal"
+      "BFS"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,10 +24,10 @@
   "content": {
     "problemStatement": "&nbsp;\n\nLogan: \"**Someone will come along**\"\n\nCharles: \"**Someone has come along**\"\n\nAfter much speculation, Logan has decided to escort Laura to a place in North Dakota called **\"Eden\"**. \n\n But Laura is in playful mood right now, and wants Logan to play with her an interesting game. \n\nShe gives Logan a tree with **N** nodes and **Q** queries. Each query will contain 5 integers **R A B X** and **Y**.\n\n**R** denotes the root node of the tree for the particular query.\n\n**A** denotes the cost of an edge if one traverses from a node to its parent node.\n\n**B** denotes the cost of an edge if one traverses from a node to its child node.\n\nConsider 2 friends are standing at nodes **X** and **Y** respectively. They both need to meet and can meet at any node. Logan need to tell Laura what is the minimum cost they both need to pay to meet?\n\n\n\n\nAfter a person travels through an edge (his current location gets updated), he needs to pay the cost which is equal to **C * cost of edge** where **C** is a factor whose value is equal to total edges traveled by a person from his starting location and upto his current location and **cost of edge** will be either equal to **A** or **B** depending upon the person's movement.\n\n\nSee sample input output for better understanding.\n\n\n\n&nbsp;",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ U, V, R, X, Y ≤ N",
-      "1 ≤ Q ≤ 10^5",
-      "1 ≤ A, B ≤ 10^6"
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 U, V, R, X, Y \u2264 N",
+      "1 \u2264 Q \u2264 10^5",
+      "1 \u2264 A, B \u2264 10^6"
     ],
     "inputFormat": "The first line contains an integer N denoting the number of nodes in the tree. The next N-1 lines contain two integers U and V denoting that there is an edge between node U and node V. The next line contains an integer Q denoting the number of queries. The next Q lines contain five integers R, A, B, X, and Y respectively.",
     "outputFormat": "For each query, print the required answer in a separate line.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal algorithm such as DFS or BFS to find the shortest path between two nodes in the tree. We need to consider the cost of traversing each edge and the direction of traversal (i.e., from parent to child or from child to parent). We can use a recursive approach to calculate the cost of traversal for each node.",
-    "timeComplexity": "O(Q * N) — where Q is the number of queries and N is the number of nodes in the tree. The reason is that for each query, we need to traverse the tree to find the shortest path between the two nodes.",
-    "spaceComplexity": "O(N) — where N is the number of nodes in the tree. The reason is that we need to store the tree structure in memory.",
+    "timeComplexity": "O(Q * N) \u2014 where Q is the number of queries and N is the number of nodes in the tree. The reason is that for each query, we need to traverse the tree to find the shortest path between the two nodes.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of nodes in the tree. The reason is that we need to store the tree structure in memory.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAX_N 100005\n#define MAX_Q 100005\n// Define the structure for a tree node\ntypedef struct Node {\n    int id;\n    int parent;\n    int children[MAX_N];\n    int numChildren;\n} Node;\n// Define the structure for a query\ntypedef struct Query {\n    int R;\n    int A;\n    int B;\n    int X;\n    int Y;\n} Query;\n// Function to calculate the cost of traversal\nint calculateCost(Node *tree, int node, int parent, int A, int B, int depth) {\n    int cost = 0;\n    if (parent != -1) {\n        if (depth > 0) {\n            cost += depth * A;\n        } else {\n            cost += -depth * B;\n        }\n    }\n    return cost;\n}\n// Function to find the shortest path between two nodes\nint findShortestPath(Node *tree, int X, int Y, int R, int A, int B) {\n    int cost = 0;\n    // Find the path from X to R\n    int currentNode = X;\n    int parent = -1;\n    int depth = 0;\n    while (currentNode != R) {\n        cost += calculateCost(tree, currentNode, parent, A, B, depth);\n        parent = currentNode;\n        currentNode = tree[currentNode].parent;\n        depth++;\n    }\n    // Find the path from Y to R\n    currentNode = Y;\n    parent = -1;\n    depth = 0;\n    while (currentNode != R) {\n        cost += calculateCost(tree, currentNode, parent, A, B, depth);\n        parent = currentNode;\n        currentNode = tree[currentNode].parent;\n        depth++;\n    }\n    return cost;\n}\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    Node tree[N + 1];\n    for (int i = 1; i <= N; i++) {\n        tree[i].id = i;\n        tree[i].parent = -1;\n        tree[i].numChildren = 0;\n    }\n    for (int i = 1; i < N; i++) {\n        int U, V;\n        scanf(\"%d %d\", &U, &V);\n        tree[U].children[tree[U].numChildren++] = V;\n        tree[V].parent = U;\n    }\n    int Q;\n    scanf(\"%d\", &Q);\n    Query queries[Q];\n    for (int i = 0; i < Q; i++) {\n        scanf(\"%d %d %d %d %d\", &queries[i].R, &queries[i].A, &queries[i].B, &queries[i].X, &queries[i].Y);\n    }\n    for (int i = 0; i < Q; i++) {\n        int cost = findShortestPath(tree, queries[i].X, queries[i].Y, queries[i].R, queries[i].A, queries[i].B);\n        printf(\"%d\\n\", cost);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n#define MAX_N 100005\n#define MAX_Q 100005\n// Define the structure for a tree node\nstruct Node {\n    int id;\n    int parent;\n    vector<int> children;\n};\n// Define the structure for a query\nstruct Query {\n    int R;\n    int A;\n    int B;\n    int X;\n    int Y;\n};\n// Function to calculate the cost of traversal\nint calculateCost(Node *tree, int node, int parent, int A, int B, int depth) {\n    int cost = 0;\n    if (parent != -1) {\n        if (depth > 0) {\n            cost += depth * A;\n        } else {\n            cost += -depth * B;\n        }\n    }\n    return cost;\n}\n// Function to find the shortest path between two nodes\nint findShortestPath(Node *tree, int X, int Y, int R, int A, int B) {\n    int cost = 0;\n    // Find the path from X to R\n    int currentNode = X;\n    int parent = -1;\n    int depth = 0;\n    while (currentNode != R) {\n        cost += calculateCost(tree, currentNode, parent, A, B, depth);\n        parent = currentNode;\n        currentNode = tree[currentNode].parent;\n        depth++;\n    }\n    // Find the path from Y to R\n    currentNode = Y;\n    parent = -1;\n    depth = 0;\n    while (currentNode != R) {\n        cost += calculateCost(tree, currentNode, parent, A, B, depth);\n        parent = currentNode;\n        currentNode = tree[currentNode].parent;\n        depth++;\n    }\n    return cost;\n}\nint main() {\n    int N;\n    cin >> N;\n    Node tree[N + 1];\n    for (int i = 1; i <= N; i++) {\n        tree[i].id = i;\n        tree[i].parent = -1;\n    }\n    for (int i = 1; i < N; i++) {\n        int U, V;\n        cin >> U >> V;\n        tree[U].children.push_back(V);\n        tree[V].parent = U;\n    }\n    int Q;\n    cin >> Q;\n    Query queries[Q];\n    for (int i = 0; i < Q; i++) {\n        cin >> queries[i].R >> queries[i].A >> queries[i].B >> queries[i].X >> queries[i].Y;\n    }\n    for (int i = 0; i < Q; i++) {\n        int cost = findShortestPath(tree, queries[i].X, queries[i].Y, queries[i].R, queries[i].A, queries[i].B);\n        cout << cost << endl;\n    }\n    return 0;\n}",

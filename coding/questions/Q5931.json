@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Palindromes",
+      "Strings",
       "Constructive Algorithms",
       "Greedy"
     ],
@@ -20,13 +21,13 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given two integers XXX and YYY. You need to construct two different strings S1S_1S1​ and S2S_2S2​ consisting of only the characters ‘a’‘a’‘a’ and ‘b’‘b’‘b’, such that the following conditions are satisfied:\n\n\nBoth S1S_1S1​ and S2S_2S2​ are palindromes.\nBoth S1S_1S1​ and S2S_2S2​ should contain exactly XXX occurrences of a\\texttt{a}a and YYY occurrences of b\\texttt{b}b.\nIf there are multiple possible answers, you may print **any** of them. If it is not possible to construct two distinct strings satisfying the conditions, print −1-1−1 instead.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. Then the test cases follow.\nEach test case consists of a single line of input containing two space-separated integers X,YX, YX,Y.\n\n\nOutput Format\nFor each test case:\n\n\n\nIf it is not possible to construct two distinct strings satisfying the conditions, print −1-1−1\nOtherwise, print two lines — the first should contain the string S1S_1S1​ and the second should contain S2S_2S2​\nIf there are multiple possible answers, you may print any of them.",
+    "problemStatement": "You are given two integers XXX and YYY. You need to construct two different strings S1S_1S1\u200b and S2S_2S2\u200b consisting of only the characters \u2018a\u2019\u2018a\u2019\u2018a\u2019 and \u2018b\u2019\u2018b\u2019\u2018b\u2019, such that the following conditions are satisfied:\n\n\nBoth S1S_1S1\u200b and S2S_2S2\u200b are palindromes.\nBoth S1S_1S1\u200b and S2S_2S2\u200b should contain exactly XXX occurrences of a\\texttt{a}a and YYY occurrences of b\\texttt{b}b.\nIf there are multiple possible answers, you may print **any** of them. If it is not possible to construct two distinct strings satisfying the conditions, print \u22121-1\u22121 instead.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. Then the test cases follow.\nEach test case consists of a single line of input containing two space-separated integers X,YX, YX,Y.\n\n\nOutput Format\nFor each test case:\n\n\n\nIf it is not possible to construct two distinct strings satisfying the conditions, print \u22121-1\u22121\nOtherwise, print two lines \u2014 the first should contain the string S1S_1S1\u200b and the second should contain S2S_2S2\u200b\nIf there are multiple possible answers, you may print any of them.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ X, Y ≤ 1000"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 X, Y \u2264 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and Y.",
-    "outputFormat": "For each test case, if it is impossible to output two distinct palindromes with exactly X letters 'a' and Y letters 'b', print a single line containing -1. Otherwise print two lines: the first line is any valid palindrome S1, the second line is another valid palindrome S2 (S1 ≠ S2).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers X and Y.",
+    "outputFormat": "For each test case, if it is impossible to output two distinct palindromes with exactly X letters 'a' and Y letters 'b', print a single line containing -1. Otherwise print two lines: the first line is any valid palindrome S1, the second line is another valid palindrome S2 (S1 \u2260 S2).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,7 +102,7 @@
   },
   "solution": {
     "approach": "A palindrome can be formed iff at most one of the character counts is odd. Therefore if both X and Y are odd the answer is -1. Even when a palindrome exists we need at least two different ones. This is impossible when one character does not appear at all (X=0 or Y=0) or when the only odd count equals 1 (X=1 or Y=1) because the centre is forced and the remaining half is forced. In all other feasible cases we can build two distinct palindromes by arranging the first half differently. Let aHalf = X/2, bHalf = Y/2 (integer division). If X is odd the centre character is 'a', else if Y is odd the centre is 'b', otherwise there is no centre. First palindrome: first half = aHalf times 'a' followed by bHalf times 'b'. Second palindrome: first half = bHalf times 'b' followed by aHalf times 'a'. Append the centre (if any) and the reverse of the first half to obtain the full strings. Because both aHalf and bHalf are positive in the feasible region, the two palindromes are guaranteed to be different.",
-    "timeComplexity": "O(X+Y) per test case – we only construct strings of length X+Y.",
+    "timeComplexity": "O(X+Y) per test case \u2013 we only construct strings of length X+Y.",
     "spaceComplexity": "O(X+Y) for the output strings.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nvoid solveCase(int X, int Y) {\n    if ((X & 1) && (Y & 1)) { printf(\"-1\\n\"); return; }\n    if (X == 0 || Y == 0) { printf(\"-1\\n\"); return; }\n    if ((X & 1) && X == 1) { printf(\"-1\\n\"); return; }\n    if ((Y & 1) && Y == 1) { printf(\"-1\\n\"); return; }\n    int aHalf = X / 2;\n    int bHalf = Y / 2;\n    char centre = 0;\n    if (X & 1) centre = 'a';\n    else if (Y & 1) centre = 'b';\n    int len = X + Y;\n    char *first = (char*)malloc(aHalf + bHalf + 1);\n    char *second = (char*)malloc(aHalf + bHalf + 1);\n    int pos = 0;\n    for (int i = 0; i < aHalf; ++i) first[pos++] = 'a';\n    for (int i = 0; i < bHalf; ++i) first[pos++] = 'b';\n    first[pos] = '\\0';\n    pos = 0;\n    for (int i = 0; i < bHalf; ++i) second[pos++] = 'b';\n    for (int i = 0; i < aHalf; ++i) second[pos++] = 'a';\n    second[pos] = '\\0';\n    // build and print first palindrome\n    for (int i = 0; i < aHalf + bHalf; ++i) putchar(first[i]);\n    if (centre) putchar(centre);\n    for (int i = aHalf + bHalf - 1; i >= 0; --i) putchar(first[i]);\n    putchar('\\n');\n    // second palindrome\n    for (int i = 0; i < aHalf + bHalf; ++i) putchar(second[i]);\n    if (centre) putchar(centre);\n    for (int i = aHalf + bHalf - 1; i >= 0; --i) putchar(second[i]);\n    putchar('\\n');\n    free(first);\n    free(second);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int X, Y; scanf(\"%d %d\", &X, &Y);\n        solveCase(X, Y);\n    }\n    return 0;\n}",

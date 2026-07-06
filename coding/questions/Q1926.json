@@ -6,18 +6,18 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Sorting | Searching | Data Structures",
+    "category": "Sorting",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "CSV",
       "Filtering",
-      "Sorting",
-      "Statistics",
-      "Median",
+      "CSV",
       "Variance",
       "Mode",
-      "String Matching"
+      "Sorting",
+      "String Matching",
+      "Statistics",
+      "Median"
     ],
     "companyTags": [],
     "topicTags": [
@@ -31,9 +31,9 @@
       "1 <= N <= 1000",
       "1 <= M <= 10",
       "All column names are unique and consist of letters and underscores",
-      "Numeric values fit in 32‑bit signed integer"
+      "Numeric values fit in 32\u2011bit signed integer"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n1. A line with two integers N and M – number of rows and number of columns.\n2. A line with M column names separated by commas (no spaces).\n3. N lines, each a CSV row with M fields (numeric fields are integers, others are strings).\n4. A line with an integer Q – number of commands.\n5. Q lines, each a command which can be:\n   - filter <column> <operator> <value>\n       Operators: >, <, >=, <=, ==, != for numeric columns; contains, startswith, endswith for text columns.\n   - sort <column> [desc]   (optional word \"desc\" for descending order)\n   - median <column>\n   - variance <column>\n   - mode <column>\nAll commands are processed sequentially. After each statistic command (median, variance, mode) a line with the result is printed. After all commands the final table (including header) is printed.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n1. A line with two integers N and M \u2013 number of rows and number of columns.\n2. A line with M column names separated by commas (no spaces).\n3. N lines, each a CSV row with M fields (numeric fields are integers, others are strings).\n4. A line with an integer Q \u2013 number of commands.\n5. Q lines, each a command which can be:\n   - filter <column> <operator> <value>\n       Operators: >, <, >=, <=, ==, != for numeric columns; contains, startswith, endswith for text columns.\n   - sort <column> [desc]   (optional word \"desc\" for descending order)\n   - median <column>\n   - variance <column>\n   - mode <column>\nAll commands are processed sequentially. After each statistic command (median, variance, mode) a line with the result is printed. After all commands the final table (including header) is printed.",
     "outputFormat": "For each test case, output the resulting CSV table after applying all filter and sort commands (header line first, then remaining rows). Immediately after a statistic command, output a line in the form \"Median <col>: <value>\", \"Variance <col>: <value>\", or \"Mode <col>: <value>\". Values for median and variance are printed as decimal numbers without unnecessary trailing zeros (e.g., 32.5, 6.25, 5).",
     "sampleTestCases": [
       {
@@ -114,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we read the whole table into a vector of rows, each row being a vector<string>. While reading we also decide for every column whether it is numeric (all values can be parsed as int). Commands are processed in order:\n- filter: we iterate over the current rows and keep only those satisfying the condition. Numeric comparisons use the stored integer values, text comparisons use the raw strings and the requested substring operation.\n- sort: we use std::stable_sort (or equivalent) with a comparator that compares either integers or strings depending on the column type. If the optional \"desc\" token is present the order is reversed.\n- median: we collect the numeric values of the column, sort them, and compute the middle element (average of two middle values when the count is even). The result is printed as a double.\n- variance: we compute the population variance Σ(x‑μ)² / n using double arithmetic.\n- mode: we count frequencies of the column values (numeric values are converted back to string for uniform handling) and output the value with highest frequency; on a tie the smallest value (numeric or lexicographic) is chosen.\nAll operations are O(N log N) at worst (sorting and median), which easily satisfies the limits (N ≤ 1000). Memory usage is O(N·M).",
-    "timeComplexity": "O(T * (N log N + Q * N)) – each filter scans the rows (O(N)), each sort/median/variance/mode is O(N log N) or O(N). With N ≤ 1000 this is well within limits.",
+    "approach": "For each test case we read the whole table into a vector of rows, each row being a vector<string>. While reading we also decide for every column whether it is numeric (all values can be parsed as int). Commands are processed in order:\n- filter: we iterate over the current rows and keep only those satisfying the condition. Numeric comparisons use the stored integer values, text comparisons use the raw strings and the requested substring operation.\n- sort: we use std::stable_sort (or equivalent) with a comparator that compares either integers or strings depending on the column type. If the optional \"desc\" token is present the order is reversed.\n- median: we collect the numeric values of the column, sort them, and compute the middle element (average of two middle values when the count is even). The result is printed as a double.\n- variance: we compute the population variance \u03a3(x\u2011\u03bc)\u00b2 / n using double arithmetic.\n- mode: we count frequencies of the column values (numeric values are converted back to string for uniform handling) and output the value with highest frequency; on a tie the smallest value (numeric or lexicographic) is chosen.\nAll operations are O(N log N) at worst (sorting and median), which easily satisfies the limits (N \u2264 1000). Memory usage is O(N\u00b7M).",
+    "timeComplexity": "O(T * (N log N + Q * N)) \u2013 each filter scans the rows (O(N)), each sort/median/variance/mode is O(N log N) or O(N). With N \u2264 1000 this is well within limits.",
     "spaceComplexity": "O(N * M) to store the table plus O(N) auxiliary structures for sorting and statistics.",
     "code": {
       "C": ""

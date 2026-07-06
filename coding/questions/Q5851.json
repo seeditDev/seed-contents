@@ -6,16 +6,17 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Combinatorics",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "mex",
-      "inclusion‑exclusion",
       "finite differences",
-      "NTT",
+      "Math",
+      "mex",
+      "inclusion\u2011exclusion",
+      "binomial coefficients",
       "fast exponentiation",
-      "binomial coefficients"
+      "NTT"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,15 +24,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Nayra doesn't like stories of people receiving random arrays as birthday presents, but this time she received random arrays as presents for her own birthday! After struggling for a day trying to figure out what to do with the array, she asked Aryan for help. He gave her the following problem.\n\nGiven 333 integers N,P,N, P,N,P, and MMM.\n\n\nLet f(A)f(A)f(A) be the MEX of the array AAA.\nLet g(A)=(f(A))Pg(A) = (f(A))^Pg(A)=(f(A))P for the array AAA .\nThere are (M+1)N(M+1)^N(M+1)N distinct arrays A=[A1,A2,…,AN]A = [A_1, A_2, \\ldots, A_N]A=[A1​,A2​,…,AN​] such that (0≤Ai≤M)(0 \\le A_i \\le M)(0≤Ai​≤M) ∀\\forall∀ (1≤i≤N)(1\\le i \\le N)(1≤i≤N).\n\nCalculate the sum of g(A)g(A)g(A) over all such (M+1)N(M+1)^N(M+1)N arrays. Since the answer can be huge, print it modulo 754974721754974721754974721.\n\n\nInput Format\n\nFirst line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains a single line of input, three integers N,P,N, P,N,P, and MMM.\n\n\nOutput Format\nFor each test case, output a single line containing the value of the given sum modulo 754974721754974721754974721.",
+    "problemStatement": "Nayra doesn't like stories of people receiving random arrays as birthday presents, but this time she received random arrays as presents for her own birthday! After struggling for a day trying to figure out what to do with the array, she asked Aryan for help. He gave her the following problem.\n\nGiven 333 integers N,P,N, P,N,P, and MMM.\n\n\nLet f(A)f(A)f(A) be the MEX of the array AAA.\nLet g(A)=(f(A))Pg(A) = (f(A))^Pg(A)=(f(A))P for the array AAA .\nThere are (M+1)N(M+1)^N(M+1)N distinct arrays A=[A1,A2,\u2026,AN]A = [A_1, A_2, \\ldots, A_N]A=[A1\u200b,A2\u200b,\u2026,AN\u200b] such that (0\u2264Ai\u2264M)(0 \\le A_i \\le M)(0\u2264Ai\u200b\u2264M) \u2200\\forall\u2200 (1\u2264i\u2264N)(1\\le i \\le N)(1\u2264i\u2264N).\n\nCalculate the sum of g(A)g(A)g(A) over all such (M+1)N(M+1)^N(M+1)N arrays. Since the answer can be huge, print it modulo 754974721754974721754974721.\n\n\nInput Format\n\nFirst line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains a single line of input, three integers N,P,N, P,N,P, and MMM.\n\n\nOutput Format\nFor each test case, output a single line containing the value of the given sum modulo 754974721754974721754974721.",
     "constraints": [
-      "1 ≤ T ≤ 10^4",
-      "1 ≤ N ≤ 10^9",
-      "1 ≤ P ≤ 10^9",
-      "1 ≤ M ≤ 10^5",
-      "Σ M over all test cases ≤ 10^6"
+      "1 \u2264 T \u2264 10^4",
+      "1 \u2264 N \u2264 10^9",
+      "1 \u2264 P \u2264 10^9",
+      "1 \u2264 M \u2264 10^5",
+      "\u03a3 M over all test cases \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space‑separated integers N, P and M.\nFor each test case you have to consider all arrays A of length N where each element satisfies 0 ≤ Ai ≤ M.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated integers N, P and M.\nFor each test case you have to consider all arrays A of length N where each element satisfies 0 \u2264 Ai \u2264 M.",
     "outputFormat": "For each test case output a single line containing the sum of (mex(A))^P over all (M+1)^N possible arrays, taken modulo 754974721.",
     "sampleTestCases": [
       {
@@ -106,8 +107,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed mex = k (0 ≤ k ≤ M) the value k must appear at least once, all numbers 0…k‑1 must appear at least once and the value k must be absent. The remaining positions may contain any of the other M‑k numbers. Hence the number of arrays with mex = k is\n    cnt_k = Σ_{i=0}^{k} (-1)^i * C(k,i) * (M-i)^N .\nFor k = M+1 the value M+1 never appears, therefore we only need all numbers 0…M to be present:\n    cnt_{M+1} = Σ_{i=0}^{M+1} (-1)^i * C(M+1,i) * (M+1-i)^N .\nThe required answer is\n    ans = Σ_{k=0}^{M} k^P * cnt_k + (M+1)^P * cnt_{M+1}   (mod MOD).\nDirect evaluation of each cnt_k would be O(M^2).  The inner sum is a binomial transform, i.e. the k‑th forward difference of the sequence a_i = (M-i)^N evaluated at i=0.  Using the identity\n    cnt_k = k! * Σ_{i=0}^{k} a_i * (-1)^i / (i! (k-i)!)\nwe can compute all cnt_k for k = 0…M with a single convolution of the two sequences\n    A_i = a_i * (-1)^i * invFact[i]   and   B_i = invFact[i].\nBecause the modulus 754974721 = 2^24·45+1 is NTT‑friendly, the convolution is performed with the Number Theoretic Transform in O(M log M).  The same technique is applied once more for k = M+1.\nSteps for each test case:\n1. Pre‑compute a_i = (M-i)^N for i = 0…M (and a'_i = (M+1-i)^N for i = 0…M+1) using fast exponentiation.\n2. Build arrays A, B as described and run NTT to obtain the convolution C.\n3. cnt_k = fact[k] * C_k   (mod MOD) for k = 0…M, and cnt_{M+1} = fact[M+1] * C'_{M+1}.\n4. Compute k^P for every k (fast exponentiation) and accumulate the final sum.\nAll factorials, inverse factorials and primitive roots are pre‑computed once up to the maximum M+1 over all test cases.\nThe overall complexity per test case is O(M log M + M log N + M log P) and the memory consumption is O(M).",
-    "timeComplexity": "O(M log M + M log N + M log P) per test case, where M is the given bound for that case. The total over all test cases respects the ΣM ≤ 10^6 limit.",
+    "approach": "For a fixed mex = k (0 \u2264 k \u2264 M) the value k must appear at least once, all numbers 0\u2026k\u20111 must appear at least once and the value k must be absent. The remaining positions may contain any of the other M\u2011k numbers. Hence the number of arrays with mex = k is\n    cnt_k = \u03a3_{i=0}^{k} (-1)^i * C(k,i) * (M-i)^N .\nFor k = M+1 the value M+1 never appears, therefore we only need all numbers 0\u2026M to be present:\n    cnt_{M+1} = \u03a3_{i=0}^{M+1} (-1)^i * C(M+1,i) * (M+1-i)^N .\nThe required answer is\n    ans = \u03a3_{k=0}^{M} k^P * cnt_k + (M+1)^P * cnt_{M+1}   (mod MOD).\nDirect evaluation of each cnt_k would be O(M^2).  The inner sum is a binomial transform, i.e. the k\u2011th forward difference of the sequence a_i = (M-i)^N evaluated at i=0.  Using the identity\n    cnt_k = k! * \u03a3_{i=0}^{k} a_i * (-1)^i / (i! (k-i)!)\nwe can compute all cnt_k for k = 0\u2026M with a single convolution of the two sequences\n    A_i = a_i * (-1)^i * invFact[i]   and   B_i = invFact[i].\nBecause the modulus 754974721 = 2^24\u00b745+1 is NTT\u2011friendly, the convolution is performed with the Number Theoretic Transform in O(M log M).  The same technique is applied once more for k = M+1.\nSteps for each test case:\n1. Pre\u2011compute a_i = (M-i)^N for i = 0\u2026M (and a'_i = (M+1-i)^N for i = 0\u2026M+1) using fast exponentiation.\n2. Build arrays A, B as described and run NTT to obtain the convolution C.\n3. cnt_k = fact[k] * C_k   (mod MOD) for k = 0\u2026M, and cnt_{M+1} = fact[M+1] * C'_{M+1}.\n4. Compute k^P for every k (fast exponentiation) and accumulate the final sum.\nAll factorials, inverse factorials and primitive roots are pre\u2011computed once up to the maximum M+1 over all test cases.\nThe overall complexity per test case is O(M log M + M log N + M log P) and the memory consumption is O(M).",
+    "timeComplexity": "O(M log M + M log N + M log P) per test case, where M is the given bound for that case. The total over all test cases respects the \u03a3M \u2264 10^6 limit.",
     "spaceComplexity": "O(M) additional memory for the NTT buffers and auxiliary arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdint.h>\n#define MOD 754974721ULL\n#define G 11ULL"

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Backtracking",
+    "category": "Recursion & Backtracking",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Backtracking",
-      "Permutations"
+      "Recursion & Backtracking",
+      "Permutations",
+      "Backtracking"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +20,13 @@
     ]
   },
   "content": {
-    "problemStatement": "The Chef wants to color a **3xN** grid and he has **N** different types of colors to do that. Each cell of the grid has to be colored with exactly one color. A coloring of the grid is\r\nconsidered beautiful if no two cells of the same row or same column have the same color.\r\n\n\n\r\nThe cells of first two rows are already colored and they don’t violate the beautiful condition (one color doesn’t appear more than once on the same row or on the same column).\r\n\n\n\r\nFind how many different ways he can color the **3rd** row such that the resulting grid is beautiful. Two ways of coloring are considered different if there is at least one cell which is colored with different color.",
+    "problemStatement": "The Chef wants to color a **3xN** grid and he has **N** different types of colors to do that. Each cell of the grid has to be colored with exactly one color. A coloring of the grid is\r\nconsidered beautiful if no two cells of the same row or same column have the same color.\r\n\n\n\r\nThe cells of first two rows are already colored and they don\u2019t violate the beautiful condition (one color doesn\u2019t appear more than once on the same row or on the same column).\r\n\n\n\r\nFind how many different ways he can color the **3rd** row such that the resulting grid is beautiful. Two ways of coloring are considered different if there is at least one cell which is colored with different color.",
     "constraints": [
       "1 <= T <= 20",
       "3 <= N <= 1000",
       "A1, A2, ..., AN is a permutation of the numbers 1, 2, ..., N.",
       "B1, B2, ..., BN is a permutation of the numbers 1, 2, ..., N.",
-      "Ai ≠ Bi (1 ≤ i ≤ N)"
+      "Ai \u2260 Bi (1 \u2264 i \u2264 N)"
     ],
     "inputFormat": "First line contains T, the number of test cases. Each test case contains an integer N on the first line, followed by two lines containing N integers each, representing the colors of the first and second rows.",
     "outputFormat": "For each test case, print the number of different ways to color the 3rd row such that the resulting grid is beautiful.",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using backtracking. We start by trying to color the first cell of the third row with each of the N colors. For each color, we check if it is valid (i.e., it does not appear in the same column in the first two rows and it does not appear in the same row in the third row). If it is valid, we recursively try to color the rest of the cells in the third row. If we are able to color all cells, we increment the count of valid colorings.",
     "timeComplexity": "O(N!) per test case, O(T * N!) total. The time complexity is due to the backtracking algorithm trying all possible permutations of colors for the third row.",
-    "spaceComplexity": "O(N) — the dominant structure is the recursion stack and the arrays used to store the colors of the rows.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the recursion stack and the arrays used to store the colors of the rows.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n\nint N;\nint A[1000], B[1000], C[1000];\nbool used[1000];\n\nbool isValid(int col, int color) {\n    for (int i = 0; i < col; i++) {\n        if (C[i] == color) return false;\n    }\n    if (A[col] == color || B[col] == color) return false;\n    return true;\n}\n\nbool backtrack(int col) {\n    if (col == N) return true;\n    for (int color = 1; color <= N; color++) {\n        if (used[color]) continue;\n        if (isValid(col, color)) {\n            C[col] = color;\n            used[color] = true;\n            if (backtrack(col + 1)) return true;\n            used[color] = false;\n        }\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        for (int i = 0; i < N; i++) scanf(\"%d\", &A[i]);\n        for (int i = 0; i < N; i++) scanf(\"%d\", &B[i]);\n        int count = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 1; j <= N; j++) used[j] = false;\n            C[0] = i;\n            used[i] = true;\n            if (backtrack(1)) count++;\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint N;\nvector<int> A, B, C;\nvector<bool> used;\n\nbool isValid(int col, int color) {\n    for (int i = 0; i < col; i++) {\n        if (C[i] == color) return false;\n    }\n    if (A[col] == color || B[col] == color) return false;\n    return true;\n}\n\nbool backtrack(int col) {\n    if (col == N) return true;\n    for (int color = 1; color <= N; color++) {\n        if (used[color]) continue;\n        if (isValid(col, color)) {\n            C[col] = color;\n            used[color] = true;\n            if (backtrack(col + 1)) return true;\n            used[color] = false;\n        }\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        A.resize(N);\n        B.resize(N);\n        C.resize(N);\n        used.resize(N + 1, false);\n        for (int i = 0; i < N; i++) cin >> A[i];\n        for (int i = 0; i < N; i++) cin >> B[i];\n        int count = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 1; j <= N; j++) used[j] = false;\n            C[0] = i;\n            used[i] = true;\n            if (backtrack(1)) count++;\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

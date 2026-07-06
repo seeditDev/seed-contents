@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Sorting",
+      "Greedy",
       "Two Pointers"
     ],
     "companyTags": [],
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The key insight is to sort both the boxes and the rubber bands by their sizes. Then, we can use two pointers to match the boxes with the rubber bands. We start with the smallest box and try to match it with the smallest rubber band that can fit it. If we find a match, we move to the next box and the next rubber band. If we don't find a match, we move to the next rubber band. This way, we can pack the maximum number of boxes.",
     "timeComplexity": "O(T * (N log N + M log M)) per test case, O(T * (N log N + M log M)) total. The sorting of boxes and rubber bands takes O(N log N) and O(M log M) time respectively. The two pointers technique takes O(N + M) time.",
-    "spaceComplexity": "O(N + M) — for storing the boxes and rubber bands.",
+    "spaceComplexity": "O(N + M) \u2014 for storing the boxes and rubber bands.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define K 22.0 / 7.0\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint compareRubber(const void *a, const void *b) {\n    int* x = (int*)a;\n    int* y = (int*)b;\n    return x[0] - y[0];\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int boxes[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &boxes[i]);\n        }\n        qsort(boxes, N, sizeof(int), compare);\n        int M;\n        scanf(\"%d\", &M);\n        int rubberBands[M][2];\n        for (int i = 0; i < M; i++) {\n            scanf(\"%d %d\", &rubberBands[i][0], &rubberBands[i][1]);\n        }\n        qsort(rubberBands, M, sizeof(int) * 2, compareRubber);\n        int packed = 0;\n        int j = 0;\n        for (int i = 0; i < N; i++) {\n            while (j < M) {\n                if (2 * K * rubberBands[j][0] <= 4 * boxes[i] && 4 * boxes[i] <= 2 * K * rubberBands[j][1]) {\n                    packed++;\n                    j++;\n                    break;\n                }\n                j++;\n            }\n        }\n        printf(\"%d\\n\", packed);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define K 22.0 / 7.0\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int boxes[N];\n        for (int i = 0; i < N; i++) {\n            cin >> boxes[i];\n        }\n        sort(boxes, boxes + N);\n        int M;\n        cin >> M;\n        int rubberBands[M][2];\n        for (int i = 0; i < M; i++) {\n            cin >> rubberBands[i][0] >> rubberBands[i][1];\n        }\n        sort(rubberBands, rubberBands + M);\n        int packed = 0;\n        int j = 0;\n        for (int i = 0; i < N; i++) {\n            while (j < M) {\n                if (2 * K * rubberBands[j][0] <= 4 * boxes[i] && 4 * boxes[i] <= 2 * K * rubberBands[j][1]) {\n                    packed++;\n                    j++;\n                    break;\n                }\n                j++;\n            }\n        }\n        cout << packed << endl;\n    }\n    return 0;\n}",

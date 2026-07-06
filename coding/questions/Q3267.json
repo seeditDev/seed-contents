@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree",
-      "Depth-First Search",
-      "Dynamic Programming"
+      "Graphs",
+      "Dynamic Programming",
+      "Depth-First Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a depth-first search (DFS) approach to calculate the strategic cost of each subtree. We start by initializing the distance of each node to itself as 0. Then, for each node, we calculate the distance to all its descendants and update the strategic cost accordingly. We use a recursive DFS function to traverse the tree and calculate the distances and strategic costs.",
-    "timeComplexity": "O(T * N * (N + M)) — where T is the number of test cases, N is the number of nodes, and M is the number of edges. The reason is that in the worst case, we might need to traverse the entire tree for each test case.",
-    "spaceComplexity": "O(N + M) — for storing the tree and the distances.",
+    "timeComplexity": "O(T * N * (N + M)) \u2014 where T is the number of test cases, N is the number of nodes, and M is the number of edges. The reason is that in the worst case, we might need to traverse the entire tree for each test case.",
+    "spaceComplexity": "O(N + M) \u2014 for storing the tree and the distances.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\n#define MAXM 200005\ntypedef struct Edge {\n    int v, w, next;\n} Edge;\nEdge edges[MAXM];\nint head[MAXN], tot = 0;\nvoid addEdge(int u, int v, int w) {\n    edges[tot].v = v;\n    edges[tot].w = w;\n    edges[tot].next = head[u];\n    head[u] = tot++;\n}\nint dist[MAXN], cost[MAXN];\nvoid dfs(int u, int fa) {\n    dist[u] = 0;\n    for (int i = head[u]; i != -1; i = edges[i].next) {\n        int v = edges[i].v;\n        if (v == fa) continue;\n        dfs(v, u);\n        dist[u] = (dist[u] > dist[v] + edges[i].w) ? dist[u] : dist[v] + edges[i].w;\n    }\n    cost[u] = dist[u];\n    for (int i = head[u]; i != -1; i = edges[i].next) {\n        int v = edges[i].v;\n        if (v == fa) continue;\n        cost[u] = (cost[u] < cost[v]) ? cost[u] : cost[v];\n    }\n}\nint main() {\n    int T, N, u, v, w;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        for (int i = 1; i <= N; i++) head[i] = -1;\n        tot = 0;\n        for (int i = 1; i < N; i++) {\n            scanf(\"%d %d %d\", &u, &v, &w);\n            addEdge(u, v, w);\n            addEdge(v, u, w);\n        }\n        dfs(1, 0);\n        for (int i = 1; i <= N; i++) printf(\"%d\\n\", cost[i]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\ntypedef pair<int, int> pii;\nconst int MAXN = 100005;\nvector<pii> edges[MAXN];\nint dist[MAXN], cost[MAXN];\nvoid dfs(int u, int fa) {\n    dist[u] = 0;\n    for (auto &e : edges[u]) {\n        int v = e.first;\n        if (v == fa) continue;\n        dfs(v, u);\n        dist[u] = max(dist[u], dist[v] + e.second);\n    }\n    cost[u] = dist[u];\n    for (auto &e : edges[u]) {\n        int v = e.first;\n        if (v == fa) continue;\n        cost[u] = min(cost[u], cost[v]);\n    }\n}\nint main() {\n    int T, N, u, v, w;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        for (int i = 1; i <= N; i++) edges[i].clear();\n        for (int i = 1; i < N; i++) {\n            cin >> u >> v >> w;\n            edges[u].push_back({v, w});\n            edges[v].push_back({u, w});\n        }\n        dfs(1, 0);\n        for (int i = 1; i <= N; i++) cout << cost[i] << endl;\n    }\n    return 0;\n}",

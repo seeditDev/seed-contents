@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Tree Construction",
+      "Graphs",
+      "Greedy",
       "Constructive Algorithms",
-      "Greedy"
+      "Tree Construction"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef's friend JJ challenged him to construct a tree which has exactly RRR red coloured nodes, GGG green coloured nodes and BBB blue coloured nodes.\n\nTo make the task interesting he added an extra condition: the simple path between any two blue nodes should contain **at least** one red node and **at least** one green node.\n\nCan you help Chef to complete JJ's challenge by constructing any valid tree that satisfies these conditions?\n\n\nInput Format\n\nThe first line contains TTT - the number of test cases. Then the test cases follow.\nThe first line of each test case contains RRR, GGG, and BBB - the number of red, green and blue nodes respectively in the tree.\n\n\nOutput Format\n\nIf a tree can be constructed that fulfils all the requirements then\n\nIn the first line, output a string of length R+G+BR + G + BR+G+B in which the ithi^{th}ith character (1-based indexing) is either `R`, `G` or `B` denoting the colour of the ithi^{th}ith node as red, green or blue respectively.\nIn the following R+G+B−1R + G + B - 1R+G+B−1 lines, output two integers UUU and VVV denoting there is an edge between UthU^{th}Uth and VthV^{th}Vth node.\n\n\nIf no tree fulfils the requirements print `-1` in a single line.",
+    "problemStatement": "Chef's friend JJ challenged him to construct a tree which has exactly RRR red coloured nodes, GGG green coloured nodes and BBB blue coloured nodes.\n\nTo make the task interesting he added an extra condition: the simple path between any two blue nodes should contain **at least** one red node and **at least** one green node.\n\nCan you help Chef to complete JJ's challenge by constructing any valid tree that satisfies these conditions?\n\n\nInput Format\n\nThe first line contains TTT - the number of test cases. Then the test cases follow.\nThe first line of each test case contains RRR, GGG, and BBB - the number of red, green and blue nodes respectively in the tree.\n\n\nOutput Format\n\nIf a tree can be constructed that fulfils all the requirements then\n\nIn the first line, output a string of length R+G+BR + G + BR+G+B in which the ithi^{th}ith character (1-based indexing) is either `R`, `G` or `B` denoting the colour of the ithi^{th}ith node as red, green or blue respectively.\nIn the following R+G+B\u22121R + G + B - 1R+G+B\u22121 lines, output two integers UUU and VVV denoting there is an edge between UthU^{th}Uth and VthV^{th}Vth node.\n\n\nIf no tree fulfils the requirements print `-1` in a single line.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= R, G, B <= 1000",
       "3 <= R+G+B <= 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three integers R, G and B — the required numbers of red, green and blue nodes respectively.",
-    "outputFormat": "For each test case, if a required tree does not exist output a single line containing -1. Otherwise output a string of length N=R+G+B where the i‑th character is 'R', 'G' or 'B' denoting the colour of node i. Then output N‑1 lines, each containing two integers u v (1‑based) describing an edge of the tree.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three integers R, G and B \u2014 the required numbers of red, green and blue nodes respectively.",
+    "outputFormat": "For each test case, if a required tree does not exist output a single line containing -1. Otherwise output a string of length N=R+G+B where the i\u2011th character is 'R', 'G' or 'B' denoting the colour of node i. Then output N\u20111 lines, each containing two integers u v (1\u2011based) describing an edge of the tree.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "The only restriction is that the simple path between any two blue nodes must contain at least one red and at least one green node. If two blue nodes share the same red parent, their path would miss a green node, therefore each blue node needs a distinct red parent. Consequently a necessary condition is R >= B. This condition is also sufficient. Construction: 1) create a chain of all G green nodes (if G>1) to keep the tree connected. 2) Choose the first green node (id 1) as the central green node. 3) For every red node (total R) connect it directly to the central green node. 4) For the first B red nodes, attach one blue leaf each. All remaining red nodes (if any) stay as leaves of the central green node. The resulting tree has N‑1 edges, is connected, and any path between two blue leaves goes: blue_i – red_i – central_green – red_j – blue_j, which certainly contains a red (red_i or red_j) and a green (central_green).",
-    "timeComplexity": "O(R+G+B) per test case – we create each node and each edge once.",
+    "approach": "The only restriction is that the simple path between any two blue nodes must contain at least one red and at least one green node. If two blue nodes share the same red parent, their path would miss a green node, therefore each blue node needs a distinct red parent. Consequently a necessary condition is R >= B. This condition is also sufficient. Construction: 1) create a chain of all G green nodes (if G>1) to keep the tree connected. 2) Choose the first green node (id 1) as the central green node. 3) For every red node (total R) connect it directly to the central green node. 4) For the first B red nodes, attach one blue leaf each. All remaining red nodes (if any) stay as leaves of the central green node. The resulting tree has N\u20111 edges, is connected, and any path between two blue leaves goes: blue_i \u2013 red_i \u2013 central_green \u2013 red_j \u2013 blue_j, which certainly contains a red (red_i or red_j) and a green (central_green).",
+    "timeComplexity": "O(R+G+B) per test case \u2013 we create each node and each edge once.",
     "spaceComplexity": "O(R+G+B) for storing the colour string and the edge list.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int R,G,B; scanf(\"%d %d %d\",&R,&G,&B);\n        if(R<B){\n            printf(\"-1\\n\");\n            continue;\n        }\n        int N = R+G+B;\n        // colour string\n        char *col = (char*)malloc(N+1);\n        int idx=0;\n        for(int i=0;i<G;i++) col[idx++]='G';\n        for(int i=0;i<R;i++) col[idx++]='R';\n        for(int i=0;i<B;i++) col[idx++]='B';\n        col[N]='\\0';\n        printf(\"%s\\n\",col);\n        // edges\n        // green chain\n        for(int i=2;i<=G;i++) printf(\"%d %d\\n\",i-1,i);\n        int central = 1; // first green node\n        // connect all red nodes to central green\n        for(int i=1;i<=R;i++){\n            int red_id = G + i;\n            printf(\"%d %d\\n\",central,red_id);\n        }\n        // attach blue leaves to first B red nodes\n        for(int i=1;i<=B;i++){\n            int red_id = G + i;\n            int blue_id = G + R + i;\n            printf(\"%d %d\\n\",red_id,blue_id);\n        }\n        free(col);\n    }\n    return 0;\n}",

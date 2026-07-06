@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Minimum Number of Assistants",
       "Greedy Algorithm",
-      "Minimum Number of Assistants"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using a greedy algorithm. We start by finding the meal with the minimum cooking time. Then, we assign an assistant to cook all the meals with the minimum cooking time in the subsequence of length K. We repeat this process until all meals are cooked.",
     "timeComplexity": "O(N^2) per test case, O(T*N^2) total. The time complexity is quadratic because in the worst case, we might have to iterate over all meals for each assistant.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of cooking times.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of cooking times.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int f[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &f[i]);\n        }\n        int assistants = 0;\n        int cooked[N];\n        for (int i = 0; i < N; i++) {\n            cooked[i] = 0;\n        }\n        while (1) {\n            int min_time = INT_MAX;\n            int min_index = -1;\n            for (int i = 0; i < N; i++) {\n                if (!cooked[i] && f[i] < min_time) {\n                    min_time = f[i];\n                    min_index = i;\n                }\n            }\n            if (min_index == -1) {\n                break;\n            }\n            assistants++;\n            for (int i = max(0, min_index - K + 1); i <= min(min_index + K - 1, N - 1); i++) {\n                if (f[i] == min_time) {\n                    cooked[i] = 1;\n                }\n            }\n        }\n        printf(\"%d\\n\", assistants);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <climits>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        int f[N];\n        for (int i = 0; i < N; i++) {\n            cin >> f[i];\n        }\n        int assistants = 0;\n        bool cooked[N];\n        for (int i = 0; i < N; i++) {\n            cooked[i] = false;\n        }\n        while (true) {\n            int min_time = INT_MAX;\n            int min_index = -1;\n            for (int i = 0; i < N; i++) {\n                if (!cooked[i] && f[i] < min_time) {\n                    min_time = f[i];\n                    min_index = i;\n                }\n            }\n            if (min_index == -1) {\n                break;\n            }\n            assistants++;\n            for (int i = max(0, min_index - K + 1); i <= min(min_index + K - 1, N - 1); i++) {\n                if (f[i] == min_time) {\n                    cooked[i] = true;\n                }\n            }\n        }\n        cout << assistants << endl;\n    }\n    return 0;\n}",

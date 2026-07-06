@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Bitwise XOR",
+      "Bit Manipulation",
       "Dynamic Programming"
     ],
     "companyTags": [],
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Nikitosh the painter has a 1-indexed array **A** of **N** elements. He wants to find the **maximum** value of expression \n\n\n(**A[l1]** ⊕ **A[l1 + 1]** ⊕ **...** ⊕ **A[r1]**) + (**A[l2]** ⊕ **A[l2 + 1]** ⊕ **...** ⊕ **A[r2]**) where **1** ≤ **l1** ≤ **r1** &lt; **l2** ≤ **r2** ≤ **N**.\n\n\nHere, **x** ⊕ **y** means the bitwise XOR of **x** and **y**.\n\nBecause Nikitosh is a painter and not a mathematician, you need to help him in this task.",
+    "problemStatement": "Nikitosh the painter has a 1-indexed array **A** of **N** elements. He wants to find the **maximum** value of expression \n\n\n(**A[l1]** \u2295 **A[l1 + 1]** \u2295 **...** \u2295 **A[r1]**) + (**A[l2]** \u2295 **A[l2 + 1]** \u2295 **...** \u2295 **A[r2]**) where **1** \u2264 **l1** \u2264 **r1** &lt; **l2** \u2264 **r2** \u2264 **N**.\n\n\nHere, **x** \u2295 **y** means the bitwise XOR of **x** and **y**.\n\nBecause Nikitosh is a painter and not a mathematician, you need to help him in this task.",
     "constraints": [
       "2 <= N <= 4*10^5",
       "0 <= Ai <= 10^9"
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We first calculate the prefix XOR array for the given array A. Then, for each possible pair of subarrays (l1, r1) and (l2, r2) where 1 <= l1 <= r1 < l2 <= r2 <= N, we calculate the XOR of the elements in the subarrays and add them together. We keep track of the maximum sum obtained so far.",
-    "timeComplexity": "O(N^3) — we have three nested loops to consider all possible pairs of subarrays",
-    "spaceComplexity": "O(N) — we need to store the prefix XOR array",
+    "timeComplexity": "O(N^3) \u2014 we have three nested loops to consider all possible pairs of subarrays",
+    "spaceComplexity": "O(N) \u2014 we need to store the prefix XOR array",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <limits.h>\nint max(int a, int b) { return (a > b) ? a : b; }\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    int prefixXOR[N + 1] = {0};\n    for (int i = 0; i < N; i++) {\n        prefixXOR[i + 1] = prefixXOR[i] ^ A[i];\n    }\n    int maxSum = INT_MIN;\n    for (int l1 = 0; l1 < N; l1++) {\n        for (int r1 = l1; r1 < N; r1++) {\n            for (int l2 = r1 + 1; l2 < N; l2++) {\n                for (int r2 = l2; r2 < N; r2++) {\n                    int sum = (prefixXOR[r1 + 1] ^ prefixXOR[l1]) + (prefixXOR[r2 + 1] ^ prefixXOR[l2]);\n                    maxSum = max(maxSum, sum);\n                }\n            }\n        }\n    }\n    printf(\"%d\\n\", maxSum);\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <climits>\nusing namespace std;\nint main() {\n    int N;\n    cin >> N;\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    int prefixXOR[N + 1] = {0};\n    for (int i = 0; i < N; i++) {\n        prefixXOR[i + 1] = prefixXOR[i] ^ A[i];\n    }\n    int maxSum = INT_MIN;\n    for (int l1 = 0; l1 < N; l1++) {\n        for (int r1 = l1; r1 < N; r1++) {\n            for (int l2 = r1 + 1; l2 < N; l2++) {\n                for (int r2 = l2; r2 < N; r2++) {\n                    int sum = (prefixXOR[r1 + 1] ^ prefixXOR[l1]) + (prefixXOR[r2 + 1] ^ prefixXOR[l2]);\n                    maxSum = max(maxSum, sum);\n                }\n            }\n        }\n    }\n    cout << maxSum << endl;\n    return 0;\n}",

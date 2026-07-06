@@ -6,17 +6,18 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Data Structures | Offline Queries",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Tree",
-      "Euler Tour",
+      "Graphs",
       "Binary Lifting",
-      "Mo's Algorithm",
+      "Modular Arithmetic",
+      "Tree",
       "Fenwick Tree",
-      "Expected Value",
-      "Modular Arithmetic"
+      "Mo's Algorithm",
+      "Euler Tour",
+      "Expected Value"
     ],
     "companyTags": [],
     "topicTags": [
@@ -24,14 +25,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Let's define an elephant tree with size NNN as a rooted tree with NNN vertices (numbered 111 through NNN) such that:\n\n\nvertex 111 is the root\nfor any three vertices uuu, vvv and www such that u&lt;v&lt;wu \\lt v \\lt wu&lt;v&lt;w, if www is a (direct or indirect) descendant of uuu, then vvv is also a descendant of uuu\nLittle Chef has an elephant tree with size NNN. Today, he wants to use the leaves of this tree to decorate QQQ dishes (a leaf is a vertex with no children). For each dish, he picks some range [L,R][L, R][L,R] and he wants to uniformly randomly choose a pair of distinct leaves with labels between LLL and RRR inclusive. These leaves are removed and used to decorate the dish; since the tree is magical, the removed leaves grow back immediately.\n\nYou should answer QQQ queries. In each query, Chef is decorating one dish and wants to know the expected value of the distance between the chosen leaves. It can be proved that if at least one pair of leaves can be chosen, this expected value can be expressed as a fraction P/DP/DP/D, where PPP and DDD are coprime positive integers and DDD is coprime to 998,244,353998,244,353998,244,353.\n\nThe answer to a query is 000 if there is at most one leaf in the given range (no pair of leaves can be chosen) or P⋅D−1P \\cdot D^{-1}P⋅D−1 modulo 998,244,353998,244,353998,244,353 otherwise, where D−1D^{-1}D−1 denotes the multiplicative inverse of DDD modulo 998,244,353998,244,353998,244,353.\n\nLittle Chef is very unpredictable, so you have to answer each query immediately after he gives it to you.",
+    "problemStatement": "Let's define an elephant tree with size NNN as a rooted tree with NNN vertices (numbered 111 through NNN) such that:\n\n\nvertex 111 is the root\nfor any three vertices uuu, vvv and www such that u&lt;v&lt;wu \\lt v \\lt wu&lt;v&lt;w, if www is a (direct or indirect) descendant of uuu, then vvv is also a descendant of uuu\nLittle Chef has an elephant tree with size NNN. Today, he wants to use the leaves of this tree to decorate QQQ dishes (a leaf is a vertex with no children). For each dish, he picks some range [L,R][L, R][L,R] and he wants to uniformly randomly choose a pair of distinct leaves with labels between LLL and RRR inclusive. These leaves are removed and used to decorate the dish; since the tree is magical, the removed leaves grow back immediately.\n\nYou should answer QQQ queries. In each query, Chef is decorating one dish and wants to know the expected value of the distance between the chosen leaves. It can be proved that if at least one pair of leaves can be chosen, this expected value can be expressed as a fraction P/DP/DP/D, where PPP and DDD are coprime positive integers and DDD is coprime to 998,244,353998,244,353998,244,353.\n\nThe answer to a query is 000 if there is at most one leaf in the given range (no pair of leaves can be chosen) or P\u22c5D\u22121P \\cdot D^{-1}P\u22c5D\u22121 modulo 998,244,353998,244,353998,244,353 otherwise, where D\u22121D^{-1}D\u22121 denotes the multiplicative inverse of DDD modulo 998,244,353998,244,353998,244,353.\n\nLittle Chef is very unpredictable, so you have to answer each query immediately after he gives it to you.",
     "constraints": [
-      "2 ≤ N, Q ≤ 300000",
-      "1 ≤ fi < i for every i (the tree is rooted at 1)",
-      "The tree satisfies the elephant‑tree property, i.e. the vertices of every subtree form a contiguous interval of labels."
+      "2 \u2264 N, Q \u2264 300000",
+      "1 \u2264 fi < i for every i (the tree is rooted at 1)",
+      "The tree satisfies the elephant\u2011tree property, i.e. the vertices of every subtree form a contiguous interval of labels."
     ],
-    "inputFormat": "The first line contains two integers N and Q – the number of vertices of the elephant tree and the number of queries. The second line contains N‑1 integers f2 … fN, where fi is the parent of vertex i (1‑based indexing, vertex 1 is the root). Then Q lines follow, each containing two integers x and y. For each query let ans be the answer of the previous query (ans = 0 for the first query). The real parameters are L = x xor ans and R = y xor ans (1 ≤ L ≤ R ≤ N).",
-    "outputFormat": "For each query output a single integer – the expected distance between a uniformly random unordered pair of distinct leaves whose labels lie in [L, R], modulo 998244353. If the interval contains fewer than two leaves output 0.",
+    "inputFormat": "The first line contains two integers N and Q \u2013 the number of vertices of the elephant tree and the number of queries. The second line contains N\u20111 integers f2 \u2026 fN, where fi is the parent of vertex i (1\u2011based indexing, vertex\u202f1 is the root). Then Q lines follow, each containing two integers x and y. For each query let ans be the answer of the previous query (ans = 0 for the first query). The real parameters are L = x xor ans and R = y xor ans (1 \u2264 L \u2264 R \u2264 N).",
+    "outputFormat": "For each query output a single integer \u2013 the expected distance between a uniformly random unordered pair of distinct leaves whose labels lie in [L, R], modulo 998244353. If the interval contains fewer than two leaves output 0.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -105,8 +106,8 @@
     ]
   },
   "solution": {
-    "approach": "Because every subtree of an elephant tree occupies a contiguous interval of labels, the set of leaves is static and each leaf can be identified by its position in the sorted list of leaves. For a query we need the sum of distances over all unordered leaf pairs inside the interval. The distance between two vertices u and v is depth(u)+depth(v)‑2·depth(lca(u,v)). Hence for a set S of leaves we need:\n    sumDepth = Σ_{v∈S} depth(v)\n    sumLCA   = Σ_{(u,v), u<v, u,v∈S} depth(lca(u,v))\nThe answer is (|S|·sumDepth – 2·sumLCA) / C(|S|,2).\n\nWe answer all queries offline with Mo's algorithm on the array of leaves (ordered by label). While moving the current interval we maintain:\n  cnt          – number of leaves in the current interval\n  sumDepth     – Σ depth(v) for the current leaves\n  totalDist    – Σ_{u<v} distance(u,v) for the current leaves\n  fenwick      – a Fenwick tree on the Euler tour of the whole tree that stores, for each vertex, how many of the current leaves lie in its subtree.\nWhen a leaf x is added we compute its contribution to totalDist in O(log N) time:\n  contribution = depth(x)·cnt + sumDepth – 2·Σ_{a ancestor of x} depth(a)·(cntSubtree[a] – cntSubtree[parent(a)])\nThe term Σ_{a ancestor of x} … can be evaluated by climbing the ancestors of x using binary lifting. For each jump we query the Fenwick tree for the number of current leaves inside the jumped node’s subtree. The number of jumps is O(log N), each query is O(log N), so the whole addition/removal costs O(log^2 N).\nAll queries are processed in O((N+Q)·√N·log^2 N) which easily fits the limits.\nModular arithmetic is performed with the given prime MOD = 998244353; the modular inverse of C(cnt,2) is computed with fast exponentiation.\n\nPre‑processing steps:\n  1. Build the tree, run a DFS to obtain tin/tout times, depth array and binary‑lifting table up[k][v].\n  2. Identify all leaves, store them in a vector leaves[] sorted by label and remember for each leaf its position.\n  3. Build a Fenwick tree of size N (Euler tour size) initialised with zeros.\n  4. Prepare the queries for Mo’s ordering (block size ≈ √|leaves|).\n\nDuring Mo’s processing we keep two pointers L,R on the leaves array (0‑based, inclusive). Adding/removing a leaf updates cnt, sumDepth, totalDist and the Fenwick tree accordingly.\nFinally for each query we output 0 if cnt < 2, otherwise (totalDist * inv(C(cnt,2))) mod MOD.\n\nThe algorithm runs in O((N+Q)·√N·log^2 N) time and O(N) memory.",
-    "timeComplexity": "O((N + Q) · √N · log^2 N)",
+    "approach": "Because every subtree of an elephant tree occupies a contiguous interval of labels, the set of leaves is static and each leaf can be identified by its position in the sorted list of leaves. For a query we need the sum of distances over all unordered leaf pairs inside the interval. The distance between two vertices u and v is depth(u)+depth(v)\u20112\u00b7depth(lca(u,v)). Hence for a set S of leaves we need:\n    sumDepth = \u03a3_{v\u2208S} depth(v)\n    sumLCA   = \u03a3_{(u,v), u<v, u,v\u2208S} depth(lca(u,v))\nThe answer is (|S|\u00b7sumDepth \u2013 2\u00b7sumLCA) / C(|S|,2).\n\nWe answer all queries offline with Mo's algorithm on the array of leaves (ordered by label). While moving the current interval we maintain:\n  cnt          \u2013 number of leaves in the current interval\n  sumDepth     \u2013 \u03a3 depth(v) for the current leaves\n  totalDist    \u2013 \u03a3_{u<v} distance(u,v) for the current leaves\n  fenwick      \u2013 a Fenwick tree on the Euler tour of the whole tree that stores, for each vertex, how many of the current leaves lie in its subtree.\nWhen a leaf x is added we compute its contribution to totalDist in O(log N) time:\n  contribution = depth(x)\u00b7cnt + sumDepth \u2013 2\u00b7\u03a3_{a ancestor of x} depth(a)\u00b7(cntSubtree[a] \u2013 cntSubtree[parent(a)])\nThe term \u03a3_{a ancestor of x} \u2026 can be evaluated by climbing the ancestors of x using binary lifting. For each jump we query the Fenwick tree for the number of current leaves inside the jumped node\u2019s subtree. The number of jumps is O(log N), each query is O(log N), so the whole addition/removal costs O(log^2 N).\nAll queries are processed in O((N+Q)\u00b7\u221aN\u00b7log^2 N) which easily fits the limits.\nModular arithmetic is performed with the given prime MOD = 998244353; the modular inverse of C(cnt,2) is computed with fast exponentiation.\n\nPre\u2011processing steps:\n  1. Build the tree, run a DFS to obtain tin/tout times, depth array and binary\u2011lifting table up[k][v].\n  2. Identify all leaves, store them in a vector leaves[] sorted by label and remember for each leaf its position.\n  3. Build a Fenwick tree of size N (Euler tour size) initialised with zeros.\n  4. Prepare the queries for Mo\u2019s ordering (block size \u2248 \u221a|leaves|).\n\nDuring Mo\u2019s processing we keep two pointers L,R on the leaves array (0\u2011based, inclusive). Adding/removing a leaf updates cnt, sumDepth, totalDist and the Fenwick tree accordingly.\nFinally for each query we output 0 if cnt < 2, otherwise (totalDist * inv(C(cnt,2))) mod MOD.\n\nThe algorithm runs in O((N+Q)\u00b7\u221aN\u00b7log^2 N) time and O(N) memory.",
+    "timeComplexity": "O((N + Q) \u00b7 \u221aN \u00b7 log^2 N)",
     "spaceComplexity": "O(N)",
     "code": {
       "C": ""

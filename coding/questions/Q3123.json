@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree",
       "Path",
+      "Graphs",
       "Query"
     ],
     "companyTags": [],
@@ -105,8 +106,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a tree traversal algorithm such as Depth-First Search (DFS) to check if there is a path containing all K query nodes. We can start by creating an adjacency list representation of the tree. Then, for each query, we can use DFS to traverse the tree and check if all K nodes are visited. If they are, we output 'Yes', otherwise we output 'No'.",
-    "timeComplexity": "O(T * (N + Q * K)) — where T is the number of test cases, N is the number of nodes in the tree, Q is the number of queries, and K is the number of nodes in each query.",
-    "spaceComplexity": "O(N) — where N is the number of nodes in the tree, for storing the adjacency list representation of the tree.",
+    "timeComplexity": "O(T * (N + Q * K)) \u2014 where T is the number of test cases, N is the number of nodes in the tree, Q is the number of queries, and K is the number of nodes in each query.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of nodes in the tree, for storing the adjacency list representation of the tree.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX_N 100005\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int data;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new tree node\nNode* createNode(int data) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    if (!newNode) {\n        printf(\"Memory error\n\");\n        return NULL;\n    }\n    newNode->data = data;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to perform DFS traversal\nint dfs(Node* root, int* nodes, int k) {\n    if (root == NULL) return 0;\n    int count = 0;\n    for (int i = 0; i < k; i++) {\n        if (root->data == nodes[i]) count++;\n    }\n    return count + dfs(root->left, nodes, k) + dfs(root->right, nodes, k);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        Node* root = NULL;\n        for (int i = 0; i < n - 1; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            // Create the tree\n        }\n        int q;\n        scanf(\"%d\", &q);\n        while (q--) {\n            int k;\n            scanf(\"%d\", &k);\n            int* nodes = (int*) malloc(k * sizeof(int));\n            for (int i = 0; i < k; i++) {\n                scanf(\"%d\", &nodes[i]);\n            }\n            if (dfs(root, nodes, k) == k) printf(\"Yes\\n\");\n            else printf(\"No\\n\");\n            free(nodes);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int data;\n    vector<int> children;\n};\n\n// Function to perform DFS traversal\nbool dfs(int node, vector<int>& nodes, vector<vector<int>>& tree) {\n    if (node == -1) return true;\n    bool found = false;\n    for (int i = 0; i < nodes.size(); i++) {\n        if (node + 1 == nodes[i]) {\n            nodes.erase(nodes.begin() + i);\n            found = true;\n            break;\n        }\n    }\n    if (found) {\n        for (int child : tree[node]) {\n            if (!dfs(child, nodes, tree)) return false;\n        }\n    }\n    return nodes.empty();\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        vector<vector<int>> tree(n);\n        for (int i = 0; i < n - 1; i++) {\n            int u, v;\n            cin >> u >> v;\n            tree[u - 1].push_back(v - 1);\n            tree[v - 1].push_back(u - 1);\n        }\n        int q;\n        cin >> q;\n        while (q--) {\n            int k;\n            cin >> k;\n            vector<int> nodes(k);\n            for (int i = 0; i < k; i++) {\n                cin >> nodes[i];\n                nodes[i]--;\n            }\n            bool found = false;\n            for (int i = 0; i < n; i++) {\n                if (dfs(i, nodes, tree)) {\n                    cout << \"Yes\" << endl;\n                    found = true;\n                    break;\n                }\n            }\n            if (!found) cout << \"No\" << endl;\n        }\n    }\n    return 0;\n}",

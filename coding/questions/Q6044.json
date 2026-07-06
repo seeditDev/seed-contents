@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Probability | Expected Value",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Random Walk",
+      "Math",
+      "Expected Number of Steps",
       "Linear Recurrence",
-      "Closed Form",
-      "Expected Number of Steps"
+      "Closed Form"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a fair coin and two integers XXX and NNN.\n\nYou repeatedly flip the coin and perform the following operation based on the result:\n\n\nIf it lands on heads, then XXX will **increase** by 111. However, if X=NX = NX=N then XXX will **not** change.\nIf it lands on tails, XXX will **decrease** by 111.\nYou stop as soon as the value of XXX becomes 111.\n\nFind the expected number of coin flips.\n\nNote that it is guaranteed that under the given constraints, the answer is an integer and does not exceed 2⋅10182 \\cdot 10^{18}2⋅1018\n\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases. Then the test cases follow.\nThe first and only line of each test case contains two space separated integers XXX and NNN.\n\n\nOutput Format\nFor each testcase, output the expected number of coin flips.",
+    "problemStatement": "You are given a fair coin and two integers XXX and NNN.\n\nYou repeatedly flip the coin and perform the following operation based on the result:\n\n\nIf it lands on heads, then XXX will **increase** by 111. However, if X=NX = NX=N then XXX will **not** change.\nIf it lands on tails, XXX will **decrease** by 111.\nYou stop as soon as the value of XXX becomes 111.\n\nFind the expected number of coin flips.\n\nNote that it is guaranteed that under the given constraints, the answer is an integer and does not exceed 2\u22c510182 \\cdot 10^{18}2\u22c51018\n\n\nInput Format\n\nThe first line contains a single integer TTT \u2014 the number of test cases. Then the test cases follow.\nThe first and only line of each test case contains two space separated integers XXX and NNN.\n\n\nOutput Format\nFor each testcase, output the expected number of coin flips.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ X ≤ N ≤ 10^9",
-      "The answer does not exceed 2·10^18"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 X \u2264 N \u2264 10^9",
+      "The answer does not exceed 2\u00b710^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and N (1 ≤ X ≤ N ≤ 10^9).",
-    "outputFormat": "For each test case output a single line with the expected number of coin flips. The answer is guaranteed to be an integer and fits in 64‑bit signed integer.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers X and N (1 \u2264 X \u2264 N \u2264 10^9).",
+    "outputFormat": "For each test case output a single line with the expected number of coin flips. The answer is guaranteed to be an integer and fits in 64\u2011bit signed integer.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,9 +115,9 @@
     ]
   },
   "solution": {
-    "approach": "Let E[i] be the expected number of flips needed to reach state 1 starting from i. For 2 ≤ i ≤ N‑1 we have E[i] = 1 + ½·E[i+1] + ½·E[i‑1]. At i = N the coin head leaves the state unchanged, therefore E[N] = 1 + ½·E[N] + ½·E[N‑1] which simplifies to E[N] = E[N‑1] + 2. Together with the absorbing condition E[1] = 0 we obtain a linear recurrence: E[i+1] – 2E[i] + E[i‑1] = –2. Solving this second‑order difference equation yields a quadratic solution E[i] = –i² + A·i + B. Using E[1] = 0 and E[N] = E[N‑1] + 2 we find A = 2N + 1 and B = –2N. Hence the closed form is:   E[X] = –X² + (2N + 1)·X – 2N   = X·(2N + 1 – X) – 2N. The formula is O(1) per test case and fits in 64‑bit signed integer under the given limits.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few 64‑bit variables.",
+    "approach": "Let E[i] be the expected number of flips needed to reach state 1 starting from i. For 2 \u2264 i \u2264 N\u20111 we have E[i] = 1 + \u00bd\u00b7E[i+1] + \u00bd\u00b7E[i\u20111]. At i = N the coin head leaves the state unchanged, therefore E[N] = 1 + \u00bd\u00b7E[N] + \u00bd\u00b7E[N\u20111] which simplifies to E[N] = E[N\u20111] + 2. Together with the absorbing condition E[1] = 0 we obtain a linear recurrence: E[i+1] \u2013 2E[i] + E[i\u20111] = \u20132. Solving this second\u2011order difference equation yields a quadratic solution E[i] = \u2013i\u00b2 + A\u00b7i + B. Using E[1] = 0 and E[N] = E[N\u20111] + 2 we find A = 2N + 1 and B = \u20132N. Hence the closed form is:   E[X] = \u2013X\u00b2 + (2N + 1)\u00b7X \u2013 2N   = X\u00b7(2N + 1 \u2013 X) \u2013 2N. The formula is O(1) per test case and fits in 64\u2011bit signed integer under the given limits.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few 64\u2011bit variables.",
     "code": {
       "C": "#include <stdio.h>\n#include <inttypes.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        long long X, N; scanf(\"%lld %lld\", &X, &N);\n        long long ans = X * (2 * N + 1 - X) - 2 * N;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long X,N; cin>>X>>N;\n        long long ans = X * (2*N + 1 - X) - 2*N;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

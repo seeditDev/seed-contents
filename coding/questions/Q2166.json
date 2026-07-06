@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Recurrence Relations",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Johnny has invented a magic sequence. Each element of the sequence is defined by the same recursive definition - take some linear combination of previous elements (whose coefficients are fixed) and add to them the n-th powers of some integers. Formally: Xn = Xn-1*a1 + ... + Xn-i*ai + b1*d1n + ... + bj*djn, for some integer constants p,q,a1,...,ap,b1,..., bq,d1,..., dq. Of course, as the values can quickly grow, he computed them modulo a fixed value: 106. He wrote many consecutive values of the sequence, but then he lost most of his work. All he has now, is 10 consecutive values taken from somewhere in the sequence (he doesn't know at what n they begin), and the recursive rule. And he would like to recover the sequence, or at the very least, to be able to write the next 10 values taken from the sequence.",
     "constraints": [
-      "0 ≤ p ≤ 4",
-      "0 ≤ q ≤ 4",
-      "-100 ≤ a1, ..., ap, b1, ..., bq, d1, ..., dq ≤ 100",
+      "0 \u2264 p \u2264 4",
+      "0 \u2264 q \u2264 4",
+      "-100 \u2264 a1, ..., ap, b1, ..., bq, d1, ..., dq \u2264 100",
       "All calculations are performed modulo 10^6"
     ],
     "inputFormat": "First line contains two integers p and q, followed by p coefficients a1 to ap, then q coefficients b1 to bq and their corresponding powers d1 to dq. Then, 10 consecutive values of the sequence Xn to Xn+9.",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem involves a recurrence relation with modular arithmetic. We can solve this by iterating through the recurrence relation and applying the modular arithmetic at each step.",
     "timeComplexity": "O(T * 20) per test case, O(T * 20) total. No precomputation is done.",
-    "spaceComplexity": "O(20) — the dominant structure is the array to store the sequence values.",
+    "spaceComplexity": "O(20) \u2014 the dominant structure is the array to store the sequence values.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int p, q;\n        scanf(\"%d %d\", &p, &q);\n        int a[p], b[q], d[q];\n        for (int i = 0; i < p; i++) scanf(\"%d\", &a[i]);\n        for (int i = 0; i < q; i++) scanf(\"%d %d\", &b[i], &d[i]);\n        int x[20];\n        for (int i = 0; i < 10; i++) scanf(\"%d\", &x[i]);\n        for (int i = 10; i < 20; i++) {\n            int sum = 0;\n            for (int j = 0; j < p; j++) sum = (sum + a[j] * x[i - j - 1]) % 1000000;\n            for (int j = 0; j < q; j++) sum = (sum + b[j] * (long long)(i + 1 - 10) * d[j]) % 1000000;\n            x[i] = sum;\n        }\n        for (int i = 10; i < 20; i++) printf(\"%d \", x[i]);\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int p, q;\n        cin >> p >> q;\n        int a[p], b[q], d[q];\n        for (int i = 0; i < p; i++) cin >> a[i];\n        for (int i = 0; i < q; i++) cin >> b[i] >> d[i];\n        int x[20];\n        for (int i = 0; i < 10; i++) cin >> x[i];\n        for (int i = 10; i < 20; i++) {\n            int sum = 0;\n            for (int j = 0; j < p; j++) sum = (sum + a[j] * x[i - j - 1]) % 1000000;\n            for (int j = 0; j < q; j++) sum = (sum + b[j] * (long long)(i + 1 - 10) * d[j]) % 1000000;\n            x[i] = sum;\n        }\n        for (int i = 10; i < 20; i++) cout << x[i] << \" \";\n        cout << endl;\n    }\n    return 0;\n}",

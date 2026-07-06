@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Interval Scheduling",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Our chef has recently opened a new restaurant with a unique style. The restaurant is divided into **K** compartments (numbered from **1** to **K**) and each compartment can be occupied by at most one customer. \n\n Each customer that visits the restaurant has a strongly preferred compartment **p** (**1 ≤ p ≤ K**), and if that compartment is already occupied, then the customer simply leaves. Now obviously, the chef wants to maximize the total number of customers that dine at his restaurant and so he allows (or disallows) certain customers so as to achieve this task. You are to help him with this. \n\n Given a list of **N** customers with their arrival time, departure time and the preferred compartment, you need to calculate the maximum number of customers that can dine at the restaurant.",
+    "problemStatement": "Our chef has recently opened a new restaurant with a unique style. The restaurant is divided into **K** compartments (numbered from **1** to **K**) and each compartment can be occupied by at most one customer. \n\n Each customer that visits the restaurant has a strongly preferred compartment **p** (**1 \u2264 p \u2264 K**), and if that compartment is already occupied, then the customer simply leaves. Now obviously, the chef wants to maximize the total number of customers that dine at his restaurant and so he allows (or disallows) certain customers so as to achieve this task. You are to help him with this. \n\n Given a list of **N** customers with their arrival time, departure time and the preferred compartment, you need to calculate the maximum number of customers that can dine at the restaurant.",
     "constraints": [
       "1 <= T <= 30",
       "0 <= N <= 10^5",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using a greedy algorithm. We first sort the customers based on their departure time. Then, we iterate over the sorted customers and for each customer, we check if the preferred compartment is available. If it is available, we assign the compartment to the customer and increment the count of customers. We use a boolean array to keep track of the availability of each compartment.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting operation takes O(N log N) time and the iteration over the customers takes O(N) time.",
-    "spaceComplexity": "O(N + K) — we use a boolean array of size K to keep track of the availability of each compartment and a sorting operation that requires O(N) extra space in the worst case.",
+    "spaceComplexity": "O(N + K) \u2014 we use a boolean array of size K to keep track of the availability of each compartment and a sorting operation that requires O(N) extra space in the worst case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\ntypedef struct Customer {\n    int si, fi, pi;\n} Customer;\nint compare(const void *a, const void *b) {\n    Customer *c1 = (Customer *)a;\n    Customer *c2 = (Customer *)b;\n    return c1->fi - c2->fi;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        Customer *customers = (Customer *)malloc(N * sizeof(Customer));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d %d\", &customers[i].si, &customers[i].fi, &customers[i].pi);\n        }\n        qsort(customers, N, sizeof(Customer), compare);\n        int *compartment = (int *)malloc(K * sizeof(int));\n        memset(compartment, 0, K * sizeof(int));\n        int max_customers = 0;\n        for (int i = 0; i < N; i++) {\n            if (customers[i].pi <= K && compartment[customers[i].pi - 1] == 0) {\n                compartment[customers[i].pi - 1] = 1;\n                max_customers++;\n            }\n        }\n        printf(\"%d\\n\", max_customers);\n        free(customers);\n        free(compartment);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nstruct Customer {\n    int si, fi, pi;\n};\nbool compare(const Customer &c1, const Customer &c2) {\n    return c1.fi < c2.fi;\n}\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        Customer *customers = new Customer[N];\n        for (int i = 0; i < N; i++) {\n            cin >> customers[i].si >> customers[i].fi >> customers[i].pi;\n        }\n        sort(customers, customers + N, compare);\n        int *compartment = new int[K];\n        fill(compartment, compartment + K, 0);\n        int max_customers = 0;\n        for (int i = 0; i < N; i++) {\n            if (customers[i].pi <= K && compartment[customers[i].pi - 1] == 0) {\n                compartment[customers[i].pi - 1] = 1;\n                max_customers++;\n            }\n        }\n        cout << max_customers << endl;\n        delete[] customers;\n        delete[] compartment;\n    }\n    return 0;\n}",

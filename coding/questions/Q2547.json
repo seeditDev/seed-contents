@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Math",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Palindrome",
-      "Counting",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Strings",
+      "Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,31 +23,31 @@
   "content": {
     "problemStatement": "Chef had an interesting dream last night. He dreamed of a new revolutionary chicken recipe. When he woke up today he tried very hard to reconstruct the ingredient list. But, he could only remember certain ingredients. To simplify the problem, the ingredient list can be represented by a string of lowercase characters 'a' - 'z'.\n\nChef can recall some characters of the ingredient list, all the others, he has forgotten. However, he is quite sure that the ingredient list was a palindrome.\n\nYou are given the ingredient list Chef dreamed last night. The forgotten characters are represented by a question mark ('?'). Count the number of ways Chef can replace the forgotten characters with characters 'a' - 'z' in such a way that resulting ingredient list is a palindrome.",
     "constraints": [
-      "1 ≤ T ≤ 20",
-      "1 ≤ length of each string ≤ 100",
-      "Total length over all test cases ≤ 1,000,000",
-      "Characters are only 'a'‑'z' or '?'"
+      "1 \u2264 T \u2264 20",
+      "1 \u2264 length of each string \u2264 100",
+      "Total length over all test cases \u2264 1,000,000",
+      "Characters are only 'a'\u2011'z' or '?'"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 20), the number of test cases. Each of the next T lines contains a non‑empty string consisting of lowercase letters ('a'‑'z') and/or the character '?'. The length of each string is at most 100.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 20), the number of test cases. Each of the next T lines contains a non\u2011empty string consisting of lowercase letters ('a'\u2011'z') and/or the character '?'. The length of each string is at most 100.",
     "outputFormat": "For each test case output a single line with the number of ways to replace all '?' characters so that the resulting string is a palindrome. Print the answer modulo 10000009.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "5\\n?\\n??\\nab?\\na?c\\naba",
         "output": "26\\n26\\n1\\n0\\n1",
-        "explanation": "? → any of 26 letters. ?? → both positions must be equal → 26 possibilities. ab? → first and last must match, so '?' must be 'a' → 1. a?c → mismatch between 'a' and 'c' → 0. aba is already a palindrome → 1."
+        "explanation": "? \u2192 any of 26 letters. ?? \u2192 both positions must be equal \u2192 26 possibilities. ab? \u2192 first and last must match, so '?' must be 'a' \u2192 1. a?c \u2192 mismatch between 'a' and 'c' \u2192 0. aba is already a palindrome \u2192 1."
       },
       {
         "id": "sample_2",
         "input": "3\\n???\\na?b?a\\n?a?",
         "output": "676\\n26\\n26",
-        "explanation": "??? → pair (0,2) both '?' gives 26 choices, middle '?' gives another 26 → 26*26=676. a?b?a → positions 1 and 3 are both '?' and must be equal → 26 choices. ?a? → positions 0 and 2 must be equal → 26 choices."
+        "explanation": "??? \u2192 pair (0,2) both '?' gives 26 choices, middle '?' gives another 26 \u2192 26*26=676. a?b?a \u2192 positions 1 and 3 are both '?' and must be equal \u2192 26 choices. ?a? \u2192 positions 0 and 2 must be equal \u2192 26 choices."
       },
       {
         "id": "sample_3",
         "input": "2\\na\\nabca",
         "output": "1\\n0",
-        "explanation": "'a' is already a palindrome → 1. In 'abca' positions 1 and 2 are 'b' and 'c' which differ, so no palindrome can be formed → 0."
+        "explanation": "'a' is already a palindrome \u2192 1. In 'abca' positions 1 and 2 are 'b' and 'c' which differ, so no palindrome can be formed \u2192 0."
       }
     ]
   },
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "For each string we compare symmetric positions i and n‑1‑i. If both characters are known and differ, the answer is 0. If both are '?', we can choose any of the 26 letters for the pair, contributing a factor 26. If exactly one side is '?', it is forced to match the known character, contributing factor 1. After processing all pairs, if the length is odd and the middle character is '?', it can be any of 26 letters, adding another factor 26. Multiply all factors modulo 10000009. The algorithm runs in O(n) per test case.",
-    "timeComplexity": "O(total length) – each character is examined at most once.",
+    "approach": "For each string we compare symmetric positions i and n\u20111\u2011i. If both characters are known and differ, the answer is 0. If both are '?', we can choose any of the 26 letters for the pair, contributing a factor 26. If exactly one side is '?', it is forced to match the known character, contributing factor 1. After processing all pairs, if the length is odd and the middle character is '?', it can be any of 26 letters, adding another factor 26. Multiply all factors modulo 10000009. The algorithm runs in O(n) per test case.",
+    "timeComplexity": "O(total length) \u2013 each character is examined at most once.",
     "spaceComplexity": "O(1) besides the input string.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nconst int MOD = 10000009;\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    char s[1005];\n    while(T--){\n        scanf(\"%s\",s);\n        long long ans=1;\n        int n=strlen(s);\n        for(int i=0;i<n/2;i++){\n            char a=s[i], b=s[n-1-i];\n            if(a!='?' && b!='?'){\n                if(a!=b){ ans=0; break; }\n            }else if(a=='?' && b=='?'){\n                ans = (ans*26)%MOD;\n            }\n        }\n        if(ans!=0 && (n%2==1) && s[n/2]=='?') ans = (ans*26)%MOD;\n        printf(\"%lld\\n\",ans);\n    }\n    return 0;\n}",

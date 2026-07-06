@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Bit Manipulation",
+    "category": "Bit Manipulation",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Linear Algebra over GF(2)",
-      "Parity",
       "Exponentiation",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Bit Manipulation",
+      "Parity",
+      "Linear Algebra over GF(2)"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,7 +27,7 @@
       "1 <= T <= 10^4",
       "1 <= N <= 10^5",
       "1 <= K <= N",
-      "Sum of N over all test cases does not exceed 3·10^5"
+      "Sum of N over all test cases does not exceed 3\u00b710^5"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers N and K. The second line contains a binary string S of length N.",
     "outputFormat": "For each test case, output a single line containing the number of distinct binary strings Chef can obtain, modulo 1000000007.",
@@ -41,7 +42,7 @@
         "id": "sample_2",
         "input": "3\n5 3\n10101\n3 2\n010\n6 4\n111111",
         "output": "32\n4\n32",
-        "explanation": "Case 1: K odd → 2^5 = 32.\\nCase 2: N=3, K even → 2^{3-1}=4.\\nCase 3: N=6, K even → 2^{6-1}=32."
+        "explanation": "Case 1: K odd \u2192 2^5 = 32.\\nCase 2: N=3, K even \u2192 2^{3-1}=4.\\nCase 3: N=6, K even \u2192 2^{6-1}=32."
       }
     ]
   },
@@ -109,8 +110,8 @@
     ]
   },
   "solution": {
-    "approach": "Consider each binary string as a vector over GF(2). An operation adds a vector that has exactly K ones. All such weight‑K vectors generate a linear subspace. If K is odd, any unit vector can be expressed as a combination of weight‑K vectors, so the generated subspace is the whole space of dimension N. If K is even, every weight‑K vector has even parity, therefore any combination also has even parity; the generated subspace is the even‑weight subspace of dimension N‑1. Hence the number of reachable strings equals the size of the subspace, i.e., 2^N when K is odd and 2^{N‑1} when K is even. The answer is computed as pow_mod(2, exponent, MOD) where exponent = N if K is odd else N‑1.",
-    "timeComplexity": "O(T * log N) – each test case needs a fast exponentiation in O(log exponent).",
+    "approach": "Consider each binary string as a vector over GF(2). An operation adds a vector that has exactly K ones. All such weight\u2011K vectors generate a linear subspace. If K is odd, any unit vector can be expressed as a combination of weight\u2011K vectors, so the generated subspace is the whole space of dimension N. If K is even, every weight\u2011K vector has even parity, therefore any combination also has even parity; the generated subspace is the even\u2011weight subspace of dimension N\u20111. Hence the number of reachable strings equals the size of the subspace, i.e., 2^N when K is odd and 2^{N\u20111} when K is even. The answer is computed as pow_mod(2, exponent, MOD) where exponent = N if K is odd else N\u20111.",
+    "timeComplexity": "O(T * log N) \u2013 each test case needs a fast exponentiation in O(log exponent).",
     "spaceComplexity": "O(1) besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nconst long long MOD = 1000000007LL;\n\nlong long modpow(long long base, long long exp) {\n    long long res = 1;\n    base %= MOD;\n    while (exp > 0) {\n        if (exp & 1) res = (res * base) % MOD;\n        base = (base * base) % MOD;\n        exp >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long N, K;\n        char s[100005];\n        scanf(\"%lld %lld\", &N, &K);\n        scanf(\"%s\", s); // string is not needed for computation\n        long long exp = (K % 2 == 1) ? N : N - 1;\n        if (exp < 0) exp = 0; // when N=0, not possible per constraints\n        printf(\"%lld\\n\", modpow(2, exp));\n    }\n    return 0;\n}",

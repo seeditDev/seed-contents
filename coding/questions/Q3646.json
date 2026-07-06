@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Sorting",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "Sorting",
+      "Array Permutation",
       "Median",
-      "Array Permutation"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "You are given an array **A** of size **2 * N** consisting of positive integers, where **N** is an odd number. You can construct an array B from **A** as follows, B[i] = max(**A**[2 * i - 1], **A**[2 * i]), i.e. B array contains the maximum of adjacent pairs of array **A**. Assume that we use 1-based indexing throughout the problem.\n\nYou want to maximize the median of the array B. For achieving that, you are allowed to permute the entries of **A**. Find out the maximum median of corresponding B array that you can get. Also, find out any permutation for which this maximum is achieved.\n\n\nNoteMedian of an array of size n, where n is odd, is the middle element of the array when it is sorted in non-decreasing order. Note that n being odd, the middle element will be unique, i.e. at index (n+1) / 2.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 50000",
-      "1 ≤ A[i] ≤ 2 * N"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 50000",
+      "1 \u2264 A[i] \u2264 2 * N"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains an integer N. The second line of each test case contains 2 * N space separated integers denoting array A.",
     "outputFormat": "For each test case, output two lines. The first of which should contain an integer corresponding to maximum value of the median of array B that you can get. In the second line, print 2 * N integers in a single line denoting any permutation of A for which the maximum value of median of array B is achieved.",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To maximize the median of array B, we need to maximize the middle element of B when it is sorted in non-decreasing order. Since B[i] = max(A[2 * i - 1], A[2 * i]), we can maximize the median by pairing the largest elements of A together. First, sort A in non-decreasing order. Then, pair the largest elements together and the smallest elements together. This way, the maximum of each pair will be as large as possible, maximizing the median of B.",
-    "timeComplexity": "O(T * N log N) — due to sorting the array A for each test case",
-    "spaceComplexity": "O(N) — for storing the sorted array A and the permutation of A",
+    "timeComplexity": "O(T * N log N) \u2014 due to sorting the array A for each test case",
+    "spaceComplexity": "O(N) \u2014 for storing the sorted array A and the permutation of A",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int A[2 * N];\n        for (int i = 0; i < 2 * N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        qsort(A, 2 * N, sizeof(int), compare);\n        int B[N];\n        for (int i = 0; i < N; i++) {\n            B[i] = (i < N / 2) ? A[i * 2] : A[(N - 1 - i) * 2 + 1];\n        }\n        printf(\"%d\\n\", B[N / 2]);\n        for (int i = 0; i < N; i++) {\n            printf(\"%d \", A[i * 2]);\n            printf(\"%d \", A[i * 2 + 1]);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int A[2 * N];\n        for (int i = 0; i < 2 * N; i++) {\n            cin >> A[i];\n        }\n        sort(A, A + 2 * N);\n        int B[N];\n        for (int i = 0; i < N; i++) {\n            B[i] = (i < N / 2) ? A[i * 2] : A[(N - 1 - i) * 2 + 1];\n        }\n        cout << B[N / 2] << endl;\n        for (int i = 0; i < N; i++) {\n            cout << A[i * 2] << \" \" << A[i * 2 + 1] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",

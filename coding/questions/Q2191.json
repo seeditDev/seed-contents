@@ -6,15 +6,16 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Spatial Indexing",
       "Nearest Neighbor",
-      "Range Counting",
-      "KD‑Tree",
+      "Math",
       "Divide and Conquer",
-      "Spatial Indexing"
+      "KD\u2011Tree",
+      "Range Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -24,12 +25,12 @@
   "content": {
     "problemStatement": "Johnny has been hired to write a program to analyse strategic data for the Bytelandian Navy. His task is described below.\n\nThere are N battleships represented as N points on the plane. The **radius** of a ship is defined to be the distance from that ship to the ship closest to it. The **effective set** for a ship is defined to be the set of all ships (excluding itself) which are at a distance from that ship of **no more than twice** its radius. The number of elements in the effective set of a ship is called the **effective value** of that ship.\n\nJohnny needs to write a program to calculate the radius and the effective value of each battleship. This task is so tough that without your help, Johnny could never finish it. Let's help him!",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 30000",
-      "0 ≤ X, Y ≤ 10000"
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f10",
+      "1\u202f\u2264\u202fN\u202f\u2264\u202f30000",
+      "0\u202f\u2264\u202fX,\u202fY\u202f\u2264\u202f10000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (the number of battleships). The next N lines each contain two integers X and Y (0 ≤ X, Y ≤ 10000) representing the coordinates of a battleship.",
-    "outputFormat": "For each test case output N lines. The i‑th line contains two numbers: the radius of the i‑th battleship (rounded to exactly two decimal places) and its effective value (an integer). After each test case output a blank line.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (the number of battleships). The next N lines each contain two integers X and Y (0\u202f\u2264\u202fX,\u202fY\u202f\u2264\u202f10000) representing the coordinates of a battleship.",
+    "outputFormat": "For each test case output N lines. The i\u2011th line contains two numbers: the radius of the i\u2011th battleship (rounded to exactly two decimal places) and its effective value (an integer). After each test case output a blank line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,9 +104,9 @@
     ]
   },
   "solution": {
-    "approach": "For every ship we need two quantities:\n1. **Radius** – the distance to its closest other ship.\n2. **Effective value** – the number of ships whose distance is ≤ 2 × radius.\nA naïve O(N²) solution works for tiny inputs but fails for N = 30000.  The optimal solution builds a static KD‑Tree (or an equivalent balanced spatial index) on all points.\n* **Nearest‑neighbor query** – for each point we query the KD‑Tree for the closest point that is not itself.  The query runs in O(log N) average time, giving O(N log N) total for all radii.\n* **Range‑count query** – after the radius of a point is known, we query the KD‑Tree for the number of points inside the circle centred at the point with radius 2 × radius.  The KD‑Tree can count points in a rectangular region; we recursively descend the tree, pruning sub‑trees whose bounding boxes lie completely outside the circle.  The expected complexity of a range query is O(log N + k) where k is the number of reported points, which is acceptable because the sum of all k over all queries is at most N² in the worst case but in practice far smaller.  Overall the algorithm runs in O(N log N) time and O(N) memory.\nIf an implementation language does not provide a ready KD‑Tree, a simple grid‑bucketing technique with cell size equal to the current best distance can also achieve near‑linear performance for the given coordinate limits.\nThe steps are:\n1. Read all points.\n2. Build the KD‑Tree.\n3. For each point i:\n   a. Perform a nearest‑neighbor search (excluding i) → radius[i].\n   b. Perform a range‑count search with radius = 2 × radius[i] → effective[i].\n4. Output radius[i] rounded to two decimals and effective[i].",
-    "timeComplexity": "O(N log N) per test case (building the KD‑Tree + N nearest‑neighbor queries + N range‑count queries).",
-    "spaceComplexity": "O(N) for storing the points and the KD‑Tree.",
+    "approach": "For every ship we need two quantities:\n1. **Radius** \u2013 the distance to its closest other ship.\n2. **Effective value** \u2013 the number of ships whose distance is \u2264\u202f2\u202f\u00d7\u202fradius.\nA na\u00efve O(N\u00b2) solution works for tiny inputs but fails for N\u202f=\u202f30000.  The optimal solution builds a static KD\u2011Tree (or an equivalent balanced spatial index) on all points.\n* **Nearest\u2011neighbor query** \u2013 for each point we query the KD\u2011Tree for the closest point that is not itself.  The query runs in O(log\u202fN) average time, giving O(N\u202flog\u202fN) total for all radii.\n* **Range\u2011count query** \u2013 after the radius of a point is known, we query the KD\u2011Tree for the number of points inside the circle centred at the point with radius 2\u202f\u00d7\u202fradius.  The KD\u2011Tree can count points in a rectangular region; we recursively descend the tree, pruning sub\u2011trees whose bounding boxes lie completely outside the circle.  The expected complexity of a range query is O(log\u202fN\u202f+\u202fk) where k is the number of reported points, which is acceptable because the sum of all k over all queries is at most N\u00b2 in the worst case but in practice far smaller.  Overall the algorithm runs in O(N\u202flog\u202fN) time and O(N) memory.\nIf an implementation language does not provide a ready KD\u2011Tree, a simple grid\u2011bucketing technique with cell size equal to the current best distance can also achieve near\u2011linear performance for the given coordinate limits.\nThe steps are:\n1. Read all points.\n2. Build the KD\u2011Tree.\n3. For each point i:\n   a. Perform a nearest\u2011neighbor search (excluding i) \u2192 radius[i].\n   b. Perform a range\u2011count search with radius = 2\u202f\u00d7\u202fradius[i] \u2192 effective[i].\n4. Output radius[i] rounded to two decimals and effective[i].",
+    "timeComplexity": "O(N\u202flog\u202fN) per test case (building the KD\u2011Tree + N nearest\u2011neighbor queries + N range\u2011count queries).",
+    "spaceComplexity": "O(N) for storing the points and the KD\u2011Tree.",
     "code": {
       "C": ""
     }

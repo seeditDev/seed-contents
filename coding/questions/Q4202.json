@@ -12,7 +12,8 @@
     "tags": [
       "Subset Sums",
       "Modular Arithmetic",
-      "Bit Manipulation"
+      "Bit Manipulation",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a sequence AAA of NNN integers: (A1,A2,…,AN)(A_1, A_2, \\ldots, A_N)(A1​,A2​,…,AN​). From this sequence, you create another sequence of size NNN: B=(B1,B2,…,BN)B = (B_1, B_2, \\ldots, B_N)B=(B1​,B2​,…,BN​), where Bi=2AiB_i = 2^{A_i}Bi​=2Ai​.\n\nYou are also given an integer KKK. You need to output the number of subsequences of BBB whose sum is exactly KKK. Since the answer might be huge, output it modulo 109+710^9+7109+7.\n\n\nInput Format\n\nThe first line contains the number of testcases in file TTT.\nEach testcase is described as follows:\n\nThe first line contains two integers, NNN and KKK.\nThe second line contains NNN space-separated integers: A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​.\n\n\n\n\nOutput Format\nOutput TTT lines, each containing a single integer which should be the answer.",
+    "problemStatement": "You are given a sequence AAA of NNN integers: (A1,A2,\u2026,AN)(A_1, A_2, \\ldots, A_N)(A1\u200b,A2\u200b,\u2026,AN\u200b). From this sequence, you create another sequence of size NNN: B=(B1,B2,\u2026,BN)B = (B_1, B_2, \\ldots, B_N)B=(B1\u200b,B2\u200b,\u2026,BN\u200b), where Bi=2AiB_i = 2^{A_i}Bi\u200b=2Ai\u200b.\n\nYou are also given an integer KKK. You need to output the number of subsequences of BBB whose sum is exactly KKK. Since the answer might be huge, output it modulo 109+710^9+7109+7.\n\n\nInput Format\n\nThe first line contains the number of testcases in file TTT.\nEach testcase is described as follows:\n\nThe first line contains two integers, NNN and KKK.\nThe second line contains NNN space-separated integers: A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b.\n\n\n\n\nOutput Format\nOutput TTT lines, each containing a single integer which should be the answer.",
     "constraints": [
       "1 <= T <= 200",
       "1 <= N <= 100",
       "0 <= Ai <= 60",
       "1 <= K < 2^61"
     ],
-    "inputFormat": "The first line contains the number of test cases T. Each test case is described as follows: The first line contains two integers, N and K. The second line contains N space-separated integers: A1, A2, …, AN.",
+    "inputFormat": "The first line contains the number of test cases T. Each test case is described as follows: The first line contains two integers, N and K. The second line contains N space-separated integers: A1, A2, \u2026, AN.",
     "outputFormat": "Output T lines, each containing a single integer which should be the answer, representing the number of subsequences of B whose sum is exactly K, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
@@ -109,8 +110,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of subsequences of B that sum up to K. We will create a DP array where dp[i] represents the number of subsequences that sum up to i. We will iterate over each element in A, and for each element, we will update the DP array accordingly. Finally, we will return dp[K] modulo 10^9 + 7.",
-    "timeComplexity": "O(T * N * K) — where T is the number of test cases, N is the number of elements in A, and K is the target sum.",
-    "spaceComplexity": "O(K) — where K is the target sum.",
+    "timeComplexity": "O(T * N * K) \u2014 where T is the number of test cases, N is the number of elements in A, and K is the target sum.",
+    "spaceComplexity": "O(K) \u2014 where K is the target sum.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#define MOD 1000000007\nint dp[2000001];\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        dp[0] = 1;\n        for (int i = 0; i < N; i++) {\n            int curr = 1 << A[i];\n            for (int j = K; j >= curr; j--) {\n                dp[j] = (dp[j] + dp[j - curr]) % MOD;\n            }\n        }\n        printf(\"%d\\n\", dp[K]);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[2000001];\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        dp[0] = 1;\n        for (int i = 0; i < N; i++) {\n            int curr = 1 << A[i];\n            for (int j = K; j >= curr; j--) {\n                dp[j] = (dp[j] + dp[j - curr]) % MOD;\n            }\n        }\n        cout << dp[K] << endl;\n    }\n    return 0;\n}",

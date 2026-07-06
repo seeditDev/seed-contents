@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "String Parsing",
       "Counting",
+      "Tokenization",
+      "Strings",
       "Trim",
-      "Tokenization"
+      "String Parsing"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Imagine you are developing a data analysis tool that helps users find how many times a specific element appears in a tuple. Instead of manually searching, the program will take user input to create a tuple and a specific element to count, then use Python’s count() method to determine its occurrences.",
+    "problemStatement": "Imagine you are developing a data analysis tool that helps users find how many times a specific element appears in a tuple. Instead of manually searching, the program will take user input to create a tuple and a specific element to count, then use Python\u2019s count() method to determine its occurrences.",
     "constraints": [
       "1 <= T <= 10",
       "Each tuple contains at most 15 elements",
       "Each element string length after trimming is at most 100 characters",
-      "Elements are compared case‑sensitively"
+      "Elements are compared case\u2011sensitively"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case there are two lines: the first line is a comma‑separated list of elements (each element may contain spaces which should be trimmed), the second line is the element whose occurrences need to be counted.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case there are two lines: the first line is a comma\u2011separated list of elements (each element may contain spaces which should be trimmed), the second line is the element whose occurrences need to be counted.",
     "outputFormat": "For each test case output a single line in the exact format: The element '<element>' appears X time(s) in the tuple.",
     "sampleTestCases": [
       {
@@ -116,7 +117,7 @@
   },
   "solution": {
     "approach": "For each test case read the whole line containing the tuple and split it by commas. Trim leading and trailing spaces from each token and from the search element. Compare the trimmed token with the trimmed search element and increase a counter when they are equal. Finally print the required sentence. The algorithm is linear in the number of elements of the tuple.",
-    "timeComplexity": "O(T * N) where N is the number of elements in a tuple (N ≤ 15).",
+    "timeComplexity": "O(T * N) where N is the number of elements in a tuple (N \u2264 15).",
     "spaceComplexity": "O(1) extra space besides the input strings.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define MAX_LINE 1024\n#define MAX_ELEM 256\n\n// trim leading and trailing spaces in place\nstatic void trim(char *s) {\n    // leading\n    while (*s == ' ') s++;\n    memmove(s - (s - (char *)s), s, strlen(s) + 1); // shift to original pointer start\n    // trailing\n    char *end = s + strlen(s) - 1;\n    while (end >= s && *end == ' ') {\n        *end = '\\0';\n        end--;\n    }\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    getchar(); // consume newline after T\n    for (int tc = 0; tc < T; ++tc) {\n        char line[MAX_LINE];\n        char search[MAX_ELEM];\n        if (!fgets(line, sizeof(line), stdin)) break;\n        line[strcspn(line, \"\\n\")] = '\\0';\n        if (!fgets(search, sizeof(search), stdin)) break;\n        search[strcspn(search, \"\\n\")] = '\\0';\n        // trim search\n        char *p = search;\n        while (*p == ' ') p++;\n        memmove(search, p, strlen(p) + 1);\n        // trailing spaces of search\n        char *end = search + strlen(search) - 1;\n        while (end >= search && *end == ' ') {\n            *end = '\\0';\n            end--;\n        }\n        int count = 0;\n        char *token = strtok(line, \",\");\n        while (token) {\n            // trim token\n            while (*token == ' ') token++;\n            char *e = token + strlen(token) - 1;\n            while (e >= token && *e == ' ') {\n                *e = '\\0';\n                e--;\n            }\n            if (strcmp(token, search) == 0) ++count;\n            token = strtok(NULL, \",\");\n        }\n        printf(\"The element '%s' appears %d time(s) in the tuple.\\n\", search, count);\n    }\n    return 0;\n}",

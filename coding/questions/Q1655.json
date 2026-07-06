@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Precomputation",
       "Prime Numbers",
-      "Sieve of Eratosthenes",
+      "Math",
       "Prefix Sum",
-      "Precomputation"
+      "Sieve of Eratosthenes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,31 +22,31 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef loves exploring numbers and wants to study prime numbers in a new way.  Given an integer limit limitlimitlimit, Chef wants to know: **How many prime numbers are strictly less than limitlimitlimit ?**\n\nYour job is to help Chef count these primes efficiently.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncountPrimesLessThancountPrimesLessThancountPrimesLessThan\n\n\n\n**Parameters**\n\n\n\nlimitlimitlimit — A non-negative integer (upper bound, exclusive)\n\n\n\n**Return Value**\n\n\n\nReturns an integer:\n\nthe number of prime numbers **strictly less than** limitlimitlimit",
+    "problemStatement": "Chef loves exploring numbers and wants to study prime numbers in a new way.  Given an integer limit limitlimitlimit, Chef wants to know: **How many prime numbers are strictly less than limitlimitlimit ?**\n\nYour job is to help Chef count these primes efficiently.\n\nFunction Declaration\n\n**Function Name**\n\n\n\ncountPrimesLessThancountPrimesLessThancountPrimesLessThan\n\n\n\n**Parameters**\n\n\n\nlimitlimitlimit \u2014 A non-negative integer (upper bound, exclusive)\n\n\n\n**Return Value**\n\n\n\nReturns an integer:\n\nthe number of prime numbers **strictly less than** limitlimitlimit",
     "constraints": [
-      "1 ≤ T ≤ 100000",
-      "0 ≤ limit ≤ 5000000"
+      "1 \u2264 T \u2264 100000",
+      "0 \u2264 limit \u2264 5000000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer limit (0 ≤ limit ≤ 5 000 000).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer limit (0 \u2264 limit \u2264 5\u202f000\u202f000).",
     "outputFormat": "For each test case output a single line containing the number of prime numbers strictly less than the given limit.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "5\n0\n2\n3\n20\n100",
         "output": "0\n0\n1\n8\n25",
-        "explanation": "For each limit we count primes smaller than it: <0 → 0, <2 → 0, <3 → {2} → 1, <20 → 8 primes, <100 → 25 primes."
+        "explanation": "For each limit we count primes smaller than it: <0 \u2192 0, <2 \u2192 0, <3 \u2192 {2} \u2192 1, <20 \u2192 8 primes, <100 \u2192 25 primes."
       },
       {
         "id": "sample_2",
         "input": "3\n1\n5\n5000000",
         "output": "0\n2\n348513",
-        "explanation": "π(1)=0, π(5)=2 (2,3), π(5 000 000)=348513."
+        "explanation": "\u03c0(1)=0, \u03c0(5)=2 (2,3), \u03c0(5\u202f000\u202f000)=348513."
       },
       {
         "id": "sample_3",
         "input": "2\n10\n11",
         "output": "4\n4",
-        "explanation": "Primes <10 are 2,3,5,7 →4. Primes <11 are the same four because 11 itself is not counted."
+        "explanation": "Primes <10 are 2,3,5,7 \u21924. Primes <11 are the same four because 11 itself is not counted."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "Pre‑compute primality for every integer up to the maximum possible limit (5 000 000) using the Sieve of Eratosthenes. While sieving, also build a prefix array pref where pref[i] = number of primes ≤ i. For a query limit, the answer is pref[limit‑1] (or 0 when limit is 0). This makes each test case O(1) after an O(N log log N) preprocessing step.",
-    "timeComplexity": "Preprocessing: O(N log log N) where N = 5 000 000. Each query: O(1). Total: O(N log log N + T).",
+    "approach": "Pre\u2011compute primality for every integer up to the maximum possible limit (5\u202f000\u202f000) using the Sieve of Eratosthenes. While sieving, also build a prefix array pref where pref[i] = number of primes \u2264 i. For a query limit, the answer is pref[limit\u20111] (or 0 when limit is 0). This makes each test case O(1) after an O(N log log N) preprocessing step.",
+    "timeComplexity": "Preprocessing: O(N log log N) where N = 5\u202f000\u202f000. Each query: O(1). Total: O(N log log N + T).",
     "spaceComplexity": "O(N) for the boolean sieve and the prefix array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n#define MAX_LIMIT 5000001\nstatic bool isPrime[MAX_LIMIT];\nstatic int pref[MAX_LIMIT];\nvoid preprocess() {\n    for (int i = 0; i < MAX_LIMIT; ++i) isPrime[i] = true;\n    isPrime[0] = isPrime[1] = false;\n    for (int i = 2; i * i < MAX_LIMIT; ++i) {\n        if (isPrime[i]) {\n            for (int j = i * i; j < MAX_LIMIT; j += i) {\n                isPrime[j] = false;\n            }\n        }\n    }\n    pref[0] = 0;\n    for (int i = 1; i < MAX_LIMIT; ++i) {\n        pref[i] = pref[i-1] + (isPrime[i] ? 1 : 0);\n    }\n}\nint main() {\n    preprocess();\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int limit;\n        scanf(\"%d\", &limit);\n        if (limit == 0) {\n            printf(\"0\\n\");\n        } else {\n            printf(\"%d\\n\", pref[limit-1]);\n        }\n    }\n    return 0;\n}",

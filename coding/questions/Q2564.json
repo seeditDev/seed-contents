@@ -10,9 +10,8 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
-      "Math",
-      "Integer Division"
+      "Integer Division",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,26 +26,26 @@
       "1 <= X <= 100",
       "1 <= Ai <= 100"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X – the number of banknotes and the cost of one sweet. The second line contains N space‑separated integers A1 … AN, the values of the banknotes.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X \u2013 the number of banknotes and the cost of one sweet. The second line contains N space\u2011separated integers A1 \u2026 AN, the values of the banknotes.",
     "outputFormat": "For each test case output a single line containing -1 if the set of banknotes is inadequate, otherwise output the largest possible number of sweets the customer can buy.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n4 7\n10 4 8 5\n1 10\n12\n2 10\n20 50",
         "output": "-1\n1\n7",
-        "explanation": "First case: total=27, max sweets=3, but removing banknote 5 leaves 22 which still buys 3 sweets → inadequate → -1. Second: total=12, max=1, removing the only banknote leaves 0 → adequate → 1. Third: total=70, max=7, removing any banknote leaves insufficient money for 7 sweets → adequate → 7."
+        "explanation": "First case: total=27, max sweets=3, but removing banknote 5 leaves 22 which still buys 3 sweets \u2192 inadequate \u2192 -1. Second: total=12, max=1, removing the only banknote leaves 0 \u2192 adequate \u2192 1. Third: total=70, max=7, removing any banknote leaves insufficient money for 7 sweets \u2192 adequate \u2192 7."
       },
       {
         "id": "sample_2",
         "input": "2\n2 10\n3 4\n3 5\n6 4 5",
         "output": "-1\n3",
-        "explanation": "First case: total=7 < X, cannot buy any sweet → -1. Second case: total=15, X=5, max=3, removing any banknote leaves at most 10 which buys 2 sweets <3 → adequate → 3."
+        "explanation": "First case: total=7 < X, cannot buy any sweet \u2192 -1. Second case: total=15, X=5, max=3, removing any banknote leaves at most 10 which buys 2 sweets <3 \u2192 adequate \u2192 3."
       },
       {
         "id": "sample_3",
         "input": "1\n1 1\n1",
         "output": "1",
-        "explanation": "Total=1, X=1, max=1, removing the only banknote leaves 0 which cannot buy 1 sweet → adequate → 1."
+        "explanation": "Total=1, X=1, max=1, removing the only banknote leaves 0 which cannot buy 1 sweet \u2192 adequate \u2192 1."
       }
     ]
   },
@@ -115,7 +114,7 @@
   },
   "solution": {
     "approach": "For a test case let total = sum of all banknotes. The maximum number of sweets that can possibly be bought is K = floor(total / X). If K = 0 the answer is -1 because the customer must buy a positive number of sweets. The set of banknotes is adequate exactly when removing any single banknote makes the remaining money insufficient for K sweets, i.e. for every i: floor((total - Ai) / X) < K. This condition can be checked in O(N). If it holds, K is the required answer; otherwise the answer is -1. The algorithm is optimal because it examines each banknote only once.",
-    "timeComplexity": "O(N) per test case, O(T·N) overall.",
+    "timeComplexity": "O(N) per test case, O(T\u00b7N) overall.",
     "spaceComplexity": "O(1) besides the input array.",
     "code": {
       "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,X; scanf(\"%d %d\",&N,&X);\n        int total=0, a;\n        int arr[101];\n        for(int i=0;i<N;i++){\n            scanf(\"%d\",&a);\n            arr[i]=a;\n            total+=a;\n        }\n        int K = total / X;\n        if(K==0){\n            printf(\"-1\\n\");\n            continue;\n        }\n        int adequate=1;\n        for(int i=0;i<N;i++){\n            if( (total - arr[i]) / X >= K ){\n                adequate=0; break;\n            }\n        }\n        if(adequate) printf(\"%d\\n\",K); else printf(\"-1\\n\");\n    }\n    return 0;\n}",

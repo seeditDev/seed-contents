@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Greedy | Sorting",
+    "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Sweep line",
-      "Counting",
-      "Event handling"
+      "Event handling",
+      "Arrays",
+      "Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is building an Airport in Chefland.\n\nThere are NNN airplanes such that the ithi^{th}ith airplane arrives at the AiA_iAi​-th minute and departs at the DiD_iDi​-th minute.\n\nFind the **minimum** number of runways required at the airport so that all the arrivals and departures can occur smoothly.\n\n**Note:**\n\n\nArrival and departure timings are given in minutes after midnight.\nA plane uses the runway only in the minute at which it arrives or departs. Between the arrival and departure times, the runway is available for use by other airplanes.\nOne runway can be used by only one airplane at a point in time.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN — the number of airplanes.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​ denoting the arrival timings of ithi^{th}ith airplane.\nThe third line of each test case contains NNN space-separated integers D1,D2,…,DND_1, D_2, \\dots, D_ND1​,D2​,…,DN​ denoting the departure timings of ithi^{th}ith airplane.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** number of runways required at the airport.",
+    "problemStatement": "Chef is building an Airport in Chefland.\n\nThere are NNN airplanes such that the ithi^{th}ith airplane arrives at the AiA_iAi\u200b-th minute and departs at the DiD_iDi\u200b-th minute.\n\nFind the **minimum** number of runways required at the airport so that all the arrivals and departures can occur smoothly.\n\n**Note:**\n\n\nArrival and departure timings are given in minutes after midnight.\nA plane uses the runway only in the minute at which it arrives or departs. Between the arrival and departure times, the runway is available for use by other airplanes.\nOne runway can be used by only one airplane at a point in time.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN \u2014 the number of airplanes.\nThe second line of each test case contains NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\dots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b denoting the arrival timings of ithi^{th}ith airplane.\nThe third line of each test case contains NNN space-separated integers D1,D2,\u2026,DND_1, D_2, \\dots, D_ND1\u200b,D2\u200b,\u2026,DN\u200b denoting the departure timings of ithi^{th}ith airplane.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** number of runways required at the airport.",
     "constraints": [
       "1 <= T <= 10^4",
       "1 <= N <= 10^5",
       "0 <= Ai < Di <= 1439",
       "Sum of N over all test cases <= 8*10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains integer N, the number of airplanes. Second line contains N space‑separated integers A1 … AN, the arrival minutes. Third line contains N space‑separated integers D1 … DN, the departure minutes.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains integer N, the number of airplanes. Second line contains N space\u2011separated integers A1 \u2026 AN, the arrival minutes. Third line contains N space\u2011separated integers D1 \u2026 DN, the departure minutes.",
     "outputFormat": "For each test case output a single line containing the minimum number of runways required.",
     "sampleTestCases": [
       {
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "Each airplane occupies a runway only at two discrete minutes: its arrival minute and its departure minute. Therefore the number of runways needed at any minute equals the total number of arrivals plus departures occurring at that minute. The answer for a test case is the maximum such count over all minutes from 0 to 1439. We can count events using an array cnt[1440] initialized to zero, increment cnt[Ai] and cnt[Di] for every airplane, and finally take the maximum value in cnt.",
     "timeComplexity": "O(N + 1440) per test case, which is O(N) overall because 1440 is a constant.",
-    "spaceComplexity": "O(1440) ≈ O(1) extra space per test case.",
+    "spaceComplexity": "O(1440) \u2248 O(1) extra space per test case.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int cnt[1440]; memset(cnt,0,sizeof(cnt));\n        int A[N];\n        for(int i=0;i<N;i++) scanf(\"%d\",&A[i]);\n        for(int i=0;i<N;i++){\n            int d; scanf(\"%d\",&d);\n            cnt[A[i]]++;\n            cnt[d]++;\n        }\n        int ans=0;\n        for(int i=0;i<1440;i++) if(cnt[i]>ans) ans=cnt[i];\n        printf(\"%d\\n\",ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> A(N);\n        for(int &x: A) cin>>x;\n        int cnt[1440] = {0};\n        for(int i=0;i<N;i++){\n            int d; cin>>d;\n            ++cnt[A[i]];\n            ++cnt[d];\n        }\n        int ans=0;\n        for(int v: cnt) ans=max(ans,v);\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

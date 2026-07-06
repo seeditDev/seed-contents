@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Subset Sum",
-      "DP"
+      "DP",
+      "Dynamic Programming",
+      "Subset Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -112,8 +113,8 @@
     ]
   },
   "solution": {
-    "approach": "The total sum of the array must be even; otherwise partition is impossible. Let target = total/2. The problem reduces to checking if there exists a subset with sum equal to target. This is the classic 0/1 knapsack subset‑sum problem. We use a 1‑dimensional DP array dp[0..target] where dp[s] is true if a subset with sum s can be formed using the processed elements. Initialise dp[0]=true. For each element v, iterate s from target down to v and set dp[s] |= dp[s‑v]. After processing all elements, dp[target] tells the answer.",
-    "timeComplexity": "O(N * S) per test case, where S is total sum/2 (worst‑case O(N * 50000) given constraints).",
+    "approach": "The total sum of the array must be even; otherwise partition is impossible. Let target = total/2. The problem reduces to checking if there exists a subset with sum equal to target. This is the classic 0/1 knapsack subset\u2011sum problem. We use a 1\u2011dimensional DP array dp[0..target] where dp[s] is true if a subset with sum s can be formed using the processed elements. Initialise dp[0]=true. For each element v, iterate s from target down to v and set dp[s] |= dp[s\u2011v]. After processing all elements, dp[target] tells the answer.",
+    "timeComplexity": "O(N * S) per test case, where S is total sum/2 (worst\u2011case O(N * 50000) given constraints).",
     "spaceComplexity": "O(S) auxiliary space for the DP array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\nbool canPartition(int *nums, int n) {\n    int sum = 0;\n    for (int i = 0; i < n; ++i) sum += nums[i];\n    if (sum % 2) return false;\n    int target = sum / 2;\n    bool *dp = (bool *)calloc(target + 1, sizeof(bool));\n    dp[0] = true;\n    for (int i = 0; i < n; ++i) {\n        int v = nums[i];\n        for (int j = target; j >= v; --j) {\n            if (dp[j - v]) dp[j] = true;\n        }\n    }\n    bool ans = dp[target];\n    free(dp);\n    return ans;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int *arr = (int *)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        printf(canPartition(arr, N) ? \"YES\\n\" : \"NO\\n\");\n        free(arr);\n    }\n    return 0;\n}",

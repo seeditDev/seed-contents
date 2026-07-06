@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Backtracking",
+    "category": "Recursion & Backtracking",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Backtracking",
+      "Recursion & Backtracking",
       "Counting",
-      "Digits"
+      "Digits",
+      "Backtracking"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,10 +21,10 @@
     ]
   },
   "content": {
-    "problemStatement": "Recently, chef Ciel often hears about lucky numbers.\n\n\n\n\nEverybody knows that lucky numbers are positive integers\nwhose decimal representation contains only the lucky digits 4 and 7.\nFor example, numbers 47, 744, 4 are lucky and 5, 17, 467 are not.\n\n\nCiel decides to make Ciel numbers.\nAs you know, Ciel likes the digit 8 very much.\nAnd then, Ciel likes the digits 5 and 3.\nSo Ciel defines Ciel numbers as the positive integers **k** such that **d**(**k**, 8) ≥ **d**(**k**, 5) ≥ **d**(**k**, 3) and **d**(**k**, **i**) = 0 for all **i** = 0, 1, 2, 4, 6, 7, 9,\nwhere **d**(**k**, **i**) denotes the number of the digit **i** in the decimal representation of the integer **k**.\nFor example, the first few Ciel numbers are 8, 58, 85, 88, 358, 385, 538, 583, 588, 835, 853, 858, 885, 888, ....\n\n\n\nCiel would like to know about Ciel numbers.\nYour task is to find the first 50000 Ciel numbers.",
+    "problemStatement": "Recently, chef Ciel often hears about lucky numbers.\n\n\n\n\nEverybody knows that lucky numbers are positive integers\nwhose decimal representation contains only the lucky digits 4 and 7.\nFor example, numbers 47, 744, 4 are lucky and 5, 17, 467 are not.\n\n\nCiel decides to make Ciel numbers.\nAs you know, Ciel likes the digit 8 very much.\nAnd then, Ciel likes the digits 5 and 3.\nSo Ciel defines Ciel numbers as the positive integers **k** such that **d**(**k**, 8) \u2265 **d**(**k**, 5) \u2265 **d**(**k**, 3) and **d**(**k**, **i**) = 0 for all **i** = 0, 1, 2, 4, 6, 7, 9,\nwhere **d**(**k**, **i**) denotes the number of the digit **i** in the decimal representation of the integer **k**.\nFor example, the first few Ciel numbers are 8, 58, 85, 88, 358, 385, 538, 583, 588, 835, 853, 858, 885, 888, ....\n\n\n\nCiel would like to know about Ciel numbers.\nYour task is to find the first 50000 Ciel numbers.",
     "constraints": [
       "The program must output exactly 50000 numbers.",
-      "Each number consists only of digits 3, 5 and 8 and satisfies count(8) ≥ count(5) ≥ count(3)."
+      "Each number consists only of digits 3, 5 and 8 and satisfies count(8) \u2265 count(5) \u2265 count(3)."
     ],
     "inputFormat": "No input required.",
     "outputFormat": "Print the first 50000 Ciel numbers, one per line, in increasing order.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by generating all possible numbers with digits 3, 5, and 8, and then checking if the count of 8 is greater than or equal to the count of 5, and the count of 5 is greater than or equal to the count of 3. We can use a backtracking approach to generate all possible numbers.",
     "timeComplexity": "O(1) per test case, O(1) total. The time complexity is constant because we are generating a fixed number of Ciel numbers.",
-    "spaceComplexity": "O(1) — The dominant structure is the output array.",
+    "spaceComplexity": "O(1) \u2014 The dominant structure is the output array.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\n#define TARGET 50000\n\nchar cur[20];\nchar result[TARGET][20];\nint resCnt = 0;\n\nvoid dfs(int pos, int len) {\n    if (resCnt >= TARGET) return;\n    if (pos == len) {\n        int c8 = 0, c5 = 0, c3 = 0;\n        for (int i = 0; i < len; ++i) {\n            if (cur[i] == '8') c8++;\n            else if (cur[i] == '5') c5++;\n            else c3++;\n        }\n        if (c8 >= c5 && c5 >= c3) {\n            cur[len] = '\\0';\n            strcpy(result[resCnt++], cur);\n        }\n        return;\n    }\n    cur[pos] = '3'; dfs(pos + 1, len); if (resCnt >= TARGET) return;\n    cur[pos] = '5'; dfs(pos + 1, len); if (resCnt >= TARGET) return;\n    cur[pos] = '8'; dfs(pos + 1, len);\n}\n\nint main() {\n    for (int len = 1; resCnt < TARGET; ++len) {\n        dfs(0, len);\n    }\n    for (int i = 0; i < TARGET; ++i) {\n        puts(result[i]);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    const int TARGET = 50000;\n    vector<string> ans;\n    string cur;\n    function<void(int)> dfs = [&](int len) {\n        if ((int)ans.size() >= TARGET) return;\n        if ((int)cur.size() == len) {\n            int c8 = 0, c5 = 0, c3 = 0;\n            for (char ch : cur) {\n                if (ch == '8') ++c8;\n                else if (ch == '5') ++c5;\n                else ++c3;\n            }\n            if (c8 >= c5 && c5 >= c3) ans.push_back(cur);\n            return;\n        }\n        for (char d : {'3', '5', '8'}) {\n            cur.push_back(d);\n            dfs(len);\n            cur.pop_back();\n            if ((int)ans.size() >= TARGET) return;\n        }\n    };\n    for (int len = 1; (int)ans.size() < TARGET; ++len) dfs(len);\n    for (const string &s : ans) cout << s << '\\n';\n    return 0;\n}",

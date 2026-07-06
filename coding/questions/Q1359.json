@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Recursion",
+    "category": "Recursion & Backtracking",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Backtracking",
       "DFS",
-      "Sorting"
+      "Sorting",
+      "Recursion & Backtracking",
+      "Backtracking"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,13 +23,13 @@
   "content": {
     "problemStatement": "You are given an Array and you have to output all possible subsets of that array.\n\nFor Example:\nLet the array Arr = [1, 2, 3], It's possible subsets include:\n\n\n{}\n{1}\n{2}\n{3}\n{1, 2}\n{2, 3}\n{1, 3}\n{1, 2, 3}\n**Note** - Print the subsets in sorted order.\n\n\nInput Format\n\nThe first line of input will contain a single integer NNN, denoting the number of integers in the array.\nThe second line contains NNN integers.\n\n\nOutput Format\nOutput All the possible subsets of the given array.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 15",
-      "1 ≤ Ai ≤ 10^5",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 15",
+      "1 \u2264 Ai \u2264 10^5",
       "All Ai are distinct"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (1 ≤ N ≤ 15), the size of the array. The second line contains N distinct integers Ai (1 ≤ Ai ≤ 10^5) separated by spaces.",
-    "outputFormat": "For each test case, output all non‑empty subsets of the given array, one subset per line. Elements inside a subset are printed in increasing order and separated by a single space. Subsets are printed in the order produced by a depth‑first recursion that first decides to include the current element and then to exclude it (after sorting the original array). Do not print the empty subset. No extra blank lines are required between test cases.",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (1 \u2264 N \u2264 15), the size of the array. The second line contains N distinct integers Ai (1 \u2264 Ai \u2264 10^5) separated by spaces.",
+    "outputFormat": "For each test case, output all non\u2011empty subsets of the given array, one subset per line. Elements inside a subset are printed in increasing order and separated by a single space. Subsets are printed in the order produced by a depth\u2011first recursion that first decides to include the current element and then to exclude it (after sorting the original array). Do not print the empty subset. No extra blank lines are required between test cases.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -108,8 +109,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we first sort the array so that every subset is generated in increasing order. Then we run a simple depth‑first recursion that processes the elements from left to right. At each index we first *include* the current element, recurse, then *exclude* it and recurse again. When the index reaches N we have built one subset; if it is non‑empty we output it. This traversal visits the leaves of the recursion tree in the order of decreasing binary numbers (1 = include, 0 = exclude), which matches the required output order. The algorithm visits every non‑empty subset exactly once, so the time complexity is O(2^N) per test case and the auxiliary space is O(N) for the recursion stack and current subset storage.",
-    "timeComplexity": "O(2^N) per test case (worst‑case number of subsets).",
+    "approach": "For each test case we first sort the array so that every subset is generated in increasing order. Then we run a simple depth\u2011first recursion that processes the elements from left to right. At each index we first *include* the current element, recurse, then *exclude* it and recurse again. When the index reaches N we have built one subset; if it is non\u2011empty we output it. This traversal visits the leaves of the recursion tree in the order of decreasing binary numbers (1 = include, 0 = exclude), which matches the required output order. The algorithm visits every non\u2011empty subset exactly once, so the time complexity is O(2^N) per test case and the auxiliary space is O(N) for the recursion stack and current subset storage.",
+    "timeComplexity": "O(2^N) per test case (worst\u2011case number of subsets).",
     "spaceComplexity": "O(N) auxiliary space for the recursion stack and temporary subset storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp(const void *a, const void *b) { return (*(int*)a) - (*(int*)b); }\n\nvoid dfs(int idx, int n, int *arr, int *temp, int sz) {\n    if (idx == n) {\n        if (sz == 0) return; // skip empty set\n        for (int i = 0; i < sz; ++i) {\n            if (i) printf(\" \");\n            printf(\"%d\", temp[i]);\n        }\n        printf(\"\\n\");\n        return;\n    }\n    // include arr[idx]\n    temp[sz] = arr[idx];\n    dfs(idx + 1, n, arr, temp, sz + 1);\n    // exclude arr[idx]\n    dfs(idx + 1, n, arr, temp, sz);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int *arr = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        qsort(arr, N, sizeof(int), cmp);\n        int *temp = (int*)malloc(N * sizeof(int));\n        dfs(0, N, arr, temp, 0);\n        free(temp);\n        free(arr);\n    }\n    return 0;\n}",

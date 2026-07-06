@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Greedy",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "Minimum Excluded Value (MEX)",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,10 +22,10 @@
   "content": {
     "problemStatement": "You are given a multi-set **S** of **N** integers, and an integer **K**. You want to find the maximum value of Minimum Excluded Value (**MEX**) of the multi-set given that you are allowed to add at most any **K** integers to the multi-set. Find the maximum value of MEX that you can obtain. \n\nMEX (Minimum Excluded Value) is defined as the smallest non-negative integer (0, 1, 2, ...) that does not appear in a given multiset or array. Few examples of MEX of a multi-set are as follows. MEX of the multi-set {0} is 1, {1} is 0, {0, 1, 3} is 2, {0, 1, 2, 3, 5, 6} is 4.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 10^5",
-      "0 ≤ K ≤ 10^5",
-      "0 ≤ Si ≤ 2 * 10^5"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 10^5",
+      "0 \u2264 K \u2264 10^5",
+      "0 \u2264 Si \u2264 2 * 10^5"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of testcases. The first line of each test case contains two space-separated integers N and K denoting the size of the multi-set and the maximum number of extra integers that you can add in the multi-set respectively. The second line contains N space-separated integers denoting the multi-set S: S1, S2, .... SN.",
     "outputFormat": "For each testcase, output the answer in a single line.",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first need to understand the concept of Minimum Excluded Value (MEX). MEX is the smallest non-negative integer that does not appear in a given multiset or array. We will use a greedy approach to find the maximum value of MEX that can be obtained by adding at most K integers to the multiset. We will sort the multiset and then try to fill the gaps in the sorted multiset by adding integers from 0 to K. The maximum value of MEX will be the length of the longest prefix of the sorted multiset that contains all integers from 0 to the length of the prefix minus one.",
-    "timeComplexity": "O(T * N log N) — where T is the number of test cases and N is the size of the multiset. The reason is that we are sorting the multiset for each test case.",
-    "spaceComplexity": "O(N) — where N is the size of the multiset. The reason is that we are storing the sorted multiset.",
+    "timeComplexity": "O(T * N log N) \u2014 where T is the number of test cases and N is the size of the multiset. The reason is that we are sorting the multiset for each test case.",
+    "spaceComplexity": "O(N) \u2014 where N is the size of the multiset. The reason is that we are storing the sorted multiset.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int S[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &S[i]);\n        }\n        qsort(S, N, sizeof(int), compare);\n        int mex = 0;\n        for (int i = 0; i < N; i++) {\n            if (S[i] == mex) {\n                mex++;\n            } else if (S[i] > mex && K > 0) {\n                K--;\n                mex++;\n            } else if (S[i] > mex && K == 0) {\n                break;\n            }\n        }\n        while (K > 0) {\n            mex++;\n            K--;\n        }\n        printf(\"%d\\n\", mex);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        int S[N];\n        for (int i = 0; i < N; i++) {\n            cin >> S[i];\n        }\n        sort(S, S + N);\n        int mex = 0;\n        for (int i = 0; i < N; i++) {\n            if (S[i] == mex) {\n                mex++;\n            } else if (S[i] > mex && K > 0) {\n                K--;\n                mex++;\n            } else if (S[i] > mex && K == 0) {\n                break;\n            }\n        }\n        while (K > 0) {\n            mex++;\n            K--;\n        }\n        cout << mex << endl;\n    }\n    return 0;\n}",

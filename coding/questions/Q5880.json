@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Digit Sum",
       "Parity",
-      "Greedy",
-      "Number Theory"
+      "Digit Sum",
+      "Math",
+      "Number Theory",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,29 +24,29 @@
   "content": {
     "problemStatement": "For a positive integer MMM, MoEngage defines digitSum(M)\\texttt{digitSum(M)}digitSum(M) as the sum of digits of the number MMM (when written in decimal).\n\nFor example, digitSum(1023)=1+0+2+3=6\\texttt{digitSum(1023)} = 1 + 0 + 2 + 3 = 6digitSum(1023)=1+0+2+3=6.\n\nGiven a positive integer NNN, find the **smallest** integer XXX **strictly greater** than NNN such that:\n\n\ndigitSum(N)\\texttt{digitSum(N)}digitSum(N) and digitSum(X)\\texttt{digitSum(X)}digitSum(X) have different parity, i.e. one of them is odd and the other is even.\n\nInput Format\n\nThe first line contains an integer TTT, the number of test cases. The description of the TTT test cases follow.\nEach test case consists of a single line of input with a single integer, the number NNN.\n\n\nOutput Format\n\nFor each test case, print in a single line, an integer, the answer to the problem.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N < 10^9"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N < 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N < 10^9).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N < 10^9).",
     "outputFormat": "For each test case output a single line with the smallest integer X strictly greater than N such that digitSum(N) and digitSum(X) have opposite parity.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\\n123\\n19\\n509",
         "output": "124\\n21\\n511",
-        "explanation": "For 123 the trailing 9 count is 0 (even) → answer 124.\\nFor 19 the trailing 9 count is 1 (odd) → answer 21.\\nFor 509 the trailing 9 count is 0 (even) → answer 511."
+        "explanation": "For 123 the trailing 9 count is 0 (even) \u2192 answer 124.\\nFor 19 the trailing 9 count is 1 (odd) \u2192 answer 21.\\nFor 509 the trailing 9 count is 0 (even) \u2192 answer 511."
       },
       {
         "id": "sample_2",
         "input": "2\\n1\\n999",
         "output": "2\\n1001",
-        "explanation": "N=1 has no trailing 9 → answer 2.\\nN=999 has three trailing 9's (odd) → answer 1001."
+        "explanation": "N=1 has no trailing 9 \u2192 answer 2.\\nN=999 has three trailing 9's (odd) \u2192 answer 1001."
       },
       {
         "id": "sample_3",
         "input": "1\\n1299",
         "output": "1300",
-        "explanation": "1299 ends with two 9's (even) → answer 1300."
+        "explanation": "1299 ends with two 9's (even) \u2192 answer 1300."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "Let s(N) be the sum of digits of N. When we increase N by 1, the digit sum changes by Δ = 1 - 9·k, where k is the number of trailing 9's in N. Modulo 2, Δ ≡ 1 - k (because 9 ≡ 1 (mod 2)). Therefore the parity of the digit sum flips exactly when k is even (including k = 0). Consequently, the answer is:\n- If the count of trailing 9's in N is even, X = N + 1.\n- Otherwise (k odd) X = N + 2.\nThe algorithm runs in O(number of trailing 9's) ≤ O(log10 N) per test case, which is effectively O(1).",
-    "timeComplexity": "O(T * log10 N) ≈ O(T), because at most a few digit checks are needed per test case.",
+    "approach": "Let s(N) be the sum of digits of N. When we increase N by 1, the digit sum changes by \u0394 = 1 - 9\u00b7k, where k is the number of trailing 9's in N. Modulo 2, \u0394 \u2261 1 - k (because 9 \u2261 1 (mod 2)). Therefore the parity of the digit sum flips exactly when k is even (including k = 0). Consequently, the answer is:\n- If the count of trailing 9's in N is even, X = N + 1.\n- Otherwise (k odd) X = N + 2.\nThe algorithm runs in O(number of trailing 9's) \u2264 O(log10 N) per test case, which is effectively O(1).",
+    "timeComplexity": "O(T * log10 N) \u2248 O(T), because at most a few digit checks are needed per test case.",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic int trailing_nines(int64_t n) {\n    int cnt = 0;\n    while (n % 10 == 9) {\n        cnt++;\n        n /= 10;\n    }\n    return cnt;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int64_t N;\n        scanf(\"%lld\", &N);\n        int k = trailing_nines(N);\n        int64_t ans = (k % 2 == 0) ? N + 1 : N + 2;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

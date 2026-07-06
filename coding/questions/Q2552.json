@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Union-Find",
-      "Disjoint Set"
+      "Graphs",
+      "Disjoint Set",
+      "Union-Find"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using a Union-Find data structure. We maintain a parent array to keep track of the connected components. When a wire is attached, we union the two endpoints. When a voltage is applied, we mark the corresponding component as high. When an LED is attached, we check if the two endpoints are in different components or if one of them is not high.",
     "timeComplexity": "O(N * alpha(R*C)) per test case, where alpha is the inverse Ackermann function, which grows very slowly. The space complexity is O(R*C), where R*C is the number of components.",
-    "spaceComplexity": "O(R*C) — the dominant structure is the parent array.",
+    "spaceComplexity": "O(R*C) \u2014 the dominant structure is the parent array.",
     "code": {
       "C": "#include <stdio.h>\n#define MAXN 1000000\n#define MAXR 500\n#define MAXC 2500\nint parent[MAXN], rank[MAXN], high[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y);\nif (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; }} }\nint main() {\nint N, R, C;\nscanf(\"%d %d %d\", &N, &R, &C);\nfor (int i = 0; i < R*C; i++) { parent[i] = i; rank[i] = 0; high[i] = 0; }\nfor (int i = 0; i < N; i++) {\nchar op;\nscanf(\" %c\", &op);\nif (op == 'W') {\nchar x[3], y[3];\nscanf(\"%s %s\", x, y);\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nint yy = (y[0] - 'A') * 52 + y[1] - 'A';\nunionSet(xx, yy);\n} else if (op == 'V') {\nchar x[3];\nscanf(\"%s\", x);\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nhigh[find(xx)] = 1;\n} else if (op == 'R') {\nchar x[3];\nscanf(\"%s\", x);\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nhigh[find(xx)] = 0;\n} else if (op == 'L') {\nchar x[3], y[3];\nscanf(\"%s %s\", x, y);\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nint yy = (y[0] - 'A') * 52 + y[1] - 'A';\nif (high[find(xx)] != high[find(yy)]) {\nprintf(\"ON\\n\");\n} else {\nprintf(\"OFF\\n\");\n}\n}\n}\nreturn 0;\n}",
       "C++": "#include <iostream>\n#define MAXN 1000000\n#define MAXR 500\n#define MAXC 2500\nusing namespace std;\nint parent[MAXN], rank[MAXN], high[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y);\nif (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; }} }\nint main() {\nios::sync_with_stdio(false);\ncin.tie(NULL);\nint N, R, C;\ncin >> N >> R >> C;\nfor (int i = 0; i < R*C; i++) { parent[i] = i; rank[i] = 0; high[i] = 0; }\nfor (int i = 0; i < N; i++) {\nchar op;\ncin >> op;\nif (op == 'W') {\nchar x[3], y[3];\ncin >> x >> y;\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nint yy = (y[0] - 'A') * 52 + y[1] - 'A';\nunionSet(xx, yy);\n} else if (op == 'V') {\nchar x[3];\ncin >> x;\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nhigh[find(xx)] = 1;\n} else if (op == 'R') {\nchar x[3];\ncin >> x;\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nhigh[find(xx)] = 0;\n} else if (op == 'L') {\nchar x[3], y[3];\ncin >> x >> y;\nint xx = (x[0] - 'A') * 52 + x[1] - 'A';\nint yy = (y[0] - 'A') * 52 + y[1] - 'A';\nif (high[find(xx)] != high[find(yy)]) {\ncout << \"ON\" << endl;\n} else {\ncout << \"OFF\" << endl;\n}\n}\n}\nreturn 0;\n}",

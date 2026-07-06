@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Bit Manipulation",
       "Expected Value",
-      "Bit Manipulation"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved by iterating over all possible subsets of balloons and calculating the expected cost for each subset that meets the minimum color requirement. The expected cost is calculated by summing the costs of all balloons in the subset and dividing by the total number of possible subsets (2^N).",
     "timeComplexity": "O(T * 2^N * N) per test case, O(T * 2^N * N) total.",
-    "spaceComplexity": "O(N) — for storing the costs and colors of the balloons.",
+    "spaceComplexity": "O(N) \u2014 for storing the costs and colors of the balloons.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint main() {\n    int T, N, M, Ci, Pi;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &M);\n        int costs[N];\n        int colors[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &Ci, &Pi);\n            costs[i] = Pi;\n            colors[i] = Ci;\n        }\n        double expectedCost = 0.0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int numColors = 0;\n            int subsetCost = 0;\n            int colorSet[41] = {0};\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    subsetCost += costs[i];\n                    colorSet[colors[i]] = 1;\n                }\n            }\n            for (int i = 1; i <= 40; i++) {\n                if (colorSet[i] == 1) numColors++;\n            }\n            if (numColors >= M) {\n                expectedCost += subsetCost / pow(2, N);\n            }\n        }\n        printf(\"%.6f\\n\", expectedCost);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    int T, N, M, Ci, Pi;\n    cin >> T;\n    while (T--) {\n        cin >> N >> M;\n        int costs[N];\n        int colors[N];\n        for (int i = 0; i < N; i++) {\n            cin >> Ci >> Pi;\n            costs[i] = Pi;\n            colors[i] = Ci;\n        }\n        double expectedCost = 0.0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int numColors = 0;\n            int subsetCost = 0;\n            int colorSet[41] = {0};\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    subsetCost += costs[i];\n                    colorSet[colors[i]] = 1;\n                }\n            }\n            for (int i = 1; i <= 40; i++) {\n                if (colorSet[i] == 1) numColors++;\n            }\n            if (numColors >= M) {\n                expectedCost += subsetCost / pow(2, N);\n            }\n        }\n        cout << fixed << setprecision(6) << expectedCost << endl;\n    }\n    return 0;\n}",

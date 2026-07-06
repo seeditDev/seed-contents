@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Book Pile",
       "Priority Queue",
-      "Book Pile"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we use a priority queue to store the books. The priority queue is ordered by the number of exercises in the book and then by the position of the book in the pile. When Harry wants to do a book exercise, we remove the book with the minimum number of exercises from the pile and print the number of books that need to be removed to reach this book. We then update the positions of the remaining books in the pile.",
     "timeComplexity": "O(N log N) per test case, where N is the number of actions.",
-    "spaceComplexity": "O(N) — the space complexity is dominated by the priority queue.",
+    "spaceComplexity": "O(N) \u2014 the space complexity is dominated by the priority queue.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 1000000\n#define MAX_NAME 15\n\ntypedef struct Book {\n    int exercises;\n    char name[MAX_NAME + 1];\n    int position;\n} Book;\n\nint compare(const void *a, const void *b) {\n    Book *book1 = (Book *)a;\n    Book *book2 = (Book *)b;\n    if (book1->exercises != book2->exercises) {\n        return book1->exercises - book2->exercises;\n    } else {\n        return book1->position - book2->position;\n    }\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    Book books[N];\n    int top = 0;\n    for (int i = 0; i < N; i++) {\n        int exercises;\n        scanf(\"%d\", &exercises);\n        if (exercises == -1) {\n            qsort(books, top, sizeof(Book), compare);\n            printf(\"%d %s\\n\", books[0].position, books[0].name);\n            for (int j = 1; j < top; j++) {\n                if (books[j].exercises == books[0].exercises) {\n                    books[j].position--;\n                }\n            }\n            top--;\n        } else {\n            char name[MAX_NAME + 1];\n            scanf(\"%s\", name);\n            books[top].exercises = exercises;\n            strcpy(books[top].name, name);\n            books[top].position = top;\n            top++;\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <string>\nusing namespace std;\n\nstruct Book {\n    int exercises;\n    string name;\n    int position;\n    bool operator<(const Book &other) const {\n        if (exercises != other.exercises) {\n            return exercises > other.exercises;\n        } else {\n            return position > other.position;\n        }\n    }\n};\n\nint main() {\n    int N;\n    cin >> N;\n    priority_queue<Book> pq;\n    for (int i = 0; i < N; i++) {\n        int exercises;\n        cin >> exercises;\n        if (exercises == -1) {\n            Book book = pq.top();\n            pq.pop();\n            cout << book.position << \" \" << book.name << endl;\n            while (!pq.empty() && pq.top().exercises == book.exercises) {\n                Book temp = pq.top();\n                pq.pop();\n                temp.position--;\n                pq.push(temp);\n            }\n        } else {\n            string name;\n            cin >> name;\n            Book book;\n            book.exercises = exercises;\n            book.name = name;\n            book.position = pq.size();\n            pq.push(book);\n        }\n    }\n    return 0;\n}",

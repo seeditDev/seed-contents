@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Math | Dynamic Programming",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Prefix Sum",
       "Sliding Window",
-      "Dynamic Programming"
+      "Prefix Sum",
+      "Dynamic Programming",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "There is an infinite grid given to you. Some of the cells in this infinite grid have gems in them. Each gem a parameter beauty associated with it which is given by a positive integer.\n\nYou will be given an integer **L**. You have to find maximum sum of beauties inside any square sub-grid with its side length being less than or equal to **L**. Let **S** be that number, i.e. the maximum sum of beauties for some sub-grid with side length no greater than **L**. You also have to find minimum side length such that there exists some sqaure sub-grid with that given side length with sum of beauties of gems inside it being equal to **S**.",
     "constraints": [
-      "1 ≤ L ≤ 10^5",
-      "1 ≤ ci ≤ 10^9",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ xi, yi ≤ 10^5"
+      "1 \u2264 L \u2264 10^5",
+      "1 \u2264 ci \u2264 10^9",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 xi, yi \u2264 10^5"
     ],
     "inputFormat": "The first line contains two space-separated integers N and L, where N is the number of gems and L is the maximum allowed size of the sub-grid. Each of the next N lines contains three space-separated integers xi, yi, and ci, denoting the x-coordinate, y-coordinate, and the value of the ith gem respectively.",
     "outputFormat": "The output should be a single line containing two space-separated integers: the maximum value of the sum of beauties of gems in some square sub-grid of the length not greater than L and the minimum side length of the square-grid which contains that much sum of beauties of gems inside it.",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a prefix sum array to store the sum of beauties of gems in each sub-grid. We can then use a sliding window approach to find the maximum sum of beauties in each sub-grid. We will iterate over all possible sub-grids and update the maximum sum and minimum side length accordingly.",
-    "timeComplexity": "O(N * L^2) — where N is the number of gems and L is the maximum allowed size of the sub-grid. The time complexity is dominated by the iteration over all possible sub-grids.",
-    "spaceComplexity": "O(N) — where N is the number of gems. The space complexity is dominated by the storage of the prefix sum array.",
+    "timeComplexity": "O(N * L^2) \u2014 where N is the number of gems and L is the maximum allowed size of the sub-grid. The time complexity is dominated by the iteration over all possible sub-grids.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of gems. The space complexity is dominated by the storage of the prefix sum array.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\nint main() {\n    int N, L;\n    scanf(\"%d %d\", &N, &L);\n    int x[N], y[N], c[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d %d %d\", &x[i], &y[i], &c[i]);\n    }\n    int max_sum = INT_MIN;\n    int min_side = INT_MAX;\n    for (int side = 1; side <= L; side++) {\n        for (int i = 0; i < N; i++) {\n            int sum = 0;\n            for (int j = 0; j < N; j++) {\n                if (x[j] >= x[i] && x[j] < x[i] + side && y[j] >= y[i] && y[j] < y[i] + side) {\n                    sum += c[j];\n                }\n            }\n            if (sum > max_sum) {\n                max_sum = sum;\n                min_side = side;\n            } else if (sum == max_sum && side < min_side) {\n                min_side = side;\n            }\n        }\n    }\n    printf(\"%d %d\\n\", max_sum, min_side);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\nint main() {\n    int N, L;\n    cin >> N >> L;\n    int x[N], y[N], c[N];\n    for (int i = 0; i < N; i++) {\n        cin >> x[i] >> y[i] >> c[i];\n    }\n    int max_sum = numeric_limits<int>::min();\n    int min_side = numeric_limits<int>::max();\n    for (int side = 1; side <= L; side++) {\n        for (int i = 0; i < N; i++) {\n            int sum = 0;\n            for (int j = 0; j < N; j++) {\n                if (x[j] >= x[i] && x[j] < x[i] + side && y[j] >= y[i] && y[j] < y[i] + side) {\n                    sum += c[j];\n                }\n            }\n            if (sum > max_sum) {\n                max_sum = sum;\n                min_side = side;\n            } else if (sum == max_sum && side < min_side) {\n                min_side = side;\n            }\n        }\n    }\n    cout << max_sum << \" \" << min_side << endl;\n    return 0;\n}",

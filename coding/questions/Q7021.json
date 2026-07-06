@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Hash Map",
-      "Array",
       "Maximum per Group",
-      "Simple Greedy"
+      "Simple Greedy",
+      "Array",
+      "Hash Map",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are trying to be more healthy, and thus have decided to eat only fruits. You have lots of fruits of different types, but you get bored of a specific fruit type very quickly — so you will never repeat fruit types that you eat, i.e. you will eat **at most one** fruit of each type.\n\nYou have NNN fruits, the iii-th fruit being of type AiA_iAi​ and providing you a nutrition value of BiB_iBi​.\n\nSome fruits are rotten, so BiB_iBi​ can be negative.\n\nFind the **maximum** possible sum of nutrition values of the fruits you eat, under the constraint of never repeating fruit types.\n\nNote that you may choose to eat no fruits as well, which would give you 000 nutrition.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains one integer NNN, the number of fruits.\nThe second line contains NNN space-separated integers, A1,A2,…,ANA_1, A_2,\\ldots, A_NA1​,A2​,…,AN​, the types of the fruits.\nThe third line contains NNN space-separated integers, B1,B2,…,BNB_1, B_2,\\ldots, B_NB1​,B2​,…,BN​, the nutrition values of the fruits.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the maximum possible sum of nutrition values of the fruits you eat, under the constraint of not repeating any types.",
+    "problemStatement": "You are trying to be more healthy, and thus have decided to eat only fruits. You have lots of fruits of different types, but you get bored of a specific fruit type very quickly \u2014 so you will never repeat fruit types that you eat, i.e. you will eat **at most one** fruit of each type.\n\nYou have NNN fruits, the iii-th fruit being of type AiA_iAi\u200b and providing you a nutrition value of BiB_iBi\u200b.\n\nSome fruits are rotten, so BiB_iBi\u200b can be negative.\n\nFind the **maximum** possible sum of nutrition values of the fruits you eat, under the constraint of never repeating fruit types.\n\nNote that you may choose to eat no fruits as well, which would give you 000 nutrition.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains one integer NNN, the number of fruits.\nThe second line contains NNN space-separated integers, A1,A2,\u2026,ANA_1, A_2,\\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b, the types of the fruits.\nThe third line contains NNN space-separated integers, B1,B2,\u2026,BNB_1, B_2,\\ldots, B_NB1\u200b,B2\u200b,\u2026,BN\u200b, the nutrition values of the fruits.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the maximum possible sum of nutrition values of the fruits you eat, under the constraint of not repeating any types.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 100",
       "1 <= Ai <= N",
       "-100 <= Bi <= 100"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains integer N, the number of fruits. Second line contains N integers A1 … AN, the type of each fruit. Third line contains N integers B1 … BN, the nutrition value of each fruit.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains integer N, the number of fruits. Second line contains N integers A1 \u2026 AN, the type of each fruit. Third line contains N integers B1 \u2026 BN, the nutrition value of each fruit.",
     "outputFormat": "For each test case output a single line with the maximum possible sum of nutrition values you can obtain while eating at most one fruit of each type.",
     "sampleTestCases": [
       {
@@ -47,7 +48,7 @@
         "id": "sample_3",
         "input": "1\\n3\\n1 2 3\\n-5 -10 0",
         "output": "0",
-        "explanation": "All maximum values are non‑positive, so the optimal choice is to eat no fruit."
+        "explanation": "All maximum values are non\u2011positive, so the optimal choice is to eat no fruit."
       }
     ]
   },
@@ -69,7 +70,7 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – all same type",
+        "label": "edge case \u2013 all same type",
         "input": "1\n5\n1 1 1 1 1\n-10 20 -5 15 -1",
         "expectedOutput": "20",
         "weight": 2
@@ -116,7 +117,7 @@
   },
   "solution": {
     "approach": "For each fruit type we can pick at most one fruit. The best choice for a given type is the fruit with the largest nutrition value among that type. If that maximum is negative we simply skip the type because we may eat no fruit. Therefore the answer is the sum over all distinct types of max(0, maximum B among fruits of that type). We can compute this in O(N) per test case by storing the current maximum for each type in an array or hash map.",
-    "timeComplexity": "O(N) per test case, O(T·N) overall.",
+    "timeComplexity": "O(N) per test case, O(T\u00b7N) overall.",
     "spaceComplexity": "O(N) for the array that stores the maximum value per type.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int A[105]; int B[105];\n        for(int i=0;i<N;i++) scanf(\"%d\", &A[i]);\n        for(int i=0;i<N;i++) scanf(\"%d\", &B[i]);\n        int maxVal[105];\n        for(int i=0;i<=N;i++) maxVal[i] = -101; // less than minimum possible B\n        for(int i=0;i<N;i++){\n            int type = A[i];\n            if(B[i] > maxVal[type]) maxVal[type] = B[i];\n        }\n        long long ans = 0;\n        for(int i=1;i<=N;i++) if(maxVal[i] > 0) ans += maxVal[i];\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

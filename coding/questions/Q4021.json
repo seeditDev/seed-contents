@@ -10,8 +10,9 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Combinatorics",
       "Probability",
-      "Combinatorics"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,19 +20,19 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef's company wants to make ATM PINs for its users, so that they could use the PINs for withdrawing their hard-earned money. One of these users is Reziba, who lives in an area where a lot of robberies take place when people try to withdraw their money.\n\nChef plans to include a safety feature in the PINs: if someone inputs the reverse of their own PIN in an ATM machine, the Crime Investigation Department (CID) are immediately informed and stop the robbery. However, even though this was implemented by Chef, some people could still continue to get robbed. The reason is that CID is only informed if the reverse of a PIN is different from that PIN (so that there wouldn't be false reports of robberies).\n\nYou know that a PIN consists of NNN decimal digits. Find the probability that Reziba could get robbed. Specifically, it can be proven that this probability can be written as a fraction P/QP/QP/Q, where P≥0P \\ge 0P≥0 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers; you should compute PPP and QQQ.",
+    "problemStatement": "Chef's company wants to make ATM PINs for its users, so that they could use the PINs for withdrawing their hard-earned money. One of these users is Reziba, who lives in an area where a lot of robberies take place when people try to withdraw their money.\n\nChef plans to include a safety feature in the PINs: if someone inputs the reverse of their own PIN in an ATM machine, the Crime Investigation Department (CID) are immediately informed and stop the robbery. However, even though this was implemented by Chef, some people could still continue to get robbed. The reason is that CID is only informed if the reverse of a PIN is different from that PIN (so that there wouldn't be false reports of robberies).\n\nYou know that a PIN consists of NNN decimal digits. Find the probability that Reziba could get robbed. Specifically, it can be proven that this probability can be written as a fraction P/QP/QP/Q, where P\u22650P \\ge 0P\u22650 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers; you should compute PPP and QQQ.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 10^5"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The first and only line of each test case contains a single integer N denoting the length of each PIN.",
-    "outputFormat": "For each test case, print a single line containing two space-separated integers — the numerator P and denominator Q of the probability.",
+    "outputFormat": "For each test case, print a single line containing two space-separated integers \u2014 the numerator P and denominator Q of the probability.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n1",
         "output": "1 1",
-        "explanation": "A PIN containing only one number would fail to inform the CID, since when it's input in reverse, the ATM detects the same PIN as the correct one. Therefore, Reziba can always get robbed — the probability is 1=1/1."
+        "explanation": "A PIN containing only one number would fail to inform the CID, since when it's input in reverse, the ATM detects the same PIN as the correct one. Therefore, Reziba can always get robbed \u2014 the probability is 1=1/1."
       },
       {
         "id": "sample_2",
@@ -106,8 +107,8 @@
   },
   "solution": {
     "approach": "To find the probability that Reziba could get robbed, we need to calculate the probability that the reverse of a PIN is different from the PIN itself. This can be done by counting the number of PINs that are not palindromes and dividing it by the total number of possible PINs. For a PIN of length N, there are 10^N possible PINs. To count the number of PINs that are not palindromes, we can use the fact that a PIN is a palindrome if and only if its first half is the same as the reverse of its second half. For a PIN of length N, the first half has length N/2 (if N is even) or (N+1)/2 (if N is odd). The number of possible first halves is 10^(N/2) (if N is even) or 10^((N+1)/2) (if N is odd). The number of possible second halves is also 10^(N/2) (if N is even) or 10^((N-1)/2) (if N is odd). However, not all combinations of first and second halves result in a valid PIN. We need to consider the cases where N is even and N is odd separately.",
-    "timeComplexity": "O(T) — the time complexity is linear with respect to the number of test cases, as we only need to perform a constant amount of work for each test case.",
-    "spaceComplexity": "O(1) — the space complexity is constant, as we only need to use a constant amount of space to store the input and output values.",
+    "timeComplexity": "O(T) \u2014 the time complexity is linear with respect to the number of test cases, as we only need to perform a constant amount of work for each test case.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant, as we only need to use a constant amount of space to store the input and output values.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        if (N == 1) {\n            printf(\"1 1\\n\");\n        } else {\n            long long numerator = 1;\n            long long denominator = 1;\n            for (int i = 0; i < N; i++) {\n                numerator *= 10;\n                denominator *= 10;\n            }\n            if (N % 2 == 0) {\n                for (int i = 0; i < N / 2; i++) {\n                    numerator *= 9;\n                }\n            } else {\n                for (int i = 0; i < (N + 1) / 2; i++) {\n                    numerator *= 9;\n                }\n            }\n            printf(\"%lld %lld\\n\", numerator, denominator);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        if (N == 1) {\n            cout << \"1 1\" << endl;\n        } else {\n            long long numerator = 1;\n            long long denominator = 1;\n            for (int i = 0; i < N; i++) {\n                numerator *= 10;\n                denominator *= 10;\n            }\n            if (N % 2 == 0) {\n                for (int i = 0; i < N / 2; i++) {\n                    numerator *= 9;\n                }\n            } else {\n                for (int i = 0; i < (N + 1) / 2; i++) {\n                    numerator *= 9;\n                }\n            }\n            cout << numerator << \" \" << denominator << endl;\n        }\n    }\n    return 0;\n}",

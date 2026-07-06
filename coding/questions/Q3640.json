@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Closest Pair",
-      "Distance Calculation"
+      "Distance Calculation",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +20,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Consider a set of points in 2D which is initially empty.\nYou need to process queries which insert and remove points from it.\n\nAfter each query, you should also print the square of the distance between two closest points in the set.\nIf there are fewer than 2 points in the set, print 0 instead.\n\n It is guaranteed that all the queries are valid — there will be no query of adding a point that is already present in the set or\nremoving a point which does not exist in the set.",
+    "problemStatement": "Consider a set of points in 2D which is initially empty.\nYou need to process queries which insert and remove points from it.\n\nAfter each query, you should also print the square of the distance between two closest points in the set.\nIf there are fewer than 2 points in the set, print 0 instead.\n\n It is guaranteed that all the queries are valid \u2014 there will be no query of adding a point that is already present in the set or\nremoving a point which does not exist in the set.",
     "constraints": [
-      "1 ≤ Q ≤ 75,000",
-      "1 ≤ x, y ≤ 500"
+      "1 \u2264 Q \u2264 75,000",
+      "1 \u2264 x, y \u2264 500"
     ],
-    "inputFormat": "The first line of the input contains an integer Q denoting the number of queries. Each of the next Q lines contains one query, which will be one of the following two types: + x y — add the point (x, y) to the set, - x y — remove the point (x, y) from the set.",
-    "outputFormat": "For each query, output a single line containing one integer — the square of the distance between two closest points in the set. If there are fewer than 2 points in the set, print 0 instead.",
+    "inputFormat": "The first line of the input contains an integer Q denoting the number of queries. Each of the next Q lines contains one query, which will be one of the following two types: + x y \u2014 add the point (x, y) to the set, - x y \u2014 remove the point (x, y) from the set.",
+    "outputFormat": "For each query, output a single line containing one integer \u2014 the square of the distance between two closest points in the set. If there are fewer than 2 points in the set, print 0 instead.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -100,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by calculating the distance between each pair of points after each query. We will maintain a set of points and update it according to the queries. For each query, we will calculate the square of the distance between each pair of points and keep track of the minimum distance found so far.",
-    "timeComplexity": "O(Q * N^2) — where Q is the number of queries and N is the maximum number of points in the set at any time. This is because for each query, we are potentially calculating the distance between each pair of points.",
-    "spaceComplexity": "O(N) — where N is the maximum number of points in the set at any time. This is because we need to store all the points in the set.",
+    "timeComplexity": "O(Q * N^2) \u2014 where Q is the number of queries and N is the maximum number of points in the set at any time. This is because for each query, we are potentially calculating the distance between each pair of points.",
+    "spaceComplexity": "O(N) \u2014 where N is the maximum number of points in the set at any time. This is because we need to store all the points in the set.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\n#define MAX_POINTS 75000\n\ntypedef struct Point {\n    int x, y;\n} Point;\n\nint comparePoints(const void *a, const void *b) {\n    Point *p1 = (Point *)a;\n    Point *p2 = (Point *)b;\n    if (p1->x < p2->x) return -1;\n    if (p1->x > p2->x) return 1;\n    if (p1->y < p2->y) return -1;\n    if (p1->y > p2->y) return 1;\n    return 0;\n}\n\nint calculateDistance(Point *p1, Point *p2) {\n    return (p1->x - p2->x) * (p1->x - p2->x) + (p1->y - p2->y) * (p1->y - p2->y);\n}\n\nint main() {\n    int Q;\n    scanf(\"%d\", &Q);\n    Point points[MAX_POINTS];\n    int numPoints = 0;\n    for (int i = 0; i < Q; i++) {\n        char query;\n        int x, y;\n        scanf(\" %c %d %d\", &query, &x, &y);\n        if (query == '+') {\n            points[numPoints].x = x;\n            points[numPoints].y = y;\n            numPoints++;\n        } else {\n            for (int j = 0; j < numPoints; j++) {\n                if (points[j].x == x && points[j].y == y) {\n                    for (int k = j; k < numPoints - 1; k++) {\n                        points[k] = points[k + 1];\n                    }\n                    numPoints--;\n                    break;\n                }\n            }\n        }\n        int minDistance = 0;\n        if (numPoints >= 2) {\n            minDistance = calculateDistance(&points[0], &points[1]);\n            for (int j = 0; j < numPoints; j++) {\n                for (int k = j + 1; k < numPoints; k++) {\n                    int distance = calculateDistance(&points[j], &points[k]);\n                    if (distance < minDistance) {\n                        minDistance = distance;\n                    }\n                }\n            }\n        }\n        printf(\"%d\\n\", minDistance);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <cmath>\nusing namespace std;\n\nstruct Point {\n    int x, y;\n};\n\nint calculateDistance(const Point &p1, const Point &p2) {\n    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);\n}\n\nint main() {\n    int Q;\n    cin >> Q;\n    vector<Point> points;\n    for (int i = 0; i < Q; i++) {\n        char query;\n        int x, y;\n        cin >> query >> x >> y;\n        if (query == '+') {\n            points.push_back({x, y});\n        } else {\n            for (auto it = points.begin(); it != points.end(); it++) {\n                if (it->x == x && it->y == y) {\n                    points.erase(it);\n                    break;\n                }\n            }\n        }\n        int minDistance = 0;\n        if (points.size() >= 2) {\n            minDistance = calculateDistance(points[0], points[1]);\n            for (int j = 0; j < points.size(); j++) {\n                for (int k = j + 1; k < points.size(); k++) {\n                    int distance = calculateDistance(points[j], points[k]);\n                    if (distance < minDistance) {\n                        minDistance = distance;\n                    }\n                }\n            }\n        }\n        cout << minDistance << endl;\n    }\n    return 0;\n}",

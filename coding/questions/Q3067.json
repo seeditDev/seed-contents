@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "BFS",
-      "Maze"
+      "Maze",
+      "Graphs",
+      "BFS"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using a breadth-first search (BFS) algorithm. We start from the upper-left corner of the maze and explore all possible moves (up, down, left, right) from each cell. We keep track of the visited cells to avoid revisiting them and to ensure that we visit each non-forbidden cell at least once.",
     "timeComplexity": "O(N^2) per test case, O(T * N^2) total.",
-    "spaceComplexity": "O(N^2) — for the visited matrix and the queue.",
+    "spaceComplexity": "O(N^2) \u2014 for the visited matrix and the queue.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 1000\n#define MAX_MOVES MAX_N * (MAX_N + 7)\n\nchar maze[MAX_N][MAX_N + 1];\nchar moves[MAX_MOVES + 1];\nint visited[MAX_N][MAX_N];\nint moveCount;\n\nvoid bfs(int x, int y) {\n    int queueX[MAX_N * MAX_N], queueY[MAX_N * MAX_N], queueSize = 0;\n    queueX[queueSize] = x;\n    queueY[queueSize] = y;\n    queueSize++;\n    visited[x][y] = 1;\n\n    while (queueSize > 0) {\n        x = queueX[0];\n        y = queueY[0];\n        for (int i = 1; i < queueSize; i++) {\n            queueX[i - 1] = queueX[i];\n            queueY[i - 1] = queueY[i];\n        }\n        queueSize--;\n\n        if (x > 1 && maze[x - 1][y] == '.' && !visited[x - 1][y]) {\n            queueX[queueSize] = x - 1;\n            queueY[queueSize] = y;\n            queueSize++;\n            visited[x - 1][y] = 1;\n            moves[moveCount++] = 'U';\n        }\n        if (x < MAX_N && maze[x + 1][y] == '.' && !visited[x + 1][y]) {\n            queueX[queueSize] = x + 1;\n            queueY[queueSize] = y;\n            queueSize++;\n            visited[x + 1][y] = 1;\n            moves[moveCount++] = 'D';\n        }\n        if (y > 1 && maze[x][y - 1] == '.' && !visited[x][y - 1]) {\n            queueX[queueSize] = x;\n            queueY[queueSize] = y - 1;\n            queueSize++;\n            visited[x][y - 1] = 1;\n            moves[moveCount++] = 'L';\n        }\n        if (y < MAX_N && maze[x][y + 1] == '.' && !visited[x][y + 1]) {\n            queueX[queueSize] = x;\n            queueY[queueSize] = y + 1;\n            queueSize++;\n            visited[x][y + 1] = 1;\n            moves[moveCount++] = 'R';\n        }\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        for (int i = 1; i <= N; i++) {\n            scanf(\"%s\", maze[i] + 1);\n        }\n        moveCount = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 1; j <= N; j++) {\n                visited[i][j] = 0;\n            }\n        }\n        bfs(1, 1);\n        printf(\"%s\\n\", moves);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <queue>\n#include <vector>\n#include <string>\nusing namespace std;\n#define MAX_N 1000\n#define MAX_MOVES MAX_N * (MAX_N + 7)\n\nstruct Point {\n    int x, y;\n};\n\nchar maze[MAX_N][MAX_N + 1];\nchar moves[MAX_MOVES + 1];\nint visited[MAX_N][MAX_N];\nint moveCount;\n\nvoid bfs(int x, int y) {\n    queue<Point> q;\n    q.push({x, y});\n    visited[x][y] = 1;\n\n    while (!q.empty()) {\n        x = q.front().x;\n        y = q.front().y;\n        q.pop();\n\n        if (x > 1 && maze[x - 1][y] == '.' && !visited[x - 1][y]) {\n            q.push({x - 1, y});\n            visited[x - 1][y] = 1;\n            moves[moveCount++] = 'U';\n        }\n        if (x < MAX_N && maze[x + 1][y] == '.' && !visited[x + 1][y]) {\n            q.push({x + 1, y});\n            visited[x + 1][y] = 1;\n            moves[moveCount++] = 'D';\n        }\n        if (y > 1 && maze[x][y - 1] == '.' && !visited[x][y - 1]) {\n            q.push({x, y - 1});\n            visited[x][y - 1] = 1;\n            moves[moveCount++] = 'L';\n        }\n        if (y < MAX_N && maze[x][y + 1] == '.' && !visited[x][y + 1]) {\n            q.push({x, y + 1});\n            visited[x][y + 1] = 1;\n            moves[moveCount++] = 'R';\n        }\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        for (int i = 1; i <= N; i++) {\n            cin >> maze[i];\n        }\n        moveCount = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 1; j <= N; j++) {\n                visited[i][j] = 0;\n            }\n        }\n        bfs(1, 1);\n        cout << moves << endl;\n    }\n    return 0;\n}",

@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Grid Traversal",
+      "Greedy",
       "Snake Path",
       "Unique Identification"
     ],
@@ -20,13 +21,13 @@
     ]
   },
   "content": {
-    "problemStatement": "There is a robot in the cell (0,0)(0, 0)(0,0) of an infinite grid. One cell (X,Y)(X, Y)(X,Y) contains an obstacle and all other cells are free. We only know that 1≤X≤R1 \\le X \\le R1≤X≤R and 1≤Y≤C1 \\le Y \\le C1≤Y≤C, but not the exact location of the obstacle.\n\nYou may give the robot a sequence of instructions. There are four types of instructions:\n\n\nL: move one cell to the left, i.e. from a cell (x,y)(x, y)(x,y) to (x−1,y)(x-1, y)(x−1,y)\nR: move one cell to the right, i.e. from a cell (x,y)(x, y)(x,y) to (x+1,y)(x+1, y)(x+1,y)\nD: move one cell down, i.e. from a cell (x,y)(x, y)(x,y) to (x,y−1)(x, y-1)(x,y−1)\nU: move one cell up, i.e. from a cell (x,y)(x, y)(x,y) to (x,y+1)(x, y+1)(x,y+1)\nThe robot attempts to perform these instructions one by one. When performing an instruction, if the cell it needs to move to is free, then it moves to that cell; otherwise, it stays in its current cell.\n\nConsider the following process: you choose a fixed sequence of instructions for the robot, which performs these instructions; then you are given the final cell of the robot and based on only that information, you determine the position of the obstacle. Find a sufficiently short sequence of instructions such that if this process was performed, you would always be able to correctly determine the position of the obstacle. It can be proved that for the given constraints, such a sequence always exists.",
+    "problemStatement": "There is a robot in the cell (0,0)(0, 0)(0,0) of an infinite grid. One cell (X,Y)(X, Y)(X,Y) contains an obstacle and all other cells are free. We only know that 1\u2264X\u2264R1 \\le X \\le R1\u2264X\u2264R and 1\u2264Y\u2264C1 \\le Y \\le C1\u2264Y\u2264C, but not the exact location of the obstacle.\n\nYou may give the robot a sequence of instructions. There are four types of instructions:\n\n\nL: move one cell to the left, i.e. from a cell (x,y)(x, y)(x,y) to (x\u22121,y)(x-1, y)(x\u22121,y)\nR: move one cell to the right, i.e. from a cell (x,y)(x, y)(x,y) to (x+1,y)(x+1, y)(x+1,y)\nD: move one cell down, i.e. from a cell (x,y)(x, y)(x,y) to (x,y\u22121)(x, y-1)(x,y\u22121)\nU: move one cell up, i.e. from a cell (x,y)(x, y)(x,y) to (x,y+1)(x, y+1)(x,y+1)\nThe robot attempts to perform these instructions one by one. When performing an instruction, if the cell it needs to move to is free, then it moves to that cell; otherwise, it stays in its current cell.\n\nConsider the following process: you choose a fixed sequence of instructions for the robot, which performs these instructions; then you are given the final cell of the robot and based on only that information, you determine the position of the obstacle. Find a sufficiently short sequence of instructions such that if this process was performed, you would always be able to correctly determine the position of the obstacle. It can be proved that for the given constraints, such a sequence always exists.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ R, C ≤ 20"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 R, C \u2264 20"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers R and C (1 ≤ R, C ≤ 20) describing the size of the rectangle that contains the unknown obstacle.",
-    "outputFormat": "For each test case output a single line containing a string of characters 'L', 'R', 'U', 'D' (length ≤ 104) that is a sequence of instructions. After the robot executes this sequence, its final cell uniquely determines the obstacle position.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers R and C (1 \u2264 R, C \u2264 20) describing the size of the rectangle that contains the unknown obstacle.",
+    "outputFormat": "For each test case output a single line containing a string of characters 'L', 'R', 'U', 'D' (length \u2264 104) that is a sequence of instructions. After the robot executes this sequence, its final cell uniquely determines the obstacle position.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -106,8 +107,8 @@
     ]
   },
   "solution": {
-    "approach": "We traverse all cells of the rectangle (1..R, 1..C) in a deterministic snake order. The robot starts at (0,0). For each row y from 1 to C we:\n1. Move horizontally across the whole row (right if y is odd, left if y is even).\n2. Move one step up to the next row (unless we are already at the last row).\nThe robot follows this exact path. If the obstacle is at (X,Y), the robot will stop just before entering that cell, i.e., at the cell that precedes (X,Y) in the traversal order. Because the traversal order is known and visits every cell exactly once, the final position uniquely identifies (X,Y). The total number of moves is R*C + R + C ≤ 440, well below the allowed limit.",
-    "timeComplexity": "O(R*C) per test case – we simply generate the path.",
+    "approach": "We traverse all cells of the rectangle (1..R, 1..C) in a deterministic snake order. The robot starts at (0,0). For each row y from 1 to C we:\n1. Move horizontally across the whole row (right if y is odd, left if y is even).\n2. Move one step up to the next row (unless we are already at the last row).\nThe robot follows this exact path. If the obstacle is at (X,Y), the robot will stop just before entering that cell, i.e., at the cell that precedes (X,Y) in the traversal order. Because the traversal order is known and visits every cell exactly once, the final position uniquely identifies (X,Y). The total number of moves is R*C + R + C \u2264 440, well below the allowed limit.",
+    "timeComplexity": "O(R*C) per test case \u2013 we simply generate the path.",
     "spaceComplexity": "O(1) besides the output string.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int R,C; scanf(\"%d %d\",&R,&C); int total=R*C+R+C; char *ans=malloc(total+1); int pos=0; for(int y=1;y<=C;++y){ if(y%2==1){ for(int i=0;i<R;++i) ans[pos++]='R'; }\n else{ for(int i=0;i<R;++i) ans[pos++]='L'; }\n if(y!=C) ans[pos++]='U'; }\n ans[pos]='\\0'; printf(\"%s\\n\",ans); free(ans);} return 0; }",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
-      "Shortest Path",
-      "Floyd-Warshall Algorithm"
+      "Graphs",
+      "Floyd-Warshall Algorithm",
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "To solve this problem, we can use the Floyd-Warshall algorithm to find the shortest path between all pairs of villages. Then, for each village connected to the district headquarter, we calculate the total distance of all villages from their closest village in the path chosen. We keep track of the minimum total distance found and print it as the result for each test case.",
     "timeComplexity": "O(N * K^3) per test case, O(N * K^3) total. The Floyd-Warshall algorithm has a time complexity of O(K^3) for each test case, and we have N test cases.",
-    "spaceComplexity": "O(K^2) — the dominant structure is the adjacency matrix of the graph.",
+    "spaceComplexity": "O(K^2) \u2014 the dominant structure is the adjacency matrix of the graph.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\n#define INF INT_MAX\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    for (int i = 0; i < N; i++) {\n        int K;\n        scanf(\"%d\", &K);\n        int **graph = (int **)malloc(K * sizeof(int *));\n        for (int j = 0; j < K; j++) {\n            graph[j] = (int *)malloc(K * sizeof(int));\n            for (int k = 0; k < K; k++) {\n                graph[j][k] = INF;\n            }\n        }\n        for (int j = 0; j < K; j++) {\n            int F, D;\n            scanf(\"%d %d\", &F, &D);\n            for (int k = 0; k < D; k++) {\n                int village, distance;\n                scanf(\"%d %d\", &village, &distance);\n                graph[j][village - 1] = distance;\n                graph[village - 1][j] = distance;\n            }\n        }\n        int **dist = (int **)malloc(K * sizeof(int *));\n        for (int j = 0; j < K; j++) {\n            dist[j] = (int *)malloc(K * sizeof(int));\n            for (int k = 0; k < K; k++) {\n                dist[j][k] = INF;\n            }\n        }\n        for (int j = 0; j < K; j++) {\n            dist[j][j] = 0;\n        }\n        for (int j = 0; j < K; j++) {\n            for (int k = 0; k < K; k++) {\n                for (int l = 0; l < K; l++) {\n                    dist[j][k] = (dist[j][k] < dist[j][l] + graph[l][k]) ? dist[j][k] : dist[j][l] + graph[l][k];\n                }\n            }\n        }\n        int minTotalDistance = INF;\n        for (int j = 0; j < K; j++) {\n            if (graph[0][j] != INF) {\n                int totalDistance = 0;\n                for (int k = 0; k < K; k++) {\n                    totalDistance += dist[k][j];\n                }\n                minTotalDistance = (minTotalDistance < totalDistance) ? minTotalDistance : totalDistance;\n            }\n        }\n        printf(\"Case %d: %d\\n\", i + 1, minTotalDistance);\n        for (int j = 0; j < K; j++) {\n            free(graph[j]);\n            free(dist[j]);\n        }\n        free(graph);\n        free(dist);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\n#define INF numeric_limits<int>::max()\nint main() {\n    int N;\n    cin >> N;\n    for (int i = 0; i < N; i++) {\n        int K;\n        cin >> K;\n        vector<vector<int>> graph(K, vector<int>(K, INF));\n        for (int j = 0; j < K; j++) {\n            int F, D;\n            cin >> F >> D;\n            for (int k = 0; k < D; k++) {\n                int village, distance;\n                cin >> village >> distance;\n                graph[j][village - 1] = distance;\n                graph[village - 1][j] = distance;\n            }\n        }\n        vector<vector<int>> dist(K, vector<int>(K, INF));\n        for (int j = 0; j < K; j++) {\n            dist[j][j] = 0;\n        }\n        for (int j = 0; j < K; j++) {\n            for (int k = 0; k < K; k++) {\n                for (int l = 0; l < K; l++) {\n                    dist[j][k] = min(dist[j][k], dist[j][l] + graph[l][k]);\n                }\n            }\n        }\n        int minTotalDistance = INF;\n        for (int j = 0; j < K; j++) {\n            if (graph[0][j] != INF) {\n                int totalDistance = 0;\n                for (int k = 0; k < K; k++) {\n                    totalDistance += dist[k][j];\n                }\n                minTotalDistance = min(minTotalDistance, totalDistance);\n            }\n        }\n        cout << \"Case \" << i + 1 << \": \" << minTotalDistance << endl;\n    }\n    return 0;\n}",

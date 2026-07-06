@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Planar Graph",
+      "Graphs",
       "Blossoms",
       "Parity",
-      "Faces"
+      "Faces",
+      "Planar Graph"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,8 +24,8 @@
   "content": {
     "problemStatement": "The Chef has formed a very nice planar graph out of icing on his latest cake. The nodes of the graph are represented by distinct points on the cake and every edge is drawn as a straight line segment between its two endpoints. For each edge e = (u,v) the line segment connecting u and v does not pass through any other point representing some other node. Finally, if two line segments representing different edges e,e' share a common point on the cake, it must be that this common point is in fact a common endpoint v of both e and e' (i.e. no two edges cross).\n\n\n\nNot only is the drawing of the planar graph very nice, the graph itself has some nice properties. For starters, there are no loops in the graph and no two nodes are connected by more than one edge. The graph is also connected and it is impossible to disconnect the graph by removing a single edge.\n\n\n\nDrawing the planar graph divides the plane into \"faces\". More specifically, consider the subset of the plane F = { (x,y) : (x,y) is not a point and (x,y) does not lie on an edge}. The points in F are partitioned into faces where two points P,Q in F lie on the same face if and only if it is possible to draw a path from P to Q without lifting the pencil and without touching any edge or point (i.e. the path stays contained in F).\n\n\n\nAs is well-known in the theory of planar graphs, there is exactly one face that is \"unbounded\" or \"outside\" of the drawing. All other faces are called \"interior\" faces. \nNote that if a graph G is simply a cycle, then there is also only one interior face.\nFor each cycle C and each face F, we say that F is \"contained in\" C if F is a subset (as a set of points in the plane) of the only interior face of the planar drawing obtained by erasing all edges and nodes of G except for those that appear in C.\n\n\n\nThe Chef wants to add an icing blossom on some of the edges in the drawing of the graph in a harmonious manner. He wants to do this so that for each cycle C, the parity of the number of blossoms on edges of C is equal to the parity of the number of faces contained in C. Your task is to determine if this is possible and, if so, describe which edges should receive a blossom.",
     "constraints": [
-      "3 ≤ N ≤ 10,000",
-      "N ≤ M ≤ 3N - 6",
+      "3 \u2264 N \u2264 10,000",
+      "N \u2264 M \u2264 3N - 6",
       "The integers describing the coordinates of the points are at most 1,000,000,000 in absolute value",
       "No two nodes will be located at the same point, no edge has equal endpoints, and no edge will be given more than once in the input"
     ],
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal algorithm to identify the faces of the planar graph and then determine the parity of the number of blossoms on each face. We can use a depth-first search (DFS) algorithm to traverse the graph and identify the faces. Once we have identified the faces, we can determine the parity of the number of blossoms on each face by counting the number of edges that belong to each face.",
     "timeComplexity": "O(N + M) per test case, O(T * (N + M)) total",
-    "spaceComplexity": "O(N + M) — the dominant structure is the adjacency list representation of the graph",
+    "spaceComplexity": "O(N + M) \u2014 the dominant structure is the adjacency list representation of the graph",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAXN 10000\n#define MAXM 30000\n\n// Define the structure for a node\ntypedef struct Node {\n    int x, y;\n    struct Node* next;\n} Node;\n\n// Define the structure for an edge\ntypedef struct Edge {\n    int u, v;\n    struct Edge* next;\n} Edge;\n\n// Function to add an edge to the graph\nvoid addEdge(Edge** edges, int u, int v) {\n    Edge* newEdge = (Edge*)malloc(sizeof(Edge));\n    newEdge->u = u;\n    newEdge->v = v;\n    newEdge->next = edges[u];\n    edges[u] = newEdge;\n}\n\n// Function to perform DFS\nvoid dfs(int* visited, Edge** edges, int node, int* blossoms) {\n    visited[node] = 1;\n    Edge* temp = edges[node];\n    while (temp != NULL) {\n        if (!visited[temp->v]) {\n            dfs(visited, edges, temp->v, blossoms);\n        }\n        temp = temp->next;\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        Node* nodes = (Node*)malloc(N * sizeof(Node));\n        Edge** edges = (Edge**)malloc(N * sizeof(Edge*));\n        for (int i = 0; i < N; i++) {\n            edges[i] = NULL;\n        }\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &nodes[i].x, &nodes[i].y);\n        }\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            addEdge(edges, u, v);\n        }\n        int* visited = (int*)malloc(N * sizeof(int));\n        int* blossoms = (int*)malloc(M * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            visited[i] = 0;\n        }\n        for (int i = 0; i < M; i++) {\n            blossoms[i] = 0;\n        }\n        dfs(visited, edges, 0, blossoms);\n        for (int i = 0; i < M; i++) {\n            printf(\"%d \", blossoms[i]);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a node\nstruct Node {\n    int x, y;\n};\n\n// Define the structure for an edge\nstruct Edge {\n    int u, v;\n};\n\n// Function to add an edge to the graph\nvoid addEdge(vector<vector<int>>& edges, int u, int v) {\n    edges[u].push_back(v);\n}\n\n// Function to perform DFS\nvoid dfs(vector<bool>& visited, vector<vector<int>>& edges, int node, vector<int>& blossoms) {\n    visited[node] = true;\n    for (int i = 0; i < edges[node].size(); i++) {\n        if (!visited[edges[node][i]]) {\n            dfs(visited, edges, edges[node][i], blossoms);\n        }\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        vector<Node> nodes(N);\n        vector<vector<int>> edges(N);\n        for (int i = 0; i < N; i++) {\n            cin >> nodes[i].x >> nodes[i].y;\n        }\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            cin >> u >> v;\n            addEdge(edges, u, v);\n        }\n        vector<bool> visited(N, false);\n        vector<int> blossoms(M, 0);\n        dfs(visited, edges, 0, blossoms);\n        for (int i = 0; i < M; i++) {\n            cout << blossoms[i] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",

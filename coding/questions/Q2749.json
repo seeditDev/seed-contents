@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "Two Pointers",
+      "Sorting",
+      "Arrays",
       "Binary Search",
-      "Sorting"
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "Read problems statements in Russian hereThe Head Chef is studying the motivation and satisfaction level of his chefs . The motivation and satisfaction of a Chef can be represented as an integer . The Head Chef wants to know the ** N ** th smallest sum of one satisfaction value and one motivation value for various values of ** N ** . The satisfaction and motivation values may correspond to the same chef or different chefs . Given two arrays, the first array denoting the motivation value and the second array denoting the satisfaction value of the chefs . We can get a set of sums(add one element from the first array and one from the second). For each query ( denoted by an integer qi ( i = 1 to Q ) , Q denotes number of queries ) , find the qi th element in the set of sums ( in non-decreasing order ) .",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ K ≤ 20000",
-      "1 ≤ Q ≤ 500",
-      "1 ≤ qi ≤ K*K",
-      "1 ≤ Ai ≤ 10^18",
-      "1 ≤ Bi ≤ 10^18"
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 K \u2264 20000",
+      "1 \u2264 Q \u2264 500",
+      "1 \u2264 qi \u2264 K*K",
+      "1 \u2264 Ai \u2264 10^18",
+      "1 \u2264 Bi \u2264 10^18"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case contains two integers K and Q on the first line, followed by two lines of K space-separated integers representing the motivation and satisfaction values of the chefs. The next Q lines contain a single integer qi, representing the query for the qi-th smallest sum.",
     "outputFormat": "For each query of each test case, print the qi-th smallest sum of one satisfaction value and one motivation value on a new line.",
@@ -118,7 +119,7 @@
   "solution": {
     "approach": "To solve this problem, we can generate all possible sums of one motivation value and one satisfaction value, sort them, and then answer each query by finding the qi-th smallest sum. However, generating all sums would be inefficient for large K. Instead, we can use a min-heap to efficiently find the smallest sums. We can also use binary search to find the qi-th smallest sum in the sorted array of sums.",
     "timeComplexity": "O(T * (K^2 * log(K^2) + Q * log(K^2))) per test case, O(T * (K^2 * log(K^2) + Q * log(K^2))) total.",
-    "spaceComplexity": "O(K^2) — for storing all possible sums.",
+    "spaceComplexity": "O(K^2) \u2014 for storing all possible sums.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint compare(const void *a, const void *b) {\n    return (*(long long*)a - *(long long*)b);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int K, Q;\n        scanf(\"%d %d\", &K, &Q);\n        long long A[K], B[K], sums[K * K];\n        for (int i = 0; i < K; i++) {\n            scanf(\"%lld\", &A[i]);\n        }\n        for (int i = 0; i < K; i++) {\n            scanf(\"%lld\", &B[i]);\n        }\n        int index = 0;\n        for (int i = 0; i < K; i++) {\n            for (int j = 0; j < K; j++) {\n                sums[index++] = A[i] + B[j];\n            }\n        }\n        qsort(sums, K * K, sizeof(long long), compare);\n        for (int i = 0; i < Q; i++) {\n            int qi;\n            scanf(\"%d\", &qi);\n            printf(\"%lld\\n\", sums[qi - 1]);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int K, Q;\n        cin >> K >> Q;\n        long long A[K], B[K], sums[K * K];\n        for (int i = 0; i < K; i++) {\n            cin >> A[i];\n        }\n        for (int i = 0; i < K; i++) {\n            cin >> B[i];\n        }\n        int index = 0;\n        for (int i = 0; i < K; i++) {\n            for (int j = 0; j < K; j++) {\n                sums[index++] = A[i] + B[j];\n            }\n        }\n        sort(sums, sums + K * K);\n        for (int i = 0; i < Q; i++) {\n            int qi;\n            cin >> qi;\n            cout << sums[qi - 1] << endl;\n        }\n    }\n    return 0;\n}",

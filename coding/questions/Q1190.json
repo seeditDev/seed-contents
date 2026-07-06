@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Bit Manipulation",
+    "category": "Bit Manipulation",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "popcount",
       "binary representation",
-      "greedy"
+      "greedy",
+      "Bit Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "Chef has two integers AAA and BBB. He can perform the following operation on AAA an arbitrary number of times (including zero):\n\n\nwrite AAA as a binary number with an arbitrary number of leading zeroes (possibly without any)\nshuffle the binary digits of AAA in an arbitrary way, obtaining a number sss\nreplace AAA by s+1s+1s+1\nChef is wondering about the minimum number of operations he has to perform on AAA in order to obtain BBB. Compute this number or determine that it is impossible.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "0 ≤ A, B ≤ 10^18"
+      "1 \u2264 T \u2264 10^5",
+      "0 \u2264 A, B \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers A and B (0 ≤ A, B ≤ 10^18).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers A and B (0 \u2264 A, B \u2264 10^18).",
     "outputFormat": "For each test case output a single line containing the minimum number of operations required to transform A into B, or -1 if it is impossible.",
     "sampleTestCases": [
       {
@@ -38,13 +39,13 @@
         "id": "sample_2",
         "input": "4\\n0 0\\n0 1\\n4 2\\n7 8",
         "output": "0\\n1\\n1\\n1",
-        "explanation": "0→0 needs 0. 0→1 needs one operation (shuffle 0 gives 0, +1 =1). 4 (100) can be shuffled to 001 (1) then +1 =2, so 1 operation. 7 (111) shuffled stays 111, +1 =8, so 1 operation."
+        "explanation": "0\u21920 needs 0. 0\u21921 needs one operation (shuffle 0 gives 0, +1 =1). 4 (100) can be shuffled to 001 (1) then +1 =2, so 1 operation. 7 (111) shuffled stays 111, +1 =8, so 1 operation."
       },
       {
         "id": "sample_3",
         "input": "3\\n5 3\\n10 10\\n123456789012345678 123456789012345679",
         "output": "-1\\n0\\n1",
-        "explanation": "First: popcount(5)=2, popcount(3-1)=popcount(2)=1, pcA>pcB so impossible. Second: A equals B → 0. Third: popcount(A)=popcount(123456789012345678) and popcount(B-1)=same, answer = 0+1 =1."
+        "explanation": "First: popcount(5)=2, popcount(3-1)=popcount(2)=1, pcA>pcB so impossible. Second: A equals B \u2192 0. Third: popcount(A)=popcount(123456789012345678) and popcount(B-1)=same, answer = 0+1 =1."
       }
     ]
   },
@@ -112,9 +113,9 @@
     ]
   },
   "solution": {
-    "approach": "For a number X let popcnt(X) be the number of ones in its binary representation. In one operation we may reorder the bits of the current A arbitrarily (keeping the number of ones unchanged) and then add 1. Therefore after an operation the new value is (some Y with popcnt(Y)=popcnt(old A)) + 1. Consequently the only thing that matters is the popcount of the current value.\n\n* If A == B, zero operations are needed.\n* If B == 0, the only way to obtain 0 is to start with 0 and perform no operation; otherwise impossible.\n* If B == 1, we need a predecessor Y = 0, which requires popcnt(A)=0, i.e. A must be 0. Then exactly one operation (0 → 0+1) works.\n* For B ≥ 2, let pA = popcnt(A) and pB = popcnt(B‑1). After the last operation we must have a number Y with popcnt(Y)=pA such that Y+1 = B, i.e. popcnt(B‑1)=pB. Each operation can increase the popcount by at most 1 (by choosing Y that after adding 1 creates an extra carry). Hence the minimal number of operations is (pB - pA) + 1, provided pA ≤ pB. If pA > pB the transformation is impossible.\n\nThe algorithm follows these rules directly and runs in O(1) per test case using the built‑in popcount operation.",
-    "timeComplexity": "O(T) – each test case needs only a constant‑time popcount.",
-    "spaceComplexity": "O(1) – only a few integer variables are used.",
+    "approach": "For a number X let popcnt(X) be the number of ones in its binary representation. In one operation we may reorder the bits of the current A arbitrarily (keeping the number of ones unchanged) and then add 1. Therefore after an operation the new value is (some Y with popcnt(Y)=popcnt(old A)) + 1. Consequently the only thing that matters is the popcount of the current value.\n\n* If A == B, zero operations are needed.\n* If B == 0, the only way to obtain 0 is to start with 0 and perform no operation; otherwise impossible.\n* If B == 1, we need a predecessor Y = 0, which requires popcnt(A)=0, i.e. A must be 0. Then exactly one operation (0 \u2192 0+1) works.\n* For B \u2265 2, let pA = popcnt(A) and pB = popcnt(B\u20111). After the last operation we must have a number Y with popcnt(Y)=pA such that Y+1 = B, i.e. popcnt(B\u20111)=pB. Each operation can increase the popcount by at most 1 (by choosing Y that after adding 1 creates an extra carry). Hence the minimal number of operations is (pB - pA) + 1, provided pA \u2264 pB. If pA > pB the transformation is impossible.\n\nThe algorithm follows these rules directly and runs in O(1) per test case using the built\u2011in popcount operation.",
+    "timeComplexity": "O(T) \u2013 each test case needs only a constant\u2011time popcount.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic int popcountll(uint64_t x) {\n    return __builtin_popcountll(x);\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t A, B;\n        scanf(\"%llu %llu\", &A, &B);\n        if (A == B) {\n            printf(\"0\\n\");\n            continue;\n        }\n        if (B == 0) {\n            printf(\"-1\\n\");\n            continue;\n        }\n        if (B == 1) {\n            printf(A == 0 ? \"1\\n\" : \"-1\\n\");\n            continue;\n        }\n        int aa = popcountll(A);\n        int bb = popcountll(B - 1);\n        if (aa > bb) {\n            printf(\"-1\\n\");\n        } else {\n            printf(\"%d\\n\", bb - aa + 1);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while (T--) {\n        unsigned long long A, B;\n        cin >> A >> B;\n        if (A == B) {\n            cout << 0 << '\\n';\n            continue;\n        }\n        if (B == 0) {\n            cout << -1 << '\\n';\n            continue;\n        }\n        if (B == 1) {\n            cout << (A == 0 ? 1 : -1) << '\\n';\n            continue;\n        }\n        int aa = __builtin_popcountll(A);\n        int bb = __builtin_popcountll(B - 1);\n        if (aa > bb) cout << -1 << '\\n';\n        else cout << (bb - aa + 1) << '\\n';\n    }\n    return 0;\n}",

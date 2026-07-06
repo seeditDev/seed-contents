@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Depth-First Search",
-      "Tree"
+      "Tree",
+      "Graphs",
+      "Depth-First Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a depth-first search (DFS) approach. We start by initializing a count variable to store the number of subtrees that satisfy the condition. Then, for each node in the tree, we perform a DFS traversal and calculate the length of the longest path in the subtree rooted at that node. If the length of the longest path is less than or equal to K, we increment the count. We repeat this process for all nodes in the tree and finally output the count.",
     "timeComplexity": "O(T * N^2) per test case, O(T * N^2) total. The time complexity is quadratic because in the worst case, we are performing a DFS traversal for each node in the tree.",
-    "spaceComplexity": "O(N) — the dominant structure is the adjacency list representation of the tree.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the adjacency list representation of the tree.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX_N 60\n\nint count;\nint max_len;\nint K;\nint adj[MAX_N][MAX_N];\nint visited[MAX_N];\n\nvoid dfs(int node, int parent, int len) {\n    visited[node] = 1;\n    int max_child_len = 0;\n    for (int i = 0; i < MAX_N; i++) {\n        if (adj[node][i] == 1 && i != parent) {\n            dfs(i, node, len + 1);\n            max_child_len = (max_child_len > max_len) ? max_child_len : max_len;\n        }\n    }\n    if (max_child_len <= K) {\n        count++;\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d %d\", &N, &K);\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                adj[i][j] = 0;\n            }\n        }\n        for (int i = 0; i < N - 1; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            adj[u][v] = adj[v][u] = 1;\n        }\n        count = 0;\n        for (int i = 0; i < N; i++) {\n            max_len = 0;\n            for (int j = 0; j < N; j++) {\n                visited[j] = 0;\n            }\n            dfs(i, -1, 0);\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nconst int MAX_N = 60;\n\nint count;\nint max_len;\nint K;\nvector<vector<int>> adj;\nvector<int> visited;\n\nvoid dfs(int node, int parent, int len) {\n    visited[node] = 1;\n    int max_child_len = 0;\n    for (int i = 0; i < adj[node].size(); i++) {\n        if (adj[node][i] == 1 && i != parent) {\n            dfs(i, node, len + 1);\n            max_child_len = (max_child_len > max_len) ? max_child_len : max_len;\n        }\n    }\n    if (max_child_len <= K) {\n        count++;\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N >> K;\n        adj.clear();\n        visited.clear();\n        adj.resize(N, vector<int>(N, 0));\n        visited.resize(N, 0);\n        for (int i = 0; i < N - 1; i++) {\n            int u, v;\n            cin >> u >> v;\n            adj[u][v] = adj[v][u] = 1;\n        }\n        count = 0;\n        for (int i = 0; i < N; i++) {\n            max_len = 0;\n            for (int j = 0; j < N; j++) {\n                visited[j] = 0;\n            }\n            dfs(i, -1, 0);\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

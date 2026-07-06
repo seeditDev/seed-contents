@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Convex Polygons",
+      "Math",
       "Stick Lengths"
     ],
     "companyTags": [],
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Given **n** sticks' lengths, determine whether there is a solution to choose **2k** out of them and use these **2k** sticks to form two **k**-convex polygons (non-degenerated), namely, two convex polygons each has exactly **k** sticks as its sides, and every adjacent sticks are not parallel.",
     "constraints": [
-      "2k ≤ n ≤ 1000",
-      "3 ≤ k ≤ 10",
-      "1 ≤ length of each stick ≤ 10^9"
+      "2k \u2264 n \u2264 1000",
+      "3 \u2264 k \u2264 10",
+      "1 \u2264 length of each stick \u2264 10^9"
     ],
     "inputFormat": "First line contains two space-separated integers n and k, denoting the number of sticks and the size of convex polygon we needed. The second line contains n positive integers, denoting the lengths of sticks.",
     "outputFormat": "Print 'Yes' (without quotes) in the first line if exists a solution. Otherwise print 'No' (without quotes) instead. If such solution exists, you should output a plan in the second line. Print 2k indexes (indexes start from 1) of the sticks you chosen. First k sticks compose the first k-convex polygon. And the later k sticks form the second.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by iterating over all possible combinations of 2k sticks and checking if they can form two convex polygons. We can use the Shoelace formula to calculate the area of the polygon and check if it is convex.",
     "timeComplexity": "O(n^2 * k) per test case, O(T * n^2 * k) total.",
-    "spaceComplexity": "O(n) — for storing the stick lengths.",
+    "spaceComplexity": "O(n) \u2014 for storing the stick lengths.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n#define MAXN 1000\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint is_convex(int *sticks, int k) {\n    int i, j;\n    double area = 0;\n    for (i = 0; i < k; i++) {\n        j = (i + 1) % k;\n        area += sticks[i] * sticks[j];\n    }\n    return area > 0;\n}\nint main() {\n    int T, n, k, i, j;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &n, &k);\n        int sticks[MAXN];\n        for (i = 0; i < n; i++) {\n            scanf(\"%d\", &sticks[i]);\n        }\n        qsort(sticks, n, sizeof(int), compare);\n        for (i = 0; i <= n - 2 * k; i++) {\n            for (j = i + k; j <= n - k; j++) {\n                int first_k[MAXN], second_k[MAXN];\n                for (int l = 0; l < k; l++) {\n                    first_k[l] = sticks[i + l];\n                    second_k[l] = sticks[j + l];\n                }\n                if (is_convex(first_k, k) && is_convex(second_k, k)) {\n                    printf(\"Yes\\n\");\n                    for (int l = 0; l < k; l++) {\n                        printf(\"%d \", i + l + 1);\n                    }\n                    for (int l = 0; l < k; l++) {\n                        printf(\"%d \", j + l + 1);\n                    }\n                    printf(\"\\n\");\n                    break;\n                }\n            }\n            if (i <= n - 2 * k && j <= n - k) break;\n        }\n        if (i > n - 2 * k || j > n - k) printf(\"No\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAXN 1000\nbool is_convex(int sticks[], int k) {\n    int i, j;\n    double area = 0;\n    for (i = 0; i < k; i++) {\n        j = (i + 1) % k;\n        area += sticks[i] * sticks[j];\n    }\n    return area > 0;\n}\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T, n, k, i, j;\n    cin >> T;\n    while (T--) {\n        cin >> n >> k;\n        int sticks[MAXN];\n        for (i = 0; i < n; i++) {\n            cin >> sticks[i];\n        }\n        sort(sticks, sticks + n);\n        for (i = 0; i <= n - 2 * k; i++) {\n            for (j = i + k; j <= n - k; j++) {\n                int first_k[MAXN], second_k[MAXN];\n                for (int l = 0; l < k; l++) {\n                    first_k[l] = sticks[i + l];\n                    second_k[l] = sticks[j + l];\n                }\n                if (is_convex(first_k, k) && is_convex(second_k, k)) {\n                    cout << \"Yes\" << endl;\n                    for (int l = 0; l < k; l++) {\n                        cout << i + l + 1 << \" \";\n                    }\n                    for (int l = 0; l < k; l++) {\n                        cout << j + l + 1 << \" \";\n                    }\n                    cout << endl;\n                    break;\n                }\n            }\n            if (i <= n - 2 * k && j <= n - k) break;\n        }\n        if (i > n - 2 * k || j > n - k) cout << \"No\" << endl;\n    }\n    return 0;\n}",

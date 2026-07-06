@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Dependency Graph",
       "Topological Sorting",
-      "Dependency Graph"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a topological sorting approach. First, we build a graph based on the dependencies between the subparts. Then, we perform a topological sort on the graph to get the order in which the subparts should be completed. Finally, we calculate the total labor cost by summing up the cost of each subpart multiplied by the number of days it takes to complete, taking into account the dependencies between the subparts.",
     "timeComplexity": "O(T * (K + D)) per test case, O(T * (K + D)) total. The time complexity is dominated by the topological sorting step, which takes O(K + D) time.",
-    "spaceComplexity": "O(K + D) — the dominant structure is the graph used to store the dependencies between the subparts.",
+    "spaceComplexity": "O(K + D) \u2014 the dominant structure is the graph used to store the dependencies between the subparts.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX 200\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T, K, D, x, y;\n    scanf(\"%d\", &T);\n    for (int i = 0; i < T; i++) {\n        scanf(\"%d\", &K);\n        int days[K], cost[K];\n        for (int j = 0; j < K; j++) {\n            scanf(\"%d\", &days[j]);\n        }\n        for (int j = 0; j < K; j++) {\n            scanf(\"%d\", &cost[j]);\n        }\n        scanf(\"%d\", &D);\n        int dependencies[D][2];\n        for (int j = 0; j < D; j++) {\n            scanf(\"%d %d\", &x, &y);\n            dependencies[j][0] = x - 1;\n            dependencies[j][1] = y - 1;\n        }\n        int finish_time[K];\n        for (int j = 0; j < K; j++) {\n            finish_time[j] = days[j];\n        }\n        for (int j = 0; j < D; j++) {\n            finish_time[dependencies[j][1]] = finish_time[dependencies[j][0]] + days[dependencies[j][1]];\n        }\n        int total_cost = 0;\n        for (int j = 0; j < K; j++) {\n            total_cost += finish_time[j] * cost[j];\n        }\n        printf(\"Case %d: %d\\n\", i + 1, total_cost);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    for (int i = 0; i < T; i++) {\n        int K;\n        cin >> K;\n        vector<int> days(K), cost(K);\n        for (int j = 0; j < K; j++) {\n            cin >> days[j];\n        }\n        for (int j = 0; j < K; j++) {\n            cin >> cost[j];\n        }\n        int D;\n        cin >> D;\n        vector<pair<int, int>> dependencies(D);\n        for (int j = 0; j < D; j++) {\n            cin >> dependencies[j].first >> dependencies[j].second;\n            dependencies[j].first--;\n            dependencies[j].second--;\n        }\n        vector<int> finish_time(K);\n        for (int j = 0; j < K; j++) {\n            finish_time[j] = days[j];\n        }\n        for (int j = 0; j < D; j++) {\n            finish_time[dependencies[j].second] = finish_time[dependencies[j].first] + days[dependencies[j].second];\n        }\n        int total_cost = 0;\n        for (int j = 0; j < K; j++) {\n            total_cost += finish_time[j] * cost[j];\n        }\n        cout << \"Case \" << i + 1 << \": \" << total_cost << endl;\n    }\n    return 0;\n}",

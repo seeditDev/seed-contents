@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming | Recursion",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Prime Numbers",
       "Modular Arithmetic",
-      "Recursive Functions"
+      "Recursive Functions",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the sum of the values returned by Fun(S) for every distinct sequence S. We can use a recursive approach to calculate Fun(S) for each sequence. We also need to use modular arithmetic to avoid overflow.",
-    "timeComplexity": "O(T * N * 2^N) — because we have T test cases, and for each test case, we have N elements in the array A, and we generate all possible sequences of these elements, which is 2^N.",
-    "spaceComplexity": "O(N) — because we need to store the recursive call stack, which can go up to a depth of N in the worst case.",
+    "timeComplexity": "O(T * N * 2^N) \u2014 because we have T test cases, and for each test case, we have N elements in the array A, and we generate all possible sequences of these elements, which is 2^N.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the recursive call stack, which can go up to a depth of N in the worst case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long power(long long a, long long b, long long m) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1)\n            res = (res * a) % m;\n        a = (a * a) % m;\n        b >>= 1;\n    }\n    return res;\n}\n\nlong long fun(long long* A, int* S, int len, int N, long long M) {\n    if (len == 1)\n        return A[S[0]];\n    long long res = power(A[S[0]], fun(A, S + 1, len - 1, N, M), M);\n    return res;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        long long* A = (long long*)malloc(N * sizeof(long long));\n        for (int i = 0; i < N; i++)\n            scanf(\"%lld\", &A[i]);\n        long long sum = 0;\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int len = 0;\n            int* S = (int*)malloc(N * sizeof(int));\n            for (int i = 0; i < N; i++) {\n                if (mask & (1 << i)) {\n                    S[len] = i;\n                    len++;\n                }\n            }\n            sum = (sum + fun(A, S, len, N, M)) % M;\n            free(S);\n        }\n        printf(\"%lld\\n\", sum);\n        free(A);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nlong long power(long long a, long long b, long long m) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1)\n            res = (res * a) % m;\n        a = (a * a) % m;\n        b >>= 1;\n    }\n    return res;\n}\n\nlong long fun(long long* A, int* S, int len, int N, long long M) {\n    if (len == 1)\n        return A[S[0]];\n    long long res = power(A[S[0]], fun(A, S + 1, len - 1, N, M), M);\n    return res;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        long long* A = new long long[N];\n        for (int i = 0; i < N; i++)\n            cin >> A[i];\n        long long sum = 0;\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int len = 0;\n            int* S = new int[N];\n            for (int i = 0; i < N; i++) {\n                if (mask & (1 << i)) {\n                    S[len] = i;\n                    len++;\n                }\n            }\n            sum = (sum + fun(A, S, len, N, M)) % M;\n            delete[] S;\n        }\n        cout << sum << endl;\n        delete[] A;\n    }\n    return 0;\n}",

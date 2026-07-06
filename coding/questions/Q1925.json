@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Rock Paper Scissors",
-      "Game Theory"
+      "Game Theory",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -32,7 +33,7 @@
         "id": "sample_1",
         "input": "1\\n3\\nScissors Paper\\nRock Paper\\nRock Paper",
         "output": "Round 1: You\nRound 2: Computer\nRound 3: Computer\nComputer won the overall match",
-        "explanation": "Round 1: Scissors beats Paper → You win. Round 2 and 3: Paper beats Rock → Computer wins both. Computer has 2 wins vs 1 win for You, so the overall winner is Computer."
+        "explanation": "Round 1: Scissors beats Paper \u2192 You win. Round 2 and 3: Paper beats Rock \u2192 Computer wins both. Computer has 2 wins vs 1 win for You, so the overall winner is Computer."
       },
       {
         "id": "sample_2",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by simulating each round of the game and determining the winner based on the game's rules. The overall winner of the match is the player who wins the most rounds.",
     "timeComplexity": "O(T * N) per test case, O(T * N) total.",
-    "spaceComplexity": "O(1) — the space used does not grow with the size of the input.",
+    "spaceComplexity": "O(1) \u2014 the space used does not grow with the size of the input.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint result(const char *a, const char *b) {\n    if (strcmp(a, b) == 0) return 0;\n    // Rock\n    if (strcmp(a, \"Rock\") == 0) {\n        if (strcmp(b, \"Scissors\") == 0 || strcmp(b, \"Water\") == 0) return 1;\n        return -1; // Paper\n    }\n    // Paper\n    if (strcmp(a, \"Paper\") == 0) {\n        if (strcmp(b, \"Rock\") == 0) return 1;\n        if (strcmp(b, \"Scissors\") == 0 || strcmp(b, \"Water\") == 0) return -1;\n    }\n    // Scissors\n    if (strcmp(a, \"Scissors\") == 0) {\n        if (strcmp(b, \"Paper\") == 0 || strcmp(b, \"Water\") == 0) return 1;\n        return -1; // Rock\n    }\n    // Water\n    if (strcmp(a, \"Water\") == 0) {\n        if (strcmp(b, \"Paper\") == 0 || strcmp(b, \"Scissors\") == 0) return 1;\n        if (strcmp(b, \"Rock\") == 0) return -1;\n    }\n    return 0; // should never reach\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char you[20], comp[20];\n        int youScore = 0, compScore = 0;\n        for (int i = 1; i <= N; ++i) {\n            scanf(\"%s %s\", you, comp);\n            int r = result(you, comp);\n            if (r == 1) { ++youScore; printf(\"Round %d: You\\n\", i); }\n            else if (r == -1) { ++compScore; printf(\"Round %d: Computer\\n\", i); }\n            else { printf(\"Round %d: Tie\\n\", i); }\n        }\n        if (youScore > compScore) printf(\"You won the overall match\\n\");\n        else if (compScore > youScore) printf(\"Computer won the overall match\\n\");\n        else printf(\"Match tied\\n\");\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint result(const string &a, const string &b) {\n    if (a == b) return 0;\n    if (a == \"Rock\") {\n        if (b == \"Scissors\" || b == \"Water\") return 1;\n        return -1; // Paper\n    }\n    if (a == \"Paper\") {\n        if (b == \"Rock\") return 1;\n        if (b == \"Scissors\" || b == \"Water\") return -1;\n    }\n    if (a == \"Scissors\") {\n        if (b == \"Paper\" || b == \"Water\") return 1;\n        return -1; // Rock\n    }\n    if (a == \"Water\") {\n        if (b == \"Paper\" || b == \"Scissors\") return 1;\n        if (b == \"Rock\") return -1;\n    }\n    return 0;\n}\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        int youScore=0, compScore=0;\n        for(int i=1;i<=N;++i){\n            string you, comp; cin>>you>>comp;\n            int r=result(you,comp);\n            if(r==1){ ++youScore; cout<<\"Round \"<<i<<\": You\\n\"; }\n            else if(r==-1){ ++compScore; cout<<\"Round \"<<i<<\": Computer\\n\"; }\n            else cout<<\"Round \"<<i<<\": Tie\\n\";\n        }\n        if(youScore>compScore) cout<<\"You won the overall match\\n\";\n        else if(compScore>youScore) cout<<\"Computer won the overall match\\n\";\n        else cout<<\"Match tied\\n\";\n    }\n    return 0;\n}\n",

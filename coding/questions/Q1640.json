@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Bit Manipulation",
+      "Monotonic Property",
       "Binary Search",
-      "Greedy",
-      "Monotonic Property"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array AAA consisting of NNN non-negative integers.\n\nIt is guaranteed that AAA contains **at least two distinct** elements.\n\nYou are also given a non-negative integer XXX.\n\nFor each YYY (0≤Y≤X)(0 \\leq Y \\leq X)(0≤Y≤X), we create an array BBB of size NNN such that Bi=Ai∣YB_i = A_i | YBi​=Ai​∣Y, where ∣|∣ denotes the bitwise OR operation.\n\nFind the **largest** integer Y(Y≤X)Y(Y \\leq X)Y(Y≤X) such that the array BBB contains **at least two distinct** elements.\n\n**Function Description:**You are given a function named **`maximizeXor`** that you must complete.\n\nThe function has the following parameters:\n\n\n**`a`** – a vector of `N` non-negative integers\n**`x`** – a non-negative integer representing the upper bound for `Y`\nThe function must **return this maximum valid value of `Y`**.\n\nThe input and output formats given below are only if you want to test using custom inputs.",
+    "problemStatement": "You are given an array AAA consisting of NNN non-negative integers.\n\nIt is guaranteed that AAA contains **at least two distinct** elements.\n\nYou are also given a non-negative integer XXX.\n\nFor each YYY (0\u2264Y\u2264X)(0 \\leq Y \\leq X)(0\u2264Y\u2264X), we create an array BBB of size NNN such that Bi=Ai\u2223YB_i = A_i | YBi\u200b=Ai\u200b\u2223Y, where \u2223|\u2223 denotes the bitwise OR operation.\n\nFind the **largest** integer Y(Y\u2264X)Y(Y \\leq X)Y(Y\u2264X) such that the array BBB contains **at least two distinct** elements.\n\n**Function Description:**You are given a function named **`maximizeXor`** that you must complete.\n\nThe function has the following parameters:\n\n\n**`a`** \u2013 a vector of `N` non-negative integers\n**`x`** \u2013 a non-negative integer representing the upper bound for `Y`\nThe function must **return this maximum valid value of `Y`**.\n\nThe input and output formats given below are only if you want to test using custom inputs.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "2 ≤ N ≤ 10^5",
-      "0 ≤ Ai, X < 2^30",
-      "The sum of N over all test cases does not exceed 2·10^5"
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f10^5",
+      "2\u202f\u2264\u202fN\u202f\u2264\u202f10^5",
+      "0\u202f\u2264\u202fAi,\u202fX\u202f<\u202f2^30",
+      "The sum of N over all test cases does not exceed 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X — the size of the array and the maximum allowed value of Y. The second line contains N space‑separated non‑negative integers A1, A2, …, AN.",
-    "outputFormat": "For each test case output a single line containing the largest integer Y (0 ≤ Y ≤ X) such that after replacing every Ai by (Ai | Y) the resulting array contains at least two distinct values.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X \u2014 the size of the array and the maximum allowed value of Y. The second line contains N space\u2011separated non\u2011negative integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case output a single line containing the largest integer Y (0\u202f\u2264\u202fY\u202f\u2264\u202fX) such that after replacing every Ai by (Ai\u202f|\u202fY) the resulting array contains at least two distinct values.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed Y the condition \"array B has at least two distinct elements\" can be checked in O(N) by computing the first value v = A0 | Y and verifying whether any other Ai | Y differs from v. Observe that if Y1 ≤ Y2 (bitwise) then every Ai|Y1 ≤ Ai|Y2, therefore increasing Y can only make distinct values merge, never create new ones. Consequently the predicate P(Y): \"B has ≥2 distinct values\" is monotone decreasing with Y. Hence the set of Y that satisfy P is a prefix [0, Ymax]. We can binary‑search the largest Y in [0, X] for which P(Y) holds. Each test case needs O(N·log X) time (log X ≤ 30) and O(1) extra space.",
-    "timeComplexity": "O(N·log X) per test case (≈ 30·N), total O((sum N)·log X).",
+    "approach": "For a fixed Y the condition \"array B has at least two distinct elements\" can be checked in O(N) by computing the first value v = A0 | Y and verifying whether any other Ai | Y differs from v. Observe that if Y1 \u2264 Y2 (bitwise) then every Ai|Y1 \u2264 Ai|Y2, therefore increasing Y can only make distinct values merge, never create new ones. Consequently the predicate P(Y): \"B has \u22652 distinct values\" is monotone decreasing with Y. Hence the set of Y that satisfy P is a prefix [0, Ymax]. We can binary\u2011search the largest Y in [0, X] for which P(Y) holds. Each test case needs O(N\u00b7log\u202fX) time (log\u202fX \u2264 30) and O(1) extra space.",
+    "timeComplexity": "O(N\u00b7log\u202fX) per test case (\u2248 30\u00b7N), total O((sum\u202fN)\u00b7log\u202fX).",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n\nstatic bool hasDistinct(int *a, int n, int y) {\n    int first = a[0] | y;\n    for (int i = 1; i < n; ++i) {\n        if ((a[i] | y) != first) return true;\n    }\n    return false;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, X; scanf(\"%d %d\", &N, &X);\n        int a[N];\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &a[i]);\n        int lo = 0, hi = X, ans = 0;\n        while (lo <= hi) {\n            int mid = lo + ((hi - lo) >> 1);\n            if (hasDistinct(a, N, mid)) {\n                ans = mid; // mid works, try higher\n                lo = mid + 1;\n            } else {\n                hi = mid - 1;\n            }\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

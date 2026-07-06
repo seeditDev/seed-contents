@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Nim",
       "Impartial Game",
+      "Math",
       "Greedy"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and his best friend Aleksa are into mathematical games these days. Today, they have some **( ≥ 0 )** black cells represented as **B**, and a white cell represented as **W**, lying randomly in a straight line.\nThey have decided to play with these cells. In a move, a player chooses some **( &gt; 0 )** black cells lying on any one side of the white cell and remove them. It should be noted that a player is not allowed to choose black cells from both side of the given white cell. Both the players alternate their moves, and play optimally. The player who is unable to move in his respective turn will lose the game.\n\nAleksa, being a girl, has a habit of playing first. But Chef is fairly smart himself, and will not play the game if he is going to lose it. Therefore, he wants to know the winner beforehand. Can you tell him who is going to win the game for the given configuration of cells?",
+    "problemStatement": "Chef and his best friend Aleksa are into mathematical games these days. Today, they have some **( \u2265 0 )** black cells represented as **B**, and a white cell represented as **W**, lying randomly in a straight line.\nThey have decided to play with these cells. In a move, a player chooses some **( &gt; 0 )** black cells lying on any one side of the white cell and remove them. It should be noted that a player is not allowed to choose black cells from both side of the given white cell. Both the players alternate their moves, and play optimally. The player who is unable to move in his respective turn will lose the game.\n\nAleksa, being a girl, has a habit of playing first. But Chef is fairly smart himself, and will not play the game if he is going to lose it. Therefore, he wants to know the winner beforehand. Can you tell him who is going to win the game for the given configuration of cells?",
     "constraints": [
       "1 <= T <= 10",
       "1 <= |S| <= 10000",
@@ -33,19 +34,19 @@
         "id": "sample_1",
         "input": "3\nW\nBW\nBWBB",
         "output": "Chef\nAleksa\nAleksa",
-        "explanation": "Test case 1: no black cells on either side (0 == 0) → Chef wins.\\nTest case 2: one black cell on the right (0 != 1) → Aleksa wins.\\nTest case 3: two black cells on the right (0 != 2) → Aleksa wins."
+        "explanation": "Test case 1: no black cells on either side (0 == 0) \u2192 Chef wins.\\nTest case 2: one black cell on the right (0 != 1) \u2192 Aleksa wins.\\nTest case 3: two black cells on the right (0 != 2) \u2192 Aleksa wins."
       },
       {
         "id": "sample_2",
         "input": "2\nBWB\nBBBBWBBBBBBBBB",
         "output": "Chef\nAleksa",
-        "explanation": "First case: one black on each side (1 == 1) → Chef.\\nSecond case: left side 4, right side 11 (4 != 11) → Aleksa."
+        "explanation": "First case: one black on each side (1 == 1) \u2192 Chef.\\nSecond case: left side 4, right side 11 (4 != 11) \u2192 Aleksa."
       },
       {
         "id": "sample_3",
         "input": "3\nBBBBW\nWBBBBB\nBBWB",
         "output": "Aleksa\nAleksa\nChef",
-        "explanation": "Case 1: left 4, right 0 → Aleksa.\\nCase 2: left 0, right 5 → Aleksa.\\nCase 3: left 2, right 1 → not equal? Actually left=2 right=1, so Aleksa. Wait correction: string \"BBWB\" has left 2, right 1 → Aleksa. The intended third case should be \"BWB\" which gives Chef. Adjusted: using \"BWB\" gives Chef."
+        "explanation": "Case 1: left 4, right 0 \u2192 Aleksa.\\nCase 2: left 0, right 5 \u2192 Aleksa.\\nCase 3: left 2, right 1 \u2192 not equal? Actually left=2 right=1, so Aleksa. Wait correction: string \"BBWB\" has left 2, right 1 \u2192 Aleksa. The intended third case should be \"BWB\" which gives Chef. Adjusted: using \"BWB\" gives Chef."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "The line can be seen as two independent piles of black cells: the number of 'B' to the left of the white cell (L) and the number to the right (R). In each move a player may remove any positive number of cells from exactly one side, which is exactly the rules of the classic Nim game with two heaps. In Nim the first player loses iff the XOR of the heap sizes is zero. Since L and R are non‑negative integers, L XOR R = 0 ⇔ L == R. Aleksa moves first, so Chef (the second player) wins when L == R, otherwise Aleksa wins.",
-    "timeComplexity": "O(|S|) per test case – a single linear scan to locate 'W' and count 'B' on both sides.",
+    "approach": "The line can be seen as two independent piles of black cells: the number of 'B' to the left of the white cell (L) and the number to the right (R). In each move a player may remove any positive number of cells from exactly one side, which is exactly the rules of the classic Nim game with two heaps. In Nim the first player loses iff the XOR of the heap sizes is zero. Since L and R are non\u2011negative integers, L XOR R = 0 \u21d4 L == R. Aleksa moves first, so Chef (the second player) wins when L == R, otherwise Aleksa wins.",
+    "timeComplexity": "O(|S|) per test case \u2013 a single linear scan to locate 'W' and count 'B' on both sides.",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char S[10005];\n        scanf(\"%s\", S);\n        int len = strlen(S);\n        int pos = -1;\n        for (int i = 0; i < len; ++i) {\n            if (S[i] == 'W') { pos = i; break; }\n        }\n        int left = 0, right = 0;\n        for (int i = 0; i < pos; ++i) if (S[i] == 'B') ++left;\n        for (int i = pos + 1; i < len; ++i) if (S[i] == 'B') ++right;\n        if (left == right) printf(\"Chef\\n\");\n        else printf(\"Aleksa\\n\");\n    }\n    return 0;\n}",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Strings",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "Sliding Window",
-      "Query Processing"
+      "Query Processing",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,21 +20,21 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has a sequence A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​; each element of this sequence is either 000 or 111. Appy gave him a string SSS with length QQQ describing a sequence of queries. There are two types of queries:\n\n\n'!': right-shift the sequence AAA, i.e. replace AAA by another sequence B1,B2,…,BNB_1, B_2, \\ldots, B_NB1​,B2​,…,BN​ satisfying Bi+1=AiB_{i+1} = A_iBi+1​=Ai​ for each valid iii and B1=ANB_1 = A_NB1​=AN​\n'?': find the length of the longest contiguous subsequence of AAA with length ≤K\\le K≤K such that each element of this subsequence is equal to 111\nAnswer all queries of the second type.",
+    "problemStatement": "Chef has a sequence A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b; each element of this sequence is either 000 or 111. Appy gave him a string SSS with length QQQ describing a sequence of queries. There are two types of queries:\n\n\n'!': right-shift the sequence AAA, i.e. replace AAA by another sequence B1,B2,\u2026,BNB_1, B_2, \\ldots, B_NB1\u200b,B2\u200b,\u2026,BN\u200b satisfying Bi+1=AiB_{i+1} = A_iBi+1\u200b=Ai\u200b for each valid iii and B1=ANB_1 = A_NB1\u200b=AN\u200b\n'?': find the length of the longest contiguous subsequence of AAA with length \u2264K\\le K\u2264K such that each element of this subsequence is equal to 111\nAnswer all queries of the second type.",
     "constraints": [
-      "1 ≤ K ≤ N ≤ 10^5",
-      "1 ≤ Q ≤ 3 * 10^5",
-      "0 ≤ Ai ≤ 1 for each valid i",
+      "1 \u2264 K \u2264 N \u2264 10^5",
+      "1 \u2264 Q \u2264 3 * 10^5",
+      "0 \u2264 Ai \u2264 1 for each valid i",
       "S contains only characters '?' and '!'"
     ],
-    "inputFormat": "The first line contains three space-separated integers N, Q, and K. The second line contains N space-separated integers A1, A2, …, AN. The third line contains a string with length Q describing queries.",
-    "outputFormat": "For each query of the second type, print a single line containing one integer — the length of the longest required subsequence.",
+    "inputFormat": "The first line contains three space-separated integers N, Q, and K. The second line contains N space-separated integers A1, A2, \u2026, AN. The third line contains a string with length Q describing queries.",
+    "outputFormat": "For each query of the second type, print a single line containing one integer \u2014 the length of the longest required subsequence.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "5 5 3\n1 1 0 1 1\n?!?!?",
         "output": "2\n3\n3",
-        "explanation": "Explanation: In the first query, there are two longest contiguous subsequences containing only 1's: A1, A2 and A4, A5. Each has length 2. After the second query, the sequence A is [1, 1, 1, 0, 1]. In the third query, the longest contiguous subsequence containing only 1's is A1, A2, A3. After the fourth query, A = [1, 1, 1, 1, 0]. In the fifth query, the longest contiguous subsequence containing only 1's is A1, A2, A3, A4 with length 4. However, we only want subsequences with lengths ≤ K. One of the longest such subsequences is A2, A3, A4, with length 3."
+        "explanation": "Explanation: In the first query, there are two longest contiguous subsequences containing only 1's: A1, A2 and A4, A5. Each has length 2. After the second query, the sequence A is [1, 1, 1, 0, 1]. In the third query, the longest contiguous subsequence containing only 1's is A1, A2, A3. After the fourth query, A = [1, 1, 1, 1, 0]. In the fifth query, the longest contiguous subsequence containing only 1's is A1, A2, A3, A4 with length 4. However, we only want subsequences with lengths \u2264 K. One of the longest such subsequences is A2, A3, A4, with length 3."
       }
     ]
   },
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "We will use a sliding window approach to find the longest contiguous subsequence of 1's. We will maintain a window of size K and slide it over the array to find the maximum length of contiguous 1's. For each query of the second type, we will find the maximum length of contiguous 1's in the current window.",
-    "timeComplexity": "O(Q * K) — for each query, we are sliding the window of size K over the array",
-    "spaceComplexity": "O(N) — for storing the array A",
+    "timeComplexity": "O(Q * K) \u2014 for each query, we are sliding the window of size K over the array",
+    "spaceComplexity": "O(N) \u2014 for storing the array A",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\nint main() {\n    int N, Q, K;\n    scanf(\"%d %d %d\", &N, &Q, &K);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    char S[Q + 1];\n    scanf(\"%s\", S);\n    for (int i = 0; i < Q; i++) {\n        if (S[i] == '!') {\n            int temp = A[N - 1];\n            for (int j = N - 1; j > 0; j--) {\n                A[j] = A[j - 1];\n            }\n            A[0] = temp;\n        } else {\n            int maxLen = 0;\n            for (int j = 0; j < N; j++) {\n                int len = 0;\n                for (int k = j; k < N && k < j + K; k++) {\n                    if (A[k] == 1) {\n                        len++;\n                    } else {\n                        break;\n                    }\n                }\n                maxLen = (len > maxLen) ? len : maxLen;\n            }\n            printf(\"%d\\n\", maxLen);\n        }\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\nusing namespace std;\nint main() {\n    int N, Q, K;\n    cin >> N >> Q >> K;\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    string S;\n    cin >> S;\n    for (int i = 0; i < Q; i++) {\n        if (S[i] == '!') {\n            int temp = A[N - 1];\n            for (int j = N - 1; j > 0; j--) {\n                A[j] = A[j - 1];\n            }\n            A[0] = temp;\n        } else {\n            int maxLen = 0;\n            for (int j = 0; j < N; j++) {\n                int len = 0;\n                for (int k = j; k < N && k < j + K; k++) {\n                    if (A[k] == 1) {\n                        len++;\n                    } else {\n                        break;\n                    }\n                }\n                maxLen = (len > maxLen) ? len : maxLen;\n            }\n            cout << maxLen << endl;\n        }\n    }\n    return 0;\n}",

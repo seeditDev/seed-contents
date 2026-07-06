@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings | Bit Manipulation",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
+      "Bit Manipulation",
+      "Strings",
       "String",
-      "Bit Manipulation"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a binary string SSS of length NNN.\n\nYou can perform the following operation on it:\n\n\nChoose an index iii (1≤i≤N1 \\leq i \\leq N1≤i≤N), and flip **every** character of SSS from index iii to NNN.\n\nFlipping a character means turning it from 000 to 111 and vice versa.\nFor example, if S=1001101S = 1001101S=1001101 and you choose i=4i = 4i=4, the resulting string will be S=1000010S = 1000010S=1000010.\n\nFind the **minimum** number of operations required to turn SSS into an alternating string.\n\nSSS is said to be an alternating string if Si≠Si−1S_i \\neq S_{i-1}Si​=Si−1​ for every iii from 222 to NNN.\n\nIt can be proved that it's always possible to turn SSS into an alternating string.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains one integer NNN — the length of SSS.\nThe next line contains the binary string SSS.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the minimum number of operations required to make SSS alternating.",
+    "problemStatement": "You are given a binary string SSS of length NNN.\n\nYou can perform the following operation on it:\n\n\nChoose an index iii (1\u2264i\u2264N1 \\leq i \\leq N1\u2264i\u2264N), and flip **every** character of SSS from index iii to NNN.\n\nFlipping a character means turning it from 000 to 111 and vice versa.\nFor example, if S=1001101S = 1001101S=1001101 and you choose i=4i = 4i=4, the resulting string will be S=1000010S = 1000010S=1000010.\n\nFind the **minimum** number of operations required to turn SSS into an alternating string.\n\nSSS is said to be an alternating string if Si\u2260Si\u22121S_i \\neq S_{i-1}Si\u200b\ue020=Si\u22121\u200b for every iii from 222 to NNN.\n\nIt can be proved that it's always possible to turn SSS into an alternating string.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains one integer NNN \u2014 the length of SSS.\nThe next line contains the binary string SSS.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the minimum number of operations required to make SSS alternating.",
     "constraints": [
       "1 <= T <= 100000",
       "1 <= N <= 200000",
@@ -28,7 +29,7 @@
       "S consists only of characters '0' and '1'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the length of the binary string. The second line contains the binary string S of length N.",
-    "outputFormat": "For each test case output a single line containing the minimum number of suffix‑flip operations required to make S alternating.",
+    "outputFormat": "For each test case output a single line containing the minimum number of suffix\u2011flip operations required to make S alternating.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "The operation flips every character from a chosen index i to the end of the string. While scanning the string from left to right we keep a variable parity that tells whether an odd (parity=1) or even (parity=0) number of flips have been applied to the current suffix. The effective character at position i is (S[i] XOR parity). We try to transform the string into one of the two possible alternating patterns: 0101… (starting with 0) or 1010… (starting with 1). For a fixed target pattern we greedily decide: if the effective character already equals the desired one, do nothing; otherwise we must flip at i, which toggles parity for the rest of the string. This greedy choice is optimal because any later operation cannot affect position i without also affecting earlier positions, which would break the already satisfied prefix. We compute the number of flips needed for both target patterns and take the minimum.",
-    "timeComplexity": "O(N) per test case, where N is the length of the string. Over all test cases the total time is O(sum of N) ≤ O(2·10^5).",
+    "approach": "The operation flips every character from a chosen index i to the end of the string. While scanning the string from left to right we keep a variable parity that tells whether an odd (parity=1) or even (parity=0) number of flips have been applied to the current suffix. The effective character at position i is (S[i] XOR parity). We try to transform the string into one of the two possible alternating patterns: 0101\u2026 (starting with 0) or 1010\u2026 (starting with 1). For a fixed target pattern we greedily decide: if the effective character already equals the desired one, do nothing; otherwise we must flip at i, which toggles parity for the rest of the string. This greedy choice is optimal because any later operation cannot affect position i without also affecting earlier positions, which would break the already satisfied prefix. We compute the number of flips needed for both target patterns and take the minimum.",
+    "timeComplexity": "O(N) per test case, where N is the length of the string. Over all test cases the total time is O(sum of N) \u2264 O(2\u00b710^5).",
     "spaceComplexity": "O(1) additional space besides the input string.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint countFlips(const char *s, int n, int startBit) {\n    int flips = 0, parity = 0;\n    for (int i = 0; i < n; ++i) {\n        int cur = (s[i] - '0') ^ parity;\n        int desired = (startBit + i) & 1;\n        if (cur != desired) {\n            ++flips;\n            parity ^= 1;\n        }\n    }\n    return flips;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        static char s[200005];\n        scanf(\"%s\", s);\n        int ans0 = countFlips(s, N, 0);\n        int ans1 = countFlips(s, N, 1);\n        printf(\"%d\\n\", ans0 < ans1 ? ans0 : ans1);\n    }\n    return 0;\n}",

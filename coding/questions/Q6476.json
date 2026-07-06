@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Greedy",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Parity",
       "Permutation within parity classes",
-      "Simple observation"
+      "Simple observation",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has a **binary** string SSS of size NNN. Chef can perform the following operation on the string:\n\n\nSelect any substring of size 333 and **reverse** it.\nFind the **minimum** distance between **any two** 111s Chef can achieve, by applying the above operation any (possibly zero) number of times.\n\nNote:\n\n\nThe distance between two characters SiS_iSi​ and SjS_jSj​ is defined as abs(i−j)abs(i-j)abs(i−j).\nIt is guaranteed that the string contains **at least** two occurrences of 111.\nA substring is obtained by deleting some (possibly zero) elements from the beginning and some (possibly zero) elements from the end of the string.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN — the number of characters in the string.\nThe next line contains a binary string of length NNN.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** distance between **any two** 111s Chef can achieve, by applying the above operation any (possibly zero) number of times.",
+    "problemStatement": "Chef has a **binary** string SSS of size NNN. Chef can perform the following operation on the string:\n\n\nSelect any substring of size 333 and **reverse** it.\nFind the **minimum** distance between **any two** 111s Chef can achieve, by applying the above operation any (possibly zero) number of times.\n\nNote:\n\n\nThe distance between two characters SiS_iSi\u200b and SjS_jSj\u200b is defined as abs(i\u2212j)abs(i-j)abs(i\u2212j).\nIt is guaranteed that the string contains **at least** two occurrences of 111.\nA substring is obtained by deleting some (possibly zero) elements from the beginning and some (possibly zero) elements from the end of the string.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of characters in the string.\nThe next line contains a binary string of length NNN.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** distance between **any two** 111s Chef can achieve, by applying the above operation any (possibly zero) number of times.",
     "constraints": [
       "1 <= T <= 1000",
       "2 <= N <= 100000",
@@ -29,13 +30,13 @@
       "S contains at least two '1's"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the length of the binary string. The second line contains a binary string S of length N consisting only of characters '0' and '1'. It is guaranteed that each string contains at least two '1's.",
-    "outputFormat": "For each test case output a single integer on its own line – the minimum possible distance between any two '1's after applying any number of operations of reversing a substring of length three.",
+    "outputFormat": "For each test case output a single integer on its own line \u2013 the minimum possible distance between any two '1's after applying any number of operations of reversing a substring of length three.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2\n11\n3\n101\n7\n0100101",
         "output": "1\n2\n1",
-        "explanation": "Test case 1: positions 1 (odd) and 2 (even) already contain '1', both parities present → answer 1.\nTest case 2: the two '1's are at positions 1 and 3, both odd → only odd parity → answer 2.\nTest case 3: after reversing substring [2,4] we can place a '1' on an even position, giving both parities → answer 1."
+        "explanation": "Test case 1: positions 1 (odd) and 2 (even) already contain '1', both parities present \u2192 answer 1.\nTest case 2: the two '1's are at positions 1 and 3, both odd \u2192 only odd parity \u2192 answer 2.\nTest case 3: after reversing substring [2,4] we can place a '1' on an even position, giving both parities \u2192 answer 1."
       }
     ]
   },
@@ -57,21 +58,21 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – all 1s on even positions",
+        "label": "edge case \u2013 all 1s on even positions",
         "input": "1\n4\n0101",
         "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case – mixed parity",
+        "label": "general case \u2013 mixed parity",
         "input": "1\n6\n101010",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case – only odd parity with more than two 1s",
+        "label": "general case \u2013 only odd parity with more than two 1s",
         "input": "1\n5\n00101",
         "expectedOutput": "2",
         "weight": 2
@@ -103,7 +104,7 @@
     ]
   },
   "solution": {
-    "approach": "Reversing any substring of length three swaps the characters at its two ends while keeping the middle character unchanged. This operation allows us to swap any two characters whose indices differ by 2. Repeating such swaps we can arbitrarily permute characters that share the same parity (odd positions with odd positions, even positions with even positions). Consequently, the set of positions occupied by '1's can be rearranged freely inside each parity class, but a '1' originally at an odd index can never move to an even index and vice‑versa.\n\nTo minimise the distance between two '1's we consider two possibilities:\n1. Distance 1 – possible only if after rearrangement we can place one '1' on an odd index and another on an even index. This requires that the original string already contains at least one '1' on an odd position **and** at least one '1' on an even position.\n2. Distance 2 – the smallest distance achievable when all '1's belong to the same parity class, because any two positions of the same parity differ by an even number, the smallest non‑zero even number being 2.\n\nThus the answer for a test case is:\n- 1, if there exists at least one '1' at an odd index **and** at least one '1' at an even index (1‑indexed).\n- 2, otherwise.\nThe algorithm scans the string once, records the presence of a '1' in each parity, and prints the result.\n\nTime Complexity: O(N) per test case (single pass). Overall O(total N) ≤ 2·10^5.\nSpace Complexity: O(1) besides the input string.",
+    "approach": "Reversing any substring of length three swaps the characters at its two ends while keeping the middle character unchanged. This operation allows us to swap any two characters whose indices differ by 2. Repeating such swaps we can arbitrarily permute characters that share the same parity (odd positions with odd positions, even positions with even positions). Consequently, the set of positions occupied by '1's can be rearranged freely inside each parity class, but a '1' originally at an odd index can never move to an even index and vice\u2011versa.\n\nTo minimise the distance between two '1's we consider two possibilities:\n1. Distance 1 \u2013 possible only if after rearrangement we can place one '1' on an odd index and another on an even index. This requires that the original string already contains at least one '1' on an odd position **and** at least one '1' on an even position.\n2. Distance 2 \u2013 the smallest distance achievable when all '1's belong to the same parity class, because any two positions of the same parity differ by an even number, the smallest non\u2011zero even number being 2.\n\nThus the answer for a test case is:\n- 1, if there exists at least one '1' at an odd index **and** at least one '1' at an even index (1\u2011indexed).\n- 2, otherwise.\nThe algorithm scans the string once, records the presence of a '1' in each parity, and prints the result.\n\nTime Complexity: O(N) per test case (single pass). Overall O(total N) \u2264 2\u00b710^5.\nSpace Complexity: O(1) besides the input string.",
     "timeComplexity": "O(N) per test case, O(total N) over all test cases",
     "spaceComplexity": "O(1)",
     "code": {

@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Memoization",
+      "Divide and Conquer",
+      "Dynamic Programming",
       "Recursion",
-      "Divide and Conquer"
+      "Memoization"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "In Byteland they have a very strange monetary system.\n\n\n\n\nEach Bytelandian gold coin has an integer number written on it. A coin n\ncan be exchanged in a bank into three coins: n/2, n/3 and n/4.\nBut these numbers are all rounded down (the banks have to make a profit).\n\n\n\nYou can also sell Bytelandian coins for American dollars. The exchange\nrate is 1:1. But you can not buy Bytelandian coins.\n\n\n\nYou have one gold coin. What is the maximum amount of American dollars\nyou can get for it?\n\n\n\nInput Format\nThe input will contain several test cases (not more than 10). \n\nEach testcase is a single line with a number n, it is the number written on your coin.\n\n\n\nOutput Format\nFor each test case output a single line, containing the maximum amount of American dollars you can make.",
     "constraints": [
-      "0 ≤ n ≤ 10^9",
-      "Number of test cases ≤ 10"
+      "0 \u2264 n \u2264 10^9",
+      "Number of test cases \u2264 10"
     ],
-    "inputFormat": "The input consists of up to 10 lines. Each line contains a single non‑negative integer n (0 ≤ n ≤ 10^9). The file ends with EOF.",
-    "outputFormat": "For each input line output a single integer on its own line – the maximum amount of American dollars obtainable from a coin with value n.",
+    "inputFormat": "The input consists of up to 10 lines. Each line contains a single non\u2011negative integer n (0 \u2264 n \u2264 10^9). The file ends with EOF.",
+    "outputFormat": "For each input line output a single integer on its own line \u2013 the maximum amount of American dollars obtainable from a coin with value n.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -44,7 +45,7 @@
         "id": "sample_3",
         "input": "24",
         "output": "27",
-        "explanation": "24 → 12+8+6 = 13+8+6 = 27, which is larger than 24."
+        "explanation": "24 \u2192 12+8+6 = 13+8+6 = 27, which is larger than 24."
       }
     ]
   },
@@ -112,8 +113,8 @@
     ]
   },
   "solution": {
-    "approach": "For a coin of value n we can either keep it (gain n dollars) or exchange it into three smaller coins of values floor(n/2), floor(n/3) and floor(n/4). The optimal result for n is therefore max(n, f(n/2)+f(n/3)+f(n/4)). This recurrence has overlapping sub‑problems, so we store already computed results in a hash‑map (memoization). The base case is n < 12 because for those values exchanging never yields a larger sum, thus f(n)=n. The algorithm reads each n, computes f(n) recursively with memoization and prints the answer.",
-    "timeComplexity": "Each distinct value of n encountered is computed once. For a given input the number of distinct values is O(number of nodes in the recursion tree) which is roughly O(n^{log_2 3}) but for n ≤ 10^9 it is well below a few hundred thousand. Practically the running time is O(k) where k is the number of memoized states.",
+    "approach": "For a coin of value n we can either keep it (gain n dollars) or exchange it into three smaller coins of values floor(n/2), floor(n/3) and floor(n/4). The optimal result for n is therefore max(n, f(n/2)+f(n/3)+f(n/4)). This recurrence has overlapping sub\u2011problems, so we store already computed results in a hash\u2011map (memoization). The base case is n < 12 because for those values exchanging never yields a larger sum, thus f(n)=n. The algorithm reads each n, computes f(n) recursively with memoization and prints the answer.",
+    "timeComplexity": "Each distinct value of n encountered is computed once. For a given input the number of distinct values is O(number of nodes in the recursion tree) which is roughly O(n^{log_2 3}) but for n \u2264 10^9 it is well below a few hundred thousand. Practically the running time is O(k) where k is the number of memoized states.",
     "spaceComplexity": "O(k) for the memoization table, where k is the number of distinct n values visited (at most a few hundred thousand).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdint.h>\n\ntypedef struct Node {\n    long long key;\n    long long value;\n    struct Node *next;\n} Node;\n\n#define TABLE_SIZE 2000003\nstatic Node *table[TABLE_SIZE];\n\nstatic unsigned long long hash_key(long long x) {\n    return (unsigned long long)x % TABLE_SIZE;\n}\n\nstatic long long get_memo(long long x) {\n    unsigned long long h = hash_key(x);\n    for (Node *p = table[h]; p; p = p->next) {\n        if (p->key == x) return p->value;\n    }\n    return -1;\n}\n\nstatic void set_memo(long long x, long long v) {\n    unsigned long long h = hash_key(x);\n    Node *p = (Node*)malloc(sizeof(Node));\n    p->key = x; p->value = v; p->next = table[h];\n    table[h] = p;\n}\n\nstatic long long solve(long long n) {\n    long long cached = get_memo(n);\n    if (cached != -1) return cached;\n    if (n < 12) {\n        set_memo(n, n);\n        return n;\n    }\n    long long res = solve(n/2) + solve(n/3) + solve(n/4);\n    if (res < n) res = n;\n    set_memo(n, res);\n    return res;\n}\n\nint main() {\n    long long n;\n    while (scanf(\"%lld\", &n) == 1) {\n        printf(\"%lld\\n\", solve(n));\n    }\n    return 0;\n}\n",

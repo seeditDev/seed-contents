@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Sprague-Grundy",
-      "Nim",
       "Parity",
-      "Combinatorial Game"
+      "Combinatorial Game",
+      "Math",
+      "Sprague-Grundy",
+      "Nim"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +22,21 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and Chefina are playing a game. **Chef plays first**.\n\nThere are NNN piles where the ithi^{th}ith pile contains AiA_iAi​ stones.\n\nIn his/her turn, a player can do **one** of the following:\n\n\nTake any non-empty pile and remove 111 stone from it.\nTake any pile containing atleast 222 stones and split it into two piles containing XXX and YYY stones such that X+YX+YX+Y equals the initial number of stones in the chosen pile. Note that in this case, the number of piles increases by 111.\nThe player who cannot make a move loses. Determine the winner if both players play optimally.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN - denoting the initial number of piles.\nThe next line contains NNN space separated integers A1,A2,A3,…,ANA_1, A_2, A_3, \\dots, A_NA1​,A2​,A3​,…,AN​, the number of stones initially in each pile.\n\n\n\n\nOutput Format\nFor each test case, output `CHEF` if Chef wins the game, and `CHEFINA` otherwise.\n\n\nYou may print each character in uppercase or lowercase. For example, the strings `CHEF`, `chef`, `Chef`, and `cHEf` are all considered identical.",
+    "problemStatement": "Chef and Chefina are playing a game. **Chef plays first**.\n\nThere are NNN piles where the ithi^{th}ith pile contains AiA_iAi\u200b stones.\n\nIn his/her turn, a player can do **one** of the following:\n\n\nTake any non-empty pile and remove 111 stone from it.\nTake any pile containing atleast 222 stones and split it into two piles containing XXX and YYY stones such that X+YX+YX+Y equals the initial number of stones in the chosen pile. Note that in this case, the number of piles increases by 111.\nThe player who cannot make a move loses. Determine the winner if both players play optimally.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN - denoting the initial number of piles.\nThe next line contains NNN space separated integers A1,A2,A3,\u2026,ANA_1, A_2, A_3, \\dots, A_NA1\u200b,A2\u200b,A3\u200b,\u2026,AN\u200b, the number of stones initially in each pile.\n\n\n\n\nOutput Format\nFor each test case, output `CHEF` if Chef wins the game, and `CHEFINA` otherwise.\n\n\nYou may print each character in uppercase or lowercase. For example, the strings `CHEF`, `chef`, `Chef`, and `cHEf` are all considered identical.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ Ai ≤ 10^9",
-      "Sum of N over all test cases ≤ 3·10^5"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^9",
+      "Sum of N over all test cases \u2264 3\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of piles. The second line contains N space‑separated integers A1 … AN, the number of stones in each pile.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of piles. The second line contains N space\u2011separated integers A1 \u2026 AN, the number of stones in each pile.",
     "outputFormat": "For each test case output a single line containing \"CHEF\" if Chef (the first player) wins with optimal play, otherwise output \"CHEFINA\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2\n3 3\n5\n2 1 1 1 1\n3\n2 2 2",
         "output": "CHEFINA\nCHEF\nCHEF",
-        "explanation": "For the first case both piles are odd (size 3) → Grundy 0 each → xor 0 → Chefina wins.\\nSecond case: one even pile (size 2) gives Grundy 2, four piles of size 1 give Grundy 1 each but their parity is even, so xor = 2 → Chef wins.\\nThird case: three even piles each contribute Grundy 2, odd count → xor = 2 → Chef wins."
+        "explanation": "For the first case both piles are odd (size 3) \u2192 Grundy 0 each \u2192 xor 0 \u2192 Chefina wins.\\nSecond case: one even pile (size 2) gives Grundy 2, four piles of size 1 give Grundy 1 each but their parity is even, so xor = 2 \u2192 Chef wins.\\nThird case: three even piles each contribute Grundy 2, odd count \u2192 xor = 2 \u2192 Chef wins."
       }
     ]
   },
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "For a single pile of size a the Grundy number g(a) is defined as the mex of the Grundy values reachable in one move. The allowed moves are:\n1) Remove one stone → pile size a‑1.\n2) Split the pile into two positive piles x and y (x+y = a). The resulting Grundy is g(x) xor g(y).\nBy computing g(a) for small a we discover the pattern:\n- g(0) = 0\n- g(1) = 1\n- For every even a ≥ 2, g(a) = 2\n- For every odd a ≥ 3, g(a) = 0\nThus each pile contributes only 0, 1 or 2 to the overall xor. The xor of the whole position is:\n    xor = ( (count of piles with size = 1) mod 2 ) * 1  xor  ( (count of even‑size piles) mod 2 ) * 2\nIf xor ≠ 0 the first player (Chef) has a winning move, otherwise Chefina wins.\nThe algorithm for each test case:\n- Initialise cntOne = 0, cntEven = 0.\n- For each Ai: if Ai == 1 → cntOne++; else if Ai % 2 == 0 → cntEven++.\n- Compute x = (cntOne & 1) ^ ((cntEven & 1) << 1).\n- Output CHEF if x != 0 else CHEFINA.\nThe solution runs in O(N) per test case and O(1) extra memory.",
-    "timeComplexity": "O(N) per test case, where N is the number of piles in that test case. Overall O(total N) ≤ 3·10^5.",
+    "approach": "For a single pile of size a the Grundy number g(a) is defined as the mex of the Grundy values reachable in one move. The allowed moves are:\n1) Remove one stone \u2192 pile size a\u20111.\n2) Split the pile into two positive piles x and y (x+y = a). The resulting Grundy is g(x) xor g(y).\nBy computing g(a) for small a we discover the pattern:\n- g(0) = 0\n- g(1) = 1\n- For every even a \u2265 2, g(a) = 2\n- For every odd a \u2265 3, g(a) = 0\nThus each pile contributes only 0, 1 or 2 to the overall xor. The xor of the whole position is:\n    xor = ( (count of piles with size = 1) mod 2 ) * 1  xor  ( (count of even\u2011size piles) mod 2 ) * 2\nIf xor \u2260 0 the first player (Chef) has a winning move, otherwise Chefina wins.\nThe algorithm for each test case:\n- Initialise cntOne = 0, cntEven = 0.\n- For each Ai: if Ai == 1 \u2192 cntOne++; else if Ai % 2 == 0 \u2192 cntEven++.\n- Compute x = (cntOne & 1) ^ ((cntEven & 1) << 1).\n- Output CHEF if x != 0 else CHEFINA.\nThe solution runs in O(N) per test case and O(1) extra memory.",
+    "timeComplexity": "O(N) per test case, where N is the number of piles in that test case. Overall O(total N) \u2264 3\u00b710^5.",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long cntOne = 0, cntEven = 0;\n        for (int i = 0; i < N; ++i) {\n            long long a; scanf(\"%lld\", &a);\n            if (a == 1) cntOne++;\n            else if ((a & 1LL) == 0) cntEven++;\n        }\n        int x = (cntOne & 1LL) ^ ((cntEven & 1LL) << 1);\n        if (x) printf(\"CHEF\\n\");\n        else    printf(\"CHEFINA\\n\");\n    }\n    return 0;\n}",

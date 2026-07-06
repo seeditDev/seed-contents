@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Set Operations",
-      "Query Processing"
+      "Query Processing",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "We will use an array of sets to represent the lists. For each query of type 0, we will iterate over the range [l, r] and add the number x to the corresponding set if it is not already present. For each query of type 1, we will simply return the size of the set at index q.",
-    "timeComplexity": "O(M * N) — because in the worst case, we might have to iterate over all sets for each query.",
-    "spaceComplexity": "O(N * M) — because in the worst case, each set might contain all numbers from 1 to N.",
+    "timeComplexity": "O(M * N) \u2014 because in the worst case, we might have to iterate over all sets for each query.",
+    "spaceComplexity": "O(N * M) \u2014 because in the worst case, each set might contain all numbers from 1 to N.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 250005\ntypedef struct { int* data; int size; } Set;\nSet* sets[MAXN];\nvoid initSets(int N) { for (int i = 0; i < N; i++) { sets[i] = (Set*)malloc(sizeof(Set)); sets[i]->data = NULL; sets[i]->size = 0; } }\nvoid add(int N, int l, int r, int x) { for (int i = l - 1; i < r; i++) { int* newData = (int*)realloc(sets[i]->data, (sets[i]->size + 1) * sizeof(int)); if (newData == NULL) { printf(\"Memory error\\n\"); return; } sets[i]->data = newData; int j; for (j = 0; j < sets[i]->size; j++) if (sets[i]->data[j] == x) break; if (j == sets[i]->size) { sets[i]->data[sets[i]->size] = x; sets[i]->size++; } } }\nint query(int q) { return sets[q - 1]->size; }\nint main() { int N, M; scanf(\"%d %d\", &N, &M); initSets(N); for (int i = 0; i < M; i++) { int type; scanf(\"%d\", &type); if (type == 0) { int l, r, x; scanf(\"%d %d %d\", &l, &r, &x); add(N, l, r, x); } else { int q; scanf(\"%d\", &q); printf(\"%d\\n\", query(q)); } } return 0; }",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\ntypedef vector<int> Set;\nSet sets[250005];\nvoid add(int N, int l, int r, int x) { for (int i = l - 1; i < r; i++) { bool found = false; for (int j = 0; j < sets[i].size(); j++) if (sets[i][j] == x) { found = true; break; } if (!found) sets[i].push_back(x); } }\nint query(int q) { return sets[q - 1].size(); }\nint main() { int N, M; cin >> N >> M; for (int i = 0; i < M; i++) { int type; cin >> type; if (type == 0) { int l, r, x; cin >> l >> r >> x; add(N, l, r, x); } else { int q; cin >> q; cout << query(q) << endl; } } return 0; }",

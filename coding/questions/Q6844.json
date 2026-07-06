@@ -11,7 +11,8 @@
     "isPremium": true,
     "tags": [
       "Comparison",
-      "Simple Counting"
+      "Simple Counting",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "In a season, each player has three statistics: runs, wickets, and catches. Given the season stats of two players AAA and BBB, denoted by RRR, WWW, and CCC respectively, the person who is better than the other in the most statistics is regarded as the better overall player. Tell who is better amongst AAA and BBB. It is known that in each statistic, the players have different values.\n\n\nInput Format\n\nThe first line contains an integer TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line contains three integers R1R_1R1​, W1W_1W1​, C1C_1C1​, the stats for player AAA.\nThe second line contains three integers R2R_2R2​, W2W_2W2​, C2C_2C2​, the stats for player BBB.\n\n\nOutput Format\nFor each test case, output in a single line `\"A\"` (without quotes) if player AAA is better than player BBB and `\"B\"` (without quotes) otherwise.",
+    "problemStatement": "In a season, each player has three statistics: runs, wickets, and catches. Given the season stats of two players AAA and BBB, denoted by RRR, WWW, and CCC respectively, the person who is better than the other in the most statistics is regarded as the better overall player. Tell who is better amongst AAA and BBB. It is known that in each statistic, the players have different values.\n\n\nInput Format\n\nThe first line contains an integer TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line contains three integers R1R_1R1\u200b, W1W_1W1\u200b, C1C_1C1\u200b, the stats for player AAA.\nThe second line contains three integers R2R_2R2\u200b, W2W_2W2\u200b, C2C_2C2\u200b, the stats for player BBB.\n\n\nOutput Format\nFor each test case, output in a single line `\"A\"` (without quotes) if player AAA is better than player BBB and `\"B\"` (without quotes) otherwise.",
     "constraints": [
       "1 <= T <= 1000",
       "0 <= R1, R2 <= 5000",
@@ -27,26 +28,26 @@
       "0 <= C1, C2 <= 200",
       "R1 != R2, W1 != W2, C1 != C2"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains three integers R1 W1 C1 – the runs, wickets and catches of player A. The second line contains three integers R2 W2 C2 – the corresponding statistics of player B. All three statistics are distinct between the two players.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains three integers R1 W1 C1 \u2013 the runs, wickets and catches of player A. The second line contains three integers R2 W2 C2 \u2013 the corresponding statistics of player B. All three statistics are distinct between the two players.",
     "outputFormat": "For each test case output a single line containing \"A\" if player A is better in at least two of the three statistics, otherwise output \"B\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n0 1 2\n2 3 4\n10 10 10\n8 8 8\n10 0 10\n0 10 0",
         "output": "B\nA\nA",
-        "explanation": "Test case 1: B is better in runs, wickets and catches → B.\\nTest case 2: A is better in all three → A.\\nTest case 3: A wins runs and catches (2 out of 3) → A."
+        "explanation": "Test case 1: B is better in runs, wickets and catches \u2192 B.\\nTest case 2: A is better in all three \u2192 A.\\nTest case 3: A wins runs and catches (2 out of 3) \u2192 A."
       },
       {
         "id": "sample_2",
         "input": "1\n5 3 2\n1 4 0",
         "output": "A",
-        "explanation": "A has more runs (5>1) and more catches (2>0) while B has more wickets. A wins 2 stats → A."
+        "explanation": "A has more runs (5>1) and more catches (2>0) while B has more wickets. A wins 2 stats \u2192 A."
       },
       {
         "id": "sample_3",
         "input": "2\n0 10 5\n1 9 6\n100 50 30\n90 60 20",
         "output": "B\nA",
-        "explanation": "Case 1: B wins runs and catches → B.\\nCase 2: A wins runs and catches → A."
+        "explanation": "Case 1: B wins runs and catches \u2192 B.\\nCase 2: A wins runs and catches \u2192 A."
       }
     ]
   },
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "For each test case compare the three corresponding statistics. Keep two counters: cntA for the number of fields where A's value is larger and cntB for B's. Since all values are distinct, there are no ties. After processing the three fields, if cntA > cntB (i.e., A wins at least two fields) output \"A\", else output \"B\". This runs in O(1) per test case.",
-    "timeComplexity": "O(T) – constant work for each of the three statistics per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables are used.",
+    "timeComplexity": "O(T) \u2013 constant work for each of the three statistics per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int R1, W1, C1, R2, W2, C2;\n        scanf(\"%d %d %d\", &R1, &W1, &C1);\n        scanf(\"%d %d %d\", &R2, &W2, &C2);\n        int a = 0, b = 0;\n        if (R1 > R2) a++; else b++;\n        if (W1 > W2) a++; else b++;\n        if (C1 > C2) a++; else b++;\n        if (a > b) printf(\"A\\n\"); else printf(\"B\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int R1,W1,C1,R2,W2,C2;\n        cin>>R1>>W1>>C1;\n        cin>>R2>>W2>>C2;\n        int a=0,b=0;\n        if(R1>R2) a++; else b++;\n        if(W1>W2) a++; else b++;\n        if(C1>C2) a++; else b++;\n        cout<<(a>b?\"A\":\"B\")<<'\\n';\n    }\n    return 0;\n}",

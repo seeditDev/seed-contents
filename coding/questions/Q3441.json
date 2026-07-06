@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Longest Increasing Subsequence",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming",
+      "Longest Increasing Subsequence"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,7 +29,7 @@
       "It is guaranteed that at least one n-digit number having the given LIS array exists."
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. For each test case, the first line contains an integer n denoting the number of digits in Chef's favourite number. The second line will contain n space separated integers denoting LIS array, i.e. LIS1, LIS2, ..., LISn.",
-    "outputFormat": "For each test case, output a single integer — count of different n-digit numbers having the given LIS array, modulo (10^9 + 7).",
+    "outputFormat": "For each test case, output a single integer \u2014 count of different n-digit numbers having the given LIS array, modulo (10^9 + 7).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of ways to form each digit of the number given the LIS array. We start by initializing a 2D array dp where dp[i][j] represents the number of ways to form the first i digits of the number such that the longest increasing subsequence ending at the ith digit is j. We then fill up the dp array by iterating over each digit and each possible value of the longest increasing subsequence. Finally, we return the sum of dp[n][j] for all j from 1 to n, modulo (10^9 + 7).",
-    "timeComplexity": "O(T * n^2) — where T is the number of test cases and n is the maximum number of digits in the input.",
-    "spaceComplexity": "O(n^2) — for the dp array.",
+    "timeComplexity": "O(T * n^2) \u2014 where T is the number of test cases and n is the maximum number of digits in the input.",
+    "spaceComplexity": "O(n^2) \u2014 for the dp array.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#define MOD 1000000007\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        int lis[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &lis[i]);\n        }\n        long long dp[n + 1][n + 1] = {0};\n        dp[0][0] = 1;\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= i; j++) {\n                for (int k = 1; k <= 9; k++) {\n                    if (j == lis[i - 1]) {\n                        dp[i][j] += dp[i - 1][j - 1];\n                    } else if (j < lis[i - 1]) {\n                        dp[i][j] += dp[i - 1][j];\n                    }\n                }\n                dp[i][j] %= MOD;\n            }\n        }\n        long long ans = 0;\n        for (int i = 1; i <= n; i++) {\n            ans += dp[n][i];\n        }\n        printf(\"%lld\\n\", ans % MOD);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        int lis[n];\n        for (int i = 0; i < n; i++) {\n            cin >> lis[i];\n        }\n        long long dp[n + 1][n + 1] = {0};\n        dp[0][0] = 1;\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= i; j++) {\n                for (int k = 1; k <= 9; k++) {\n                    if (j == lis[i - 1]) {\n                        dp[i][j] += dp[i - 1][j - 1];\n                    } else if (j < lis[i - 1]) {\n                        dp[i][j] += dp[i - 1][j];\n                    }\n                }\n                dp[i][j] %= MOD;\n            }\n        }\n        long long ans = 0;\n        for (int i = 1; i <= n; i++) {\n            ans += dp[n][i];\n        }\n        cout << ans % MOD << endl;\n    }\n    return 0;\n}",

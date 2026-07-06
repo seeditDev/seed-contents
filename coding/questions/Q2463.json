@@ -10,9 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
       "Permutations",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Little Elephant from Zoo of Lviv likes to watch movies.\n\nThere are **N** different movies (numbered from **0** to **N − 1**) he wants to watch in some order. Of course, he will watch each movie exactly once. The priority of **i**th movie is **Pi**.\n\nA watching of a movie is called exciting if and only if one of the following two conditions holds:\n\n\nThis is the first watching.\nThe priority of this movie is strictly greater than the maximal priority of the movies watched so far.\nLet us call the number of exciting watchings the excitingness of the order.\n\nHelp him to find the number of different watching orders whose excitingness does not exceed **K**. Since the answer can be large, print it modulo **1000000007 (109+7)**.",
+    "problemStatement": "Little Elephant from Zoo of Lviv likes to watch movies.\n\nThere are **N** different movies (numbered from **0** to **N \u2212 1**) he wants to watch in some order. Of course, he will watch each movie exactly once. The priority of **i**th movie is **Pi**.\n\nA watching of a movie is called exciting if and only if one of the following two conditions holds:\n\n\nThis is the first watching.\nThe priority of this movie is strictly greater than the maximal priority of the movies watched so far.\nLet us call the number of exciting watchings the excitingness of the order.\n\nHelp him to find the number of different watching orders whose excitingness does not exceed **K**. Since the answer can be large, print it modulo **1000000007 (109+7)**.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= K <= N <= 200",
@@ -115,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We maintain a 2D array dp where dp[i][j] represents the number of ways to watch the first i movies with at most j excitingness. We iterate over each movie and for each possible excitingness, we calculate the number of ways to watch the movie. We use modular arithmetic to avoid overflow.",
     "timeComplexity": "O(T * N * K) per test case, O(T * N * K) total.",
-    "spaceComplexity": "O(N * K) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(N * K) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int P[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &P[i]);\n        }\n        qsort(P, N, sizeof(int), compare);\n        long long dp[N + 1][K + 1] = {0};\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                for (int k = 0; k <= j; k++) {\n                    if (k == 0 || (i > 1 && P[i - 1] > P[i - 2])) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;\n                    }\n                }\n            }\n        }\n        long long ans = 0;\n        for (int i = 0; i <= K; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        int P[N];\n        for (int i = 0; i < N; i++) {\n            cin >> P[i];\n        }\n        sort(P, P + N);\n        long long dp[N + 1][K + 1] = {0};\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                for (int k = 0; k <= j; k++) {\n                    if (k == 0 || (i > 1 && P[i - 1] > P[i - 2])) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;\n                    }\n                }\n            }\n        }\n        long long ans = 0;\n        for (int i = 0; i <= K; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

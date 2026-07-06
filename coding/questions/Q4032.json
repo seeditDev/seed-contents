@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree",
-      "Dynamic Programming",
-      "Graph Theory"
+      "Graphs",
+      "Graph Theory",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and NNN animals (numbered 111 through NNN) must cross a river. They are all currently located at the left bank; Chef wants all animals and himself to be located at the right bank at the end. Some of the animals do not get along with each other, so they must not be left unattended by Chef at the same bank at any point in time.\n\nThese restrictions are described by a tree with NNN vertices; an edge between vertices uuu and vvv denotes that animals uuu and vvv do not get along with each other.\n\nThere is just a single boat with which Chef and the animals can cross the river. When the boat is crossing the river, Chef must be in the boat to steer it, possibly with zero or more animals; meanwhile, all animals that are not in the boat are left unattended.\n\nThe capacity of the boat is the maximum number of animals that can fit into the boat when crossing the river, plus 1 (for Chef).\n\nInitially, the tree consists only of vertex 111 (the root); the vertices 2,3,…,N2, 3, \\dots, N2,3,…,N are added to the tree one by one in this order. Whenever a vertex is added, it is connected to exactly one of the vertices already present in the tree (its parent). After adding each vertex, you should compute the minimum required capacity of the boat such that it is possible for Chef and the animals to move to the right bank of the river.",
+    "problemStatement": "Chef and NNN animals (numbered 111 through NNN) must cross a river. They are all currently located at the left bank; Chef wants all animals and himself to be located at the right bank at the end. Some of the animals do not get along with each other, so they must not be left unattended by Chef at the same bank at any point in time.\n\nThese restrictions are described by a tree with NNN vertices; an edge between vertices uuu and vvv denotes that animals uuu and vvv do not get along with each other.\n\nThere is just a single boat with which Chef and the animals can cross the river. When the boat is crossing the river, Chef must be in the boat to steer it, possibly with zero or more animals; meanwhile, all animals that are not in the boat are left unattended.\n\nThe capacity of the boat is the maximum number of animals that can fit into the boat when crossing the river, plus 1 (for Chef).\n\nInitially, the tree consists only of vertex 111 (the root); the vertices 2,3,\u2026,N2, 3, \\dots, N2,3,\u2026,N are added to the tree one by one in this order. Whenever a vertex is added, it is connected to exactly one of the vertices already present in the tree (its parent). After adding each vertex, you should compute the minimum required capacity of the boat such that it is possible for Chef and the animals to move to the right bank of the river.",
     "constraints": [
-      "1 ≤ T ≤ 2*10^5",
-      "2 ≤ N ≤ 10^6",
-      "1 ≤ pi < i for each valid i",
+      "1 \u2264 T \u2264 2*10^5",
+      "2 \u2264 N \u2264 10^6",
+      "1 \u2264 pi < i for each valid i",
       "The sum of N for all test cases does not exceed 10^6"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The first line of each test case contains a single integer N. The second line contains N-1 space-separated integers p2,p3,…,pN where pi denotes the parent of vertex i.",
-    "outputFormat": "Print a single line containing N-1 space-separated integers; for each i (1≤i≤N-1), the i-th of these integers denotes the minimum capacity of the boat after adding vertex i+1.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The first line of each test case contains a single integer N. The second line contains N-1 space-separated integers p2,p3,\u2026,pN where pi denotes the parent of vertex i.",
+    "outputFormat": "Print a single line containing N-1 space-separated integers; for each i (1\u2264i\u2264N-1), the i-th of these integers denotes the minimum capacity of the boat after adding vertex i+1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a tree data structure and dynamic programming. We start by initializing the tree with the root node (vertex 1). Then, for each vertex i from 2 to N, we add it to the tree as a child of its parent pi. After adding each vertex, we update the minimum capacity of the boat required to transport all animals to the right bank. This can be done by maintaining the maximum number of animals that need to be transported in a single trip, which is equivalent to the maximum degree of the tree plus one.",
-    "timeComplexity": "O(T*N) — where T is the number of test cases and N is the maximum number of vertices in the tree. The reason is that we iterate over each vertex in the tree for each test case.",
-    "spaceComplexity": "O(N) — where N is the maximum number of vertices in the tree. The reason is that we need to store the tree data structure in memory.",
+    "timeComplexity": "O(T*N) \u2014 where T is the number of test cases and N is the maximum number of vertices in the tree. The reason is that we iterate over each vertex in the tree for each test case.",
+    "spaceComplexity": "O(N) \u2014 where N is the maximum number of vertices in the tree. The reason is that we need to store the tree data structure in memory.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAX_N 1000000\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int value;\n    struct Node* parent;\n    struct Node** children;\n    int numChildren;\n} Node;\n\n// Function to create a new tree node\nNode* createNode(int value) {\n    Node* node = (Node*) malloc(sizeof(Node));\n    node->value = value;\n    node->parent = NULL;\n    node->children = NULL;\n    node->numChildren = 0;\n    return node;\n}\n\n// Function to add a child to a node\nvoid addChild(Node* parent, Node* child) {\n    parent->numChildren++;\n    parent->children = (Node**) realloc(parent->children, parent->numChildren * sizeof(Node*));\n    parent->children[parent->numChildren - 1] = child;\n    child->parent = parent;\n}\n\n// Function to calculate the minimum capacity of the boat\nint calculateCapacity(Node* root) {\n    int maxDegree = 0;\n    // Perform a depth-first search to calculate the maximum degree of the tree\n    void dfs(Node* node) {\n        int degree = node->numChildren;\n        if (degree > maxDegree) {\n            maxDegree = degree;\n        }\n        for (int i = 0; i < node->numChildren; i++) {\n            dfs(node->children[i]);\n        }\n    }\n    dfs(root);\n    return maxDegree + 1;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N;\n        scanf(\"%d\", &N);\n        Node* root = createNode(1);\n        Node** nodes = (Node**) malloc(N * sizeof(Node*));\n        nodes[0] = root;\n        for (int i = 1; i < N; i++) {\n            int parentIndex;\n            scanf(\"%d\", &parentIndex);\n            Node* parentNode = nodes[parentIndex - 1];\n            Node* childNode = createNode(i + 1);\n            addChild(parentNode, childNode);\n            nodes[i] = childNode;\n            int capacity = calculateCapacity(root);\n            printf(\"%d \", capacity);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int value;\n    Node* parent;\n    vector<Node*> children;\n};\n\n// Function to create a new tree node\nNode* createNode(int value) {\n    Node* node = new Node;\n    node->value = value;\n    node->parent = NULL;\n    return node;\n}\n\n// Function to add a child to a node\nvoid addChild(Node* parent, Node* child) {\n    parent->children.push_back(child);\n    child->parent = parent;\n}\n\n// Function to calculate the minimum capacity of the boat\nint calculateCapacity(Node* root) {\n    int maxDegree = 0;\n    // Perform a depth-first search to calculate the maximum degree of the tree\n    void dfs(Node* node) {\n        int degree = node->children.size();\n        if (degree > maxDegree) {\n            maxDegree = degree;\n        }\n        for (Node* child : node->children) {\n            dfs(child);\n        }\n    }\n    dfs(root);\n    return maxDegree + 1;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N;\n        cin >> N;\n        Node* root = createNode(1);\n        Node** nodes = new Node*[N];\n        nodes[0] = root;\n        for (int i = 1; i < N; i++) {\n            int parentIndex;\n            cin >> parentIndex;\n            Node* parentNode = nodes[parentIndex - 1];\n            Node* childNode = createNode(i + 1);\n            addChild(parentNode, childNode);\n            nodes[i] = childNode;\n            int capacity = calculateCapacity(root);\n            cout << capacity << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",

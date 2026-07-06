@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Math | Greedy",
+    "category": "Greedy",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Divide and Conquer",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,10 +22,10 @@
   "content": {
     "problemStatement": "The Chef has one long loaf of bread of length 1. He wants to cut it into as many little loaves as he can. But he wants to adhere to the following rule: At any moment, the length of the longest loaf which he possesses may not be larger than the length of shortest one, times some constant factor. Every time, he is only allowed to cut exactly one loaf into two shorter ones.",
     "constraints": [
-      "1 ≤ k ≤ 1.999",
+      "1 \u2264 k \u2264 1.999",
       "k has at most 3 digits after the decimal point"
     ],
-    "inputFormat": "One floating-point number, 1 ≤ k ≤ 1.999, meaning the stated constant factor. The number will have at most 3 digits after the decimal point.",
+    "inputFormat": "One floating-point number, 1 \u2264 k \u2264 1.999, meaning the stated constant factor. The number will have at most 3 digits after the decimal point.",
     "outputFormat": "First, you should output one number n, the maximal achievable number of loaves for the given value of the constant factor. Then, you should output any proof that this number of loaves is in fact achievable: n-1 descriptions of cutting, using the following notation. At each step, you print two numbers: first, the index of the loaf that you want to cut into two parts; second, the length of the newly created loaf (cut off from the original one).",
     "sampleTestCases": [
       {
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "The problem can be solved using a greedy algorithm. We start with one loaf of length 1. At each step, we find the longest loaf and cut it into two parts such that the length of the longer part is as close as possible to the length of the shorter part times k. We repeat this process until we cannot cut any loaf further without violating the condition.",
-    "timeComplexity": "O(log(1/(k-1))) — explain: per query is O(log(1/(k-1))), total is O(T*log(1/(k-1)))",
-    "spaceComplexity": "O(log(1/(k-1))) — explain: we need to store the lengths of the loaves at each step",
+    "timeComplexity": "O(log(1/(k-1))) \u2014 explain: per query is O(log(1/(k-1))), total is O(T*log(1/(k-1)))",
+    "spaceComplexity": "O(log(1/(k-1))) \u2014 explain: we need to store the lengths of the loaves at each step",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main() {\n    double k;\n    scanf(\"%lf\", &k);\n    int n = 1;\n    double loaves[1000];\n    loaves[0] = 1.0;\n    while (1) {\n        double max = 0.0;\n        int maxIndex = -1;\n        for (int i = 0; i < n; i++) {\n            if (loaves[i] > max) {\n                max = loaves[i];\n                maxIndex = i;\n            }\n        }\n        if (max / k < loaves[n-1]) break;\n        double cut = max / (k + 1);\n        loaves[n] = cut;\n        loaves[maxIndex] -= cut;\n        n++;\n    }\n    printf(\"%d\\n\", n);\n    for (int i = 1; i < n; i++) {\n        printf(\"%d %f\\n\", i-1, loaves[i]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    double k;\n    cin >> k;\n    int n = 1;\n    double loaves[1000];\n    loaves[0] = 1.0;\n    while (1) {\n        double max = 0.0;\n        int maxIndex = -1;\n        for (int i = 0; i < n; i++) {\n            if (loaves[i] > max) {\n                max = loaves[i];\n                maxIndex = i;\n            }\n        }\n        if (max / k < loaves[n-1]) break;\n        double cut = max / (k + 1);\n        loaves[n] = cut;\n        loaves[maxIndex] -= cut;\n        n++;\n    }\n    cout << n << endl;\n    for (int i = 1; i < n; i++) {\n        cout << i-1 << \" \" << loaves[i] << endl;\n    }\n    return 0;\n}",

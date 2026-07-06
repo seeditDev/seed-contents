@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "Floyd-Warshall Algorithm",
       "Dynamic Programming"
     ],
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To solve this problem, we first need to find the shortest path between each pair of cities using the Floyd-Warshall algorithm. Then, for each year, we calculate the minimal cost by summing the costs of the shortest paths for each hero and adding the costs of moving the heroes back to their home cities if necessary, as well as the costs of compensating the citizens in cities that were not visited.",
     "timeComplexity": "O(N^3 + M + K) per test case, O(T * (N^3 + M + K)) total. The Floyd-Warshall algorithm takes O(N^3) time, and we need to iterate over all roads and years.",
-    "spaceComplexity": "O(N^2 + M + K) — the dominant structure is the distance matrix.",
+    "spaceComplexity": "O(N^2 + M + K) \u2014 the dominant structure is the distance matrix.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\n#define MAX_N 1000\n#define MAX_M 10000\n#define MAX_K 100\n#define INF INT_MAX\nint N, M, K;\nint S[MAX_M], T[MAX_M], V[MAX_M];\nint C[MAX_K];\nint dist[MAX_N][MAX_N];\nint main() {\n    scanf(\"%d %d %d\", &N, &M, &K);\n    for (int i = 0; i < M; i++) {\n        scanf(\"%d %d %d\", &S[i], &T[i], &V[i]);\n    }\n    for (int i = 0; i < K; i++) {\n        scanf(\"%d\", &C[i]);\n    }\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            dist[i][j] = INF;\n        }\n        dist[i][i] = 0;\n    }\n    for (int i = 0; i < M; i++) {\n        dist[S[i] - 1][T[i] - 1] = V[i];\n    }\n    for (int k = 0; k < N; k++) {\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                    dist[i][j] = dist[i][k] + dist[k][j];\n                }\n            }\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        int cost = 0;\n        for (int j = 0; j < N; j++) {\n            for (int k = 0; k < N; k++) {\n                if (j != k) {\n                    cost += dist[j][k];\n                }\n            }\n        }\n        for (int j = 0; j < N; j++) {\n            cost += C[i];\n        }\n        printf(\"%d\\n\", cost);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\n#define MAX_N 1000\n#define MAX_M 10000\n#define MAX_K 100\nconst int INF = numeric_limits<int>::max();\nint N, M, K;\nint S[MAX_M], T[MAX_M], V[MAX_M];\nint C[MAX_K];\nint dist[MAX_N][MAX_N];\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    cin >> N >> M >> K;\n    for (int i = 0; i < M; i++) {\n        cin >> S[i] >> T[i] >> V[i];\n    }\n    for (int i = 0; i < K; i++) {\n        cin >> C[i];\n    }\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            dist[i][j] = INF;\n        }\n        dist[i][i] = 0;\n    }\n    for (int i = 0; i < M; i++) {\n        dist[S[i] - 1][T[i] - 1] = V[i];\n    }\n    for (int k = 0; k < N; k++) {\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                if (dist[i][k] + dist[k][j] < dist[i][j]) {\n                    dist[i][j] = dist[i][k] + dist[k][j];\n                }\n            }\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        int cost = 0;\n        for (int j = 0; j < N; j++) {\n            for (int k = 0; k < N; k++) {\n                if (j != k) {\n                    cost += dist[j][k];\n                }\n            }\n        }\n        for (int j = 0; j < N; j++) {\n            cost += C[i];\n        }\n        cout << cost << endl;\n    }\n    return 0;\n}",

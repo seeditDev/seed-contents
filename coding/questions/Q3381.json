@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
       "DFS",
+      "Graphs",
       "Tree"
     ],
     "companyTags": [],
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Depth-First Search (DFS) approach. We start by creating an adjacency list representation of the tree, where each node represents an employee and the edges represent the manager-subordinate relationships. Then, we perform a DFS traversal of the tree, keeping track of the maximum wealth difference between an employee and their subordinate. We update this maximum difference as we traverse the tree.",
-    "timeComplexity": "O(N) — where N is the number of employees. This is because we visit each employee once during the DFS traversal.",
-    "spaceComplexity": "O(N) — where N is the number of employees. This is because in the worst case, the tree can be skewed to one side, resulting in a height of N, and we need to store the recursion stack.",
+    "timeComplexity": "O(N) \u2014 where N is the number of employees. This is because we visit each employee once during the DFS traversal.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of employees. This is because in the worst case, the tree can be skewed to one side, resulting in a height of N, and we need to store the recursion stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\n\nint maxDisp = INT_MIN;\n\nvoid dfs(int node, int maxWealth, int *a, int **adj, int *visited, int n) {\n    if (visited[node] == 1) return;\n    visited[node] = 1;\n    maxDisp = maxDisp > maxWealth - a[node] ? maxDisp : maxWealth - a[node];\n    maxWealth = maxWealth > a[node] ? maxWealth : a[node];\n    for (int i = 0; i < n; i++) {\n        if (adj[node][i] == 1) {\n            dfs(i, maxWealth, a, adj, visited, n);\n        }\n    }\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int *a = (int *)malloc(n * sizeof(int));\n    int **adj = (int **)malloc(n * sizeof(int *));\n    for (int i = 0; i < n; i++) {\n        adj[i] = (int *)malloc(n * sizeof(int));\n        for (int j = 0; j < n; j++) {\n            adj[i][j] = 0;\n        }\n    }\n    int *p = (int *)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &a[i]);\n    }\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &p[i]);\n        if (p[i] != -1) {\n            adj[p[i] - 1][i] = 1;\n        }\n    }\n    int *visited = (int *)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        visited[i] = 0;\n    }\n    for (int i = 0; i < n; i++) {\n        if (p[i] == -1) {\n            dfs(i, a[i], a, adj, visited, n);\n        }\n    }\n    printf(\"%d\\n\", maxDisp);\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid dfs(int node, vector<vector<int>> &adj, vector<int> &a, int &maxDisp, int maxWealth) {\n    maxDisp = max(maxDisp, maxWealth - a[node]);\n    maxWealth = max(maxWealth, a[node]);\n    for (int ne : adj[node]) {\n        dfs(ne, adj, a, maxDisp, maxWealth);\n    }\n}\n\nint main() {\n    int n;\n    cin >> n;\n    vector<int> a(n + 1);\n    vector<vector<int>> adj(n + 1);\n    for (int i = 0; i < n; i++) {\n        cin >> a[i + 1];\n    }\n    int start;\n    for (int i = 1; i < n + 1; i++) {\n        int q;\n        cin >> q;\n        if (q == -1) {\n            start = i;\n        } else {\n            adj[q].push_back(i);\n        }\n    }\n    int maxDisp = INT_MIN;\n    dfs(start, adj, a, maxDisp, a[start]);\n    cout << maxDisp << endl;\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
-      "Depth-First Search",
-      "Prime Numbers"
+      "Prime Numbers",
+      "Graphs",
+      "Depth-First Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "Chef is going to leave his home town and shift to a new city. The new city contains exactly **N** houses. There are roads connecting the houses in such a way that there is exactly one way to go from a house to any other house. Length of each of the roads is known to Chef.\n\n\n\nChief is doing a lot of research before shifting to the new city. He wants to know how many pairs of houses (a,b) are there, such that if we multiply length of all the roads on the path from a to b, the product will be divisible by **M**.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ M ≤ 500",
-      "1 ≤ weight of the road ≤ 10^9",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 M \u2264 500",
+      "1 \u2264 weight of the road \u2264 10^9",
       "M is a prime"
     ],
     "inputFormat": "The first line contains two integers N and M, where N denotes the number of houses and M is the divisor. Each of the next (N-1) lines contains a triplet of numbers (a, b, c) which denotes that the length of the road between houses a and b is c.",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a depth-first search (DFS) approach to traverse the graph and calculate the product of the road lengths for each pair of houses. We can use a recursive function to perform the DFS and keep track of the current product. If the product is divisible by M, we increment the count of pairs.",
-    "timeComplexity": "O(N * (N-1)) — because in the worst case, we need to perform DFS from each node to every other node.",
-    "spaceComplexity": "O(N) — because we need to store the adjacency list representation of the graph.",
+    "timeComplexity": "O(N * (N-1)) \u2014 because in the worst case, we need to perform DFS from each node to every other node.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the adjacency list representation of the graph.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX 100005\n#define MOD 1000000007\n\n// Define the structure for the graph\ntypedef struct Edge {\n    int u, v, w;\n} Edge;\n\n// Define the structure for the graph\ntypedef struct Graph {\n    int numVertices;\n    Edge* edges;\n} Graph;\n\n// Function to create a graph\nGraph* createGraph(int numVertices) {\n    Graph* graph = (Graph*) malloc(sizeof(Graph));\n    graph->numVertices = numVertices;\n    graph->edges = (Edge*) malloc((numVertices - 1) * sizeof(Edge));\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph* graph, int u, int v, int w) {\n    graph->edges[u - 1].u = u;\n    graph->edges[u - 1].v = v;\n    graph->edges[u - 1].w = w;\n}\n\n// Function to perform DFS\nvoid dfs(int u, int v, long long product, int* visited, int M, int* count, Graph* graph) {\n    visited[u] = 1;\n    if (product % M == 0) {\n        (*count)++;\n    }\n    for (int i = 0; i < graph->numVertices - 1; i++) {\n        if (graph->edges[i].u == u && !visited[graph->edges[i].v]) {\n            dfs(graph->edges[i].v, v, product * graph->edges[i].w, visited, M, count, graph);\n        }\n    }\n    visited[u] = 0;\n}\n\n// Function to solve the problem\nvoid solve() {\n    int N, M;\n    scanf(\"%d %d\", &N, &M);\n    Graph* graph = createGraph(N);\n    for (int i = 0; i < N - 1; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        addEdge(graph, u, v, w);\n    }\n    int* visited = (int*) malloc(N * sizeof(int));\n    int count = 0;\n    for (int i = 1; i <= N; i++) {\n        dfs(i, i, 1, visited, M, &count, graph);\n    }\n    printf(\"%d\\n\", count);\n}\n\nint main() {\n    solve();\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for the graph\nstruct Edge {\n    int u, v, w;\n};\n\n// Define the structure for the graph\nstruct Graph {\n    int numVertices;\n    vector<Edge> edges;\n};\n\n// Function to create a graph\nGraph createGraph(int numVertices) {\n    Graph graph;\n    graph.numVertices = numVertices;\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph& graph, int u, int v, int w) {\n    Edge edge;\n    edge.u = u;\n    edge.v = v;\n    edge.w = w;\n    graph.edges.push_back(edge);\n}\n\n// Function to perform DFS\nvoid dfs(int u, int v, long long product, vector<bool>& visited, int M, int& count, const Graph& graph) {\n    visited[u] = true;\n    if (product % M == 0) {\n        count++;\n    }\n    for (const auto& edge : graph.edges) {\n        if (edge.u == u && !visited[edge.v]) {\n            dfs(edge.v, v, product * edge.w, visited, M, count, graph);\n        }\n    }\n    visited[u] = false;\n}\n\n// Function to solve the problem\nvoid solve() {\n    int N, M;\n    cin >> N >> M;\n    Graph graph = createGraph(N);\n    for (int i = 0; i < N - 1; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        addEdge(graph, u, v, w);\n    }\n    vector<bool> visited(N + 1, false);\n    int count = 0;\n    for (int i = 1; i <= N; i++) {\n        dfs(i, i, 1, visited, M, count, graph);\n    }\n    cout << count << endl;\n}\n\nint main() {\n    solve();\n    return 0;\n}",

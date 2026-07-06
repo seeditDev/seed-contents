@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -109,7 +110,7 @@
   "solution": {
     "approach": "The problem can be solved by using the formula for combinations with repetition, which is (n+k-1) choose (k-1). We need to calculate the sum of these combinations for i ranging from 0 to n. Since the result can be large, we need to calculate it modulo 1000003. We also need to consider the given prime number p and calculate the result modulo p.",
     "timeComplexity": "O(T * n) per test case, O(T * max(n)) total. Precomputation is not required.",
-    "spaceComplexity": "O(1) — the dominant structure is a constant amount of space.",
+    "spaceComplexity": "O(1) \u2014 the dominant structure is a constant amount of space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\n// Function to calculate the combination formula\nuint64_t combination(uint64_t n, uint64_t k, uint64_t p) {\n    uint64_t result = 1;\n    for (uint64_t i = 1; i <= k; i++) {\n        result = (result * (n - i + 1)) % p;\n        result = (result * modInverse(i, p)) % p;\n    }\n    return result;\n}\n\n// Function to calculate the modular inverse\nuint64_t modInverse(uint64_t a, uint64_t p) {\n    uint64_t t = 0;\n    uint64_t newt = 1;\n    uint64_t r = p;\n    uint64_t newr = a;\n    while (newr != 0) {\n        uint64_t quotient = r / newr;\n        uint64_t tmp = t - quotient * newt;\n        t = newt;\n        newt = tmp;\n        tmp = r - quotient * newr;\n        r = newr;\n        newr = tmp;\n    }\n    if (r > 1) return -1;\n    if (t < 0) t += p;\n    return t;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        uint64_t n, k, p;\n        scanf(\"%llu %llu %llu\", &n, &k, &p);\n        uint64_t sum = 0;\n        for (uint64_t i = 0; i <= n; i++) {\n            sum = (sum + combination(i + k - 1, k - 1, p)) % 1000003;\n        }\n        printf(\"%llu\\n\", sum);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n\n// Function to calculate the combination formula\nuint64_t combination(uint64_t n, uint64_t k, uint64_t p) {\n    uint64_t result = 1;\n    for (uint64_t i = 1; i <= k; i++) {\n        result = (result * (n - i + 1)) % p;\n        result = (result * modInverse(i, p)) % p;\n    }\n    return result;\n}\n\n// Function to calculate the modular inverse\nuint64_t modInverse(uint64_t a, uint64_t p) {\n    uint64_t t = 0;\n    uint64_t newt = 1;\n    uint64_t r = p;\n    uint64_t newr = a;\n    while (newr != 0) {\n        uint64_t quotient = r / newr;\n        uint64_t tmp = t - quotient * newt;\n        t = newt;\n        newt = tmp;\n        tmp = r - quotient * newr;\n        r = newr;\n        newr = tmp;\n    }\n    if (r > 1) return -1;\n    if (t < 0) t += p;\n    return t;\n}\n\nint main() {\n    int T;\n    std::cin >> T;\n    for (int t = 0; t < T; t++) {\n        uint64_t n, k, p;\n        std::cin >> n >> k >> p;\n        uint64_t sum = 0;\n        for (uint64_t i = 0; i <= n; i++) {\n            sum = (sum + combination(i + k - 1, k - 1, p)) % 1000003;\n        }\n        std::cout << sum << std::endl;\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Graph",
       "Directed Graph",
-      "Modular Arithmetic"
+      "Graph",
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -118,7 +119,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We create a 2D array dp of size (n+2) x m, where dp[i][j] represents the number of ways to reach the jth vertex in the ith layer. We initialize dp[0][0] to 1, as there is only one way to reach the first vertex in the first layer. Then, we iterate over the k additional edges and update the dp array accordingly. Finally, we calculate the number of ways to reach the last vertex in the last layer by summing up the values in the last layer.",
     "timeComplexity": "O(k * m + n * m^2) per test case",
-    "spaceComplexity": "O(n * m) — the dominant structure is the 2D dp array",
+    "spaceComplexity": "O(n * m) \u2014 the dominant structure is the 2D dp array",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint main() {\n    int n, m, k;\n    scanf(\"%d %d %d\", &n, &m, &k);\n    long long **dp = (long long **)malloc((n + 2) * sizeof(long long *));\n    for (int i = 0; i < n + 2; i++) {\n        dp[i] = (long long *)malloc(m * sizeof(long long));\n    }\n    dp[0][0] = 1;\n    for (int i = 0; i < k; i++) {\n        int edge0, edge1, edge2, edge3;\n        scanf(\"%d %d %d %d\", &edge0, &edge1, &edge2, &edge3);\n        dp[edge2][edge3] = (dp[edge2][edge3] + dp[edge0][edge1]) % MOD;\n    }\n    for (int i = 1; i < n + 1; i++) {\n        for (int j = 0; j < m; j++) {\n            for (int l = 0; l < m; l++) {\n                dp[i + 1][l] = (dp[i + 1][l] + dp[i][j]) % MOD;\n            }\n        }\n    }\n    printf(\"%lld\\n\", dp[n + 1][0]);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 1000000007\nusing namespace std;\n\nint main() {\n    int n, m, k;\n    cin >> n >> m >> k;\n    vector<vector<long long>> dp(n + 2, vector<long long>(m, 0));\n    dp[0][0] = 1;\n    for (int i = 0; i < k; i++) {\n        int edge0, edge1, edge2, edge3;\n        cin >> edge0 >> edge1 >> edge2 >> edge3;\n        dp[edge2][edge3] = (dp[edge2][edge3] + dp[edge0][edge1]) % MOD;\n    }\n    for (int i = 1; i < n + 1; i++) {\n        for (int j = 0; j < m; j++) {\n            for (int l = 0; l < m; l++) {\n                dp[i + 1][l] = (dp[i + 1][l] + dp[i][j]) % MOD;\n            }\n        }\n    }\n    cout << dp[n + 1][0] << endl;\n    return 0;\n}",

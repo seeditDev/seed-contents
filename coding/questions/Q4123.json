@@ -6,7 +6,7 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Game Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
@@ -19,14 +19,14 @@
     ]
   },
   "content": {
-    "problemStatement": "###Read problems statements Bengali and Vietnamese as well.\n\nGhayeeth is a math teacher. He likes playing games, so he invented a new game which he wants to play against his student Siroj. The rules of the game are as follows:\n\n\nInitially, Ghayeeth writes the numbers  A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​ on a whiteboard and a number Z=0Z=0Z=0 on a piece of paper.\nGhayeeth and Siroj alternate turns; Ghayeeth goes first.\nIn each turn, the current player must pick a number that is currently written on the whiteboard, add it to ZZZ and erase it from the whiteboard.\nAfter each turn, if there is no pair of positive integers (a,b)(a, b)(a,b) such that Z=a2−b2Z = a^2 - b^2Z=a2−b2, then the last player who made a move loses the game.\nOtherwise, if there are no more numbers on the whiteboard, the last player who made a move wins the game.\nHelp Ghayeeth determine the winner of this game.",
+    "problemStatement": "###Read problems statements Bengali and Vietnamese as well.\n\nGhayeeth is a math teacher. He likes playing games, so he invented a new game which he wants to play against his student Siroj. The rules of the game are as follows:\n\n\nInitially, Ghayeeth writes the numbers  A1,A2,\u2026,ANA_1, A_2, \\dots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b on a whiteboard and a number Z=0Z=0Z=0 on a piece of paper.\nGhayeeth and Siroj alternate turns; Ghayeeth goes first.\nIn each turn, the current player must pick a number that is currently written on the whiteboard, add it to ZZZ and erase it from the whiteboard.\nAfter each turn, if there is no pair of positive integers (a,b)(a, b)(a,b) such that Z=a2\u2212b2Z = a^2 - b^2Z=a2\u2212b2, then the last player who made a move loses the game.\nOtherwise, if there are no more numbers on the whiteboard, the last player who made a move wins the game.\nHelp Ghayeeth determine the winner of this game.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 300",
-      "5 ≤ Ai ≤ 100,000 for each valid i"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 300",
+      "5 \u2264 Ai \u2264 100,000 for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "For each test case, print a single line containing the string 'Ghayeeth' or 'Siroj' — the name of the winner.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case, print a single line containing the string 'Ghayeeth' or 'Siroj' \u2014 the name of the winner.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to determine the winner of the game based on the given rules. We can use a recursive approach to simulate the game and determine the winner. The key idea is to check if there is a pair of positive integers (a, b) such that Z = a^2 - b^2 after each turn. If there is no such pair, the last player who made a move loses the game.",
-    "timeComplexity": "O(T * N * sqrt(max(Ai))) — explain: per query is O(N * sqrt(max(Ai))), total is O(T * N * sqrt(max(Ai)))",
-    "spaceComplexity": "O(N) — explain what dominates: the space complexity is dominated by the recursive call stack and the space needed to store the input array",
+    "timeComplexity": "O(T * N * sqrt(max(Ai))) \u2014 explain: per query is O(N * sqrt(max(Ai))), total is O(T * N * sqrt(max(Ai)))",
+    "spaceComplexity": "O(N) \u2014 explain what dominates: the space complexity is dominated by the recursive call stack and the space needed to store the input array",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n\nint isSquare(int n) {\n    int sqrt_n = sqrt(n);\n    return sqrt_n * sqrt_n == n;\n}\n\nint canWin(int n, int* arr, int* z) {\n    if (n == 0) return 0;\n    for (int i = 0; i < n; i++) {\n        int temp = arr[i];\n        arr[i] = -1;\n        *z += temp;\n        if (!isSquare(*z) || !canWin(n - 1, arr, z)) {\n            arr[i] = temp;\n            *z -= temp;\n            return 1;\n        }\n        arr[i] = temp;\n        *z -= temp;\n    }\n    return 0;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        int* arr = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        int z = 0;\n        if (canWin(n, arr, &z)) {\n            printf(\"Ghayeeth\\n\");\n        } else {\n            printf(\"Siroj\\n\");\n        }\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nbool isSquare(int n) {\n    int sqrt_n = sqrt(n);\n    return sqrt_n * sqrt_n == n;\n}\n\nbool canWin(int n, int* arr, int& z) {\n    if (n == 0) return false;\n    for (int i = 0; i < n; i++) {\n        int temp = arr[i];\n        arr[i] = -1;\n        z += temp;\n        if (!isSquare(z) || !canWin(n - 1, arr, z)) {\n            arr[i] = temp;\n            z -= temp;\n            return true;\n        }\n        arr[i] = temp;\n        z -= temp;\n    }\n    return false;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        int* arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            cin >> arr[i];\n        }\n        int z = 0;\n        if (canWin(n, arr, z)) {\n            cout << \"Ghayeeth\" << endl;\n        } else {\n            cout << \"Siroj\" << endl;\n        }\n        delete[] arr;\n    }\n    return 0;\n}",

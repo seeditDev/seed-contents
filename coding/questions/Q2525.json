@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Prime Numbers",
-      "Miller-Rabin",
+      "Math",
       "Primality Test",
-      "Euler Totient"
+      "Euler Totient",
+      "Miller-Rabin"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +22,19 @@
     ]
   },
   "content": {
-    "problemStatement": "Witua is a little student from the University of Lviv. He enjoys studying math. Witua knows a lot of famous mathematicians like Eratosthenes, Pythagoras, Fermat, Diophantus, Furko, Gauss and so on. However, his favorite one is Euler. The only thing Witua likes more than Euler is Euler’s totient function **φ**. He is exploring the nature of this function. One of the steps of his work is finding φ(i)/i for all 2≤i≤**N**. He doesn’t need to know every such value, but Witua wonders for what value i, is φ(i)/i the maximum he can get? Help little student to find such i that φ(i)/i is maximum among all the  2≤i≤**N**.",
+    "problemStatement": "Witua is a little student from the University of Lviv. He enjoys studying math. Witua knows a lot of famous mathematicians like Eratosthenes, Pythagoras, Fermat, Diophantus, Furko, Gauss and so on. However, his favorite one is Euler. The only thing Witua likes more than Euler is Euler\u2019s totient function **\u03c6**. He is exploring the nature of this function. One of the steps of his work is finding \u03c6(i)/i for all 2\u2264i\u2264**N**. He doesn\u2019t need to know every such value, but Witua wonders for what value i, is \u03c6(i)/i the maximum he can get? Help little student to find such i that \u03c6(i)/i is maximum among all the  2\u2264i\u2264**N**.",
     "constraints": [
-      "1 ≤ T ≤ 500",
-      "2 ≤ N ≤ 10^18"
+      "1 \u2264 T \u2264 500",
+      "2 \u2264 N \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 500) – the number of test cases. Each of the next T lines contains a single integer N (2 ≤ N ≤ 10^18).",
-    "outputFormat": "For each test case output a single integer – the value i (2 ≤ i ≤ N) for which φ(i)/i is maximal. The answer is the largest prime not greater than N.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 500) \u2013 the number of test cases. Each of the next T lines contains a single integer N (2 \u2264 N \u2264 10^18).",
+    "outputFormat": "For each test case output a single integer \u2013 the value i (2 \u2264 i \u2264 N) for which \u03c6(i)/i is maximal. The answer is the largest prime not greater than N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2\n3\n4",
         "output": "2\n3\n3",
-        "explanation": "For N = 2, the only possible value is 2, so the answer is 2. For N = 3, the possible values are 2 and 3, and φ(2)/2 = 1/2 and φ(3)/3 = 2/3, so the answer is 3. For N = 4, the possible values are 2, 3, and 4, and φ(2)/2 = 1/2, φ(3)/3 = 2/3, and φ(4)/4 = 2/4, so the answer is 3."
+        "explanation": "For N = 2, the only possible value is 2, so the answer is 2. For N = 3, the possible values are 2 and 3, and \u03c6(2)/2 = 1/2 and \u03c6(3)/3 = 2/3, so the answer is 3. For N = 4, the possible values are 2, 3, and 4, and \u03c6(2)/2 = 1/2, \u03c6(3)/3 = 2/3, and \u03c6(4)/4 = 2/4, so the answer is 3."
       }
     ]
   },
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "For any integer i, φ(i)/i = Π_{p|i}(1 - 1/p). Adding a new prime factor multiplies the ratio by a number < 1, therefore the ratio is maximal for numbers that have exactly one prime factor, i.e., prime numbers. Among primes, (1 - 1/p) grows with p, so the largest prime ≤ N gives the maximal ratio. The task reduces to finding the greatest prime not larger than N. N is up to 10^18, so a deterministic Miller‑Rabin test for 64‑bit integers is used. Starting from N, we test each decreasing integer until a prime is found – the maximal prime gap below 10^18 is below 1000, making this loop fast.",
-    "timeComplexity": "Miller‑Rabin runs in O(log^3 N) per test. In the worst case we try at most a few hundred candidates, so the total complexity is O(T·log^3 N).",
+    "approach": "For any integer i, \u03c6(i)/i = \u03a0_{p|i}(1 - 1/p). Adding a new prime factor multiplies the ratio by a number < 1, therefore the ratio is maximal for numbers that have exactly one prime factor, i.e., prime numbers. Among primes, (1 - 1/p) grows with p, so the largest prime \u2264 N gives the maximal ratio. The task reduces to finding the greatest prime not larger than N. N is up to 10^18, so a deterministic Miller\u2011Rabin test for 64\u2011bit integers is used. Starting from N, we test each decreasing integer until a prime is found \u2013 the maximal prime gap below 10^18 is below 1000, making this loop fast.",
+    "timeComplexity": "Miller\u2011Rabin runs in O(log^3 N) per test. In the worst case we try at most a few hundred candidates, so the total complexity is O(T\u00b7log^3 N).",
     "spaceComplexity": "O(1) additional memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n#include <inttypes.h>\n\nstatic uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t mod) {\n    __uint128_t res = ( __uint128_t ) a * b;\n    return (uint64_t)(res % mod);\n}\n\nstatic uint64_t pow_mod(uint64_t a, uint64_t d, uint64_t mod) {\n    uint64_t result = 1;\n    while (d) {\n        if (d & 1) result = mul_mod(result, a, mod);\n        a = mul_mod(a, a, mod);\n        d >>= 1;\n    }\n    return result;\n}\n\nstatic int is_prime(uint64_t n) {\n    if (n < 2) return 0;\n    static uint64_t small_primes[] = {2,3,5,7,11,13,17,19,23,29,31,37};\n    for (size_t i = 0; i < sizeof(small_primes)/sizeof(small_primes[0]); ++i) {\n        if (n % small_primes[i] == 0) return n == small_primes[i];\n    }\n    uint64_t d = n - 1, s = 0;\n    while ((d & 1) == 0) { d >>= 1; ++s; }\n    uint64_t bases[] = {2,3,5,7,11,13,17};\n    for (size_t i = 0; i < sizeof(bases)/sizeof(bases[0]); ++i) {\n        uint64_t a = bases[i];\n        if (a % n == 0) continue;\n        uint64_t x = pow_mod(a, d, n);\n        if (x == 1 || x == n-1) continue;\n        int cont = 0;\n        for (uint64_t r = 1; r < s; ++r) {\n            x = mul_mod(x, x, n);\n            if (x == n-1) { cont = 1; break; }\n        }\n        if (cont) continue;\n        return 0;\n    }\n    return 1;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        uint64_t N; scanf(\"%\" PRIu64, &N);\n        uint64_t cur = N;\n        while (!is_prime(cur)) --cur;\n        printf(\"%\" PRIu64 \"\\n\", cur);\n    }\n    return 0;\n}",

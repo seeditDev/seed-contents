@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Connected Graph",
+      "Graphs",
       "Degree Adjustment",
-      "Greedy Construction",
-      "Chain Construction"
+      "Connected Graph",
+      "Chain Construction",
+      "Greedy Construction"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,28 +22,28 @@
     ]
   },
   "content": {
-    "problemStatement": "Chefland is a big nation which relies on its airport system to guarantee fast travel. Currently, there are NNN airports (numbered 111 through NNN) and MMM bidirectional flights in Chefland. Each flight connects two distinct airports, but there may be any number of flights between each pair of airports. We say that a system of flights is connected if it is possible to travel from each airport to all other airports using these flights. For each airport iii, we also define its degree did_idi​ as the number of flights that have iii as one of their endpoints.\n\nUnfortunately, it turns out that the current flight system is not necessarily connected. This is unacceptable, so the mayor asked you to propose a new flight system. Formally, this means that you can remove some of the existing flights (possibly none) and arbitrarily create some new flights (possibly none). You may even create multiple flights between the same pairs of airports.\n\nHowever, the infrastructure and number of employees at each airport is optimised for its current degree did_idi​, so it would be inconvenient if the new degrees of airports differ too much from the old ones. For each airport iii, let's define xix_ixi​ as the degree of airport iii in the new proposed system of flights. We define the inconvenience of this system as ∑i=1N∣di−xi∣\\sum_{i=1}^N |d_i-x_i|∑i=1N​∣di​−xi​∣.\n\nYou should propose a connected system of flights such that its inconvenience is the smallest possible. If there are multiple solutions, you may find any one.",
+    "problemStatement": "Chefland is a big nation which relies on its airport system to guarantee fast travel. Currently, there are NNN airports (numbered 111 through NNN) and MMM bidirectional flights in Chefland. Each flight connects two distinct airports, but there may be any number of flights between each pair of airports. We say that a system of flights is connected if it is possible to travel from each airport to all other airports using these flights. For each airport iii, we also define its degree did_idi\u200b as the number of flights that have iii as one of their endpoints.\n\nUnfortunately, it turns out that the current flight system is not necessarily connected. This is unacceptable, so the mayor asked you to propose a new flight system. Formally, this means that you can remove some of the existing flights (possibly none) and arbitrarily create some new flights (possibly none). You may even create multiple flights between the same pairs of airports.\n\nHowever, the infrastructure and number of employees at each airport is optimised for its current degree did_idi\u200b, so it would be inconvenient if the new degrees of airports differ too much from the old ones. For each airport iii, let's define xix_ixi\u200b as the degree of airport iii in the new proposed system of flights. We define the inconvenience of this system as \u2211i=1N\u2223di\u2212xi\u2223\\sum_{i=1}^N |d_i-x_i|\u2211i=1N\u200b\u2223di\u200b\u2212xi\u200b\u2223.\n\nYou should propose a connected system of flights such that its inconvenience is the smallest possible. If there are multiple solutions, you may find any one.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N ≤ 100000",
-      "0 ≤ M ≤ 200000",
-      "Sum of N over all test cases ≤ 400000",
-      "Sum of M over all test cases ≤ 600000"
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N \u2264 100000",
+      "0 \u2264 M \u2264 200000",
+      "Sum of N over all test cases \u2264 400000",
+      "Sum of M over all test cases \u2264 600000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M – the number of airports and the number of existing flights. Then M lines follow, each containing two integers a and b (1 ≤ a, b ≤ N, a ≠ b) describing a bidirectional flight between airports a and b. Multiple flights between the same pair may appear.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M \u2013 the number of airports and the number of existing flights. Then M lines follow, each containing two integers a and b (1 \u2264 a, b \u2264 N, a \u2260 b) describing a bidirectional flight between airports a and b. Multiple flights between the same pair may appear.",
     "outputFormat": "For each test case output two integers on one line: the minimum inconvenience achieved by the algorithm and the number of flights F in the new system. Then output F lines, each containing two integers a and b describing a flight of the new system. The new system must be connected.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\n3 2\\n1 2\\n2 3\\n",
         "output": "0 2\\n1 2\\n2 3\\n",
-        "explanation": "Original degrees are [1,2,1]. The chain 1‑2‑3 gives the same degrees, so inconvenience is 0 and we output the two chain edges."
+        "explanation": "Original degrees are [1,2,1]. The chain 1\u20112\u20113 gives the same degrees, so inconvenience is 0 and we output the two chain edges."
       },
       {
         "id": "sample_2",
         "input": "1\\n4 0\\n",
         "output": "6 3\\n1 2\\n2 3\\n3 4\\n",
-        "explanation": "All original degrees are 0. In the chain 1‑2‑3‑4 the degrees become [1,2,2,1]; the sum of absolute differences is 1+2+2+1=6."
+        "explanation": "All original degrees are 0. In the chain 1\u20112\u20113\u20114 the degrees become [1,2,2,1]; the sum of absolute differences is 1+2+2+1=6."
       },
       {
         "id": "sample_3",
@@ -116,7 +117,7 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we first compute the original degree d_i of every airport from the given M flights. To obtain a connected graph with a simple, deterministic structure we build a straight chain: (1,2), (2,3), …, (N‑1,N). This chain is always connected and uses exactly N‑1 flights (0 when N=1). The degree of each vertex in the chain is:\n- vertex 1 and N : 1 (if N>1, otherwise 0),\n- all other vertices : 2.\nThe inconvenience is then Σ|d_i - x_i| where x_i is the degree in the chain. Because the construction is fixed, the inconvenience can be computed directly after reading the input. The algorithm runs in O(N+M) per test case and uses O(N) additional memory for the degree array.",
+    "approach": "For each test case we first compute the original degree d_i of every airport from the given M flights. To obtain a connected graph with a simple, deterministic structure we build a straight chain: (1,2), (2,3), \u2026, (N\u20111,N). This chain is always connected and uses exactly N\u20111 flights (0 when N=1). The degree of each vertex in the chain is:\n- vertex 1 and N : 1 (if N>1, otherwise 0),\n- all other vertices : 2.\nThe inconvenience is then \u03a3|d_i - x_i| where x_i is the degree in the chain. Because the construction is fixed, the inconvenience can be computed directly after reading the input. The algorithm runs in O(N+M) per test case and uses O(N) additional memory for the degree array.",
     "timeComplexity": "O(N + M) per test case",
     "spaceComplexity": "O(N) for the degree array",
     "code": {

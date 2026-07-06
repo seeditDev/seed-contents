@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Geometry",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Plane Division",
+      "Math",
       "Largest Perfect Subset",
       "Geometry"
     ],
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "Chef is working with lines on a 2-D plane.\n\nHe knows that every line on a plane can be clearly defined by three coefficients **A**, **B** and **C**: any point **(x,&nbsp;y)** lies on the line if and only if **A * x + B * y + C = 0**.\n\nLet's call a set of lines to be perfect if there does not exist a point that belongs to two or more distinct lines of the set.\n\nHe has a set of lines on a plane and he wants to find out the size of the largest perfect subset of this set.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ N ≤ 10^5",
-      "Sum over all N for all test cases ≤ 10^6",
-      "|A|, |B|, |C| ≤ 10^9",
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 N \u2264 10^5",
+      "Sum over all N for all test cases \u2264 10^6",
+      "|A|, |B|, |C| \u2264 10^9",
       "For a line with coefficients A, B, and C either A or B is not zero."
     ],
     "inputFormat": "The first line of input contains one integer T denoting the number of test cases. Each test case consists of one integer N denoting the number of lines. Next N lines contain 3 space-separated integers each denoting coefficients A, B, and C respectively.",
@@ -116,8 +117,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by generating all possible subsets of the given lines and checking if each subset is perfect. A subset is perfect if there does not exist a point that belongs to two or more distinct lines of the subset. We can use the concept of linear independence to check if a subset is perfect.",
-    "timeComplexity": "O(2^N * N) — explain: per query is O(N), total is O(2^N * N) due to generating all possible subsets",
-    "spaceComplexity": "O(N) — explain: we need to store the coefficients of the lines",
+    "timeComplexity": "O(2^N * N) \u2014 explain: per query is O(N), total is O(2^N * N) due to generating all possible subsets",
+    "spaceComplexity": "O(N) \u2014 explain: we need to store the coefficients of the lines",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int A[N], B[N], C[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d %d\", &A[i], &B[i], &C[i]);\n        }\n        int max_size = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int size = 0;\n            int is_perfect = 1;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i))) {\n                    size++;\n                    for (int j = i + 1; j < N; j++) {\n                        if ((mask & (1 << j))) {\n                            if (A[i] * B[j] - A[j] * B[i] == 0 && A[i] * C[j] - A[j] * C[i] == 0 && B[i] * C[j] - B[j] * C[i] == 0) {\n                                is_perfect = 0;\n                                break;\n                            }\n                        }\n                    }\n                    if (!is_perfect) break;\n                }\n            }\n            if (is_perfect) max_size = (max_size > size) ? max_size : size;\n        }\n        printf(\"%d\\n\", max_size);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <cmath>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<int> A(N), B(N), C(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i] >> B[i] >> C[i];\n        }\n        int max_size = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int size = 0;\n            int is_perfect = 1;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i))) {\n                    size++;\n                    for (int j = i + 1; j < N; j++) {\n                        if ((mask & (1 << j))) {\n                            if (A[i] * B[j] - A[j] * B[i] == 0 && A[i] * C[j] - A[j] * C[i] == 0 && B[i] * C[j] - B[j] * C[i] == 0) {\n                                is_perfect = 0;\n                                break;\n                            }\n                        }\n                    }\n                    if (!is_perfect) break;\n                }\n            }\n            if (is_perfect) max_size = (max_size > size) ? max_size : size;\n        }\n        cout << max_size << endl;\n    }\n    return 0;\n}",

@@ -6,15 +6,16 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory | Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Prime Numbers",
-      "Sieve of Eratosthenes",
       "Impartial Games",
-      "Sprague‑Grundy",
-      "Prefix Sum"
+      "Prime Numbers",
+      "Math",
+      "Prefix Sum",
+      "Sprague\u2011Grundy",
+      "Sieve of Eratosthenes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,19 +23,19 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and Divyam are playing a game with the following rules:\n\n\nFirst, an integer X!X!X! is written on a board.\nChef and Divyam alternate turns; Chef plays first.\nIn each move, the current player should choose a positive integer DDD which is divisible by up to YYY distinct primes and does not exceed the integer currently written on the board. Note that 111 is not a prime.\nDDD is then subtracted from the integer on the board, i.e. if the integer written on the board before this move was AAA, it is erased and replaced by A−DA-DA−D.\nWhen one player writes 000 on the board, the game ends and this player wins.\nGiven XXX and YYY, determine the winner of the game.",
+    "problemStatement": "Chef and Divyam are playing a game with the following rules:\n\n\nFirst, an integer X!X!X! is written on a board.\nChef and Divyam alternate turns; Chef plays first.\nIn each move, the current player should choose a positive integer DDD which is divisible by up to YYY distinct primes and does not exceed the integer currently written on the board. Note that 111 is not a prime.\nDDD is then subtracted from the integer on the board, i.e. if the integer written on the board before this move was AAA, it is erased and replaced by A\u2212DA-DA\u2212D.\nWhen one player writes 000 on the board, the game ends and this player wins.\nGiven XXX and YYY, determine the winner of the game.",
     "constraints": [
-      "1 ≤ T ≤ 10^6",
-      "1 ≤ X, Y ≤ 10^6"
+      "1 \u2264 T \u2264 10^6",
+      "1 \u2264 X, Y \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and Y.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers X and Y.",
     "outputFormat": "For each test case output a single line containing \"Chef\" if Chef wins the game, otherwise \"Divyam\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\\n1 2\\n3 1\\n2021 42",
         "output": "Chef\\nDivyam\\nDivyam",
-        "explanation": "π(1)=0 ≤2 → Chef can take 1! =1 and win.\\nπ(3)=2 >1 → 3! has two distinct primes, not allowed; first player loses.\\nπ(2021)=306 >42 → Divyam wins."
+        "explanation": "\u03c0(1)=0 \u22642 \u2192 Chef can take 1! =1 and win.\\n\u03c0(3)=2 >1 \u2192 3! has two distinct primes, not allowed; first player loses.\\n\u03c0(2021)=306 >42 \u2192 Divyam wins."
       }
     ]
   },
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "The integer written on the board at the start is X!.\nThe only property of a move that matters is the number of distinct prime factors of the chosen D. Let ω(D) be that number. A move is allowed iff ω(D) ≤ Y.\nObserve that ω(X!) equals the number of distinct primes not larger than X, i.e. π(X). If π(X) ≤ Y then X! itself satisfies the move condition, so Chef can subtract the whole X! in his first turn and win immediately.\nIf π(X) > Y, then X! contains at least Y+1 distinct primes. Any allowed D can contain at most Y distinct primes, therefore after subtracting D the remaining number is still positive and still has at least one of those Y+1 primes as a factor. Consequently the opponent can always mirror the situation and eventually force a win for the second player. Hence the starting position is losing for the first player.\nThus the winner is decided solely by comparing π(X) with Y.\nImplementation steps:\n1. Pre‑compute an array primeCnt[i] = number of primes ≤ i for all i up to 10^6 using a linear/Eratosthenes sieve (O(N log log N)).\n2. For each test case read X, Y and output \"Chef\" if primeCnt[X] ≤ Y else \"Divyam\".\nThe algorithm runs in O(N log log N + T) time and O(N) memory.",
-    "timeComplexity": "O(N log log N + T), where N = 10^6 (pre‑computation) and T is the number of test cases.",
+    "approach": "The integer written on the board at the start is X!.\nThe only property of a move that matters is the number of distinct prime factors of the chosen D. Let \u03c9(D) be that number. A move is allowed iff \u03c9(D) \u2264 Y.\nObserve that \u03c9(X!) equals the number of distinct primes not larger than X, i.e. \u03c0(X). If \u03c0(X) \u2264 Y then X! itself satisfies the move condition, so Chef can subtract the whole X! in his first turn and win immediately.\nIf \u03c0(X) > Y, then X! contains at least Y+1 distinct primes. Any allowed D can contain at most Y distinct primes, therefore after subtracting D the remaining number is still positive and still has at least one of those Y+1 primes as a factor. Consequently the opponent can always mirror the situation and eventually force a win for the second player. Hence the starting position is losing for the first player.\nThus the winner is decided solely by comparing \u03c0(X) with Y.\nImplementation steps:\n1. Pre\u2011compute an array primeCnt[i] = number of primes \u2264 i for all i up to 10^6 using a linear/Eratosthenes sieve (O(N log log N)).\n2. For each test case read X, Y and output \"Chef\" if primeCnt[X] \u2264 Y else \"Divyam\".\nThe algorithm runs in O(N log log N + T) time and O(N) memory.",
+    "timeComplexity": "O(N log log N + T), where N = 10^6 (pre\u2011computation) and T is the number of test cases.",
     "spaceComplexity": "O(N) for the sieve and prefix array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    const int MAX = 1000000;\n    char *isPrime = (char*)calloc(MAX+1, sizeof(char));\n    int *pref = (int*)malloc((MAX+1)*sizeof(int));\n    for(int i=2;i<=MAX;i++) isPrime[i]=1;\n    for(int p=2;p*p<=MAX;p++) if(isPrime[p]) for(int q=p*p;q<=MAX;q+=p) isPrime[q]=0;\n    pref[0]=0; pref[1]=0;\n    for(int i=2;i<=MAX;i++) pref[i]=pref[i-1]+isPrime[i];\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int X,Y; scanf(\"%d %d\",&X,&Y);\n        if(pref[X]<=Y) printf(\"Chef\\n\"); else printf(\"Divyam\\n\");\n    }\n    free(isPrime); free(pref);\n    return 0;\n}",

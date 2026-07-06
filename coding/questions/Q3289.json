@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Greedy | Searching",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "BFS",
       "Grid",
       "Shortest Path"
@@ -22,8 +23,8 @@
   "content": {
     "problemStatement": "There is a haunted town called HauntedLand. The structure of HauntedLand can be thought of as a grid of size **n * m**. There is a house in each cell of the grid. Some people have fled from their houses because they were haunted. '.' represents a haunted house whereas '*' represents a house in which people are living.\n\n\n\nOne day, Devu, the famous perfumer came to town with a perfume whose smell can hypnotize people. Devu can put the perfume in at most one of the houses. This takes Devu one second. Then, the perfume spreads from one house (need not be inhabited by people) to all its adjacent houses in one second, and the cycle continues. Two houses are said to be a adjacent to each other, if they share a corner or an edge, i.e., each house (except those on the boundaries) will have 8 adjacent houses.\n\n\n\nYou want to save people from Devu's dark perfumery by sending them a message to flee from the town. So, you need to estimate the minimum amount of time Devu needs to hypnotize all the people? Note that if there are no houses inhabited by people, Devu doesn't need to put perfume in any cell.",
     "constraints": [
-      "1 ≤ T ≤ 20",
-      "1 ≤ n, m ≤ 1000"
+      "1 \u2264 T \u2264 20",
+      "1 \u2264 n, m \u2264 1000"
     ],
     "inputFormat": "The first line of input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers n, m denoting the dimensions of the town. For each of the next n lines, each line has m characters (without any space) denoting a row of houses of the town.",
     "outputFormat": "The minimum amount of time Devu needs to hypnotize all the people.",
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Breadth-First Search (BFS) algorithm. We start by finding the first '*' in the grid, which represents the house where Devu can put the perfume. Then, we perform a BFS from this house, exploring all its adjacent houses (horizontally, vertically, and diagonally) and keeping track of the time it takes to reach each house. The time it takes to hypnotize all the people is the maximum time it takes to reach any '*' in the grid.",
-    "timeComplexity": "O(T * n * m) — where T is the number of test cases, n is the number of rows in the grid, and m is the number of columns in the grid. The reason is that in the worst case, we need to perform a BFS for each test case, and each BFS can take up to n * m time.",
-    "spaceComplexity": "O(n * m) — where n is the number of rows in the grid and m is the number of columns in the grid. The reason is that we need to store the grid and the visited status of each cell in the grid.",
+    "timeComplexity": "O(T * n * m) \u2014 where T is the number of test cases, n is the number of rows in the grid, and m is the number of columns in the grid. The reason is that in the worst case, we need to perform a BFS for each test case, and each BFS can take up to n * m time.",
+    "spaceComplexity": "O(n * m) \u2014 where n is the number of rows in the grid and m is the number of columns in the grid. The reason is that we need to store the grid and the visited status of each cell in the grid.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 1000\n\nint minTime(char grid[][MAX], int n, int m) {\n    int i, j, time = 0;\n    int visited[n][m];\n    int queue[n * m][2];\n    int front = 0, rear = 0;\n\n    // Find the first '*' in the grid\n    for (i = 0; i < n; i++) {\n        for (j = 0; j < m; j++) {\n            if (grid[i][j] == '*') {\n                queue[rear][0] = i;\n                queue[rear][1] = j;\n                rear++;\n                visited[i][j] = 1;\n                break;\n            }\n        }\n        if (rear > 0) break;\n    }\n\n    // Perform BFS\n    while (front < rear) {\n        int x = queue[front][0];\n        int y = queue[front][1];\n        front++;\n\n        // Explore all adjacent houses\n        for (i = -1; i <= 1; i++) {\n            for (j = -1; j <= 1; j++) {\n                int nx = x + i;\n                int ny = y + j;\n\n                if (nx >= 0 && nx < n && ny >= 0 && ny < m && visited[nx][ny] == 0) {\n                    queue[rear][0] = nx;\n                    queue[rear][1] = ny;\n                    rear++;\n                    visited[nx][ny] = 1;\n                    if (grid[nx][ny] == '*') time++;\n                }\n            }\n        }\n    }\n\n    return time;\n}\n\nint main() {\n    int T, n, m, i, j;\n    char grid[1000][1000];\n\n    scanf(\"%d\", &T);\n\n    while (T--) {\n        scanf(\"%d %d\", &n, &m);\n\n        for (i = 0; i < n; i++) {\n            scanf(\"%s\", grid[i]);\n        }\n\n        printf(\"%d\\n\", minTime(grid, n, m));\n    }\n\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nconst int MAX = 1000;\n\nint minTime(vector<vector<char>>& grid, int n, int m) {\n    int time = 0;\n    vector<vector<int>> visited(n, vector<int>(m, 0));\n    queue<pair<int, int>> q;\n\n    // Find the first '*' in the grid\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            if (grid[i][j] == '*') {\n                q.push({i, j});\n                visited[i][j] = 1;\n                break;\n            }\n        }\n        if (!q.empty()) break;\n    }\n\n    // Perform BFS\n    while (!q.empty()) {\n        int x = q.front().first;\n        int y = q.front().second;\n        q.pop();\n\n        // Explore all adjacent houses\n        for (int i = -1; i <= 1; i++) {\n            for (int j = -1; j <= 1; j++) {\n                int nx = x + i;\n                int ny = y + j;\n\n                if (nx >= 0 && nx < n && ny >= 0 && ny < m && visited[nx][ny] == 0) {\n                    q.push({nx, ny});\n                    visited[nx][ny] = 1;\n                    if (grid[nx][ny] == '*') time++;\n                }\n            }\n        }\n    }\n\n    return time;\n}\n\nint main() {\n    int T, n, m, i, j;\n    cin >> T;\n\n    while (T--) {\n        cin >> n >> m;\n        vector<vector<char>> grid(n, vector<char>(m));\n\n        for (i = 0; i < n; i++) {\n            for (j = 0; j < m; j++) {\n                cin >> grid[i][j];\n            }\n        }\n\n        cout << minTime(grid, n, m) << endl;\n    }\n\n    return 0;\n}",

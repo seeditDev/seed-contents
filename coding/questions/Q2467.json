@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Coin Change Problem",
       "Unbounded Knapsack",
+      "Coin Change Problem",
+      "Dynamic Programming",
       "Maximizing Colors"
     ],
     "companyTags": [],
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "The Little Elephant from the Zoo of Lviv very likes coins. But most of all he likes colored coins.\n\nHe has **N** types of coins, numbered from **1** to **N**, inclusive. The coin of the **i**-th type has the value **Vi** dollars and the color **Ci**. Note that he has infinite supply of each type of coins.\n\nThe Little Elephant wants to make exactly **S** dollars using the coins. What is the maximal number of different colors he can use to make exactly **S** dollars using some of the coins he has? If it's impossible, output **-1**. Also note that the Little Elephant wants to know this for many values of **S**.",
     "constraints": [
-      "1 ≤ N ≤ 30",
-      "1 ≤ Vi ≤ 200000",
-      "1 ≤ Ci ≤ 10^9",
-      "1 ≤ Q ≤ 200000",
-      "1 ≤ S ≤ 10^18"
+      "1 \u2264 N \u2264 30",
+      "1 \u2264 Vi \u2264 200000",
+      "1 \u2264 Ci \u2264 10^9",
+      "1 \u2264 Q \u2264 200000",
+      "1 \u2264 S \u2264 10^18"
     ],
     "inputFormat": "First line contains N, the number of types of coins. Each of the following N lines contains two space-separated integers Vi and Ci, denoting the value and the color of the coin of the i-th type. The next line contains a single integer Q, denoting the number of values of S to process. Each of the following Q lines contains a single integer S, denoting the coinage you should represent via given coins using maximum number of colors.",
     "outputFormat": "For each value of S in the input, output the maximum number of different colors in the representation of S or -1 if it is impossible to represent S via given coins.",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We create a DP array where dp[i] represents the maximum number of different colors that can be used to make i dollars. We iterate over each coin and update the dp array accordingly. We also keep track of the colors used to make each amount.",
     "timeComplexity": "O(N * S) per test case, O(T * N * S) total. Precomputation is done once for each test case.",
-    "spaceComplexity": "O(S) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(S) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\nint maxColors(int *values, int *colors, int n, long long s) {\n    int *dp = (int *)calloc(s + 1, sizeof(int));\n    dp[0] = 0;\n    for (int i = 1; i <= s; i++) {\n        dp[i] = -1;\n    }\n    for (int i = 0; i < n; i++) {\n        for (int j = values[i]; j <= s; j++) {\n            if (dp[j - values[i]] != -1) {\n                if (dp[j] == -1 || dp[j - values[i]] + 1 > dp[j]) {\n                    dp[j] = dp[j - values[i]] + 1;\n                }\n            }\n        }\n    }\n    int max = dp[s];\n    free(dp);\n    return max;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        int *values = (int *)malloc(n * sizeof(int));\n        int *colors = (int *)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d %d\", &values[i], &colors[i]);\n        }\n        int q;\n        scanf(\"%d\", &q);\n        for (int i = 0; i < q; i++) {\n            long long s;\n            scanf(\"%lld\", &s);\n            printf(\"%d\\n\", maxColors(values, colors, n, s));\n        }\n        free(values);\n        free(colors);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <climits>\nusing namespace std;\n\nint maxColors(vector<int> &values, vector<int> &colors, int n, long long s) {\n    vector<int> dp(s + 1, -1);\n    dp[0] = 0;\n    for (int i = 0; i < n; i++) {\n        for (int j = values[i]; j <= s; j++) {\n            if (dp[j - values[i]] != -1) {\n                if (dp[j] == -1 || dp[j - values[i]] + 1 > dp[j]) {\n                    dp[j] = dp[j - values[i]] + 1;\n                }\n            }\n        }\n    }\n    return dp[s];\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        vector<int> values(n), colors(n);\n        for (int i = 0; i < n; i++) {\n            cin >> values[i] >> colors[i];\n        }\n        int q;\n        cin >> q;\n        for (int i = 0; i < q; i++) {\n            long long s;\n            cin >> s;\n            cout << maxColors(values, colors, n, s) << endl;\n        }\n    }\n    return 0;\n}",

@@ -6,7 +6,7 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
@@ -22,12 +22,12 @@
   "content": {
     "problemStatement": "Chef lives in the Universe in which only planets are present. Every planet is identified by 3 integers [p, q, r]. Chef lives on the planet [0, 0, 0] and wants to go to planet [X, Y, Z] with minimum energy loss.\n\nThe energy loss is determined by the following rules:\n\n\n\nIf Chef goes from [p, q, r] to [p+1, q, r] or [p, q+1, r] or [p, q, r+1], then A units of energy are lost.\nIf Chef goes from [p, q, r] to [p+1, q+1, r] or [p, q+1, r+1] or [p+1, q, r+1], then B units of energy are lost.\n If Chef goes from [p, q, r] to [p+1, q+1, r+1], then C units of energy are lost.\n\n\nYour task is to calculate the minimum energy loss possible when Chef goes from planet [0, 0, 0] to planet [X, Y, Z].",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ X, Y, Z ≤ 10^5",
-      "1 ≤ A, B, C ≤ 10^3"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 X, Y, Z \u2264 10^5",
+      "1 \u2264 A, B, C \u2264 10^3"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The only line of each test case contains 6 space-separated integers denoting the values of X, Y, Z, A, B and C respectively.",
-    "outputFormat": "For each test case, output a single line containing one integer — the minimum energy loss.",
+    "outputFormat": "For each test case, output a single line containing one integer \u2014 the minimum energy loss.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the minimum energy loss for each possible position. We start from the initial position (0, 0, 0) and try to reach the target position (X, Y, Z) with the minimum energy loss. We consider all possible movements (up, right, forward, and their combinations) and choose the one that results in the minimum energy loss.",
-    "timeComplexity": "O(T * X * Y * Z) — because we need to calculate the minimum energy loss for each position in the 3D space.",
-    "spaceComplexity": "O(X * Y * Z) — because we need to store the minimum energy loss for each position in the 3D space.",
+    "timeComplexity": "O(T * X * Y * Z) \u2014 because we need to calculate the minimum energy loss for each position in the 3D space.",
+    "spaceComplexity": "O(X * Y * Z) \u2014 because we need to store the minimum energy loss for each position in the 3D space.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\nint min(int a, int b) { return a < b ? a : b; }\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int X, Y, Z, A, B, C;\n        scanf(\"%d %d %d %d %d %d\", &X, &Y, &Z, &A, &B, &C);\n        int dp[X + 1][Y + 1][Z + 1];\n        for (int i = 0; i <= X; i++) {\n            for (int j = 0; j <= Y; j++) {\n                for (int k = 0; k <= Z; k++) {\n                    if (i == 0 && j == 0 && k == 0) {\n                        dp[i][j][k] = 0;\n                    } else {\n                        dp[i][j][k] = INT_MAX;\n                        if (i > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j][k] + A);\n                        if (j > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j - 1][k] + A);\n                        if (k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j][k - 1] + A);\n                        if (i > 0 && j > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j - 1][k] + B);\n                        if (i > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j][k - 1] + B);\n                        if (j > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j - 1][k - 1] + B);\n                        if (i > 0 && j > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j - 1][k - 1] + C);\n                    }\n                }\n            }\n        }\n        printf(\"%d\\n\", dp[X][Y][Z]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <climits>\nusing namespace std;\nint min(int a, int b) { return a < b ? a : b; }\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int X, Y, Z, A, B, C;\n        cin >> X >> Y >> Z >> A >> B >> C;\n        int dp[X + 1][Y + 1][Z + 1];\n        for (int i = 0; i <= X; i++) {\n            for (int j = 0; j <= Y; j++) {\n                for (int k = 0; k <= Z; k++) {\n                    if (i == 0 && j == 0 && k == 0) {\n                        dp[i][j][k] = 0;\n                    } else {\n                        dp[i][j][k] = INT_MAX;\n                        if (i > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j][k] + A);\n                        if (j > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j - 1][k] + A);\n                        if (k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j][k - 1] + A);\n                        if (i > 0 && j > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j - 1][k] + B);\n                        if (i > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j][k - 1] + B);\n                        if (j > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i][j - 1][k - 1] + B);\n                        if (i > 0 && j > 0 && k > 0) dp[i][j][k] = min(dp[i][j][k], dp[i - 1][j - 1][k - 1] + C);\n                    }\n                }\n            }\n        }\n        cout << dp[X][Y][Z] << endl;\n    }\n    return 0;\n}",

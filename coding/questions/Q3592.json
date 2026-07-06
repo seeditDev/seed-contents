@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory | Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Divisor Tree",
-      "Graph Theory",
-      "Number Theory"
+      "Graphs",
+      "Number Theory",
+      "Graph Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has defined a new type of rooted tree - divisor tree. In this tree, every node has a positive integer written on it. It follows some rules:\n\nThe root can have any positive integer written on it.\nSuppose a node has the integer A written on it, and suppose A has k proper divisors. [Note: Proper divisors of an integer are all its divisors except the integer itself. 1 has no proper divisor] Then this node will have exactly k child nodes, and each of A's proper divisors will be written on exactly one of the child nodes. For example, a node with number 12 written on it would have children with the numbers 1, 2, 3, 4, and 6 written on them.\n\n\nYou can observe that the nodes have 1 written on them, if and only if, they are leaves. \n\nThe score of a path in this tree is defined as the sum of degrees of all of the nodes in the path. The Score of the tree is defined as the maximum score of a path **from the root to one of the leaves**.\n\nYou are given two integers **A, B**. You want to find the sum of Scores of all the divisor trees which have n written on their root, where **A** ≤ n ≤ **B**.",
+    "problemStatement": "Chef has defined a new type of rooted tree - divisor tree. In this tree, every node has a positive integer written on it. It follows some rules:\n\nThe root can have any positive integer written on it.\nSuppose a node has the integer A written on it, and suppose A has k proper divisors. [Note: Proper divisors of an integer are all its divisors except the integer itself. 1 has no proper divisor] Then this node will have exactly k child nodes, and each of A's proper divisors will be written on exactly one of the child nodes. For example, a node with number 12 written on it would have children with the numbers 1, 2, 3, 4, and 6 written on them.\n\n\nYou can observe that the nodes have 1 written on them, if and only if, they are leaves. \n\nThe score of a path in this tree is defined as the sum of degrees of all of the nodes in the path. The Score of the tree is defined as the maximum score of a path **from the root to one of the leaves**.\n\nYou are given two integers **A, B**. You want to find the sum of Scores of all the divisor trees which have n written on their root, where **A** \u2264 n \u2264 **B**.",
     "constraints": [
-      "1 ≤ A ≤ B ≤ 10^12",
+      "1 \u2264 A \u2264 B \u2264 10^12",
       "B - A < 10^5"
     ],
-    "inputFormat": "The input contains two space-separated integers A and B, where 1 ≤ A ≤ B ≤ 10^12 and B - A < 10^5.",
+    "inputFormat": "The input contains two space-separated integers A and B, where 1 \u2264 A \u2264 B \u2264 10^12 and B - A < 10^5.",
     "outputFormat": "The output is a single integer representing the sum of scores of all divisor trees with a root value between A and B (inclusive).",
     "sampleTestCases": [
       {
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the score of each divisor tree with a root value between A and B. We can do this by finding all proper divisors of each number and calculating the sum of degrees of all nodes in the path from the root to each leaf. The score of the tree is the maximum score of all paths. We can use a depth-first search (DFS) approach to traverse the tree and calculate the score.",
-    "timeComplexity": "O(B - A + max(B)) — where max(B) is the maximum number of divisors for any number between A and B",
-    "spaceComplexity": "O(B - A + max(B)) — for storing the divisor trees",
+    "timeComplexity": "O(B - A + max(B)) \u2014 where max(B) is the maximum number of divisors for any number between A and B",
+    "spaceComplexity": "O(B - A + max(B)) \u2014 for storing the divisor trees",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\n// Function to find all divisors of a number\nvoid findDivisors(long long n, long long *divisors, int *count) {\n    *count = 0;\n    for (long long i = 1; i * i <= n; i++) {\n        if (n % i == 0) {\n            divisors[(*count)++] = i;\n            if (i * i != n) {\n                divisors[(*count)++] = n / i;\n            }\n        }\n    }\n}\n\n// Function to calculate the score of a divisor tree\nlong long calculateScore(long long n) {\n    long long score = 0;\n    long long divisors[1000];\n    int count;\n    findDivisors(n, divisors, &count);\n    for (int i = 0; i < count; i++) {\n        score += calculateScore(divisors[i]) + 1;\n    }\n    return score;\n}\n\nint main() {\n    long long A, B;\n    scanf(\"%lld %lld\", &A, &B);\n    long long sum = 0;\n    for (long long i = A; i <= B; i++) {\n        sum += calculateScore(i);\n    }\n    printf(\"%lld\\n\", sum);\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <cmath>\n\n// Function to find all divisors of a number\nstd::vector<long long> findDivisors(long long n) {\n    std::vector<long long> divisors;\n    for (long long i = 1; i * i <= n; i++) {\n        if (n % i == 0) {\n            divisors.push_back(i);\n            if (i * i != n) {\n                divisors.push_back(n / i);\n            }\n        }\n    }\n    return divisors;\n}\n\n// Function to calculate the score of a divisor tree\nlong long calculateScore(long long n) {\n    long long score = 0;\n    std::vector<long long> divisors = findDivisors(n);\n    for (long long divisor : divisors) {\n        score += calculateScore(divisor) + 1;\n    }\n    return score;\n}\n\nint main() {\n    long long A, B;\n    std::cin >> A >> B;\n    long long sum = 0;\n    for (long long i = A; i <= B; i++) {\n        sum += calculateScore(i);\n    }\n    std::cout << sum << std::endl;\n    return 0;\n}",

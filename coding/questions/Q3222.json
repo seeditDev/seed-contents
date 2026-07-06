@@ -10,8 +10,8 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Array Manipulation"
+      "Array Manipulation",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,10 +21,10 @@
   "content": {
     "problemStatement": "Chef loves Tetris. He keeps on playing Tetris all the time. Today Chef's mother wanted to him play something else and brought an array for her son. That is why Chef now decided to play Tetris with arrays. Here are the rules of the game:\n\n\n\nChef has an array **A** consisting of **N** positive integers. This is a base array. \nChef has an array **B** consisting of **N** positive integers. He placed this array directly above the array **A**. Imagine that array **B** is falling on array **A**, such that number **Bi** is directly above the number **Ai** initially.\nIf element **Bi** falls on **Ai**, **Ai** gets increased by **Bi**. \nEach element **Bi** can be dropped by Chef on either **Ai-1**, **Ai** or **Ai+1**.\nChef can't drop element out of array (for example he can't drop **B0** on **A-1**). \nChef wants all the elements of array **A** to become equal, and looking for the biggest possible value he can get. \n\n\n\nPlease help Chef in enjoying the game!!",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 10^4",
-      "1 ≤ Ai ≤ 10^6",
-      "1 ≤ Bi ≤ 10^6"
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 10^4",
+      "1 \u2264 Ai \u2264 10^6",
+      "1 \u2264 Bi \u2264 10^6"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N denoting the number of elements in both arrays. The second line contains N space-separated integers B1, B2, ..., BN denoting the elements of the falling array. The third line contains N space-separated integers A1, A2, ..., AN denoting the elements of the base array.",
     "outputFormat": "For each test case, output a single line containing the biggest integer Chef can get for all elements of array A or -1 if it is impossible.",
@@ -102,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to try all possible ways of dropping the elements of array B onto array A and keep track of the maximum value that can be achieved for all elements of array A to be equal. We will use a recursive approach with memoization to optimize the solution.",
-    "timeComplexity": "O(T * N * 3^N) — explain: per query is O(N * 3^N), total is O(T * N * 3^N)",
-    "spaceComplexity": "O(N) — explain: we need to store the memoization table of size N",
+    "timeComplexity": "O(T * N * 3^N) \u2014 explain: per query is O(N * 3^N), total is O(T * N * 3^N)",
+    "spaceComplexity": "O(N) \u2014 explain: we need to store the memoization table of size N",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAXN 10005\n#define INF 0x3f3f3f3f\n\nint max(int a, int b) { return a > b ? a : b; }\n\nint dp[MAXN][MAXN];\nint a[MAXN], b[MAXN];\n\nint dfs(int i, int j) {\n    if (i == -1) return 0;\n    if (dp[i][j] != -1) return dp[i][j];\n    int res = -INF;\n    for (int k = max(0, j - 1); k <= min(j + 1, i); k++) {\n        res = max(res, dfs(i - 1, k) + b[i] + a[k]);\n    }\n    return dp[i][j] = res;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        for (int i = 0; i < n; i++) scanf(\"%d\", &b[i]);\n        for (int i = 0; i < n; i++) scanf(\"%d\", &a[i]);\n        memset(dp, -1, sizeof(dp));\n        int ans = dfs(n - 1, 0);\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <cstring>\nusing namespace std;\n#define MAXN 10005\n#define INF 0x3f3f3f3f\n\nint max(int a, int b) { return a > b ? a : b; }\n\nint dp[MAXN][MAXN];\nint a[MAXN], b[MAXN];\n\nint dfs(int i, int j) {\n    if (i == -1) return 0;\n    if (dp[i][j] != -1) return dp[i][j];\n    int res = -INF;\n    for (int k = max(0, j - 1); k <= min(j + 1, i); k++) {\n        res = max(res, dfs(i - 1, k) + b[i] + a[k]);\n    }\n    return dp[i][j] = res;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        for (int i = 0; i < n; i++) cin >> b[i];\n        for (int i = 0; i < n; i++) cin >> a[i];\n        memset(dp, -1, sizeof(dp));\n        int ans = dfs(n - 1, 0);\n        cout << ans << endl;\n    }\n    return 0;\n}",

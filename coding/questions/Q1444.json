@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Palindrome",
       "Stack",
-      "Two Pointers",
+      "Strings",
       "String Manipulation",
-      "Palindrome"
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,11 +24,11 @@
   "content": {
     "problemStatement": "Write a program to find whether a given string is palindrome or not using stack.\n\nPalindrome:\n\nA palindrome is a word, phrase, number, or other sequence of characters that reads the same forward and backward, ignoring spaces, punctuation, and capitalization. In other words, if you reverse the order of characters in a palindrome, it will still match the original sequence.\n\n\nInput Format\nThe input consists of a single string.\n\nThe string may contain spaces, alphabets, and special characters.\n\n\n\nOutput Format\nPrint \"Palindrome\" if the given string is a palindrome.\n\nPrint \"Not palindrome\" if the given string is not a palindrome.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "0 ≤ |S| ≤ 1000",
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f10",
+      "0\u202f\u2264\u202f|S|\u202f\u2264\u202f1000",
       "Only alphanumeric characters are considered for palindrome checking; case is ignored"
     ],
-    "inputFormat": "First line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a string S (0 ≤ |S| ≤ 1000) which may include spaces, letters, digits and special characters.",
+    "inputFormat": "First line contains an integer T (1\u202f\u2264\u202fT\u202f\u2264\u202f10), the number of test cases. Each of the next T lines contains a string S (0\u202f\u2264\u202f|S|\u202f\u2264\u202f1000) which may include spaces, letters, digits and special characters.",
     "outputFormat": "For each test case print \"Palindrome\" if the processed string is a palindrome, otherwise print \"Not palindrome\". Each answer is printed on its own line.",
     "sampleTestCases": [
       {
@@ -40,7 +41,7 @@
         "id": "sample_2",
         "input": "1\nA man a plan a canal Panama\n",
         "output": "Palindrome\n",
-        "explanation": "Filtering out spaces and non‑alphanumerics gives \"amanaplanacanalpanama\", a palindrome."
+        "explanation": "Filtering out spaces and non\u2011alphanumerics gives \"amanaplanacanalpanama\", a palindrome."
       },
       {
         "id": "sample_3",
@@ -61,7 +62,7 @@
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (near‑max length)",
+        "label": "maximum boundary (near\u2011max length)",
         "input": "1\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
         "expectedOutput": "Palindrome\n",
         "weight": 2
@@ -75,7 +76,7 @@
       },
       {
         "id": "tc_4",
-        "label": "tricky non‑palindrome",
+        "label": "tricky non\u2011palindrome",
         "input": "1\nHello, World!\n",
         "expectedOutput": "Not palindrome\n",
         "weight": 2
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we first filter the input string, keeping only alphanumeric characters and converting them to lower case. The filtered sequence is then pushed onto a stack (implemented with a vector/array). By popping from the stack we obtain the characters in reverse order; we compare them one‑by‑one with the original filtered sequence. If any mismatch occurs the string is not a palindrome, otherwise it is. This directly follows the definition of a palindrome and uses the stack as required by the statement.",
-    "timeComplexity": "O(L) per test case where L is the length of the input string (after filtering). Overall O(total characters) for the whole input.",
+    "approach": "For each test case we first filter the input string, keeping only alphanumeric characters and converting them to lower case. The filtered sequence is then pushed onto a stack (implemented with a vector/array). By popping from the stack we obtain the characters in reverse order; we compare them one\u2011by\u2011one with the original filtered sequence. If any mismatch occurs the string is not a palindrome, otherwise it is. This directly follows the definition of a palindrome and uses the stack as required by the statement.",
+    "timeComplexity": "O(L) per test case where L is the length of the input string (after filtering). Overall O(total\u202fcharacters) for the whole input.",
     "spaceComplexity": "O(L) auxiliary space per test case for the filtered array and the stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\n#include <stdbool.h>\n\nbool is_palindrome(const char *s){\n    int len = strlen(s);\n    char filtered[1005];\n    int flen = 0;\n    for(int i=0;i<len;i++){\n        if(isalnum((unsigned char)s[i]))\n            filtered[flen++] = tolower((unsigned char)s[i]);\n    }\n    char stack[1005];\n    int top = -1;\n    for(int i=0;i<flen;i++)\n        stack[++top] = filtered[i];\n    for(int i=0;i<flen;i++){\n        if(stack[top--] != filtered[i])\n            return false;\n    }\n    return true;\n}\n\nint main(){\n    int T;\n    if(scanf(\"%d\", &T)!=1) return 0;\n    getchar(); // consume newline after T\n    char line[1005];\n    for(int tc=0; tc<T; ++tc){\n        if(!fgets(line, sizeof(line), stdin)) line[0]='\\0';\n        line[strcspn(line, \"\\n\")] = '\\0'; // remove trailing newline\n        if(is_palindrome(line))\n            printf(\"Palindrome\\n\");\n        else\n            printf(\"Not palindrome\\n\");\n    }\n    return 0;\n}",

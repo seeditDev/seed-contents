@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "BFS",
-      "Graph Traversal"
+      "Graph Traversal",
+      "Graphs",
+      "BFS"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "In Chefland, there are NNN cities (numbered 111 through NNN) connected by N−1N-1N−1 bidirectional roads in such a way that it is possible to reach any city from any other city. Each city has its own traditional dish for which it is famous; let's denote the tastiness of the dish in city iii by AiA_iAi​.\n\nChef is currently learning how to prepare tastier dishes. At any point, he can only remember how to cook one dish. Initially, the tastiness of the dish he can cook is WWW. Chef is going to travel from city 111 to city vvv. In each city he visits (including 111 and vvv), if the tastiness of the traditional dish of this city is strictly greater than the tastiness of the dish he can currently cook, then he forgets the dish he can currently cook and learns the traditional dish of this city.\n\nNow, Chef is wondering how many times he is going to learn a new dish during his trip. You should answer QQQ independent queries. In each query, you are given the initial tastiness WWW and Chef's final destination vvv; compute the number of times Chef learns a new dish. Note that the input is given in a special format, so you have to answer the queries online.",
+    "problemStatement": "In Chefland, there are NNN cities (numbered 111 through NNN) connected by N\u22121N-1N\u22121 bidirectional roads in such a way that it is possible to reach any city from any other city. Each city has its own traditional dish for which it is famous; let's denote the tastiness of the dish in city iii by AiA_iAi\u200b.\n\nChef is currently learning how to prepare tastier dishes. At any point, he can only remember how to cook one dish. Initially, the tastiness of the dish he can cook is WWW. Chef is going to travel from city 111 to city vvv. In each city he visits (including 111 and vvv), if the tastiness of the traditional dish of this city is strictly greater than the tastiness of the dish he can currently cook, then he forgets the dish he can currently cook and learns the traditional dish of this city.\n\nNow, Chef is wondering how many times he is going to learn a new dish during his trip. You should answer QQQ independent queries. In each query, you are given the initial tastiness WWW and Chef's final destination vvv; compute the number of times Chef learns a new dish. Note that the input is given in a special format, so you have to answer the queries online.",
     "constraints": [
       "1 <= T <= 1000",
       "2 <= N <= 10^6",
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal algorithm such as BFS. We start from the first city and traverse the graph to the destination city. At each city, we check if the tastiness of the dish is greater than the current tastiness. If it is, we update the current tastiness and increment the count of new dishes learned.",
-    "timeComplexity": "O(T * (N + Q)) — where T is the number of test cases, N is the number of cities, and Q is the number of queries. The time complexity is dominated by the graph traversal and the queries.",
-    "spaceComplexity": "O(N) — where N is the number of cities. The space complexity is dominated by the graph representation.",
+    "timeComplexity": "O(T * (N + Q)) \u2014 where T is the number of test cases, N is the number of cities, and Q is the number of queries. The time complexity is dominated by the graph traversal and the queries.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of cities. The space complexity is dominated by the graph representation.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 1000000\n#define MAX_Q 1000000\n\n// Define the structure for a city\ntypedef struct {\n    int tastiness;\n    int parent;\n} City;\n\n// Define the structure for a query\ntypedef struct {\n    int initialTastiness;\n    int destination;\n} Query;\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N;\n        scanf(\"%d\", &N);\n        City cities[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &cities[i].tastiness);\n        }\n        for (int i = 1; i < N; i++) {\n            scanf(\"%d\", &cities[i].parent);\n        }\n        int Q;\n        scanf(\"%d\", &Q);\n        Query queries[Q];\n        for (int i = 0; i < Q; i++) {\n            scanf(\"%d %d\", &queries[i].initialTastiness, &queries[i].destination);\n        }\n        for (int i = 0; i < Q; i++) {\n            int currentTastiness = queries[i].initialTastiness;\n            int currentCity = 0;\n            int count = 0;\n            while (currentCity != queries[i].destination - 1) {\n                if (cities[currentCity].tastiness > currentTastiness) {\n                    currentTastiness = cities[currentCity].tastiness;\n                    count++;\n                }\n                currentCity = cities[currentCity].parent - 1;\n            }\n            printf(\"%d\\n\", count);\n        }\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a city\nstruct City {\n    int tastiness;\n    int parent;\n};\n\n// Define the structure for a query\nstruct Query {\n    int initialTastiness;\n    int destination;\n};\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N;\n        cin >> N;\n        vector<City> cities(N);\n        for (int i = 0; i < N; i++) {\n            cin >> cities[i].tastiness;\n        }\n        for (int i = 1; i < N; i++) {\n            cin >> cities[i].parent;\n        }\n        int Q;\n        cin >> Q;\n        vector<Query> queries(Q);\n        for (int i = 0; i < Q; i++) {\n            cin >> queries[i].initialTastiness >> queries[i].destination;\n        }\n        for (int i = 0; i < Q; i++) {\n            int currentTastiness = queries[i].initialTastiness;\n            int currentCity = 0;\n            int count = 0;\n            while (currentCity != queries[i].destination - 1) {\n                if (cities[currentCity].tastiness > currentTastiness) {\n                    currentTastiness = cities[currentCity].tastiness;\n                    count++;\n                }\n                currentCity = cities[currentCity].parent - 1;\n            }\n            cout << count << endl;\n        }\n    }\n    return 0;\n}",

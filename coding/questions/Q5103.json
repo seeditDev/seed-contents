@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Game Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Math",
       "Number Theory",
       "Binary Representation",
       "Power of Two"
@@ -20,13 +21,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and Divyam are playing a game. They start with a rational number XXX, such that 0&lt;X&lt;10 &lt; X &lt; 10&lt;X&lt;1.\n\nIn each turn, Chef chooses a positive real number YYY. Then Divyam either adds or subtracts YYY to XXX. So XXX is replaced with either X+YX+YX+Y or X−YX-YX−Y. If this number becomes 000 or 111, then Chef wins. Otherwise, the game continues.\n\nYou are given XXX, and you have to determine whether Chef can win in a finite number of moves. More formally, does there exist a finite number NNN so that Chef has a strategy that is guaranteed to win in at most NNN moves?\n\nHere, XXX will be given in the form AB\\frac{A}{B}BA​, where AAA and BBB are positive integers, A&lt;BA &lt; BA&lt;B and gcd⁡(A,B)=1\\gcd(A,B)=1gcd(A,B)=1.",
+    "problemStatement": "Chef and Divyam are playing a game. They start with a rational number XXX, such that 0&lt;X&lt;10 &lt; X &lt; 10&lt;X&lt;1.\n\nIn each turn, Chef chooses a positive real number YYY. Then Divyam either adds or subtracts YYY to XXX. So XXX is replaced with either X+YX+YX+Y or X\u2212YX-YX\u2212Y. If this number becomes 000 or 111, then Chef wins. Otherwise, the game continues.\n\nYou are given XXX, and you have to determine whether Chef can win in a finite number of moves. More formally, does there exist a finite number NNN so that Chef has a strategy that is guaranteed to win in at most NNN moves?\n\nHere, XXX will be given in the form AB\\frac{A}{B}BA\u200b, where AAA and BBB are positive integers, A&lt;BA &lt; BA&lt;B and gcd\u2061(A,B)=1\\gcd(A,B)=1gcd(A,B)=1.",
     "constraints": [
-      "1 ≤ T ≤ 10^6",
-      "1 ≤ A < B ≤ 10^18",
+      "1 \u2264 T \u2264 10^6",
+      "1 \u2264 A < B \u2264 10^18",
       "gcd(A,B) = 1"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers A and B denoting the rational number X = A/B. It is guaranteed that 1 ≤ A < B ≤ 10^18, gcd(A,B)=1.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers A and B denoting the rational number X = A/B. It is guaranteed that 1 \u2264 A < B \u2264 10^18, gcd(A,B)=1.",
     "outputFormat": "For each test case output a single line containing \"Yes\" if Chef can force the game to end at 0 or 1 in a finite number of moves, otherwise output \"No\".",
     "sampleTestCases": [
       {
@@ -48,28 +49,28 @@
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (largest power of two ≤ 10^18)",
+        "label": "maximum boundary (largest power of two \u2264 10^18)",
         "input": "1\n1 576460752303423488",
         "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case – denominator not a power of two",
+        "label": "edge case \u2013 denominator not a power of two",
         "input": "1\n3 7",
         "expectedOutput": "No",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case – yes",
+        "label": "general case \u2013 yes",
         "input": "1\n5 8",
         "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case – no",
+        "label": "general case \u2013 no",
         "input": "1\n7 12",
         "expectedOutput": "No",
         "weight": 2
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "Write X = A/B in lowest terms. Chef can force the game to end iff the denominator B is a power of two. Proof sketch: If B = 2^k, Chef repeatedly chooses Y = X/2, then regardless of Divyam's sign the new value stays a dyadic rational with denominator 2^{k-1}. After at most k moves the denominator becomes 1, i.e., the value is 0 or 1, so Chef wins. If B has an odd prime factor, Divyam can always keep the denominator divisible by that odd prime, preventing the value from ever becoming an integer. Hence the answer is \"Yes\" exactly when B is a power of two. The check can be done with the bit‑trick (B & (B‑1)) == 0 using 64‑bit integers.",
-    "timeComplexity": "O(T) – each test case needs only a constant‑time power‑of‑two check.",
+    "approach": "Write X = A/B in lowest terms. Chef can force the game to end iff the denominator B is a power of two. Proof sketch: If B = 2^k, Chef repeatedly chooses Y = X/2, then regardless of Divyam's sign the new value stays a dyadic rational with denominator 2^{k-1}. After at most k moves the denominator becomes 1, i.e., the value is 0 or 1, so Chef wins. If B has an odd prime factor, Divyam can always keep the denominator divisible by that odd prime, preventing the value from ever becoming an integer. Hence the answer is \"Yes\" exactly when B is a power of two. The check can be done with the bit\u2011trick (B & (B\u20111)) == 0 using 64\u2011bit integers.",
+    "timeComplexity": "O(T) \u2013 each test case needs only a constant\u2011time power\u2011of\u2011two check.",
     "spaceComplexity": "O(1) besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        unsigned long long A,B; scanf(\"%llu %llu\", &A, &B);\n        bool isPower = (B && (B & (B-1)) == 0ULL);\n        puts(isPower?\"Yes\":\"No\");\n    }\n    return 0;\n}",

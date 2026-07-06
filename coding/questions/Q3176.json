@@ -12,6 +12,7 @@
     "tags": [
       "Prime Numbers",
       "Number Theory",
+      "Math",
       "Modular Arithmetic"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Recently, Chef Alex invented a weird function **F**.\n\nGive an integer **n** (**n** ≥ **2**), consider the prime factorization **n = p1k1 · p2k2 · … · prkr**.\n\nLet **g = gcd(k1, k2, … kr)** and **mi = ki / g**.\n\nThe function **F** is defined as: **F(n) = p1m1 · p2m2 · … · prmr**.\n\nNow, Alex is interested in summing up the value of this function for the first **N** natural numbers (other than **1**, since its prime factorization is undefined). That is, he wants to evaluate the following expression for a given value of **N**: **F(2) + F(3) + … + F(N)**.\n\nAs the above sum can be extremely large, output it modulo **998244353**.",
+    "problemStatement": "Recently, Chef Alex invented a weird function **F**.\n\nGive an integer **n** (**n** \u2265 **2**), consider the prime factorization **n = p1k1 \u00b7 p2k2 \u00b7 \u2026 \u00b7 prkr**.\n\nLet **g = gcd(k1, k2, \u2026 kr)** and **mi = ki / g**.\n\nThe function **F** is defined as: **F(n) = p1m1 \u00b7 p2m2 \u00b7 \u2026 \u00b7 prmr**.\n\nNow, Alex is interested in summing up the value of this function for the first **N** natural numbers (other than **1**, since its prime factorization is undefined). That is, he wants to evaluate the following expression for a given value of **N**: **F(2) + F(3) + \u2026 + F(N)**.\n\nAs the above sum can be extremely large, output it modulo **998244353**.",
     "constraints": [
       "1 <= T <= 10^3",
       "2 <= N <= 10^18",
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the sum of the function F(n) for the first N natural numbers (other than 1). The function F(n) is defined as the product of the prime factors of n, each raised to the power of the minimum exponent of the prime factor in the prime factorization of n. We can use a prime factorization algorithm to find the prime factors and their exponents for each number up to N. Then, we can calculate the sum of F(n) for each number and take the result modulo 998244353.",
-    "timeComplexity": "O(T * sqrt(N)) — the time complexity is dominated by the prime factorization of each number up to N.",
-    "spaceComplexity": "O(T) — the space complexity is dominated by the storage of the prime factors and their exponents for each number.",
+    "timeComplexity": "O(T * sqrt(N)) \u2014 the time complexity is dominated by the prime factorization of each number up to N.",
+    "spaceComplexity": "O(T) \u2014 the space complexity is dominated by the storage of the prime factors and their exponents for each number.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 998244353\n\nlong long gcd(long long a, long long b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nlong long powmod(long long a, long long b, long long mod) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % mod;\n        a = (a * a) % mod;\n        b >>= 1;\n    }\n    return res;\n}\n\nlong long F(long long n) {\n    long long res = 1;\n    for (long long i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            long long cnt = 0;\n            while (n % i == 0) {\n                n /= i;\n                cnt++;\n            }\n            res = (res * i) % MOD;\n        }\n    }\n    if (n > 1) res = (res * n) % MOD;\n    return res;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long N;\n        scanf(\"%lld\", &N);\n        long long sum = 0;\n        for (long long i = 2; i <= N; i++) {\n            sum = (sum + F(i)) % MOD;\n        }\n        printf(\"%lld\\n\", sum);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#define MOD 998244353\nusing namespace std;\n\nlong long gcd(long long a, long long b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nlong long powmod(long long a, long long b, long long mod) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % mod;\n        a = (a * a) % mod;\n        b >>= 1;\n    }\n    return res;\n}\n\nlong long F(long long n) {\n    long long res = 1;\n    for (long long i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            long long cnt = 0;\n            while (n % i == 0) {\n                n /= i;\n                cnt++;\n            }\n            res = (res * i) % MOD;\n        }\n    }\n    if (n > 1) res = (res * n) % MOD;\n    return res;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long N;\n        cin >> N;\n        long long sum = 0;\n        for (long long i = 2; i <= N; i++) {\n            sum = (sum + F(i)) % MOD;\n        }\n        cout << sum << endl;\n    }\n    return 0;\n}",

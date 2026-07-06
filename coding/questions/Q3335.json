@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Tic-Tac-Toe",
       "Winning Condition",
-      "Game Tree"
+      "Game Tree",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "Tic-Tac-Toe used to be Chef's favourite game during his childhood. Reminiscing in his childhood memories, he decided to create his own \"Tic-Tac-Toe\", with rules being similar to the original Tic-Tac-Toe, other than the fact that it is played on an **NxN** board.\n\n\n\nThe game is played between two players taking turns. First player puts an 'X' in an empty cell of the board, then the second player puts an 'O' in some other free cell. If the first player has **K** continuous **X's** or the second player has **K** continuous **O's** in row, column or diagonal, then he wins.\n\n\n\nChef started playing this new \"Tic-Tac-Toe\" with his assistant, beginning as the first player himself (that is, Chef plays 'X's). Currently, the game is ongoign, and it's Chef's turn. However, he needs to leave soon to begin tonight's dinner preparations, and has time to play only one more move. If he can win in one move, output \"YES\", otherwise output \"NO\" (without quotes). It is guaranteed that no player has already completed the winning criterion before this turn, and that it's a valid \"Tic-Tac-Toe\" game.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "3 ≤ N ≤ 20",
-      "1 ≤ K ≤ N"
+      "1 \u2264 T \u2264 100",
+      "3 \u2264 N \u2264 20",
+      "1 \u2264 K \u2264 N"
     ],
     "inputFormat": "The first line of input contains one integer T denoting the number of testcases. First line of each testcase contains two integers N and K, next N lines contains N characters each. Each character is either an 'X' denoting that the first player used this cell, an 'O' meaning that the second player used this cell, or a '.' (a period) representing a free cell.",
     "outputFormat": "For each testcase, output, in a single line, 'YES' if Chef can win in one move, or 'NO' otherwise.",
@@ -108,8 +109,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to check all possible moves for the current player and see if any of them lead to a winning condition. We can do this by simulating each possible move and checking if the resulting board is a winning board for the current player. If we find a winning move, we can immediately return 'YES'. If we check all possible moves and none of them lead to a winning condition, we return 'NO'.",
-    "timeComplexity": "O(T * N^2 * K) — because for each test case, we are checking all possible moves on the board, and for each move, we are checking all possible winning conditions.",
-    "spaceComplexity": "O(N^2) — because we need to store the current state of the board.",
+    "timeComplexity": "O(T * N^2 * K) \u2014 because for each test case, we are checking all possible moves on the board, and for each move, we are checking all possible winning conditions.",
+    "spaceComplexity": "O(N^2) \u2014 because we need to store the current state of the board.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <string.h>\n\nint checkWin(char board[20][20], int N, int K, char player) {\n    int i, j;\n    // Check rows\n    for (i = 0; i < N; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i][j + k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    // Check columns\n    for (i = 0; i < N; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[j + k][i] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    // Check diagonals\n    for (i = 0; i <= N - K; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i + k][j + k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    for (i = 0; i <= N - K; i++) {\n        for (j = K - 1; j < N; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i + k][j - k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    return 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        char board[20][20];\n        int i, j;\n        for (i = 0; i < N; i++) {\n            scanf(\"%s\", board[i]);\n        }\n        for (i = 0; i < N; i++) {\n            for (j = 0; j < N; j++) {\n                if (board[i][j] == '.') {\n                    board[i][j] = 'X';\n                    if (checkWin(board, N, K, 'X')) {\n                        printf(\"YES\\n\");\n                        goto next_test;\n                    }\n                    board[i][j] = '.';\n                }\n            }\n        }\n        printf(\"NO\\n\");\n        next_test:;\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint checkWin(char board[20][20], int N, int K, char player) {\n    int i, j;\n    // Check rows\n    for (i = 0; i < N; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i][j + k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    // Check columns\n    for (i = 0; i < N; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[j + k][i] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    // Check diagonals\n    for (i = 0; i <= N - K; i++) {\n        for (j = 0; j <= N - K; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i + k][j + k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    for (i = 0; i <= N - K; i++) {\n        for (j = K - 1; j < N; j++) {\n            int k;\n            for (k = 0; k < K; k++) {\n                if (board[i + k][j - k] != player) break;\n            }\n            if (k == K) return 1;\n        }\n    }\n    return 0;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        char board[20][20];\n        int i, j;\n        for (i = 0; i < N; i++) {\n            for (j = 0; j < N; j++) {\n                cin >> board[i][j];\n            }\n        }\n        for (i = 0; i < N; i++) {\n            for (j = 0; j < N; j++) {\n                if (board[i][j] == '.') {\n                    board[i][j] = 'X';\n                    if (checkWin(board, N, K, 'X')) {\n                        cout << \"YES\" << endl;\n                        goto next_test;\n                    }\n                    board[i][j] = '.';\n                }\n            }\n        }\n        cout << \"NO\" << endl;\n        next_test:;\n    }\n    return 0;\n}",

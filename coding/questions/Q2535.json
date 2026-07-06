@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
+      "Modular arithmetic",
       "String manipulation",
-      "Modular arithmetic"
+      "Strings",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,26 +27,26 @@
       "1 <= length of word <= 1000",
       "All characters are lowercase English letters"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single word consisting of lowercase English letters (a‑z).",
-    "outputFormat": "For each test case output a line containing \"YES\" if the shortest possible program that prints the given word uses at most 11 × |word| instructions, otherwise output \"NO\".",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single word consisting of lowercase English letters (a\u2011z).",
+    "outputFormat": "For each test case output a line containing \"YES\" if the shortest possible program that prints the given word uses at most 11\u202f\u00d7\u202f|word| instructions, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\\nhelloworld\\nmississippi",
         "output": "NO\nYES",
-        "explanation": "For \"helloworld\" (length 10) the minimal instruction count is 1 (load) + 10 (prints) + 100 (increments) = 111, which exceeds 11*10=110, so output is NO. For \"mississippi\" (length 11) the count is 1+11+100=112 ≤ 11*11=121, so output is YES."
+        "explanation": "For \"helloworld\" (length 10) the minimal instruction count is 1 (load) + 10 (prints) + 100 (increments) = 111, which exceeds 11*10=110, so output is NO. For \"mississippi\" (length 11) the count is 1+11+100=112 \u2264 11*11=121, so output is YES."
       },
       {
         "id": "sample_2",
         "input": "1\na",
         "output": "YES",
-        "explanation": "Length 1. Instructions = 1 (load) + 1 (print) + 0 (no increments) = 2 ≤ 11*1, therefore YES."
+        "explanation": "Length 1. Instructions = 1 (load) + 1 (print) + 0 (no increments) = 2 \u2264 11*1, therefore YES."
       },
       {
         "id": "sample_3",
         "input": "1\nz",
         "output": "YES",
-        "explanation": "Length 1. Instructions = 1 (load) + 1 (print) + 0 = 2 ≤ 11, so YES."
+        "explanation": "Length 1. Instructions = 1 (load) + 1 (print) + 0 = 2 \u2264 11, so YES."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "The program can use exactly one Load instruction at the beginning. After loading the value that corresponds to the first character, a Print instruction is needed for every character. Between two consecutive characters we may only use Increment instructions, which move the buffer forward cyclically (0→1→…→25→0). For two consecutive characters c_prev and c_cur the minimal number of increments is (value(c_cur) - value(c_prev) + 26) % 26. Therefore the optimal number of instructions is:\n    total = 1               // the initial Load\n          + |word|          // one Print for each character\n          + Σ diff_i        // diff_i is the forward distance between consecutive characters.\nIf total <= 11 * |word| the program is considered simple.\nThe algorithm scans the word once, computes the sum of forward distances and checks the inequality. Time complexity is O(|word|) per test case, and O(1) extra space.",
-    "timeComplexity": "O(T * N) where N is the length of each word (≤1000).",
+    "approach": "The program can use exactly one Load instruction at the beginning. After loading the value that corresponds to the first character, a Print instruction is needed for every character. Between two consecutive characters we may only use Increment instructions, which move the buffer forward cyclically (0\u21921\u2192\u2026\u219225\u21920). For two consecutive characters c_prev and c_cur the minimal number of increments is (value(c_cur) - value(c_prev) + 26) % 26. Therefore the optimal number of instructions is:\n    total = 1               // the initial Load\n          + |word|          // one Print for each character\n          + \u03a3 diff_i        // diff_i is the forward distance between consecutive characters.\nIf total <= 11 * |word| the program is considered simple.\nThe algorithm scans the word once, computes the sum of forward distances and checks the inequality. Time complexity is O(|word|) per test case, and O(1) extra space.",
+    "timeComplexity": "O(T * N) where N is the length of each word (\u22641000).",
     "spaceComplexity": "O(1) additional memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        char s[1005]; scanf(\"%s\",s);\n        int len=strlen(s);\n        long long total=1+len; // load + prints\n        for(int i=1;i<len;i++){\n            int diff=(s[i]-s[i-1]);\n            if(diff<0) diff+=26;\n            total+=diff;\n        }\n        if(total<=11LL*len) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",

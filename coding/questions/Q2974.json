@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Connected Permutations",
+      "Graphs",
       "Graph Theory",
       "Permutations"
     ],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Sereja has an undirected graph on **N** vertices. There are edges between all but **M** pairs of vertices.\n\n\nA permutation **p** on the vertices of the graph is represented as **p[1], p[2], … , p[N]** such that for all **i**, **p[i]** is a vertex of the graph. A permutation is called connected if there is an edge between vertices **p[i]** and **p[i+1]** for all natural numbers **i** less than **N**. Sereja wants to know the number of connected permutations on the graph vertices.",
+    "problemStatement": "Sereja has an undirected graph on **N** vertices. There are edges between all but **M** pairs of vertices.\n\n\nA permutation **p** on the vertices of the graph is represented as **p[1], p[2], \u2026 , p[N]** such that for all **i**, **p[i]** is a vertex of the graph. A permutation is called connected if there is an edge between vertices **p[i]** and **p[i+1]** for all natural numbers **i** less than **N**. Sereja wants to know the number of connected permutations on the graph vertices.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10^5",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by generating all possible permutations of the vertices and checking if each permutation is connected. A permutation is connected if there is an edge between each pair of adjacent vertices in the permutation. We can use a recursive function to generate all permutations and check if each permutation is connected.",
     "timeComplexity": "O(N! * M) per test case, O(T * N! * M) total. The time complexity is high due to the brute force approach.",
-    "spaceComplexity": "O(N) — the dominant structure is the recursion stack.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the recursion stack.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint factorial(int n) {\n    int result = 1;\n    for (int i = 2; i <= n; i++) {\n        result = (result * i) % MOD;\n    }\n    return result;\n}\n\nint is_connected(int* permutation, int n, int** edges, int m) {\n    for (int i = 0; i < n - 1; i++) {\n        int found = 0;\n        for (int j = 0; j < m; j++) {\n            if ((permutation[i] == edges[j][0] && permutation[i + 1] == edges[j][1]) || (permutation[i] == edges[j][1] && permutation[i + 1] == edges[j][0])) {\n                found = 1;\n                break;\n            }\n        }\n        if (!found) return 0;\n    }\n    return 1;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int** edges = (int**)malloc(m * sizeof(int*));\n        for (int i = 0; i < m; i++) {\n            edges[i] = (int*)malloc(2 * sizeof(int));\n            scanf(\"%d %d\", &edges[i][0], &edges[i][1]);\n        }\n        int* permutation = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) permutation[i] = i + 1;\n        int count = 0;\n        do {\n            if (is_connected(permutation, n, edges, m)) count = (count + 1) % MOD;\n        } while (next_permutation(permutation, permutation + n));\n        printf(\"%d\\n\", count);\n        for (int i = 0; i < m; i++) free(edges[i]);\n        free(edges);\n        free(permutation);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\n\nint factorial(int n) {\n    int result = 1;\n    for (int i = 2; i <= n; i++) {\n        result = (result * i) % MOD;\n    }\n    return result;\n}\n\nbool is_connected(int* permutation, int n, pair<int, int>* edges, int m) {\n    for (int i = 0; i < n - 1; i++) {\n        bool found = false;\n        for (int j = 0; j < m; j++) {\n            if ((permutation[i] == edges[j].first && permutation[i + 1] == edges[j].second) || (permutation[i] == edges[j].second && permutation[i + 1] == edges[j].first)) {\n                found = true;\n                break;\n            }\n        }\n        if (!found) return false;\n    }\n    return true;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n, m;\n        cin >> n >> m;\n        pair<int, int>* edges = new pair<int, int>[m];\n        for (int i = 0; i < m; i++) cin >> edges[i].first >> edges[i].second;\n        int* permutation = new int[n];\n        for (int i = 0; i < n; i++) permutation[i] = i + 1;\n        int count = 0;\n        do {\n            if (is_connected(permutation, n, edges, m)) count = (count + 1) % MOD;\n        } while (next_permutation(permutation, permutation + n));\n        cout << count << endl;\n        delete[] edges;\n        delete[] permutation;\n    }\n    return 0;\n}",

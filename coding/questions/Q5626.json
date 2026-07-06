@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Searching | Number Theory",
+    "category": "Searching",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Binary Search",
-      "Inclusion‑Exclusion",
+      "Searching",
       "LCM",
-      "GCD"
+      "GCD",
+      "Inclusion\u2011Exclusion",
+      "Binary Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,12 +24,12 @@
   "content": {
     "problemStatement": "Given four positive integers NNN, aaa, bbb and ccc. A number is called **good** if it is positive and is divisible by either aaa or bbb or ccc. If all the **good** numbers are listed in ascending order, find the NthN^{th}Nth **good** number.\n\n\nInput Format\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nEach testcase contains of a single line of input, four integers N,a,b,cN, a, b, cN,a,b,c.\n\n\nOutput Format\nFor each testcase, output in a single line the NthN^{th}Nth **good** number.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 10^9",
-      "1 ≤ a, b, c ≤ 10^3"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 10^9",
+      "1 \u2264 a, b, c \u2264 10^3"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains four space‑separated positive integers N a b c.",
-    "outputFormat": "For each test case output a single line containing the N‑th good number (the N‑th positive integer divisible by at least one of a, b or c).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains four space\u2011separated positive integers N a b c.",
+    "outputFormat": "For each test case output a single line containing the N\u2011th good number (the N\u2011th positive integer divisible by at least one of a, b or c).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -46,7 +47,7 @@
         "id": "sample_3",
         "input": "1\n10 2 4 6",
         "output": "20",
-        "explanation": "Since every good number is a multiple of 2, the 10th good number equals 10·2 = 20."
+        "explanation": "Since every good number is a multiple of 2, the 10th good number equals 10\u00b72 = 20."
       }
     ]
   },
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "For a given X we can count how many good numbers are ≤ X using inclusion‑exclusion:\ncount(X) = ⌊X/a⌋ + ⌊X/b⌋ + ⌊X/c⌋ – ⌊X/lcm(a,b)⌋ – ⌊X/lcm(a,c)⌋ – ⌊X/lcm(b,c)⌋ + ⌊X/lcm(a,b,c)⌋.\nThe function count(X) is monotonic, therefore we binary‑search the smallest X such that count(X) ≥ N. The search range can be [1, N·min(a,b,c)] because in the worst case every min‑multiple contributes one good number. All arithmetic uses 64‑bit integers.\nFor each test case we compute the three pairwise lcm’s and the triple lcm, then run the binary search (≈60 iterations for 64‑bit range).",
-    "timeComplexity": "O(T · log(N·min(a,b,c))) – each iteration does O(1) arithmetic, binary search needs ≤ 60 steps.",
+    "approach": "For a given X we can count how many good numbers are \u2264 X using inclusion\u2011exclusion:\ncount(X) = \u230aX/a\u230b + \u230aX/b\u230b + \u230aX/c\u230b \u2013 \u230aX/lcm(a,b)\u230b \u2013 \u230aX/lcm(a,c)\u230b \u2013 \u230aX/lcm(b,c)\u230b + \u230aX/lcm(a,b,c)\u230b.\nThe function count(X) is monotonic, therefore we binary\u2011search the smallest X such that count(X) \u2265 N. The search range can be [1, N\u00b7min(a,b,c)] because in the worst case every min\u2011multiple contributes one good number. All arithmetic uses 64\u2011bit integers.\nFor each test case we compute the three pairwise lcm\u2019s and the triple lcm, then run the binary search (\u224860 iterations for 64\u2011bit range).",
+    "timeComplexity": "O(T \u00b7 log(N\u00b7min(a,b,c))) \u2013 each iteration does O(1) arithmetic, binary search needs \u2264 60 steps.",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic int64_t gcd_int64(int64_t a, int64_t b) {\n    while (b) { int64_t t = a % b; a = b; b = t; }\n    return a;\n}\nstatic int64_t lcm_int64(int64_t a, int64_t b) {\n    return a / gcd_int64(a, b) * b;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int64_t N, a, b, c; scanf(\"%lld %lld %lld %lld\", &N, &a, &b, &c);\n        int64_t l_ab = lcm_int64(a, b);\n        int64_t l_ac = lcm_int64(a, c);\n        int64_t l_bc = lcm_int64(b, c);\n        int64_t l_abc = lcm_int64(l_ab, c);\n        int64_t low = 1, high = N * (a < b ? (a < c ? a : c) : (b < c ? b : c));\n        while (low < high) {\n            int64_t mid = low + (high - low) / 2;\n            int64_t cnt = mid / a + mid / b + mid / c\n                         - mid / l_ab - mid / l_ac - mid / l_bc\n                         + mid / l_abc;\n            if (cnt >= N) high = mid; else low = mid + 1;\n        }\n        printf(\"%lld\\n\", low);\n    }\n    return 0;\n}",

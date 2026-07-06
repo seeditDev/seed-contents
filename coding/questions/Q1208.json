@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Bitwise XOR",
-      "Modular Exponentiation",
-      "Mathematics"
+      "Bit Manipulation",
+      "Mathematics",
+      "Modular Exponentiation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "For a given NNN, find the number of ways to choose an integer xxx from the range [0,2N−1][0, 2^N - 1][0,2N−1] such that x⊕(x+1)=(x+2)⊕(x+3)x \\oplus (x+1) = (x+2) \\oplus (x+3)x⊕(x+1)=(x+2)⊕(x+3), where ⊕\\oplus⊕ denotes the bitwise XOR operator.\n\nSince the number of valid xxx can be large, output it modulo 109+710^9+7109+7.",
+    "problemStatement": "For a given NNN, find the number of ways to choose an integer xxx from the range [0,2N\u22121][0, 2^N - 1][0,2N\u22121] such that x\u2295(x+1)=(x+2)\u2295(x+3)x \\oplus (x+1) = (x+2) \\oplus (x+3)x\u2295(x+1)=(x+2)\u2295(x+3), where \u2295\\oplus\u2295 denotes the bitwise XOR operator.\n\nSince the number of valid xxx can be large, output it modulo 109+710^9+7109+7.",
     "constraints": [
       "1 <= T <= 100000",
       "1 <= N <= 100000",
       "All values are integers"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 100000).",
-    "outputFormat": "For each test case, output a single line containing the number of integers x in [0, 2^N‑1] that satisfy x⊕(x+1) = (x+2)⊕(x+3), modulo 1 000 000 007.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 100000).",
+    "outputFormat": "For each test case, output a single line containing the number of integers x in [0, 2^N\u20111] that satisfy x\u2295(x+1) = (x+2)\u2295(x+3), modulo 1\u202f000\u202f000\u202f007.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "Observe that for any integer x, x⊕(x+1) equals a number consisting of all 1s in the trailing part of x. The equality x⊕(x+1) = (x+2)⊕(x+3) holds iff the lowest set bit of x is at position ≥ 1, i.e., x is even. In the range [0, 2^N‑1] exactly half of the numbers are even, giving 2^{N-1} valid x. Hence the answer is 2^{N-1} modulo 1e9+7. Compute this power with fast binary exponentiation for each test case.",
-    "timeComplexity": "O(T·log N) – binary exponentiation per test case (log N ≤ 17 for N ≤ 100000).",
+    "approach": "Observe that for any integer x, x\u2295(x+1) equals a number consisting of all 1s in the trailing part of x. The equality x\u2295(x+1) = (x+2)\u2295(x+3) holds iff the lowest set bit of x is at position \u2265 1, i.e., x is even. In the range [0, 2^N\u20111] exactly half of the numbers are even, giving 2^{N-1} valid x. Hence the answer is 2^{N-1} modulo 1e9+7. Compute this power with fast binary exponentiation for each test case.",
+    "timeComplexity": "O(T\u00b7log N) \u2013 binary exponentiation per test case (log N \u2264 17 for N \u2264 100000).",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nconst long long MOD = 1000000007LL;\n\nlong long modPow(long long base, long long exp) {\n    long long res = 1;\n    base %= MOD;\n    while (exp > 0) {\n        if (exp & 1LL) res = (res * base) % MOD;\n        base = (base * base) % MOD;\n        exp >>= 1LL;\n    }\n    return res;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long N;\n        scanf(\"%lld\", &N);\n        long long ans = modPow(2LL, N - 1);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

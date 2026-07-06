@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Tree",
-      "Coloring",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming",
+      "Coloring"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We can define a recursive function that calculates the number of ways to paint the subtree rooted at a given node, with a given number of red, green, and blue nodes. The function will consider all possible colors for the current node and recursively calculate the number of ways to paint its children. The result will be stored in a memoization table to avoid redundant calculations.",
     "timeComplexity": "O(N * R * G * B) per test case, O(T * N * R * G * B) total.",
-    "spaceComplexity": "O(N * R * G * B) — the dominant structure is the memoization table.",
+    "spaceComplexity": "O(N * R * G * B) \u2014 the dominant structure is the memoization table.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n#define MAX_N 300\n#define MAX_R 300\n#define MAX_G 300\n#define MAX_B 300\n\nint dp[MAX_N + 1][MAX_R + 1][MAX_G + 1][MAX_B + 1];\nint N, R, G, B;\nint edges[MAX_N][2];\n\nint dfs(int node, int red, int green, int blue) {\n    if (dp[node][red][green][blue] != -1) return dp[node][red][green][blue];\n    int result = 0;\n    if (red <= R) result = (result + dfs(node, red + 1, green, blue)) % MOD;\n    if (green <= G) result = (result + dfs(node, red, green + 1, blue)) % MOD;\n    if (blue <= B) result = (result + dfs(node, red, green, blue + 1)) % MOD;\n    return dp[node][red][green][blue] = result;\n}\n\nint main() {\n    scanf(\"%d %d %d %d\", &N, &R, &G, &B);\n    for (int i = 0; i < N - 1; i++) {\n        scanf(\"%d %d\", &edges[i][0], &edges[i][1]);\n    }\n    for (int i = 0; i <= N; i++) {\n        for (int j = 0; j <= R; j++) {\n            for (int k = 0; k <= G; k++) {\n                for (int l = 0; l <= B; l++) {\n                    dp[i][j][k][l] = -1;\n                }\n            }\n        }\n    }\n    printf(\"%d\\n\", dfs(0, 0, 0, 0));\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#define MOD 1000000007\n#define MAX_N 300\n#define MAX_R 300\n#define MAX_G 300\n#define MAX_B 300\n\nusing namespace std;\n\nint dp[MAX_N + 1][MAX_R + 1][MAX_G + 1][MAX_B + 1];\nint N, R, G, B;\nvector<int> edges[MAX_N];\n\nint dfs(int node, int red, int green, int blue) {\n    if (dp[node][red][green][blue] != -1) return dp[node][red][green][blue];\n    int result = 0;\n    if (red <= R) result = (result + dfs(node, red + 1, green, blue)) % MOD;\n    if (green <= G) result = (result + dfs(node, red, green + 1, blue)) % MOD;\n    if (blue <= B) result = (result + dfs(node, red, green, blue + 1)) % MOD;\n    return dp[node][red][green][blue] = result;\n}\n\nint main() {\n    cin >> N >> R >> G >> B;\n    for (int i = 0; i < N - 1; i++) {\n        int u, v;\n        cin >> u >> v;\n        edges[u - 1].push_back(v - 1);\n        edges[v - 1].push_back(u - 1);\n    }\n    for (int i = 0; i <= N; i++) {\n        for (int j = 0; j <= R; j++) {\n            for (int k = 0; k <= G; k++) {\n                for (int l = 0; l <= B; l++) {\n                    dp[i][j][k][l] = -1;\n                }\n            }\n        }\n    }\n    cout << dfs(0, 0, 0, 0) << endl;\n    return 0;\n}",

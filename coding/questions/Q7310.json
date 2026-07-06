@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Number Theory | Greedy | DP",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Arrays",
       "Divisibility",
       "Graph Coloring",
       "Partial Order",
@@ -22,14 +23,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an integer NNN.\n\nYour task is to find the **minimum** integer CCC such that there exists an array AAA of size NNN satisfying:\n\n\n1≤Ai≤C1\\le A_i \\le C1≤Ai​≤C;\nFor distinct indices xxx and yyy where xxx **divides** y;&nbsp;Ax≠Ayy; \\ A_x \\neq A_yy;&nbsp;Ax​=Ay​.\nYou need to print the minimum value of CCC as well as the array AAA. In case multiple arrays exist, you may print any one.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer NNN.\n\n\nOutput Format\nFor each test case, output two lines.\n\n\n\nThe first line should contain a single integer CCC, the minimum integer for which array AAA exists.\nThe second line should contain NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ denoting the array AAA satisfying given conditions.\n\nIn case multiple arrays satisfy the conditions, you may print any one.",
+    "problemStatement": "You are given an integer NNN.\n\nYour task is to find the **minimum** integer CCC such that there exists an array AAA of size NNN satisfying:\n\n\n1\u2264Ai\u2264C1\\le A_i \\le C1\u2264Ai\u200b\u2264C;\nFor distinct indices xxx and yyy where xxx **divides** y;&nbsp;Ax\u2260Ayy; \\ A_x \\neq A_yy;&nbsp;Ax\u200b\ue020=Ay\u200b.\nYou need to print the minimum value of CCC as well as the array AAA. In case multiple arrays exist, you may print any one.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer NNN.\n\n\nOutput Format\nFor each test case, output two lines.\n\n\n\nThe first line should contain a single integer CCC, the minimum integer for which array AAA exists.\nThe second line should contain NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b denoting the array AAA satisfying given conditions.\n\nIn case multiple arrays satisfy the conditions, you may print any one.",
     "constraints": [
-      "1 ≤ T ≤ 10³",
-      "1 ≤ N ≤ 2·10⁵",
-      "∑ N over all test cases ≤ 2·10⁵"
+      "1 \u2264 T \u2264 10\u00b3",
+      "1 \u2264 N \u2264 2\u00b710\u2075",
+      "\u2211 N over all test cases \u2264 2\u00b710\u2075"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 2·10⁵). The sum of N over all test cases does not exceed 2·10⁵.",
-    "outputFormat": "For each test case output two lines. The first line contains the minimum possible integer C. The second line contains N space‑separated integers A₁ … A_N (1 ≤ A_i ≤ C) such that for any distinct indices x and y with x dividing y, A_x ≠ A_y.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 2\u00b710\u2075). The sum of N over all test cases does not exceed 2\u00b710\u2075.",
+    "outputFormat": "For each test case output two lines. The first line contains the minimum possible integer C. The second line contains N space\u2011separated integers A\u2081 \u2026 A_N (1 \u2264 A_i \u2264 C) such that for any distinct indices x and y with x dividing y, A_x \u2260 A_y.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -41,13 +42,13 @@
         "id": "sample_2",
         "input": "1\n10",
         "output": "4\n1 2 2 3 2 3 2 4 3 3",
-        "explanation": "The longest divisor chain up to 10 is 1→2→4→8, length 4, so C=4. The DP values give the array shown, and any pair (x,y) with x|y has different values."
+        "explanation": "The longest divisor chain up to 10 is 1\u21922\u21924\u21928, length 4, so C=4. The DP values give the array shown, and any pair (x,y) with x|y has different values."
       },
       {
         "id": "sample_3",
         "input": "1\n7",
         "output": "3\n1 2 2 3 2 3 2",
-        "explanation": "Longest chain is 1→2→4 (or 1→2→6), length 3, thus C=3. The produced array respects the divisor condition."
+        "explanation": "Longest chain is 1\u21922\u21924 (or 1\u21922\u21926), length 3, thus C=3. The produced array respects the divisor condition."
       }
     ]
   },
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "The condition creates an undirected edge between every pair (x, y) where x|y. The resulting graph is the comparability graph of a poset, which is a perfect graph. Therefore its chromatic number equals the size of the largest clique, i.e. the length of the longest chain of indices where each divides the next. The longest possible chain is obtained by repeatedly multiplying by the smallest prime (2), so its length is floor(log₂ N) + 1. To construct an optimal array we compute for each i (1 ≤ i ≤ N) the length of the longest divisor chain ending at i: dp[i] = 1 + max{ dp[d] | d < i and d|i }. This can be computed in O(N log N) using a sieve‑like loop: initialise dp[i] = 1 for all i, then for each i iterate over its multiples j = 2i, 3i, … and relax dp[j] = max(dp[j], dp[i] + 1). After the loop, C = max dp[i] and the array A_i = dp[i] satisfies the required property because if x|y then dp[y] ≥ dp[x] + 1, hence A_x ≠ A_y. The algorithm runs in linearithmic time and linear memory, which fits the constraints.",
-    "timeComplexity": "O(N log N) per test case (overall O(∑N log N) ≤ 2·10⁵·log 2·10⁵).",
+    "approach": "The condition creates an undirected edge between every pair (x, y) where x|y. The resulting graph is the comparability graph of a poset, which is a perfect graph. Therefore its chromatic number equals the size of the largest clique, i.e. the length of the longest chain of indices where each divides the next. The longest possible chain is obtained by repeatedly multiplying by the smallest prime (2), so its length is floor(log\u2082 N) + 1. To construct an optimal array we compute for each i (1 \u2264 i \u2264 N) the length of the longest divisor chain ending at i: dp[i] = 1 + max{ dp[d] | d < i and d|i }. This can be computed in O(N log N) using a sieve\u2011like loop: initialise dp[i] = 1 for all i, then for each i iterate over its multiples j = 2i, 3i, \u2026 and relax dp[j] = max(dp[j], dp[i] + 1). After the loop, C = max dp[i] and the array A_i = dp[i] satisfies the required property because if x|y then dp[y] \u2265 dp[x] + 1, hence A_x \u2260 A_y. The algorithm runs in linearithmic time and linear memory, which fits the constraints.",
+    "timeComplexity": "O(N log N) per test case (overall O(\u2211N log N) \u2264 2\u00b710\u2075\u00b7log\u202f2\u00b710\u2075).",
     "spaceComplexity": "O(N) for the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *dp = (int*)calloc(N+1, sizeof(int));\n        for(int i=1;i<=N;i++) dp[i]=1;\n        int C=1;\n        for(int i=1;i<=N;i++){\n            for(int j=i*2;j<=N;j+=i){\n                if(dp[j] < dp[i]+1) dp[j] = dp[i]+1;\n            }\n            if(dp[i]>C) C=dp[i];\n        }\n        printf(\"%d\\n\", C);\n        for(int i=1;i<=N;i++){\n            if(i>1) printf(\" \");\n            printf(\"%d\", dp[i]);\n        }\n        printf(\"\\n\");\n        free(dp);\n    }\n    return 0;\n}",

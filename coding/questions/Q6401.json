@@ -11,9 +11,10 @@
     "isPremium": false,
     "tags": [
       "Factorial",
-      "Precomputation",
       "Modular Arithmetic",
-      "Summation"
+      "Precomputation",
+      "Summation",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN balls in a bag. Initially, the ithi^{th}ith ball has a number AiA_iAi​ on it.\n\nIn one second, a ball with number kkk (k&gt;1)(k&gt;1)(k&gt;1), dissociates into kkk balls, where each of the kkk balls has number (k−1)(k-1)(k−1) written on it.\n\nIf k=1k = 1k=1, there is no change on the state of the ball.\n\nFind the number of balls in the bag after 1010010^{100}10100 seconds. Since the final number of balls can be huge, output the answer modulo 109+710^9+7109+7.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains an integer NNN, denoting the number of balls in the bag.\nThe next line contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​, denoting the initial number written on the balls.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the number of balls in the bag after 1010010^{100}10100 seconds. Since the final number of balls can be huge, output the answer modulo 109+710^9+7109+7.",
+    "problemStatement": "There are NNN balls in a bag. Initially, the ithi^{th}ith ball has a number AiA_iAi\u200b on it.\n\nIn one second, a ball with number kkk (k&gt;1)(k&gt;1)(k&gt;1), dissociates into kkk balls, where each of the kkk balls has number (k\u22121)(k-1)(k\u22121) written on it.\n\nIf k=1k = 1k=1, there is no change on the state of the ball.\n\nFind the number of balls in the bag after 1010010^{100}10100 seconds. Since the final number of balls can be huge, output the answer modulo 109+710^9+7109+7.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains an integer NNN, denoting the number of balls in the bag.\nThe next line contains NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b, denoting the initial number written on the balls.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the number of balls in the bag after 1010010^{100}10100 seconds. Since the final number of balls can be huge, output the answer modulo 109+710^9+7109+7.",
     "constraints": [
-      "1 ≤ T ≤ 10^4",
-      "1 ≤ N ≤ 2·10^5",
-      "1 ≤ Ai ≤ 10^6",
-      "Sum of N over all test cases ≤ 2·10^5"
+      "1 \u2264 T \u2264 10^4",
+      "1 \u2264 N \u2264 2\u00b710^5",
+      "1 \u2264 Ai \u2264 10^6",
+      "Sum of N over all test cases \u2264 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the number of balls. The second line contains N space‑separated integers A1 … AN, the numbers written on the balls.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the number of balls. The second line contains N space\u2011separated integers A1 \u2026 AN, the numbers written on the balls.",
     "outputFormat": "For each test case output a single line containing the number of balls in the bag after 10^100 seconds, modulo 1000000007.",
     "sampleTestCases": [
       {
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "Each ball evolves independently. A ball with initial number k splits into k balls with number k‑1 after one second, each of those splits into (k‑1) balls with number k‑2, and so on until the number becomes 1. The total number of final balls produced by this single ball is k·(k‑1)·…·1 = k! (k factorial). Therefore the final total number of balls is the sum of factorials of all initial numbers: answer = Σ (Ai!). We pre‑compute factorials modulo MOD for all values up to the maximum Ai appearing in the whole input (≤10^6) in O(maxAi) time, then answer each test case in O(N) by summing the pre‑computed values.",
-    "timeComplexity": "O(maxAi + total N) where maxAi ≤ 10^6 and total N ≤ 2·10^5.",
+    "approach": "Each ball evolves independently. A ball with initial number k splits into k balls with number k\u20111 after one second, each of those splits into (k\u20111) balls with number k\u20112, and so on until the number becomes 1. The total number of final balls produced by this single ball is k\u00b7(k\u20111)\u00b7\u2026\u00b71 = k! (k factorial). Therefore the final total number of balls is the sum of factorials of all initial numbers: answer = \u03a3 (Ai!). We pre\u2011compute factorials modulo MOD for all values up to the maximum Ai appearing in the whole input (\u226410^6) in O(maxAi) time, then answer each test case in O(N) by summing the pre\u2011computed values.",
+    "timeComplexity": "O(maxAi + total N) where maxAi \u2264 10^6 and total N \u2264 2\u00b710^5.",
     "spaceComplexity": "O(maxAi) for the factorial table.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007LL\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    int totalN=0; long long maxA=0;\n    // store inputs temporarily\n    int *Ns = (int*)malloc(T*sizeof(int));\n    int **arr = (int**)malloc(T*sizeof(int*));\n    for(int t=0;t<T;++t){\n        int N; scanf(\"%d\", &N); Ns[t]=N; totalN+=N;\n        arr[t]=(int*)malloc(N*sizeof(int));\n        for(int i=0;i<N;++i){\n            int x; scanf(\"%d\", &x); arr[t][i]=x; if(x>maxA) maxA=x;\n        }\n    }\n    // precompute factorials up to maxA\n    long long *fact = (long long*)malloc((maxA+1)*sizeof(long long));\n    fact[0]=1;\n    for(long long i=1;i<=maxA;++i) fact[i]=(fact[i-1]*i)%MOD;\n    // answer each test case\n    for(int t=0;t<T;++t){\n        long long sum=0;\n        for(int i=0;i<Ns[t];++i){\n            sum += fact[arr[t][i]];\n            if(sum>=MOD) sum-=MOD;\n        }\n        printf(\"%lld\\n\", sum%MOD);\n        free(arr[t]);\n    }\n    free(arr); free(Ns); free(fact);\n    return 0;\n}",

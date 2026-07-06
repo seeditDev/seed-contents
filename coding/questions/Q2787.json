@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Interval Scheduling",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a greedy algorithm. We first sort the events based on their end days. Then, we initialize a variable to keep track of the last end day and the total number of beds needed. We iterate over the sorted events and for each event, we check if its start day is greater than or equal to the last end day. If it is, we update the last end day to be the end day of the current event. If it's not, we increment the total number of beds needed and update the last end day to be the end day of the current event.",
     "timeComplexity": "O(N * (K log K + M * D)) per test case, O(T * (K log K + M * D)) total. The time complexity is dominated by the sorting of events and the iteration over the participations.",
-    "spaceComplexity": "O(K + M * D) — the dominant structure is the events and participations arrays.",
+    "spaceComplexity": "O(K + M * D) \u2014 the dominant structure is the events and participations arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return x[1] - y[1];\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    for (int i = 0; i < N; i++) {\n        int K, M;\n        scanf(\"%d %d\", &K, &M);\n        int events[K][2];\n        for (int j = 0; j < K; j++) {\n            scanf(\"%d %d\", &events[j][0], &events[j][1]);\n        }\n        int participations[M][K * 2];\n        for (int j = 0; j < M; j++) {\n            int D;\n            scanf(\"%d\", &D);\n            for (int k = 0; k < D; k++) {\n                scanf(\"%d %d\", &participations[j][k * 2], &participations[j][k * 2 + 1]);\n            }\n        }\n        qsort(events, K, sizeof(events[0]), compare);\n        int beds = 0;\n        int last_end = 0;\n        for (int j = 0; j < K; j++) {\n            int start = events[j][0];\n            int end = events[j][1];\n            if (start >= last_end) {\n                last_end = end;\n            } else {\n                beds++;\n                last_end = end;\n            }\n        }\n        printf(\"Case %d: %d\\n\", i + 1, beds);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nstruct Event {\n    int start;\n    int end;\n};\n\nbool compare(const Event &a, const Event &b) {\n    return a.end < b.end;\n}\n\nint main() {\n    int N;\n    cin >> N;\n    for (int i = 0; i < N; i++) {\n        int K, M;\n        cin >> K >> M;\n        Event events[K];\n        for (int j = 0; j < K; j++) {\n            cin >> events[j].start >> events[j].end;\n        }\n        sort(events, events + K, compare);\n        int participations[M][K * 2];\n        for (int j = 0; j < M; j++) {\n            int D;\n            cin >> D;\n            for (int k = 0; k < D; k++) {\n                cin >> participations[j][k * 2] >> participations[j][k * 2 + 1];\n            }\n        }\n        int beds = 0;\n        int last_end = 0;\n        for (int j = 0; j < K; j++) {\n            int start = events[j].start;\n            int end = events[j].end;\n            if (start >= last_end) {\n                last_end = end;\n            } else {\n                beds++;\n                last_end = end;\n            }\n        }\n        cout << \"Case \" << i + 1 << \": \" << beds << endl;\n    }\n    return 0;\n}",

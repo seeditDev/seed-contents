@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Simulation",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Hill Jumping",
       "Simulation",
-      "Array Updates"
+      "Array Updates",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Chef is going to organize a hill jumping competition and he is going to be one of the judges in it. In this competition there are **N** hills in a row, and the initial height of i-th hill is **Ai**. Participants are required to demonstrate their jumping skills by doing what the judges tell them.\n\nJudges will give each participant a card which has two numbers, **i** and **k**, which means that the participant should start at the **i**-th hill and jump **k** times, where one jump should be from the current hill to the nearest hill to the right which is strictly higher (in height) than the current one. If there is no such hill or its distance (i.e. difference between their indices)  is more than 100 then the participant should remain in his current hill.\n\nPlease help Chef by creating a program to use it during the competitions. It should read the initial heights of the hill and should support two kinds of operations:\n\nType 1: Given a two numbers: **i** and **k**, your program should output the index of the hill the participant is expected to finish if he starts from the i-th hill (as explained above).\n\nType 2: Given three numbers: **L**, **R**, **X**, the heights of all the hills between **L** and **R**, both end points inclusive, should be increased by **X** (if **X** is negative then their height is decreased).",
     "constraints": [
-      "1 ≤ N, Q ≤ 100,000",
-      "1 ≤ Ai ≤ 1,000,000",
-      "1 ≤ L ≤ R ≤ N",
-      "-1,000,000 ≤ X ≤ 1,000,000",
-      "1 ≤ i, k ≤ N"
+      "1 \u2264 N, Q \u2264 100,000",
+      "1 \u2264 Ai \u2264 1,000,000",
+      "1 \u2264 L \u2264 R \u2264 N",
+      "-1,000,000 \u2264 X \u2264 1,000,000",
+      "1 \u2264 i, k \u2264 N"
     ],
     "inputFormat": "The first line contains two integers N and Q, denoting the number of hills and number of operations respectively. The second line contains N space-separated integers A1, A2, ..., AN denoting the initial heights of the hills. Each of the next Q lines describes an operation. If the first integer is equal to 1, it means that the operation is of Type 1, and it will be followed by two integers i and k. Otherwise the first number will be equal to 2, and it means that the operation is of Type 2, and so it will be followed by three integers L, R and X.",
     "outputFormat": "For each operation of Type 1, output the index of the hill in which the participant will finish.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we will first read the initial heights of the hills and store them in an array. Then, we will process each operation. For Type 1 operations, we will simulate the jumping process by finding the next hill that is strictly higher than the current one and update the current hill index accordingly. For Type 2 operations, we will update the heights of the hills in the specified range. We will use a simple iterative approach to simulate the jumping process and update the heights of the hills.",
-    "timeComplexity": "O(Q * N) — The time complexity is O(Q * N) because in the worst case, we might need to simulate the jumping process for each operation and update the heights of the hills.",
-    "spaceComplexity": "O(N) — The space complexity is O(N) because we need to store the heights of the hills in an array.",
+    "timeComplexity": "O(Q * N) \u2014 The time complexity is O(Q * N) because in the worst case, we might need to simulate the jumping process for each operation and update the heights of the hills.",
+    "spaceComplexity": "O(N) \u2014 The space complexity is O(N) because we need to store the heights of the hills in an array.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q);\n    int hills[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &hills[i]);\n    }\n    while (Q--) {\n        int type;\n        scanf(\"%d\", &type);\n        if (type == 1) {\n            int i, k;\n            scanf(\"%d %d\", &i, &k);\n            i--;\n            while (k--) {\n                int next = -1;\n                for (int j = i + 1; j < N; j++) {\n                    if (hills[j] > hills[i]) {\n                        next = j;\n                        break;\n                    }\n                }\n                if (next == -1 || next - i > 100) {\n                    break;\n                }\n                i = next;\n            }\n            printf(\"%d\\n\", i + 1);\n        } else {\n            int L, R, X;\n            scanf(\"%d %d %d\", &L, &R, &X);\n            L--;\n            R--;\n            for (int i = L; i <= R; i++) {\n                hills[i] += X;\n            }\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int N, Q;\n    cin >> N >> Q;\n    int hills[N];\n    for (int i = 0; i < N; i++) {\n        cin >> hills[i];\n    }\n    while (Q--) {\n        int type;\n        cin >> type;\n        if (type == 1) {\n            int i, k;\n            cin >> i >> k;\n            i--;\n            while (k--) {\n                int next = -1;\n                for (int j = i + 1; j < N; j++) {\n                    if (hills[j] > hills[i]) {\n                        next = j;\n                        break;\n                    }\n                }\n                if (next == -1 || next - i > 100) {\n                    break;\n                }\n                i = next;\n            }\n            cout << i + 1 << endl;\n        } else {\n            int L, R, X;\n            cin >> L >> R >> X;\n            L--;\n            R--;\n            for (int i = L; i <= R; i++) {\n                hills[i] += X;\n            }\n        }\n    }\n    return 0;\n}",

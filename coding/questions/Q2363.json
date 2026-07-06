@@ -10,6 +10,7 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Implementation",
       "String Parsing",
       "Conditional Logic"
     ],
@@ -21,15 +22,15 @@
   "content": {
     "problemStatement": "The chef has turned into an entrepreneur running a bakery business. He is selling products like Biscuit, Bread etc which are packaged in various sizes. He is selling the products in the various cities of different provinces which are further sub-categorized into various regions. He maintains the data about the sex and age of all his customers along with the time of purchase. For running his business successfully, he requires a business intelligence tool to get analysis reports of sales aggregates based on various parameters so that he can run his business efficiently.",
     "constraints": [
-      "1 ≤ S ≤ 100000",
-      "0 ≤ product_id ≤ 9",
-      "0 ≤ size_id ≤ 2 (optional)",
-      "0 ≤ province ≤ 9",
-      "0 ≤ city_id ≤ 19",
-      "0 ≤ region_id ≤ 4 (optional)",
-      "sex ∈ {M,F}",
-      "1 ≤ age ≤ 90",
-      "0 ≤ units_sold ≤ 100"
+      "1 \u2264 S \u2264 100000",
+      "0 \u2264 product_id \u2264 9",
+      "0 \u2264 size_id \u2264 2 (optional)",
+      "0 \u2264 province \u2264 9",
+      "0 \u2264 city_id \u2264 19",
+      "0 \u2264 region_id \u2264 4 (optional)",
+      "sex \u2208 {M,F}",
+      "1 \u2264 age \u2264 90",
+      "0 \u2264 units_sold \u2264 100"
     ],
     "inputFormat": "The first line contains an integer S, the number of following lines. Each of the next S lines is either a sale record starting with 'I' or a query starting with 'Q'. Sale record format: I product_id[.size_id] province[.city_id[.region_id]] M/F age units_sold. Query format: Q product_id[.size_id] province[.city_id[.region_id]] M/F start_age[-end_age].",
     "outputFormat": "For each query line, output a single line containing the total number of units sold that satisfy the query conditions, considering only the sale records that appeared earlier in the input.",
@@ -120,7 +121,7 @@
   "solution": {
     "approach": "The problem can be solved by parsing each line of input and maintaining a data structure to store the sales records. For each query, iterate through the sales records and sum up the units sold that match the query conditions.",
     "timeComplexity": "O(S) per test case, O(S) total. No precomputation is done.",
-    "spaceComplexity": "O(S) — the dominant structure is the array of sales records.",
+    "spaceComplexity": "O(S) \u2014 the dominant structure is the array of sales records.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define MAX_P 11\n#define MAX_S 3\n#define MAX_C 20\n#define MAX_R 5\n#define MAX_A 91\n\nint main() {\n    int S;\n    scanf(\"%d\", &S);\n    for (int i = 0; i < S; i++) {\n        char type;\n        scanf(\" %c\", &type);\n        if (type == 'I') {\n            int product_id, size_id = -1, province, city_id = -1, region_id = -1;\n            char sex;\n            int age, units_sold;\n            scanf(\"%d\", &product_id);\n            if (getchar() == '.') {\n                scanf(\"%d\", &size_id);\n            }\n            scanf(\" %d\", &province);\n            if (getchar() == '.') {\n                scanf(\"%d\", &city_id);\n                if (getchar() == '.') {\n                    scanf(\"%d\", &region_id);\n                }\n            }\n            scanf(\" %c %d %d\", &sex, &age, &units_sold);\n            // Store the sales record\n        } else if (type == 'Q') {\n            int product_id, size_id = -1, province = -1, city_id = -1, region_id = -1;\n            char sex;\n            int start_age, end_age = -1;\n            scanf(\"%d\", &product_id);\n            if (getchar() == '.') {\n                scanf(\"%d\", &size_id);\n            }\n            if (getchar() != ' ') {\n                scanf(\"%d\", &province);\n                if (getchar() == '.') {\n                    scanf(\"%d\", &city_id);\n                    if (getchar() == '.') {\n                        scanf(\"%d\", &region_id);\n                    }\n                }\n            }\n            scanf(\" %c\", &sex);\n            if (scanf(\"%d\", &start_age) == 1) {\n                if (getchar() == '-') {\n                    scanf(\"%d\", &end_age);\n                }\n            }\n            int total_units_sold = 0;\n            // Iterate through the sales records and sum up the units sold that match the query conditions\n            printf(\"%d\\n\", total_units_sold);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int S;\n    cin >> S;\n    for (int i = 0; i < S; i++) {\n        char type;\n        cin >> type;\n        if (type == 'I') {\n            int product_id, size_id = -1, province, city_id = -1, region_id = -1;\n            char sex;\n            int age, units_sold;\n            cin >> product_id;\n            if (cin.peek() == '.') {\n                cin >> size_id;\n            }\n            cin >> province;\n            if (cin.peek() == '.') {\n                cin >> city_id;\n                if (cin.peek() == '.') {\n                    cin >> region_id;\n                }\n            }\n            cin >> sex >> age >> units_sold;\n            // Store the sales record\n        } else if (type == 'Q') {\n            int product_id, size_id = -1, province = -1, city_id = -1, region_id = -1;\n            char sex;\n            int start_age, end_age = -1;\n            cin >> product_id;\n            if (cin.peek() == '.') {\n                cin >> size_id;\n            }\n            if (cin.peek() != ' ') {\n                cin >> province;\n                if (cin.peek() == '.') {\n                    cin >> city_id;\n                    if (cin.peek() == '.') {\n                        cin >> region_id;\n                    }\n                }\n            }\n            cin >> sex;\n            if (cin >> start_age) {\n                if (cin.peek() == '-') {\n                    cin >> end_age;\n                }\n            }\n            int total_units_sold = 0;\n            // Iterate through the sales records and sum up the units sold that match the query conditions\n            cout << total_units_sold << endl;\n        }\n    }\n    return 0;\n}",

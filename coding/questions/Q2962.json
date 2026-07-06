@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Sliding Window",
-      "Substring"
+      "Substring",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,12 +22,12 @@
   "content": {
     "problemStatement": "Given a string **S**. You need to find a substring which satisfies the following conditions and output its start and end positions in the string **S**.\n\n\nHas exactly **x** different characters in it.\nLength of substring is atleast **minLength** and atmost **maxLength**.\nsubstring's start position is greater than or equal to **L**.\nsubstring's end position is less than or equal to **R**.\n\nIf there are multiple substrings that satisfy above conditions, choose the one that has least start position. If there are still multiple substrings, choose the one that has least end position. See output section for more details",
     "constraints": [
-      "1 ≤ |S| (Length of S) ≤ 10^5",
+      "1 \u2264 |S| (Length of S) \u2264 10^5",
       "S contains only lower case english alphabet ('a' - 'z')",
-      "1 ≤ Q ≤ 10^5",
-      "1 ≤ x ≤ 26",
-      "1 ≤ minLength ≤ maxLength ≤ |S|",
-      "0 ≤ L ≤ R ≤ |S|-1"
+      "1 \u2264 Q \u2264 10^5",
+      "1 \u2264 x \u2264 26",
+      "1 \u2264 minLength \u2264 maxLength \u2264 |S|",
+      "0 \u2264 L \u2264 R \u2264 |S|-1"
     ],
     "inputFormat": "The first line of input contains the string S. The second line of the input contains an integer Q denoting the number of queries. Only line of each query contains 5 space separated integers, x, minLength, maxLength, L, R",
     "outputFormat": "For each query, output one line with 2 space separated integers, start and end positions of substring in S. If there is no valid solution output '-1 -1'",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "We will use a sliding window approach to find the substring that satisfies the given conditions. We will maintain a frequency array to count the frequency of each character in the current window. We will also maintain a variable to count the number of unique characters in the current window.",
-    "timeComplexity": "O(Q * |S|) — per query is O(|S|), total is O(Q * |S|)",
-    "spaceComplexity": "O(1) — we are using a constant amount of space to store the frequency array and other variables",
+    "timeComplexity": "O(Q * |S|) \u2014 per query is O(|S|), total is O(Q * |S|)",
+    "spaceComplexity": "O(1) \u2014 we are using a constant amount of space to store the frequency array and other variables",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MAX 100005\nint main() {\n    char s[MAX];\n    int q, x, minLength, maxLength, L, R;\n    scanf(\"%s\", s);\n    scanf(\"%d\", &q);\n    while (q--) {\n        scanf(\"%d %d %d %d %d\", &x, &minLength, &maxLength, &L, &R);\n        int start = -1, end = -1;\n        for (int i = L; i <= R; i++) {\n            int freq[26] = {0};\n            int unique = 0;\n            for (int j = i; j <= R; j++) {\n                if (freq[s[j] - 'a'] == 0) unique++;\n                freq[s[j] - 'a']++;\n                if (unique == x && j - i + 1 >= minLength && j - i + 1 <= maxLength) {\n                    start = i;\n                    end = j;\n                    break;\n                }\n            }\n            if (start != -1) break;\n        }\n        printf(\"%d %d\\n\", start, end);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n#define MAX 100005\nint main() {\n    string s;\n    int q, x, minLength, maxLength, L, R;\n    cin >> s;\n    cin >> q;\n    while (q--) {\n        cin >> x >> minLength >> maxLength >> L >> R;\n        int start = -1, end = -1;\n        for (int i = L; i <= R; i++) {\n            int freq[26] = {0};\n            int unique = 0;\n            for (int j = i; j <= R; j++) {\n                if (freq[s[j] - 'a'] == 0) unique++;\n                freq[s[j] - 'a']++;\n                if (unique == x && j - i + 1 >= minLength && j - i + 1 <= maxLength) {\n                    start = i;\n                    end = j;\n                    break;\n                }\n            }\n            if (start != -1) break;\n        }\n        cout << start << \" \" << end << endl;\n    }\n    return 0;\n}",

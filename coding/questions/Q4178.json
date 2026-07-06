@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Prime Numbers",
+      "Math",
       "Sieve of Eratosthenes"
     ],
     "companyTags": [],
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an integer sequence A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​. Let's define the useful number of a subsequence of AAA as the number of distinct primes ppp such that ppp divides each member of the subsequence, multiplied by the length of the subsequence. Find the maximum of useful numbers of all subsequences of AAA.",
+    "problemStatement": "You are given an integer sequence A1,A2,\u2026,ANA_1, A_2, \\dots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. Let's define the useful number of a subsequence of AAA as the number of distinct primes ppp such that ppp divides each member of the subsequence, multiplied by the length of the subsequence. Find the maximum of useful numbers of all subsequences of AAA.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10^5",
       "1 <= Ai <= 10^5 for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "Print a single line containing one integer — the maximum useful number.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "Print a single line containing one integer \u2014 the maximum useful number.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first need to find all prime numbers up to 10^5 using the Sieve of Eratosthenes algorithm. Then, for each test case, we iterate over all possible subsequences of the given sequence A. For each subsequence, we find the greatest common divisor (GCD) of all its elements. We then find the prime factors of the GCD and count the number of distinct prime factors. The useful number of the subsequence is the product of the count of distinct prime factors and the length of the subsequence. We keep track of the maximum useful number found so far.",
-    "timeComplexity": "O(T * 2^N * sqrt(Ai)) — where T is the number of test cases, N is the length of the sequence A, and Ai is the maximum value in the sequence A. The time complexity is dominated by the iteration over all possible subsequences and the calculation of the GCD and prime factors for each subsequence.",
-    "spaceComplexity": "O(N + sqrt(Ai)) — where N is the length of the sequence A, and Ai is the maximum value in the sequence A. The space complexity is dominated by the storage of the sequence A and the sieve of Eratosthenes.",
+    "timeComplexity": "O(T * 2^N * sqrt(Ai)) \u2014 where T is the number of test cases, N is the length of the sequence A, and Ai is the maximum value in the sequence A. The time complexity is dominated by the iteration over all possible subsequences and the calculation of the GCD and prime factors for each subsequence.",
+    "spaceComplexity": "O(N + sqrt(Ai)) \u2014 where N is the length of the sequence A, and Ai is the maximum value in the sequence A. The space complexity is dominated by the storage of the sequence A and the sieve of Eratosthenes.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define MAX 100005\nint sieve[MAX];\nvoid sieve_of_eratosthenes() {\n    for (int i = 2; i * i < MAX; i++) {\n        if (sieve[i] == 0) {\n            for (int j = i * i; j < MAX; j += i) {\n                sieve[j] = 1;\n            }\n        }\n    }\n}\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint count_prime_factors(int n) {\n    int count = 0;\n    for (int i = 2; i * i <= n; i++) {\n        if (sieve[i] == 0 && n % i == 0) {\n            count++;\n            while (n % i == 0) n /= i;\n        }\n    }\n    if (n > 1) count++;\n    return count;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    sieve_of_eratosthenes();\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        int max_useful = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int subsequence[N];\n            int length = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    subsequence[length++] = A[i];\n                }\n            }\n            if (length == 0) continue;\n            int gcd_value = subsequence[0];\n            for (int i = 1; i < length; i++) {\n                gcd_value = gcd(gcd_value, subsequence[i]);\n            }\n            int useful = count_prime_factors(gcd_value) * length;\n            max_useful = max_useful > useful ? max_useful : useful;\n        }\n        printf(\"%d\\n\", max_useful);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#include <vector>\nusing namespace std;\nconst int MAX = 100005;\nbool sieve[MAX];\nvoid sieve_of_eratosthenes() {\n    for (int i = 2; i * i < MAX; i++) {\n        if (!sieve[i]) {\n            for (int j = i * i; j < MAX; j += i) {\n                sieve[j] = true;\n            }\n        }\n    }\n}\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint count_prime_factors(int n) {\n    int count = 0;\n    for (int i = 2; i * i <= n; i++) {\n        if (!sieve[i] && n % i == 0) {\n            count++;\n            while (n % i == 0) n /= i;\n        }\n    }\n    if (n > 1) count++;\n    return count;\n}\nint main() {\n    int T;\n    cin >> T;\n    sieve_of_eratosthenes();\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<int> A(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        int max_useful = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            vector<int> subsequence;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    subsequence.push_back(A[i]);\n                }\n            }\n            if (subsequence.empty()) continue;\n            int gcd_value = subsequence[0];\n            for (int i = 1; i < subsequence.size(); i++) {\n                gcd_value = gcd(gcd_value, subsequence[i]);\n            }\n            int useful = count_prime_factors(gcd_value) * subsequence.size();\n            max_useful = max(max_useful, useful);\n        }\n        cout << max_useful << endl;\n    }\n    return 0;\n}",

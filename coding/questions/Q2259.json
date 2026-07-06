@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Frobenius Coin Problem",
       "GCD",
-      "Modular Arithmetic"
+      "Frobenius Coin Problem",
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -119,7 +120,7 @@
   "solution": {
     "approach": "The problem can be solved by first calculating the Frobenius number for the given glass capacities. The Frobenius number is the largest amount that cannot be obtained using the given glass capacities. We can then iterate over the queries and check if each query amount can be obtained by checking if it is greater than the Frobenius number and if it is a multiple of the GCD of the glass capacities.",
     "timeComplexity": "O(T * n * Q) per test case, O(T * n * Q) total. The time complexity is dominated by the calculation of the Frobenius number and the iteration over the queries.",
-    "spaceComplexity": "O(n) — the dominant structure is the array of glass capacities.",
+    "spaceComplexity": "O(n) \u2014 the dominant structure is the array of glass capacities.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\n// Function to calculate GCD\nint gcd(int a, int b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\n\n// Function to calculate Frobenius number\nint frobenius(int* arr, int n) {\n    int g = arr[0];\n    for (int i = 1; i < n; i++)\n        g = gcd(g, arr[i]);\n    return g;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        int* arr = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++)\n            scanf(\"%d\", &arr[i]);\n        int Q;\n        scanf(\"%d\", &Q);\n        int a, b, c;\n        scanf(\"%d %d %d\", &a, &b, &c);\n        int g = frobenius(arr, n);\n        int max = -1;\n        for (int i = 1; i <= Q; i++) {\n            int Mi = (a * i + b) % c;\n            if (Mi % g != 0 && Mi > max) {\n                max = Mi;\n            }\n        }\n        printf(\"%d\\n\", max);\n        int A = 0, B = 0;\n        for (int i = 1; i <= Q; i++) {\n            int Mi = (a * i + b) % c;\n            if (Mi % g != 0)\n                A++;\n            else\n                B++;\n        }\n        printf(\"%d %d\\n\", A, B);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\n// Function to calculate GCD\nint gcd(int a, int b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\n\n// Function to calculate Frobenius number\nint frobenius(vector<int>& arr) {\n    int g = arr[0];\n    for (int i = 1; i < arr.size(); i++)\n        g = gcd(g, arr[i]);\n    return g;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        vector<int> arr(n);\n        for (int i = 0; i < n; i++)\n            cin >> arr[i];\n        int Q;\n        cin >> Q;\n        int a, b, c;\n        cin >> a >> b >> c;\n        int g = frobenius(arr);\n        int max = -1;\n        for (int i = 1; i <= Q; i++) {\n            int Mi = (a * i + b) % c;\n            if (Mi % g != 0 && Mi > max) {\n                max = Mi;\n            }\n        }\n        cout << max << endl;\n        int A = 0, B = 0;\n        for (int i = 1; i <= Q; i++) {\n            int Mi = (a * i + b) % c;\n            if (Mi % g != 0)\n                A++;\n            else\n                B++;\n        }\n        cout << A << \" \" << B << endl;\n    }\n    return 0;\n}",

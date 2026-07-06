@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Circles",
       "Squares",
-      "Expected Value",
-      "Random Selection"
+      "Math",
+      "Circles",
+      "Random Selection",
+      "Expected Value"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,7 +22,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chota pendrive (one of the deadliest coders) is the right hand of Farzi coder. He is really fond of circles and squares. One day he saw this problem and solved it. But he is not very sure if he correctly solved it. Can you help him in verifying the answer.\n\nThe problem looks like:\n\nThere is a grid of size **N x M**, there are **C** unit radii circles with integer center coordinates ((x₀, y₀), (x₁, y₁) .... (xc-1, yc-1)) on the grid. Choose any square portion of that grid with side length **A** such that the sides of the square are parallel to the sides of the grid, corners of this square must be inside or on the boundary of the grid and their coordinates are integers. Find the expected area covered by circles inside that square if you were to choose such a square randomly on the grid. Answer must be correct up to 6 places of decimal.\n\n\nInput Format\nFirst line will contain **N**, **M**, **A**, and **C** i.e number of rows, number of columns, side of the square and total number of circles respectively.\n\n\nNext **C** lines contains coordinates of center of circles.\n\n\n\nOutput Format\nOne line containing expected area covered by circles correct up to 6 places of decimal.",
+    "problemStatement": "Chota pendrive (one of the deadliest coders) is the right hand of Farzi coder. He is really fond of circles and squares. One day he saw this problem and solved it. But he is not very sure if he correctly solved it. Can you help him in verifying the answer.\n\nThe problem looks like:\n\nThere is a grid of size **N x M**, there are **C** unit radii circles with integer center coordinates ((x\u2080, y\u2080), (x\u2081, y\u2081) .... (xc-1, yc-1)) on the grid. Choose any square portion of that grid with side length **A** such that the sides of the square are parallel to the sides of the grid, corners of this square must be inside or on the boundary of the grid and their coordinates are integers. Find the expected area covered by circles inside that square if you were to choose such a square randomly on the grid. Answer must be correct up to 6 places of decimal.\n\n\nInput Format\nFirst line will contain **N**, **M**, **A**, and **C** i.e number of rows, number of columns, side of the square and total number of circles respectively.\n\n\nNext **C** lines contains coordinates of center of circles.\n\n\n\nOutput Format\nOne line containing expected area covered by circles correct up to 6 places of decimal.",
     "constraints": [
       "1 <= N, M, C <= 100000",
       "1 <= A <= min(N, M)",
@@ -117,8 +118,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the expected area covered by circles inside a randomly chosen square. We can do this by iterating over all possible squares of side length A in the grid, calculating the area covered by circles in each square, and then taking the average of these areas. The area covered by a circle in a square can be calculated using the formula for the area of a circle segment.",
-    "timeComplexity": "O(N * M * A * C) — because we are iterating over all possible squares and all circles for each square",
-    "spaceComplexity": "O(1) — because we are not using any additional space that scales with input size",
+    "timeComplexity": "O(N * M * A * C) \u2014 because we are iterating over all possible squares and all circles for each square",
+    "spaceComplexity": "O(1) \u2014 because we are not using any additional space that scales with input size",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint main() {\n    int N, M, A, C;\n    scanf(\"%d %d %d %d\", &N, &M, &A, &C);\n    int x[C], y[C];\n    for (int i = 0; i < C; i++) {\n        scanf(\"%d %d\", &x[i], &y[i]);\n    }\n    double totalArea = 0;\n    int totalSquares = 0;\n    for (int i = 0; i <= N - A; i++) {\n        for (int j = 0; j <= M - A; j++) {\n            double squareArea = 0;\n            for (int k = 0; k < C; k++) {\n                if (x[k] >= i && x[k] < i + A && y[k] >= j && y[k] < j + A) {\n                    double dx = x[k] - i;\n                    double dy = y[k] - j;\n                    double distance = sqrt(dx * dx + dy * dy);\n                    if (distance <= 1) {\n                        squareArea += M_PI / 4;\n                    } else if (distance <= A / 2) {\n                        double angle = acos(1 / distance);\n                        squareArea += (angle - sin(2 * angle) / 2) * 1 * 1;\n                    }\n                }\n            }\n            totalArea += squareArea;\n            totalSquares++;\n        }\n    }\n    printf(\"%.6f\\n\", totalArea / totalSquares);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    int N, M, A, C;\n    cin >> N >> M >> A >> C;\n    int x[C], y[C];\n    for (int i = 0; i < C; i++) {\n        cin >> x[i] >> y[i];\n    }\n    double totalArea = 0;\n    int totalSquares = 0;\n    for (int i = 0; i <= N - A; i++) {\n        for (int j = 0; j <= M - A; j++) {\n            double squareArea = 0;\n            for (int k = 0; k < C; k++) {\n                if (x[k] >= i && x[k] < i + A && y[k] >= j && y[k] < j + A) {\n                    double dx = x[k] - i;\n                    double dy = y[k] - j;\n                    double distance = sqrt(dx * dx + dy * dy);\n                    if (distance <= 1) {\n                        squareArea += M_PI / 4;\n                    } else if (distance <= A / 2) {\n                        double angle = acos(1 / distance);\n                        squareArea += (angle - sin(2 * angle) / 2) * 1 * 1;\n                    }\n                }\n            }\n            totalArea += squareArea;\n            totalSquares++;\n        }\n    }\n    cout << fixed;\n    cout.precision(6);\n    cout << totalArea / totalSquares << endl;\n    return 0;\n}",

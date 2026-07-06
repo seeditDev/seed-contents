@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Yalalovichik strings",
-      "Substrings",
-      "Subsequences"
+      "Subsequences",
+      "Strings",
+      "Substrings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,7 +29,7 @@
       "S contains only lowercase English letters"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N = |S|. The second line contains the string S.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of distinct Yalalovichik substrings of S.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of distinct Yalalovichik substrings of S.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to generate all possible substrings of the given string S and check if each substring is a Yalalovichik string. A string is a Yalalovichik string if the set of all its distinct non-empty substrings is equal to the set of all its distinct non-empty subsequences. We can use a brute force approach to generate all substrings and subsequences, and then compare the two sets. If they are equal, the substring is a Yalalovichik string.",
-    "timeComplexity": "O(T * N^3) — for each test case, we generate all substrings (O(N^2)) and for each substring, we generate all subsequences (O(2^N)) and compare the two sets (O(N^2))",
-    "spaceComplexity": "O(N^2) — we need to store all substrings and subsequences",
+    "timeComplexity": "O(T * N^3) \u2014 for each test case, we generate all substrings (O(N^2)) and for each substring, we generate all subsequences (O(2^N)) and compare the two sets (O(N^2))",
+    "spaceComplexity": "O(N^2) \u2014 we need to store all substrings and subsequences",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdbool.h>\n#define MAXN 1000005\n\nint T, N;\nchar S[MAXN];\n\nbool isYalalovichik(char *s) {\n    int len = strlen(s);\n    for (int i = 0; i < len; i++) {\n        for (int j = i + 1; j <= len; j++) {\n            char sub[j - i];\n            strncpy(sub, s + i, j - i);\n            sub[j - i] = '\\0';\n            bool found = false;\n            for (int mask = 1; mask < (1 << len); mask++) {\n                char subseq[j - i];\n                int k = 0;\n                for (int l = 0; l < len; l++) {\n                    if ((mask & (1 << l))) {\n                        subseq[k++] = s[l];\n                    }\n                }\n                subseq[k] = '\\0';\n                if (strcmp(sub, subseq) == 0) {\n                    found = true;\n                    break;\n                }\n            }\n            if (!found) return false;\n        }\n    }\n    return true;\n}\n\nint main() {\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        scanf(\"%s\", S);\n        int count = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j <= N; j++) {\n                char sub[j - i];\n                strncpy(sub, S + i, j - i);\n                sub[j - i] = '\\0';\n                if (isYalalovichik(sub)) count++;\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint T, N;\nstring S;\n\nbool isYalalovichik(string s) {\n    int len = s.length();\n    for (int i = 0; i < len; i++) {\n        for (int j = i + 1; j <= len; j++) {\n            string sub = s.substr(i, j - i);\n            bool found = false;\n            for (int mask = 1; mask < (1 << len); mask++) {\n                string subseq;\n                for (int l = 0; l < len; l++) {\n                    if ((mask & (1 << l))) {\n                        subseq += s[l];\n                    }\n                }\n                if (sub == subseq) {\n                    found = true;\n                    break;\n                }\n            }\n            if (!found) return false;\n        }\n    }\n    return true;\n}\n\nint main() {\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        cin >> S;\n        int count = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j <= N; j++) {\n                string sub = S.substr(i, j - i);\n                if (isYalalovichik(sub)) count++;\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

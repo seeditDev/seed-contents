@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Shortest Path",
+      "DFS",
+      "Graphs",
       "BFS",
-      "DFS"
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "With the impressive achievement in competitive programming Jem was offered an internship at IBER - a tech company that provides an alternative to tradditional taxi service.\n\n\n\nJem first task was help IBER quickly calculate the distance between two arbitrary locations in Jem's city. As an experienced competitive programmer Jem understand that this is not a trivial problem with general graph. Fortunately after investigate the city map Jem found out that the roads system is have a special form which may make Jem's problem easier to deal with.\n\n\n\nThere are **N** locations in the city and **M** bidirectional road connecting them. Each road **i** have the length of **Ci** and no two road connect the same pair of locations. The roads system is designed in a way that from a specific location one can travel to any other locations. The most important point is that there is no location belong to more than one cycle in the graph corresponding to road network.\n\n\n\nSo Jem already got his solution. If you want to secure an internship at IBER maybe you can try to solve this problem too!",
     "constraints": [
-      "2 ≤ N ≤ 10^5",
-      "1 ≤ M ≤ 2 × 10^5",
-      "1 ≤ Q ≤ 10^5",
-      "1 ≤ c ≤ 10^4"
+      "2 \u2264 N \u2264 10^5",
+      "1 \u2264 M \u2264 2 \u00d7 10^5",
+      "1 \u2264 Q \u2264 10^5",
+      "1 \u2264 c \u2264 10^4"
     ],
     "inputFormat": "The first line contains two integers N and M, representing the number of locations and roads. The next M lines contain three integers u, v, and c, representing a road of length c connecting locations u and v. The next line contains a single integer Q, representing the number of queries. The next Q lines contain two integers u and v, representing a query for the length of the shortest path between locations u and v.",
     "outputFormat": "For each query, print the length of the shortest path between the two locations on a new line.",
@@ -109,8 +110,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal algorithm such as BFS or DFS to find the shortest path between two locations. We can represent the graph as an adjacency list, where each location is a node and the roads are edges between the nodes. We can then use a queue or stack to traverse the graph and find the shortest path.",
-    "timeComplexity": "O(M + N + Q * (M + N)) — the time complexity is dominated by the graph traversal algorithm, which takes O(M + N) time in the worst case. We also need to consider the time complexity of the queue or stack operations, which takes O(Q * (M + N)) time in the worst case.",
-    "spaceComplexity": "O(M + N) — the space complexity is dominated by the graph representation, which takes O(M + N) space in the worst case.",
+    "timeComplexity": "O(M + N + Q * (M + N)) \u2014 the time complexity is dominated by the graph traversal algorithm, which takes O(M + N) time in the worst case. We also need to consider the time complexity of the queue or stack operations, which takes O(Q * (M + N)) time in the worst case.",
+    "spaceComplexity": "O(M + N) \u2014 the space complexity is dominated by the graph representation, which takes O(M + N) space in the worst case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n#define MAX_N 100005\n#define MAX_M 200005\n#define MAX_Q 100005\n#define INF INT_MAX\n\nint n, m, q;\nint u[MAX_M], v[MAX_M], c[MAX_M];\nint dist[MAX_N];\nint queue[MAX_N];\nint front, rear;\n\nvoid bfs(int start) {\n    for (int i = 1; i <= n; i++) {\n        dist[i] = INF;\n    }\n    dist[start] = 0;\n    front = rear = 0;\n    queue[rear++] = start;\n    while (front < rear) {\n        int current = queue[front++];\n        for (int i = 0; i < m; i++) {\n            if (u[i] == current || v[i] == current) {\n                int next = (u[i] == current) ? v[i] : u[i];\n                if (dist[next] > dist[current] + c[i]) {\n                    dist[next] = dist[current] + c[i];\n                    queue[rear++] = next;\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    scanf(\"%d %d\", &n, &m);\n    for (int i = 0; i < m; i++) {\n        scanf(\"%d %d %d\", &u[i], &v[i], &c[i]);\n    }\n    scanf(\"%d\", &q);\n    for (int i = 0; i < q; i++) {\n        int start, end;\n        scanf(\"%d %d\", &start, &end);\n        bfs(start);\n        printf(\"%d\\n\", dist[end]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <vector>\n#include <limits>\nusing namespace std;\n\nconst int MAX_N = 100005;\nconst int MAX_M = 200005;\nconst int MAX_Q = 100005;\nconst int INF = numeric_limits<int>::max();\n\nint n, m, q;\nvector<pair<int, int>> adj[MAX_N];\n\nvoid bfs(int start, int dist[]) {\n    for (int i = 1; i <= n; i++) {\n        dist[i] = INF;\n    }\n    dist[start] = 0;\n    queue<int> q;\n    q.push(start);\n    while (!q.empty()) {\n        int current = q.front();\n        q.pop();\n        for (auto &edge : adj[current]) {\n            int next = edge.first;\n            int weight = edge.second;\n            if (dist[next] > dist[current] + weight) {\n                dist[next] = dist[current] + weight;\n                q.push(next);\n            }\n        }\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    for (int i = 0; i < m; i++) {\n        int u, v, c;\n        cin >> u >> v >> c;\n        adj[u].push_back({v, c});\n        adj[v].push_back({u, c});\n    }\n    cin >> q;\n    for (int i = 0; i < q; i++) {\n        int start, end;\n        cin >> start >> end;\n        int dist[MAX_N];\n        bfs(start, dist);\n        cout << dist[end] << endl;\n    }\n    return 0;\n}",

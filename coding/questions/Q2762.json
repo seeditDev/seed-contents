@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has an integer sequence **a1**, **a2**, ..., **aN** of size **N**, where all the elements of the sequence are **0** initially. Chef also has **M** segments, here the **i**th one is **[Li, Ri]**. He wants to create new sequences using the following operation:\n\n\nIn a single operation, he picks a segment from the **M** segments. Let the chosen segment be **[s, t]**.\nThen flip the all elements from **s**th to **t**th elements, namely, **ai** is changed to **1 − ai** for all **s ≤ i ≤ t**.\nChef can perform the operation as many times as Chef likes. Chef wants to know how many different sequences Chef can make. Since the answer can be very large, please print it modulo **1000000007 (109+7)**.",
+    "problemStatement": "Chef has an integer sequence **a1**, **a2**, ..., **aN** of size **N**, where all the elements of the sequence are **0** initially. Chef also has **M** segments, here the **i**th one is **[Li, Ri]**. He wants to create new sequences using the following operation:\n\n\nIn a single operation, he picks a segment from the **M** segments. Let the chosen segment be **[s, t]**.\nThen flip the all elements from **s**th to **t**th elements, namely, **ai** is changed to **1 \u2212 ai** for all **s \u2264 i \u2264 t**.\nChef can perform the operation as many times as Chef likes. Chef wants to know how many different sequences Chef can make. Since the answer can be very large, please print it modulo **1000000007 (109+7)**.",
     "constraints": [
       "1 <= N, M <= 100000 (10^5)",
       "1 <= Li <= Ri <= N"
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved by iterating over each position in the sequence and checking how many segments cover that position. If a position is covered by at least one segment, it can be either 0 or 1, resulting in two possibilities. The total number of possible sequences is the product of the number of possibilities for each position.",
     "timeComplexity": "O(N * M) per test case, O(T * N * M) total.",
-    "spaceComplexity": "O(M) — for storing the segments.",
+    "spaceComplexity": "O(M) \u2014 for storing the segments.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int **segments = (int **)malloc(M * sizeof(int *));\n        for (int i = 0; i < M; i++) {\n            segments[i] = (int *)malloc(2 * sizeof(int));\n            scanf(\"%d %d\", &segments[i][0], &segments[i][1]);\n        }\n        int result = 1;\n        for (int i = 0; i < N; i++) {\n            int count = 0;\n            for (int j = 0; j < M; j++) {\n                if (segments[j][0] - 1 <= i && i <= segments[j][1] - 1) {\n                    count++;\n                }\n            }\n            if (count > 0) {\n                result = (result * 2) % MOD;\n            }\n        }\n        printf(\"%d\\n\", result);\n        for (int i = 0; i < M; i++) {\n            free(segments[i]);\n        }\n        free(segments);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 1000000007\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        vector<vector<int>> segments(M, vector<int>(2));\n        for (int i = 0; i < M; i++) {\n            cin >> segments[i][0] >> segments[i][1];\n        }\n        int result = 1;\n        for (int i = 0; i < N; i++) {\n            int count = 0;\n            for (int j = 0; j < M; j++) {\n                if (segments[j][0] - 1 <= i && i <= segments[j][1] - 1) {\n                    count++;\n                }\n            }\n            if (count > 0) {\n                result = (result * 2) % MOD;\n            }\n        }\n        cout << result << endl;\n    }\n    return 0;\n}",

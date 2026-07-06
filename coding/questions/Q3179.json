@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Graph Traversal",
+      "Graphs",
       "BFS",
       "Capital Movement"
     ],
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "Chef is playing a video game. In a video game, there's a advanced civilization that has a total of **N** planets under control. All of those planets are connected with **N-1** teleports in such a way, that it's possible to travel between any two planets using those teleports.\n\nThere's a chance that some planet gets infected. In this case it takes 24 hours for civilization to find out infection and prevent it from spreading. During this time infection uses teleport one time and infect all the planets that can be achieved in one teleport jump. So, once infection is detected at planet **V**, scientists already know that all planets connected to **V** via teleport are also infected. All the neccessary teleports are disabled right away and medics start working on eliminating the infection.\n\nEach planet has population. Planets are numbered from **1** to **N** and their populations are **P1**, **P2**, ..., **PN**. It is known that all the **Pi** are distinct.\n\nThere's a capital among all those planets. The capital is known to have the biggest population.\n\nOnce infection is detected at planet **V**, after disabling teleports on planet **V** and all connected to them, government has to establish a new capital if needed in the remaining not-infected planets. So, they list all the planets that are not connected to **V** and are not **V**. Then they pick the planet with biggest population. Your task is to find the number of this planet for every possible **V**.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 50000",
-      "1 ≤ Pi ≤ 10^9",
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 50000",
+      "1 \u2264 Pi \u2264 10^9",
       "All Pi are distinct",
-      "1 ≤ V ≤ N",
-      "1 ≤ U ≤ N"
+      "1 \u2264 V \u2264 N",
+      "1 \u2264 U \u2264 N"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains one integer N. Next line contains N space-separated integers P1, P2, ..., PN denoting the population of each planet. Next N-1 lines contain two space-separated integers each V and U denoting that there's a teleport between planet V and U.",
     "outputFormat": "For each test case, output a single line containing N integers A1, A2, ..., AN separated by a space. Here Ai denotes the number of the planet picked to be new capital in case infection starts spreading from the planet i. In case infection affects all the planets output 0.",
@@ -105,8 +106,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal approach. We will create an adjacency list representation of the graph and then perform a BFS traversal from each planet to find the new capital in case of infection. We will keep track of the maximum population planet that is not infected and output its index as the new capital.",
-    "timeComplexity": "O(T * N^2) — explain: per query is O(N^2), total is O(T * N^2)",
-    "spaceComplexity": "O(N) — explain what dominates",
+    "timeComplexity": "O(T * N^2) \u2014 explain: per query is O(N^2), total is O(T * N^2)",
+    "spaceComplexity": "O(N) \u2014 explain what dominates",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 50000\n#define INF 1000000000\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T, N, i, j, k, x, y, max, max_index;\n    int *P, *A;\n    int **G;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        P = (int*)malloc(N * sizeof(int));\n        A = (int*)malloc(N * sizeof(int));\n        G = (int**)malloc(N * sizeof(int*));\n        for (i = 0; i < N; i++) {\n            scanf(\"%d\", &P[i]);\n            G[i] = (int*)malloc(2 * sizeof(int));\n            G[i][0] = G[i][1] = 0;\n        }\n        for (i = 0; i < N - 1; i++) {\n            scanf(\"%d %d\", &x, &y);\n            G[x - 1][G[x - 1][0]++] = y - 1;\n            G[y - 1][G[y - 1][0]++] = x - 1;\n        }\n        for (i = 0; i < N; i++) {\n            max = -INF;\n            max_index = 0;\n            for (j = 0; j < N; j++) {\n                if (i != j) {\n                    int *visited = (int*)malloc(N * sizeof(int));\n                    for (k = 0; k < N; k++) {\n                        visited[k] = 0;\n                    }\n                    int queue[N], front = 0, rear = 0;\n                    queue[rear++] = i;\n                    visited[i] = 1;\n                    while (front < rear) {\n                        x = queue[front++];\n                        for (k = 0; k < G[x][0]; k++) {\n                            if (!visited[G[x][k]]) {\n                                queue[rear++] = G[x][k];\n                                visited[G[x][k]] = 1;\n                            }\n                        }\n                    }\n                    if (!visited[j] && P[j] > max) {\n                        max = P[j];\n                        max_index = j + 1;\n                    }\n                    free(visited);\n                }\n            }\n            A[i] = max_index;\n        }\n        for (i = 0; i < N; i++) {\n            printf(\"%d \", A[i]);\n        }\n        printf(\"\\n\");\n        free(P);\n        free(A);\n        for (i = 0; i < N; i++) {\n            free(G[i]);\n        }\n        free(G);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int T, N, i, j, k, x, y, max, max_index;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        vector<int> P(N), A(N);\n        vector<vector<int>> G(N);\n        for (i = 0; i < N; i++) {\n            cin >> P[i];\n        }\n        for (i = 0; i < N - 1; i++) {\n            cin >> x >> y;\n            G[x - 1].push_back(y - 1);\n            G[y - 1].push_back(x - 1);\n        }\n        for (i = 0; i < N; i++) {\n            max = -1000000000;\n            max_index = 0;\n            for (j = 0; j < N; j++) {\n                if (i != j) {\n                    vector<int> visited(N, 0);\n                    queue<int> q;\n                    q.push(i);\n                    visited[i] = 1;\n                    while (!q.empty()) {\n                        x = q.front();\n                        q.pop();\n                        for (k = 0; k < G[x].size(); k++) {\n                            if (!visited[G[x][k]]) {\n                                q.push(G[x][k]);\n                                visited[G[x][k]] = 1;\n                            }\n                        }\n                    }\n                    if (!visited[j] && P[j] > max) {\n                        max = P[j];\n                        max_index = j + 1;\n                    }\n                }\n            }\n            A[i] = max_index;\n        }\n        for (i = 0; i < N; i++) {\n            cout << A[i] << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Prefix Sum",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Prefix Sum",
       "Counting",
-      "Linear Scan"
+      "Linear Scan",
+      "Prefix Sum",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has binary string AAA of length NNN. He constructs a new binary string BBB by concatenating MMM copies of AAA together. For example, if A=\"10010\"A = \\texttt{\"10010\"}A=\"10010\", M=3M = 3M=3, then B=\"100101001010010\"B = \\texttt{\"100101001010010\"}B=\"100101001010010\".\n\nChef calls an index iii (1≤i≤N⋅M)(1 \\le i \\le N \\cdot M)(1≤i≤N⋅M) good if:\n\n\nprefi=sufi+1pref_i = suf_{i + 1}prefi​=sufi+1​.\nHere, prefj=B1+B2+…+Bjpref_j = B_1 + B_2 + \\ldots + B_jprefj​=B1​+B2​+…+Bj​ and\nsufj=Bj+Bj+1+…+BN⋅Msuf_j = B_{j} + B_{j + 1} + \\ldots + B_{N \\cdot M}sufj​=Bj​+Bj+1​+…+BN⋅M​ (Note that sufN⋅M+1=0suf_{N \\cdot M + 1} = 0sufN⋅M+1​=0 by definition)\n\nChef wants to find the number of good indices in BBB. Can you help him do so?\n\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases. Then the test cases follow.\nThe first line of each test case contains two space-separated integers NNN and MMM — the length of the binary string AAA and the number of times AAA is concatenated to form BBB.\nThe second line of each test case contains a binary string AAA of length NNN containing 000s and 111s only.\n\n\nOutput Format\nFor each test case, output the number of good indices in BBB.",
+    "problemStatement": "Chef has binary string AAA of length NNN. He constructs a new binary string BBB by concatenating MMM copies of AAA together. For example, if A=\"10010\"A = \\texttt{\"10010\"}A=\"10010\", M=3M = 3M=3, then B=\"100101001010010\"B = \\texttt{\"100101001010010\"}B=\"100101001010010\".\n\nChef calls an index iii (1\u2264i\u2264N\u22c5M)(1 \\le i \\le N \\cdot M)(1\u2264i\u2264N\u22c5M) good if:\n\n\nprefi=sufi+1pref_i = suf_{i + 1}prefi\u200b=sufi+1\u200b.\nHere, prefj=B1+B2+\u2026+Bjpref_j = B_1 + B_2 + \\ldots + B_jprefj\u200b=B1\u200b+B2\u200b+\u2026+Bj\u200b and\nsufj=Bj+Bj+1+\u2026+BN\u22c5Msuf_j = B_{j} + B_{j + 1} + \\ldots + B_{N \\cdot M}sufj\u200b=Bj\u200b+Bj+1\u200b+\u2026+BN\u22c5M\u200b (Note that sufN\u22c5M+1=0suf_{N \\cdot M + 1} = 0sufN\u22c5M+1\u200b=0 by definition)\n\nChef wants to find the number of good indices in BBB. Can you help him do so?\n\n\nInput Format\n\nThe first line contains a single integer TTT \u2014 the number of test cases. Then the test cases follow.\nThe first line of each test case contains two space-separated integers NNN and MMM \u2014 the length of the binary string AAA and the number of times AAA is concatenated to form BBB.\nThe second line of each test case contains a binary string AAA of length NNN containing 000s and 111s only.\n\n\nOutput Format\nFor each test case, output the number of good indices in BBB.",
     "constraints": [
       "1 <= T <= 10^5",
       "1 <= N, M <= 10^5",
-      "The sum of N over all test cases does not exceed 2·10^5",
-      "The sum of M over all test cases does not exceed 2·10^5",
+      "The sum of N over all test cases does not exceed 2\u00b710^5",
+      "The sum of M over all test cases does not exceed 2\u00b710^5",
       "A consists only of characters '0' and '1'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers N and M. The second line contains a binary string A of length N.",
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "Let onesA be the number of '1's in A. The total number of '1's in B is totalOnes = M * onesA. An index i is good iff pref_i = suf_{i+1}. Since suf_{i+1} = totalOnes - pref_i, the condition becomes 2 * pref_i = totalOnes. Hence a good index exists only when totalOnes is even and pref_i equals target = totalOnes / 2. For each position j inside one copy of A we know prefixA_j (number of '1's up to j in A). The prefix sum at the global position i that corresponds to the j‑th character of the (c+1)-th copy is c * onesA + prefixA_j, where c is the number of complete copies before this copy (0 ≤ c < M). We need c * onesA + prefixA_j = target. For each j we solve c = (target - prefixA_j) / onesA. If onesA = 0, totalOnes = 0, target = 0 and every index is good, answer = N * M. Otherwise, for each j we check whether (target - prefixA_j) is non‑negative, divisible by onesA and the resulting c lies in [0, M‑1]. The number of j satisfying this is the answer. The algorithm runs in O(N) per test case.",
-    "timeComplexity": "O(N) per test case, where N is the length of A. Overall O(sum of N) ≤ 2·10^5.",
+    "approach": "Let onesA be the number of '1's in A. The total number of '1's in B is totalOnes = M * onesA. An index i is good iff pref_i = suf_{i+1}. Since suf_{i+1} = totalOnes - pref_i, the condition becomes 2 * pref_i = totalOnes. Hence a good index exists only when totalOnes is even and pref_i equals target = totalOnes / 2. For each position j inside one copy of A we know prefixA_j (number of '1's up to j in A). The prefix sum at the global position i that corresponds to the j\u2011th character of the (c+1)-th copy is c * onesA + prefixA_j, where c is the number of complete copies before this copy (0 \u2264 c < M). We need c * onesA + prefixA_j = target. For each j we solve c = (target - prefixA_j) / onesA. If onesA = 0, totalOnes = 0, target = 0 and every index is good, answer = N * M. Otherwise, for each j we check whether (target - prefixA_j) is non\u2011negative, divisible by onesA and the resulting c lies in [0, M\u20111]. The number of j satisfying this is the answer. The algorithm runs in O(N) per test case.",
+    "timeComplexity": "O(N) per test case, where N is the length of A. Overall O(sum of N) \u2264 2\u00b710^5.",
     "spaceComplexity": "O(1) extra space besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,M; scanf(\"%d %d\",&N,&M);\n        char A[100005]; scanf(\"%s\",A);\n        long long onesA=0; for(int i=0;i<N;i++) if(A[i]=='1') onesA++;\n        long long totalOnes = onesA * (long long)M;\n        if(onesA==0){\n            printf(\"%lld\\n\", (long long)N * M);\n            continue;\n        }\n        if(totalOnes % 2){\n            printf(\"0\\n\");\n            continue;\n        }\n        long long target = totalOnes/2;\n        long long pref=0; long long ans=0;\n        for(int i=0;i<N;i++){\n            if(A[i]=='1') pref++;\n            long long diff = target - pref;\n            if(diff>=0 && diff % onesA == 0){\n                long long c = diff / onesA;\n                if(c >= 0 && c < M) ans++;\n            }\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

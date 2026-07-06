@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "GCD",
-      "Divisor Counting",
       "Summation of floor division",
-      "Mathematical reduction"
+      "GCD",
+      "Mathematical reduction",
+      "Math",
+      "Divisor Counting"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,17 +24,17 @@
   "content": {
     "problemStatement": "Given an integer **N**. Integers **A** and **B** are chosen randomly in the range **[1..N]**. Calculate the probability that the Greatest Common Divisor(GCD) of **A** and **B** equals to **B**.",
     "constraints": [
-      "1 ≤ T ≤ 10^3",
-      "1 ≤ N ≤ 10^9"
+      "1 \u2264 T \u2264 10^3",
+      "1 \u2264 N \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10^3), the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 10^9).",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10^3), the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 10^9).",
     "outputFormat": "For each test case output the probability that gcd(A, B) = B as a reduced fraction \"P/Q\" on its own line, where P and Q are coprime positive integers.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n1\n2\n3",
         "output": "1/1\n3/4\n5/9",
-        "explanation": "For each N, the numerator is Σ_{i=1..N} floor(N/i). N=1 → 1, denominator 1 → 1/1. N=2 → floor(2/1)+floor(2/2)=2+1=3, denominator 4 → 3/4. N=3 → 3+1+1=5, denominator 9 → 5/9."
+        "explanation": "For each N, the numerator is \u03a3_{i=1..N} floor(N/i). N=1 \u2192 1, denominator 1 \u2192 1/1. N=2 \u2192 floor(2/1)+floor(2/2)=2+1=3, denominator 4 \u2192 3/4. N=3 \u2192 3+1+1=5, denominator 9 \u2192 5/9."
       },
       {
         "id": "sample_2",
@@ -45,7 +46,7 @@
         "id": "sample_3",
         "input": "1\n12",
         "output": "35/144",
-        "explanation": "N=12: Σ floor(12/i)=35, denominator=144, fraction already in lowest terms."
+        "explanation": "N=12: \u03a3 floor(12/i)=35, denominator=144, fraction already in lowest terms."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed B, gcd(A,B)=B iff B divides A. The number of A in [1..N] divisible by B is floor(N/B). Therefore the total number of favorable ordered pairs (A,B) is S = Σ_{B=1..N} floor(N/B). The total number of ordered pairs is N^2. The required probability is S / N^2, reduced by dividing numerator and denominator by their greatest common divisor. Computing S naively is O(N) which is too slow for N up to 1e9. The sum can be evaluated in O(√N) by grouping equal values of floor(N/i): for a current i, let q = N / i, then all i in [i, N/q] have the same floor value q. Add q * (next - i + 1) to the sum and jump i to next+1. This runs in about 2·√N iterations. Finally compute g = gcd(S, N^2) and output (S/g)/(N^2/g).",
-    "timeComplexity": "O(√N) per test case",
+    "approach": "For a fixed B, gcd(A,B)=B iff B divides A. The number of A in [1..N] divisible by B is floor(N/B). Therefore the total number of favorable ordered pairs (A,B) is S = \u03a3_{B=1..N} floor(N/B). The total number of ordered pairs is N^2. The required probability is S / N^2, reduced by dividing numerator and denominator by their greatest common divisor. Computing S naively is O(N) which is too slow for N up to 1e9. The sum can be evaluated in O(\u221aN) by grouping equal values of floor(N/i): for a current i, let q = N / i, then all i in [i, N/q] have the same floor value q. Add q * (next - i + 1) to the sum and jump i to next+1. This runs in about 2\u00b7\u221aN iterations. Finally compute g = gcd(S, N^2) and output (S/g)/(N^2/g).",
+    "timeComplexity": "O(\u221aN) per test case",
     "spaceComplexity": "O(1) additional space",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic uint64_t gcd_uint64(uint64_t a, uint64_t b) {\n    while (b) {\n        uint64_t t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t N;\n        scanf(\"%llu\", &N);\n        uint64_t sum = 0;\n        uint64_t i = 1;\n        while (i <= N) {\n            uint64_t q = N / i;\n            uint64_t next = N / q;\n            sum += q * (next - i + 1);\n            i = next + 1;\n        }\n        uint64_t den = N * N;\n        uint64_t g = gcd_uint64(sum, den);\n        printf(\"%llu/%llu\\n\", sum / g, den / g);\n    }\n    return 0;\n}",

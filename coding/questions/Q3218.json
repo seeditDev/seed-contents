@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Leaf Nodes",
+      "Graphs",
       "Tree",
       "Indegree",
-      "Leaf Nodes",
       "Simple Counting"
     ],
     "companyTags": [],
@@ -23,13 +24,13 @@
   "content": {
     "problemStatement": "Chef is a private detective. He was asked to investigate a case of murder in the city of Frangton.\n\nChef arrived in Frangton to find out that the mafia was involved in the case. Chef spent some time watching for people that belong to the clan and was able to build a map of relationships between them. He knows that a mafia's organizational structure consists of a single Don, heading a hierarchical criminal organization. Each member reports exactly to one other member of the clan. It's obvious that there are no cycles in the reporting system of the mafia.\n\nThere are **N** people in the clan, for simplicity indexed from **1** to **N**, and Chef knows who each of them report to. Member **i** reports to member **Ri**.\n\nNow, Chef needs to identfy all potential killers to continue his investigation. Having considerable knowledge about the mafia's activities, Chef knows that the killer must be a minor criminal, that is, one of the members who nobody reports to. Please find the list of potential killers for Chef. Since Don reports to nobody, his **Ri** will be equal to **0**.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 100000",
-      "0 ≤ Ri ≤ N",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 100000",
+      "0 \u2264 Ri \u2264 N",
       "Exactly one i has Ri = 0 (the Don).",
       "The reporting structure forms a rooted tree (no cycles)."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with an integer N, the number of members.\n- A line with N space‑separated integers R1,R2,…,RN where Ri is the member to whom i reports (Ri = 0 for the Don).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with an integer N, the number of members.\n- A line with N space\u2011separated integers R1,R2,\u2026,RN where Ri is the member to whom i reports (Ri = 0 for the Don).",
     "outputFormat": "For each test case output a single line containing the indices of all members that have no subordinates (i.e., nobody reports to them) in ascending order, separated by a single space. If no such member exists, output an empty line.",
     "sampleTestCases": [
       {
@@ -48,7 +49,7 @@
         "id": "sample_3",
         "input": "1\n5\n0 1 2 3 4",
         "output": "5",
-        "explanation": "The structure is a chain 1→2→3→4→5. Only member 5 has no subordinates."
+        "explanation": "The structure is a chain 1\u21922\u21923\u21924\u21925. Only member 5 has no subordinates."
       }
     ]
   },
@@ -70,7 +71,7 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – simple chain",
+        "label": "edge case \u2013 simple chain",
         "input": "1\n5\n0 1 2 3 4",
         "expectedOutput": "5",
         "weight": 2
@@ -84,7 +85,7 @@
       },
       {
         "id": "tc_5",
-        "label": "general case 2 – one child",
+        "label": "general case 2 \u2013 one child",
         "input": "1\n2\n0 1",
         "expectedOutput": "2",
         "weight": 2
@@ -117,7 +118,7 @@
   },
   "solution": {
     "approach": "For each test case we count how many times each member appears as a supervisor (i.e., how many direct reports they have). This is the indegree of each node in the reporting tree. A member with indegree 0 has no subordinates and is therefore a potential killer. The algorithm:\n1. Initialise an array indeg[1..N] with zeros.\n2. Scan the N values Ri. For each i, if Ri != 0 increment indeg[Ri].\n3. After the scan, all indices i with indeg[i] == 0 are leaves. Output them in increasing order.\nThe procedure is O(N) per test case and uses O(N) additional memory.",
-    "timeComplexity": "O(N) per test case, total O( Σ N ) over all test cases.",
+    "timeComplexity": "O(N) per test case, total O( \u03a3 N ) over all test cases.",
     "spaceComplexity": "O(N) per test case for the indegree array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *indeg = (int*)calloc(N+1, sizeof(int));\n        for(int i=1;i<=N;i++){\n            int r; scanf(\"%d\", &r);\n            if(r!=0) indeg[r]++;\n        }\n        int first=1;\n        for(int i=1;i<=N;i++) if(indeg[i]==0){\n            if(!first) printf(\" \");\n            printf(\"%d\", i);\n            first=0;\n        }\n        printf(\"\\n\");\n        free(indeg);\n    }\n    return 0;\n}",

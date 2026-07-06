@@ -6,14 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Sorting",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Union of intervals",
       "Intervals",
       "Sorting",
-      "Greedy",
-      "Union of intervals"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef's college is conducting an online exam, where his camera will be monitored by one or more invigilators (supervisors). Once again, Chef failed to prepare for the exam on time and decided to google answers during it.\n\nThe exam starts at time 000 and ends at time FFF minutes. Chef needs a total of KKK minutes of googling during the exam in order to pass it. There are NNN invigilators (numbered 111 through NNN); for each valid iii, the iii-th invigilator monitors Chef's camera during the time interval starting at SiS_iSi​ minutes since the start of the exam and ending at EiE_iEi​ minutes (where 0≤Si≤Ei≤F0 \\leq S_i \\leq E_i \\leq F0≤Si​≤Ei​≤F). He was resourceful enough to somehow get hold of these times and now he wants to know if he would be able to pass the exam if he googles the answers during the times when no one is looking at his camera.\n\n**Note:** The time of googling need not be continuous and there can be multiple invigilators at some interval of time.",
+    "problemStatement": "Chef's college is conducting an online exam, where his camera will be monitored by one or more invigilators (supervisors). Once again, Chef failed to prepare for the exam on time and decided to google answers during it.\n\nThe exam starts at time 000 and ends at time FFF minutes. Chef needs a total of KKK minutes of googling during the exam in order to pass it. There are NNN invigilators (numbered 111 through NNN); for each valid iii, the iii-th invigilator monitors Chef's camera during the time interval starting at SiS_iSi\u200b minutes since the start of the exam and ending at EiE_iEi\u200b minutes (where 0\u2264Si\u2264Ei\u2264F0 \\leq S_i \\leq E_i \\leq F0\u2264Si\u200b\u2264Ei\u200b\u2264F). He was resourceful enough to somehow get hold of these times and now he wants to know if he would be able to pass the exam if he googles the answers during the times when no one is looking at his camera.\n\n**Note:** The time of googling need not be continuous and there can be multiple invigilators at some interval of time.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ N ≤ 10^5 (sum of N over all test cases ≤ 2·10^5)",
-      "1 ≤ F ≤ 10^9",
-      "0 ≤ K ≤ F",
-      "0 ≤ Si ≤ Ei ≤ F"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 N \u2264 10^5 (sum of N over all test cases \u2264 2\u00b710^5)",
+      "1 \u2264 F \u2264 10^9",
+      "0 \u2264 K \u2264 F",
+      "0 \u2264 Si \u2264 Ei \u2264 F"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains three integers N, K and F. Then N lines follow, each containing two integers Si and Ei denoting the start and end minute (0 ≤ Si ≤ Ei ≤ F) of the i‑th invigilator's monitoring interval.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains three integers N, K and F. Then N lines follow, each containing two integers Si and Ei denoting the start and end minute (0 \u2264 Si \u2264 Ei \u2264 F) of the i\u2011th invigilator's monitoring interval.",
     "outputFormat": "For each test case output a single line containing \"YES\" if Chef can find at least K minutes during which no invigilator is watching, otherwise output \"NO\".",
     "sampleTestCases": [
       {
@@ -104,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we need the total time that is *not* covered by any monitoring interval. The union of all intervals can be obtained by sorting them by start time and merging overlapping or adjacent intervals. While merging we accumulate the total length of the merged intervals (covered time). The free time equals F minus this covered time. If free time ≥ K we answer YES, otherwise NO. This is optimal because merging intervals is the standard way to compute the measure of a union of 1‑dimensional segments.",
-    "timeComplexity": "O(N log N) per test case due to sorting (overall O((ΣN) log N)).",
+    "approach": "For each test case we need the total time that is *not* covered by any monitoring interval. The union of all intervals can be obtained by sorting them by start time and merging overlapping or adjacent intervals. While merging we accumulate the total length of the merged intervals (covered time). The free time equals F minus this covered time. If free time \u2265 K we answer YES, otherwise NO. This is optimal because merging intervals is the standard way to compute the measure of a union of 1\u2011dimensional segments.",
+    "timeComplexity": "O(N log N) per test case due to sorting (overall O((\u03a3N) log N)).",
     "spaceComplexity": "O(N) for storing the intervals of a test case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\ntypedef struct { long long s, e; } Interval;\nint cmp(const void *a, const void *b) {\n    Interval *x = (Interval *)a, *y = (Interval *)b;\n    if (x->s != y->s) return (x->s < y->s) ? -1 : 1;\n    return (x->e < y->e) ? -1 : (x->e > y->e);\n}\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; long long K, F; scanf(\"%d %lld %lld\", &N, &K, &F);\n        Interval *arr = (Interval*)malloc(N * sizeof(Interval));\n        for (int i = 0; i < N; ++i) scanf(\"%lld %lld\", &arr[i].s, &arr[i].e);\n        qsort(arr, N, sizeof(Interval), cmp);\n        long long covered = 0;\n        long long curL = -1, curR = -1;\n        for (int i = 0; i < N; ++i) {\n            if (curL == -1) { curL = arr[i].s; curR = arr[i].e; }\n            else if (arr[i].s <= curR) { if (arr[i].e > curR) curR = arr[i].e; }\n            else { covered += curR - curL; curL = arr[i].s; curR = arr[i].e; }\n        }\n        if (curL != -1) covered += curR - curL;\n        long long freeTime = F - covered;\n        printf(freeTime >= K ? \"YES\\n\" : \"NO\\n\");\n        free(arr);\n    }\n    return 0;\n}",

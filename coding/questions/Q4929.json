@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory | Greedy",
+    "category": "Greedy",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Greatest Common Divisor",
+      "Euclidean algorithm",
       "Divisors",
-      "Greedy reduction",
-      "Euclidean algorithm"
+      "Greatest Common Divisor",
+      "Greedy",
+      "Greedy reduction"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +22,16 @@
     ]
   },
   "content": {
-    "problemStatement": "You are an evil sorcerer at a round table with NNN sorcerers (including yourself). You can cast MMM spells which have distinct powers p1,p2,…,pMp_1, p_2, \\ldots, p_Mp1​,p2​,…,pM​.\n\nYou may perform the following operation any number of times (possibly zero):\n\n\nAssign a living sorcerer to each positive integer cyclically to your left starting from yourself ― the closest living sorcerer to your left is assigned to 111, the next living sorcerer to the left is assigned to 222 and so on. Note that each living sorcerer (including yourself) is assigned to an infinite number of integers.\nChoose a spell jjj (possibly a spell you have chosen before) and kill the living sorcerer assigned to pjp_jpj​. You may not cast a spell to kill yourself.\nWhat is the maximum number of sorcerers you can kill using zero or more operations?",
+    "problemStatement": "You are an evil sorcerer at a round table with NNN sorcerers (including yourself). You can cast MMM spells which have distinct powers p1,p2,\u2026,pMp_1, p_2, \\ldots, p_Mp1\u200b,p2\u200b,\u2026,pM\u200b.\n\nYou may perform the following operation any number of times (possibly zero):\n\n\nAssign a living sorcerer to each positive integer cyclically to your left starting from yourself \u2015 the closest living sorcerer to your left is assigned to 111, the next living sorcerer to the left is assigned to 222 and so on. Note that each living sorcerer (including yourself) is assigned to an infinite number of integers.\nChoose a spell jjj (possibly a spell you have chosen before) and kill the living sorcerer assigned to pjp_jpj\u200b. You may not cast a spell to kill yourself.\nWhat is the maximum number of sorcerers you can kill using zero or more operations?",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 10^9",
-      "1 ≤ M ≤ 3·10^5 (sum of M over all test cases ≤ 3·10^5)",
-      "1 ≤ pi ≤ 10^9",
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 10^9",
+      "1 \u2264 M \u2264 3\u00b710^5 (sum of M over all test cases \u2264 3\u00b710^5)",
+      "1 \u2264 pi \u2264 10^9",
       "All pi are pairwise distinct"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and M — the number of sorcerers (including yourself) and the number of spells. The second line contains M distinct integers p1,p2,…,pM — the powers of the spells.",
-    "outputFormat": "For each test case output a single line containing one integer — the maximum number of sorcerers you can kill.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and M \u2014 the number of sorcerers (including yourself) and the number of spells. The second line contains M distinct integers p1,p2,\u2026,pM \u2014 the powers of the spells.",
+    "outputFormat": "For each test case output a single line containing one integer \u2014 the maximum number of sorcerers you can kill.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -104,8 +105,8 @@
     ]
   },
   "solution": {
-    "approach": "For a current number of living sorcerers k, a spell with power p kills the sorcerer assigned to p mod k. You cannot kill yourself, i.e. you cannot use a spell whose power is a multiple of k. Therefore you can decrease k as long as there exists a spell with p mod k ≠ 0. The process stops exactly when k divides every spell power. All common divisors of the spell powers are precisely the divisors of g = gcd(p1,…,pM). Hence the smallest reachable number of living sorcerers is the largest divisor d of g that does not exceed the initial N. The answer is N‑d. Algorithm: compute g = gcd of all pi. Enumerate all divisors of g in O(√g) and keep the maximum divisor ≤ N. Return N‑maxDiv.",
-    "timeComplexity": "O(M + √g) per test case (g ≤ 10^9, √g ≤ 31623).",
+    "approach": "For a current number of living sorcerers k, a spell with power p kills the sorcerer assigned to p mod k. You cannot kill yourself, i.e. you cannot use a spell whose power is a multiple of k. Therefore you can decrease k as long as there exists a spell with p mod k \u2260 0. The process stops exactly when k divides every spell power. All common divisors of the spell powers are precisely the divisors of g = gcd(p1,\u2026,pM). Hence the smallest reachable number of living sorcerers is the largest divisor d of g that does not exceed the initial N. The answer is N\u2011d. Algorithm: compute g = gcd of all pi. Enumerate all divisors of g in O(\u221ag) and keep the maximum divisor \u2264 N. Return N\u2011maxDiv.",
+    "timeComplexity": "O(M + \u221ag) per test case (g \u2264 10^9, \u221ag \u2264 31623).",
     "spaceComplexity": "O(1) besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nlong long gcd_ll(long long a,long long b){while(b){long long t=a%b;a=b;b=t;}return a;}\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){long long N; int M; scanf(\"%lld %d\",&N,&M); long long g=0; for(int i=0;i<M;i++){long long p; scanf(\"%lld\",&p); if(i==0) g=p; else g=gcd_ll(g,p);} long long best=1; long long limit=N; long long i; for(i=1;i*i<=g;i++) if(g%i==0){ long long d1=i, d2=g/i; if(d1<=limit && d1>best) best=d1; if(d2<=limit && d2>best) best=d2; } long long ans=N-best; printf(\"%lld\\n\",ans); } return 0; }",

@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree",
+      "Graphs",
       "Game Theory"
     ],
     "companyTags": [],
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a depth-first search (DFS) to traverse the tree and count the number of black and white edges. We can then use the Nim theory to determine the winner of the game.",
     "timeComplexity": "O(T * N) per test case, O(T * N) total.",
-    "spaceComplexity": "O(N) — the dominant structure is the tree.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the tree.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\n\n// Define the structure for a tree edge\ntypedef struct Edge {\n    int u, v, c;\n} Edge;\n\n// Define the structure for a tree\ntypedef struct Tree {\n    int n;\n    Edge *edges;\n} Tree;\n\n// Function to perform DFS and count the number of black and white edges\nvoid dfs(int u, int p, Tree *tree, int *black, int *white) {\n    for (int i = 0; i < tree->n - 1; i++) {\n        if (tree->edges[i].u == u && tree->edges[i].v != p) {\n            if (tree->edges[i].c == 0) {\n                (*black)++;\n            } else {\n                (*white)++;\n            }\n            dfs(tree->edges[i].v, u, tree, black, white);\n        } else if (tree->edges[i].v == u && tree->edges[i].u != p) {\n            if (tree->edges[i].c == 0) {\n                (*black)++;\n            } else {\n                (*white)++;\n            }\n            dfs(tree->edges[i].u, u, tree, black, white);\n        }\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        Tree tree;\n        tree.n = N;\n        tree.edges = (Edge *)malloc((N - 1) * sizeof(Edge));\n        for (int i = 0; i < N - 1; i++) {\n            scanf(\"%d %d %d\", &tree.edges[i].u, &tree.edges[i].v, &tree.edges[i].c);\n        }\n        int black = 0, white = 0;\n        dfs(1, -1, &tree, &black, &white);\n        if ((black + white) % 2 == 0) {\n            if(black % 2 == 0) printf(\"Ksen Ksen\\n\");\n            else printf(\"Chef Ksen\\n\");\n        } else {\n            if(black % 2 == 0) printf(\"Chef Chef\\n\");\n            else printf(\"Chef Ksen\\n\");\n        }\n        free(tree.edges);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nconst int MAXN = 100005;\n\n// Define the structure for a tree edge\nstruct Edge {\n    int u, v, c;\n};\n\n// Define the structure for a tree\nstruct Tree {\n    int n;\n    vector<Edge> edges;\n};\n\n// Function to perform DFS and count the number of black and white edges\nvoid dfs(int u, int p, Tree &tree, int &black, int &white) {\n    for (auto &edge : tree.edges) {\n        if (edge.u == u && edge.v != p) {\n            if (edge.c == 0) {\n                black++;\n            } else {\n                white++;\n            }\n            dfs(edge.v, u, tree, black, white);\n        } else if (edge.v == u && edge.u != p) {\n            if (edge.c == 0) {\n                black++;\n            } else {\n                white++;\n            }\n            dfs(edge.u, u, tree, black, white);\n        }\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        Tree tree;\n        tree.n = N;\n        for (int i = 0; i < N - 1; i++) {\n            int u, v, c;\n            cin >> u >> v >> c;\n            tree.edges.push_back({u, v, c});\n        }\n        int black = 0, white = 0;\n        dfs(1, -1, tree, black, white);\n        if ((black + white) % 2 == 0) {\n            if(black % 2 == 0) cout << \"Ksen Ksen\" << endl;\n            else cout << \"Chef Ksen\" << endl;\n        } else {\n            if(black % 2 == 0) cout << \"Chef Chef\" << endl;\n            else cout << \"Chef Ksen\" << endl;\n        }\n    }\n    return 0;\n}",

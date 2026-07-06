@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Graph Coloring",
-      "Greedy Algorithm"
+      "Graphs",
+      "Greedy Algorithm",
+      "Graph Coloring"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by representing the board as a graph, where each cell is a node, and two nodes are connected if they are in the same row or column. We then use a greedy algorithm to assign colors to each node, ensuring that no two adjacent nodes have the same color.",
     "timeComplexity": "O(T * M * N * (M + N)) per test case, O(T * M * N * (M + N)) total.",
-    "spaceComplexity": "O(M * N) — for the graph and color assignments.",
+    "spaceComplexity": "O(M * N) \u2014 for the graph and color assignments.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_M 700\n#define MAX_N 700\n\nint min_colors[MAX_M][MAX_N];\nint graph[MAX_M * MAX_N][MAX_M * MAX_N];\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int M, N;\n        scanf(\"%d %d\", &M, &N);\n        for (int i = 0; i < M; i++) {\n            for (int j = 0; j < N; j++) {\n                char c;\n                scanf(\" %c\", &c);\n                if (c == '1') {\n                    // Add edges to the graph\n                    for (int k = 0; k < N; k++) {\n                        if (k != j) {\n                            graph[i * N + j][i * N + k] = 1;\n                        }\n                    }\n                    for (int k = 0; k < M; k++) {\n                        if (k != i) {\n                            graph[i * N + j][k * N + j] = 1;\n                        }\n                    }\n                }\n            }\n        }\n        // Assign colors using a greedy algorithm\n        int max_color = 0;\n        for (int i = 0; i < M * N; i++) {\n            int color = 1;\n            while (1) {\n                int used = 0;\n                for (int j = 0; j < M * N; j++) {\n                    if (graph[i][j] && min_colors[j / N][j % N] == color) {\n                        used = 1;\n                        break;\n                    }\n                }\n                if (!used) {\n                    min_colors[i / N][i % N] = color;\n                    max_color = (max_color > color) ? max_color : color;\n                    break;\n                }\n                color++;\n            }\n        }\n        printf(\"%d\\n\", max_color);\n        for (int i = 0; i < M; i++) {\n            for (int j = 0; j < N; j++) {\n                printf(\"%d \", min_colors[i][j]);\n            }\n            printf(\"\\n\");\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nconst int MAX_M = 700;\nconst int MAX_N = 700;\n\nint min_colors[MAX_M][MAX_N];\nint graph[MAX_M * MAX_N][MAX_M * MAX_N];\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int M, N;\n        cin >> M >> N;\n        for (int i = 0; i < M; i++) {\n            for (int j = 0; j < N; j++) {\n                char c;\n                cin >> c;\n                if (c == '1') {\n                    // Add edges to the graph\n                    for (int k = 0; k < N; k++) {\n                        if (k != j) {\n                            graph[i * N + j][i * N + k] = 1;\n                        }\n                    }\n                    for (int k = 0; k < M; k++) {\n                        if (k != i) {\n                            graph[i * N + j][k * N + j] = 1;\n                        }\n                    }\n                }\n            }\n        }\n        // Assign colors using a greedy algorithm\n        int max_color = 0;\n        for (int i = 0; i < M * N; i++) {\n            int color = 1;\n            while (1) {\n                int used = 0;\n                for (int j = 0; j < M * N; j++) {\n                    if (graph[i][j] && min_colors[j / N][j % N] == color) {\n                        used = 1;\n                        break;\n                    }\n                }\n                if (!used) {\n                    min_colors[i / N][i % N] = color;\n                    max_color = max(max_color, color);\n                    break;\n                }\n                color++;\n            }\n        }\n        cout << max_color << endl;\n        for (int i = 0; i < M; i++) {\n            for (int j = 0; j < N; j++) {\n                cout << min_colors[i][j] << \" \";\n            }\n            cout << endl;\n        }\n        cout << endl;\n    }\n    return 0;\n}",

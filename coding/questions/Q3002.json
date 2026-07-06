@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Hamming Distance",
-      "Hashing"
+      "Strings",
+      "Hashing",
+      "Hamming Distance"
     ],
     "companyTags": [],
     "topicTags": [
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem can be solved by iterating over all substrings of A of length M and calculating the Hamming distance between each substring and B. The hash value of the sequence of Hamming distances is then calculated using a prime modulus and a base.",
     "timeComplexity": "O(K * N * M) per test case, O(T * K * N * M) total.",
-    "spaceComplexity": "O(N - M + 1) — for storing the Hamming distances.",
+    "spaceComplexity": "O(N - M + 1) \u2014 for storing the Hamming distances.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MOD 1000000007\n#define BASE 100001\nint hammingDistance(char *a, char *b, int len) {\n    int dist = 0;\n    for (int i = 0; i < len; i++) {\n        if (a[i] != b[i]) {\n            dist++;\n        }\n    }\n    return dist;\n}\nlong long hashValue(int *distances, int len) {\n    long long hash = 0;\n    for (int i = 0; i < len; i++) {\n        hash = (hash * BASE + distances[i]) % MOD;\n    }\n    return hash;\n}\nint main() {\n    char A[100001];\n    int K;\n    scanf(\"%s\", A);\n    scanf(\"%d\", &K);\n    int N = strlen(A);\n    for (int i = 0; i < K; i++) {\n        char B[100001];\n        scanf(\"%s\", B);\n        int M = strlen(B);\n        int distances[N - M + 1];\n        for (int j = 0; j <= N - M; j++) {\n            char subStr[M + 1];\n            strncpy(subStr, A + j, M);\n            subStr[M] = '\\0';\n            distances[j] = hammingDistance(subStr, B, M);\n        }\n        printf(\"%lld\\n\", hashValue(distances, N - M + 1));\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n#define MOD 1000000007\n#define BASE 100001\nint hammingDistance(string a, string b) {\n    int dist = 0;\n    for (int i = 0; i < b.length(); i++) {\n        if (a[i] != b[i]) {\n            dist++;\n        }\n    }\n    return dist;\n}\nlong long hashValue(int *distances, int len) {\n    long long hash = 0;\n    for (int i = 0; i < len; i++) {\n        hash = (hash * BASE + distances[i]) % MOD;\n    }\n    return hash;\n}\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    string A;\n    int K;\n    cin >> A;\n    cin >> K;\n    int N = A.length();\n    for (int i = 0; i < K; i++) {\n        string B;\n        cin >> B;\n        int M = B.length();\n        int distances[N - M + 1];\n        for (int j = 0; j <= N - M; j++) {\n            string subStr = A.substr(j, M);\n            distances[j] = hammingDistance(subStr, B);\n        }\n        printf(\"%lld\\n\", hashValue(distances, N - M + 1));\n    }\n    return 0;\n}",

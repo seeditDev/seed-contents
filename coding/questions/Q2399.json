@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Bit Manipulation",
-      "Combinatorial Optimization"
+      "Combinatorial Optimization",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using a bitmasking approach to generate all possible subsets of packs and then checking if the total number of candies in each subset is divisible by K. We use dynamic programming to store the minimum total number of candies for each subset size and remainder when divided by K.",
     "timeComplexity": "O(T * 2^N * K) per test case, O(T * 2^N * K) total.",
-    "spaceComplexity": "O(N * K) — for storing the dynamic programming table.",
+    "spaceComplexity": "O(N * K) \u2014 for storing the dynamic programming table.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 50000\n#define MAX_M 20\n#define MAX_K 20\n#define MAX_PACKS 1000000000\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M, K;\n        scanf(\"%d %d %d\", &N, &M, &K);\n        int packs[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &packs[i]);\n        }\n        qsort(packs, N, sizeof(int), compare);\n        long long min_candies = -1;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int count = 0;\n            long long total_candies = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    count++;\n                    total_candies += packs[i];\n                }\n            }\n            if (count == M && total_candies % K == 0) {\n                if (min_candies == -1 || total_candies < min_candies) {\n                    min_candies = total_candies;\n                }\n            }\n        }\n        printf(\"%lld\\n\", min_candies);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX_N 50000\n#define MAX_M 20\n#define MAX_K 20\n#define MAX_PACKS 1000000000\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M, K;\n        cin >> N >> M >> K;\n        int packs[N];\n        for (int i = 0; i < N; i++) {\n            cin >> packs[i];\n        }\n        sort(packs, packs + N);\n        long long min_candies = -1;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int count = 0;\n            long long total_candies = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    count++;\n                    total_candies += packs[i];\n                }\n            }\n            if (count == M && total_candies % K == 0) {\n                if (min_candies == -1 || total_candies < min_candies) {\n                    min_candies = total_candies;\n                }\n            }\n        }\n        cout << min_candies << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings | Bit Manipulation",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
+      "Strings",
       "String manipulation",
-      "Binary representation"
+      "Binary representation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,20 +29,20 @@
       "The sum of N over all test cases does not exceed 500000",
       "S consists only of characters '0' and '1'"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then T test cases follow. Each test case consists of two lines. The first line contains two integers N and K — the length of the binary string and the maximum number of operations allowed. The second line contains the binary string S of length N (consisting only of characters '0' and '1').",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Then T test cases follow. Each test case consists of two lines. The first line contains two integers N and K \u2014 the length of the binary string and the maximum number of operations allowed. The second line contains the binary string S of length N (consisting only of characters '0' and '1').",
     "outputFormat": "For each test case output a single line containing the binary string after performing at most K operations that yields the maximum possible decimal value.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n4 2\n1101\n6 3\n001110\n5 4\n00110\n3 1\n000",
         "output": "1111101\\n111001110\\n11111100110\\n111",
-        "explanation": "Test case 1: K=2 gives one pair, prepend \"111\" to \"1101\" → \"1111101\".\\nTest case 2: K=3 gives one pair (\"111\" prefix) and one extra operation. No \"000\" in original string, so extra does nothing → \"111001110\".\\nTest case 3: K=4 gives two pairs, prepend six \"1\"s → \"11111100110\".\\nTest case 4: K=1, no pair, extra operation converts the existing \"000\" to \"111\" → \"111\"."
+        "explanation": "Test case 1: K=2 gives one pair, prepend \"111\" to \"1101\" \u2192 \"1111101\".\\nTest case 2: K=3 gives one pair (\"111\" prefix) and one extra operation. No \"000\" in original string, so extra does nothing \u2192 \"111001110\".\\nTest case 3: K=4 gives two pairs, prepend six \"1\"s \u2192 \"11111100110\".\\nTest case 4: K=1, no pair, extra operation converts the existing \"000\" to \"111\" \u2192 \"111\"."
       },
       {
         "id": "sample_2",
         "input": "1\\n8 5\\n10100011",
         "output": "11110100011",
-        "explanation": "K=5 → pairs=2 (adds six leading \"1\"s) and extra=1. Original string contains \"000\" starting at position 3, after adding prefix the substring is still present, so we convert it to \"111\". Result: \"111111\" + \"10100011\" with the three middle zeros turned into ones → \"11110100011\"."
+        "explanation": "K=5 \u2192 pairs=2 (adds six leading \"1\"s) and extra=1. Original string contains \"000\" starting at position 3, after adding prefix the substring is still present, so we convert it to \"111\". Result: \"111111\" + \"10100011\" with the three middle zeros turned into ones \u2192 \"11110100011\"."
       }
     ]
   },
@@ -109,7 +110,7 @@
     ]
   },
   "solution": {
-    "approach": "The only operations are:\n1. Insert the substring \"000\" anywhere.\n2. Change an existing substring \"000\" into \"111\".\nInserting \"000\" at the very beginning does not change the numeric value because the leading zeros are ignored. Converting that newly inserted \"000\" into \"111\" creates three most‑significant bits equal to 1, which gives the largest possible increase in the decimal value. Therefore the best use of two operations is a pair (insert at the front, then convert) which adds a block \"111\" to the front of the current string.\nHence we should use as many such pairs as possible: floor(K/2) pairs. Each pair contributes three leading '1's.\nIf K is odd, one operation remains. The only useful single operation is to convert an already existing \"000\" into \"111\" (inserting a lone \"000\" would not help). So we look for the first occurrence of \"000\" in the original string and, if found, replace it with \"111\".\nAlgorithm per test case:\n1. pairs = K / 2, extra = K % 2.\n2. result = string consisting of \"111\" repeated pairs times, followed by the original S.\n3. If extra == 1, search S for the first index i where S[i..i+2] == \"000\". If such i exists, replace the three characters at position (pairs*3 + i) in result with \"111\".\n4. Output result.\nThe algorithm is linear in the length of S and uses O(1) additional memory besides the output string.",
+    "approach": "The only operations are:\n1. Insert the substring \"000\" anywhere.\n2. Change an existing substring \"000\" into \"111\".\nInserting \"000\" at the very beginning does not change the numeric value because the leading zeros are ignored. Converting that newly inserted \"000\" into \"111\" creates three most\u2011significant bits equal to 1, which gives the largest possible increase in the decimal value. Therefore the best use of two operations is a pair (insert at the front, then convert) which adds a block \"111\" to the front of the current string.\nHence we should use as many such pairs as possible: floor(K/2) pairs. Each pair contributes three leading '1's.\nIf K is odd, one operation remains. The only useful single operation is to convert an already existing \"000\" into \"111\" (inserting a lone \"000\" would not help). So we look for the first occurrence of \"000\" in the original string and, if found, replace it with \"111\".\nAlgorithm per test case:\n1. pairs = K / 2, extra = K % 2.\n2. result = string consisting of \"111\" repeated pairs times, followed by the original S.\n3. If extra == 1, search S for the first index i where S[i..i+2] == \"000\". If such i exists, replace the three characters at position (pairs*3 + i) in result with \"111\".\n4. Output result.\nThe algorithm is linear in the length of S and uses O(1) additional memory besides the output string.",
     "timeComplexity": "O(N) per test case, where N is the length of the given string.",
     "spaceComplexity": "O(N) for the resulting string (output).",
     "code": {

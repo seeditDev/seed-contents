@@ -10,6 +10,7 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Arrays",
       "Prefix Sum",
       "Modular Arithmetic"
     ],
@@ -110,7 +111,7 @@
   "solution": {
     "approach": "First, generate all magic numbers up to a certain limit (in this case, 3*10^5) and store them in an array. Then, for each query, calculate the sum of the elements of the array B that are in the query range using prefix sum and modular arithmetic.",
     "timeComplexity": "O(N + M) per test case, O(T*(N + M)) total. Precomputation of magic numbers is done once.",
-    "spaceComplexity": "O(N + MAX) — the dominant structure is the array to store the magic numbers.",
+    "spaceComplexity": "O(N + MAX) \u2014 the dominant structure is the array to store the magic numbers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n#define MAX 300005\n\nint sum_of_squares(int n) {\n    int sum = 0;\n    while (n > 0) {\n        int digit = n % 10;\n        sum += digit * digit;\n        n /= 10;\n    }\n    return sum;\n}\n\nint main() {\n    int q, N, M;\n    scanf(\"%d %d\", &q, &N);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    scanf(\"%d\", &M);\n    int B[N];\n    int magic_numbers[MAX] = {0};\n    int magic_index = 0;\n    for (int i = 1; i < MAX; i++) {\n        if (sum_of_squares(i) <= q) {\n            magic_numbers[magic_index++] = i;\n        }\n    }\n    for (int i = 0; i < N; i++) {\n        B[i] = magic_numbers[A[i] - 1];\n    }\n    long long prefix_sum[N + 1] = {0};\n    for (int i = 0; i < N; i++) {\n        prefix_sum[i + 1] = prefix_sum[i] + B[i];\n    }\n    for (int i = 0; i < M; i++) {\n        int l, r;\n        scanf(\"%d %d\", &l, &r);\n        long long sum = (prefix_sum[r] - prefix_sum[l - 1]) % MOD;\n        printf(\"%lld\\n\", sum);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n#define MAX 300005\n\nint sum_of_squares(int n) {\n    int sum = 0;\n    while (n > 0) {\n        int digit = n % 10;\n        sum += digit * digit;\n        n /= 10;\n    }\n    return sum;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int q, N, M;\n    cin >> q >> N;\n    vector<int> A(N);\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    cin >> M;\n    vector<int> B(N);\n    vector<int> magic_numbers(MAX, 0);\n    int magic_index = 0;\n    for (int i = 1; i < MAX; i++) {\n        if (sum_of_squares(i) <= q) {\n            magic_numbers[magic_index++] = i;\n        }\n    }\n    for (int i = 0; i < N; i++) {\n        B[i] = magic_numbers[A[i] - 1];\n    }\n    vector<long long> prefix_sum(N + 1, 0);\n    for (int i = 0; i < N; i++) {\n        prefix_sum[i + 1] = prefix_sum[i] + B[i];\n    }\n    for (int i = 0; i < M; i++) {\n        int l, r;\n        cin >> l >> r;\n        long long sum = (prefix_sum[r] - prefix_sum[l - 1]) % MOD;\n        cout << sum << endl;\n    }\n    return 0;\n}",

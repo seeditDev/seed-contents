@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Prefix Sum | Modulo",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Prefix Sum",
       "Modulo Arithmetic",
+      "Strings",
       "Subarray",
-      "Simulation"
+      "Simulation",
+      "Prefix Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -29,13 +30,13 @@
       "S contains only characters 'L' and 'R'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the length of the instruction string. The second line contains a string S of length N consisting only of characters 'L' and 'R'.",
-    "outputFormat": "For each test case output a single line containing \"YES\" if there exists a non‑empty contiguous substring of S that makes the Professor face South after starting from North, otherwise output \"NO\". The answer is case‑insensitive.",
+    "outputFormat": "For each test case output a single line containing \"YES\" if there exists a non\u2011empty contiguous substring of S that makes the Professor face South after starting from North, otherwise output \"NO\". The answer is case\u2011insensitive.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n12\nLRLRRRLRLLLL\n2\nLR\n4\nLRRL",
         "output": "YES\nNO\nYES",
-        "explanation": "Test case 1: Substring \"RLRLLL\" gives net rotation +2 (mod 4) → South. Test case 2: No substring yields rotation 2 mod 4. Test case 3: Substring \"RR\" (or \"RL\") yields net rotation -2 ≡ 2 mod 4."
+        "explanation": "Test case 1: Substring \"RLRLLL\" gives net rotation +2 (mod 4) \u2192 South. Test case 2: No substring yields rotation 2 mod 4. Test case 3: Substring \"RR\" (or \"RL\") yields net rotation -2 \u2261 2 mod 4."
       }
     ]
   },
@@ -103,9 +104,9 @@
     ]
   },
   "solution": {
-    "approach": "Treat a left turn as +1 and a right turn as -1 (each representing a 90° rotation). Starting direction is North (value 0). After executing a substring, the net rotation is the sum of its values. The Professor faces South iff the net rotation is 180°, i.e., the sum ≡ 2 (mod 4). Let pref[i] be the prefix sum modulo 4 up to position i (pref[0]=0). A substring (l+1 … r) has sum ≡ 2 iff pref[r] ≡ pref[l] + 2 (mod 4). While scanning the string we keep a boolean array seen[4] of residues that have appeared as a prefix. For each new prefix p we check if seen[(p + 2) % 4] (or equivalently seen[(p - 2 + 4) % 4]) is true; if so, a required substring exists. After the check we mark seen[p]=true. If the scan finishes without a match, answer is NO. This runs in O(N) time per test case with O(1) extra space.",
-    "timeComplexity": "O(N) per test case, where N is the length of the string. Overall O(total N) ≤ 10^6.",
-    "spaceComplexity": "O(1) – only a small array of size 4 is used.",
+    "approach": "Treat a left turn as +1 and a right turn as -1 (each representing a 90\u00b0 rotation). Starting direction is North (value 0). After executing a substring, the net rotation is the sum of its values. The Professor faces South iff the net rotation is 180\u00b0, i.e., the sum \u2261 2 (mod 4). Let pref[i] be the prefix sum modulo 4 up to position i (pref[0]=0). A substring (l+1 \u2026 r) has sum \u2261 2 iff pref[r] \u2261 pref[l] + 2 (mod 4). While scanning the string we keep a boolean array seen[4] of residues that have appeared as a prefix. For each new prefix p we check if seen[(p + 2) % 4] (or equivalently seen[(p - 2 + 4) % 4]) is true; if so, a required substring exists. After the check we mark seen[p]=true. If the scan finishes without a match, answer is NO. This runs in O(N) time per test case with O(1) extra space.",
+    "timeComplexity": "O(N) per test case, where N is the length of the string. Overall O(total N) \u2264 10^6.",
+    "spaceComplexity": "O(1) \u2013 only a small array of size 4 is used.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char s[100005]; scanf(\"%s\",s);\n        int seen[4]={0};\n        seen[0]=1; // prefix 0\n        int pref=0; int ok=0;\n        for(int i=0;i<N;i++){\n            pref += (s[i]=='L'?1:-1);\n            pref = ((pref%4)+4)%4;\n            int need = (pref+2)%4; // pref - 2 mod 4\n            if(seen[need]){ ok=1; break; }\n            seen[pref]=1;\n        }\n        printf(ok?\"YES\\n\":\"NO\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N; string s; cin>>s;\n        bool seen[4] = {false};\n        seen[0]=true; // prefix sum 0\n        int pref=0; bool ok=false;\n        for(char c: s){\n            pref += (c=='L'?1:-1);\n            pref = (pref%4+4)%4;\n            int need = (pref+2)%4; // pref-2 mod4\n            if(seen[need]){ ok=true; break; }\n            seen[pref]=true;\n        }\n        cout<<(ok?\"YES\":\"NO\")<<'\\n';\n    }\n    return 0;\n}",

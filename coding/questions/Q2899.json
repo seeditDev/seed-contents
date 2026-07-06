@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Convex Polygon",
       "Triangle Area",
-      "Point Location"
+      "Convex Polygon",
+      "Point Location",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "Recently, Max has visited the place where the Wild Things are again. He was very happy to know, that the monsters are living in peace now.\n\nHis friend Carol was so excited about Max's coming back, that he proposed everyone a brand new game. Unfortunately, all the Wild Things refused to play the game, except Max and K.W., so there were only three players playing the game.\n\n\n\nThe area, where the game takes place, is the Cartesian plane(link).\n\nThere are **N** interesting points on the plane.  Each interesting point has integer coordinates. Also, all the interesting points form a strictly convex polygon(link). \n\nThere is no need to explain the rules of the game, but it's quite important to mention the preparation process:\n\nIn order to play the game, the players(Max, K.W. and Carol) must choose three different interesting points\n\nand plant  themselves there. Also, they must choose some positive integer **S**.\n\n\nLet's assume, that Max's interesting point is **A**, K.W.'s - **B** and Carol's - **C**.\n\nIf the area of triangle **ABC** is greater than or equal to **S**, then the game will be awesome.\n\n Otherwise, it will be awful.\n\n\n\nNow Max is on his way home. His head is filled up with the memories about the wonderful game he used to play with\n\nhis friends. But there's the thing, that annoys him: he remembers, that he played the game **Q** times, but\n\nhe can't recall any interesting point chosen by him!\n\n\n\nMax exactly remembers, that in the beginning of **i**'th game K.W. chose point **B** = **Bi**,\n\nCarol chose point **C** = **Ci** and **S** was equal to **Si**.\n\nAlso, he remembers, that all the games were awesome.\n\nSo, you are to calculate the number of different interesting points,\n\nthat could be chosen by Max as **A** in the beginning of **i**'th game. This number can be equal to zero(in that case we can conclude, that **i**'th game wasn't awesome - anyway, just output zero).",
     "constraints": [
-      "3 ≤ N ≤ 60000",
-      "1 ≤ Q ≤ 250000",
-      "|X|, |Y| ≤ 10^8 for each interesting point",
-      "1 ≤ B != C ≤ N, S ≤ 10^18 for each game"
+      "3 \u2264 N \u2264 60000",
+      "1 \u2264 Q \u2264 250000",
+      "|X|, |Y| \u2264 10^8 for each interesting point",
+      "1 \u2264 B != C \u2264 N, S \u2264 10^18 for each game"
     ],
     "inputFormat": "The first line contains two integers N and Q, denoting the number of interesting points and the number of times Max played the game. The next N lines contain two integers Xi and Yi each, denoting coordinates of i-th interesting point. The points are 1-indexed. The next Q lines contain three integers Bi, Ci, and Si each. In the beginning of i-th game K.W. chose point Bi-th interesting point, Carol chose Ci-th interesting point and S was equal to Si.",
     "outputFormat": "For each round of the game, output a single line containing the number of different interesting points that could be chosen by Max as A in the beginning of the corresponding game.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use the concept of convex polygons and triangle areas. We first read the coordinates of the interesting points and store them in an array. Then, for each query, we calculate the area of the triangle formed by points B, C, and a potential point A. We check if the area is greater than or equal to S. If it is, we increment the count of possible points for Max. We use the Shoelace formula to calculate the area of the triangle.",
-    "timeComplexity": "O(Q * N) — for each query, we iterate over all interesting points to find the possible points for Max",
-    "spaceComplexity": "O(N) — we store the coordinates of the interesting points in an array",
+    "timeComplexity": "O(Q * N) \u2014 for each query, we iterate over all interesting points to find the possible points for Max",
+    "spaceComplexity": "O(N) \u2014 we store the coordinates of the interesting points in an array",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n#define MAXN 60000\n#define MAXQ 250000\n#define MAXS 1000000000000000000LL\n\nint compare(const void *a, const void *b) {\n    return (*(long long *)a - *(long long *)b);\n}\n\nlong long cross_product(long long x1, long long y1, long long x2, long long y2) {\n    return x1 * y2 - x2 * y1;\n}\n\nlong long triangle_area(long long x1, long long y1, long long x2, long long y2, long long x3, long long y3) {\n    return abs(cross_product(x2 - x1, y2 - y1, x3 - x1, y3 - y1)) / 2;\n}\n\nint main() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q);\n    long long X[MAXN], Y[MAXN];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%lld %lld\", &X[i], &Y[i]);\n    }\n    for (int i = 0; i < Q; i++) {\n        int B, C;\n        long long S;\n        scanf(\"%d %d %lld\", &B, &C, &S);\n        B--;\n        C--;\n        int count = 0;\n        for (int j = 0; j < N; j++) {\n            if (j == B || j == C) continue;\n            long long area = triangle_area(X[B], Y[B], X[C], Y[C], X[j], Y[j]);\n            if (area >= S) count++;\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <cmath>\nusing namespace std;\n\nconst int MAXN = 60000;\nconst int MAXQ = 250000;\nconst long long MAXS = 1000000000000000000LL;\n\nlong long cross_product(long long x1, long long y1, long long x2, long long y2) {\n    return x1 * y2 - x2 * y1;\n}\n\nlong long triangle_area(long long x1, long long y1, long long x2, long long y2, long long x3, long long y3) {\n    return abs(cross_product(x2 - x1, y2 - y1, x3 - x1, y3 - y1)) / 2;\n}\n\nint main() {\n    int N, Q;\n    cin >> N >> Q;\n    vector<long long> X(N), Y(N);\n    for (int i = 0; i < N; i++) {\n        cin >> X[i] >> Y[i];\n    }\n    for (int i = 0; i < Q; i++) {\n        int B, C;\n        long long S;\n        cin >> B >> C >> S;\n        B--;\n        C--;\n        int count = 0;\n        for (int j = 0; j < N; j++) {\n            if (j == B || j == C) continue;\n            long long area = triangle_area(X[B], Y[B], X[C], Y[C], X[j], Y[j]);\n            if (area >= S) count++;\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Matrix",
-      "Zero Setting"
+      "Zero Setting",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +20,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an `N x M` integer matrix, if an element is `0`, set its entire row and column to `0`s.\n\n**Note:** You **don’t need to repeat the process for new 0s that are formed** during the operation.\n\nSee the following example:\n\n\n\nFunction DeclarationFunction NamesetZeroessetZeroessetZeroes – This function modifies the given matrix such that if any cell contains `0`, its entire row and column are set to `0`.\n\nParameters\nmatmatmat : A reference to a 2D integer matrix of size N×MN \\times MN×M.\nReturn Value\nThis function does **not** return anything.\nThe matrix matmatmat is modified **in-place** according to the rules.\nConstraints\n1≤N,M≤10001 \\leq N, M \\leq 10001≤N,M≤1000\n0≤mat[i][j]≤10000 \\leq mat[i][j] \\leq 10000≤mat[i][j]≤1000\n\nInput Format\n\nThe first line contains two integers NNN and MMM — the number of rows and columns in the matrix.\nThe next NNN lines each contain MMM space-separated integers representing the matrix elements.\n\n\nOutput Format\n\nOutput the modified matrix of size N×MN \\times MN×M.\nEach row should be printed on a new line with space-separated integers.",
+    "problemStatement": "Given an `N x M` integer matrix, if an element is `0`, set its entire row and column to `0`s.\n\n**Note:** You **don\u2019t need to repeat the process for new 0s that are formed** during the operation.\n\nSee the following example:\n\n\n\nFunction DeclarationFunction NamesetZeroessetZeroessetZeroes \u2013 This function modifies the given matrix such that if any cell contains `0`, its entire row and column are set to `0`.\n\nParameters\nmatmatmat : A reference to a 2D integer matrix of size N\u00d7MN \\times MN\u00d7M.\nReturn Value\nThis function does **not** return anything.\nThe matrix matmatmat is modified **in-place** according to the rules.\nConstraints\n1\u2264N,M\u226410001 \\leq N, M \\leq 10001\u2264N,M\u22641000\n0\u2264mat[i][j]\u226410000 \\leq mat[i][j] \\leq 10000\u2264mat[i][j]\u22641000\n\nInput Format\n\nThe first line contains two integers NNN and MMM \u2014 the number of rows and columns in the matrix.\nThe next NNN lines each contain MMM space-separated integers representing the matrix elements.\n\n\nOutput Format\n\nOutput the modified matrix of size N\u00d7MN \\times MN\u00d7M.\nEach row should be printed on a new line with space-separated integers.",
     "constraints": [
-      "1 ≤ N, M ≤ 1000",
-      "0 ≤ mat[i][j] ≤ 1000"
+      "1 \u2264 N, M \u2264 1000",
+      "0 \u2264 mat[i][j] \u2264 1000"
     ],
-    "inputFormat": "The first line contains two integers N and M — the number of rows and columns in the matrix. The next N lines each contain M space-separated integers representing the matrix elements.",
-    "outputFormat": "Output the modified matrix of size N×M. Each row should be printed on a new line with space-separated integers.",
+    "inputFormat": "The first line contains two integers N and M \u2014 the number of rows and columns in the matrix. The next N lines each contain M space-separated integers representing the matrix elements.",
+    "outputFormat": "Output the modified matrix of size N\u00d7M. Each row should be printed on a new line with space-separated integers.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved by using the first row and first column as markers to track which rows and columns need to be set to zero. We iterate through the matrix, and whenever we encounter a zero, we mark the corresponding row and column in the first row and first column. Then, we iterate through the matrix again, and for each cell, if the corresponding row or column is marked, we set the cell to zero.",
     "timeComplexity": "O(N * M) per test case",
-    "spaceComplexity": "O(1) — we only use a constant amount of space to store the markers.",
+    "spaceComplexity": "O(1) \u2014 we only use a constant amount of space to store the markers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid setZeroes(int **mat, int n, int m) {\n    int firstColZero = 0;\n    // First pass: use first row and column as markers\n    for (int i = 0; i < n; ++i) {\n        if (mat[i][0] == 0) firstColZero = 1;\n        for (int j = 1; j < m; ++j) {\n            if (mat[i][j] == 0) {\n                mat[i][0] = 0;\n                mat[0][j] = 0;\n            }\n        }\n    }\n    // Second pass: set zeros using markers (bottom-up)\n    for (int i = n - 1; i >= 0; --i) {\n        for (int j = m - 1; j >= 1; --j) {\n            if (mat[i][0] == 0 || mat[0][j] == 0) mat[i][j] = 0;\n        }\n        if (firstColZero) mat[i][0] = 0;\n    }\n}\n\nint main() {\n    int N, M; scanf(\"%d %d\", &N, &M);\n    int **mat = (int**)malloc(N * sizeof(int*));\n    for (int i = 0; i < N; ++i) {\n        mat[i] = (int*)malloc(M * sizeof(int));\n        for (int j = 0; j < M; ++j) scanf(\"%d\", &mat[i][j]);\n    }\n    setZeroes(mat, N, M);\n    for (int i = 0; i < N; ++i) {\n        for (int j = 0; j < M; ++j) {\n            printf(\"%d\", mat[i][j]);\n            if (j + 1 < M) printf(\" \");\n        }\n        printf(\"\\n\");\n    }\n    for (int i = 0; i < N; ++i) free(mat[i]);\n    free(mat);\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid setZeroes(vector<vector<int>>& mat) {\n    int n = mat.size();\n    int m = mat[0].size();\n    bool firstColZero = false;\n    for (int i = 0; i < n; ++i) {\n        if (mat[i][0] == 0) firstColZero = true;\n        for (int j = 1; j < m; ++j) {\n            if (mat[i][j] == 0) {\n                mat[i][0] = 0;\n                mat[0][j] = 0;\n            }\n        }\n    }\n    for (int i = n - 1; i >= 0; --i) {\n        for (int j = m - 1; j >= 1; --j) {\n            if (mat[i][0] == 0 || mat[0][j] == 0) mat[i][j] = 0;\n        }\n        if (firstColZero) mat[i][0] = 0;\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N, M; cin >> N >> M;\n    vector<vector<int>> mat(N, vector<int>(M));\n    for (int i = 0; i < N; ++i)\n        for (int j = 0; j < M; ++j) cin >> mat[i][j];\n    setZeroes(mat);\n    for (int i = 0; i < N; ++i) {\n        for (int j = 0; j < M; ++j) {\n            cout << mat[i][j];\n            if (j + 1 < M) cout << ' ';\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",

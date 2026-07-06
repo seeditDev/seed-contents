@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Data Structures | Recursion",
+    "category": "Data Structures",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Binary Search Tree",
-      "Recursion",
       "Divide and Conquer",
-      "Balanced Tree"
+      "Data Structures",
+      "Balanced Tree",
+      "Recursion"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +22,21 @@
     ]
   },
   "content": {
-    "problemStatement": "Create a height-balanced binary search tree from the given sorted integer array.\n\n(**Note:** A height-balanced binary tree is defined as a binary tree in which the depth difference between the two subtrees of every node is never more than one.)\n\nFor eg., the BST that can be created from the sorted array [1, 2, 3, 4, 5, 6, 7] is as follows:\n\n\n\n\nInput Format\n\nThe first line of the input contains s single integer NNN — the number of integers in the sorted array.\nNext line contains NNN space separated sorted integers of the array.\n\n\nOutput Format\nComplete the given function which returns the root of created BST.",
+    "problemStatement": "Create a height-balanced binary search tree from the given sorted integer array.\n\n(**Note:** A height-balanced binary tree is defined as a binary tree in which the depth difference between the two subtrees of every node is never more than one.)\n\nFor eg., the BST that can be created from the sorted array [1, 2, 3, 4, 5, 6, 7] is as follows:\n\n\n\n\nInput Format\n\nThe first line of the input contains s single integer NNN \u2014 the number of integers in the sorted array.\nNext line contains NNN space separated sorted integers of the array.\n\n\nOutput Format\nComplete the given function which returns the root of created BST.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10000",
       "1 <= array[i] <= 100000",
-      "The given array for each test case is sorted in non‑decreasing order"
+      "The given array for each test case is sorted in non\u2011decreasing order"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N — the size of the sorted array. The second line contains N space‑separated integers in non‑decreasing order.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N \u2014 the size of the sorted array. The second line contains N space\u2011separated integers in non\u2011decreasing order.",
     "outputFormat": "For each test case output a single line containing the text:\nSuccessfully created BST!",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n7\n1 2 3 4 5 6 7",
         "output": "Successfully created BST!",
-        "explanation": "One test case with N=7. The middle element 4 becomes the root, recursively building left and right subtrees yields a height‑balanced BST. After construction the program prints the required confirmation."
+        "explanation": "One test case with N=7. The middle element 4 becomes the root, recursively building left and right subtrees yields a height\u2011balanced BST. After construction the program prints the required confirmation."
       },
       {
         "id": "sample_2",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "Because the input array is already sorted, a height‑balanced BST can be built by repeatedly choosing the middle element of the current sub‑array as the root. Recursively apply the same process to the left sub‑array to build the left subtree and to the right sub‑array to build the right subtree. This guarantees that the depth difference of any node's children never exceeds one, producing a height‑balanced tree.\n\nAlgorithm:\n1. Read T.\n2. For each test case read N and the sorted array.\n3. Call a recursive function build(arr, l, r):\n   - If l > r return NULL.\n   - mid = l + (r‑l)/2.\n   - Create a node with value arr[mid].\n   - node->left = build(arr, l, mid‑1).\n   - node->right = build(arr, mid+1, r).\n   - Return node.\n4. After the tree is built (its structure is not required for output), print \"Successfully created BST!\".\n\nThe recursion depth is O(log N) for a balanced tree, and each element is visited exactly once.",
-    "timeComplexity": "O(N) per test case – each array element is processed once while constructing the tree.",
+    "approach": "Because the input array is already sorted, a height\u2011balanced BST can be built by repeatedly choosing the middle element of the current sub\u2011array as the root. Recursively apply the same process to the left sub\u2011array to build the left subtree and to the right sub\u2011array to build the right subtree. This guarantees that the depth difference of any node's children never exceeds one, producing a height\u2011balanced tree.\n\nAlgorithm:\n1. Read T.\n2. For each test case read N and the sorted array.\n3. Call a recursive function build(arr, l, r):\n   - If l > r return NULL.\n   - mid = l + (r\u2011l)/2.\n   - Create a node with value arr[mid].\n   - node->left = build(arr, l, mid\u20111).\n   - node->right = build(arr, mid+1, r).\n   - Return node.\n4. After the tree is built (its structure is not required for output), print \"Successfully created BST!\".\n\nThe recursion depth is O(log N) for a balanced tree, and each element is visited exactly once.",
+    "timeComplexity": "O(N) per test case \u2013 each array element is processed once while constructing the tree.",
     "spaceComplexity": "O(log N) auxiliary stack space due to recursion (ignoring the memory used by the tree itself).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Node {\n    int val;\n    struct Node *left;\n    struct Node *right;\n};\n\nstruct Node* build(int *arr, int l, int r) {\n    if (l > r) return NULL;\n    int m = l + (r - l) / 2;\n    struct Node *node = (struct Node*)malloc(sizeof(struct Node));\n    node->val = arr[m];\n    node->left = build(arr, l, m - 1);\n    node->right = build(arr, m + 1, r);\n    return node;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int *arr = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        struct Node *root = build(arr, 0, N - 1);\n        (void)root; // tree not used further\n        free(arr);\n        printf(\"Successfully created BST!\\n\");\n    }\n    return 0;\n}",

@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Combinatorics",
       "Probability",
-      "Combinatorics"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Sereja is playing a game called Winner Eats Sandwich with his friends. There are **N** persons in total, including Sereja. Sereja is allotted the number 1, while his friends are allotted numbers from 2 to **N**. A set of this game consists of **M** parts. Probability that a player numbered **i** wins part **j** of any set is **p[i][j]**. Sereja and his friends play all the **M** parts of the first set. If someone wins all the parts, he is declared the winner of the match. Otherwise, another set of the game is played. A match of the game continues until someone wins a set. The winner of the set is then declared the winner of the game, and gets to eat the sandwich.\n\nNow Sereja is interested in the probability with which he can win the match in no more than 10^(10^(10^(10^(10^10)))) sets. This is because the sandwich gets cold by the end of these many sets, and Sereja hates cold sandwiches.",
     "constraints": [
-      "1 ≤ T ≤ 3",
-      "1 ≤ N ≤ 13",
-      "1 ≤ M ≤ 10000",
+      "1 \u2264 T \u2264 3",
+      "1 \u2264 N \u2264 13",
+      "1 \u2264 M \u2264 10000",
       "For each j, the sum p[1][j] + p[2][j] + ... + p[N][j] is 1"
     ],
     "inputFormat": "The first line contains T, the number of test cases. Each test case starts with a line containing two space-separated integers, N and M, where N is the number of players and M is the number of parts in a set. Following this, there are N lines, each containing M space-separated numbers representing the probabilities p[i][j] that player i wins part j.",
@@ -103,7 +104,7 @@
   "solution": {
     "approach": "To solve this problem, we need to calculate the probability that Sereja wins the match in no more than 10^(10^(10^(10^(10^10)))) sets. This can be done by calculating the probability of Sereja winning a set and then using the formula for the sum of an infinite geometric series to calculate the probability of Sereja winning the match in no more than 10^(10^(10^(10^(10^10)))) sets.",
     "timeComplexity": "O(T * N * M) per test case, O(T * N * M) total.",
-    "spaceComplexity": "O(N * M) — the dominant structure is the 2D array to store the probabilities.",
+    "spaceComplexity": "O(N * M) \u2014 the dominant structure is the 2D array to store the probabilities.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T, N, M;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &M);\n        double p[N][M];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                scanf(\"%lf\", &p[i][j]);\n            }\n        }\n        double prob = 1.0;\n        for (int j = 0; j < M; j++) {\n            prob *= p[0][j];\n        }\n        double sum = prob;\n        double q = 1 - prob;\n        for (int i = 1; i < 100; i++) {\n            sum += prob * pow(q, i);\n        }\n        printf(\"%.6f\\n\", sum);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nint main() {\n    int T, N, M;\n    cin >> T;\n    while (T--) {\n        cin >> N >> M;\n        double p[N][M];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                cin >> p[i][j];\n            }\n        }\n        double prob = 1.0;\n        for (int j = 0; j < M; j++) {\n            prob *= p[0][j];\n        }\n        double sum = prob;\n        double q = 1 - prob;\n        for (int i = 1; i < 100; i++) {\n            sum += prob * pow(q, i);\n        }\n        cout << fixed;\n        cout.precision(6);\n        cout << sum << endl;\n    }\n    return 0;\n}",

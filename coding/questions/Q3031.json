@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "Dynamic Programming",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,10 +21,10 @@
   "content": {
     "problemStatement": "Captain Dehatti from Bawanian village is making strategy to win the Fake Cricket World Cup organised in his village. \n\nHe want his team to score runs only in 4's and 6's because he believes that scoring any runs by running will make them tired. \n\nHe also wants that the team does not loose more than  **L** wickets.\n\nHe now wonders in how many ways his team can score exactly **R** runs in **B** balls. Ofcourse, he assumes that the opponent bowling is awesome and will not concede any extra runs. \n\nFormally, He wonders how many ways can his team score exactly **R** runs in **B** balls, given that each ball can result in 4, 6, 0 , or W(wicket wont add anything to score). Atmost **L** wicktes are allowed [i.e. Atmost **L** 'W' can be there in B balls ].\n\n**Note:** His batting order is fixed i.e. After each wicket , next player to come is fixed.",
     "constraints": [
-      "1 ≤ T ≤ 25000",
-      "0 ≤ R ≤ 10^9",
-      "1 ≤ B ≤ 300",
-      "0 ≤ L ≤ 9"
+      "1 \u2264 T \u2264 25000",
+      "0 \u2264 R \u2264 10^9",
+      "1 \u2264 B \u2264 300",
+      "0 \u2264 L \u2264 9"
     ],
     "inputFormat": "The first line contains T, the number of test cases. Each test case contains 3 space-separated integers, R, B, and L, where R is the target score, B is the number of balls, and L is the maximum number of wickets allowed.",
     "outputFormat": "For each test case, output the number of ways the team can score exactly R runs in B balls, given that each ball can result in 4, 6, 0, or W (wicket), with at most L wickets allowed, modulo 1e9+7 (1000000007).",
@@ -102,8 +102,8 @@
   },
   "solution": {
     "approach": "This problem can be solved using dynamic programming. We will create a 3D DP table, dp[R][B][L], where dp[R][B][L] represents the number of ways to score R runs in B balls with at most L wickets. We will iterate over all possible scores, balls, and wickets, and for each state, we will consider all possible outcomes of the current ball (4, 6, 0, or W) and update the DP table accordingly. Finally, we will return dp[R][B][L] modulo 1e9+7.",
-    "timeComplexity": "O(T * R * B * L) — because we are iterating over all possible states in the DP table.",
-    "spaceComplexity": "O(R * B * L) — because we need to store the DP table.",
+    "timeComplexity": "O(T * R * B * L) \u2014 because we are iterating over all possible states in the DP table.",
+    "spaceComplexity": "O(R * B * L) \u2014 because we need to store the DP table.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint dp[1001][301][10];\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int R, B, L;\n        scanf(\"%d %d %d\", &R, &B, &L);\n        for (int i = 0; i <= R; i++) {\n            for (int j = 0; j <= B; j++) {\n                for (int k = 0; k <= L; k++) {\n                    dp[i][j][k] = 0;\n                }\n            }\n        }\n        dp[0][0][0] = 1;\n        for (int i = 0; i <= R; i++) {\n            for (int j = 1; j <= B; j++) {\n                for (int k = 0; k <= L; k++) {\n                    if (i >= 4) dp[i][j][k] = (dp[i][j][k] + dp[i - 4][j - 1][k]) % MOD;\n                    if (i >= 6) dp[i][j][k] = (dp[i][j][k] + dp[i - 6][j - 1][k]) % MOD;\n                    dp[i][j][k] = (dp[i][j][k] + dp[i][j - 1][k]) % MOD;\n                    if (k < L) dp[i][j][k] = (dp[i][j][k] + dp[i][j - 1][k + 1]) % MOD;\n                }\n            }\n        }\n        printf(\"%d\\n\", dp[R][B][L]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[1001][301][10];\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int R, B, L;\n        cin >> R >> B >> L;\n        for (int i = 0; i <= R; i++) {\n            for (int j = 0; j <= B; j++) {\n                for (int k = 0; k <= L; k++) {\n                    dp[i][j][k] = 0;\n                }\n            }\n        }\n        dp[0][0][0] = 1;\n        for (int i = 0; i <= R; i++) {\n            for (int j = 1; j <= B; j++) {\n                for (int k = 0; k <= L; k++) {\n                    if (i >= 4) dp[i][j][k] = (dp[i][j][k] + dp[i - 4][j - 1][k]) % MOD;\n                    if (i >= 6) dp[i][j][k] = (dp[i][j][k] + dp[i - 6][j - 1][k]) % MOD;\n                    dp[i][j][k] = (dp[i][j][k] + dp[i][j - 1][k]) % MOD;\n                    if (k < L) dp[i][j][k] = (dp[i][j][k] + dp[i][j - 1][k + 1]) % MOD;\n                }\n            }\n        }\n        cout << dp[R][B][L] << endl;\n    }\n    return 0;\n}",

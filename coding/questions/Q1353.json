@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Binary Search",
+      "Searching",
       "Matrix",
-      "Two‑Dimensional Array"
+      "Two\u2011Dimensional Array",
+      "Binary Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -25,17 +26,17 @@
       "1 <= T <= 10",
       "1 <= N, M <= 1000",
       "0 <= X <= 1,000,000",
-      "All matrix elements fit in 32‑bit signed integer range",
-      "Rows are sorted non‑decreasingly and rows are strictly increasing with respect to each other"
+      "All matrix elements fit in 32\u2011bit signed integer range",
+      "Rows are sorted non\u2011decreasingly and rows are strictly increasing with respect to each other"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three space‑separated integers N, M and X — the number of rows, the number of columns and the target value. Then follow N lines, each containing M space‑separated integers describing the matrix. Each row is sorted in non‑decreasing order and the first element of a row is greater than the last element of the previous row.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three space\u2011separated integers N, M and X \u2014 the number of rows, the number of columns and the target value. Then follow N lines, each containing M space\u2011separated integers describing the matrix. Each row is sorted in non\u2011decreasing order and the first element of a row is greater than the last element of the previous row.",
     "outputFormat": "For each test case output a single line containing \"YES\" if X exists in the matrix, otherwise \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\n3 4 7\\n1 2 3 4\\n5 6 7 8\\n9 10 11 12",
         "output": "YES",
-        "explanation": "The matrix is globally sorted. The value 7 is located at row 2 column 3 (1‑based), so the answer is YES."
+        "explanation": "The matrix is globally sorted. The value 7 is located at row 2 column 3 (1\u2011based), so the answer is YES."
       },
       {
         "id": "sample_2",
@@ -47,7 +48,7 @@
         "id": "sample_3",
         "input": "1\\n1 1 1\\n1",
         "output": "YES",
-        "explanation": "Single‑element matrix that equals the target."
+        "explanation": "Single\u2011element matrix that equals the target."
       }
     ]
   },
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "Because the whole matrix is globally sorted (each row is sorted and the first element of a row is larger than the last element of the previous row), we can treat the N×M matrix as a sorted 1‑dimensional array. Using binary search on the virtual array gives O(log(N·M)) time. The index mid is mapped to row = mid / M and col = mid % M to access the actual element. If the element equals X we answer YES, otherwise we continue the binary search. The algorithm is repeated for each test case.",
-    "timeComplexity": "O(log(N·M)) per test case, because binary search halves the search space each step.",
+    "approach": "Because the whole matrix is globally sorted (each row is sorted and the first element of a row is larger than the last element of the previous row), we can treat the N\u00d7M matrix as a sorted 1\u2011dimensional array. Using binary search on the virtual array gives O(log(N\u00b7M)) time. The index mid is mapped to row = mid / M and col = mid % M to access the actual element. If the element equals X we answer YES, otherwise we continue the binary search. The algorithm is repeated for each test case.",
+    "timeComplexity": "O(log(N\u00b7M)) per test case, because binary search halves the search space each step.",
     "spaceComplexity": "O(1) extra space besides the input matrix.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, M, X;\n        scanf(\"%d %d %d\", &N, &M, &X);\n        int **mat = (int **)malloc(N * sizeof(int *));\n        for (int i = 0; i < N; ++i) {\n            mat[i] = (int *)malloc(M * sizeof(int));\n            for (int j = 0; j < M; ++j) {\n                scanf(\"%d\", &mat[i][j]);\n            }\n        }\n        long long left = 0, right = (long long)N * M - 1;\n        int found = 0;\n        while (left <= right) {\n            long long mid = left + (right - left) / 2;\n            int r = mid / M;\n            int c = mid % M;\n            int val = mat[r][c];\n            if (val == X) { found = 1; break; }\n            else if (val < X) left = mid + 1;\n            else right = mid - 1;\n        }\n        printf(found ? \"YES\\n\" : \"NO\\n\");\n        for (int i = 0; i < N; ++i) free(mat[i]);\n        free(mat);\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Palindromes",
       "Combinatorics",
       "Counting",
+      "Palindromes",
+      "Strings",
       "Greedy"
     ],
     "companyTags": [],
@@ -26,26 +27,26 @@
       "1 <= T <= 10^5",
       "1 <= A, B <= 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers A and B.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers A and B.",
     "outputFormat": "For each test case output a single line containing \"Yes\" if two different binary palindrome strings with exactly A zeros and B ones can be constructed, otherwise output \"No\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2 2\n2 3\n3 3",
         "output": "Yes\nYes\nNo",
-        "explanation": "Test case 1: N=4 even, A and B are even and both >=2 → at least two palindromes exist.\\nTest case 2: N=5 odd, B is odd (3) and >=3, A=2 >=2 → two palindromes exist.\\nTest case 3: N=6 even but A and B are odd, so no palindrome can be formed."
+        "explanation": "Test case 1: N=4 even, A and B are even and both >=2 \u2192 at least two palindromes exist.\\nTest case 2: N=5 odd, B is odd (3) and >=3, A=2 >=2 \u2192 two palindromes exist.\\nTest case 3: N=6 even but A and B are odd, so no palindrome can be formed."
       },
       {
         "id": "sample_2",
         "input": "2\n4 0\n1 1",
         "output": "No\nNo",
-        "explanation": "Case 1: N=4 even, counts are even but B=0 (<2) → only one palindrome (\"0000\").\\nCase 2: N=2 even, A and B are odd → palindrome impossible."
+        "explanation": "Case 1: N=4 even, counts are even but B=0 (<2) \u2192 only one palindrome (\"0000\").\\nCase 2: N=2 even, A and B are odd \u2192 palindrome impossible."
       },
       {
         "id": "sample_3",
         "input": "2\n3 2\n5 4",
         "output": "Yes\nYes",
-        "explanation": "Case 1: N=5 odd, A is odd (3) >=3 and B=2 >=2 → two palindromes exist.\\nCase 2: N=9 odd, B is even, A is odd (5) >=3 and B=4 >=2 → two palindromes exist."
+        "explanation": "Case 1: N=5 odd, A is odd (3) >=3 and B=2 >=2 \u2192 two palindromes exist.\\nCase 2: N=9 odd, B is even, A is odd (5) >=3 and B=4 >=2 \u2192 two palindromes exist."
       }
     ]
   },
@@ -113,9 +114,9 @@
     ]
   },
   "solution": {
-    "approach": "For a binary string to be a palindrome, the counts of each character must satisfy parity constraints. If the total length N = A + B is even, both A and B must be even; if N is odd, exactly one of A or B must be odd (the odd‑count character occupies the middle). Once feasibility is confirmed, the number of distinct palindromes equals the number of ways to arrange the first half of the string (the second half is forced). For an even N the first half length is N/2 and we must place A/2 zeros and B/2 ones, giving C(N/2, A/2) possibilities. For an odd N, after fixing the middle character, the first half length is floor(N/2) and we must place (oddCount-1)/2 of the odd character and evenCount/2 of the even character, giving C(floor(N/2), (oddCount-1)/2) possibilities. There are at least two different palindromes iff the binomial coefficient is greater than 1, which happens exactly when both character types appear at least once in the first half. This leads to simple numeric conditions:\n- If N is even: feasible iff A and B are even, and we need A >= 2 and B >= 2.\n- If N is odd and A is odd: feasible iff B is even, and we need A >= 3 and B >= 2.\n- If N is odd and B is odd: feasible iff A is even, and we need B >= 3 and A >= 2.\nIf the corresponding condition holds, answer \"Yes\", otherwise \"No\". The algorithm runs in O(1) per test case.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables.",
+    "approach": "For a binary string to be a palindrome, the counts of each character must satisfy parity constraints. If the total length N = A + B is even, both A and B must be even; if N is odd, exactly one of A or B must be odd (the odd\u2011count character occupies the middle). Once feasibility is confirmed, the number of distinct palindromes equals the number of ways to arrange the first half of the string (the second half is forced). For an even N the first half length is N/2 and we must place A/2 zeros and B/2 ones, giving C(N/2, A/2) possibilities. For an odd N, after fixing the middle character, the first half length is floor(N/2) and we must place (oddCount-1)/2 of the odd character and evenCount/2 of the even character, giving C(floor(N/2), (oddCount-1)/2) possibilities. There are at least two different palindromes iff the binomial coefficient is greater than 1, which happens exactly when both character types appear at least once in the first half. This leads to simple numeric conditions:\n- If N is even: feasible iff A and B are even, and we need A >= 2 and B >= 2.\n- If N is odd and A is odd: feasible iff B is even, and we need A >= 3 and B >= 2.\n- If N is odd and B is odd: feasible iff A is even, and we need B >= 3 and A >= 2.\nIf the corresponding condition holds, answer \"Yes\", otherwise \"No\". The algorithm runs in O(1) per test case.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long A, B;\n        scanf(\"%lld %lld\", &A, &B);\n        long long N = A + B;\n        int possible = 0;\n        if (N % 2 == 0) {\n            if (A % 2 == 0 && B % 2 == 0 && A >= 2 && B >= 2) possible = 1;\n        } else {\n            if (A % 2 == 1 && B % 2 == 0 && A >= 3 && B >= 2) possible = 1;\n            else if (B % 2 == 1 && A % 2 == 0 && B >= 3 && A >= 2) possible = 1;\n        }\n        printf(\"%s\\n\", possible ? \"Yes\" : \"No\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long A,B; cin>>A>>B;\n        long long N=A+B;\n        bool ok=false;\n        if(N%2==0){\n            if(A%2==0 && B%2==0 && A>=2 && B>=2) ok=true;\n        }else{\n            if(A%2==1 && B%2==0 && A>=3 && B>=2) ok=true;\n            else if(B%2==1 && A%2==0 && B>=3 && A>=2) ok=true;\n        }\n        cout<<(ok?\"Yes\":\"No\")<<'\\n';\n    }\n    return 0;\n}",

@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Coloring",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming",
+      "Coloring"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We maintain a 2D array dp where dp[i][j] represents the number of ways to color the first i links such that the last link is colored with the jth color. We iterate over all possible colors for the last link and update dp[i][j] accordingly. We also need to ensure that every color is used at least once in every M+1 consecutive links.",
     "timeComplexity": "O(T * N * M) per test case, O(T * N * M) total.",
-    "spaceComplexity": "O(N * M) — for the dp array.",
+    "spaceComplexity": "O(N * M) \u2014 for the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint dp[100005][105], cnt[105];\nint main() {\n    int T, N, M;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &M);\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j <= M; j++) {\n                dp[i][j] = 0;\n                cnt[j] = 0;\n            }\n        }\n        for (int i = 1; i <= M; i++) {\n            dp[1][i] = 1;\n        }\n        for (int i = 2; i <= N; i++) {\n            for (int j = 1; j <= M; j++) {\n                for (int k = 1; k <= M; k++) {\n                    if (k != j) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int i = 1; i <= M; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[100005][105], cnt[105];\nint main() {\n    int T, N, M;\n    cin >> T;\n    while (T--) {\n        cin >> N >> M;\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j <= M; j++) {\n                dp[i][j] = 0;\n                cnt[j] = 0;\n            }\n        }\n        for (int i = 1; i <= M; i++) {\n            dp[1][i] = 1;\n        }\n        for (int i = 2; i <= N; i++) {\n            for (int j = 1; j <= M; j++) {\n                for (int k = 1; k <= M; k++) {\n                    if (k != j) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int i = 1; i <= M; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

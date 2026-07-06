@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming | Greedy | Strings",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Subset Generation",
+      "String Processing",
       "Greedy Algorithm",
-      "String Processing"
+      "Subset Generation",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "The approach involves generating all possible subsets of friends and their states, then checking which subsets are present in all parties. We use a greedy algorithm to select the subsets that cover the most parties. The time complexity is O(2^N * M * N) due to subset generation and checking, and the space complexity is O(2^N) for storing subsets.",
-    "timeComplexity": "O(2^N * M * N) — per test case is O(2^N * M * N), total is O(T * 2^N * M * N)",
-    "spaceComplexity": "O(2^N) — for storing subsets",
+    "timeComplexity": "O(2^N * M * N) \u2014 per test case is O(2^N * M * N), total is O(T * 2^N * M * N)",
+    "spaceComplexity": "O(2^N) \u2014 for storing subsets",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <string.h>\n#define MAXN 5\n#define MAXM 1000\n#define MAXS 100\nint T, N, M;\nchar states[MAXM][MAXN];\nint main() {\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &M);\n        for (int i = 0; i < M; i++) {\n            scanf(\"%s\", states[i]);\n        }\n        // Generate all possible subsets and their states\n        int min_size = MAXM * MAXN;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int size = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    size++;\n                }\n            }\n            // Check if the subset is present in all parties\n            int valid = 1;\n            for (int j = 0; j < M; j++) {\n                int found = 0;\n                for (int i = 0; i < N; i++) {\n                    if ((mask & (1 << i)) != 0 && states[j][i] != '0') {\n                        found = 1;\n                        break;\n                    }\n                }\n                if (!found) {\n                    valid = 0;\n                    break;\n                }\n            }\n            if (valid) {\n                min_size = size;\n            }\n        }\n        printf(\"%d\\n\", min_size);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n#define MAXN 5\n#define MAXM 1000\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        vector<string> states(M);\n        for (int i = 0; i < M; i++) {\n            cin >> states[i];\n        }\n        // Generate all possible subsets and their states\n        int min_size = MAXM * MAXN;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int size = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    size++;\n                }\n            }\n            // Check if the subset is present in all parties\n            bool valid = true;\n            for (int j = 0; j < M; j++) {\n                bool found = false;\n                for (int i = 0; i < N; i++) {\n                    if ((mask & (1 << i)) != 0 && states[j][i] != '0') {\n                        found = true;\n                        break;\n                    }\n                }\n                if (!found) {\n                    valid = false;\n                    break;\n                }\n            }\n            if (valid) {\n                min_size = min(min_size, size);\n            }\n        }\n        cout << min_size << endl;\n    }\n    return 0;\n}",

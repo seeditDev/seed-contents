@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Bitwise XOR",
+      "Bit Manipulation",
       "Backtracking"
     ],
     "companyTags": [],
@@ -21,24 +22,24 @@
   "content": {
     "problemStatement": "Once upon a time, in a land far, far away... nevermind, we don't recall the rest of the story.\n\nAll we know is that Chef has a matrix of integers MMM with NNN rows and NNN columns; he wants to take a single element from each row and a single element from each column (NNN elements in total) and find their bitwise XOR. Find the set of all values he could obtain.",
     "constraints": [
-      "1 ≤ T ≤ 7",
-      "1 ≤ N ≤ 60",
-      "0 ≤ Mi,j ≤ 1023 for each valid i, j"
+      "1 \u2264 T \u2264 7",
+      "1 \u2264 N \u2264 60",
+      "0 \u2264 Mi,j \u2264 1023 for each valid i, j"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. N lines follow. For each i (1≤i≤N), the i-th of the following lines contains N space-separated integers Mi,1,Mi,2,…,Mi,N.",
-    "outputFormat": "For each test case, print a single line containing one or more space-separated integers in increasing order — the obtainable values.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. N lines follow. For each i (1\u2264i\u2264N), the i-th of the following lines contains N space-separated integers Mi,1,Mi,2,\u2026,Mi,N.",
+    "outputFormat": "For each test case, print a single line containing one or more space-separated integers in increasing order \u2014 the obtainable values.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n3\n5 9 15\n19 7 2\n1 0 0",
         "output": "2 7 9 10 26 28",
-        "explanation": "Explanation: We could choose M1,1=5 and M2,2=7; since we are only allowed to choose one element from each row and one from each column, we cannot choose anything else from rows 1, 2 and columns 1, 2, so we have to choose M3,3=0. Their XOR is 5⊕7⊕0=2."
+        "explanation": "Explanation: We could choose M1,1=5 and M2,2=7; since we are only allowed to choose one element from each row and one from each column, we cannot choose anything else from rows 1, 2 and columns 1, 2, so we have to choose M3,3=0. Their XOR is 5\u22957\u22950=2."
       },
       {
         "id": "sample_2",
         "input": "1\n2\n1 2\n3 4",
         "output": "4 6",
-        "explanation": "Explanation: We can choose M1,1=1 and M2,2=4, or M1,2=2 and M2,1=3. Their XORs are 1⊕4=5 and 2⊕3=1, respectively."
+        "explanation": "Explanation: We can choose M1,1=1 and M2,2=4, or M1,2=2 and M2,1=3. Their XORs are 1\u22954=5 and 2\u22953=1, respectively."
       },
       {
         "id": "sample_3",
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a backtracking approach. We start by choosing an element from the first row, then an element from the second row that is not in the same column as the previously chosen element, and so on. We continue this process until we have chosen an element from each row. We then calculate the bitwise XOR of all the chosen elements and add it to our result set. We repeat this process for all possible combinations of elements.",
-    "timeComplexity": "O(N! * N) — because in the worst case, we have to try all permutations of elements and for each permutation, we have to calculate the XOR of N elements",
-    "spaceComplexity": "O(N) — because we need to store the current permutation of elements",
+    "timeComplexity": "O(N! * N) \u2014 because in the worst case, we have to try all permutations of elements and for each permutation, we have to calculate the XOR of N elements",
+    "spaceComplexity": "O(N) \u2014 because we need to store the current permutation of elements",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nvoid backtrack(int **matrix, int *chosen, int *columns, int row, int n, int *result, int *resultSize) {\n    if (row == n) {\n        int xor = 0;\n        for (int i = 0; i < n; i++) {\n            xor ^= matrix[i][chosen[i]];\n        }\n        result[(*resultSize)++] = xor;\n        return;\n    }\n    for (int col = 0; col < n; col++) {\n        if (columns[col] == 0) {\n            chosen[row] = col;\n            columns[col] = 1;\n            backtrack(matrix, chosen, columns, row + 1, n, result, resultSize);\n            columns[col] = 0;\n        }\n    }\n}\n\nint* chefAndLostStory(int **matrix, int n, int *returnSize) {\n    int *result = (int*)malloc(n * n * sizeof(int));\n    *returnSize = 0;\n    int *chosen = (int*)malloc(n * sizeof(int));\n    int *columns = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        columns[i] = 0;\n    }\n    backtrack(matrix, chosen, columns, 0, n, result, returnSize);\n    qsort(result, *returnSize, sizeof(int), compare);\n    return result;\n}\n",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nvoid backtrack(vector<vector<int>>& matrix, vector<int>& chosen, vector<int>& columns, int row, int n, vector<int>& result) {\n    if (row == n) {\n        int xor = 0;\n        for (int i = 0; i < n; i++) {\n            xor ^= matrix[i][chosen[i]];\n        }\n        result.push_back(xor);\n        return;\n    }\n    for (int col = 0; col < n; col++) {\n        if (columns[col] == 0) {\n            chosen[row] = col;\n            columns[col] = 1;\n            backtrack(matrix, chosen, columns, row + 1, n, result);\n            columns[col] = 0;\n        }\n    }\n}\n\nvector<int> chefAndLostStory(vector<vector<int>>& matrix, int n) {\n    vector<int> result;\n    vector<int> chosen(n, 0);\n    vector<int> columns(n, 0);\n    backtrack(matrix, chosen, columns, 0, n, result);\n    sort(result.begin(), result.end());\n    return result;\n}\n",

@@ -12,6 +12,7 @@
     "tags": [
       "Probability",
       "Grid",
+      "Dynamic Programming",
       "Path Finding"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "The country in which Chef Ciel lives has many earthquakes.\nSince Ciel's restaurant is far away from an evacuation center, Ciel is afraid of earthquakes.\nSo, Ciel would like to know the probability that Ciel can reach from Ciel's restaurant to the evacuation center when an earthquake occurs.\nYour task is calculating the probability under the following assumptions.\n\n\n\nCiel's city has **R*****C** junctions (**i**, **j**) for 1 ≤ **i** ≤ **R**, 1 ≤ **j** ≤ **C**.\nThere is a two-way road between the junctions (**r**1, **c**1) and (**r**2, **c**2) if and only if |**r**1 - **r**2| + |**c**1 - **c**2| = 1.\nWhen an earthquake occurs, each road is destroyed with probability **p**, and these events are statistically independent of each other.\nCiel's restaurant is in the junction (1, 1), and the evacuation center is in the junction (**R**, **C**).\nCiel only considers a big earthquake, so you can assume that **p** is not less than 0.1.",
+    "problemStatement": "The country in which Chef Ciel lives has many earthquakes.\nSince Ciel's restaurant is far away from an evacuation center, Ciel is afraid of earthquakes.\nSo, Ciel would like to know the probability that Ciel can reach from Ciel's restaurant to the evacuation center when an earthquake occurs.\nYour task is calculating the probability under the following assumptions.\n\n\n\nCiel's city has **R*****C** junctions (**i**, **j**) for 1 \u2264 **i** \u2264 **R**, 1 \u2264 **j** \u2264 **C**.\nThere is a two-way road between the junctions (**r**1, **c**1) and (**r**2, **c**2) if and only if |**r**1 - **r**2| + |**c**1 - **c**2| = 1.\nWhen an earthquake occurs, each road is destroyed with probability **p**, and these events are statistically independent of each other.\nCiel's restaurant is in the junction (1, 1), and the evacuation center is in the junction (**R**, **C**).\nCiel only considers a big earthquake, so you can assume that **p** is not less than 0.1.",
     "constraints": [
       "1 <= T <= 50",
       "1 <= R <= 8",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We start from the destination (R, C) and move backwards to the source (1, 1). For each cell, we calculate the probability of reaching the destination from that cell. The probability of reaching the destination from a cell is the sum of the probabilities of reaching the destination from the cells below and to the right of it, multiplied by the probability of the road being intact (1 - p).",
     "timeComplexity": "O(R * C) per test case, O(T * R * C) total.",
-    "spaceComplexity": "O(R * C) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(R * C) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#define MAX_R 10\n#define MAX_C 1000000\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int R, C;\n        double p;\n        scanf(\"%d %d %lf\", &R, &C, &p);\n        double dp[R][C];\n        for (int i = 0; i < R; i++) {\n            for (int j = 0; j < C; j++) {\n                if (i == R - 1 && j == C - 1) {\n                    dp[i][j] = 1;\n                } else {\n                    dp[i][j] = 0;\n                }\n            }\n        }\n        for (int i = R - 2; i >= 0; i--) {\n            for (int j = C - 2; j >= 0; j--) {\n                double prob = 0;\n                if (i + 1 < R) prob += (1 - p) * dp[i + 1][j];\n                if (j + 1 < C) prob += (1 - p) * dp[i][j + 1];\n                dp[i][j] = prob;\n            }\n        }\n        printf(\"%.10f\\n\", dp[0][0]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int R, C;\n        double p;\n        cin >> R >> C >> p;\n        vector<vector<double>> dp(R, vector<double>(C, 0));\n        dp[R - 1][C - 1] = 1;\n        for (int i = R - 2; i >= 0; i--) {\n            for (int j = C - 2; j >= 0; j--) {\n                double prob = 0;\n                if (i + 1 < R) prob += (1 - p) * dp[i + 1][j];\n                if (j + 1 < C) prob += (1 - p) * dp[i][j + 1];\n                dp[i][j] = prob;\n            }\n        }\n        cout << fixed;\n        cout.precision(10);\n        cout << dp[0][0] << endl;\n    }\n    return 0;\n}",

@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Bit Manipulation | Mathematics",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "XOR",
       "Parity",
+      "XOR",
       "Modular Exponentiation",
-      "Fast Power"
+      "Fast Power",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,7 +22,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Suppose you have an array BBB consisting of MMM non-negative integers.\n\nBBB is called **good** if you can make all elements of BBB equal to 000 by performing the following operation any (possibly 000) number of times:\n\n\nSelect two indices iii and jjj (1≤i&lt;j≤M)(1 \\leq i \\lt j \\leq M)(1≤i&lt;j≤M);\nLet X=BiX = B_iX=Bi​ ∣|∣ BjB_jBj​, where ∣|∣ denotes bitwise OR;\nReplace BiB_iBi​ with X−BiX - B_iX−Bi​ and BjB_jBj​ with X−BjX - B_jX−Bj​.\nYou are given integers NNN and KKK. Count number of arrays AAA of length NNN such that:\n\n\n0≤Ai&lt;2K0 \\leq A_i \\lt 2^K0≤Ai​&lt;2K;\nAAA is **good**.\nSince the number of arrays might be too large, please print it modulo 998244353998244353998244353.\n\n\nInput Format\n\nThe first line contains a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains two integers NNN and KKK −-− the length of AAA and parameter KKK.\n\n\nOutput Format\nFor each test case, output on a new line, the number of **good** arrays satisfying given condition modulo 998244353998244353998244353.",
+    "problemStatement": "Suppose you have an array BBB consisting of MMM non-negative integers.\n\nBBB is called **good** if you can make all elements of BBB equal to 000 by performing the following operation any (possibly 000) number of times:\n\n\nSelect two indices iii and jjj (1\u2264i&lt;j\u2264M)(1 \\leq i \\lt j \\leq M)(1\u2264i&lt;j\u2264M);\nLet X=BiX = B_iX=Bi\u200b \u2223|\u2223 BjB_jBj\u200b, where \u2223|\u2223 denotes bitwise OR;\nReplace BiB_iBi\u200b with X\u2212BiX - B_iX\u2212Bi\u200b and BjB_jBj\u200b with X\u2212BjX - B_jX\u2212Bj\u200b.\nYou are given integers NNN and KKK. Count number of arrays AAA of length NNN such that:\n\n\n0\u2264Ai&lt;2K0 \\leq A_i \\lt 2^K0\u2264Ai\u200b&lt;2K;\nAAA is **good**.\nSince the number of arrays might be too large, please print it modulo 998244353998244353998244353.\n\n\nInput Format\n\nThe first line contains a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains two integers NNN and KKK \u2212-\u2212 the length of AAA and parameter KKK.\n\n\nOutput Format\nFor each test case, output on a new line, the number of **good** arrays satisfying given condition modulo 998244353998244353998244353.",
     "constraints": [
       "1 <= T <= 10^5",
       "2 <= N <= 10^6",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For each bit position the operation can move the bit between elements and cancels it when it appears in two elements. Therefore a bit can be completely removed iff it appears an even number of times in the whole array. The condition for the whole array to be good is that for every bit (0 … K‑1) the total number of set bits among all N numbers is even. This is equivalent to the XOR of all N numbers being zero. Each element is a K‑bit vector, so we need the number of N‑tuples of K‑bit vectors whose XOR is zero. For a single bit there are 2^{N-1} ways to have an even number of 1s among N positions. Bits are independent, thus the total number is (2^{N-1})^K = 2^{K·(N-1)}. The answer is computed as pow_mod(2, K·(N-1), MOD). Because MOD is prime, the exponent can be reduced modulo MOD‑1 using Fermat's theorem.",
-    "timeComplexity": "O(T·log MOD) – each test case needs one modular exponentiation.",
+    "approach": "For each bit position the operation can move the bit between elements and cancels it when it appears in two elements. Therefore a bit can be completely removed iff it appears an even number of times in the whole array. The condition for the whole array to be good is that for every bit (0 \u2026 K\u20111) the total number of set bits among all N numbers is even. This is equivalent to the XOR of all N numbers being zero. Each element is a K\u2011bit vector, so we need the number of N\u2011tuples of K\u2011bit vectors whose XOR is zero. For a single bit there are 2^{N-1} ways to have an even number of 1s among N positions. Bits are independent, thus the total number is (2^{N-1})^K = 2^{K\u00b7(N-1)}. The answer is computed as pow_mod(2, K\u00b7(N-1), MOD). Because MOD is prime, the exponent can be reduced modulo MOD\u20111 using Fermat's theorem.",
+    "timeComplexity": "O(T\u00b7log MOD) \u2013 each test case needs one modular exponentiation.",
     "spaceComplexity": "O(1) besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\nconst long long MOD = 998244353LL;\nlong long modpow(long long a, long long e) {\n    long long r = 1;\n    a %= MOD;\n    while (e) {\n        if (e & 1) r = r * a % MOD;\n        a = a * a % MOD;\n        e >>= 1;\n    }\n    return r;\n}\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        long long N, K; scanf(\"%lld %lld\", &N, &K);\n        long long exp = ( (K % (MOD-1)) * ((N-1) % (MOD-1)) ) % (MOD-1);\n        printf(\"%lld\\n\", modpow(2, exp));\n    }\n    return 0;\n}",

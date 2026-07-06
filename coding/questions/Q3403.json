@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
+      "Graphs",
       "Disjoint Set Union",
       "Connected Components"
     ],
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "Chef has recently set up a network between the **N** residents of the dormitory. Each resident owns a personal computer. There are direct connections between **E** pairs of computers. Pairs of computers not directly connected can still communicate if there is a path between them in the network.\n\nAll **N** residents are fans of Basketball, but each one has their own favorite team. The **i**th resident's favorite team is team **Gi**. Naturally, fans of the same team want to communicate with each other via the network.\n\nUnfortunately, Chef isn't too knowledgeable about computers so he didn't ensure that all pairs of computers can communicate with each other. We call a pair of residents **(i, j)** **sad** if they have the same favorite team (i.e., **Gi** = **Gj**) but they can't communicate with each other. Thus, there can be many sad pairs in the network right now.\n\nEven worse, from time to time, someone gets disconnected from the network, further increasing the number of sad pairs. When a resident is disconnected, all direct connections to and from his/her computer becomes unusable.\n\nChef didn't anticipate all these problems and has turned to you for help. Your first task is to submit a report containing **N** integers, where the **i**th integer is the number of sad pairs in the network if the **i**th resident was disconnected.",
     "constraints": [
-      "5 ≤ N ≤ 2×10^5",
-      "1 ≤ Gi ≤ 10^6",
-      "0 ≤ E ≤ min(2×10^5, N(N-1)/2)",
-      "1 ≤ ai < bi ≤ N",
+      "5 \u2264 N \u2264 2\u00d710^5",
+      "1 \u2264 Gi \u2264 10^6",
+      "0 \u2264 E \u2264 min(2\u00d710^5, N(N-1)/2)",
+      "1 \u2264 ai < bi \u2264 N",
       "No pair (ai, bi) will appear more than once in the input."
     ],
     "inputFormat": "The first line contains two integers, N and E. The second line contains N space-separated integers G1, G2, ..., GN denoting the residents' favorite teams. The following E lines each contains two integers, ai and bi, which means that there is a direct connection between computers of resident ai and bi. Connections are bidirectional.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a disjoint set union data structure to keep track of the connected components in the graph. We first initialize the parent array and the rank array for the disjoint set union data structure. Then, we iterate over each edge in the graph and union the two nodes if they are not already in the same connected component. After that, we iterate over each node and find the number of sad pairs if the node was disconnected from the network. We can do this by finding the number of nodes in the same connected component as the current node and the number of nodes with the same favorite team as the current node, and then subtracting the number of nodes that are both in the same connected component and have the same favorite team as the current node.",
-    "timeComplexity": "O(N + E * α(N)) — where α(N) is the inverse Ackermann function, which grows very slowly. The time complexity is dominated by the time it takes to perform the union operations in the disjoint set union data structure.",
-    "spaceComplexity": "O(N) — we need to store the parent array and the rank array for the disjoint set union data structure, which takes O(N) space.",
+    "timeComplexity": "O(N + E * \u03b1(N)) \u2014 where \u03b1(N) is the inverse Ackermann function, which grows very slowly. The time complexity is dominated by the time it takes to perform the union operations in the disjoint set union data structure.",
+    "spaceComplexity": "O(N) \u2014 we need to store the parent array and the rank array for the disjoint set union data structure, which takes O(N) space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 200005\nint parent[MAXN], rank[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y); if (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; } } }\nint main() {\n    int N, E;\n    scanf(\"%d %d\", &N, &E);\n    for (int i = 1; i <= N; i++) {\n        scanf(\"%d\", &parent[i]);\n        rank[i] = 0;\n    }\n    for (int i = 0; i < E; i++) {\n        int x, y;\n        scanf(\"%d %d\", &x, &y);\n        unionSet(x, y);\n    }\n    for (int i = 1; i <= N; i++) {\n        int count = 0;\n        for (int j = 1; j <= N; j++) {\n            if (find(i) != find(j) && parent[i] == parent[j]) {\n                count++;\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 200005;\nint parent[MAXN], rank[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y); if (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; } } }\nint main() {\n    int N, E;\n    cin >> N >> E;\n    for (int i = 1; i <= N; i++) {\n        cin >> parent[i];\n        rank[i] = 0;\n    }\n    for (int i = 0; i < E; i++) {\n        int x, y;\n        cin >> x >> y;\n        unionSet(x, y);\n    }\n    for (int i = 1; i <= N; i++) {\n        int count = 0;\n        for (int j = 1; j <= N; j++) {\n            if (find(i) != find(j) && parent[i] == parent[j]) {\n                count++;\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

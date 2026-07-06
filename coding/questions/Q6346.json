@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Two\u2011Pointer",
+      "Strings",
       "Monotone String",
       "Greedy",
-      "Counting Transitions",
-      "Two‑Pointer"
+      "Counting Transitions"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,27 +22,27 @@
     ]
   },
   "content": {
-    "problemStatement": "You have a binary string SSS. You can perform the following operation on SSS:\n\n\nSelect any substring SL…RS_{L \\dots R}SL…R​ (1≤L≤R≤∣S∣)(1 \\le L \\le R \\le |S|)(1≤L≤R≤∣S∣) which is **sorted** in **non-decreasing** order and remove it from SSS.\n(Both the left and right halves are concatenated after performing the operation)\nFor e.g. if S=100011000S = 100011000S=100011000, we can perform the following operation: 100011‾000→100000100\\underline{011}000 \\rightarrow 100000100011​000→100000\n\nFind the **minimum** number of operations required so that the final binary string SSS is **sorted** in **non-decreasing** order.\n\nNote that a substring is formed by deleting some (possibly zero) characters from the beginning and some (possibly zero) characters from the end of the string.\n\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases. Then the test cases follow.\nThe first line of each test case contains an integer NNN — the length of the binary string SSS.\nThe second line of each test case contains a binary string SSS of length NNN containing 000s and 111s only.\n\n\nOutput Format\nFor each test case, output the **minimum** number of operations required so that the final binary string SSS is sorted in **non-decreasing** order.",
+    "problemStatement": "You have a binary string SSS. You can perform the following operation on SSS:\n\n\nSelect any substring SL\u2026RS_{L \\dots R}SL\u2026R\u200b (1\u2264L\u2264R\u2264\u2223S\u2223)(1 \\le L \\le R \\le |S|)(1\u2264L\u2264R\u2264\u2223S\u2223) which is **sorted** in **non-decreasing** order and remove it from SSS.\n(Both the left and right halves are concatenated after performing the operation)\nFor e.g. if S=100011000S = 100011000S=100011000, we can perform the following operation: 100011\u203e000\u2192100000100\\underline{011}000 \\rightarrow 100000100011\u200b000\u2192100000\n\nFind the **minimum** number of operations required so that the final binary string SSS is **sorted** in **non-decreasing** order.\n\nNote that a substring is formed by deleting some (possibly zero) characters from the beginning and some (possibly zero) characters from the end of the string.\n\n\nInput Format\n\nThe first line contains a single integer TTT \u2014 the number of test cases. Then the test cases follow.\nThe first line of each test case contains an integer NNN \u2014 the length of the binary string SSS.\nThe second line of each test case contains a binary string SSS of length NNN containing 000s and 111s only.\n\n\nOutput Format\nFor each test case, output the **minimum** number of operations required so that the final binary string SSS is sorted in **non-decreasing** order.",
     "constraints": [
       "1 <= T <= 10^5",
       "1 <= N <= 10^5",
-      "The sum of N over all test cases does not exceed 2·10^5",
+      "The sum of N over all test cases does not exceed 2\u00b710^5",
       "S contains only characters '0' and '1'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Then for each test case: the first line contains an integer N, the length of the binary string. The second line contains a binary string S of length N consisting only of characters '0' and '1'.",
-    "outputFormat": "For each test case output a single integer – the minimum number of operations required to make the string sorted in non‑decreasing order.",
+    "outputFormat": "For each test case output a single integer \u2013 the minimum number of operations required to make the string sorted in non\u2011decreasing order.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n3\n000\n5\n01110\n2\n10",
         "output": "0\n1\n1",
-        "explanation": "Test case 1: No \"10\" transition, string already sorted → 0 operations.\nTest case 2: The only \"10\" occurs between positions 4 and 5, so answer is 1.\nTest case 3: The string \"10\" itself is a single \"10\" transition, requiring 1 operation."
+        "explanation": "Test case 1: No \"10\" transition, string already sorted \u2192 0 operations.\nTest case 2: The only \"10\" occurs between positions 4 and 5, so answer is 1.\nTest case 3: The string \"10\" itself is a single \"10\" transition, requiring 1 operation."
       },
       {
         "id": "sample_2",
         "input": "2\n4\n1010\n6\n110011",
         "output": "2\n1",
-        "explanation": "For \"1010\" there are two \"10\" transitions (positions 1‑2 and 3‑4) → 2 operations.\nFor \"110011\" only one transition occurs at positions 2‑3 (\"1\" followed by \"0\") → 1 operation."
+        "explanation": "For \"1010\" there are two \"10\" transitions (positions 1\u20112 and 3\u20114) \u2192 2 operations.\nFor \"110011\" only one transition occurs at positions 2\u20113 (\"1\" followed by \"0\") \u2192 1 operation."
       },
       {
         "id": "sample_3",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "A substring can be removed only if it does not contain the pattern \"10\" (a 1 followed later by a 0). Therefore a deletion block is always a monotone substring of the form 0*1*.\n\nIf the original string already has no \"10\" adjacent pair, it is already sorted and zero operations are needed. Otherwise, each occurrence of the adjacent pattern \"10\" creates a place where a 1 is immediately followed by a 0. Any deletion block cannot cross such a boundary because it would contain \"10\" and would not be allowed. Consequently, each maximal \"10\" transition must be broken by at least one separate operation. Moreover, deleting either the whole block of consecutive 1's before the transition or the block of consecutive 0's after it (both are monotone) resolves that transition without affecting any other transition. Hence the minimum number of operations equals the number of positions i (1‑based) such that S[i] = '1' and S[i+1] = '0'.\n\nAlgorithm per test case:\n1. Initialise ans = 0.\n2. Scan the string from left to right for i = 0 … N‑2.\n3. If S[i] == '1' and S[i+1] == '0', increment ans.\n4. Output ans.\n\nThe scan is O(N) time and O(1) extra space.",
-    "timeComplexity": "O(N) per test case, where N is the length of the string. Over all test cases O(total N) ≤ 2·10^5.",
+    "approach": "A substring can be removed only if it does not contain the pattern \"10\" (a 1 followed later by a 0). Therefore a deletion block is always a monotone substring of the form 0*1*.\n\nIf the original string already has no \"10\" adjacent pair, it is already sorted and zero operations are needed. Otherwise, each occurrence of the adjacent pattern \"10\" creates a place where a 1 is immediately followed by a 0. Any deletion block cannot cross such a boundary because it would contain \"10\" and would not be allowed. Consequently, each maximal \"10\" transition must be broken by at least one separate operation. Moreover, deleting either the whole block of consecutive 1's before the transition or the block of consecutive 0's after it (both are monotone) resolves that transition without affecting any other transition. Hence the minimum number of operations equals the number of positions i (1\u2011based) such that S[i] = '1' and S[i+1] = '0'.\n\nAlgorithm per test case:\n1. Initialise ans = 0.\n2. Scan the string from left to right for i = 0 \u2026 N\u20112.\n3. If S[i] == '1' and S[i+1] == '0', increment ans.\n4. Output ans.\n\nThe scan is O(N) time and O(1) extra space.",
+    "timeComplexity": "O(N) per test case, where N is the length of the string. Over all test cases O(total N) \u2264 2\u00b710^5.",
     "spaceComplexity": "O(1) additional memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char s[100005]; scanf(\"%s\", s);\n        int ans = 0;\n        for (int i = 0; i < N-1; ++i) {\n            if (s[i]=='1' && s[i+1]=='0') ++ans;\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

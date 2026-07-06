@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Bit Manipulation",
-      "Modular Arithmetic"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has an integer array **X**, and a binary array **S**, both of size **N**. He wants to know how many vectors (denote by **V**) of **N** elements exist, for which the following conditions hold for all valid indices **i** (that is, for all 1 ≤ **i** ≤ **N**).\n\n\n0 ≤ **Vi** &lt; 1018If **Si** = 1, **Vi** is ≥ **Xi**, and if **Si** = 0, **Vi** ≤ **Xi**Sum of the elements of **V**, when viewed as a string, contains \"47\" as a substring.\n\n\nPlease help Chef find this count. Since it may be a very large number, you should output the count modulo **109+7**.",
+    "problemStatement": "Chef has an integer array **X**, and a binary array **S**, both of size **N**. He wants to know how many vectors (denote by **V**) of **N** elements exist, for which the following conditions hold for all valid indices **i** (that is, for all 1 \u2264 **i** \u2264 **N**).\n\n\n0 \u2264 **Vi** &lt; 1018If **Si** = 1, **Vi** is \u2265 **Xi**, and if **Si** = 0, **Vi** \u2264 **Xi**Sum of the elements of **V**, when viewed as a string, contains \"47\" as a substring.\n\n\nPlease help Chef find this count. Since it may be a very large number, you should output the count modulo **109+7**.",
     "constraints": [
       "1 <= N <= 8",
       "0 <= Xi < 10^18",
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "We will use a recursive approach with memoization to solve this problem. We will generate all possible vectors V and check if they satisfy the given conditions. We will use a bitmask to represent the current state of the vector V.",
-    "timeComplexity": "O(2^N * 10^N) — because we are generating all possible vectors V and checking each one.",
-    "spaceComplexity": "O(2^N) — because we are using a bitmask to represent the current state of the vector V.",
+    "timeComplexity": "O(2^N * 10^N) \u2014 because we are generating all possible vectors V and checking each one.",
+    "spaceComplexity": "O(2^N) \u2014 because we are using a bitmask to represent the current state of the vector V.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n#define MOD 1000000007\n\nint countVectors(int N, int S[], int X[]) {\n    int count = 0;\n    for (uint64_t i = 0; i < (1ULL << (N * 18)); i++) {\n        uint64_t vec[N];\n        for (int j = 0; j < N; j++) {\n            vec[j] = (i >> (j * 18)) & ((1ULL << 18) - 1);\n        }\n        int valid = 1;\n        for (int j = 0; j < N; j++) {\n            if (S[j] == 1 && vec[j] < X[j]) {\n                valid = 0;\n                break;\n            }\n            if (S[j] == 0 && vec[j] > X[j]) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid) {\n            char str[100];\n            sprintf(str, \"%llu\", i);\n            if (strstr(str, \"47\") != NULL) {\n                count++;\n            }\n        }\n    }\n    return count % MOD;\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int S[N], X[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d %d\", &S[i], &X[i]);\n    }\n    printf(\"%d\\n\", countVectors(N, S, X));\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n#define MOD 1000000007\n\nint countVectors(int N, int S[], int X[]) {\n    int count = 0;\n    for (uint64_t i = 0; i < (1ULL << (N * 18)); i++) {\n        uint64_t vec[N];\n        for (int j = 0; j < N; j++) {\n            vec[j] = (i >> (j * 18)) & ((1ULL << 18) - 1);\n        }\n        int valid = 1;\n        for (int j = 0; j < N; j++) {\n            if (S[j] == 1 && vec[j] < X[j]) {\n                valid = 0;\n                break;\n            }\n            if (S[j] == 0 && vec[j] > X[j]) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid) {\n            char str[100];\n            sprintf(str, \"%llu\", i);\n            if (strstr(str, \"47\") != NULL) {\n                count++;\n            }\n        }\n    }\n    return count % MOD;\n}\n\nint main() {\n    int N;\n    std::cin >> N;\n    int S[N], X[N];\n    for (int i = 0; i < N; i++) {\n        std::cin >> S[i] >> X[i];\n    }\n    std::cout << countVectors(N, S, X) << std::endl;\n    return 0;\n}",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Sorting",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Lexicographical Sorting",
-      "Custom Sorting"
+      "Custom Sorting",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "Generate all possible M-letter words using the first N letters of the English alphabet. Calculate the cost of each word using the given matrix P. Sort the words in descending order of their costs and then lexicographically. Return the K-th word in the sorted list.",
-    "timeComplexity": "O(N^M * M * log(N^M)) — generating all words takes O(N^M), calculating the cost of each word takes O(M), and sorting the words takes O(N^M * M * log(N^M))",
-    "spaceComplexity": "O(N^M * M) — storing all generated words takes O(N^M * M)",
+    "timeComplexity": "O(N^M * M * log(N^M)) \u2014 generating all words takes O(N^M), calculating the cost of each word takes O(M), and sorting the words takes O(N^M * M * log(N^M))",
+    "spaceComplexity": "O(N^M * M) \u2014 storing all generated words takes O(N^M * M)",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 16\n#define MAX_M 10\n#define MAX_K 100000\n\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    int cost_x = 0, cost_y = 0;\n    for (int i = 0; i < M; i++) {\n        cost_x += P[i][x[i]];\n        cost_y += P[i][y[i]];\n    }\n    if (cost_x != cost_y) return cost_y - cost_x;\n    for (int i = 0; i < M; i++) {\n        if (x[i] != y[i]) return x[i] - y[i];\n    }\n    return 0;\n}\n\nint main() {\n    int N, M, K;\n    scanf(\"%d %d %d\", &N, &M, &K);\n    int P[MAX_M][MAX_N];\n    for (int i = 0; i < M; i++) {\n        for (int j = 0; j < N; j++) {\n            scanf(\"%d\", &P[i][j]);\n        }\n    }\n    int *words = (int *)malloc(N * M * sizeof(int));\n    int count = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            for (int k = 0; k < N; k++) {\n                for (int l = 0; l < N; l++) {\n                    for (int m = 0; m < N; m++) {\n                        words[count++] = i;\n                        words[count++] = j;\n                        words[count++] = k;\n                        words[count++] = l;\n                        words[count++] = m;\n                    }\n                }\n            }\n        }\n    }\n    qsort(words, N * N * N * N * N, sizeof(int), compare);\n    for (int i = 0; i < M; i++) {\n        printf(\"%c\", words[(K - 1) * M + i] + 'a');\n    }\n    printf(\"\\n\");\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX_N 16\n#define MAX_M 10\n#define MAX_K 100000\n\nstruct Word {\n    int letters[MAX_M];\n    int cost;\n};\n\nbool compare(const Word &x, const Word &y) {\n    if (x.cost != y.cost) return x.cost > y.cost;\n    for (int i = 0; i < MAX_M; i++) {\n        if (x.letters[i] != y.letters[i]) return x.letters[i] < y.letters[i];\n    }\n    return false;\n}\n\nint main() {\n    int N, M, K;\n    cin >> N >> M >> K;\n    int P[MAX_M][MAX_N];\n    for (int i = 0; i < M; i++) {\n        for (int j = 0; j < N; j++) {\n            cin >> P[i][j];\n        }\n    }\n    Word words[N * N * N * N * N];\n    int count = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            for (int k = 0; k < N; k++) {\n                for (int l = 0; l < N; l++) {\n                    for (int m = 0; m < N; m++) {\n                        words[count].letters[0] = i;\n                        words[count].letters[1] = j;\n                        words[count].letters[2] = k;\n                        words[count].letters[3] = l;\n                        words[count].letters[4] = m;\n                        words[count].cost = P[0][i] + P[1][j] + P[2][k] + P[3][l] + P[4][m];\n                        count++;\n                    }\n                }\n            }\n        }\n    }\n    sort(words, words + count, compare);\n    for (int i = 0; i < M; i++) {\n        cout << (char)(words[K - 1].letters[i] + 'a');\n    }\n    cout << endl;\n    return 0;\n}",

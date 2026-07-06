@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Greedy",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Prefix",
+      "Linear Scan",
+      "Strings",
       "Substring Removal",
-      "Greedy",
-      "Linear Scan"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   },
   "solution": {
     "approach": "Let cnt1 be the number of consecutive '1's from the beginning of S. These leading ones can never be harmed because removing any character before them would only shorten the prefix. The first zero appears at position cnt1 (if it exists). By deleting a substring that starts at this first zero and ends just before some later position k, we can bring the block of ones that starts at k to the front, directly after the kept leading ones. Therefore the best we can achieve is cnt1 plus the length of the longest contiguous block of '1's that starts somewhere after the first zero. We obtain this by a single linear scan: after counting the leading ones, scan the rest of the string, keep the length of the current run of '1's, and track the maximum run length. The answer is cnt1 + maxRun. If the whole string is already all '1's, the answer is N.",
-    "timeComplexity": "O(N) per test case, where N is the length of the string. The total over all test cases is O( Σ N ) ≤ O(2·10^5).",
+    "timeComplexity": "O(N) per test case, where N is the length of the string. The total over all test cases is O( \u03a3 N ) \u2264 O(2\u00b710^5).",
     "spaceComplexity": "O(1) additional memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char s[200005]; scanf(\"%s\", s);\n        int i = 0;\n        while (i < N && s[i] == '1') i++;\n        int cnt1 = i;\n        int maxRun = 0, cur = 0;\n        for (; i < N; ++i) {\n            if (s[i] == '1') {\n                cur++;\n            } else {\n                if (cur > maxRun) maxRun = cur;\n                cur = 0;\n            }\n        }\n        if (cur > maxRun) maxRun = cur;\n        printf(\"%d\\n\", cnt1 + maxRun);\n    }\n    return 0;\n}",

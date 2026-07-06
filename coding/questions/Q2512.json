@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Dijkstra's Algorithm",
+      "Graphs",
       "Shortest Path"
     ],
     "companyTags": [],
@@ -21,10 +22,10 @@
   "content": {
     "problemStatement": "Chef has started Home Delivery scheme in one of his restaurants. As the scheme is new , Chef appoints only one employee to deliver food to various locations. The delivery boy who has been appointed is an absent-minded chap. He always forgets to fill fuel in his delivery scooter. So what he does is that whenever Chef sends him for delivery, he goes to the gas station from the restaurant first. He gets his tank filled and then he heads towards his destination. He will do this every single time irrespective of the destination. The delivery boy tries his best to be on time. And to do this, he will choose those paths(from restaurant to gas station AND gas station to destinaion) which cost him the least amount of time. Your task is to tell the Chef how much time can the delivery boy save if he had enough fuel in his scooter i.e. if he went to the destination directly without stopping for fuel (taking the path which costs him least amount of time).\n\nThe city has **N** streets numbered from **0** to **N-1**. The restaurant is on street number **S**, the gas station is on street number **G** and the food has to be delivered to street **D** . Note that **S, G** and **D**  need **not** be distinct.\n\nInput:**N**\n**NxN****T****N****N**\n**T[i][j]**thth**T[i][i]**\n**M**\n**M****S****G****D**\nOutput:For each of the **M** scenarios, output the time taken by the delivery boy to deliver the food and the time he could have saved if he went directly from **S** to **D**.\n\nBoth these values must be on the same line separated by a single space.",
     "constraints": [
-      "1 ≤ N ≤ 250",
-      "1 ≤ M ≤ 10000",
-      "0 ≤ T[i][j] ≤ 100000",
-      "0 ≤ S, G, D ≤ N-1"
+      "1 \u2264 N \u2264 250",
+      "1 \u2264 M \u2264 10000",
+      "0 \u2264 T[i][j] \u2264 100000",
+      "0 \u2264 S, G, D \u2264 N-1"
     ],
     "inputFormat": "First line contains N, the number of streets. The next N lines contain N space-separated integers, representing the time taken to travel between streets. The next line contains an integer M, representing the number of scenarios. The next M lines contain three space-separated integers, representing the street numbers of the restaurant, gas station, and destination.",
     "outputFormat": "For each scenario, output the time taken by the delivery boy to deliver the food and the time he could have saved if he went directly from the restaurant to the destination, separated by a space.",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using Dijkstra's algorithm to find the shortest path between the restaurant, gas station, and destination. The key insight is to calculate the time taken by the delivery boy to deliver the food with and without stopping at the gas station, and then find the difference between these two times.",
     "timeComplexity": "O(N^3 * M) per test case, O(N^3 * M) total. The precomputation is done once for each test case.",
-    "spaceComplexity": "O(N^2) — the dominant structure is the graph.",
+    "spaceComplexity": "O(N^2) \u2014 the dominant structure is the graph.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\n#define INF INT_MAX\n#define N 250\nint min(int a, int b) { return a < b ? a : b; }\nint dijkstra(int graph[N][N], int src, int dest) {\n    int dist[N];\n    for (int i = 0; i < N; i++) dist[i] = INF;\n    dist[src] = 0;\n    for (int i = 0; i < N - 1; i++) {\n        for (int u = 0; u < N; u++) {\n            for (int v = 0; v < N; v++) {\n                if (graph[u][v] != INF && dist[u] != INF && dist[u] + graph[u][v] < dist[v]) {\n                    dist[v] = dist[u] + graph[u][v];\n                }\n            }\n        }\n    }\n    return dist[dest];\n}\nint main() {\n    int N, M;\n    scanf(\"%d\", &N);\n    int graph[N][N];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            scanf(\"%d\", &graph[i][j]);\n        }\n    }\n    scanf(\"%d\", &M);\n    for (int i = 0; i < M; i++) {\n        int S, G, D;\n        scanf(\"%d %d %d\", &S, &G, &D);\n        int time_with_gas_station = dijkstra(graph, S, G) + dijkstra(graph, G, D);\n        int time_without_gas_station = dijkstra(graph, S, D);\n        printf(\"%d %d\\n\", time_with_gas_station, time_with_gas_station - time_without_gas_station);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\n#include <vector>\n#define INF std::numeric_limits<int>::max()\n#define N 250\nint dijkstra(const std::vector<std::vector<int>>& graph, int src, int dest) {\n    std::vector<int> dist(N, INF);\n    dist[src] = 0;\n    for (int i = 0; i < N - 1; i++) {\n        for (int u = 0; u < N; u++) {\n            for (int v = 0; v < N; v++) {\n                if (graph[u][v] != INF && dist[u] != INF && dist[u] + graph[u][v] < dist[v]) {\n                    dist[v] = dist[u] + graph[u][v];\n                }\n            }\n        }\n    }\n    return dist[dest];\n}\nint main() {\n    int N, M;\n    std::cin >> N;\n    std::vector<std::vector<int>> graph(N, std::vector<int>(N));\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            std::cin >> graph[i][j];\n        }\n    }\n    std::cin >> M;\n    for (int i = 0; i < M; i++) {\n        int S, G, D;\n        std::cin >> S >> G >> D;\n        int time_with_gas_station = dijkstra(graph, S, G) + dijkstra(graph, G, D);\n        int time_without_gas_station = dijkstra(graph, S, D);\n        std::cout << time_with_gas_station << \" \" << time_with_gas_station - time_without_gas_station << std::endl;\n    }\n    return 0;\n}",

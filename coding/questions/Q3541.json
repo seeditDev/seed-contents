@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Sliding Window",
       "String Manipulation",
-      "Sliding Window"
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +20,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Nemo went to the shop to buy a chain for his girlfriend. The shopkeeper has shown him a chain made of some expensive stones. The chain has **n** stones marked from **0** to **n-1**. The **ith** stone is connected with **((i+1)%n)th** stone for each **0 ≤ i &lt; n**. Each stone can be either Ruby or Amber.\n\nNemo defines beauty factor **B** of a chain as the maximum number of consecutive stones of the same type.\n\nIn the chain above, the beauty factor is **B = 4** because there are **4** consecutive Amber in the chain.\n\nNemo wants to choose **exactly one** stone **i** and exchange it with a stone of a different type. So if the **ith** stone is Ruby, Nemo will exchange it with Amber and vice-versa. He wants to do it in such a way that the value **B** is as small as possible.\n\nGiven the configuration of the chain, can you find the minimum value of **B** that Nemo can get after exchanging **exactly one** stone? Note that, it’s not allowed to change positions of the stones; the new stone must be placed in the same position as the original stone.\n\n\nInput Format\nFirst line contains the number of test cases **T (1 ≤ T ≤ 2500)**. For each test case, there is a single line containing a string **S (1 ≤ |S| ≤ 105)** denoting the chain. Here |S| denotes the length or number of characters in the string. The string is made of only **'R'** (Ruby) and **'A'** (Amber). The total number of characters in the input file will be less than **5 x 106**.\n\n\n\nOutput Format\nFor each test case, print the case number and the answer in a single line. Look at the output for sample input for details.",
+    "problemStatement": "Nemo went to the shop to buy a chain for his girlfriend. The shopkeeper has shown him a chain made of some expensive stones. The chain has **n** stones marked from **0** to **n-1**. The **ith** stone is connected with **((i+1)%n)th** stone for each **0 \u2264 i &lt; n**. Each stone can be either Ruby or Amber.\n\nNemo defines beauty factor **B** of a chain as the maximum number of consecutive stones of the same type.\n\nIn the chain above, the beauty factor is **B = 4** because there are **4** consecutive Amber in the chain.\n\nNemo wants to choose **exactly one** stone **i** and exchange it with a stone of a different type. So if the **ith** stone is Ruby, Nemo will exchange it with Amber and vice-versa. He wants to do it in such a way that the value **B** is as small as possible.\n\nGiven the configuration of the chain, can you find the minimum value of **B** that Nemo can get after exchanging **exactly one** stone? Note that, it\u2019s not allowed to change positions of the stones; the new stone must be placed in the same position as the original stone.\n\n\nInput Format\nFirst line contains the number of test cases **T (1 \u2264 T \u2264 2500)**. For each test case, there is a single line containing a string **S (1 \u2264 |S| \u2264 105)** denoting the chain. Here |S| denotes the length or number of characters in the string. The string is made of only **'R'** (Ruby) and **'A'** (Amber). The total number of characters in the input file will be less than **5 x 106**.\n\n\n\nOutput Format\nFor each test case, print the case number and the answer in a single line. Look at the output for sample input for details.",
     "constraints": [
-      "1 ≤ T ≤ 2500",
-      "1 ≤ |S| ≤ 105",
+      "1 \u2264 T \u2264 2500",
+      "1 \u2264 |S| \u2264 105",
       "The total number of characters in the input file will be less than 5 x 106"
     ],
-    "inputFormat": "The first line contains the number of test cases T (1 ≤ T ≤ 2500). For each test case, there is a single line containing a string S (1 ≤ |S| ≤ 105) denoting the chain. Here |S| denotes the length or number of characters in the string. The string is made of only 'R' (Ruby) and 'A' (Amber).",
+    "inputFormat": "The first line contains the number of test cases T (1 \u2264 T \u2264 2500). For each test case, there is a single line containing a string S (1 \u2264 |S| \u2264 105) denoting the chain. Here |S| denotes the length or number of characters in the string. The string is made of only 'R' (Ruby) and 'A' (Amber).",
     "outputFormat": "For each test case, print the case number and the answer in a single line. The answer is the minimum value of B that Nemo can get after exchanging exactly one stone.",
     "sampleTestCases": [
       {
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to find the maximum number of consecutive stones of the same type in the chain. Then, we need to try exchanging each stone with a stone of a different type and find the minimum value of B. We can use a sliding window approach to find the maximum number of consecutive stones of the same type.",
-    "timeComplexity": "O(T * n^2) — where n is the length of the string. We are iterating over each test case, and for each test case, we are iterating over each character in the string and trying to exchange it with a stone of a different type.",
-    "spaceComplexity": "O(n) — where n is the length of the string. We are storing the string in memory.",
+    "timeComplexity": "O(T * n^2) \u2014 where n is the length of the string. We are iterating over each test case, and for each test case, we are iterating over each character in the string and trying to exchange it with a stone of a different type.",
+    "spaceComplexity": "O(n) \u2014 where n is the length of the string. We are storing the string in memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint maxConsecutive(char *s, int n) {\n    int max = 0;\n    for (int i = 0; i < n; i++) {\n        int count = 0;\n        char c = s[i];\n        for (int j = i; j < n; j++) {\n            if (s[j] == c) {\n                count++;\n            } else {\n                break;\n            }\n        }\n        max = (max > count) ? max : count;\n    }\n    return max;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        char s[105];\n        scanf(\"%s\", s);\n        int n = strlen(s);\n        int minB = n;\n        for (int i = 0; i < n; i++) {\n            char temp = s[i];\n            if (s[i] == 'R') {\n                s[i] = 'A';\n            } else {\n                s[i] = 'R';\n            }\n            int b = maxConsecutive(s, n);\n            minB = (minB < b) ? minB : b;\n            s[i] = temp;\n        }\n        printf(\"Case %d: %d\\n\", t + 1, minB);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint maxConsecutive(string s) {\n    int max = 0;\n    for (int i = 0; i < s.length(); i++) {\n        int count = 0;\n        char c = s[i];\n        for (int j = i; j < s.length(); j++) {\n            if (s[j] == c) {\n                count++;\n            } else {\n                break;\n            }\n        }\n        max = (max > count) ? max : count;\n    }\n    return max;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        string s;\n        cin >> s;\n        int minB = s.length();\n        for (int i = 0; i < s.length(); i++) {\n            char temp = s[i];\n            if (s[i] == 'R') {\n                s[i] = 'A';\n            } else {\n                s[i] = 'R';\n            }\n            int b = maxConsecutive(s);\n            minB = (minB < b) ? minB : b;\n            s[i] = temp;\n        }\n        cout << \"Case \" << t + 1 << \": \" << minB << endl;\n    }\n    return 0;\n}",

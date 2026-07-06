@@ -13,6 +13,7 @@
       "Binary Tree",
       "Inorder Traversal",
       "Queue",
+      "Data Structures",
       "Recursion"
     ],
     "companyTags": [],
@@ -25,9 +26,9 @@
     "constraints": [
       "1 <= T <= 10",
       "1 <= number of nodes in a test case <= 50000",
-      "Node values fit in 32‑bit signed integer"
+      "Node values fit in 32\u2011bit signed integer"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a space‑separated level order representation of a binary tree. An integer denotes a node value, the character 'N' denotes a NULL child. The tree is rooted at the first value of the line.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a space\u2011separated level order representation of a binary tree. An integer denotes a node value, the character 'N' denotes a NULL child. The tree is rooted at the first value of the line.",
     "outputFormat": "For each test case output the inorder traversal of the given tree. Print the node values separated by a single space and end the line with a space as shown in the samples.",
     "sampleTestCases": [
       {
@@ -104,7 +105,7 @@
   "solution": {
     "approach": "For each test case we first rebuild the binary tree from its level order description. While reading the tokens we keep a queue of created nodes. For the node taken from the queue we assign its left and right child from the next two tokens (skipping 'N'). After the tree is built we perform a standard recursive inorder traversal (left, root, right) and store the visited values. Finally we print the stored values in order separated by a space. The reconstruction is O(N) and the traversal is O(N).",
     "timeComplexity": "O(N) per test case, where N is the number of nodes in that test case.",
-    "spaceComplexity": "O(N) for the tree nodes and the recursion stack (worst‑case height N).",
+    "spaceComplexity": "O(N) for the tree nodes and the recursion stack (worst\u2011case height N).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <ctype.h>\n\ntypedef struct Node{int data; struct Node* left; struct Node* right;}Node;\n\nNode* newNode(int v){Node* n=(Node*)malloc(sizeof(Node));n->data=v;n->left=n->right=NULL;return n;}\n\nvoid inorder(Node* root){if(!root) return; inorder(root->left); printf(\"%d \",root->data); inorder(root->right);} \n\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; getchar(); // consume newline\nchar line[100000];\nfor(int tc=0; tc<T; ++tc){\n    if(!fgets(line, sizeof(line), stdin)) break;\n    // split line into tokens\n    char* tokens[100000]; int cnt=0; char* p=strtok(line,\" \\n\\r\");\n    while(p){tokens[cnt++]=p; p=strtok(NULL,\" \\n\\r\");}\n    if(cnt==0){printf(\"\\n\"); continue;}\n    Node* root=newNode(atoi(tokens[0]));\n    Node** q=(Node**)malloc(sizeof(Node*)*cnt);\n    int front=0, back=0; q[back++]=root; int idx=1;\n    while(front<back && idx<cnt){\n        Node* cur=q[front++];\n        if(idx<cnt && strcmp(tokens[idx],\"N\")!=0){cur->left=newNode(atoi(tokens[idx])); q[back++]=cur->left;} idx++;\n        if(idx<cnt && strcmp(tokens[idx],\"N\")!=0){cur->right=newNode(atoi(tokens[idx])); q[back++]=cur->right;} idx++;\n    }\n    free(q);\n    inorder(root);\n    printf(\"\\n\");\n    // free memory omitted for brevity\n}\nreturn 0;}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Node{int data; Node* left; Node* right; Node(int v):data(v),left(nullptr),right(nullptr){}};\nNode* buildTree(const vector<string>& tok){if(tok.empty()) return nullptr; Node* root=new Node(stoi(tok[0])); queue<Node*> q; q.push(root); size_t i=1; while(!q.empty() && i<tok.size()){\n    Node* cur=q.front(); q.pop();\n    if(i<tok.size() && tok[i]!=\"N\"){cur->left=new Node(stoi(tok[i])); q.push(cur->left);} ++i;\n    if(i<tok.size() && tok[i]!=\"N\"){cur->right=new Node(stoi(tok[i])); q.push(cur->right);} ++i;\n}\nreturn root;}\nvoid inorder(Node* r, vector<int>& out){if(!r) return; inorder(r->left,out); out.push_back(r->data); inorder(r->right,out);} \nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T; if(!(cin>>T)) return 0; string dummy; getline(cin,dummy); // consume endline\nwhile(T--){string line; getline(cin,line); while(line.size() && (line.back()=='\\r' || line.back()=='\\n')) line.pop_back(); \n    stringstream ss(line); vector<string> tok; string s; while(ss>>s) tok.push_back(s);\n    Node* root=buildTree(tok);\n    vector<int> res; inorder(root,res);\n    for(int v:res) cout<<v<<' '; cout<<'\\n';\n    // memory cleanup omitted\n}\nreturn 0;}\n",

@@ -10,9 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
+      "Shopping",
       "Discounts",
-      "Shopping"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +116,7 @@
   "solution": {
     "approach": "This problem can be solved using dynamic programming. The idea is to maintain a 2D array dp where dp[i][j] represents the minimum amount Alice needs to spend to buy the first i items with the last item bought from shop j. We iterate over each item and for each item, we iterate over each shop. For each shop, we calculate the minimum amount Alice needs to spend to buy the current item from that shop by considering two cases: either she buys the current item from the same shop as the previous item or from a different shop. We update dp[i][j] with the minimum of these two cases.",
     "timeComplexity": "O(T * N * M) per test case, O(T * N * M) total.",
-    "spaceComplexity": "O(N * M) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(N * M) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int prices[N][M], discounts[N][M];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                scanf(\"%d %d\", &prices[i][j], &discounts[i][j]);\n            }\n        }\n        int dp[N][M];\n        for (int i = 0; i < M; i++) {\n            dp[0][i] = prices[0][i];\n        }\n        for (int i = 1; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                int min = INT_MAX;\n                for (int k = 0; k < M; k++) {\n                    int cost = dp[i - 1][k] + (k == j ? (prices[i][j] - discounts[i - 1][k]) > 0 ? (prices[i][j] - discounts[i - 1][k]) : 0 : prices[i][j]);\n                    if (cost < min) {\n                        min = cost;\n                    }\n                }\n                dp[i][j] = min;\n            }\n        }\n        int min = INT_MAX;\n        for (int i = 0; i < M; i++) {\n            if (dp[N - 1][i] < min) {\n                min = dp[N - 1][i];\n            }\n        }\n        printf(\"%d\\n\", min);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        int prices[N][M], discounts[N][M];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                cin >> prices[i][j] >> discounts[i][j];\n            }\n        }\n        int dp[N][M];\n        for (int i = 0; i < M; i++) {\n            dp[0][i] = prices[0][i];\n        }\n        for (int i = 1; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                int min = numeric_limits<int>::max();\n                for (int k = 0; k < M; k++) {\n                    int cost = dp[i - 1][k] + (k == j ? (prices[i][j] - discounts[i - 1][k]) > 0 ? (prices[i][j] - discounts[i - 1][k]) : 0 : prices[i][j]);\n                    if (cost < min) {\n                        min = cost;\n                    }\n                }\n                dp[i][j] = min;\n            }\n        }\n        int min = numeric_limits<int>::max();\n        for (int i = 0; i < M; i++) {\n            if (dp[N - 1][i] < min) {\n                min = dp[N - 1][i];\n            }\n        }\n        cout << min << endl;\n    }\n    return 0;\n}",

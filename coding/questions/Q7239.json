@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory | Dynamic Programming | Strings",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "DP",
+      "Strings",
       "String",
       "Game Theory",
       "No consecutive same move"
@@ -21,12 +22,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef and Roku are locked in an epic Rock, Paper, Scissors battle consisting of NNN games.\n\nHowever, Chef has a secret weapon: he found a note revealing Roku's entire sequence of moves beforehand!\n\nYou are given a string AAA, where AiA_iAi​ represents Roku's planned move in the ithi^{th}ith game.\n\nEach character of AAA is one of `'R'`, `'P'`, and `'S'`, denoting Rock, Paper, and Scissors, respectively.\n\nDetermine the maximum number of games Chef can win, if he is **not allowed to make the same move twice consecutively**.\n\n**Note:** In a classic game of Rock, Paper, Scissors, both players choose one of the three moves simultaneously, and the winner is decided as follows:\n\n\nRock crushes Scissors (Rock wins)\nPaper covers Rock (Paper wins)\nScissors cut Paper (Scissors wins)\nIf both players choose the same move, it's a draw.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains a single integer NNN — the number of games.\nThe second line of each test case contains a string AAA of length NNN, where the iii-th character AiA_iAi​ represents the move Roku will make in the iii-th game.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the maximum number of games Chef can win.",
+    "problemStatement": "Chef and Roku are locked in an epic Rock, Paper, Scissors battle consisting of NNN games.\n\nHowever, Chef has a secret weapon: he found a note revealing Roku's entire sequence of moves beforehand!\n\nYou are given a string AAA, where AiA_iAi\u200b represents Roku's planned move in the ithi^{th}ith game.\n\nEach character of AAA is one of `'R'`, `'P'`, and `'S'`, denoting Rock, Paper, and Scissors, respectively.\n\nDetermine the maximum number of games Chef can win, if he is **not allowed to make the same move twice consecutively**.\n\n**Note:** In a classic game of Rock, Paper, Scissors, both players choose one of the three moves simultaneously, and the winner is decided as follows:\n\n\nRock crushes Scissors (Rock wins)\nPaper covers Rock (Paper wins)\nScissors cut Paper (Scissors wins)\nIf both players choose the same move, it's a draw.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains a single integer NNN \u2014 the number of games.\nThe second line of each test case contains a string AAA of length NNN, where the iii-th character AiA_iAi\u200b represents the move Roku will make in the iii-th game.\n\n\n\n\nOutput Format\nFor each test case, output on a new line the maximum number of games Chef can win.",
     "constraints": [
       "1 <= T <= 100000",
       "1 <= N <= 100000",
       "Sum of N over all test cases does not exceed 100000",
-      "A_i ∈ {'R','P','S'}"
+      "A_i \u2208 {'R','P','S'}"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the number of games; the second line contains a string A of length N, where A_i is 'R', 'P' or 'S' representing Roku's move in the i-th game.",
     "outputFormat": "For each test case output a single line containing the maximum possible number of games Chef can win while never playing the same move in two consecutive games.",
@@ -104,7 +105,7 @@
   },
   "solution": {
     "approach": "For each position i we keep the best score for each possible last move of Chef (R, P, S). Let dp[i][c] be the maximum wins up to game i when Chef plays move c in game i. Transition: for every previous move p (p != c) dp[i][c] = max(dp[i][c], dp[i-1][p] + win(c, A[i])). The win function returns 1 if c beats A[i] (R beats S, P beats R, S beats P) otherwise 0. Initialise dp[0][*] = 0 (no previous move). The answer for a test case is max_c dp[N-1][c]. This runs in O(N*9) = O(N) time and O(1) extra space (we keep only the previous row).",
-    "timeComplexity": "O(N) per test case, total O(sum of N) ≤ 1e5",
+    "timeComplexity": "O(N) per test case, total O(sum of N) \u2264 1e5",
     "spaceComplexity": "O(1) additional space",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint win(char chef, char opp) {\n    if (chef == 'R' && opp == 'S') return 1;\n    if (chef == 'P' && opp == 'R') return 1;\n    if (chef == 'S' && opp == 'P') return 1;\n    return 0;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char A[100005]; scanf(\"%s\", A);\n        int prev[3] = {0,0,0}, cur[3];\n        // 0:R,1:P,2:S\n        for (int i = 0; i < N; ++i) {\n            for (int c = 0; c < 3; ++c) cur[c] = -1000000;\n            for (int p = 0; p < 3; ++p) {\n                for (int c = 0; c < 3; ++c) if (c != p) {\n                    int add = win(c==0?'R':c==1?'P':'S', A[i]);\n                    if (prev[p] + add > cur[c]) cur[c] = prev[p] + add;\n                }\n            }\n            for (int c = 0; c < 3; ++c) prev[c] = cur[c];\n        }\n        int ans = prev[0];\n        if (prev[1] > ans) ans = prev[1];\n        if (prev[2] > ans) ans = prev[2];\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

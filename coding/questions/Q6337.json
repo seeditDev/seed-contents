@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Stack | Strings | Math",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": true,
     "tags": [
       "Postfix Evaluation",
+      "Strings",
       "Stack",
       "Expression Evaluation"
     ],
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a string SSS consisting of NNN characters. Each character is either a digit from 000 to 999 or an operator out of `+`, `-`, and `*`.\n\nConsider the string to be in reverse polish notation consisting of **digits** (from 111 to 999) as the operands and `+`, `-`, or `*` as the operators and evaluate the expression.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN — the number of characters in the string.\nThe next line consists of NNN characters, where the ithi^{th}ith character is either a digit from 000 to 999 or an operator out of `+`, `-`, and `*`. Consider the string to be in reverse polish notation.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, an integer denoting the evaluated expression.",
+    "problemStatement": "You are given a string SSS consisting of NNN characters. Each character is either a digit from 000 to 999 or an operator out of `+`, `-`, and `*`.\n\nConsider the string to be in reverse polish notation consisting of **digits** (from 111 to 999) as the operands and `+`, `-`, or `*` as the operators and evaluate the expression.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains a single integer NNN \u2014 the number of characters in the string.\nThe next line consists of NNN characters, where the ithi^{th}ith character is either a digit from 000 to 999 or an operator out of `+`, `-`, and `*`. Consider the string to be in reverse polish notation.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, an integer denoting the evaluated expression.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 100000",
       "The sum of N over all test cases does not exceed 200000",
-      "The expression is guaranteed to be valid and contains only single‑digit operands."
+      "The expression is guaranteed to be valid and contains only single\u2011digit operands."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the length of the string. The second line contains a string S of length N consisting of digits ('0'‑'9') and the operators '+', '-', '*'. The string represents a valid postfix (reverse polish) expression.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the length of the string. The second line contains a string S of length N consisting of digits ('0'\u2011'9') and the operators '+', '-', '*'. The string represents a valid postfix (reverse polish) expression.",
     "outputFormat": "For each test case output a single line containing the integer value obtained after evaluating the postfix expression.",
     "sampleTestCases": [
       {
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "Traverse the string from left to right. Maintain a stack of 64‑bit integers. If the current character is a digit, push its numeric value onto the stack. If it is an operator, pop the top two values (first the right operand, then the left operand), apply the operator, and push the result back. After processing the whole string the stack contains exactly one value – the answer. This runs in O(N) time per test case and uses O(N) auxiliary space for the stack.",
-    "timeComplexity": "O(N) per test case, where N is the length of the expression. The total across all test cases is O(ΣN) ≤ O(2·10^5).",
+    "approach": "Traverse the string from left to right. Maintain a stack of 64\u2011bit integers. If the current character is a digit, push its numeric value onto the stack. If it is an operator, pop the top two values (first the right operand, then the left operand), apply the operator, and push the result back. After processing the whole string the stack contains exactly one value \u2013 the answer. This runs in O(N) time per test case and uses O(N) auxiliary space for the stack.",
+    "timeComplexity": "O(N) per test case, where N is the length of the expression. The total across all test cases is O(\u03a3N) \u2264 O(2\u00b710^5).",
     "spaceComplexity": "O(N) for the stack in the worst case (when the expression consists only of operands before any operator).",
     "code": {
       "C": "#include <stdio.h>\n#include <ctype.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char *s = (char*)malloc(N+2);\n        scanf(\"%s\", s);\n        long long *st = (long long*)malloc((N+1)*sizeof(long long));\n        int top = 0;\n        for (int i = 0; i < N; ++i) {\n            char c = s[i];\n            if (isdigit(c)) {\n                st[top++] = c - '0';\n            } else {\n                long long b = st[--top];\n                long long a = st[--top];\n                long long res = 0;\n                if (c == '+') res = a + b;\n                else if (c == '-') res = a - b;\n                else if (c == '*') res = a * b;\n                st[top++] = res;\n            }\n        }\n        printf(\"%lld\\n\", st[top-1]);\n        free(s);\n        free(st);\n    }\n    return 0;\n}",

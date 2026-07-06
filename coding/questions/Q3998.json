@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Bitwise AND",
-      "Dynamic Programming"
+      "Bit Manipulation",
+      "Dynamic Programming",
+      "Bitwise AND"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Danya has a sequence AAA of non-negative integers. Initially, AAA has length NNN.\n\nLet's define a function f(x,A)f(x, A)f(x,A), where xxx is a positive integer ≤∣A∣\\le |A|≤∣A∣, as the maximum of bitwise ANDs of all subsequences of AAA with length equal to xxx.\n\nKostya gives Danya MMM requests. There are three types of requests:\n\n\n1  v1\\;v1v: append an integer vvv to AAA\n2  v2\\;v2v: delete an element equal to vvv from AAA; it is guaranteed that AAA contains vvv at least once, but if there are more elements equal to vvv, you should only delete one of them\n3  x3\\;x3x: calculate f(x,A)f(x, A)f(x,A)\nAlso, Kostya knows that at any time, all elements of AAA are smaller than 2k2^k2k for a fixed kkk.\n\nHelp Danya process all of Kostya's requests.",
+    "problemStatement": "Danya has a sequence AAA of non-negative integers. Initially, AAA has length NNN.\n\nLet's define a function f(x,A)f(x, A)f(x,A), where xxx is a positive integer \u2264\u2223A\u2223\\le |A|\u2264\u2223A\u2223, as the maximum of bitwise ANDs of all subsequences of AAA with length equal to xxx.\n\nKostya gives Danya MMM requests. There are three types of requests:\n\n\n1\u2005\u200av1\\;v1v: append an integer vvv to AAA\n2\u2005\u200av2\\;v2v: delete an element equal to vvv from AAA; it is guaranteed that AAA contains vvv at least once, but if there are more elements equal to vvv, you should only delete one of them\n3\u2005\u200ax3\\;x3x: calculate f(x,A)f(x, A)f(x,A)\nAlso, Kostya knows that at any time, all elements of AAA are smaller than 2k2^k2k for a fixed kkk.\n\nHelp Danya process all of Kostya's requests.",
     "constraints": [
-      "1 ≤ N, M ≤ 75,000",
-      "1 ≤ k ≤ 18",
-      "0 ≤ v < 2^k",
-      "1 ≤ x ≤ |A|"
+      "1 \u2264 N, M \u2264 75,000",
+      "1 \u2264 k \u2264 18",
+      "0 \u2264 v < 2^k",
+      "1 \u2264 x \u2264 |A|"
     ],
-    "inputFormat": "The first line contains three space-separated integers N, M, and k. The second line contains N space-separated integers a1, a2, …, aN denoting the initial sequence A. Each of the following M lines contains two space-separated integers describing a request in the format 1 v1, 2 v2, or 3 x3.",
-    "outputFormat": "For each request of type 3, print a single line containing one integer — the value of f(x, A).",
+    "inputFormat": "The first line contains three space-separated integers N, M, and k. The second line contains N space-separated integers a1, a2, \u2026, aN denoting the initial sequence A. Each of the following M lines contains two space-separated integers describing a request in the format 1 v1, 2 v2, or 3 x3.",
+    "outputFormat": "For each request of type 3, print a single line containing one integer \u2014 the value of f(x, A).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We will maintain a 2D array dp where dp[i][j] represents the maximum bitwise AND of all subsequences of length j from the first i elements. We will update this array based on the type of request. For type 1 requests, we append the new element to the sequence and update the dp array. For type 2 requests, we remove the specified element from the sequence and update the dp array. For type 3 requests, we calculate the maximum bitwise AND of all subsequences of length x from the current sequence.",
-    "timeComplexity": "O(M * N * k) — where M is the number of requests, N is the length of the sequence, and k is the number of bits in the integers.",
-    "spaceComplexity": "O(N * k) — where N is the length of the sequence and k is the number of bits in the integers.",
+    "timeComplexity": "O(M * N * k) \u2014 where M is the number of requests, N is the length of the sequence, and k is the number of bits in the integers.",
+    "spaceComplexity": "O(N * k) \u2014 where N is the length of the sequence and k is the number of bits in the integers.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 75000\n#define MAXK 18\nint dp[MAXN + 1][MAXN + 1];\nint a[MAXN];\nint n, m, k;\nvoid update(int idx, int val) {\n    for (int i = n; i >= idx; i--) {\n        for (int j = 1; j <= i; j++) {\n            if (i == idx) {\n                dp[i][j] = val;\n            } else {\n                dp[i][j] = (dp[i - 1][j - 1] & val) > dp[i - 1][j] ? (dp[i - 1][j - 1] & val) : dp[i - 1][j];\n            }\n        }\n    }\n}\nint main() {\n    scanf(\"%d %d %d\", &n, &m, &k);\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &a[i]);\n        update(i, a[i]);\n    }\n    for (int i = 0; i < m; i++) {\n        int type, val;\n        scanf(\"%d %d\", &type, &val);\n        if (type == 1) {\n            a[n++] = val;\n            update(n - 1, val);\n        } else if (type == 2) {\n            for (int j = 0; j < n; j++) {\n                if (a[j] == val) {\n                    for (int p = j; p < n - 1; p++) {\n                        a[p] = a[p + 1];\n                    }\n                    n--;\n                    update(j, a[j]);\n                    break;\n                }\n            }\n        } else {\n            printf(\"%d\\n\", dp[n][val]);\n        }\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 75000;\nconst int MAXK = 18;\nint dp[MAXN + 1][MAXN + 1];\nint a[MAXN];\nint n, m, k;\nvoid update(int idx, int val) {\n    for (int i = n; i >= idx; i--) {\n        for (int j = 1; j <= i; j++) {\n            if (i == idx) {\n                dp[i][j] = val;\n            } else {\n                dp[i][j] = (dp[i - 1][j - 1] & val) > dp[i - 1][j] ? (dp[i - 1][j - 1] & val) : dp[i - 1][j];\n            }\n        }\n    }\n}\nint main() {\n    cin >> n >> m >> k;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n        update(i, a[i]);\n    }\n    for (int i = 0; i < m; i++) {\n        int type, val;\n        cin >> type >> val;\n        if (type == 1) {\n            a[n++] = val;\n            update(n - 1, val);\n        } else if (type == 2) {\n            for (int j = 0; j < n; j++) {\n                if (a[j] == val) {\n                    for (int p = j; p < n - 1; p++) {\n                        a[p] = a[p + 1];\n                    }\n                    n--;\n                    update(j, a[j]);\n                    break;\n                }\n            }\n        } else {\n            cout << dp[n][val] << endl;\n        }\n    }\n    return 0;\n}",

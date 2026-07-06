@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Permutation",
       "Derangement",
-      "Constructive"
+      "Constructive",
+      "Permutation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Given a positive integer nnn and an integer kkk such that 0≤k≤n0 \\leq k \\leq n0≤k≤n, find any permutation AAA of 1,2…n1, 2 \\dots n1,2…n such that the number of indices for which Ai=iA_i=iAi​=i is exactly kkk. If there exists no such permutation, print −1-1−1. If there exist multiple such permutations, print any one of them.\n\n\nInput Format\n\nFirst line of the input contains TTT, the number of test cases. Then the test cases follow.\nEach test case contains a single line of input, two integers n,kn, kn,k.\n\n\nOutput Format\nFor each test case, print a permutation in a single line, if a permutation with the given constraints exists. Print −1-1−1 otherwise.",
+    "problemStatement": "Given a positive integer nnn and an integer kkk such that 0\u2264k\u2264n0 \\leq k \\leq n0\u2264k\u2264n, find any permutation AAA of 1,2\u2026n1, 2 \\dots n1,2\u2026n such that the number of indices for which Ai=iA_i=iAi\u200b=i is exactly kkk. If there exists no such permutation, print \u22121-1\u22121. If there exist multiple such permutations, print any one of them.\n\n\nInput Format\n\nFirst line of the input contains TTT, the number of test cases. Then the test cases follow.\nEach test case contains a single line of input, two integers n,kn, kn,k.\n\n\nOutput Format\nFor each test case, print a permutation in a single line, if a permutation with the given constraints exists. Print \u22121-1\u22121 otherwise.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ n ≤ 10^5",
-      "0 ≤ k ≤ n",
-      "Sum of n over all test cases ≤ 2·10^6"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 n \u2264 10^5",
+      "0 \u2264 k \u2264 n",
+      "Sum of n over all test cases \u2264 2\u00b710^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers n and k (1 ≤ n ≤ 10^5, 0 ≤ k ≤ n).",
-    "outputFormat": "For each test case output a single line. If a permutation of {1,…,n} with exactly k fixed points exists, print any such permutation as n space‑separated integers. Otherwise print -1.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers n and k (1 \u2264 n \u2264 10^5, 0 \u2264 k \u2264 n).",
+    "outputFormat": "For each test case output a single line. If a permutation of {1,\u2026,n} with exactly k fixed points exists, print any such permutation as n space\u2011separated integers. Otherwise print -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "A permutation can have any number of fixed points k except k = n‑1. If k = n‑1 the answer is impossible because the remaining element would also be fixed. For all other k we construct a permutation: keep the first k positions unchanged (i.e., A_i = i). The remaining m = n‑k positions must contain no fixed points. When m = 0 we are done (identity). When m ≥ 2 we simply rotate these m elements by one position: for i = k+1 … n‑1 set A_i = i+1 and set A_n = k+1. This rotation is a derangement of the remaining elements. The construction runs in O(n) per test case.",
-    "timeComplexity": "O(n) per test case, total O(Σ n) ≤ 2·10^6",
+    "approach": "A permutation can have any number of fixed points k except k = n\u20111. If k = n\u20111 the answer is impossible because the remaining element would also be fixed. For all other k we construct a permutation: keep the first k positions unchanged (i.e., A_i = i). The remaining m = n\u2011k positions must contain no fixed points. When m = 0 we are done (identity). When m \u2265 2 we simply rotate these m elements by one position: for i = k+1 \u2026 n\u20111 set A_i = i+1 and set A_n = k+1. This rotation is a derangement of the remaining elements. The construction runs in O(n) per test case.",
+    "timeComplexity": "O(n) per test case, total O(\u03a3 n) \u2264 2\u00b710^6",
     "spaceComplexity": "O(n) for the output array of each test case",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int n,k; scanf(\"%d %d\",&n,&k);\n        if(k==n-1){\n            printf(\"-1\\n\");\n            continue;\n        }\n        int *a = (int*)malloc((n+1)*sizeof(int));\n        int i;\n        for(i=1;i<=k;i++) a[i]=i;\n        int m=n-k;\n        if(m>0){\n            for(i=1;i<m;i++) a[k+i]=k+i+1;\n            a[n]=k+1;\n        }\n        for(i=1;i<=n;i++){\n            if(i>1) printf(\" \");\n            printf(\"%d\",a[i]);\n        }\n        printf(\"\\n\");\n        free(a);\n    }\n    return 0;\n}",

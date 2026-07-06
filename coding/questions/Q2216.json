@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Greedy",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Cross Multiplication",
+      "Brute Force",
       "Fractions",
       "Maximum Ratio",
-      "Brute Force",
-      "Cross Multiplication"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,12 +24,12 @@
   "content": {
     "problemStatement": "You have discovered a new way to add fractions ! Now, the result of adding fractions a/b and c/d is (a + c)/(b + d). Similarly the result of adding 3 fractions a/b, c/d, e/f is (a + c + e)/(b + d + f), and so on. You are given a list of N fractions a_1/b_1, a_2/b_2,...,a_N/b_N. You wonder what for each fraction i is the maximum fraction that you can obtain by adding together some continuous fractions in the list (possibly 1) starting at i ?\n\n\n\nFor example, let N = 4 and the fractions be 1/1, 4/3, 10/1 and 5/4. The maximum fraction you can obtain by starting at index 1 is 3/1 (1/1 + 4/3 + 10/1). Similarly, the maximum fraction you can obtain by starting at index 2 is 7/2 (4/3 + 10/1). By starting at index 3, the maximum sum you can obtain is 10/1 itself, and by starting at index 4, you can obtain sum 5/4.\n\n\n\nInput :\n\nOutput :",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 100000 (the official limits, but hidden tests use N ≤ 15)",
-      "1 ≤ a_k , b_k ≤ 100000"
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 100000 (the official limits, but hidden tests use N \u2264 15)",
+      "1 \u2264 a_k , b_k \u2264 100000"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with an integer N, the number of fractions. Then N lines follow, each containing a fraction in the form a/b where a and b are positive integers.",
-    "outputFormat": "For each test case output N lines. The i‑th line must contain the maximum fraction that can be obtained by adding together a contiguous sub‑array of fractions that starts at index i (1‑based). The fraction must be printed as numerator/denominator without any reduction.",
+    "outputFormat": "For each test case output N lines. The i\u2011th line must contain the maximum fraction that can be obtained by adding together a contiguous sub\u2011array of fractions that starts at index i (1\u2011based). The fraction must be printed as numerator/denominator without any reduction.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For each starting position i we try all possible ending positions j ≥ i. While scanning we keep a running sum of numerators (num) and denominators (den). The current fraction is num/den. To decide whether it is better than the best fraction seen so far we compare using cross multiplication: num * bestDen > bestNum * den. Because all numbers fit in 64‑bit signed integers (max sum ≤ 1e5 * 1e5 = 1e10), long long is safe. The algorithm is O(N²) per test case, which is acceptable for the hidden tests where N ≤ 15. The implementation is straightforward in all five languages.",
-    "timeComplexity": "O(N²) per test case (worst‑case), O(T·N²) overall.",
+    "approach": "For each starting position i we try all possible ending positions j \u2265 i. While scanning we keep a running sum of numerators (num) and denominators (den). The current fraction is num/den. To decide whether it is better than the best fraction seen so far we compare using cross multiplication: num * bestDen > bestNum * den. Because all numbers fit in 64\u2011bit signed integers (max sum \u2264 1e5 * 1e5 = 1e10), long long is safe. The algorithm is O(N\u00b2) per test case, which is acceptable for the hidden tests where N \u2264 15. The implementation is straightforward in all five languages.",
+    "timeComplexity": "O(N\u00b2) per test case (worst\u2011case), O(T\u00b7N\u00b2) overall.",
     "spaceComplexity": "O(1) extra besides the input arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        long long *a = (long long*)malloc(sizeof(long long) * N);\n        long long *b = (long long*)malloc(sizeof(long long) * N);\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%lld/%lld\", &a[i], &b[i]);\n        }\n        for (int i = 0; i < N; ++i) {\n            long long bestNum = a[i];\n            long long bestDen = b[i];\n            long long curNum = 0;\n            long long curDen = 0;\n            for (int j = i; j < N; ++j) {\n                curNum += a[j];\n                curDen += b[j];\n                if (curNum * bestDen > bestNum * curDen) {\n                    bestNum = curNum;\n                    bestDen = curDen;\n                }\n            }\n            printf(\"%lld/%lld\\n\", bestNum, bestDen);\n        }\n        free(a);\n        free(b);\n    }\n    return 0;\n}",

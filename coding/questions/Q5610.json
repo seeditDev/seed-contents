@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Graphs",
+      "Sorting",
       "BFS",
       "Lexicographically Minimal",
-      "Sorting",
       "Queue"
     ],
     "companyTags": [],
@@ -21,17 +22,17 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an undirected connected graph with NNN nodes and MMM edges. You are also given a node XXX.\n\nA sequence in which all the nodes of a graph appear exactly once is called a **BFS ordering** if and only the breadth first search algorithm starting from the node XXX can output it as a result.\n\nYou need to print the lexicographically minimal **BFS ordering** of the given graph that starts from the node XXX.\n\n\nInput Format\n\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of TTT test cases follows.\n\n\n\n\nThe first line of each test case contains three space-separated integers NNN, MMM and XXX.\n\n\n\n\nMMM lines follow. The iii-th of these lines contains two space-separated integers uiu_iui​ and viv_ivi​ denoting an edge of the graph.\n\n\n\n\n\nOutput Format\n\n\nFor each test case, print a single line.\n\n\n\n\nIn that line, print NNN space-separated integers ― the lexicographically minimal **BFS ordering** of the given graph.",
+    "problemStatement": "You are given an undirected connected graph with NNN nodes and MMM edges. You are also given a node XXX.\n\nA sequence in which all the nodes of a graph appear exactly once is called a **BFS ordering** if and only the breadth first search algorithm starting from the node XXX can output it as a result.\n\nYou need to print the lexicographically minimal **BFS ordering** of the given graph that starts from the node XXX.\n\n\nInput Format\n\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of TTT test cases follows.\n\n\n\n\nThe first line of each test case contains three space-separated integers NNN, MMM and XXX.\n\n\n\n\nMMM lines follow. The iii-th of these lines contains two space-separated integers uiu_iui\u200b and viv_ivi\u200b denoting an edge of the graph.\n\n\n\n\n\nOutput Format\n\n\nFor each test case, print a single line.\n\n\n\n\nIn that line, print NNN space-separated integers \u2015 the lexicographically minimal **BFS ordering** of the given graph.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N ≤ 2·10^5 (sum of N over all test cases ≤ 4·10^5)",
-      "N‑1 ≤ M ≤ min(2·10^5, N·(N‑1)/2) (sum of M over all test cases ≤ 4·10^5)",
-      "1 ≤ X ≤ N",
-      "1 ≤ u, v ≤ N, u ≠ v",
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N \u2264 2\u00b710^5 (sum of N over all test cases \u2264 4\u00b710^5)",
+      "N\u20111 \u2264 M \u2264 min(2\u00b710^5, N\u00b7(N\u20111)/2) (sum of M over all test cases \u2264 4\u00b710^5)",
+      "1 \u2264 X \u2264 N",
+      "1 \u2264 u, v \u2264 N, u \u2260 v",
       "No multiple edges, the graph is connected"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three integers N, M and X — the number of nodes, the number of edges and the starting node. Then M lines follow, each containing two integers u and v denoting an undirected edge between nodes u and v. The graph is connected.",
-    "outputFormat": "For each test case output a single line with N space‑separated integers — the lexicographically minimal BFS ordering that starts from node X.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three integers N, M and X \u2014 the number of nodes, the number of edges and the starting node. Then M lines follow, each containing two integers u and v denoting an undirected edge between nodes u and v. The graph is connected.",
+    "outputFormat": "For each test case output a single line with N space\u2011separated integers \u2014 the lexicographically minimal BFS ordering that starts from node X.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -112,7 +113,7 @@
   },
   "solution": {
     "approach": "For each test case build an adjacency list. Sort every adjacency list in increasing order. Perform a standard BFS starting from X using a queue. When a node is popped, append it to the answer and iterate over its sorted neighbours; for each unvisited neighbour mark it visited and push it into the queue. Because neighbours are enqueued in increasing order, the produced order is the smallest possible lexicographically among all BFS orders that can be generated from X. The algorithm runs in O(N + M log D) where D is the average degree (sorting each adjacency list).",
-    "timeComplexity": "O(N + M log maxDegree) per test case (sorting dominates).",
+    "timeComplexity": "O(N + M log\u202fmaxDegree) per test case (sorting dominates).",
     "spaceComplexity": "O(N + M) for adjacency lists, visited array and queue.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {int v; struct Node* next;} Node;\n\nint cmp(const void* a, const void* b){return *(int*)a - *(int*)b;}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N,M,X; scanf(\"%d %d %d\", &N, &M, &X);\n        int *deg = calloc(N+1, sizeof(int));\n        int (*adj)[];\n        // temporary storage of edges\n        int *u = malloc(M*sizeof(int));\n        int *v = malloc(M*sizeof(int));\n        for(int i=0;i<M;i++){\n            scanf(\"%d %d\", &u[i], &v[i]);\n            deg[u[i]]++; deg[v[i]]++;\n        }\n        // allocate adjacency arrays\n        int **g = malloc((N+1)*sizeof(int*));\n        for(int i=1;i<=N;i++) g[i]=malloc(deg[i]*sizeof(int));\n        int *pos = calloc(N+1, sizeof(int));\n        for(int i=0;i<M;i++){\n            int a=u[i], b=v[i];\n            g[a][pos[a]++] = b;\n            g[b][pos[b]++] = a;\n        }\n        free(u); free(v); free(pos);\n        for(int i=1;i<=N;i++) qsort(g[i], deg[i], sizeof(int), cmp);\n        int *vis = calloc(N+1, sizeof(int));\n        int *queue = malloc(N*sizeof(int));\n        int head=0, tail=0;\n        queue[tail++] = X; vis[X]=1;\n        while(head<tail){\n            int cur = queue[head++];\n            printf(\"%d\", cur);\n            if(head!=1 || tail!=1) printf(\" \");\n            for(int i=0;i<deg[cur];i++){\n                int nb = g[cur][i];\n                if(!vis[nb]){vis[nb]=1; queue[tail++]=nb;}\n            }\n        }\n        printf(\"\\n\");\n        for(int i=1;i<=N;i++) free(g[i]);\n        free(g); free(deg); free(vis); free(queue);\n    }\n    return 0;\n}\n",

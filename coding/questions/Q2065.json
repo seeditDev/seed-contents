@@ -10,11 +10,12 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "String parsing",
-      "Validation",
-      "Identifier",
+      "Strings",
       "Email",
-      "URL"
+      "Validation",
+      "URL",
+      "String parsing",
+      "Identifier"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,7 +29,7 @@
       "1 <= |S| <= 100",
       "S contains printable ASCII characters"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100), the number of test cases. Each of the next T lines contains a non‑empty string S (1 ≤ |S| ≤ 100) consisting of printable ASCII characters without leading or trailing spaces.",
+    "inputFormat": "The first line contains an integer T (1\u202f\u2264\u202fT\u202f\u2264\u202f100), the number of test cases. Each of the next T lines contains a non\u2011empty string S (1\u202f\u2264\u202f|S|\u202f\u2264\u202f100) consisting of printable ASCII characters without leading or trailing spaces.",
     "outputFormat": "For each test case output on a separate line one of the four strings: URL, Email, Identifier, or Invalid.",
     "sampleTestCases": [
       {
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "For each string we apply the checks in the required precedence order. 1) URL: check if it starts with \"http://\" (length >7) or \"https://\" (length >8). 2) Email: count '@' characters; if exactly one, split into local and domain parts. Both parts must be non‑empty, the domain must contain at least one '.' and must not start or end with '.'. 3) Identifier: use the language built‑in rules – the string must be a valid identifier (starts with a letter or underscore, followed by letters, digits or underscores) and must not be a Python keyword (the same set of keywords is used for all languages). 4) If none of the above matches, classify as Invalid. Each test case is processed independently, giving O(|S|) time per case and O(1) extra space.",
-    "timeComplexity": "O(T * L) where L is the length of each string (≤100).",
+    "approach": "For each string we apply the checks in the required precedence order. 1) URL: check if it starts with \"http://\" (length >7) or \"https://\" (length >8). 2) Email: count '@' characters; if exactly one, split into local and domain parts. Both parts must be non\u2011empty, the domain must contain at least one '.' and must not start or end with '.'. 3) Identifier: use the language built\u2011in rules \u2013 the string must be a valid identifier (starts with a letter or underscore, followed by letters, digits or underscores) and must not be a Python keyword (the same set of keywords is used for all languages). 4) If none of the above matches, classify as Invalid. Each test case is processed independently, giving O(|S|) time per case and O(1) extra space.",
+    "timeComplexity": "O(T * L) where L is the length of each string (\u2264100).",
     "spaceComplexity": "O(1) besides the input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\n#include <stdbool.h>\n\nbool is_keyword(const char *s){\n    const char *kw[] = {\"False\",\"await\",\"else\",\"import\",\"pass\",\"None\",\"break\",\"except\",\"in\",\"raise\",\"True\",\"class\",\"finally\",\"is\",\"return\",\"and\",\"continue\",\"for\",\"lambda\",\"try\",\"as\",\"def\",\"from\",\"nonlocal\",\"while\",\"assert\",\"del\",\"global\",\"not\",\"with\",\"async\",\"elif\",\"if\",\"or\",\"yield\"};\n    for(int i=0;i<33;i++) if(strcmp(s,kw[i])==0) return true;\n    return false;\n}\n\nbool is_identifier(const char *s){\n    if(!(isalpha((unsigned char)s[0])||s[0]=='_')) return false;\n    for(int i=1;s[i];i++) if(!(isalnum((unsigned char)s[i])||s[i]=='_')) return false;\n    return !is_keyword(s);\n}\n\nconst char* classify(const char *s){\n    if((strncmp(s,\"http://\",7)==0 && strlen(s)>7) || (strncmp(s,\"https://\",8)==0 && strlen(s)>8))\n        return \"URL\";\n    int at_cnt=0; const char *at_ptr=NULL;\n    for(const char *p=s;*p;p++) if(*p=='@'){at_cnt++; at_ptr=p;}\n    if(at_cnt==1){\n        int local_len = at_ptr - s;\n        const char *domain = at_ptr+1;\n        int domain_len = strlen(domain);\n        if(local_len>0 && domain_len>0 && strchr(domain,'.') && domain[0]!='.' && domain[domain_len-1]!='.')\n            return \"Email\";\n    }\n    if(is_identifier(s)) return \"Identifier\";\n    return \"Invalid\";\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0; getchar();\n    char buf[105];\n    for(int i=0;i<T;i++){\n        if(fgets(buf,105,stdin)==NULL) break;\n        size_t len=strlen(buf);\n        if(len && buf[len-1]=='\\n') buf[len-1]='\\0';\n        printf(\"%s\\n\", classify(buf));\n    }\n    return 0;\n}",

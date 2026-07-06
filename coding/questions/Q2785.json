@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Simulation"
+      "Math",
+      "Simulation",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by simulating the team selection process. First, calculate the strength of each player using the given formula. Then, sort the strengths in descending order and assign the players to the teams in an alternating manner. Finally, calculate the absolute strength difference between the two teams.",
     "timeComplexity": "O(N log N) per test case, O(T * N log N) total.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of player strengths.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of player strengths.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, a, b, c, d;\n        scanf(\"%d %d %d %d %d\", &N, &a, &b, &c, &d);\n        int *strengths = (int*)malloc(N * sizeof(int));\n        strengths[0] = d;\n        for (int i = 1; i < N; i++) {\n            if(i == 1) strengths[i] = (a * d + b * d + c) % 1000000;\n            else strengths[i] = (a * strengths[i-2] + b * strengths[i-1] + c) % 1000000;\n        }\n        qsort(strengths, N, sizeof(int), compare);\n        int team1 = 0, team2 = 0;\n        for (int i = N - 1; i >= 0; i--) {\n            if ((N - 1 - i) % 2 == 0) team1 += strengths[i];\n            else team2 += strengths[i];\n        }\n        printf(\"%d\\n\", abs(team1 - team2));\n        free(strengths);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, a, b, c, d;\n        cin >> N >> a >> b >> c >> d;\n        int *strengths = new int[N];\n        strengths[0] = d;\n        for (int i = 1; i < N; i++) {\n            if(i == 1) strengths[i] = (a * d + b * d + c) % 1000000;\n            else strengths[i] = (a * strengths[i-2] + b * strengths[i-1] + c) % 1000000;\n        }\n        sort(strengths, strengths + N);\n        int team1 = 0, team2 = 0;\n        for (int i = N - 1; i >= 0; i--) {\n            if ((N - 1 - i) % 2 == 0) team1 += strengths[i];\n            else team2 += strengths[i];\n        }\n        cout << abs(team1 - team2) << endl;\n        delete[] strengths;\n    }\n    return 0;\n}",

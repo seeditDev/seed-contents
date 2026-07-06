@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Heavy-light decomposition",
       "Tree",
+      "Heavy-light decomposition",
+      "Graphs",
       "Modular arithmetic"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Heavy-light decomposition of a tree is a powerful tool that often helps in the most difficult tree data structure problems.\n\nHeavy-light decomposition is to be built on a rooted tree. In this problem, the node with the number **1** should be considered the root of a tree. Heavy light decomposition is a colouring of edges of the tree. Each edge is either heavy or light. For each non leaf node (node having degree greater than 1), from all the edges emanating from it into the subtree rooted at this vertex should have exactly one heavy edge. \n\n\nThe heavy-light decomposition is called correct, if you can reach any node from the root node by using no more that **⌊ log2 N ⌋** light edges, where **N** is the number of nodes in the tree.\n\nGiven a tree, calculate the number of its' correct heavy-light decompositions. As answer could be very large, please print it modulo **19101995**.",
+    "problemStatement": "Heavy-light decomposition of a tree is a powerful tool that often helps in the most difficult tree data structure problems.\n\nHeavy-light decomposition is to be built on a rooted tree. In this problem, the node with the number **1** should be considered the root of a tree. Heavy light decomposition is a colouring of edges of the tree. Each edge is either heavy or light. For each non leaf node (node having degree greater than 1), from all the edges emanating from it into the subtree rooted at this vertex should have exactly one heavy edge. \n\n\nThe heavy-light decomposition is called correct, if you can reach any node from the root node by using no more that **\u230a log2 N \u230b** light edges, where **N** is the number of nodes in the tree.\n\nGiven a tree, calculate the number of its' correct heavy-light decompositions. As answer could be very large, please print it modulo **19101995**.",
     "constraints": [
       "1 <= N <= 20",
       "The tree is connected and undirected",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a recursive approach to calculate the number of correct heavy-light decompositions for each subtree. We start by choosing the root of the tree and then recursively calculate the number of decompositions for each of its subtrees. We use modular arithmetic to avoid overflow.",
     "timeComplexity": "O(2^N) per test case, O(T * 2^N) total. The time complexity is exponential due to the recursive nature of the problem.",
-    "spaceComplexity": "O(N) — the dominant structure is the recursion stack.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the recursion stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 19101995\n#define MAXN 100000\n\nint N;\nint adj[MAXN][MAXN];\nint deg[MAXN];\n\nvoid dfs(int u, int p) {\n    int i;\n    for (i = 0; i < N; i++) {\n        if (adj[u][i] && i != p) {\n            dfs(i, u);\n            deg[u]++;\n        }\n    }\n}\n\nint count_decompositions(int u, int p) {\n    int i;\n    int res = 1;\n    for (i = 0; i < N; i++) {\n        if (adj[u][i] && i != p) {\n            res = (res * count_decompositions(i, u)) % MOD;\n        }\n    }\n    if (deg[u] > 1) {\n        res = (res * deg[u]) % MOD;\n    }\n    return res;\n}\n\nint main() {\n    int i, j;\n    scanf(\"%d\", &N);\n    for (i = 0; i < N - 1; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        u--; v--;\n        adj[u][v] = adj[v][u] = 1;\n    }\n    dfs(0, -1);\n    printf(\"%d\\n\", count_decompositions(0, -1));\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 19101995\n#define MAXN 100000\n\nusing namespace std;\n\nint N;\nvector<int> adj[MAXN];\nint deg[MAXN];\n\nvoid dfs(int u, int p) {\n    for (int i : adj[u]) {\n        if (i != p) {\n            dfs(i, u);\n            deg[u]++;\n        }\n    }\n}\n\nint count_decompositions(int u, int p) {\n    int res = 1;\n    for (int i : adj[u]) {\n        if (i != p) {\n            res = (res * count_decompositions(i, u)) % MOD;\n        }\n    }\n    if (deg[u] > 1) {\n        res = (res * deg[u]) % MOD;\n    }\n    return res;\n}\n\nint main() {\n    cin >> N;\n    for (int i = 0; i < N - 1; i++) {\n        int u, v;\n        cin >> u >> v;\n        u--; v--;\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n    dfs(0, -1);\n    cout << count_decompositions(0, -1) << endl;\n    return 0;\n}",

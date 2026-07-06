@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Combinatorics",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Combinatorics",
       "Modular Arithmetic",
+      "Math",
       "Subset Sum"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Misha is an expert on combinatorics, so he knows a lot about permutations. Recently, he learned the definition of a convex polygon and invented too many new problems involving permutations. Please help him solve one of them.\n\n\n\nLet's define a function on a set **a** with size **k**: **F**(**a1**, **a2**, ... , **ak**). Imagine that we have sticks of lengths **a1**, **a2**, ... , **ak**. **F**(**a1**, **a2**, ... , **ak**) = 1, if and only if a convex polygon can be created from these sticks. **F**(**a1**, **a2**, ... , **ak**) = 0, otherwise.\n\n\n\nMisha has the identity permutation over **n** elements — **In** (**In = {1, 2, 3, .. n})**. He wants to know the sum of the function **F** over all possible distinct **k**-sized subsets of **In**.\n\n\n\nPlease help Misha find this sum. Since its value may be very large, you should output the sum modulo **109+7**.",
+    "problemStatement": "Misha is an expert on combinatorics, so he knows a lot about permutations. Recently, he learned the definition of a convex polygon and invented too many new problems involving permutations. Please help him solve one of them.\n\n\n\nLet's define a function on a set **a** with size **k**: **F**(**a1**, **a2**, ... , **ak**). Imagine that we have sticks of lengths **a1**, **a2**, ... , **ak**. **F**(**a1**, **a2**, ... , **ak**) = 1, if and only if a convex polygon can be created from these sticks. **F**(**a1**, **a2**, ... , **ak**) = 0, otherwise.\n\n\n\nMisha has the identity permutation over **n** elements \u2014 **In** (**In = {1, 2, 3, .. n})**. He wants to know the sum of the function **F** over all possible distinct **k**-sized subsets of **In**.\n\n\n\nPlease help Misha find this sum. Since its value may be very large, you should output the sum modulo **109+7**.",
     "constraints": [
       "1 <= T <= 500",
       "3 <= k <= 7",
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use combinatorial reasoning and modular arithmetic. We need to calculate the sum of the function F over all possible distinct k-sized subsets of In. The function F returns 1 if a convex polygon can be created from the given subset and 0 otherwise. We can use the fact that a convex polygon can be created if and only if the sum of the lengths of any k-1 sides is greater than the length of the remaining side. We can then use modular arithmetic to calculate the sum of the function F over all possible subsets.",
-    "timeComplexity": "O(T * (n choose k)) — where n choose k is the number of k-sized subsets of a set of size n",
-    "spaceComplexity": "O(1) — as we only need to store a constant amount of information",
+    "timeComplexity": "O(T * (n choose k)) \u2014 where n choose k is the number of k-sized subsets of a set of size n",
+    "spaceComplexity": "O(1) \u2014 as we only need to store a constant amount of information",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 1000000007\nlong long power(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\nlong long modInverse(long long a) {\n    return power(a, MOD - 2);\n}\nlong long nCr(long long n, long long r) {\n    long long res = 1;\n    for (long long i = 1; i <= r; i++) {\n        res = (res * (n - i + 1)) % MOD;\n        res = (res * modInverse(i)) % MOD;\n    }\n    return res;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long n, k;\n        scanf(\"%lld %lld\", &n, &k);\n        long long ans = 0;\n        for (long long i = k; i <= n; i++) {\n            long long cnt = nCr(i - 1, k - 1);\n            ans = (ans + cnt) % MOD;\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#define MOD 1000000007\nusing namespace std;\nlong long power(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\nlong long modInverse(long long a) {\n    return power(a, MOD - 2);\n}\nlong long nCr(long long n, long long r) {\n    long long res = 1;\n    for (long long i = 1; i <= r; i++) {\n        res = (res * (n - i + 1)) % MOD;\n        res = (res * modInverse(i)) % MOD;\n    }\n    return res;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long n, k;\n        cin >> n >> k;\n        long long ans = 0;\n        for (long long i = k; i <= n; i++) {\n            long long cnt = nCr(i - 1, k - 1);\n            ans = (ans + cnt) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

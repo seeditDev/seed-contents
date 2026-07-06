@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Multisets",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming",
+      "Multisets"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,11 +21,11 @@
     ]
   },
   "content": {
-    "problemStatement": "Read problems statements in Russian hereProblem StatementChef studies combinatorics. He tries to group objects by their rang (a positive integer associated with each object). He also gives the formula for calculating the number of different objects with rang **N** as following:\n\n\n**the number of different objects with rang N = F(N) = A0 + A1 * N + A2 * N2 + A3 * N3**.\n\nNow Chef wants to know how many different multisets of these objects exist such that sum of rangs of the objects in the multiset equals to **S**. You are given the coefficients in **F(N)** and the target sum **S**. Please, find the number of different multisets modulo **1,000,000,007**.\n\n\nYou should consider a multiset as an unordered sequence of integers. Two multisets are different if and only if there at least exists one element which occurs **X** times in the first multiset but **Y** times in the second one, where **(X ≠ Y)**.",
+    "problemStatement": "Read problems statements in Russian hereProblem StatementChef studies combinatorics. He tries to group objects by their rang (a positive integer associated with each object). He also gives the formula for calculating the number of different objects with rang **N** as following:\n\n\n**the number of different objects with rang N = F(N) = A0 + A1 * N + A2 * N2 + A3 * N3**.\n\nNow Chef wants to know how many different multisets of these objects exist such that sum of rangs of the objects in the multiset equals to **S**. You are given the coefficients in **F(N)** and the target sum **S**. Please, find the number of different multisets modulo **1,000,000,007**.\n\n\nYou should consider a multiset as an unordered sequence of integers. Two multisets are different if and only if there at least exists one element which occurs **X** times in the first multiset but **Y** times in the second one, where **(X \u2260 Y)**.",
     "constraints": [
-      "1 ≤ T ≤ 500",
-      "1 ≤ S ≤ 100",
-      "0 ≤ Ai ≤ 1000",
+      "1 \u2264 T \u2264 500",
+      "1 \u2264 S \u2264 100",
+      "0 \u2264 Ai \u2264 1000",
       "Sum of all S for all test cases is not greater than 500",
       "At least one Ai is non-zero"
     ],
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We create a dp array where dp[i] represents the number of different multisets with sum i. We iterate over all possible values of N and for each N, we calculate the number of objects with rang N using the given formula. Then, we update the dp array accordingly. Finally, we print the value of dp[S] for each test case.",
     "timeComplexity": "O(T * S^2) per test case, O(T * S^2) total. Precomputation is not required.",
-    "spaceComplexity": "O(S) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(S) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint dp[101];\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int A0, A1, A2, A3, S;\n        scanf(\"%d %d %d %d %d\", &A0, &A1, &A2, &A3, &S);\n        dp[0] = 1;\n        for (int i = 1; i <= S; i++) dp[i] = 0;\n        for (int N = 1; N <= S; N++) {\n            int num = (A0 + A1 * N + A2 * N * N + A3 * N * N * N) % MOD;\n            for (int i = N; i <= S; i++) {\n                dp[i] = (dp[i] + (long long)dp[i - N] * num) % MOD;\n            }\n        }\n        printf(\"%d\\n\", dp[S]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[101];\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int A0, A1, A2, A3, S;\n        cin >> A0 >> A1 >> A2 >> A3 >> S;\n        dp[0] = 1;\n        for (int i = 1; i <= S; i++) dp[i] = 0;\n        for (int N = 1; N <= S; N++) {\n            int num = (A0 + A1 * N + A2 * N * N + A3 * N * N * N) % MOD;\n            for (int i = N; i <= S; i++) {\n                dp[i] = (dp[i] + (long long)dp[i - N] * num) % MOD;\n            }\n        }\n        cout << dp[S] << endl;\n    }\n    return 0;\n}",

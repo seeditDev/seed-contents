@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Number Theory",
       "GCD",
+      "Number Theory",
+      "Math",
       "Modular Arithmetic"
     ],
     "companyTags": [],
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Sereja asks you to find out number of arrays **A** of size **N, i.e. A1, A2, ..., AN (1 ≤ Ai ≤ M)**, such that for each pair **i, j (1 ≤ i &lt; j ≤ N) gcd(Ai, Aj) = 1.** \n\n\n\nAs the answer could be large, print it modulo **109 + 7 (1000000007)**.",
+    "problemStatement": "Sereja asks you to find out number of arrays **A** of size **N, i.e. A1, A2, ..., AN (1 \u2264 Ai \u2264 M)**, such that for each pair **i, j (1 \u2264 i &lt; j \u2264 N) gcd(Ai, Aj) = 1.** \n\n\n\nAs the answer could be large, print it modulo **109 + 7 (1000000007)**.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ M ≤ 100"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 M \u2264 100"
     ],
     "inputFormat": "First line contains T, the number of test cases. Each test case contains two space-separated integers N and M.",
-    "outputFormat": "For each test case, print the number of arrays A of size N, such that for each pair i, j (1 ≤ i < j ≤ N) gcd(Ai, Aj) = 1, modulo 10^9 + 7.",
+    "outputFormat": "For each test case, print the number of arrays A of size N, such that for each pair i, j (1 \u2264 i < j \u2264 N) gcd(Ai, Aj) = 1, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved by using the principle of inclusion-exclusion to count the number of arrays that satisfy the given condition. We can use dynamic programming to store the intermediate results and avoid redundant calculations. The time complexity is O(T * M^N) and the space complexity is O(M^2).",
     "timeComplexity": "O(T * M^N) per test case, O(T * M^N) total.",
-    "spaceComplexity": "O(M^2) — state for dynamic programming.",
+    "spaceComplexity": "O(M^2) \u2014 state for dynamic programming.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }\nint countArrays(int N, int M) {\n    int count = 0;\n    for (int mask = 0; mask < (1 << M); mask++) {\n        int valid = 1;\n        for (int i = 0; i < M; i++) {\n            for (int j = i + 1; j < M; j++) {\n                if ((mask & (1 << i)) && (mask & (1 << j)) && gcd(i + 1, j + 1) != 1) {\n                    valid = 0;\n                    break;\n                }\n            }\n            if (!valid) break;\n        }\n        if (valid) count++;\n    }\n    return count;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int result = 1;\n        for (int i = 0; i < N; i++) {\n            result = (result * M) % MOD;\n        }\n        printf(\"%d\\n\", result);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }\nint countArrays(int N, int M) {\n    int count = 0;\n    for (int mask = 0; mask < (1 << M); mask++) {\n        int valid = 1;\n        for (int i = 0; i < M; i++) {\n            for (int j = i + 1; j < M; j++) {\n                if ((mask & (1 << i)) && (mask & (1 << j)) && gcd(i + 1, j + 1) != 1) {\n                    valid = 0;\n                    break;\n                }\n            }\n            if (!valid) break;\n        }\n        if (valid) count++;\n    }\n    return count;\n}\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        int result = 1;\n        for (int i = 0; i < N; i++) {\n            result = (result * M) % MOD;\n        }\n        cout << result << endl;\n    }\n    return 0;\n}",

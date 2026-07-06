@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Bitwise XOR",
+      "Bit Manipulation",
       "Lexicographically Smallest Sequence"
     ],
     "companyTags": [],
@@ -19,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a sequence A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ and you have to perform the following operation exactly XXX times:\n\n\nChoose two integers iii and jjj such that 1≤i&lt;j≤N1 \\le i \\lt j \\le N1≤i&lt;j≤N.\nChoose a non-negative integer ppp.\nChange AiA_iAi​ to Ai⊕2pA_i \\oplus 2^pAi​⊕2p, and change AjA_jAj​ to Aj⊕2pA_j \\oplus 2^pAj​⊕2p, where ⊕\\oplus⊕ denotes bitwise XOR.\nFind the lexicographically smallest sequence which can be obtained by performing this operation exactly XXX times.\n\nA sequence B1,B2,…,BNB_1, B_2, \\ldots, B_NB1​,B2​,…,BN​ is said to be lexicographically smaller than a sequence C1,C2,…,CNC_1, C_2, \\ldots, C_NC1​,C2​,…,CN​ if there is an index iii such that Bi&lt;CiB_i \\lt C_iBi​&lt;Ci​ and for each valid j&lt;ij \\lt ij&lt;i, Bj=CjB_j = C_jBj​=Cj​.",
+    "problemStatement": "You are given a sequence A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b and you have to perform the following operation exactly XXX times:\n\n\nChoose two integers iii and jjj such that 1\u2264i&lt;j\u2264N1 \\le i \\lt j \\le N1\u2264i&lt;j\u2264N.\nChoose a non-negative integer ppp.\nChange AiA_iAi\u200b to Ai\u22952pA_i \\oplus 2^pAi\u200b\u22952p, and change AjA_jAj\u200b to Aj\u22952pA_j \\oplus 2^pAj\u200b\u22952p, where \u2295\\oplus\u2295 denotes bitwise XOR.\nFind the lexicographically smallest sequence which can be obtained by performing this operation exactly XXX times.\n\nA sequence B1,B2,\u2026,BNB_1, B_2, \\ldots, B_NB1\u200b,B2\u200b,\u2026,BN\u200b is said to be lexicographically smaller than a sequence C1,C2,\u2026,CNC_1, C_2, \\ldots, C_NC1\u200b,C2\u200b,\u2026,CN\u200b if there is an index iii such that Bi&lt;CiB_i \\lt C_iBi\u200b&lt;Ci\u200b and for each valid j&lt;ij \\lt ij&lt;i, Bj=CjB_j = C_jBj\u200b=Cj\u200b.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "2 ≤ N ≤ 10^5",
-      "1 ≤ X ≤ 10^9",
-      "1 ≤ Ai ≤ 10^9"
+      "1 \u2264 T \u2264 10",
+      "2 \u2264 N \u2264 10^5",
+      "1 \u2264 X \u2264 10^9",
+      "1 \u2264 Ai \u2264 10^9"
     ],
-    "inputFormat": "First line contains T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "For each test case output a single line with N space-separated integers – the lexicographically smallest sequence obtainable after performing exactly X operations.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case output a single line with N space-separated integers \u2013 the lexicographically smallest sequence obtainable after performing exactly X operations.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The key insight is to find the most significant set bit in each number and try to clear it by performing the XOR operation with another number that has the same bit set. This approach ensures that we get the lexicographically smallest sequence. We start from the first number and try to clear its most significant set bit. If we can't find another number with the same bit set, we move to the next number.",
     "timeComplexity": "O(T * N * log(max(Ai))) per test case, O(T * N * log(max(Ai))) total. The time complexity is due to the loop over each number and the loop to find the most significant set bit.",
-    "spaceComplexity": "O(N) — the dominant structure is the array to store the input numbers.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array to store the input numbers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint msb_pos(int x) {\n    int pos = 0;\n    while (x >>= 1) ++pos;\n    return pos;\n}\n\nint main() {\n    int T; scanf(\"%d\", &T);\n    while (T--) {\n        int N; long long X; scanf(\"%d %lld\", &N, &X);\n        int *A = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &A[i]);\n        long long ops = X;\n        for (int i = 0; i < N - 1 && ops > 0; ++i) {\n            while (A[i] && ops > 0) {\n                int b = msb_pos(A[i]);\n                int mask = 1 << b;\n                int j = i + 1;\n                while (j < N && !(A[j] & mask)) ++j;\n                if (j == N) break;\n                A[i] ^= mask;\n                A[j] ^= mask;\n                --ops;\n            }\n        }\n        if (ops > 0 && N == 2 && (ops & 1LL)) {\n            A[N-2] ^= 1;\n            A[N-1] ^= 1;\n        }\n        for (int i = 0; i < N; ++i) {\n            printf(\"%d\", A[i]);\n            if (i + 1 < N) printf(\" \");\n        }\n        printf(\"\\n\");\n        free(A);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        int N; long long X; cin >> N >> X;\n        vector<int> A(N);\n        for (int &v : A) cin >> v;\n        long long ops = X;\n        for (int i = 0; i < N - 1 && ops > 0; ++i) {\n            while (A[i] && ops > 0) {\n                int b = 31 - __builtin_clz(A[i]); // most significant set bit\n                int mask = 1 << b;\n                int j = i + 1;\n                while (j < N && !(A[j] & mask)) ++j;\n                if (j == N) break;\n                A[i] ^= mask;\n                A[j] ^= mask;\n                --ops;\n            }\n        }\n        if (ops > 0 && N == 2 && (ops & 1LL)) {\n            A[N-2] ^= 1;\n            A[N-1] ^= 1;\n        }\n        for (int i = 0; i < N; ++i) {\n            if (i) cout << ' ';\n            cout << A[i];\n        }\n        cout << '\\n';\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Sorting",
       "Selection Sort",
-      "Greedy",
-      "Swaps"
+      "Swaps",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Swap SortYou are given an array AAA of size nnn (not exceeding 500500500), you are allowed a maximum of n−1n-1n−1 swaps where in each swap you can choose **any two** indices i,ji, ji,j such that 0≤i,j≤n−10 \\leq i, j \\leq n-10≤i,j≤n−1 and swap the values of AiA_iAi​ and AjA_jAj​.",
+    "problemStatement": "Swap SortYou are given an array AAA of size nnn (not exceeding 500500500), you are allowed a maximum of n\u22121n-1n\u22121 swaps where in each swap you can choose **any two** indices i,ji, ji,j such that 0\u2264i,j\u2264n\u221210 \\leq i, j \\leq n-10\u2264i,j\u2264n\u22121 and swap the values of AiA_iAi\u200b and AjA_jAj\u200b.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ n ≤ 500",
-      "−10^9 ≤ Ai ≤ 10^9"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 n \u2264 500",
+      "\u221210^9 \u2264 Ai \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 ≤ n ≤ 500). The second line contains n space‑separated integers A0 … A{n‑1} (−10^9 ≤ Ai ≤ 10^9).",
-    "outputFormat": "For each test case output the number of performed swaps m on a single line. Then output m lines, each containing two integers i and j (0 ≤ i, j < n) denoting a swap of positions i and j. After applying the swaps in the given order the array must be sorted in non‑decreasing order.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 \u2264 n \u2264 500). The second line contains n space\u2011separated integers A0 \u2026 A{n\u20111} (\u221210^9 \u2264 Ai \u2264 10^9).",
+    "outputFormat": "For each test case output the number of performed swaps m on a single line. Then output m lines, each containing two integers i and j (0 \u2264 i, j < n) denoting a swap of positions i and j. After applying the swaps in the given order the array must be sorted in non\u2011decreasing order.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -39,7 +40,7 @@
         "id": "sample_2",
         "input": "1\\n5\\n5 1 4 2 3",
         "output": "4\n0 1\n1 3\n2 4\n3 4",
-        "explanation": "Selection‑sort swaps: (0,1) puts 1 at front, (1,3) puts 2 next, (2,4) puts 3, (3,4) puts 4. The array becomes [1,2,3,4,5]."
+        "explanation": "Selection\u2011sort swaps: (0,1) puts 1 at front, (1,3) puts 2 next, (2,4) puts 3, (3,4) puts 4. The array becomes [1,2,3,4,5]."
       },
       {
         "id": "sample_3",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "We use a simple selection‑sort style algorithm. For each position i from 0 to n‑2 we find the smallest element among indices i … n‑1. If the smallest element is not already at i we swap A[i] with that element and record the swap (i, pos). This uses at most n‑1 swaps, satisfying the problem limit. The algorithm is deterministic and works for any integer values, including negatives and duplicates.",
-    "timeComplexity": "O(T * n^2) – for each test case we scan the unsorted suffix to find the minimum.",
+    "approach": "We use a simple selection\u2011sort style algorithm. For each position i from 0 to n\u20112 we find the smallest element among indices i \u2026 n\u20111. If the smallest element is not already at i we swap A[i] with that element and record the swap (i, pos). This uses at most n\u20111 swaps, satisfying the problem limit. The algorithm is deterministic and works for any integer values, including negatives and duplicates.",
+    "timeComplexity": "O(T * n^2) \u2013 for each test case we scan the unsorted suffix to find the minimum.",
     "spaceComplexity": "O(1) besides the input array and the list of recorded swaps.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int n; scanf(\"%d\", &n);\n        long long *a = (long long*)malloc(n*sizeof(long long));\n        for(int i=0;i<n;i++) scanf(\"%lld\", &a[i]);\n        int maxSwaps = n-1;\n        int (*swaps)[2] = malloc(maxSwaps * 2 * sizeof(int));\n        int m = 0;\n        for(int i=0;i<n-1;i++){\n            int pos = i;\n            for(int j=i+1;j<n;j++) if(a[j] < a[pos]) pos = j;\n            if(pos!=i){\n                long long tmp = a[i]; a[i]=a[pos]; a[pos]=tmp;\n                swaps[m][0]=i; swaps[m][1]=pos; m++;\n            }\n        }\n        printf(\"%d\\n\", m);\n        for(int i=0;i<m;i++) printf(\"%d %d\\n\", swaps[i][0], swaps[i][1]);\n        free(a); free(swaps);\n    }\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Digitsum",
-      "BFS"
+      "BFS",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -25,13 +26,13 @@
       "1 <= N, D <= 10^10"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first and only line of each test case contains two space-separated integers N and D.",
-    "outputFormat": "For each test case, print a single line containing two space-separated integers — the minimum value of N and the minimum required number of operations.",
+    "outputFormat": "For each test case, print a single line containing two space-separated integers \u2014 the minimum value of N and the minimum required number of operations.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2 1\n9 3\n11 13",
         "output": "1 9\n3 2\n1 4",
-        "explanation": "Explanation: Example case 1: The value N=1 can be achieved by 8 successive \"add\" operations (changing N to 10) and one \"digit-sum\" operation. Example case 2: You can prove that you cannot obtain N=1 and N=2, and you can obtain N=3. The value N=3 can be achieved by one \"add\" and one \"digitsum\" operation, changing 9 to 12 and 12 to 3. Example case 3: N=1 can be achieved by operations \"add\", \"add\", \"digitsum\", \"digitsum\": 11→24→37→10→1."
+        "explanation": "Explanation: Example case 1: The value N=1 can be achieved by 8 successive \"add\" operations (changing N to 10) and one \"digit-sum\" operation. Example case 2: You can prove that you cannot obtain N=1 and N=2, and you can obtain N=3. The value N=3 can be achieved by one \"add\" and one \"digitsum\" operation, changing 9 to 12 and 12 to 3. Example case 3: N=1 can be achieved by operations \"add\", \"add\", \"digitsum\", \"digitsum\": 11\u219224\u219237\u219210\u21921."
       }
     ]
   },
@@ -100,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a breadth-first search (BFS) algorithm. We start with the initial value of N and explore all possible operations (adding D to N and calculating the digitsum of N) in a level-order manner. We keep track of the minimum value of N and the minimum number of operations required to achieve it.",
-    "timeComplexity": "O(T * (log(N) + log(D))) — the time complexity is dominated by the BFS algorithm, which explores all possible operations in a level-order manner. The log(N) and log(D) terms come from the fact that we need to calculate the digitsum of N and D, which takes logarithmic time.",
-    "spaceComplexity": "O(T * (log(N) + log(D))) — the space complexity is also dominated by the BFS algorithm, which stores all possible operations in a queue. The log(N) and log(D) terms come from the fact that we need to store the digitsum of N and D, which takes logarithmic space.",
+    "timeComplexity": "O(T * (log(N) + log(D))) \u2014 the time complexity is dominated by the BFS algorithm, which explores all possible operations in a level-order manner. The log(N) and log(D) terms come from the fact that we need to calculate the digitsum of N and D, which takes logarithmic time.",
+    "spaceComplexity": "O(T * (log(N) + log(D))) \u2014 the space complexity is also dominated by the BFS algorithm, which stores all possible operations in a queue. The log(N) and log(D) terms come from the fact that we need to store the digitsum of N and D, which takes logarithmic space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 1000000000\n\nint min(int a, int b) { return a < b ? a : b; }\n\nint digitsum(int n) {\n    int sum = 0;\n    while (n > 0) {\n        sum += n % 10;\n        n /= 10;\n    }\n    return sum;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, D;\n        scanf(\"%d %d\", &N, &D);\n        int min_val = N;\n        int min_ops = 0;\n        int queue[MAX];\n        int front = 0, rear = 0;\n        queue[rear++] = N;\n        int visited[MAX] = {0};\n        visited[N] = 1;\n        while (front < rear) {\n            int curr = queue[front++];\n            if (curr < min_val) {\n                min_val = curr;\n                min_ops = visited[curr];\n            }\n            int next1 = curr + D;\n            if (next1 <= MAX && !visited[next1]) {\n                queue[rear++] = next1;\n                visited[next1] = visited[curr] + 1;\n            }\n            int next2 = digitsum(curr);\n            if (next2 <= MAX && !visited[next2]) {\n                queue[rear++] = next2;\n                visited[next2] = visited[curr] + 1;\n            }\n        }\n        printf(\"%d %d\\n\", min_val, min_ops);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <unordered_set>\nusing namespace std;\n\nint digitsum(int n) {\n    int sum = 0;\n    while (n > 0) {\n        sum += n % 10;\n        n /= 10;\n    }\n    return sum;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, D;\n        cin >> N >> D;\n        int min_val = N;\n        int min_ops = 0;\n        queue<int> q;\n        unordered_set<int> visited;\n        q.push(N);\n        visited.insert(N);\n        while (!q.empty()) {\n            int curr = q.front();\n            q.pop();\n            if (curr < min_val) {\n                min_val = curr;\n                min_ops = visited.size();\n            }\n            int next1 = curr + D;\n            if (next1 <= 1000000000 && visited.find(next1) == visited.end()) {\n                q.push(next1);\n                visited.insert(next1);\n            }\n            int next2 = digitsum(curr);\n            if (next2 <= 1000000000 && visited.find(next2) == visited.end()) {\n                q.push(next2);\n                visited.insert(next2);\n            }\n        }\n        cout << min_val << \" \" << min_ops << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "XOR operation",
+      "Graphs",
       "Weighted tree",
-      "Depth-First Search (DFS)"
+      "Depth-First Search (DFS)",
+      "XOR operation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a Depth-First Search (DFS) approach to traverse the weighted tree and calculate the XOR-sum of all weights on the simple path between any two vertices. We will maintain a variable to store the maximum XOR-sum found so far.",
     "timeComplexity": "O(T * N * (N-1)) per test case, O(T * N^2) total, where N is the number of vertices in the tree.",
-    "spaceComplexity": "O(N) — for storing the visited vertices and the edges of the tree.",
+    "spaceComplexity": "O(N) \u2014 for storing the visited vertices and the edges of the tree.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\n#define MAXM 100005\ntypedef struct Edge {\n    int u, v, w;\n} Edge;\nint max_xor_sum = 0;\nvoid dfs(int u, int v, int xor_sum, int *visited, Edge *edges, int n) {\n    visited[u] = 1;\n    if(v != -1) xor_sum ^= edges[v].w;\n    max_xor_sum = (max_xor_sum > xor_sum) ? max_xor_sum : xor_sum;\n    for (int i = 0; i < n - 1; i++) {\n        if (edges[i].u == u && !visited[edges[i].v]) {\n            dfs(edges[i].v, i, xor_sum, visited, edges, n);\n        }\n        if (edges[i].v == u && !visited[edges[i].u]) {\n            dfs(edges[i].u, i, xor_sum, visited, edges, n);\n        }\n    }\n    visited[u] = 0;\n}\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        Edge *edges = (Edge *)malloc((n - 1) * sizeof(Edge));\n        for (int i = 0; i < n - 1; i++) {\n            scanf(\"%d %d %d\", &edges[i].u, &edges[i].v, &edges[i].w);\n        }\n        int *visited = (int *)calloc(n + 1, sizeof(int));\n        max_xor_sum = 0;\n        for (int i = 1; i <= n; i++) {\n            dfs(i, -1, 0, visited, edges, n);\n        }\n        printf(\"%d\\n\", max_xor_sum);\n        free(edges);\n        free(visited);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 100005;\nconst int MAXM = 100005;\nstruct Edge {\n    int u, v, w;\n};\nint max_xor_sum = 0;\nvoid dfs(int u, int v, int xor_sum, vector<bool> &visited, vector<Edge> &edges, int n) {\n    visited[u] = true;\n    if(v != -1) xor_sum ^= edges[v].w;\n    max_xor_sum = max(max_xor_sum, xor_sum);\n    for (int i = 0; i < n - 1; i++) {\n        if (edges[i].u == u && !visited[edges[i].v]) {\n            dfs(edges[i].v, i, xor_sum, visited, edges, n);\n        }\n        if (edges[i].v == u && !visited[edges[i].u]) {\n            dfs(edges[i].u, i, xor_sum, visited, edges, n);\n        }\n    }\n    visited[u] = false;\n}\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        vector<Edge> edges(n - 1);\n        for (int i = 0; i < n - 1; i++) {\n            cin >> edges[i].u >> edges[i].v >> edges[i].w;\n        }\n        vector<bool> visited(n + 1, false);\n        max_xor_sum = 0;\n        for (int i = 1; i <= n; i++) {\n            dfs(i, -1, 0, visited, edges, n);\n        }\n        cout << max_xor_sum << endl;\n    }\n    return 0;\n}",

@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Sorting",
       "Greedy Algorithm",
-      "Sorting"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to sort the dishes based on the difference between the time taken by other cooks and the time taken by the Chef or his assistant. Then, we assign the dishes with the largest difference to the other cooks and the remaining dishes are assigned to the Chef and his assistant in a way that minimizes the maximum time taken by either of them.",
     "timeComplexity": "O(T * n log n) per test case, O(T * n log n) total. The sorting operation dominates the time complexity.",
-    "spaceComplexity": "O(n) — the dominant structure is the array of dishes.",
+    "spaceComplexity": "O(n) \u2014 the dominant structure is the array of dishes.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Structure to represent a dish\ntypedef struct {\n    int other_cook_time;\n    int chef_time;\n} Dish;\n\n// Comparison function for sorting dishes\nint compare_dishes(const void *a, const void *b) {\n    Dish *dish1 = (Dish *)a;\n    Dish *dish2 = (Dish *)b;\n    return (dish2->other_cook_time - dish2->chef_time) - (dish1->other_cook_time - dish1->chef_time);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        Dish dishes[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d %d\", &dishes[i].other_cook_time, &dishes[i].chef_time);\n        }\n        qsort(dishes, n, sizeof(Dish), compare_dishes);\n        int chef_time = 0, assistant_time = 0;\n        for (int i = 0; i < n; i++) {\n            if (dishes[i].other_cook_time > dishes[i].chef_time * 2) {\n                // Assign to other cook\n                continue;\n            } else if (chef_time <= assistant_time) {\n                // Assign to chef\n                chef_time += dishes[i].chef_time;\n            } else {\n                // Assign to assistant\n                assistant_time += dishes[i].chef_time;\n            }\n        }\n        printf(\"%d\\n\", (chef_time > assistant_time) ? chef_time : assistant_time);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nstruct Dish {\n    int other_cook_time;\n    int chef_time;\n};\n\nbool compare_dishes(const Dish &dish1, const Dish &dish2) {\n    return (dish2.other_cook_time - dish2.chef_time) > (dish1.other_cook_time - dish1.chef_time);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        Dish dishes[n];\n        for (int i = 0; i < n; i++) {\n            cin >> dishes[i].other_cook_time >> dishes[i].chef_time;\n        }\n        sort(dishes, dishes + n, compare_dishes);\n        int chef_time = 0, assistant_time = 0;\n        for (int i = 0; i < n; i++) {\n            if (dishes[i].other_cook_time > dishes[i].chef_time * 2) {\n                // Assign to other cook\n                continue;\n            } else if (chef_time <= assistant_time) {\n                // Assign to chef\n                chef_time += dishes[i].chef_time;\n            } else {\n                // Assign to assistant\n                assistant_time += dishes[i].chef_time;\n            }\n        }\n        cout << ((chef_time > assistant_time) ? chef_time : assistant_time) << endl;\n    }\n    return 0;\n}",

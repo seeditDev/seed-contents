@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph",
+      "Graphs",
       "BFS",
       "Backtracking"
     ],
@@ -26,7 +27,7 @@
       "Each vertex contains a digit from {1,2,..7}",
       "Starting at the vertex 1 with an empty string S, we travel through some vertices (with no limitations) to the vertex N"
     ],
-    "inputFormat": "The first line contains a positive integer N (N ≤ 100). The second line contains N digits (separated by spaces), the i-th digit is the value of the i-th vertex. N last lines, each contains N values of {0, 1} (separated by spaces), the j-th value of the i-th line is equal to 1 if there is an edge connecting two vertices (i, j), otherwise 0.",
+    "inputFormat": "The first line contains a positive integer N (N \u2264 100). The second line contains N digits (separated by spaces), the i-th digit is the value of the i-th vertex. N last lines, each contains N values of {0, 1} (separated by spaces), the j-th value of the i-th line is equal to 1 if there is an edge connecting two vertices (i, j), otherwise 0.",
     "outputFormat": "For each test case, output on a line the minimum sum of digits found, or **-1** if there's no solution.",
     "sampleTestCases": [
       {
@@ -108,8 +109,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a backtracking approach with BFS to explore all possible paths from vertex 1 to vertex N. We keep track of the current string S and its sum of digits. If the current string S is divisible by all its digits, we update the minimum sum of digits found. We use a visited array to avoid revisiting the same vertex.",
-    "timeComplexity": "O(N!) — because in the worst case, we might have to explore all possible permutations of vertices",
-    "spaceComplexity": "O(N) — for the recursion stack and the visited array",
+    "timeComplexity": "O(N!) \u2014 because in the worst case, we might have to explore all possible permutations of vertices",
+    "spaceComplexity": "O(N) \u2014 for the recursion stack and the visited array",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 100\n#define INF 1000000\n\nint minSum = INF;\nint digits[MAX];\nint graph[MAX][MAX];\nint visited[MAX];\n\nint isDivisible(int* arr, int size) {\n    int sum = 0;\n    for (int i = 0; i < size; i++) {\n        sum += arr[i];\n    }\n    for (int i = 0; i < size; i++) {\n        if (arr[i] != 0 && sum % arr[i] != 0) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nvoid backtrack(int* arr, int size, int current) {\n    if (current == size) {\n        if (isDivisible(arr, size)) {\n            int sum = 0;\n            for (int i = 0; i < size; i++) {\n                sum += arr[i];\n            }\n            minSum = (sum < minSum) ? sum : minSum;\n        }\n        return;\n    }\n    for (int i = 0; i < size; i++) {\n        if (!visited[i] && graph[current][i]) {\n            visited[i] = 1;\n            arr[size] = digits[i];\n            backtrack(arr, size + 1, i);\n            visited[i] = 0;\n        }\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &digits[i]);\n        }\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                scanf(\"%d\", &graph[i][j]);\n            }\n        }\n        minSum = INF;\n        int arr[n];\n        arr[0] = digits[0];\n        visited[0] = 1;\n        backtrack(arr, 1, 0);\n        if (minSum == INF) {\n            printf(\"-1\\n\");\n        } else {\n            printf(\"%d\\n\", minSum);\n        }\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n#define MAX 100\n#define INF 1000000\n\nint minSum = INF;\nvector<int> digits;\nvector<vector<int>> graph;\nvector<int> visited;\n\nint isDivisible(vector<int>& arr) {\n    int sum = 0;\n    for (int i = 0; i < arr.size(); i++) {\n        sum += arr[i];\n    }\n    for (int i = 0; i < arr.size(); i++) {\n        if (arr[i] != 0 && sum % arr[i] != 0) {\n            return 0;\n        }\n    }\n    return 1;\n}\n\nvoid backtrack(vector<int>& arr, int current) {\n    if (current == digits.size()) {\n        if (isDivisible(arr)) {\n            int sum = 0;\n            for (int i = 0; i < arr.size(); i++) {\n                sum += arr[i];\n            }\n            minSum = (sum < minSum) ? sum : minSum;\n        }\n        return;\n    }\n    for (int i = 0; i < digits.size(); i++) {\n        if (!visited[i] && graph[current][i]) {\n            visited[i] = 1;\n            arr.push_back(digits[i]);\n            backtrack(arr, i);\n            arr.pop_back();\n            visited[i] = 0;\n        }\n    }\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        digits.resize(n);\n        graph.resize(n, vector<int>(n));\n        visited.resize(n);\n        for (int i = 0; i < n; i++) {\n            cin >> digits[i];\n        }\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                cin >> graph[i][j];\n            }\n        }\n        minSum = INF;\n        vector<int> arr;\n        arr.push_back(digits[0]);\n        visited[0] = 1;\n        backtrack(arr, 0);\n        if (minSum == INF) {\n            cout << -1 << endl;\n        } else {\n            cout << minSum << endl;\n        }\n    }\n    return 0;\n}",

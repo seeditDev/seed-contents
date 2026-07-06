@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Scheduling",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to sort the programs based on the difference between their running times on the two computers. Then, we assign the programs to the computers in an alternating manner, starting with the program that has the largest difference in running times. This approach ensures that the total time to run all programs on both computers is minimized.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting step takes O(N log N) time, and we do this for each of the T test cases.",
-    "spaceComplexity": "O(N) — we need to store the running times of the N programs.",
+    "spaceComplexity": "O(N) \u2014 we need to store the running times of the N programs.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return (x[0] - x[1]) - (y[0] - y[1]);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int **A = (int **)malloc(N * sizeof(int *));\n        for (int i = 0; i < N; i++) {\n            A[i] = (int *)malloc(2 * sizeof(int));\n            scanf(\"%d %d\", &A[i][0], &A[i][1]);\n        }\n        qsort(A, N, sizeof(int *), compare);\n        int sum1 = 0, sum2 = 0;\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                sum1 += A[i][0];\n                sum2 += A[i][1];\n            } else {\n                sum1 += A[i][1];\n                sum2 += A[i][0];\n            }\n        }\n        printf(\"%d\\n\", sum1 > sum2 ? sum1 : sum2);\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                printf(\"%d \", A[i][0]);\n            } else {\n                printf(\"%d \", A[i][1]);\n            }\n        }\n        printf(\"\\n\");\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                printf(\"%d \", A[i][1]);\n            } else {\n                printf(\"%d \", A[i][0]);\n            }\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nstruct Program {\n    int a, b;\n};\n\nbool compare(Program x, Program y) {\n    return (x.a - x.b) > (y.a - y.b);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        Program *A = new Program[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i].a >> A[i].b;\n        }\n        sort(A, A + N, compare);\n        int sum1 = 0, sum2 = 0;\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                sum1 += A[i].a;\n                sum2 += A[i].b;\n            } else {\n                sum1 += A[i].b;\n                sum2 += A[i].a;\n            }\n        }\n        cout << (sum1 > sum2 ? sum1 : sum2) << endl;\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                cout << A[i].a << \" \";\n            } else {\n                cout << A[i].b << \" \";\n            }\n        }\n        cout << endl;\n        for (int i = 0; i < N; i++) {\n            if (i % 2 == 0) {\n                cout << A[i].b << \" \";\n            } else {\n                cout << A[i].a << \" \";\n            }\n        }\n        cout << endl;\n    }\n    return 0;\n}",

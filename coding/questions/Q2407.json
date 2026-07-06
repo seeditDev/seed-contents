@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Random Walk",
       "Probability",
+      "Graphs",
+      "Random Walk",
       "Graph Theory"
     ],
     "companyTags": [],
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Today, Ciel's restaurant is closed.\nCiel is bored, so she decides to take a walk randomly.\n\n\n\nThis town has **N** intersections and **M** one way roads.\nThe **i**-th road connects from the **Ai**-th intersection to the **Bi**-th intersection.\nCiel is in the 1st intersection now, and Ciel's house is in the **N**-th intersection.\n\n\n\nIf Ciel is in the **i**-th intersection, she will take a walk as follows:\n\n\n\nIf **i** = **N**, her walk is ended.\nOtherwise, she chooses an integer **k** such that **Ak** = **i** uniformly randomly, she walks along the **k**-th road.\n\nOn the way, **S** intersections have beautiful flowers.\nLet the **F**1-th intersection, the **F**2-th intersection, ..., and the **FS**-th intersection have beautiful flowers.\nCan you tell the probability that Ciel last sees the flowers in the **Fi**-th intersection?\nThat is to say, can you tell the probability that she visits the **Fi**-th intersection, then she goes to **N**-th intersection without visiting other intersections having beautiful flowers?",
     "constraints": [
-      "1 ≤ S < N ≤ 30",
-      "1 ≤ F1 < F2 < ... < FS < N",
-      "Ai ≠ Bi",
-      "If i ≠ j and Ai = Aj, then Bi ≠ Bj",
-      "For each 1 ≤ i < N, Ciel can go from the i-th intersection to the N-th intersection, directly or indirectly"
+      "1 \u2264 S < N \u2264 30",
+      "1 \u2264 F1 < F2 < ... < FS < N",
+      "Ai \u2260 Bi",
+      "If i \u2260 j and Ai = Aj, then Bi \u2260 Bj",
+      "For each 1 \u2264 i < N, Ciel can go from the i-th intersection to the N-th intersection, directly or indirectly"
     ],
     "inputFormat": "First line contains three integers N, M and S. Then, next line has S integers F1, F2, ..., FS. Next M lines have 2 integers each, Ai and Bi.",
     "outputFormat": "For each test case, print the probability that Ciel last sees beautiful flowers at the Fi-th intersection.",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a graph theory approach. We can represent the town as a directed graph where each intersection is a node and each one-way road is a directed edge. We can then use a random walk algorithm to calculate the probability of reaching each intersection with beautiful flowers without visiting any other intersections with beautiful flowers.",
     "timeComplexity": "O(N * M) per test case, O(T * N * M) total",
-    "spaceComplexity": "O(N * N) — for the adjacency matrix of the graph",
+    "spaceComplexity": "O(N * N) \u2014 for the adjacency matrix of the graph",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX 100\n#define INF 1000000000\n\nint main() {\n    int T, N, M, S;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d %d\", &N, &M, &S);\n        int *F = (int *) malloc(S * sizeof(int));\n        for (int i = 0; i < S; i++) {\n            scanf(\"%d\", &F[i]);\n            F[i]--;\n        }\n        int **roads = (int **) malloc(M * sizeof(int *));\n        for (int i = 0; i < M; i++) {\n            roads[i] = (int *) malloc(2 * sizeof(int));\n            scanf(\"%d %d\", &roads[i][0], &roads[i][1]);\n            roads[i][0]--;\n            roads[i][1]--;\n        }\n        double **probability = (double **) malloc(N * sizeof(double *));\n        for (int i = 0; i < N; i++) {\n            probability[i] = (double *) malloc(N * sizeof(double));\n        }\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                probability[i][j] = 0.0;\n            }\n        }\n        for (int i = 0; i < N; i++) {\n            int count = 0;\n            for (int j = 0; j < M; j++) {\n                if (roads[j][0] == i) {\n                    count++;\n                }\n            }\n            for (int j = 0; j < M; j++) {\n                if (roads[j][0] == i) {\n                    probability[i][roads[j][1]] = 1.0 / (double) count;\n                }\n            }\n        }\n        for (int i = 0; i < S; i++) {\n            for (int j = 0; j < N; j++) {\n                if (j != F[i]) {\n                    probability[F[i]][j] = 0.0;\n                }\n            }\n        }\n        for (int i = 0; i < S; i++) {\n            double prob = 0.0;\n            for (int j = 0; j < N; j++) {\n                if (j != F[i]) {\n                    prob += probability[F[i]][j];\n                }\n            }\n            printf(\"%f\\n\", prob);\n        }\n        free(F);\n        for (int i = 0; i < M; i++) {\n            free(roads[i]);\n        }\n        free(roads);\n        for (int i = 0; i < N; i++) {\n            free(probability[i]);\n        }\n        free(probability);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int T, N, M, S;\n    cin >> T;\n    while (T--) {\n        cin >> N >> M >> S;\n        vector<int> F(S);\n        for (int i = 0; i < S; i++) {\n            cin >> F[i];\n            F[i]--;\n        }\n        vector<pair<int, int>> roads(M);\n        for (int i = 0; i < M; i++) {\n            cin >> roads[i].first >> roads[i].second;\n            roads[i].first--;\n            roads[i].second--;\n        }\n        vector<vector<double>> probability(N, vector<double>(N, 0.0));\n        for (int i = 0; i < N; i++) {\n            int count = 0;\n            for (int j = 0; j < M; j++) {\n                if (roads[j].first == i) {\n                    count++;\n                }\n            }\n            for (int j = 0; j < M; j++) {\n                if (roads[j].first == i) {\n                    probability[i][roads[j].second] = 1.0 / (double) count;\n                }\n            }\n        }\n        for (int i = 0; i < S; i++) {\n            for (int j = 0; j < N; j++) {\n                if (j != F[i]) {\n                    probability[F[i]][j] = 0.0;\n                }\n            }\n        }\n        for (int i = 0; i < S; i++) {\n            double prob = 0.0;\n            for (int j = 0; j < N; j++) {\n                if (j != F[i]) {\n                    prob += probability[F[i]][j];\n                }\n            }\n            cout << prob << endl;\n        }\n    }\n    return 0;\n}",

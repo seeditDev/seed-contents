@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Bit Manipulation | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Multinomial Coefficients",
+      "Dynamic Programming",
       "Lucas Theorem",
-      "Binary DP",
-      "Inclusion‑Exclusion"
+      "Inclusion\u2011Exclusion",
+      "Multinomial Coefficients",
+      "Binary DP"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,12 +24,12 @@
   "content": {
     "problemStatement": "In an N-dimensional grid the co-ordinates of a cell are denoted as X1, X2, ..., XN. Any cell with negative co-ordinate are colored white. The origin cell (the one with all zero co-ordinates) is colored as black. The color of a cell in (X1, X2, ..., XN) depends on the N cells with co-ordinates (X1-1, X2, ..., XN), (X1, X2-1, ..., XN), ....,  (X1, X2, ..., XN-1). The cell is colored white if and only if the number of black colored cells among these N co-ordinates are even, otherwise the cell is colored black.\n\nYou are given the starting and ending co-ordinate of sub-hypercube. You need to compute how many hyper cells in this sub hypercube are colored black.",
     "constraints": [
-      "1 ≤ T ≤ 50",
-      "1 ≤ N ≤ 8",
-      "0 ≤ Si ≤ Ei ≤ 10^15"
+      "1 \u2264 T \u2264 50",
+      "1 \u2264 N \u2264 8",
+      "0 \u2264 Si \u2264 Ei \u2264 10^15"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with an integer N (1 ≤ N ≤ 8), the dimension of the hyper‑cube.\n- A line with N space‑separated non‑negative integers S1 … SN, the coordinates of the starting cell.\n- A line with N space‑separated non‑negative integers E1 … EN, the coordinates of the ending cell (Si ≤ Ei for every i).",
-    "outputFormat": "For each test case output a single line containing the number of black coloured cells inside the inclusive hyper‑rectangle defined by the start and end coordinates, modulo 1000000009.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with an integer N (1 \u2264 N \u2264 8), the dimension of the hyper\u2011cube.\n- A line with N space\u2011separated non\u2011negative integers S1 \u2026 SN, the coordinates of the starting cell.\n- A line with N space\u2011separated non\u2011negative integers E1 \u2026 EN, the coordinates of the ending cell (Si \u2264 Ei for every i).",
+    "outputFormat": "For each test case output a single line containing the number of black coloured cells inside the inclusive hyper\u2011rectangle defined by the start and end coordinates, modulo 1000000009.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For a cell with non‑negative coordinates (x1,…,xN) the colour satisfies over GF(2)\\n    C(x) = ( Σ_{i=1..N} C(x‑e_i) ) mod 2,\\nwith C(0,…,0)=1 and any cell having a negative coordinate is white (0).\\nThe solution of this linear recurrence is the multinomial coefficient\\n    C(x) = ( (x1+…+xN)! / (x1!·…·xN!) ) mod 2.\\nBy Lucas theorem a multinomial coefficient is odd (i.e. the cell is black) iff when the N numbers are added in binary no carry occurs. Equivalently, for every bit position at most one of the xi has a 1. This can be written as\\n    (x1 | x2 | … | xN) == (x1 + x2 + … + xN).\\nThus the problem reduces to counting vectors inside a given axis‑aligned hyper‑rectangle that satisfy the “no‑carry” condition.\\n\\nCounting vectors ≤ a bound B (0 ≤ vi ≤ Bi) can be done with a digit DP on the binary representation (most significant bit down to 0). The DP state is a bitmask of size N indicating for each dimension whether the already processed prefix is exactly equal to the prefix of Bi (tight) or already smaller. For each bit we may set either all zeros or a single 1 in one dimension (otherwise a carry would appear). The transition checks whether the chosen bit respects the current tightness and updates the mask accordingly. The DP runs in O( bits · 2^N · N ) time (bits ≤ 60, N ≤ 8).\\n\\nTo obtain the answer for an arbitrary rectangle [S,E] we use inclusion‑exclusion over its 2^N corners: for each mask M (0…2^N‑1) we build a corner vector C where Ci = Si‑1 if the i‑th bit of M is 1, otherwise Ci = Ei. The contribution of this corner is (-1)^{popcount(M)}·F(C), where F(C) is the DP count for the prefix defined by C (if any Ci < 0 the contribution is 0). Summing all contributions yields the required number of black cells. All operations are performed modulo 1 000 000 009.",
-    "timeComplexity": "O(T · 2^N · N · B) where B ≤ 60 is the number of binary digits of the largest coordinate (≈ 60). With N ≤ 8 this is well below 10^6 operations per test case.",
+    "approach": "For a cell with non\u2011negative coordinates (x1,\u2026,xN) the colour satisfies over GF(2)\\n    C(x) = ( \u03a3_{i=1..N} C(x\u2011e_i) ) mod 2,\\nwith C(0,\u2026,0)=1 and any cell having a negative coordinate is white (0).\\nThe solution of this linear recurrence is the multinomial coefficient\\n    C(x) = ( (x1+\u2026+xN)! / (x1!\u00b7\u2026\u00b7xN!) ) mod 2.\\nBy Lucas theorem a multinomial coefficient is odd (i.e. the cell is black) iff when the N numbers are added in binary no carry occurs. Equivalently, for every bit position at most one of the xi has a 1. This can be written as\\n    (x1 | x2 | \u2026 | xN) == (x1 + x2 + \u2026 + xN).\\nThus the problem reduces to counting vectors inside a given axis\u2011aligned hyper\u2011rectangle that satisfy the \u201cno\u2011carry\u201d condition.\\n\\nCounting vectors \u2264 a bound B (0 \u2264 vi \u2264 Bi) can be done with a digit DP on the binary representation (most significant bit down to 0). The DP state is a bitmask of size N indicating for each dimension whether the already processed prefix is exactly equal to the prefix of Bi (tight) or already smaller. For each bit we may set either all zeros or a single 1 in one dimension (otherwise a carry would appear). The transition checks whether the chosen bit respects the current tightness and updates the mask accordingly. The DP runs in O( bits \u00b7 2^N \u00b7 N ) time (bits \u2264 60, N \u2264 8).\\n\\nTo obtain the answer for an arbitrary rectangle [S,E] we use inclusion\u2011exclusion over its 2^N corners: for each mask M (0\u20262^N\u20111) we build a corner vector C where Ci = Si\u20111 if the i\u2011th bit of M is 1, otherwise Ci = Ei. The contribution of this corner is (-1)^{popcount(M)}\u00b7F(C), where F(C) is the DP count for the prefix defined by C (if any Ci < 0 the contribution is 0). Summing all contributions yields the required number of black cells. All operations are performed modulo 1\u202f000\u202f000\u202f009.",
+    "timeComplexity": "O(T \u00b7 2^N \u00b7 N \u00b7 B) where B \u2264 60 is the number of binary digits of the largest coordinate (\u2248 60). With N \u2264 8 this is well below 10^6 operations per test case.",
     "spaceComplexity": "O(2^N) for the DP arrays (at most 256 entries).",
     "code": {
       "C": ""

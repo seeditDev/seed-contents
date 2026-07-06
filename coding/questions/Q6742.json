@@ -10,10 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Simple Graph",
       "Counting",
-      "Greedy",
       "Blood Types",
-      "Simple Graph"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "In living donation, the following blood types are compatible:\n\n\nBlood type `A` donors can donate to recipients with blood types `A` and `AB`.\nBlood type `B` donors can donate to recipients with blood types `B` and `AB`.\nBlood type `AB` donors can donate to recipients with blood type `AB` only.\nBlood type `O` donors can donate to recipients with blood types `A`, `B`, `AB` and `O`.\nThere are NNN people in a hospital where the blood type of the ithi^{th}ith person is denoted by BiB_iBi​. Note that the value of BiB_iBi​ can be `A`, `B`, `AB`, or `O` only.\n\nA chain is formed when a donor can donate blood to a recipient, who in turn can donate blood to another recipient, and so on.\n\nFind the **maximum** number of people that can form a chain of blood transfusions.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN — the number of people.\nThe next line contains NNN space separated strings BiB_iBi​ — denoting the blood group of each person.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **maximum** number of people that can form a chain of blood transfusions.",
+    "problemStatement": "In living donation, the following blood types are compatible:\n\n\nBlood type `A` donors can donate to recipients with blood types `A` and `AB`.\nBlood type `B` donors can donate to recipients with blood types `B` and `AB`.\nBlood type `AB` donors can donate to recipients with blood type `AB` only.\nBlood type `O` donors can donate to recipients with blood types `A`, `B`, `AB` and `O`.\nThere are NNN people in a hospital where the blood type of the ithi^{th}ith person is denoted by BiB_iBi\u200b. Note that the value of BiB_iBi\u200b can be `A`, `B`, `AB`, or `O` only.\n\nA chain is formed when a donor can donate blood to a recipient, who in turn can donate blood to another recipient, and so on.\n\nFind the **maximum** number of people that can form a chain of blood transfusions.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of people.\nThe next line contains NNN space separated strings BiB_iBi\u200b \u2014 denoting the blood group of each person.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **maximum** number of people that can form a chain of blood transfusions.",
     "constraints": [
       "1 <= T <= 1000",
       "1 <= N <= 100000",
       "Sum of N over all test cases does not exceed 200000",
       "Each blood type string is exactly \"A\", \"B\", \"AB\" or \"O\""
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of people. The second line contains N space‑separated strings, each being one of \"A\", \"B\", \"AB\", or \"O\", representing the blood type of each person.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of people. The second line contains N space\u2011separated strings, each being one of \"A\", \"B\", \"AB\", or \"O\", representing the blood type of each person.",
     "outputFormat": "For each test case output a single line containing the maximum possible number of distinct people that can be arranged in a chain of blood transfusions.",
     "sampleTestCases": [
       {
@@ -103,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "The compatibility rules depend only on blood types, not on individual identities. A person can always donate to another of the same type, so all people of one type can be placed consecutively. The only possible ordering that respects all donor→recipient edges is: any number of O‑type people (they can donate to everyone but can receive only from O), followed by either all A‑type or all B‑type people (A cannot donate to B and vice‑versa, so we can keep at most one of these groups), and finally all AB‑type people (AB can receive from anyone but can donate only to AB). Therefore the longest chain uses all O’s, all AB’s, and the larger of the counts of A and B. The answer for each test case is:\n    answer = count(O) + count(AB) + max(count(A), count(B)).\nThe algorithm simply counts the four types in O(N) time per test case and applies the formula.",
-    "timeComplexity": "O(N) per test case, where N is the number of people in that test case. Overall O(total N) ≤ 2·10^5.",
+    "approach": "The compatibility rules depend only on blood types, not on individual identities. A person can always donate to another of the same type, so all people of one type can be placed consecutively. The only possible ordering that respects all donor\u2192recipient edges is: any number of O\u2011type people (they can donate to everyone but can receive only from O), followed by either all A\u2011type or all B\u2011type people (A cannot donate to B and vice\u2011versa, so we can keep at most one of these groups), and finally all AB\u2011type people (AB can receive from anyone but can donate only to AB). Therefore the longest chain uses all O\u2019s, all AB\u2019s, and the larger of the counts of A and B. The answer for each test case is:\n    answer = count(O) + count(AB) + max(count(A), count(B)).\nThe algorithm simply counts the four types in O(N) time per test case and applies the formula.",
+    "timeComplexity": "O(N) per test case, where N is the number of people in that test case. Overall O(total N) \u2264 2\u00b710^5.",
     "spaceComplexity": "O(1) additional space (only four counters).",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        long long cntA=0,cntB=0,cntAB=0,cntO=0;\n        char s[4];\n        for(int i=0;i<N;i++){\n            scanf(\"%s\", s);\n            if(strcmp(s,\"A\")==0) cntA++;\n            else if(strcmp(s,\"B\")==0) cntB++;\n            else if(strcmp(s,\"AB\")==0) cntAB++;\n            else if(strcmp(s,\"O\")==0) cntO++;\n        }\n        long long ans = cntO + cntAB + (cntA>cntB?cntA:cntB);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

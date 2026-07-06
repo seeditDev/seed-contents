@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Sliding Window",
+      "Arrays",
       "Two Pointers"
     ],
     "companyTags": [],
@@ -21,12 +22,12 @@
   "content": {
     "problemStatement": "You are given an array arrarrarr consisting of only the integers 000, 111, and 222. Your task is to find the number of contiguous subarrays that contain at least one occurrence of each integer (0, 1, and 2).\n\n\nInput Format\n\nThe first line contains one integer nnn, the size of the array.                                                                                                               - Next line contains nnn integers arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n], representing the elements of the array.\n\n\nOutput Format\n\nPrint the count of all subarrays that contains at least one occurrence of each integer (0,1,2)(0, 1, \n 2)(0,1,2).",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ n ≤ 10^5",
-      "arr[i] ∈ {0,1,2}",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 n \u2264 10^5",
+      "arr[i] \u2208 {0,1,2}",
       "The sum of n over all test cases does not exceed 10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 ≤ n ≤ 10^5), the size of the array. The second line contains n space‑separated integers arr[i] where each arr[i] is 0, 1 or 2.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 \u2264 n \u2264 10^5), the size of the array. The second line contains n space\u2011separated integers arr[i] where each arr[i] is 0, 1 or 2.",
     "outputFormat": "For each test case, output a single line containing the number of contiguous subarrays that contain at least one occurrence of each of the three values 0, 1 and 2.",
     "sampleTestCases": [
       {
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "Use a sliding‑window (two‑pointer) technique. Keep a left pointer L and a right pointer R (initially 0) and an array cnt[3] storing how many of each value are inside the current window [L, R). While the window does not contain all three values, move R to the right and update cnt. When the window first satisfies the condition, every extension of the window to the right (i.e., any subarray that starts at L and ends at any index ≥ R‑1) is also valid, because adding more elements cannot remove existing values. Therefore we add (n - R + 1) to the answer. Then we shrink the window from the left by decreasing cnt[arr[L]] and increment L, repeating the process. The whole array is scanned at most twice, giving O(n) time per test case.",
-    "timeComplexity": "O(n) per test case, O(total n) over all test cases.",
+    "approach": "Use a sliding\u2011window (two\u2011pointer) technique. Keep a left pointer L and a right pointer R (initially 0) and an array cnt[3] storing how many of each value are inside the current window [L, R). While the window does not contain all three values, move R to the right and update cnt. When the window first satisfies the condition, every extension of the window to the right (i.e., any subarray that starts at L and ends at any index \u2265 R\u20111) is also valid, because adding more elements cannot remove existing values. Therefore we add (n - R + 1) to the answer. Then we shrink the window from the left by decreasing cnt[arr[L]] and increment L, repeating the process. The whole array is scanned at most twice, giving O(n) time per test case.",
+    "timeComplexity": "O(n) per test case, O(total\u202fn) over all test cases.",
     "spaceComplexity": "O(1) extra space (only a few counters).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n; scanf(\"%d\", &n);\n        int *arr = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; ++i) scanf(\"%d\", &arr[i]);\n        long long ans = 0;\n        int cnt[3] = {0, 0, 0};\n        int r = 0;\n        for (int l = 0; l < n; ++l) {\n            while (r < n && (cnt[0] == 0 || cnt[1] == 0 || cnt[2] == 0)) {\n                cnt[arr[r]]++;\n                ++r;\n            }\n            if (cnt[0] && cnt[1] && cnt[2]) {\n                ans += (long long)(n - r + 1);\n            }\n            cnt[arr[l]]--;\n        }\n        printf(\"%lld\\n\", ans);\n        free(arr);\n    }\n    return 0;\n}",

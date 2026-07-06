@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Greedy",
       "Sorting",
-      "String processing"
+      "String processing",
+      "Strings",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has been studying the human sleep cycle for years. He divides a day into LLL units of time (numbered 111 through LLL). Chef's research shows that his body requires spending only HHH continuous units of time per day on sleep — then, he can stay active during work. However, in case of travel or any other responsibilities, he might not be able to achieve this ideal state.\n\nNext, Chef noticed that if he sleeps for xxx (x&lt;Hx \\lt Hx&lt;H) continuous units of time and then performs some other activity, he can still meet his daily sleep quota, but the remaining time he needs to spend on continuously sleeping becomes 2⋅(H−x)2\\cdot(H-x)2⋅(H−x). He can further split this sleeping time in the same way, i.e. if he now sleeps for yyy more (y&lt;2⋅(H−x)y \\lt 2\\cdot(H-x)y&lt;2⋅(H−x)) continuous units of time, his required sleeping time becomes 2⋅(2⋅(H−x)−y)2\\cdot(2\\cdot(H-x)-y)2⋅(2⋅(H−x)−y), and so on.\n\nYou are given a string SSS with length LLL; for each valid iii, the iii-th character of this string is '0' if the iii-th unit of time is free (so Chef can use it to sleep) or '1' if it is occupied.\n\nCan Chef ever get enough sleep to feel fresh during his work, given that he can choose when to sleep in his free time?",
+    "problemStatement": "Chef has been studying the human sleep cycle for years. He divides a day into LLL units of time (numbered 111 through LLL). Chef's research shows that his body requires spending only HHH continuous units of time per day on sleep \u2014 then, he can stay active during work. However, in case of travel or any other responsibilities, he might not be able to achieve this ideal state.\n\nNext, Chef noticed that if he sleeps for xxx (x&lt;Hx \\lt Hx&lt;H) continuous units of time and then performs some other activity, he can still meet his daily sleep quota, but the remaining time he needs to spend on continuously sleeping becomes 2\u22c5(H\u2212x)2\\cdot(H-x)2\u22c5(H\u2212x). He can further split this sleeping time in the same way, i.e. if he now sleeps for yyy more (y&lt;2\u22c5(H\u2212x)y \\lt 2\\cdot(H-x)y&lt;2\u22c5(H\u2212x)) continuous units of time, his required sleeping time becomes 2\u22c5(2\u22c5(H\u2212x)\u2212y)2\\cdot(2\\cdot(H-x)-y)2\u22c5(2\u22c5(H\u2212x)\u2212y), and so on.\n\nYou are given a string SSS with length LLL; for each valid iii, the iii-th character of this string is '0' if the iii-th unit of time is free (so Chef can use it to sleep) or '1' if it is occupied.\n\nCan Chef ever get enough sleep to feel fresh during his work, given that he can choose when to sleep in his free time?",
     "constraints": [
       "1 <= T <= 10",
       "1 <= H <= L <= 10^5",
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "Collect lengths of all maximal consecutive '0' segments. Sort these lengths in descending order. Let required = H. Iterate over the sorted lengths: if the current length >= required, Chef can finish sleeping → answer YES. Otherwise, if the length is more than half of required (i.e., length*2 > required), using this segment reduces the remaining required sleep to required = 2*(required - length). Continue with the next longest segment. If no segment can reduce the requirement and none is long enough, answer NO. This greedy choice is optimal because using the longest possible segment that actually reduces the requirement yields the smallest possible new requirement; any shorter segment would either not reduce the requirement or would lead to a larger requirement later.",
-    "timeComplexity": "O(L log L) per test case due to sorting the zero‑segment lengths.",
+    "approach": "Collect lengths of all maximal consecutive '0' segments. Sort these lengths in descending order. Let required = H. Iterate over the sorted lengths: if the current length >= required, Chef can finish sleeping \u2192 answer YES. Otherwise, if the length is more than half of required (i.e., length*2 > required), using this segment reduces the remaining required sleep to required = 2*(required - length). Continue with the next longest segment. If no segment can reduce the requirement and none is long enough, answer NO. This greedy choice is optimal because using the longest possible segment that actually reduces the requirement yields the smallest possible new requirement; any shorter segment would either not reduce the requirement or would lead to a larger requirement later.",
+    "timeComplexity": "O(L log L) per test case due to sorting the zero\u2011segment lengths.",
     "spaceComplexity": "O(L) for storing segment lengths.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp_desc(const void *a, const void *b) {\n    int x = *(int*)b - *(int*)a;\n    return x;\n}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int L, H; scanf(\"%d %d\", &L, &H);\n        char *S = (char*)malloc(L+5);\n        scanf(\"%s\", S);\n        int *segs = (int*)malloc(L * sizeof(int));\n        int cnt=0, segCnt=0;\n        for(int i=0;i<L;i++){\n            if(S[i]=='0') cnt++;\n            else{ if(cnt>0){ segs[segCnt++]=cnt; cnt=0; } }\n        }\n        if(cnt>0) segs[segCnt++]=cnt;\n        qsort(segs, segCnt, sizeof(int), cmp_desc);\n        int req = H;\n        int ok = 0;\n        for(int i=0;i<segCnt;i++){\n            int len = segs[i];\n            if(len >= req){ ok = 1; break; }\n            if(len*2 > req) req = 2*(req - len);\n        }\n        printf(ok?\"YES\\n\":\"NO\\n\");\n        free(S); free(segs);\n    }\n    return 0;\n}",

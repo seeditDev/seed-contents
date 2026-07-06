@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Greedy",
+    "category": "Greedy",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Right Isoceles Triangle",
-      "Birds",
       "Grain",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Birds",
+      "Right Isoceles Triangle",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,11 +24,11 @@
   "content": {
     "problemStatement": "Chef loves to listen bird's chirping. Now Chef is in his office and is missing the chirping of birds after getting bored with long hours of work. So, he wants to have some fun. He likes paper birds of special shape. Here is some examples of beautiful paper birds Chef likes. \n \n\n\n\nAs we can see, the stomach of each bird is a **right angled isoceles triangle** (highlighted in the figures).\n\nToday morning, Chef had bought a rectangular piece of paper of height **N** and width **M**. For e.g. consider following rectangular paper of height **N = 3** and width **M = 5**.\n\n\n\n\nAs you can see that, this is not an ordinary paper. This paper has some marked lines where each marked line joins two points available on the paper.\n\nNow, Chef imagines creating birds for **each possible right isoceles triangle** whose sides are along the marked lines of the paper and its vertices are among the given points of the rectangular paper. See the sample test case for better understanding.\n\nEach little bird has capacity to eat some grams of grain. Capacity of eating grains for a bird is defined by sum of hungriness of **all the points** included in triangle (including the corners of triangle) made by bird's stomach.\n\nSee the following images for some examples:\n\n\n\nNow, Chef has **G** grams of grains at his house and wants to feed as many birds as possible. Can you help him in finding out the maximum number of birds he can feed?",
     "constraints": [
-      "1 ≤ N ≤ 335",
-      "1 ≤ N * M ≤ 112225",
-      "0 ≤ Hi,j ≤ 50",
-      "1 ≤ Q ≤ 105",
-      "0 ≤ G ≤ 109"
+      "1 \u2264 N \u2264 335",
+      "1 \u2264 N * M \u2264 112225",
+      "0 \u2264 Hi,j \u2264 50",
+      "1 \u2264 Q \u2264 105",
+      "0 \u2264 G \u2264 109"
     ],
     "inputFormat": "The first line contains three space-separated integers N, M, and Q, where N is the height of the paper, M is the width of the paper, and Q is the number of questions. The next N lines contain M space-separated integers, where the jth integer in the ith line denotes the hungriness of the point at position (i, j). The next Q lines contain a single integer G, which denotes the grams of grain available to the chef.",
     "outputFormat": "For each question, print the maximum number of birds that can be fed with the given amount of grain.",
@@ -117,8 +118,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to first calculate the hungriness of each possible right isoceles triangle. Then, we sort the triangles based on their hungriness. For each question, we iterate over the sorted triangles and feed as many birds as possible with the given amount of grain.",
-    "timeComplexity": "O(N * M * log(N * M) + Q * N * M) — where N * M is the number of triangles and Q is the number of questions",
-    "spaceComplexity": "O(N * M) — where N * M is the number of triangles",
+    "timeComplexity": "O(N * M * log(N * M) + Q * N * M) \u2014 where N * M is the number of triangles and Q is the number of questions",
+    "spaceComplexity": "O(N * M) \u2014 where N * M is the number of triangles",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 335\n#define MAX_M 335\n#define MAX_Q 105\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int N, M, Q;\n    scanf(\"%d %d %d\", &N, &M, &Q);\n    int H[N][M];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            scanf(\"%d\", &H[i][j]);\n        }\n    }\n    for (int q = 0; q < Q; q++) {\n        int G;\n        scanf(\"%d\", &G);\n        int triangles[N * M];\n        int count = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                for (int k = i; k < N; k++) {\n                    for (int l = j; l < M; l++) {\n                        if ((k - i) == (l - j)) {\n                            int hungriness = 0;\n                            for (int x = i; x <= k; x++) {\n                                for (int y = j; y <= l; y++) {\n                                    hungriness += H[x][y];\n                                }\n                            }\n                            triangles[count++] = hungriness;\n                        }\n                    }\n                }\n            }\n        }\n        qsort(triangles, count, sizeof(int), compare);\n        int fed = 0;\n        for (int i = 0; i < count; i++) {\n            if (G >= triangles[i]) {\n                G -= triangles[i];\n                fed++;\n            } else {\n                break;\n            }\n        }\n        printf(\"%d\\n\", fed);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX_N 335\n#define MAX_M 335\n#define MAX_Q 105\n\nint main() {\n    int N, M, Q;\n    cin >> N >> M >> Q;\n    int H[N][M];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            cin >> H[i][j];\n        }\n    }\n    for (int q = 0; q < Q; q++) {\n        int G;\n        cin >> G;\n        int triangles[N * M];\n        int count = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                for (int k = i; k < N; k++) {\n                    for (int l = j; l < M; l++) {\n                        if ((k - i) == (l - j)) {\n                            int hungriness = 0;\n                            for (int x = i; x <= k; x++) {\n                                for (int y = j; y <= l; y++) {\n                                    hungriness += H[x][y];\n                                }\n                            }\n                            triangles[count++] = hungriness;\n                        }\n                    }\n                }\n            }\n        }\n        sort(triangles, triangles + count);\n        int fed = 0;\n        for (int i = 0; i < count; i++) {\n            if (G >= triangles[i]) {\n                G -= triangles[i];\n                fed++;\n            } else {\n                break;\n            }\n        }\n        cout << fed << endl;\n    }\n    return 0;\n}",

@@ -10,7 +10,6 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Math",
       "Simulation",
       "Greedy"
     ],
@@ -20,13 +19,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is playing a videogame, and is now at a boss fight.\n\nThe boss has HHH health.\n\nChef has two weapons with him:\n\n\nFirst, a gun that does XXX damage every hit.\nSecond, a laser that does Y1Y_1Y1​ damage every hit.\n\nHowever, after the KKK-th time it's used, the laser's output drops; and it will then do only Y2Y_2Y2​ damage every hit (Y2&lt;Y1Y_2 \\lt Y_1Y2​&lt;Y1​).\nChef must choose **exactly one** of the two weapons to fight the boss, and cannot change once the fight begins.\n\nWhat's the minimum number of hits he needs to defeat the boss?\n\nThe boss will be defeated once Chef inflicts at least HHH damage to it in total.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe only line of each test case contains five space-separated integers: H,X,Y1,Y2,KH, X, Y_1, Y_2, KH,X,Y1​,Y2​,K — the boss' health, the gun's damage, the laser's initial damage, the laser's lowered damage, and the threshold before lowering.\n\n\nOutput Format\nFor each test case, output on a new line the minimum number of hits needed for Chef to defeat the boss.",
+    "problemStatement": "Chef is playing a videogame, and is now at a boss fight.\n\nThe boss has HHH health.\n\nChef has two weapons with him:\n\n\nFirst, a gun that does XXX damage every hit.\nSecond, a laser that does Y1Y_1Y1\u200b damage every hit.\n\nHowever, after the KKK-th time it's used, the laser's output drops; and it will then do only Y2Y_2Y2\u200b damage every hit (Y2&lt;Y1Y_2 \\lt Y_1Y2\u200b&lt;Y1\u200b).\nChef must choose **exactly one** of the two weapons to fight the boss, and cannot change once the fight begins.\n\nWhat's the minimum number of hits he needs to defeat the boss?\n\nThe boss will be defeated once Chef inflicts at least HHH damage to it in total.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe only line of each test case contains five space-separated integers: H,X,Y1,Y2,KH, X, Y_1, Y_2, KH,X,Y1\u200b,Y2\u200b,K \u2014 the boss' health, the gun's damage, the laser's initial damage, the laser's lowered damage, and the threshold before lowering.\n\n\nOutput Format\nFor each test case, output on a new line the minimum number of hits needed for Chef to defeat the boss.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ H, X, Y1, Y2, K ≤ 10^9",
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 H, X, Y1, Y2, K \u2264 10^9",
       "Y2 < Y1"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains five space‑separated integers H X Y1 Y2 K — the boss' health, the gun's damage per hit, the laser's initial damage per hit, the laser's reduced damage per hit after the K‑th use, and the threshold K.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains five space\u2011separated integers H X Y1 Y2 K \u2014 the boss' health, the gun's damage per hit, the laser's initial damage per hit, the laser's reduced damage per hit after the K\u2011th use, and the threshold K.",
     "outputFormat": "For each test case output a single line containing the minimum number of hits Chef needs to defeat the boss.",
     "sampleTestCases": [
       {
@@ -69,7 +68,7 @@
       },
       {
         "id": "tc_5",
-        "label": "laser dramatically better after one high‑damage hit",
+        "label": "laser dramatically better after one high\u2011damage hit",
         "input": "1\n999999937 123456789 500000000 400000000 1",
         "expectedOutput": "3",
         "weight": 2
@@ -101,9 +100,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we evaluate the two possible weapons independently.\n\n*Gun*: It always deals X damage. The required hits are ceil(H / X).\n\n*Laser*: It deals Y1 damage for the first K hits and Y2 thereafter. If the boss can be killed within the first K hits, the answer is ceil(H / Y1) (provided this value ≤ K). Otherwise we use all K high‑damage hits, inflict K·Y1 damage, and then need additional hits of Y2 damage: remaining = H - K·Y1 (positive). The extra hits are ceil(remaining / Y2). Total laser hits = K + ceil(remaining / Y2).\n\nThe final answer is the minimum of the gun hits and the laser hits.\n\nAll calculations fit in 64‑bit signed integers; we use the formula (a + b - 1) / b for ceiling division.\n\nThe algorithm runs in O(1) per test case, O(T) overall, with O(1) extra memory.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few variables.",
+    "approach": "For each test case we evaluate the two possible weapons independently.\n\n*Gun*: It always deals X damage. The required hits are ceil(H / X).\n\n*Laser*: It deals Y1 damage for the first K hits and Y2 thereafter. If the boss can be killed within the first K hits, the answer is ceil(H / Y1) (provided this value \u2264 K). Otherwise we use all K high\u2011damage hits, inflict K\u00b7Y1 damage, and then need additional hits of Y2 damage: remaining = H - K\u00b7Y1 (positive). The extra hits are ceil(remaining / Y2). Total laser hits = K + ceil(remaining / Y2).\n\nThe final answer is the minimum of the gun hits and the laser hits.\n\nAll calculations fit in 64\u2011bit signed integers; we use the formula (a + b - 1) / b for ceiling division.\n\nThe algorithm runs in O(1) per test case, O(T) overall, with O(1) extra memory.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few variables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic inline int64_t ceil_div(int64_t a, int64_t b) {\n    return (a + b - 1) / b;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int64_t H, X, Y1, Y2, K;\n        scanf(\"%lld %lld %lld %lld %lld\", &H, &X, &Y1, &Y2, &K);\n        int64_t gun_hits = ceil_div(H, X);\n        int64_t laser_hits;\n        int64_t hits_if_all_y1 = ceil_div(H, Y1);\n        if (hits_if_all_y1 <= K) {\n            laser_hits = hits_if_all_y1;\n        } else {\n            int64_t damage_first = K * Y1;\n            int64_t remaining = H > damage_first ? H - damage_first : 0;\n            laser_hits = K + ceil_div(remaining, Y2);\n        }\n        int64_t ans = gun_hits < laser_hits ? gun_hits : laser_hits;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic inline long long ceil_div(long long a, long long b) {\n    return (a + b - 1) / b;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        long long H, X, Y1, Y2, K;\n        cin >> H >> X >> Y1 >> Y2 >> K;\n        long long gun_hits = ceil_div(H, X);\n        long long laser_hits;\n        long long hits_all_y1 = ceil_div(H, Y1);\n        if (hits_all_y1 <= K) {\n            laser_hits = hits_all_y1;\n        } else {\n            long long damage_first = K * Y1;\n            long long remaining = H > damage_first ? H - damage_first : 0;\n            laser_hits = K + ceil_div(remaining, Y2);\n        }\n        cout << min(gun_hits, laser_hits) << '\\n';\n    }\n    return 0;\n}\n",

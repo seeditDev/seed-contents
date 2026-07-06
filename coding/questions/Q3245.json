@@ -10,9 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
       "Knapsack Problem",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +22,14 @@
   "content": {
     "problemStatement": "Recently, Sergey bought a plot of **S** square units and now wants to build a cherry tree farm at this plot.\n\nIn order to do so, he wants to visit the market and buy a number of cherry tree seedlings. There are **N** kinds of seedlings available in the market. One seedling of the **i**th kind will occupy **Ai** square units of Sergey's farm, will bring Sergey **Ci** burles of profit, and costs **Bi** burles each. There is an infinite amount of seedlings of each kind available.\n\nNow, Sergey wants to know the number of ways to buy some seedlings in such a way that the total space they occupy will not exceed the size of Sergey's plot of land and the profit from cherry trees from the seedlings bought exceeds the money spent on them.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N ≤ 100",
-      "1 ≤ S ≤ 100",
-      "1 ≤ Ai ≤ S",
-      "1 ≤ Bi ≤ 100",
-      "1 ≤ Ci ≤ 10^7"
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N \u2264 100",
+      "1 \u2264 S \u2264 100",
+      "1 \u2264 Ai \u2264 S",
+      "1 \u2264 Bi \u2264 100",
+      "1 \u2264 Ci \u2264 10^7"
     ],
-    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each description contains two space-separated integers N and S denoting the number of kinds of seedlings and the area of Sergey's plot of land. Each of the following N lines contains three space-separated integers — Ai, Bi, and Ci — denoting the area occupied by one seedling of the i-th kind, the cost of one seedling of this kind and the profit a seedling of this kind will bring, respectively.",
+    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows. The first line of each description contains two space-separated integers N and S denoting the number of kinds of seedlings and the area of Sergey's plot of land. Each of the following N lines contains three space-separated integers \u2014 Ai, Bi, and Ci \u2014 denoting the area occupied by one seedling of the i-th kind, the cost of one seedling of this kind and the profit a seedling of this kind will bring, respectively.",
     "outputFormat": "For each test case, output a single line containing the number of ways to buy seedlings in such a way that the profit from these seedlings exceeds the expenses on these seedlings and the occupied area doesn't exceed S, modulo 10^9+7.",
     "sampleTestCases": [
       {
@@ -105,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming. We will create a 2D array dp where dp[i][j] represents the number of ways to buy i seedlings with a total area of j. We will iterate over each type of seedling and for each seedling, we will iterate over the possible areas from 1 to S. For each area, we will calculate the number of ways to buy seedlings with a total area of j and a total profit greater than the total cost. We will use modular arithmetic to avoid overflow.",
-    "timeComplexity": "O(T * N * S * 100) — because we are iterating over T test cases, N types of seedlings, S areas, and 100 possible profits.",
-    "spaceComplexity": "O(N * S) — because we are using a 2D array of size N * S to store the dp values.",
+    "timeComplexity": "O(T * N * S * 100) \u2014 because we are iterating over T test cases, N types of seedlings, S areas, and 100 possible profits.",
+    "spaceComplexity": "O(N * S) \u2014 because we are using a 2D array of size N * S to store the dp values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, S;\n        scanf(\"%d %d\", &N, &S);\n        int **dp = (int **)malloc((N + 1) * sizeof(int *));\n        for (int i = 0; i <= N; i++) {\n            dp[i] = (int *)malloc((S + 1) * sizeof(int));\n        }\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j <= S; j++) {\n                dp[i][j] = 0;\n            }\n        }\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            int A, B, C;\n            scanf(\"%d %d %d\", &A, &B, &C);\n            for (int j = 0; j <= S; j++) {\n                for (int k = 0; k <= j / A; k++) {\n                    if (k * B < k * C) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][j - k * A]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int i = 0; i <= S; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        printf(\"%d\\n\", ans);\n        for (int i = 0; i <= N; i++) {\n            free(dp[i]);\n        }\n        free(dp);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 1000000007\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, S;\n        cin >> N >> S;\n        vector<vector<int>> dp(N + 1, vector<int>(S + 1, 0));\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            int A, B, C;\n            cin >> A >> B >> C;\n            for (int j = 0; j <= S; j++) {\n                for (int k = 0; k <= j / A; k++) {\n                    if (k * B < k * C) {\n                        dp[i][j] = (dp[i][j] + dp[i - 1][j - k * A]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int i = 0; i <= S; i++) {\n            ans = (ans + dp[N][i]) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

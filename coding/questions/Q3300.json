@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Math | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Exponential Sequences",
+      "Binary Strings",
       "Palindromes",
-      "Binary Strings"
+      "Exponential Sequences",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a binary string **S** of **N** bits. The bits in the string are indexed starting from 1. **S[i]** denotes the **i**th bit of **S**.\n\n\n\nLet's say that a sequence **i1**, **i2**, …, **iK**(1 ≤ **K**; 1 ≤ **i1** &lt; **i2** &lt; … &lt; **iK** ≤ **N**) produces a palindrome when applied to **S**, if the string **S[i1]** **S[i2]** … **S[ik]** is a palindrome (that is, reads the same backward or forward).\n\n\n \nIn addition, a sequence **i1**, **i2**, …, **iK**(1 ≤ **K**; 1 ≤ **i1** &lt; **i2** &lt; … &lt; **iK** ≤ **N**) is said to be exponential, if **ij + 1 = p * ij** for each integer **1 ≤ j &lt; K** and for some integer **p &gt; 1**. Note, that a sequence of one element is always exponential.\n\n\nYour task is to count the number of exponential sequences that produce a palindrome when applied to **S**.",
+    "problemStatement": "You are given a binary string **S** of **N** bits. The bits in the string are indexed starting from 1. **S[i]** denotes the **i**th bit of **S**.\n\n\n\nLet's say that a sequence **i1**, **i2**, \u2026, **iK**(1 \u2264 **K**; 1 \u2264 **i1** &lt; **i2** &lt; \u2026 &lt; **iK** \u2264 **N**) produces a palindrome when applied to **S**, if the string **S[i1]** **S[i2]** \u2026 **S[ik]** is a palindrome (that is, reads the same backward or forward).\n\n\n \nIn addition, a sequence **i1**, **i2**, \u2026, **iK**(1 \u2264 **K**; 1 \u2264 **i1** &lt; **i2** &lt; \u2026 &lt; **iK** \u2264 **N**) is said to be exponential, if **ij + 1 = p * ij** for each integer **1 \u2264 j &lt; K** and for some integer **p &gt; 1**. Note, that a sequence of one element is always exponential.\n\n\nYour task is to count the number of exponential sequences that produce a palindrome when applied to **S**.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 5 * 10^5"
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to generate all possible exponential sequences from the given binary string and check if they form a palindrome. We can use a recursive approach to generate all possible exponential sequences. For each sequence, we check if it is a palindrome by comparing the first and last elements, the second and second last elements, and so on. If all pairs of elements are equal, then the sequence is a palindrome.",
-    "timeComplexity": "O(T * 2^N) — explain: per query is O(2^N), total is O(T * 2^N)",
-    "spaceComplexity": "O(N) — explain: we need to store the binary string of length N",
+    "timeComplexity": "O(T * 2^N) \u2014 explain: per query is O(2^N), total is O(T * 2^N)",
+    "spaceComplexity": "O(N) \u2014 explain: we need to store the binary string of length N",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint isPalindrome(char *s, int *seq, int len) {\n    int i, j;\n    for (i = 0, j = len - 1; i < j; i++, j--) {\n        if (s[seq[i]] != s[seq[j]]) return 0;\n    }\n    return 1;\n}\n\nint countExponentialSequences(char *s, int n) {\n    int count = 0;\n    for (int len = 1; len <= n; len++) {\n        for (int i = 0; i < n; i++) {\n            int seq[len];\n            seq[0] = i;\n            int j = 1;\n            int p = 2;\n            while (j < len && seq[j - 1] * p < n) {\n                seq[j] = seq[j - 1] * p;\n                j++;\n                p++;\n            }\n            if (j == len && isPalindrome(s, seq, len)) count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        char s[500001];\n        scanf(\"%s\", s);\n        int n = strlen(s);\n        printf(\"%d\\n\", countExponentialSequences(s, n));\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint isPalindrome(string s, int *seq, int len) {\n    int i, j;\n    for (i = 0, j = len - 1; i < j; i++, j--) {\n        if (s[seq[i]] != s[seq[j]]) return 0;\n    }\n    return 1;\n}\n\nint countExponentialSequences(string s, int n) {\n    int count = 0;\n    for (int len = 1; len <= n; len++) {\n        for (int i = 0; i < n; i++) {\n            int seq[len];\n            seq[0] = i;\n            int j = 1;\n            int p = 2;\n            while (j < len && seq[j - 1] * p < n) {\n                seq[j] = seq[j - 1] * p;\n                j++;\n                p++;\n            }\n            if (j == len && isPalindrome(s, seq, len)) count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        string s;\n        cin >> s;\n        int n = s.length();\n        cout << countExponentialSequences(s, n) << endl;\n    }\n    return 0;\n}",

@@ -6,14 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Sorting",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "Sorting",
-      "Greedy",
       "Frequency Counting",
-      "Permutation"
+      "Permutation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef received a new sequence A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​. He does not like arbitrarily ordered sequences, so he wants to permute the elements of AAA in such a way that it would satisfy the following condition: there is an integer ppp (1≤p≤N1 \\le p \\le N1≤p≤N) such that the first ppp elements of the new (permuted) sequence are strictly increasing and the last N−p+1N-p+1N−p+1 elements are strictly decreasing.\n\nHelp Chef and find a permutation of the given sequence which satisfies this condition or determine that no such permutation exists. If there are multiple solutions, you may find any one.",
+    "problemStatement": "Chef received a new sequence A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. He does not like arbitrarily ordered sequences, so he wants to permute the elements of AAA in such a way that it would satisfy the following condition: there is an integer ppp (1\u2264p\u2264N1 \\le p \\le N1\u2264p\u2264N) such that the first ppp elements of the new (permuted) sequence are strictly increasing and the last N\u2212p+1N-p+1N\u2212p+1 elements are strictly decreasing.\n\nHelp Chef and find a permutation of the given sequence which satisfies this condition or determine that no such permutation exists. If there are multiple solutions, you may find any one.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 100000",
       "1 <= Ai <= 200000",
       "Sum of N over all test cases does not exceed 1000000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the sequence. The second line contains N space‑separated integers A1,…,AN.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the sequence. The second line contains N space\u2011separated integers A1,\u2026,AN.",
     "outputFormat": "For each test case, output either a single line \"NO\" if no required permutation exists, or two lines: the first line \"YES\" and the second line the N integers of any valid permutation.",
     "sampleTestCases": [
       {
@@ -103,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For a sequence to be rearranged into a strictly increasing prefix followed by a strictly decreasing suffix (the peak element belongs to both parts), each value can appear at most twice: once in the increasing part and once in the decreasing part. The maximum value can appear only once because it must be the peak. Algorithm: 1) Count frequencies of all numbers. 2) If any frequency > 2 → impossible. 3) If the maximum value appears twice → impossible. 4) Otherwise, build the answer:   • increasing part – all distinct values in ascending order.   • decreasing part – all values whose frequency is 2, taken in descending order (the maximum value is never in this part). 5) Concatenate increasing part followed by decreasing part. This sequence is strictly increasing up to the peak and strictly decreasing afterwards.",
-    "timeComplexity": "O(N log N) per test case because of sorting the distinct values (the total number of elements across all test cases is ≤ 10^6).",
+    "approach": "For a sequence to be rearranged into a strictly increasing prefix followed by a strictly decreasing suffix (the peak element belongs to both parts), each value can appear at most twice: once in the increasing part and once in the decreasing part. The maximum value can appear only once because it must be the peak. Algorithm: 1) Count frequencies of all numbers. 2) If any frequency > 2 \u2192 impossible. 3) If the maximum value appears twice \u2192 impossible. 4) Otherwise, build the answer:   \u2022 increasing part \u2013 all distinct values in ascending order.   \u2022 decreasing part \u2013 all values whose frequency is 2, taken in descending order (the maximum value is never in this part). 5) Concatenate increasing part followed by decreasing part. This sequence is strictly increasing up to the peak and strictly decreasing afterwards.",
+    "timeComplexity": "O(N log N) per test case because of sorting the distinct values (the total number of elements across all test cases is \u2264 10^6).",
     "spaceComplexity": "O(N) for storing the array and frequency map.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\ntypedef struct {int val; int cnt;} Pair;\nint cmp_int(const void *a, const void *b){return *(int*)a-*(int*)b;}\nint cmp_pair(const void *a, const void *b){return ((Pair*)a)->val-((Pair*)b)->val;}\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N; scanf(\"%d\",&N); int *arr=malloc(N*sizeof(int)); for(int i=0;i<N;i++) scanf(\"%d\",&arr[i]); qsort(arr,N,sizeof(int),cmp_int);\n // frequency counting on sorted array\n int distinct=0; Pair *p=malloc(N*sizeof(Pair));\n for(int i=0;i<N;i++){\n   if(i==0||arr[i]!=arr[i-1]){p[distinct].val=arr[i]; p[distinct].cnt=1; distinct++;}\n   else p[distinct-1].cnt++;\n }\n int ok=1; int maxVal=p[distinct-1].val; if(p[distinct-1].cnt==2) ok=0; for(int i=0;i<distinct;i++) if(p[i].cnt>2) ok=0;\n if(!ok){printf(\"NO\\n\"); free(arr); free(p); continue;}\n // build answer\n int *ans=malloc(N*sizeof(int)); int idx=0;\n for(int i=0;i<distinct;i++) ans[idx++]=p[i].val; // increasing part\n for(int i=distinct-2;i>=0;i--){ // decreasing part from second largest to smallest\n   if(p[i].cnt==2) ans[idx++]=p[i].val;\n }\n printf(\"YES\\n\"); for(int i=0;i<N;i++) printf(\"%d%s\",ans[i], i+1==N?\"\\n\":\" \");\n free(arr); free(p); free(ans);\n }\n return 0; }",

@@ -10,11 +10,12 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Fenwick Tree",
+      "Dynamic Queries",
       "Binary Indexed Tree",
       "Ordered Set",
-      "Dynamic Queries",
-      "Prefix Sum"
+      "Fenwick Tree",
+      "Prefix Sum",
+      "Data Structures"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,17 +23,17 @@
     ]
   },
   "content": {
-    "problemStatement": "Given is a sequence AAA of length NNN.\n\nDefine f(i,j)f(i,j)f(i,j) to be the number of distinct elements in Ai,Ai+1,…,AjA_i,A_{i+1},\\ldots,A_jAi​,Ai+1​,…,Aj​.\n\nYou need to process QQQ queries of the following two types:\n\n\n1&nbsp;x&nbsp;y1\\ x\\ y1&nbsp;x&nbsp;y — set Ax=yA_x = yAx​=y.\n2&nbsp;k2\\ k2&nbsp;k — print ∑i=1k∑j=ikf(i,j)\\sum\\limits_{i=1}^{k}\\sum\\limits_{j=i}^{k}f(i,j)i=1∑k​j=i∑k​f(i,j).\n\nInput Format\n\nThe first line of input contains two integers NNN and QQQ — the size of the array and the number of queries.\nThe second line of input contains NNN space-separated integers A1,A2,…,ANA_1,A_2,\\ldots,A_NA1​,A2​,…,AN​.\nThen, QQQ lines follow, describing queries in the format given in the statement.\n\n\nOutput Format\nFor each type 222 query, print the answer to it on a new line.",
+    "problemStatement": "Given is a sequence AAA of length NNN.\n\nDefine f(i,j)f(i,j)f(i,j) to be the number of distinct elements in Ai,Ai+1,\u2026,AjA_i,A_{i+1},\\ldots,A_jAi\u200b,Ai+1\u200b,\u2026,Aj\u200b.\n\nYou need to process QQQ queries of the following two types:\n\n\n1&nbsp;x&nbsp;y1\\ x\\ y1&nbsp;x&nbsp;y \u2014 set Ax=yA_x = yAx\u200b=y.\n2&nbsp;k2\\ k2&nbsp;k \u2014 print \u2211i=1k\u2211j=ikf(i,j)\\sum\\limits_{i=1}^{k}\\sum\\limits_{j=i}^{k}f(i,j)i=1\u2211k\u200bj=i\u2211k\u200bf(i,j).\n\nInput Format\n\nThe first line of input contains two integers NNN and QQQ \u2014 the size of the array and the number of queries.\nThe second line of input contains NNN space-separated integers A1,A2,\u2026,ANA_1,A_2,\\ldots,A_NA1\u200b,A2\u200b,\u2026,AN\u200b.\nThen, QQQ lines follow, describing queries in the format given in the statement.\n\n\nOutput Format\nFor each type 222 query, print the answer to it on a new line.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N, Q ≤ 2·10^5",
-      "1 ≤ A_i, y ≤ N",
-      "1 ≤ x ≤ N",
-      "1 ≤ k ≤ N",
-      "The sum of N over all test cases does not exceed 2·10^5.",
-      "The sum of Q over all test cases does not exceed 2·10^5."
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N, Q \u2264 2\u00b710^5",
+      "1 \u2264 A_i, y \u2264 N",
+      "1 \u2264 x \u2264 N",
+      "1 \u2264 k \u2264 N",
+      "The sum of N over all test cases does not exceed 2\u00b710^5.",
+      "The sum of Q over all test cases does not exceed 2\u00b710^5."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q — the length of the array and the number of queries.\n- The second line contains N integers A1, A2, …, AN.\n- Each of the next Q lines describes a query:\n  * \"1 x y\" – set A[x] = y.\n  * \"2 k\"   – output S(k) = Σ_{i=1}^{k} Σ_{j=i}^{k} f(i, j), where f(i, j) is the number of distinct elements in the sub‑array A[i…j].\nAll indices are 1‑based.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q \u2014 the length of the array and the number of queries.\n- The second line contains N integers A1, A2, \u2026, AN.\n- Each of the next Q lines describes a query:\n  * \"1 x y\" \u2013 set A[x] = y.\n  * \"2 k\"   \u2013 output S(k) = \u03a3_{i=1}^{k} \u03a3_{j=i}^{k} f(i, j), where f(i, j) is the number of distinct elements in the sub\u2011array A[i\u2026j].\nAll indices are 1\u2011based.",
     "outputFormat": "For each query of type 2, output the required value on its own line.",
     "sampleTestCases": [
       {
@@ -113,9 +114,9 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed prefix length k, each position p (1 ≤ p ≤ k) contributes to S(k) exactly when the sub‑array contains p but does not contain any earlier occurrence of the same value. Let prev[p] be the index of the previous occurrence of A[p] (0 if none). Then the number of pairs (i, j) with i ≤ p ≤ j ≤ k and i > prev[p] equals (p - prev[p])·(k - p + 1). Hence\n    S(k) = Σ_{p=1}^{k} (p - prev[p])·(k - p + 1).\nRewrite it as\n    S(k) = (k+1)· Σ_{p=1}^{k} w[p]  –  Σ_{p=1}^{k} w[p]·(p-1),\nwhere w[p] = p - prev[p].\nIf we maintain two Fenwick trees:\n    FT1 stores w[p],\n    FT2 stores w[p]·(p-1),\nthen S(k) can be answered in O(log N) as\n    S(k) = (k+1)·FT1.prefix(k) - FT2.prefix(k).\nUpdates change the value at position x. Only the positions whose predecessor changes are affected: x itself, the next occurrence of the old value after x, and the next occurrence of the new value after x. Using an ordered set (std::set, TreeSet, or a treap) for each distinct value we can find predecessor and successor in O(log N). For each affected position p we recompute w[p] and update both Fenwick trees with the difference. All operations are O(log N), giving overall O((N+Q)·log N) time and O(N) memory.\nEdge cases such as the first/last occurrence are handled by treating prev = 0, which makes w[p] = p.",
-    "timeComplexity": "O((N + Q) · log N) per test case.",
-    "spaceComplexity": "O(N) for the array, two Fenwick trees and the ordered‑set containers.",
+    "approach": "For a fixed prefix length k, each position p (1 \u2264 p \u2264 k) contributes to S(k) exactly when the sub\u2011array contains p but does not contain any earlier occurrence of the same value. Let prev[p] be the index of the previous occurrence of A[p] (0 if none). Then the number of pairs (i, j) with i \u2264 p \u2264 j \u2264 k and i > prev[p] equals (p - prev[p])\u00b7(k - p + 1). Hence\n    S(k) = \u03a3_{p=1}^{k} (p - prev[p])\u00b7(k - p + 1).\nRewrite it as\n    S(k) = (k+1)\u00b7 \u03a3_{p=1}^{k} w[p]  \u2013  \u03a3_{p=1}^{k} w[p]\u00b7(p-1),\nwhere w[p] = p - prev[p].\nIf we maintain two Fenwick trees:\n    FT1 stores w[p],\n    FT2 stores w[p]\u00b7(p-1),\nthen S(k) can be answered in O(log N) as\n    S(k) = (k+1)\u00b7FT1.prefix(k) - FT2.prefix(k).\nUpdates change the value at position x. Only the positions whose predecessor changes are affected: x itself, the next occurrence of the old value after x, and the next occurrence of the new value after x. Using an ordered set (std::set, TreeSet, or a treap) for each distinct value we can find predecessor and successor in O(log N). For each affected position p we recompute w[p] and update both Fenwick trees with the difference. All operations are O(log N), giving overall O((N+Q)\u00b7log N) time and O(N) memory.\nEdge cases such as the first/last occurrence are handled by treating prev = 0, which makes w[p] = p.",
+    "timeComplexity": "O((N + Q) \u00b7 log N) per test case.",
+    "spaceComplexity": "O(N) for the array, two Fenwick trees and the ordered\u2011set containers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef long long ll;\n\n"
     }

@@ -10,10 +10,11 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Disjoint Set Union",
       "Union Find",
+      "Dynamic Connectivity",
+      "Disjoint Set Union",
       "Connectivity",
-      "Dynamic Connectivity"
+      "Data Structures"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,14 +24,14 @@
   "content": {
     "problemStatement": "There are NNN bags and NNN magic cards which manufactured by DSUDSUDSU CompanyCompanyCompany\ndaily. Each bag and card has assigned a number between 111 to NNN. Initially ithi^{th}ith card\nis in the ithi^{th}ith bag. Now manager wants to club some card together.\n\nManager is really busy right now he needs your help to perform this task.\n\nYou have QQQ queries to perform.\n\nEach query can be among 333 TypesTypesTypes :\n\n\nTypeTypeType-111. QueryQueryQuery - 111 AAA BBB\nMagic card with number AAA and BBB are merge into single bag if they belong to two\ndifferent bags. Its independent which bag to choose, our goal is to add both the cards with number AAA and BBB in the same bag.\n\nNOTENOTENOTE - If you merging two magic cards AAA and BBB together then all other card which are already merge with card AAA and BBB will all be in a single bag after this query.\n\n\nTypeTypeType-222. QueryQueryQuery - 222 AAA BBB\nYou need to check if two magic cards with number AAA and BBB belongs to same bag\nor not.\n\n\nTypeTypeType-333. QueryQueryQuery - 333\nThis query use to check how many distinct bags remained till now.\n\n\nInput Format\n\nThe first line contains two space separated integer NNN and QQQ.\nNext QQQ line contains 333 space separated integer for TypeTypeType-111 and TypeTypeType-222 query\nand single integer for TypeTypeType-333 query as shown in problem description.\n\n\nOutput Format\n\nFor TypeTypeType-222 query print **\"YES\"** if both magic cards belong to same bag else print **\"NO\"** without quotes.\nFor TypeTypeType-333 query print a single integer that denotes number of bags remained till now.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N, Q ≤ 10^5",
-      "1 ≤ A, B ≤ N",
-      "The sum of N over all test cases ≤ 10^5",
-      "The sum of Q over all test cases ≤ 10^5"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N, Q \u2264 10^5",
+      "1 \u2264 A, B \u2264 N",
+      "The sum of N over all test cases \u2264 10^5",
+      "The sum of Q over all test cases \u2264 10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and Q – the number of bags (and cards) and the number of queries. Then Q lines follow. Each line starts with an integer type:\n1 A B – merge the bags containing cards A and B (if they are different).\n2 A B – output whether cards A and B are in the same bag.\n3 – output the current number of distinct bags.\nAll card numbers satisfy 1 ≤ A, B ≤ N and A ≠ B for type 1 and 2 queries.",
-    "outputFormat": "For each query of type 2 print a line containing \"YES\" if the two cards are in the same bag, otherwise print \"NO\". For each query of type 3 print a line containing a single integer – the current number of distinct bags.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and Q \u2013 the number of bags (and cards) and the number of queries. Then Q lines follow. Each line starts with an integer type:\n1 A B \u2013 merge the bags containing cards A and B (if they are different).\n2 A B \u2013 output whether cards A and B are in the same bag.\n3 \u2013 output the current number of distinct bags.\nAll card numbers satisfy 1 \u2264 A, B \u2264 N and A \u2260 B for type 1 and 2 queries.",
+    "outputFormat": "For each query of type 2 print a line containing \"YES\" if the two cards are in the same bag, otherwise print \"NO\". For each query of type 3 print a line containing a single integer \u2013 the current number of distinct bags.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -104,8 +105,8 @@
     ]
   },
   "solution": {
-    "approach": "The problem is a classic dynamic connectivity task. Each bag corresponds to a set of cards. We maintain a Disjoint Set Union (DSU) structure with path compression and union by size/rank. Initially every card i is its own parent, so the number of distinct bags equals N. For a type‑1 query we union the two sets; if they were different we decrement the component counter. Type‑2 is answered by checking whether find(A) == find(B). Type‑3 simply outputs the current component counter. All operations are amortised O(α(N)) where α is the inverse Ackermann function, effectively constant.",
-    "timeComplexity": "O((N + Q) · α(N)) per test case, which is practically linear.",
+    "approach": "The problem is a classic dynamic connectivity task. Each bag corresponds to a set of cards. We maintain a Disjoint Set Union (DSU) structure with path compression and union by size/rank. Initially every card i is its own parent, so the number of distinct bags equals N. For a type\u20111 query we union the two sets; if they were different we decrement the component counter. Type\u20112 is answered by checking whether find(A) == find(B). Type\u20113 simply outputs the current component counter. All operations are amortised O(\u03b1(N)) where \u03b1 is the inverse Ackermann function, effectively constant.",
+    "timeComplexity": "O((N + Q) \u00b7 \u03b1(N)) per test case, which is practically linear.",
     "spaceComplexity": "O(N) for the parent and size arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {\n    int *parent;\n    int *sz;\n    int components;\n} DSU;\n\nint find(DSU *d, int x) {\n    if (d->parent[x] != x) d->parent[x] = find(d, d->parent[x]);\n    return d->parent[x];\n}\n\nvoid unite(DSU *d, int a, int b) {\n    a = find(d, a);\n    b = find(d, b);\n    if (a == b) return;\n    if (d->sz[a] < d->sz[b]) { int tmp = a; a = b; b = tmp; }\n    d->parent[b] = a;\n    d->sz[a] += d->sz[b];\n    d->components--;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N, Q; scanf(\"%d %d\", &N, &Q);\n        DSU d; d.parent = (int*)malloc((N+1)*sizeof(int));\n        d.sz = (int*)malloc((N+1)*sizeof(int));\n        for (int i=1;i<=N;i++) { d.parent[i]=i; d.sz[i]=1; }\n        d.components = N;\n        for (int i=0;i<Q;i++) {\n            int type; scanf(\"%d\", &type);\n            if (type==1) {\n                int A,B; scanf(\"%d %d\", &A, &B);\n                unite(&d, A, B);\n            } else if (type==2) {\n                int A,B; scanf(\"%d %d\", &A, &B);\n                if (find(&d, A)==find(&d, B)) printf(\"YES\\n\");\n                else printf(\"NO\\n\");\n            } else if (type==3) {\n                printf(\"%d\\n\", d.components);\n            }\n        }\n        free(d.parent); free(d.sz);\n    }\n    return 0;\n}",

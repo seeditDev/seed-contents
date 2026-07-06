@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "String manipulation",
+      "Trimming",
       "Find and replace",
-      "Trimming"
+      "String manipulation",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -25,7 +26,7 @@
       "1 <= T <= 10",
       "Length of each sentence after stripping <= 100"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10) – the number of sentences. Each of the next T lines contains a sentence which may have leading or trailing spaces. The length of each sentence after stripping spaces does not exceed 100 characters.",
+    "inputFormat": "The first line contains an integer T (1\u202f\u2264\u202fT\u202f\u2264\u202f10) \u2013 the number of sentences. Each of the next T lines contains a sentence which may have leading or trailing spaces. The length of each sentence after stripping spaces does not exceed 100 characters.",
     "outputFormat": "For each of the T sentences output two lines:\\nOriginal sentence: <sentence after stripping leading/trailing spaces>\\nAuto-Corrected sentence: <sentence after stripping and replacing every occurrence of \"cats\" with \"cars\">",
     "sampleTestCases": [
       {
@@ -112,8 +113,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case read the whole line, remove leading and trailing whitespace (trim), then replace every non‑overlapping occurrence of the substring \"cats\" with \"cars\". The replacement can be done by scanning the string and copying characters to a new buffer, or by using built‑in replace functions in high‑level languages. Finally print the original trimmed sentence and the corrected one.",
-    "timeComplexity": "O(L) per sentence, where L is the length of the trimmed sentence (L ≤ 100). Overall O(T·L).",
+    "approach": "For each test case read the whole line, remove leading and trailing whitespace (trim), then replace every non\u2011overlapping occurrence of the substring \"cats\" with \"cars\". The replacement can be done by scanning the string and copying characters to a new buffer, or by using built\u2011in replace functions in high\u2011level languages. Finally print the original trimmed sentence and the corrected one.",
+    "timeComplexity": "O(L) per sentence, where L is the length of the trimmed sentence (L \u2264 100). Overall O(T\u00b7L).",
     "spaceComplexity": "O(L) auxiliary space for the corrected string.",
     "code": {
       "C": "#include <stdio.h>\\n#include <string.h>\\n#include <ctype.h>\\n\\nvoid trim(char *s){\\n    int start=0; while(s[start] && isspace((unsigned char)s[start])) start++;\\n    int end=strlen(s)-1; while(end>=0 && isspace((unsigned char)s[end])) end--;\\n    int len=end-start+1;\\n    memmove(s,s+start,len);\\n    s[len]='\\0';\\n}\\n\\nvoid replaceCats(const char *src, char *dst){\\n    const char *pat=\"cats\";\\n    const char *rep=\"cars\";\\n    while(*src){\\n        if(strncmp(src,pat,4)==0){\\n            strcpy(dst,rep);\\n            src+=4; dst+=4;\\n        }else{\\n            *dst=*src; src++; dst++;\\n        }\\n    }\\n    *dst='\\0';\\n}\\n\\nint main(){\\n    int T; if(scanf(\"%d\",&T)!=1) return 0; getchar();\\n    char line[256];\\n    for(int i=0;i<T;i++){\\n        if(!fgets(line, sizeof(line), stdin)) break;\\n        line[strcspn(line,\"\\\\n\")]='\\0';\\n        trim(line);\\n        char original[256]; strcpy(original,line);\\n        char corrected[256]; replaceCats(line, corrected);\\n        printf(\"Original sentence: %s\\\\n\", original);\\n        printf(\"Auto-Corrected sentence: %s\\\\n\", corrected);\\n    }\\n    return 0;\\n}",

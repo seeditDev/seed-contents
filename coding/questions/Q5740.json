@@ -11,8 +11,9 @@
     "isPremium": true,
     "tags": [
       "Sliding Window",
-      "Two Pointers",
-      "Frequency Array"
+      "Frequency Array",
+      "Strings",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Given a string sss and an integer kkk, Alice calls a string good if it follows the following condition\n\n\nAll the characters present in the string are of frequency kkk\nFind the longest good substring of the string sss to make Alice happy.\n\nString aaa is a substring of string bbb if it is possible to choose several consecutive letters in bbb in such a way that they form aaa.\n\nOutput the First such string that occurs.\n\n\nInput Format\n\nThe first line will contain 222 numbers |SSS| ,kkk\nThe second line contains the string SSS\n\n\nOutput Format\nOutput the length of the longest good substring and on next line output the substring as well. If there is no such substring, print “IMPOSSIBLE” without the quotes.",
+    "problemStatement": "Given a string sss and an integer kkk, Alice calls a string good if it follows the following condition\n\n\nAll the characters present in the string are of frequency kkk\nFind the longest good substring of the string sss to make Alice happy.\n\nString aaa is a substring of string bbb if it is possible to choose several consecutive letters in bbb in such a way that they form aaa.\n\nOutput the First such string that occurs.\n\n\nInput Format\n\nThe first line will contain 222 numbers |SSS| ,kkk\nThe second line contains the string SSS\n\n\nOutput Format\nOutput the length of the longest good substring and on next line output the substring as well. If there is no such substring, print \u201cIMPOSSIBLE\u201d without the quotes.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ K ≤ 10^5",
-      "Sum of N over all test cases ≤ 10^5"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 K \u2264 10^5",
+      "Sum of N over all test cases \u2264 10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and K (1 ≤ N, K ≤ 10^5) – the length of the string and the required frequency. The second line contains a string S of length N consisting of lowercase English letters.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and K (1 \u2264 N, K \u2264 10^5) \u2013 the length of the string and the required frequency. The second line contains a string S of length N consisting of lowercase English letters.",
     "outputFormat": "For each test case, if a good substring exists, output two lines: the length of the longest good substring and on the next line the substring itself (the first one in case of several with the same maximum length). If no good substring exists, output a single line with the word IMPOSSIBLE.",
     "sampleTestCases": [
       {
@@ -108,8 +109,8 @@
     ]
   },
   "solution": {
-    "approach": "For a substring to be good, every distinct character inside it must appear exactly K times. The number of distinct characters in a good substring cannot exceed 26 (lowercase alphabet). We iterate over the possible number of distinct characters d = 1 … 26. For each d we use a sliding‑window (two‑pointer) technique that maintains:\n- cnt[c]: current frequency of character c in the window,\n- distinct: number of characters with cnt > 0,\n- exactK: number of characters whose frequency is exactly K.\nWhen we extend the right end, we update cnt, distinct and exactK. If distinct exceeds d we shrink the left end until distinct ≤ d, updating the counters similarly. Whenever distinct == d && distinct == exactK the current window satisfies the condition; we compare its length with the best answer and keep the first longest one. The overall complexity is O(26·N) = O(N) per test case, and the extra memory is O(26).",
-    "timeComplexity": "O(N) per test case (26·N in the worst case, but 26 is a constant).",
+    "approach": "For a substring to be good, every distinct character inside it must appear exactly K times. The number of distinct characters in a good substring cannot exceed 26 (lowercase alphabet). We iterate over the possible number of distinct characters d = 1 \u2026 26. For each d we use a sliding\u2011window (two\u2011pointer) technique that maintains:\n- cnt[c]: current frequency of character c in the window,\n- distinct: number of characters with cnt > 0,\n- exactK: number of characters whose frequency is exactly K.\nWhen we extend the right end, we update cnt, distinct and exactK. If distinct exceeds d we shrink the left end until distinct \u2264 d, updating the counters similarly. Whenever distinct == d && distinct == exactK the current window satisfies the condition; we compare its length with the best answer and keep the first longest one. The overall complexity is O(26\u00b7N) = O(N) per test case, and the extra memory is O(26).",
+    "timeComplexity": "O(N) per test case (26\u00b7N in the worst case, but 26 is a constant).",
     "spaceComplexity": "O(26) = O(1) additional memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N, K; scanf(\"%d %d\", &N, &K);\n        char s[100005]; scanf(\"%s\", s);\n        int bestLen = 0; int bestPos = -1;\n        for(int d=1; d<=26; ++d){\n            int cnt[26] = {0};\n            int distinct = 0, exactK = 0;\n            int left = 0;\n            for(int right=0; right<N; ++right){\n                int idx = s[right]-'a';\n                if(cnt[idx]==0) distinct++;\n                if(cnt[idx]==K) exactK--;\n                cnt[idx]++;\n                if(cnt[idx]==K) exactK++;\n                while(distinct > d){\n                    int idl = s[left]-'a';\n                    if(cnt[idl]==K) exactK--;\n                    cnt[idl]--;\n                    if(cnt[idl]==0) distinct--;\n                    if(cnt[idl]==K) exactK++;\n                    left++;\n                }\n                if(distinct==d && distinct==exactK){\n                    int len = right-left+1;\n                    if(len > bestLen){\n                        bestLen = len; bestPos = left;\n                    }\n                }\n            }\n        }\n        if(bestLen==0){\n            printf(\"IMPOSSIBLE\\n\");\n        }else{\n            printf(\"%d\\n\", bestLen);\n            for(int i=0;i<bestLen;++i) putchar(s[bestPos+i]);\n            putchar('\\n');\n        }\n    }\n    return 0;\n}\n",

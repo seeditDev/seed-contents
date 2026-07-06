@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Geometry",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Knight Moves",
+      "Math",
       "Checkmate",
+      "Knight Moves",
       "Geometry"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Abhineet the Chess master of NIT Kurukshetra got bored of 8x8 chess board and invented the new variation of Chess, the one on an infinite chess board. There is only a white king and NNN black knights. The white king has to avoid checkmate as long as it can.\n\nA situation is given. Determine if white king is in checkmate or not. The white king is in checkmate if and only if it is in check and it is not able to move to any of its neighboring positions which is not in check.\n\n###Input:\n\n\nThe first line will contain TTT, number of test cases. Then the test cases follow.\nThe first line of each test case contains a single integer NNN.\nThe next N line contains 2 space-separated integers XiXiXi and YiYiYi denoting the position of knights.\nThe next line contains 2 space-separated integers AAA and BBB denoting the position of king\n###Output:\nPrint a single line corresponding to each test case — “YES” (without quotes) – if the king is in checkmate and “NO” (without quotes) – if the king is not in checkmate.\n\n###Constraints\n\n\n1≤T≤51 \\leq T \\leq 51≤T≤5\n1≤N≤1051 \\leq N \\leq 10^51≤N≤105\n−109≤Xi,Yi,A,B≤109-10^9 \\leq Xi, Yi, A, B \\leq 10^9−109≤Xi,Yi,A,B≤109",
+    "problemStatement": "Abhineet the Chess master of NIT Kurukshetra got bored of 8x8 chess board and invented the new variation of Chess, the one on an infinite chess board. There is only a white king and NNN black knights. The white king has to avoid checkmate as long as it can.\n\nA situation is given. Determine if white king is in checkmate or not. The white king is in checkmate if and only if it is in check and it is not able to move to any of its neighboring positions which is not in check.\n\n###Input:\n\n\nThe first line will contain TTT, number of test cases. Then the test cases follow.\nThe first line of each test case contains a single integer NNN.\nThe next N line contains 2 space-separated integers XiXiXi and YiYiYi denoting the position of knights.\nThe next line contains 2 space-separated integers AAA and BBB denoting the position of king\n###Output:\nPrint a single line corresponding to each test case \u2014 \u201cYES\u201d (without quotes) \u2013 if the king is in checkmate and \u201cNO\u201d (without quotes) \u2013 if the king is not in checkmate.\n\n###Constraints\n\n\n1\u2264T\u226451 \\leq T \\leq 51\u2264T\u22645\n1\u2264N\u22641051 \\leq N \\leq 10^51\u2264N\u2264105\n\u2212109\u2264Xi,Yi,A,B\u2264109-10^9 \\leq Xi, Yi, A, B \\leq 10^9\u2212109\u2264Xi,Yi,A,B\u2264109",
     "constraints": [
       "1 <= T <= 5",
       "1 <= N <= 10^5",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To determine if the king is in checkmate, we need to check if the king is under attack by any knight and if the king can move to any adjacent position without being under attack. We can use a set to store the positions of the knights and then check for each possible move of the king if it is under attack.",
-    "timeComplexity": "O(T * N) — for each test case, we iterate over the knights to check if the king is under attack and over the possible moves of the king",
-    "spaceComplexity": "O(N) — we store the positions of the knights in a set",
+    "timeComplexity": "O(T * N) \u2014 for each test case, we iterate over the knights to check if the king is under attack and over the possible moves of the king",
+    "spaceComplexity": "O(N) \u2014 we store the positions of the knights in a set",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n#define MAX_N 100005\nbool isUnderAttack(int x, int y, int knights[][2], int n) {\n    for (int i = 0; i < n; i++) {\n        int dx = abs(x - knights[i][0]);\n        int dy = abs(y - knights[i][1]);\n        if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) {\n            return true;\n        }\n    }\n    return false;\n}\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n        int knights[MAX_N][2];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d %d\", &knights[i][0], &knights[i][1]);\n        }\n        int x, y;\n        scanf(\"%d %d\", &x, &y);\n        bool isCheckmate = isUnderAttack(x, y, knights, n);\n        bool canMove = false;\n        for (int dx = -1; dx <= 1; dx++) {\n            for (int dy = -1; dy <= 1; dy++) {\n                if (dx == 0 && dy == 0) continue;\n                if (!isUnderAttack(x + dx, y + dy, knights, n)) {\n                    canMove = true;\n                    break;\n                }\n            }\n            if (canMove) break;\n        }\n        if (isCheckmate && !canMove) {\n            printf(\"YES\\n\");\n        } else {\n            printf(\"NO\\n\");\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\nbool isUnderAttack(int x, int y, vector<pair<int, int>> knights) {\n    for (auto knight : knights) {\n        int dx = abs(x - knight.first);\n        int dy = abs(y - knight.second);\n        if ((dx == 2 && dy == 1) || (dx == 1 && dy == 2)) {\n            return true;\n        }\n    }\n    return false;\n}\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n;\n        cin >> n;\n        vector<pair<int, int>> knights(n);\n        for (int i = 0; i < n; i++) {\n            cin >> knights[i].first >> knights[i].second;\n        }\n        int x, y;\n        cin >> x >> y;\n        bool isCheckmate = isUnderAttack(x, y, knights);\n        bool canMove = false;\n        for (int dx = -1; dx <= 1; dx++) {\n            for (int dy = -1; dy <= 1; dy++) {\n                if (dx == 0 && dy == 0) continue;\n                if (!isUnderAttack(x + dx, y + dy, knights)) {\n                    canMove = true;\n                    break;\n                }\n            }\n            if (canMove) break;\n        }\n        if (isCheckmate && !canMove) {\n            cout << \"YES\" << endl;\n        } else {\n            cout << \"NO\" << endl;\n        }\n    }\n    return 0;\n}",

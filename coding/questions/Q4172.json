@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Geometry",
+      "Math",
       "Angles",
-      "Cuts"
+      "Cuts",
+      "Geometry"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Vasya has ordered a pizza delivery. The pizza can be considered a perfect circle. There were nnn premade cuts in the pizza when it was delivered. Each cut is a straight segment connecting the center of the pizza with its boundary.\n\nLet OOO be the center of the pizza, PiP_iPi​ be the endpoint of the iii-th cut lying on the boundary, and RRR be the point of the boundary straight to the right of OOO. Then the counterclockwise-measured angle ∠ROPi\\angle ROP_i∠ROPi​ is equal to aia_iai​ degrees, where aia_iai​ is an integer between 000 and 359359359. Note that angles between 000 and 180180180 angles correspond to PiP_iPi​ in the top half of the pizza, while angles between 180180180 and 360360360 angles correspond to the bottom half.\n\nVasya may cut his pizza a few more times, and the new cuts still have to be straight segments starting at the center. He wants to make the pizza separated into several equal slices, with each slice being a circular sector with no cuts inside of it. How many new cuts Vasya will have to make?\n\nInput:The first line of input contains TTT , i.e number of test cases per file.\n\nThe first line of each test case contains a single integer n−n-n−  the numbers of premade cuts (2≤n≤3602 \\leq n \\leq 3602≤n≤360).\n\nThe second lines contains nnn integers a1,…,an−a_1, \\ldots, a_n-a1​,…,an​− angles of the cuts 1,…,n1, \\ldots, n1,…,n respectively (0≤a1&lt;…,an−1&lt;3600 \\leq a_1 &lt; \\ldots, a_{n - 1} &lt; 3600≤a1​&lt;…,an−1​&lt;360).\n\nOutput:Print a single integer−-− the smallest number of additional cuts Vasya has to make so that the pizza is divided into several equal slices.",
+    "problemStatement": "Vasya has ordered a pizza delivery. The pizza can be considered a perfect circle. There were nnn premade cuts in the pizza when it was delivered. Each cut is a straight segment connecting the center of the pizza with its boundary.\n\nLet OOO be the center of the pizza, PiP_iPi\u200b be the endpoint of the iii-th cut lying on the boundary, and RRR be the point of the boundary straight to the right of OOO. Then the counterclockwise-measured angle \u2220ROPi\\angle ROP_i\u2220ROPi\u200b is equal to aia_iai\u200b degrees, where aia_iai\u200b is an integer between 000 and 359359359. Note that angles between 000 and 180180180 angles correspond to PiP_iPi\u200b in the top half of the pizza, while angles between 180180180 and 360360360 angles correspond to the bottom half.\n\nVasya may cut his pizza a few more times, and the new cuts still have to be straight segments starting at the center. He wants to make the pizza separated into several equal slices, with each slice being a circular sector with no cuts inside of it. How many new cuts Vasya will have to make?\n\nInput:The first line of input contains TTT , i.e number of test cases per file.\n\nThe first line of each test case contains a single integer n\u2212n-n\u2212  the numbers of premade cuts (2\u2264n\u22643602 \\leq n \\leq 3602\u2264n\u2264360).\n\nThe second lines contains nnn integers a1,\u2026,an\u2212a_1, \\ldots, a_n-a1\u200b,\u2026,an\u200b\u2212 angles of the cuts 1,\u2026,n1, \\ldots, n1,\u2026,n respectively (0\u2264a1&lt;\u2026,an\u22121&lt;3600 \\leq a_1 &lt; \\ldots, a_{n - 1} &lt; 3600\u2264a1\u200b&lt;\u2026,an\u22121\u200b&lt;360).\n\nOutput:Print a single integer\u2212-\u2212 the smallest number of additional cuts Vasya has to make so that the pizza is divided into several equal slices.",
     "constraints": [
       "1 <= T <= 36",
       "2 <= n <= 360",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to find the greatest common divisor (GCD) of the differences between consecutive angles. This GCD will give us the angle of each slice. We then divide 360 by this angle to get the total number of slices. If the total number of slices is not equal to the number of premade cuts, we need to make additional cuts. The number of additional cuts is the difference between the total number of slices and the number of premade cuts.",
-    "timeComplexity": "O(T * n) — where T is the number of test cases and n is the number of premade cuts. We iterate over each test case and for each test case, we iterate over the angles to find the GCD.",
-    "spaceComplexity": "O(1) — we only use a constant amount of space to store the GCD and the number of additional cuts.",
+    "timeComplexity": "O(T * n) \u2014 where T is the number of test cases and n is the number of premade cuts. We iterate over each test case and for each test case, we iterate over the angles to find the GCD.",
+    "spaceComplexity": "O(1) \u2014 we only use a constant amount of space to store the GCD and the number of additional cuts.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        int angles[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &angles[i]);\n        }\n        int g = angles[1] - angles[0];\n        for (int i = 2; i < n; i++) {\n            g = gcd(g, angles[i] - angles[i-1]);\n        }\n        int total_slices = 360 / g;\n        int additional_cuts = total_slices - n;\n        printf(\"%d\\n\", additional_cuts);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <numeric>\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint main() {\n    int T;\n    std::cin >> T;\n    while (T--) {\n        int n;\n        std::cin >> n;\n        int angles[n];\n        for (int i = 0; i < n; i++) {\n            std::cin >> angles[i];\n        }\n        int g = angles[1] - angles[0];\n        for (int i = 2; i < n; i++) {\n            g = gcd(g, angles[i] - angles[i-1]);\n        }\n        int total_slices = 360 / g;\n        int additional_cuts = total_slices - n;\n        std::cout << additional_cuts << std::endl;\n    }\n    return 0;\n}",

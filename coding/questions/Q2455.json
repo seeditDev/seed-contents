@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Distance Calculation",
       "Line Equation",
+      "Distance Calculation",
+      "Math",
       "Brute Force"
     ],
     "companyTags": [],
@@ -22,14 +23,14 @@
   "content": {
     "problemStatement": "Chef Ciel develops a new island with her restaurants.\nIn the island, Ciel intends to built **N** restaurants, and the coordinate of the **i**-th restaurant will be (**xi**, **yi**).\nIn addition, Ciel is going to create **K** roads, whose location is not decided yet.\nEach road must be a infinitely long straight line.\n\n\n\nLet **di** be the distance between the **i**-th restaurant and the nearest road from the **i**-th restaurant.\nCiel would like to create **K** roads which minimize max(**d**1, **d**2, ..., **dN**).\nYour task is to calculate the minimal value of max(**d**1, **d**2, ..., **dN**).",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ K ≤ N ≤ 13",
-      "−100 ≤ xi, yi ≤ 100",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 K \u2264 N \u2264 13",
+      "\u2212100 \u2264 xi, yi \u2264 100",
       "All points are distinct",
-      "Sum of N over the whole file ≤ 30"
+      "Sum of N over the whole file \u2264 30"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains two integers N and K (1 ≤ K ≤ N ≤ 13). Then N lines follow, each containing two integers xi and yi (−100 ≤ xi, yi ≤ 100), the coordinates of the i-th restaurant.",
-    "outputFormat": "For each test case output a single line with the minimal possible value of max(d1,…,dN). The answer must have an absolute error not larger than 1e-6.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains two integers N and K (1 \u2264 K \u2264 N \u2264 13). Then N lines follow, each containing two integers xi and yi (\u2212100 \u2264 xi, yi \u2264 100), the coordinates of the i-th restaurant.",
+    "outputFormat": "For each test case output a single line with the minimal possible value of max(d1,\u2026,dN). The answer must have an absolute error not larger than 1e-6.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by trying all possible combinations of K lines and calculating the maximum distance from each point to the nearest line. The key insight here is to use the concept of distance from a point to a line, which can be calculated using the formula: distance = |Ax + By + C| / sqrt(A^2 + B^2), where the line equation is Ax + By + C = 0.",
     "timeComplexity": "O(T * (N choose K) * N * K) per test case, O(T * (N choose K) * N * K) total. The time complexity is dominated by the brute force approach of trying all possible combinations of K lines.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of points.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of points.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#include <float.h>\n#define MAXN 13\n#define MAXMASK (1<<MAXN)\n\nint N, K;\nint X[MAXN], Y[MAXN];\ndouble width[MAXMASK];\nint popcnt[MAXMASK];\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &K);\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &X[i], &Y[i]);\n        }\n        double min_max_distance = DBL_MAX;\n        for (int mask = 0; mask < MAXMASK; mask++) {\n            if (__builtin_popcount(mask) == K) {\n                double max_distance = 0;\n                for (int i = 0; i < N; i++) {\n                    double min_distance = DBL_MAX;\n                    for (int j = 0; j < N; j++) {\n                        if ((mask & (1 << j)) != 0) {\n                            double A = Y[j] - Y[i];\n                            double B = X[i] - X[j];\n                            double C = X[j] * Y[i] - X[i] * Y[j];\n                            double distance = fabs(A * X[i] + B * Y[i] + C) / sqrt(A * A + B * B);\n                            min_distance = fmin(min_distance, distance);\n                        }\n                    }\n                    max_distance = fmax(max_distance, min_distance);\n                }\n                min_max_distance = fmin(min_max_distance, max_distance);\n            }\n        }\n        printf(\"%.6f\\n\", min_max_distance);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#include <climits>\nusing namespace std;\n\nconst int MAXN = 13;\nconst int MAXMASK = (1 << MAXN);\n\nint N, K;\nint X[MAXN], Y[MAXN];\ndouble width[MAXMASK];\nint popcnt[MAXMASK];\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        cin >> N >> K;\n        for (int i = 0; i < N; i++) {\n            cin >> X[i] >> Y[i];\n        }\n        double min_max_distance = DBL_MAX;\n        for (int mask = 0; mask < MAXMASK; mask++) {\n            if (__builtin_popcount(mask) == K) {\n                double max_distance = 0;\n                for (int i = 0; i < N; i++) {\n                    double min_distance = DBL_MAX;\n                    for (int j = 0; j < N; j++) {\n                        if ((mask & (1 << j)) != 0) {\n                            double A = Y[j] - Y[i];\n                            double B = X[i] - X[j];\n                            double C = X[j] * Y[i] - X[i] * Y[j];\n                            double distance = fabs(A * X[i] + B * Y[i] + C) / sqrt(A * A + B * B);\n                            min_distance = min(min_distance, distance);\n                        }\n                    }\n                    max_distance = max(max_distance, min_distance);\n                }\n                min_max_distance = min(min_max_distance, max_distance);\n            }\n        }\n        printf(\"%.6f\\n\", min_max_distance);\n    }\n    return 0;\n}",

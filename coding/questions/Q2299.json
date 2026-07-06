@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Math",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Arrays",
       "Prefix Sum",
       "Brute Force"
     ],
@@ -21,8 +22,8 @@
   "content": {
     "problemStatement": "Given a matrix sized m x n, we define an O-region as a non-empty sub-block with another non-empty sub-block inside removed, such that the removed sub-block has no common boundaries with the outside.  That is, the leftmost column of the removed sub-block must be different from the leftmost column of the outer sub-block, and similarly the rightmost columns, topmost rows, and bottommost rows are different. The removal of the inner sub-block leaves a region which looks like the letter O.\n\n\nThe value of an O-region is the sum of all numbers in the outer sub-block but not in the removed one. Your task is finding the maximal value of all O-regions appearing in the given matrix.",
     "constraints": [
-      "3 ≤ m, n ≤ 77",
-      "1 ≤ T ≤ 15",
+      "3 \u2264 m, n \u2264 77",
+      "1 \u2264 T \u2264 15",
       "Absolute value of each integer in the matrix is at most 10^5"
     ],
     "inputFormat": "The first line contains two positive integers m and n, representing the dimensions of the matrix. m lines follow, each containing n integers describing the matrix.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to calculate the sum of all sub-matrices and then find the maximum O-region value by subtracting the sum of the inner sub-matrix from the sum of the outer sub-matrix. We use a brute force approach to check all possible O-regions.",
     "timeComplexity": "O(T * m^4 * n^4) per test case, O(T * m^4 * n^4) total.",
-    "spaceComplexity": "O(m * n) — the dominant structure is the input matrix.",
+    "spaceComplexity": "O(m * n) \u2014 the dominant structure is the input matrix.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <limits.h>\n\nint maxORegionValue(int m, int n, int matrix[m][n]) {\n    int maxValue = INT_MIN;\n    for (int i = 0; i < m; i++) {\n        for (int j = 0; j < n; j++) {\n            for (int k = i + 1; k <= m; k++) {\n                for (int l = j + 1; l <= n; l++) {\n                    for (int x = i + 1; x < k - 1; x++) {\n                        for (int y = j + 1; y < l - 1; y++) {\n                            int outerSum = 0, innerSum = 0;\n                            for (int a = i; a < k; a++) {\n                                for (int b = j; b < l; b++) {\n                                    outerSum += matrix[a][b];\n                                }\n                            }\n                            for (int a = x; a < k - 1; a++) {\n                                for (int b = y; b < l - 1; b++) {\n                                    innerSum += matrix[a][b];\n                                }\n                            }\n                            maxValue = (outerSum - innerSum > maxValue) ? outerSum - innerSum : maxValue;\n                        }\n                    }\n                }\n            }\n        }\n    }\n    return maxValue;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int m, n;\n        scanf(\"%d %d\", &m, &n);\n        int matrix[m][n];\n        for (int i = 0; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                scanf(\"%d\", &matrix[i][j]);\n            }\n        }\n        printf(\"%d\\n\", maxORegionValue(m, n, matrix));\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <climits>\nusing namespace std;\n\nint maxORegionValue(int m, int n, int matrix[m][n]) {\n    int maxValue = INT_MIN;\n    for (int i = 0; i < m; i++) {\n        for (int j = 0; j < n; j++) {\n            for (int k = i + 1; k <= m; k++) {\n                for (int l = j + 1; l <= n; l++) {\n                    for (int x = i + 1; x < k - 1; x++) {\n                        for (int y = j + 1; y < l - 1; y++) {\n                            int outerSum = 0, innerSum = 0;\n                            for (int a = i; a < k; a++) {\n                                for (int b = j; b < l; b++) {\n                                    outerSum += matrix[a][b];\n                                }\n                            }\n                            for (int a = x; a < k - 1; a++) {\n                                for (int b = y; b < l - 1; b++) {\n                                    innerSum += matrix[a][b];\n                                }\n                            }\n                            maxValue = (outerSum - innerSum > maxValue) ? outerSum - innerSum : maxValue;\n                        }\n                    }\n                }\n            }\n        }\n    }\n    return maxValue;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int m, n;\n        cin >> m >> n;\n        int matrix[m][n];\n        for (int i = 0; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                cin >> matrix[i][j];\n            }\n        }\n        cout << maxORegionValue(m, n, matrix) << endl;\n    }\n    return 0;\n}",

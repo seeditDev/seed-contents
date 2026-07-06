@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory | Searching",
+    "category": "Searching",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Perfect Power",
-      "Integer k‑th root",
       "Binary search",
-      "Brute force over exponents"
+      "Searching",
+      "Brute force over exponents",
+      "Perfect Power",
+      "Integer k\u2011th root"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,13 +22,13 @@
     ]
   },
   "content": {
-    "problemStatement": "An integer xxx is said to be a **Perfect Power** if there exists **positive** integers aaa and bbb (i.e aaa, and bbb should be ≥1\\geq 1≥1) such that x=ab+1x = a^{b+1}x=ab+1.\n\nGiven an integer nnn, find the closest Perfect Power to nnn. If there are multiple Perfect Powers equidistant from nnn and as close as possible to nnn, find the smallest one.\n\nMore formally, find the smallest integer xxx such that xxx is a Perfect Power and ∣n−x∣≤∣n−y∣|n - x| \\leq |n - y|∣n−x∣≤∣n−y∣ over all Perfect Powers yyy.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first and only line of each test case contains a single integer nnn.\n\n\nOutput Format\nFor each test case, print in a separate line, the smallest xxx such that xxx is a perfect power and ∣n−x∣|n - x|∣n−x∣ is minimum.",
+    "problemStatement": "An integer xxx is said to be a **Perfect Power** if there exists **positive** integers aaa and bbb (i.e aaa, and bbb should be \u22651\\geq 1\u22651) such that x=ab+1x = a^{b+1}x=ab+1.\n\nGiven an integer nnn, find the closest Perfect Power to nnn. If there are multiple Perfect Powers equidistant from nnn and as close as possible to nnn, find the smallest one.\n\nMore formally, find the smallest integer xxx such that xxx is a Perfect Power and \u2223n\u2212x\u2223\u2264\u2223n\u2212y\u2223|n - x| \\leq |n - y|\u2223n\u2212x\u2223\u2264\u2223n\u2212y\u2223 over all Perfect Powers yyy.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first and only line of each test case contains a single integer nnn.\n\n\nOutput Format\nFor each test case, print in a separate line, the smallest xxx such that xxx is a perfect power and \u2223n\u2212x\u2223|n - x|\u2223n\u2212x\u2223 is minimum.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ n ≤ 10^18"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 n \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10^5), the number of test cases. Each of the next T lines contains a single integer n (1 ≤ n ≤ 10^18).",
-    "outputFormat": "For each test case output a single line containing the smallest perfect power x such that |n‑x| is minimal among all perfect powers.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10^5), the number of test cases. Each of the next T lines contains a single integer n (1 \u2264 n \u2264 10^18).",
+    "outputFormat": "For each test case output a single line containing the smallest perfect power x such that |n\u2011x| is minimal among all perfect powers.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "For a number to be a perfect power it must be of the form a^k with a ≥ 1 and k ≥ 2. For each test case we iterate over all possible exponents k from 2 up to 60 (because 2^60 > 10^18). For a fixed k we need the integer a whose k‑th power is closest to n. We obtain a = floor(n^{1/k}) using the floating point pow function and then correct it with a small binary‑search‑like adjustment to guarantee a^k ≤ n < (a+1)^k. The two candidates a^k and (a+1)^k are evaluated (using 128‑bit arithmetic to avoid overflow). The global best candidate is kept, breaking ties by choosing the smaller value. The value 1 (1^k) is automatically considered because a may become 1. The total work per test case is O(log N) ≈ 60 iterations, each performing a constant‑time power calculation, which easily fits the limits for T = 10^5.",
-    "timeComplexity": "O(T · K) where K = 60 (the maximum exponent). Effectively O(T).",
+    "approach": "For a number to be a perfect power it must be of the form a^k with a \u2265 1 and k \u2265 2. For each test case we iterate over all possible exponents k from 2 up to 60 (because 2^60 > 10^18). For a fixed k we need the integer a whose k\u2011th power is closest to n. We obtain a = floor(n^{1/k}) using the floating point pow function and then correct it with a small binary\u2011search\u2011like adjustment to guarantee a^k \u2264 n < (a+1)^k. The two candidates a^k and (a+1)^k are evaluated (using 128\u2011bit arithmetic to avoid overflow). The global best candidate is kept, breaking ties by choosing the smaller value. The value 1 (1^k) is automatically considered because a may become 1. The total work per test case is O(log\u202fN) \u2248 60 iterations, each performing a constant\u2011time power calculation, which easily fits the limits for T = 10^5.",
+    "timeComplexity": "O(T \u00b7 K) where K = 60 (the maximum exponent). Effectively O(T).",
     "spaceComplexity": "O(1) besides the input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#include <inttypes.h>\n\nstatic __int128 ipow(__int128 a, int k, __int128 limit) {\n    __int128 res = 1;\n    while (k) {\n        if (k & 1) {\n            if (res > limit / a) return limit + 1; // overflow detection\n            res *= a;\n        }\n        k >>= 1;\n        if (k) {\n            if (a > limit / a) a = limit + 1; else a *= a;\n        }\n    }\n    return res;\n}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        unsigned long long n; scanf(\"%llu\", &n);\n        __int128 best = -1; unsigned long long ans = 0; unsigned long long diff = (unsigned long long)(-1);\n        for(int k=2;k<=60;k++){\n            double nd = (double)n;\n            unsigned long long a = (unsigned long long)pow(nd, 1.0/k);\n            if(a==0) a=1;\n            // adjust a to be floor root\n            while(ipow(a+1, k, (__int128)n) <= (__int128)n) ++a;\n            while(ipow(a, k, (__int128)n) > (__int128)n) --a;\n            for(unsigned long long candBase = a; candBase <= a+1; ++candBase){\n                if(candBase==0) continue;\n                __int128 val = ipow(candBase, k, (__int128)18446744073709551615ULL);\n                if(val> (__int128)1000000000000000000ULL) continue;\n                unsigned long long v = (unsigned long long)val;\n                unsigned long long d = n>v? n-v : v-n;\n                if(best==-1 || d<diff || (d==diff && v<ans)){\n                    best = val; ans = v; diff = d;\n                }\n            }\n        }\n        // also consider 1 explicitly (already covered when a becomes 1)\n        printf(\"%llu\\n\", ans);\n    }\n    return 0;\n}\n",

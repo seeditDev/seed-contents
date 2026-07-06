@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Penalty",
       "Scheduling",
       "Deadline",
-      "Penalty"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -119,7 +120,7 @@
   "solution": {
     "approach": "The problem can be solved using a greedy approach. We sort the orders based on their deadlines and penalties. Then, we iterate over the sorted orders and try to cook as many items as possible before the deadline. If we cannot cook all items before the deadline, we calculate the penalty and add it to the total penalty.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting operation takes O(N log N) time, and we do this for each test case.",
-    "spaceComplexity": "O(N) — we need to store the orders for each test case.",
+    "spaceComplexity": "O(N) \u2014 we need to store the orders for each test case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n#include <time.h>\n#include <stdint.h>\n\n#define MAX_ORDERS 200\n\n// Structure to represent an order\ntypedef struct {\n    int start_time;\n    int num_items;\n    int deadline;\n    int penalty;\n} Order;\n\n// Comparison function for sorting orders\nint compare_orders(const void *a, const void *b) {\n    Order *order1 = (Order *)a;\n    Order *order2 = (Order *)b;\n    if (order1->deadline < order2->deadline) return -1;\n    if (order1->deadline > order2->deadline) return 1;\n    if (order1->penalty < order2->penalty) return -1;\n    if (order1->penalty > order2->penalty) return 1;\n    return 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        Order orders[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d %d %d\", &orders[i].start_time, &orders[i].num_items, &orders[i].deadline, &orders[i].penalty);\n        }\n        qsort(orders, N, sizeof(Order), compare_orders);\n        int current_time = 0;\n        int total_penalty = 0;\n        for (int i = 0; i < N; i++) {\n            int items_cooked = 0;\n            while (current_time < orders[i].deadline && items_cooked < orders[i].num_items) {\n                current_time++;\n                items_cooked++;\n            }\n            if (items_cooked < orders[i].num_items) {\n                total_penalty += (orders[i].num_items - items_cooked) * orders[i].penalty;\n            }\n        }\n        printf(\"%d\\n\", total_penalty);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nstruct Order {\n    int start_time;\n    int num_items;\n    int deadline;\n    int penalty;\n};\n\nbool compare_orders(const Order &a, const Order &b) {\n    if (a.deadline < b.deadline) return true;\n    if (a.deadline > b.deadline) return false;\n    if (a.penalty < b.penalty) return true;\n    if (a.penalty > b.penalty) return false;\n    return false;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<Order> orders(N);\n        for (int i = 0; i < N; i++) {\n            cin >> orders[i].start_time >> orders[i].num_items >> orders[i].deadline >> orders[i].penalty;\n        }\n        sort(orders.begin(), orders.end(), compare_orders);\n        int current_time = 0;\n        int total_penalty = 0;\n        for (int i = 0; i < N; i++) {\n            int items_cooked = 0;\n            while (current_time < orders[i].deadline && items_cooked < orders[i].num_items) {\n                current_time++;\n                items_cooked++;\n            }\n            if (items_cooked < orders[i].num_items) {\n                total_penalty += (orders[i].num_items - items_cooked) * orders[i].penalty;\n            }\n        }\n        cout << total_penalty << endl;\n    }\n    return 0;\n}",

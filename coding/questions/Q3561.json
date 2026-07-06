@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Math",
-      "Counting"
+      "Counting",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,11 +19,11 @@
     ]
   },
   "content": {
-    "problemStatement": "You like tracking airplane flights a lot. Specifically, you maintain history of an airplane’s flight at several instants and record them in your notebook. Today, you have recorded **N** such records **h1, h2, ..., hN**, denoting the heights of some airplane at several instants. These records mean that airplane was first flying on height **h1**, then started changing its height to **h2**, then from **h2** to **h3** and so on. The airplanes are usually on cruise control while descending or ascending, so \nyou can assume that plane will smoothly increase/decrease its height from **hi** to **hi + 1** with a constant speed. You can see that during this period, the airplane will cover all possible heights in the range **[min(hi, hi+1), max(hi, hi+1)]** (both inclusive). It is easy to see that the plane will be at all possible heights in the range exactly a single instant of time during this ascend/descend.\n\n\nYou are interested in finding the maximum integer **K** such that the plane was at some height exactly **K** times during the flight.",
+    "problemStatement": "You like tracking airplane flights a lot. Specifically, you maintain history of an airplane\u2019s flight at several instants and record them in your notebook. Today, you have recorded **N** such records **h1, h2, ..., hN**, denoting the heights of some airplane at several instants. These records mean that airplane was first flying on height **h1**, then started changing its height to **h2**, then from **h2** to **h3** and so on. The airplanes are usually on cruise control while descending or ascending, so \nyou can assume that plane will smoothly increase/decrease its height from **hi** to **hi + 1** with a constant speed. You can see that during this period, the airplane will cover all possible heights in the range **[min(hi, hi+1), max(hi, hi+1)]** (both inclusive). It is easy to see that the plane will be at all possible heights in the range exactly a single instant of time during this ascend/descend.\n\n\nYou are interested in finding the maximum integer **K** such that the plane was at some height exactly **K** times during the flight.",
     "constraints": [
       "1 <= N <= 10^5",
       "1 <= hi <= 10^9",
-      "hi ≠ hi+1"
+      "hi \u2260 hi+1"
     ],
     "inputFormat": "The first line contains an integer N denoting the number of records of heights of the plane. The second line contains N space-separated integers denoting h1, h2, ..., hN.",
     "outputFormat": "Output a single maximum integer K in one line, such that the plane was at some height exactly K times during the flight.",
@@ -113,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can iterate over each pair of consecutive heights and count the number of times each height appears. We can use a hashmap to store the count of each height. For each pair of heights, we can iterate from the minimum to the maximum and increment the count in the hashmap. Finally, we can find the maximum count in the hashmap.",
-    "timeComplexity": "O(N * max(hi, hi+1) - min(hi, hi+1)) — explain: per query is O(max(hi, hi+1) - min(hi, hi+1)), total is O(N * max(hi, hi+1) - min(hi, hi+1))",
-    "spaceComplexity": "O(N * max(hi, hi+1) - min(hi, hi+1)) — explain: we need to store the count of each height in the hashmap",
+    "timeComplexity": "O(N * max(hi, hi+1) - min(hi, hi+1)) \u2014 explain: per query is O(max(hi, hi+1) - min(hi, hi+1)), total is O(N * max(hi, hi+1) - min(hi, hi+1))",
+    "spaceComplexity": "O(N * max(hi, hi+1) - min(hi, hi+1)) \u2014 explain: we need to store the count of each height in the hashmap",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int* heights = (int*)malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &heights[i]);\n    }\n    int maxCount = 0;\n    for (int i = 0; i < N - 1; i++) {\n        int min = heights[i] < heights[i + 1] ? heights[i] : heights[i + 1];\n        int max = heights[i] > heights[i + 1] ? heights[i] : heights[i + 1];\n        for (int j = min; j <= max; j++) {\n            int count = 0;\n            for (int k = 0; k < N - 1; k++) {\n                int min2 = heights[k] < heights[k + 1] ? heights[k] : heights[k + 1];\n                int max2 = heights[k] > heights[k + 1] ? heights[k] : heights[k + 1];\n                if (j >= min2 && j <= max2) {\n                    count++;\n                }\n            }\n            if (count > maxCount) {\n                maxCount = count;\n            }\n        }\n    }\n    printf(\"%d\\n\", maxCount);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int N;\n    cin >> N;\n    vector<int> heights(N);\n    for (int i = 0; i < N; i++) {\n        cin >> heights[i];\n    }\n    int maxCount = 0;\n    for (int i = 0; i < N - 1; i++) {\n        int min = heights[i] < heights[i + 1] ? heights[i] : heights[i + 1];\n        int max = heights[i] > heights[i + 1] ? heights[i] : heights[i + 1];\n        for (int j = min; j <= max; j++) {\n            int count = 0;\n            for (int k = 0; k < N - 1; k++) {\n                int min2 = heights[k] < heights[k + 1] ? heights[k] : heights[k + 1];\n                int max2 = heights[k] > heights[k + 1] ? heights[k] : heights[k + 1];\n                if (j >= min2 && j <= max2) {\n                    count++;\n                }\n            }\n            if (count > maxCount) {\n                maxCount = count;\n            }\n        }\n    }\n    cout << maxCount << endl;\n    return 0;\n}",

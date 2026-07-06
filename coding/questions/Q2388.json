@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Permutations",
-      "Base Conversion"
+      "Math",
+      "Base Conversion",
+      "Permutations"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by generating all permutations of the digits of A and B, converting them to base X, and checking if their sum equals C. We can use a recursive approach to generate all permutations.",
     "timeComplexity": "O(T * (len(A)!) * (len(B)!)) per test case, O(T * (len(A)!) * (len(B)!)) total.",
-    "spaceComplexity": "O(len(A) + len(B)) — for storing the permutations.",
+    "spaceComplexity": "O(len(A) + len(B)) \u2014 for storing the permutations.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n// Function to swap two characters\nvoid swap(char *a, char *b) {\n    char temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\n// Function to generate all permutations of a string\nvoid permute(char *str, int left, int right) {\n    if (left == right)\n        printf(\"%s\\n\", str);\n    else {\n        for (int i = left; i <= right; i++) {\n            swap((str + left), (str + i));\n            permute(str, left + 1, right);\n            swap((str + left), (str + i)); // backtrack\n        }\n    }\n}\n\n// Function to convert a number from base X to decimal\nint baseToDecimal(char *num, int base) {\n    int decimal = 0;\n    int power = 1;\n    for (int i = strlen(num) - 1; i >= 0; i--) {\n        decimal += (num[i] - '0') * power;\n        power *= base;\n    }\n    return decimal;\n}\n\n// Function to check if the sum of two numbers equals a third number\nint checkSum(char *A, char *B, char *C, int X) {\n    int sum = baseToDecimal(A, X) + baseToDecimal(B, X);\n    return sum == baseToDecimal(C, X);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int X;\n        char A[100], B[100], C[100];\n        scanf(\"%d %s %s %s\", &X, A, B, C);\n        int count = 0;\n        int lenA = strlen(A);\n        int lenB = strlen(B);\n        permute(A, 0, lenA - 1);\n        permute(B, 0, lenB - 1);\n        // Convert to base X and check sum\n        if (checkSum(A, B, C, X))\n            count++;\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int X;\n        string A, B, C;\n        cin >> X >> A >> B >> C;\n        int count = 0;\n        sort(A.begin(), A.end());\n        sort(B.begin(), B.end());\n        do {\n            do {\n                // Convert to base X and check sum\n                int sum = stoi(A, 0, X) + stoi(B, 0, X);\n                if (sum == stoi(C, 0, X))\n                    count++;\n            } while (next_permutation(B.begin(), B.end()));\n        } while (next_permutation(A.begin(), A.end()));\n        cout << count << endl;\n    }\n    return 0;\n}",

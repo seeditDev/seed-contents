@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +19,13 @@
     ]
   },
   "content": {
-    "problemStatement": "It's summer — the time for holidays! Chef finally finished all university exams. Now he can rest and play with sequences.\n\nToday, Chef took a sequence AAA with NNN elements. He wants to partition this sequence into an arbitrary number of non-empty contiguous subsequences (i.e. each of the subsequences has to consist of one or more consecutive elements of the original sequence). Each element of the original sequence must belong to exactly one subsequence.\n\nThis would be easy for Chef, so he is only interested in safe partitions of AAA. A safe partition is a partition into subsequences S1,S2,…,SKS_1, S_2, \\dots, S_KS1​,S2​,…,SK​ such that for each valid iii, min(Si)≤∣Si∣≤max(Si)\\mathrm{min}(S_i) \\le |S_i| \\le \\mathrm{max}(S_i)min(Si​)≤∣Si​∣≤max(Si​) — that is, for each subsequence in this partition, its length is greater or equal to its smallest element and smaller or equal to its largest element.\n\nFinding one safe partition would still be easy for Chef, so he wants to find the number of safe partitions of AAA. Since this number could be very big, please compute it modulo 100000000710000000071000000007 (109+710^9 + 7109+7).",
+    "problemStatement": "It's summer \u2014 the time for holidays! Chef finally finished all university exams. Now he can rest and play with sequences.\n\nToday, Chef took a sequence AAA with NNN elements. He wants to partition this sequence into an arbitrary number of non-empty contiguous subsequences (i.e. each of the subsequences has to consist of one or more consecutive elements of the original sequence). Each element of the original sequence must belong to exactly one subsequence.\n\nThis would be easy for Chef, so he is only interested in safe partitions of AAA. A safe partition is a partition into subsequences S1,S2,\u2026,SKS_1, S_2, \\dots, S_KS1\u200b,S2\u200b,\u2026,SK\u200b such that for each valid iii, min(Si)\u2264\u2223Si\u2223\u2264max(Si)\\mathrm{min}(S_i) \\le |S_i| \\le \\mathrm{max}(S_i)min(Si\u200b)\u2264\u2223Si\u200b\u2223\u2264max(Si\u200b) \u2014 that is, for each subsequence in this partition, its length is greater or equal to its smallest element and smaller or equal to its largest element.\n\nFinding one safe partition would still be easy for Chef, so he wants to find the number of safe partitions of AAA. Since this number could be very big, please compute it modulo 100000000710000000071000000007 (109+710^9 + 7109+7).",
     "constraints": [
       "1 <= N <= 5 * 10^5",
       "1 <= Ai <= N for each valid i"
     ],
-    "inputFormat": "The first line contains a single integer N. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "Print a single line containing one integer — the number of safe partitions of AAA modulo 10^9 + 7.",
+    "inputFormat": "The first line contains a single integer N. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "Print a single line containing one integer \u2014 the number of safe partitions of AAA modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -100,8 +100,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming. We will create a DP array where DP[i] represents the number of safe partitions of the subarray A[1...i]. We will iterate over the array and for each element, we will check all possible partitions that can be formed. If the length of the partition is within the range [min(Ai), max(Ai)], we will update the DP array accordingly.",
-    "timeComplexity": "O(N^2) — because we are iterating over the array and for each element, we are checking all possible partitions.",
-    "spaceComplexity": "O(N) — because we are using a DP array of size N.",
+    "timeComplexity": "O(N^2) \u2014 because we are iterating over the array and for each element, we are checking all possible partitions.",
+    "spaceComplexity": "O(N) \u2014 because we are using a DP array of size N.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint dp[500005];\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int a[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &a[i]);\n    }\n    dp[0] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) {\n            int min = a[i - j];\n            int max = a[i - j];\n            for (int k = i - j + 1; k <= i; k++) {\n                min = (min < a[k - 1]) ? min : a[k - 1];\n                max = (max > a[k - 1]) ? max : a[k - 1];\n            }\n            if (j >= min && j <= max) {\n                dp[i] = (dp[i] + dp[i - j]) % MOD;\n            }\n        }\n    }\n    printf(\"%d\\n\", dp[n]);\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[500005];\nint main() {\n    int n;\n    cin >> n;\n    int a[n];\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n    }\n    dp[0] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) {\n            int min = a[i - j];\n            int max = a[i - j];\n            for (int k = i - j + 1; k <= i; k++) {\n                min = (min < a[k - 1]) ? min : a[k - 1];\n                max = (max > a[k - 1]) ? max : a[k - 1];\n            }\n            if (j >= min && j <= max) {\n                dp[i] = (dp[i] + dp[i - j]) % MOD;\n            }\n        }\n    }\n    cout << dp[n] << endl;\n    return 0;\n}",

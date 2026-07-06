@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
+      "Maximum Sum",
       "Brackets",
-      "Well-Bracketed Sequences",
-      "Maximum Sum"
+      "Dynamic Programming",
+      "Well-Bracketed Sequences"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +23,10 @@
   "content": {
     "problemStatement": "Indian National Olympiad in Informatics 2016There are k types of brackets each with its own opening bracket and closing bracket. We assume that the first pair is denoted by the numbers 1 and k+1, the second by 2 and k+2 and so on. Thus the opening brackets are denoted by 1,2,.., k, and the corresponding closing brackets are denoted by k+1,k+2,..., 2*k respectively.\n\n\nSome sequences with elements from 1,2, ... 2*k form well-bracketed sequences while others don't. A sequence is well-bracketed, if we can match or pair up opening brackets and closing brackets of the same type in such a way that the following holds:\n\n\n1) every bracket is paired up\n\n2) in each matched pair, the opening bracket occurs before the closing bracket\n\n3) for a matched pair, any other matched pair lies either completely between them or outside them.\n\n\nFor the examples discussed below, let us assume that k = 2. The sequence 1,1,3 is not well-bracketed as one of the two 1's cannot be paired. The sequence 3,1,3,1 is not well-bracketed as there is no way to match the second 1 to a closing bracket occurring after it. The sequence 1,2,3,4 is not well-bracketed as the matched pair 2,4 is neither completely between the matched pair 1,3 nor completely outside it. That is, the matched pairs cannot overlap. The sequence 1,2,4,3,1,3 is well-bracketed. We match the first 1 with the first 3, the 2 with the 4 and the second 1 with the second 3, satisfying all the 3 conditions. If you rewrite these sequences using [,{,],} instead of 1,2,3,4 respectively, this will be quite clear.\n\n\nIn this problem you are given a sequence of brackets, of length N: B[1], .., B[N], where each B[i] is one of the brackets. You are also given an array of Values: V[1],.., V[N].\n\n\nAmong all the subsequences in the Values array, such that the corresponding bracket subsequence in the B Array is a well-bracketed sequence, you need to find the maximum sum. Suppose N = 6, k = 3 and the values of V and B are as follows:\n\n\n\ni\t1\t2\t3\t4\t5\t6\nV[i]\t4\t5\t-2\t1\t1\t6\nB[i]\t1\t3\t4\t2\t5\t6\n\n`Then, the brackets in positions 1,3 form a well-bracketed sequence (1,4) and the sum of the values in these positions is 2 (4 + -2 = 2). The brackets in positions 1,3,4,5 form a well-bracketed sequence (1,4,2,5) and the sum of the values in these positions is 4. Finally, the brackets in positions 2,4,5,6 forms a well-bracketed sequence (3,2,5,6) and the sum of the values in these positions is 13. The sum of the values in positions 1,2,5,6 is 16 but the brackets in these positions (1,3,5,6) do not form a well-bracketed sequence. You can check the best sum from positions whose brackets form a well-bracketed sequence is 13.\n`\n\n\nInput Format\n\nOne line, which contains (2*N + 2) space separate integers.\nThe first integer denotes N.\nThe next integer is k.\nThe next N integers are V[1],..., V[N].\nThe last N integers are B[1],.., B[N].\n\n\nOutput Format\nOne integer, which is the maximum sum possible satisfying the requirement mentioned above.",
     "constraints": [
-      "1 ≤ k ≤ 7",
-      "-10^6 ≤ V[i] ≤ 10^6, for all i",
-      "1 ≤ B[i] ≤ 2*k, for all i",
-      "1 ≤ N ≤ 700"
+      "1 \u2264 k \u2264 7",
+      "-10^6 \u2264 V[i] \u2264 10^6, for all i",
+      "1 \u2264 B[i] \u2264 2*k, for all i",
+      "1 \u2264 N \u2264 700"
     ],
     "inputFormat": "The first line contains two space-separated integers: N and k. The next N integers are the values V[1],..., V[N]. The last N integers are the brackets B[1],.., B[N].",
     "outputFormat": "The maximum sum possible satisfying the requirement mentioned above.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to find the maximum sum of well-bracketed sequences. We will maintain a 2D array dp where dp[i][j] represents the maximum sum of well-bracketed sequences ending at index i with j pairs of brackets. We will iterate over the array and update dp[i][j] based on the current bracket and the previous well-bracketed sequences.",
-    "timeComplexity": "O(N^2) — because we are using two nested loops to fill up the dp array",
-    "spaceComplexity": "O(N^2) — because we are using a 2D array of size N x N to store the dp values",
+    "timeComplexity": "O(N^2) \u2014 because we are using two nested loops to fill up the dp array",
+    "spaceComplexity": "O(N^2) \u2014 because we are using a 2D array of size N x N to store the dp values",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 700\n#define MAXK 7\nint max(int a, int b) { return a > b ? a : b; }\nint min(int a, int b) { return a < b ? a : b; }\nint abs(int a) { return a < 0 ? -a : a; }\nint main() {\n    int N, k;\n    scanf(\"%d %d\", &N, &k);\n    int V[MAXN], B[MAXN];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &V[i]);\n    }\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &B[i]);\n    }\n    int dp[MAXN][MAXN];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++) {\n            dp[i][j] = -1000000000;\n        }\n    }\n    for (int i = 0; i < N; i++) {\n        dp[i][0] = V[i];\n    }\n    for (int len = 2; len <= N; len++) {\n        for (int i = 0; i <= N - len; i++) {\n            int j = i + len - 1;\n            if (B[i] == B[j] - k) {\n                for (int k = i + 1; k < j; k++) {\n                    dp[i][j] = max(dp[i][j], dp[i + 1][k - 1] + V[i] + V[j]);\n                }\n            }\n        }\n    }\n    int ans = -1000000000;\n    for (int i = 0; i < N; i++) {\n        for (int j = i; j < N; j++) {\n            ans = max(ans, dp[i][j]);\n        }\n    }\n    printf(\"%d\\n\", ans);\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nconst int MAXN = 700;\nconst int MAXK = 7;\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> V(N), B(N);\n    for (int i = 0; i < N; i++) {\n        cin >> V[i];\n    }\n    for (int i = 0; i < N; i++) {\n        cin >> B[i];\n    }\n    vector<vector<int>> dp(N, vector<int>(N, -1000000000));\n    for (int i = 0; i < N; i++) {\n        dp[i][0] = V[i];\n    }\n    for (int len = 2; len <= N; len++) {\n        for (int i = 0; i <= N - len; i++) {\n            int j = i + len - 1;\n            if (B[i] == B[j] - k) {\n                for (int k = i + 1; k < j; k++) {\n                    dp[i][j] = max(dp[i][j], dp[i + 1][k - 1] + V[i] + V[j]);\n                }\n            }\n        }\n    }\n    int ans = -1000000000;\n    for (int i = 0; i < N; i++) {\n        for (int j = i; j < N; j++) {\n            ans = max(ans, dp[i][j]);\n        }\n    }\n    cout << ans << endl;\n    return 0;\n}",

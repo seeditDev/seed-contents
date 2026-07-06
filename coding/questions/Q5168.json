@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "String processing",
       "Implementation",
-      "String processing"
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is planning to setup a secure password for his Codechef account. For a password to be secure the following conditions should be satisfied:\n\n\n\nPassword must contain at least one lower case letter [a−z][a-z][a−z];\n\n\n\n\nPassword must contain at least one upper case letter [A−Z] strictly inside (first or the last character won’t be considered)\n\n\n\n\nPassword must contain at least one digit [0−9][0-9][0−9] strictly inside;\n\n\n\n\nPassword must contain at least one special character from the set {\\{{ '@', '#', '%', '&amp;', '?' }\\}} strictly inside;\n\n\n\n\nPassword must be at least 101010 characters in length, but it can be longer.\n\n\n\nChef has generated several strings and now wants you to check whether the passwords are secure based on the above criteria. Please help Chef in doing so.",
+    "problemStatement": "Chef is planning to setup a secure password for his Codechef account. For a password to be secure the following conditions should be satisfied:\n\n\n\nPassword must contain at least one lower case letter [a\u2212z][a-z][a\u2212z];\n\n\n\n\nPassword must contain at least one upper case letter [A\u2212Z] strictly inside (first or the last character won\u2019t be considered)\n\n\n\n\nPassword must contain at least one digit [0\u22129][0-9][0\u22129] strictly inside;\n\n\n\n\nPassword must contain at least one special character from the set {\\{{ '@', '#', '%', '&amp;', '?' }\\}} strictly inside;\n\n\n\n\nPassword must be at least 101010 characters in length, but it can be longer.\n\n\n\nChef has generated several strings and now wants you to check whether the passwords are secure based on the above criteria. Please help Chef in doing so.",
     "constraints": [
       "1 <= T <= 10^5",
       "1 <= |S| <= 200",
@@ -39,13 +40,13 @@
         "id": "sample_2",
         "input": "1\naB1@cdefgh",
         "output": "YES",
-        "explanation": "Length is 10, contains lowercase, uppercase 'B' at position 1, digit '1' at position 2, special '@' at position 3 – all inside requirements satisfied."
+        "explanation": "Length is 10, contains lowercase, uppercase 'B' at position 1, digit '1' at position 2, special '@' at position 3 \u2013 all inside requirements satisfied."
       },
       {
         "id": "sample_3",
         "input": "1\nAbcdefghij",
         "output": "NO",
-        "explanation": "No digit, no special character, and the only uppercase 'A' is at the first position, so inside‑uppercase condition fails."
+        "explanation": "No digit, no special character, and the only uppercase 'A' is at the first position, so inside\u2011uppercase condition fails."
       }
     ]
   },
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "For each password we scan the characters once and maintain five boolean flags: hasLower (anywhere), hasUpperInside (uppercase not at first or last position), hasDigitInside, hasSpecialInside, and lengthOk (|S| >= 10). While scanning we update the flags according to the character and its index. After the scan we output YES if all flags are true, otherwise NO. This runs in O(|S|) per test case and O(1) extra memory.",
-    "timeComplexity": "O(total length of all strings) which is ≤ 10^6",
+    "timeComplexity": "O(total length of all strings) which is \u2264 10^6",
     "spaceComplexity": "O(1) besides the input storage",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdbool.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0; \n    char buf[210];\n    // consume newline after T\n    fgets(buf, sizeof(buf), stdin);\n    while(T--){\n        if(!fgets(buf, sizeof(buf), stdin)) break;\n        size_t len = strlen(buf);\n        if(len && buf[len-1]=='\\n') buf[--len]='\\0';\n        bool hasLower=false, hasUpperInside=false, hasDigitInside=false, hasSpecialInside=false;\n        bool lengthOk = len>=10;\n        for(size_t i=0;i<len;i++){\n            char c=buf[i];\n            if('a'<=c && c<='z') hasLower=true;\n            if(i!=0 && i!=len-1){\n                if('A'<=c && c<='Z') hasUpperInside=true;\n                if('0'<=c && c<='9') hasDigitInside=true;\n                if(c=='@' || c=='#' || c=='%' || c=='&' || c=='?') hasSpecialInside=true;\n            }\n        }\n        if(hasLower && hasUpperInside && hasDigitInside && hasSpecialInside && lengthOk) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",

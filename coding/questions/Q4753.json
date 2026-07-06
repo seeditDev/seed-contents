@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Parity",
       "Number Theory",
       "Bit Manipulation",
-      "Parity"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,25 +21,25 @@
     ]
   },
   "content": {
-    "problemStatement": "As usual, Tom and Jerry are fighting. Tom has strength TSTSTS and Jerry has strength JSJSJS. You are given TSTSTS and your task is to find the number of possible values of JSJSJS such that Jerry wins the following game.\n\nThe game consists of one or more turns. In each turn:\n\n\nIf both TSTSTS and JSJSJS are even, their values get divided by 222 and the game proceeds with the next turn.\nIf both TSTSTS and JSJSJS are odd, a tie is declared and the game ends.\nIf TSTSTS is even and JSJSJS is odd, Tom wins the game.\nIf TSTSTS is odd and JSJSJS is even, Jerry wins the game.\nFind the number of possible initial values of JSJSJS such that 1≤JS≤TS1 \\le JS \\le TS1≤JS≤TS, there is no tie and Jerry wins the game.",
+    "problemStatement": "As usual, Tom and Jerry are fighting. Tom has strength TSTSTS and Jerry has strength JSJSJS. You are given TSTSTS and your task is to find the number of possible values of JSJSJS such that Jerry wins the following game.\n\nThe game consists of one or more turns. In each turn:\n\n\nIf both TSTSTS and JSJSJS are even, their values get divided by 222 and the game proceeds with the next turn.\nIf both TSTSTS and JSJSJS are odd, a tie is declared and the game ends.\nIf TSTSTS is even and JSJSJS is odd, Tom wins the game.\nIf TSTSTS is odd and JSJSJS is even, Jerry wins the game.\nFind the number of possible initial values of JSJSJS such that 1\u2264JS\u2264TS1 \\le JS \\le TS1\u2264JS\u2264TS, there is no tie and Jerry wins the game.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ TS ≤ 10^18"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 TS \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer TS, Tom's strength (1 ≤ TS ≤ 10^18).",
-    "outputFormat": "For each test case output a single line containing the number of possible initial values of JS (1 ≤ JS ≤ TS) such that the game does not end in a tie and Jerry wins.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer TS, Tom's strength (1 \u2264 TS \u2264 10^18).",
+    "outputFormat": "For each test case output a single line containing the number of possible initial values of JS (1 \u2264 JS \u2264 TS) such that the game does not end in a tie and Jerry wins.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n1\n11",
         "output": "0\n5",
-        "explanation": "For TS=1 (odd) there are no even JS ≤1, so answer 0. For TS=11 (odd) the even numbers are {2,4,6,8,10}, five values, so answer 5."
+        "explanation": "For TS=1 (odd) there are no even JS \u22641, so answer 0. For TS=11 (odd) the even numbers are {2,4,6,8,10}, five values, so answer 5."
       },
       {
         "id": "sample_2",
         "input": "3\n2\n12\n45",
         "output": "0\n1\n22",
-        "explanation": "TS=2 (2^1) → divisor 4 → 0 multiples. TS=12=2^2*3 → divisor 8 → only 8 works → 1. TS=45 odd → floor(45/2)=22."
+        "explanation": "TS=2 (2^1) \u2192 divisor 4 \u2192 0 multiples. TS=12=2^2*3 \u2192 divisor 8 \u2192 only 8 works \u2192 1. TS=45 odd \u2192 floor(45/2)=22."
       }
     ]
   },
@@ -60,7 +61,7 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – power of two",
+        "label": "edge case \u2013 power of two",
         "input": "1\n1048576",
         "expectedOutput": "0",
         "weight": 2
@@ -106,9 +107,9 @@
     ]
   },
   "solution": {
-    "approach": "Let TS = 2^k * odd_T where k = v2(TS) (the exponent of the largest power of two dividing TS). During the game both numbers are divided by 2 while they are even, which effectively removes min(v2(TS), v2(JS)) powers of two from both numbers. After this reduction Tom is odd iff v2(JS) ≥ k, and Jerry is even iff v2(JS) > k. Therefore Jerry wins exactly when v2(JS) > k, i.e., when JS is divisible by 2^{k+1}. All numbers 1 ≤ JS ≤ TS that satisfy this are the multiples of 2^{k+1} not exceeding TS. Hence the answer is floor(TS / 2^{k+1}). The algorithm for each test case: 1) read TS, 2) compute k = number of trailing zero bits of TS, 3) compute divisor = 1LL << (k+1), 4) answer = TS / divisor. This runs in O(1) per test case.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few variables.",
+    "approach": "Let TS = 2^k * odd_T where k = v2(TS) (the exponent of the largest power of two dividing TS). During the game both numbers are divided by 2 while they are even, which effectively removes min(v2(TS), v2(JS)) powers of two from both numbers. After this reduction Tom is odd iff v2(JS) \u2265 k, and Jerry is even iff v2(JS) > k. Therefore Jerry wins exactly when v2(JS) > k, i.e., when JS is divisible by 2^{k+1}. All numbers 1 \u2264 JS \u2264 TS that satisfy this are the multiples of 2^{k+1} not exceeding TS. Hence the answer is floor(TS / 2^{k+1}). The algorithm for each test case: 1) read TS, 2) compute k = number of trailing zero bits of TS, 3) compute divisor = 1LL << (k+1), 4) answer = TS / divisor. This runs in O(1) per test case.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few variables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        unsigned long long TS; scanf(\"%llu\", &TS);\n        // count trailing zeros\n        int k = 0;\n        unsigned long long temp = TS;\n        while((temp & 1ULL) == 0ULL){\n            k++; temp >>= 1ULL;\n        }\n        unsigned long long divisor = 1ULL << (k+1);\n        unsigned long long ans = TS / divisor;\n        printf(\"%llu\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        unsigned long long TS; cin>>TS;\n        int k = __builtin_ctzll(TS); // number of trailing zeros\n        unsigned long long divisor = 1ULL << (k+1);\n        unsigned long long ans = TS / divisor;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

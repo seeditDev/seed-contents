@@ -11,9 +11,10 @@
     "isPremium": true,
     "tags": [
       "Stack",
-      "Next Smaller Element",
       "Monotonic Stack",
-      "Linked List Simulation"
+      "Linked List Simulation",
+      "Next Smaller Element",
+      "Data Structures"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +22,21 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef gave you the headheadhead of a linked list and challenged you to find the next smaller value for every node in the linked list. Can you solve the challenge?\n\n**Note:** If for some value, there is no next smaller value then assume the next smaller value for this number to be −1-1−1.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the length of array.\nThe second line of every test case contains NNN integers - A1,A2,..,AN A_1,A_2,..,A_NA1​,A2​,..,AN​ denoting the integers in the array.\nYou don't need to read or print anything. Just complete the function nextSmallerValue() which takes the head of the linked list as input.\n\n\nOutput Format\nReturn the head of the linked list which contains next smaller value for every node.",
+    "problemStatement": "Chef gave you the headheadhead of a linked list and challenged you to find the next smaller value for every node in the linked list. Can you solve the challenge?\n\n**Note:** If for some value, there is no next smaller value then assume the next smaller value for this number to be \u22121-1\u22121.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the length of array.\nThe second line of every test case contains NNN integers - A1,A2,..,AN A_1,A_2,..,A_NA1\u200b,A2\u200b,..,AN\u200b denoting the integers in the array.\nYou don't need to read or print anything. Just complete the function nextSmallerValue() which takes the head of the linked list as input.\n\n\nOutput Format\nReturn the head of the linked list which contains next smaller value for every node.",
     "constraints": [
       "1 <= T <= 1000",
       "1 <= N <= 100000",
       "1 <= Ai <= 10^9",
       "Sum of N over all test cases does not exceed 5*10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space‑separated integers representing the node values from head to tail.",
-    "outputFormat": "For each test case output a single line containing N space‑separated integers. The i‑th integer is the value of the next node to the right that is strictly smaller than the i‑th node; if no such node exists output -1.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space\u2011separated integers representing the node values from head to tail.",
+    "outputFormat": "For each test case output a single line containing N space\u2011separated integers. The i\u2011th integer is the value of the next node to the right that is strictly smaller than the i\u2011th node; if no such node exists output -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2\n9 19\n6\n19 18 16 12 8 8\n6\n14 9 14 5 2 1",
         "output": "-1 -1\n18 16 12 8 -1 -1\n9 5 5 2 1 -1",
-        "explanation": "Test case 1: No element to the right is smaller than 9 or 19, so both are -1.\\nTest case 2: Each element's next smaller value is the first strictly smaller element to its right; the last two 8's have none, so -1.\\nTest case 3: 14 → 9, 9 → 5, second 14 → 5, 5 → 2, 2 → 1, 1 → -1."
+        "explanation": "Test case 1: No element to the right is smaller than 9 or 19, so both are -1.\\nTest case 2: Each element's next smaller value is the first strictly smaller element to its right; the last two 8's have none, so -1.\\nTest case 3: 14 \u2192 9, 9 \u2192 5, second 14 \u2192 5, 5 \u2192 2, 2 \u2192 1, 1 \u2192 -1."
       }
     ]
   },
@@ -104,7 +105,7 @@
   },
   "solution": {
     "approach": "The problem is equivalent to finding the Next Smaller Element to the right for each array element. Scan the array from right to left while maintaining a monotonic increasing stack (top holds the smallest candidate). For each element a[i]: pop stack elements that are >= a[i]; if the stack becomes empty, there is no smaller element to the right, so answer[i] = -1; otherwise answer[i] = stack.top(). Finally push a[i] onto the stack. This runs in O(N) per test case because each element is pushed and popped at most once. The linked list is only a conceptual wrapper; we work directly on the array of values.",
-    "timeComplexity": "O(N) per test case, where N is the length of the linked list. Overall O(∑N) ≤ 5·10^5.",
+    "timeComplexity": "O(N) per test case, where N is the length of the linked list. Overall O(\u2211N) \u2264 5\u00b710^5.",
     "spaceComplexity": "O(N) for the answer array and the stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long *a = (long long*)malloc(N * sizeof(long long));\n        for (int i = 0; i < N; ++i) scanf(\"%lld\", &a[i]);\n        long long *ans = (long long*)malloc(N * sizeof(long long));\n        long long *stack = (long long*)malloc(N * sizeof(long long));\n        int top = -1;\n        for (int i = N-1; i >= 0; --i) {\n            while (top >= 0 && stack[top] >= a[i]) top--;\n            ans[i] = (top == -1) ? -1 : stack[top];\n            stack[++top] = a[i];\n        }\n        for (int i = 0; i < N; ++i) {\n            if (i) printf(\" \");\n            printf(\"%lld\", ans[i]);\n        }\n        printf(\"\\n\");\n        free(a); free(ans); free(stack);\n    }\n    return 0;\n}",

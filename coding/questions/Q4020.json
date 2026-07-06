@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Subsequences",
       "Modular Arithmetic",
+      "Subsequences",
+      "Dynamic Programming",
       "Bit Manipulation"
     ],
     "companyTags": [],
@@ -20,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Katya has a sequence of integers a1,a2,…,ana_1, a_2, \\dots, a_na1​,a2​,…,an​ and an integer mmm.\n\nShe defines a good sequence of integers as a non-empty sequence such that the sum of the elements in each of its non-empty subsequences is divisible by mmm.\n\nKatya wants to know the number of good subsequences of the sequence aaa. Can you help her?",
+    "problemStatement": "Katya has a sequence of integers a1,a2,\u2026,ana_1, a_2, \\dots, a_na1\u200b,a2\u200b,\u2026,an\u200b and an integer mmm.\n\nShe defines a good sequence of integers as a non-empty sequence such that the sum of the elements in each of its non-empty subsequences is divisible by mmm.\n\nKatya wants to know the number of good subsequences of the sequence aaa. Can you help her?",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ n ≤ 30",
-      "1 ≤ m ≤ 1000",
-      "1 ≤ ai ≤ 1000 for each valid i"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 n \u2264 30",
+      "1 \u2264 m \u2264 1000",
+      "1 \u2264 ai \u2264 1000 for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers n and m. The second line contains n space-separated integers a1, a2, …, an.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of good subsequences.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers n and m. The second line contains n space-separated integers a1, a2, \u2026, an.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of good subsequences.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach with bit manipulation. We generate all possible subsequences of the given sequence and check if the sum of each subsequence is divisible by m. We use a bitmask to represent each subsequence, where the i-th bit corresponds to the i-th element in the sequence. We iterate over all possible subsequences and check if the sum of the elements in the subsequence is divisible by m. If it is, we increment the count of good subsequences.",
-    "timeComplexity": "O(T * 2^n * n) — where n is the length of the sequence. The reason is that we generate all possible subsequences (2^n) and for each subsequence, we calculate the sum of its elements (O(n)).",
-    "spaceComplexity": "O(1) — we only use a constant amount of space to store the count of good subsequences and the current subsequence.",
+    "timeComplexity": "O(T * 2^n * n) \u2014 where n is the length of the sequence. The reason is that we generate all possible subsequences (2^n) and for each subsequence, we calculate the sum of its elements (O(n)).",
+    "spaceComplexity": "O(1) \u2014 we only use a constant amount of space to store the count of good subsequences and the current subsequence.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint countGoodSubsequences(int* arr, int n, int m) {\n    int count = 0;\n    for (int mask = 1; mask < (1 << n); mask++) {\n        int sum = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                sum += arr[i];\n            }\n        }\n        if (sum % m == 0) {\n            count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T-- > 0) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int* arr = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        printf(\"%d\\n\", countGoodSubsequences(arr, n, m));\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n\nint countGoodSubsequences(const std::vector<int>& arr, int m) {\n    int count = 0;\n    int n = arr.size();\n    for (int mask = 1; mask < (1 << n); mask++) {\n        int sum = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                sum += arr[i];\n            }\n        }\n        if (sum % m == 0) {\n            count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int T;\n    std::cin >> T;\n    while (T-- > 0) {\n        int n, m;\n        std::cin >> n >> m;\n        std::vector<int> arr(n);\n        for (int i = 0; i < n; i++) {\n            std::cin >> arr[i];\n        }\n        std::cout << countGoodSubsequences(arr, m) << std::endl;\n    }\n    return 0;\n}",

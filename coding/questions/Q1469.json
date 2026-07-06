@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Backtracking",
+    "category": "Recursion & Backtracking",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Backtracking",
-      "Recursion",
+      "Combinatorial Search",
       "N-Queens",
-      "Combinatorial Search"
+      "Backtracking",
+      "Recursion & Backtracking",
+      "Recursion"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,12 +22,12 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a chessboard of dimensions N⋅NN \\cdot NN⋅N. \n\nPlace NNN queens on the chessboard such that none of the Queens attack each other.\n\n\nInput Format\n\nThe first line of input contains one integer NNN - the dimension of chessboard.\n\n\nOutput Format\nReturn all the distinct board configurations, where `'Q'` denotes the placement of a Queen and `'.'` denotes an empty cell.",
+    "problemStatement": "You are given a chessboard of dimensions N\u22c5NN \\cdot NN\u22c5N. \n\nPlace NNN queens on the chessboard such that none of the Queens attack each other.\n\n\nInput Format\n\nThe first line of input contains one integer NNN - the dimension of chessboard.\n\n\nOutput Format\nReturn all the distinct board configurations, where `'Q'` denotes the placement of a Queen and `'.'` denotes an empty cell.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 9"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases (1 ≤ T ≤ 10). Each of the next T lines contains a single integer N (1 ≤ N ≤ 9) representing the size of the chessboard for that test case.",
+    "inputFormat": "The first line contains an integer T, the number of test cases (1 \u2264 T \u2264 10). Each of the next T lines contains a single integer N (1 \u2264 N \u2264 9) representing the size of the chessboard for that test case.",
     "outputFormat": "For each test case, output all distinct board configurations. For each configuration output N lines, each line containing N characters where 'Q' denotes a queen and '.' denotes an empty cell. After each configuration output a blank line. If a test case has no valid configuration, output nothing for that test case (i.e., directly proceed to the next test case).",
     "sampleTestCases": [
       {
@@ -101,8 +102,8 @@
     ]
   },
   "solution": {
-    "approach": "We place queens row by row. While placing a queen in the current row we try every column that is not under attack from previously placed queens. A column is safe if no queen occupies the same column, the same main diagonal (row‑col), or the same anti‑diagonal (row+col). We keep three boolean arrays: cols[N], diag1[2*N-1] for (row‑col+N‑1) and diag2[2*N-1] for (row+col). When a queen is placed we mark the three arrays, recurse to the next row, and backtrack afterwards. When row == N we have found a complete configuration and store/print it. Because N ≤ 9 the exponential O(N!) worst‑case time is easily fast enough.",
-    "timeComplexity": "O(N!) in the worst case (the number of permutations of columns). For N ≤ 9 this is at most 362880 operations per test case.",
+    "approach": "We place queens row by row. While placing a queen in the current row we try every column that is not under attack from previously placed queens. A column is safe if no queen occupies the same column, the same main diagonal (row\u2011col), or the same anti\u2011diagonal (row+col). We keep three boolean arrays: cols[N], diag1[2*N-1] for (row\u2011col+N\u20111) and diag2[2*N-1] for (row+col). When a queen is placed we mark the three arrays, recurse to the next row, and backtrack afterwards. When row == N we have found a complete configuration and store/print it. Because N \u2264 9 the exponential O(N!) worst\u2011case time is easily fast enough.",
+    "timeComplexity": "O(N!) in the worst case (the number of permutations of columns). For N \u2264 9 this is at most 362880 operations per test case.",
     "spaceComplexity": "O(N) for the board representation and the three helper arrays, plus O(N) recursion depth.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_N 9\n\nint cols[MAX_N];\nint diag1[2*MAX_N]; // row - col + N - 1\nint diag2[2*MAX_N]; // row + col\nchar board[MAX_N][MAX_N+1];\nint n;\n\nvoid print_solution() {\n    for (int i = 0; i < n; ++i) {\n        printf(\"%s\\n\", board[i]);\n    }\n    printf(\"\\n\");\n}\n\nvoid backtrack(int row) {\n    if (row == n) {\n        print_solution();\n        return;\n    }\n    for (int col = 0; col < n; ++col) {\n        int d1 = row - col + n - 1;\n        int d2 = row + col;\n        if (!cols[col] && !diag1[d1] && !diag2[d2]) {\n            board[row][col] = 'Q';\n            cols[col] = diag1[d1] = diag2[d2] = 1;\n            backtrack(row + 1);\n            cols[col] = diag1[d1] = diag2[d2] = 0;\n            board[row][col] = '.';\n        }\n    }\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        if (scanf(\"%d\", &n) != 1) break;\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < n; ++j) board[i][j] = '.';\n            board[i][n] = '\\0';\n        }\n        memset(cols, 0, sizeof(cols));\n        memset(diag1, 0, sizeof(diag1));\n        memset(diag2, 0, sizeof(diag2));\n        backtrack(0);\n    }\n    return 0;\n}",

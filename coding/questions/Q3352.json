@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Subsequences",
+      "Combinatorics",
       "Modular Arithmetic",
-      "Combinatorics"
+      "Subsequences",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "You are given an array **A**, consisting of **N** integers and an array **B**, consisting of **M** integers.\n\nThe subsequence of **A** is the array that can be obtained by picking the elements at the arbitrary sorted set of positions from **A**.\n\nYour task is to count the number of such subsequences **C** of **A** that:\n\n\n\n**C** contains exactly **M** elements.\nThe array **(C+B)** is non-decreasing. Here by **+** operation, we mean element-wise sum. \n\nFor example, the array **(4, 8, 5)** plus the array **(10, 20, 30)** is **(14, 28, 35)**.\n\nFormally, **(C+B)** is an array of size **M** such that **(C+B)i** = **Ci** + **Bi**.\n\n\nIn case some subsequence appears more that once, you should counts it as many times as it appears.\n\nFormally, two subarrays of an array **a**, (**ai_1**, **ai_2**, ... ,**ai_n**) and (**aj_1**, **aj_2**, ... ,**aj_m**) will be considered different if either their lengths are different i.e. **n != m** or there exists an index **k** such that such that **i_k** ** != j_k**.\n\n\nSince the answer can be very large, we ask you to calculate it, modulo **109+7**.",
     "constraints": [
-      "1 ≤ N ≤ 2000",
-      "1 ≤ M ≤ 1000",
-      "1 ≤ Ai, Bi ≤ 10^9"
+      "1 \u2264 N \u2264 2000",
+      "1 \u2264 M \u2264 1000",
+      "1 \u2264 Ai, Bi \u2264 10^9"
     ],
     "inputFormat": "The first line of input contains a pair of space-separated integers N and M, denoting the number of elements in the array A and the number of elements in the array B. The second line contains N space-separated integers Ai, denoting the array A. The third line contains M space-separated integers Bj, denoting the array B.",
     "outputFormat": "Output a single line containing the number of subsequences C as asked in the problem, modulo 10^9+7.",
@@ -108,8 +109,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to count the number of subsequences of A that satisfy the given conditions. We will iterate over all possible subsequences of A and check if the sum of the subsequence and B is non-decreasing. We will use modular arithmetic to avoid overflow.",
-    "timeComplexity": "O(2^N * M) — because we are generating all possible subsequences of A and checking each one.",
-    "spaceComplexity": "O(N + M) — for storing the arrays A and B.",
+    "timeComplexity": "O(2^N * M) \u2014 because we are generating all possible subsequences of A and checking each one.",
+    "spaceComplexity": "O(N + M) \u2014 for storing the arrays A and B.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint countSubsequences(int* A, int N, int* B, int M) {\n    int count = 0;\n    for (int mask = 0; mask < (1 << N); mask++) {\n        int subsequence[M];\n        int size = 0;\n        for (int i = 0; i < N; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subsequence[size++] = A[i];\n            }\n        }\n        if (size != M) continue;\n        int valid = 1;\n        for (int i = 0; i < M; i++) {\n            if (i > 0 && subsequence[i] + B[i] < subsequence[i-1] + B[i-1]) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid) count = (count + 1) % MOD;\n    }\n    return count;\n}\n\nint main() {\n    int N, M;\n    scanf(\"%d %d\", &N, &M);\n    int* A = (int*)malloc(N * sizeof(int));\n    int* B = (int*)malloc(M * sizeof(int));\n    for (int i = 0; i < N; i++) scanf(\"%d\", &A[i]);\n    for (int i = 0; i < M; i++) scanf(\"%d\", &B[i]);\n    qsort(A, N, sizeof(int), compare);\n    printf(\"%d\\n\", countSubsequences(A, N, B, M));\n    free(A);\n    free(B);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\n\nint countSubsequences(int* A, int N, int* B, int M) {\n    int count = 0;\n    for (int mask = 0; mask < (1 << N); mask++) {\n        int subsequence[M];\n        int size = 0;\n        for (int i = 0; i < N; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subsequence[size++] = A[i];\n            }\n        }\n        if (size != M) continue;\n        int valid = 1;\n        for (int i = 0; i < M; i++) {\n            if (i > 0 && subsequence[i] + B[i] < subsequence[i-1] + B[i-1]) {\n                valid = 0;\n                break;\n            }\n        }\n        if (valid) count = (count + 1) % MOD;\n    }\n    return count;\n}\n\nint main() {\n    int N, M;\n    cin >> N >> M;\n    int* A = new int[N];\n    int* B = new int[M];\n    for (int i = 0; i < N; i++) cin >> A[i];\n    for (int i = 0; i < M; i++) cin >> B[i];\n    sort(A, A + N);\n    cout << countSubsequences(A, N, B, M) << endl;\n    delete[] A;\n    delete[] B;\n    return 0;\n}",

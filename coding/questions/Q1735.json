@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Singly Linked List",
+      "O(1) Insertion",
       "Linked List",
       "Tail Pointer",
-      "O(1) Insertion",
-      "Singly Linked List"
+      "Data Structures"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,20 +28,20 @@
       "1 <= N <= 1000",
       "1 <= value <= 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements to insert. The second line contains N space‑separated integers that must be inserted at the end of the linked list in the given order.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements to insert. The second line contains N space\u2011separated integers that must be inserted at the end of the linked list in the given order.",
     "outputFormat": "For each test case, output a single line containing the elements of the linked list after all insertions, in order, separated by a single space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\n4\\n2 32 23 53",
         "output": "2 32 23 53",
-        "explanation": "The list starts empty. Inserting 2 makes it 2. Inserting 32 appends after 2 → 2 32. Then 23 → 2 32 23. Finally 53 → 2 32 23 53."
+        "explanation": "The list starts empty. Inserting 2 makes it 2. Inserting 32 appends after 2 \u2192 2 32. Then 23 \u2192 2 32 23. Finally 53 \u2192 2 32 23 53."
       },
       {
         "id": "sample_2",
         "input": "2\\n3\\n1 2 3\\n2\\n4 5",
         "output": "1 2 3\\n4 5",
-        "explanation": "First test case builds list 1→2→3 and prints \"1 2 3\". Second test case builds list 4→5 and prints \"4 5\"."
+        "explanation": "First test case builds list 1\u21922\u21923 and prints \"1 2 3\". Second test case builds list 4\u21925 and prints \"4 5\"."
       },
       {
         "id": "sample_3",
@@ -75,14 +76,14 @@
       },
       {
         "id": "tc_4",
-        "label": "general case 1 – two test cases",
+        "label": "general case 1 \u2013 two test cases",
         "input": "2\\n3\\n10 20 30\\n4\\n5 4 3 2",
         "expectedOutput": "10 20 30\\n5 4 3 2",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case 2 – unsorted values",
+        "label": "general case 2 \u2013 unsorted values",
         "input": "1\\n5\\n100 1 50 25 75",
         "expectedOutput": "100 1 50 25 75",
         "weight": 2
@@ -115,7 +116,7 @@
   },
   "solution": {
     "approach": "Maintain two pointers in the list structure: *head* (first node) and *tail* (last node). When inserting a new value, create a node. If the list is empty, set both head and tail to the new node. Otherwise, link the current tail's next to the new node and update tail to the new node. This makes each insertion O(1). After processing all values, traverse from head to tail printing each value.",
-    "timeComplexity": "O(total number of inserted elements) = O( Σ N_i ) because each insertion and each print step is O(1).",
+    "timeComplexity": "O(total number of inserted elements) = O( \u03a3 N_i ) because each insertion and each print step is O(1).",
     "spaceComplexity": "O( total number of inserted elements ) for the nodes of the linked list.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int value;\n    struct Node* next;\n} Node;\n\ntypedef struct LinkedList {\n    Node* head;\n    Node* tail;\n} LinkedList;\n\nNode* createNode(int value) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->value = value;\n    newNode->next = NULL;\n    return newNode;\n}\n\nvoid insertAtEnd(LinkedList* list, int value) {\n    Node* newNode = createNode(value);\n    if (list->head == NULL) {\n        list->head = newNode;\n        list->tail = newNode;\n    } else {\n        list->tail->next = newNode;\n        list->tail = newNode;\n    }\n}\n\nvoid printValues(LinkedList* list) {\n    Node* cur = list->head;\n    while (cur != NULL) {\n        printf(\"%d\", cur->value);\n        if (cur->next != NULL) printf(\" \");\n        cur = cur->next;\n    }\n    printf(\"\\n\");\n}\n\nint main() {\n    int T; scanf(\"%d\", &T);\n    while (T--) {\n        LinkedList list = {NULL, NULL};\n        int N; scanf(\"%d\", &N);\n        for (int i = 0; i < N; ++i) {\n            int v; scanf(\"%d\", &v);\n            insertAtEnd(&list, v);\n        }\n        printValues(&list);\n        // free memory (optional for contest)\n        Node* cur = list.head;\n        while (cur) {\n            Node* nxt = cur->next;\n            free(cur);\n            cur = nxt;\n        }\n    }\n    return 0;\n}",

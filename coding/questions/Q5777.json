@@ -10,11 +10,12 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Permutations",
-      "Cycles",
       "GCD",
-      "Möbius Inversion",
-      "Number Theory"
+      "Cycles",
+      "M\u00f6bius Inversion",
+      "Sorting",
+      "Number Theory",
+      "Permutations"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is bored cooking his regular dishes, so he decided to cook permutations instead. Since this is his first time cooking permutations, he takes some help.\n\nChef has two permutations AAA and BBB, each of size NNN. Chef cooks a permutation CCC of size N2N^2N2 by doing the following:\n\n`for i = 1 to N:\n    for j = 1 to N:\n        C[i + (j-1) * N] = A[i] + (B[j] - 1) * N\n`Chef is allowed to make some (maybe 000) moves on permutation CCC. In one move, Chef can:\n\n\nPick two indices 1≤i&lt;j≤N21 \\leq i &lt; j \\leq N^21≤i&lt;j≤N2 and swap the elements CiC_iCi​ and CjC_jCj​.\nFind the **minimum** number of moves required to sort permutation CCC in ascending order.\n\n\nInput Format\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of test cases follows.\nThe first line of each test case contains an integer NNN - the length of permutations AAA and BBB.\nThe second line of each test case contains NNN integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​, denoting permutation AAA.\nThe third line of each test case contains NNN integers B1,B2,…,BNB_1, B_2, \\ldots, B_NB1​,B2​,…,BN​, denoting permutation BBB.\n\n\nOutput Format\nFor each test case, print a single integer representing the number of moves required to sort permutation CCC.",
+    "problemStatement": "Chef is bored cooking his regular dishes, so he decided to cook permutations instead. Since this is his first time cooking permutations, he takes some help.\n\nChef has two permutations AAA and BBB, each of size NNN. Chef cooks a permutation CCC of size N2N^2N2 by doing the following:\n\n`for i = 1 to N:\n    for j = 1 to N:\n        C[i + (j-1) * N] = A[i] + (B[j] - 1) * N\n`Chef is allowed to make some (maybe 000) moves on permutation CCC. In one move, Chef can:\n\n\nPick two indices 1\u2264i&lt;j\u2264N21 \\leq i &lt; j \\leq N^21\u2264i&lt;j\u2264N2 and swap the elements CiC_iCi\u200b and CjC_jCj\u200b.\nFind the **minimum** number of moves required to sort permutation CCC in ascending order.\n\n\nInput Format\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of test cases follows.\nThe first line of each test case contains an integer NNN - the length of permutations AAA and BBB.\nThe second line of each test case contains NNN integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b, denoting permutation AAA.\nThe third line of each test case contains NNN integers B1,B2,\u2026,BNB_1, B_2, \\ldots, B_NB1\u200b,B2\u200b,\u2026,BN\u200b, denoting permutation BBB.\n\n\nOutput Format\nFor each test case, print a single integer representing the number of moves required to sort permutation CCC.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ N ≤ 2·10^5",
-      "1 ≤ Ai, Bi ≤ N",
-      "∑ N over all test cases ≤ 10^6"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 N \u2264 2\u00b710^5",
+      "1 \u2264 Ai, Bi \u2264 N",
+      "\u2211 N over all test cases \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N, the size of the permutations.\n- A line with N space‑separated integers A1 … AN, a permutation of {1,…,N}.\n- A line with N space‑separated integers B1 … BN, a permutation of {1,…,N}.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N, the size of the permutations.\n- A line with N space\u2011separated integers A1 \u2026 AN, a permutation of {1,\u2026,N}.\n- A line with N space\u2011separated integers B1 \u2026 BN, a permutation of {1,\u2026,N}.",
     "outputFormat": "For each test case output a single line containing the minimum number of swaps required to sort the constructed permutation C in ascending order.",
     "sampleTestCases": [
       {
@@ -104,7 +105,7 @@
     ]
   },
   "solution": {
-    "approach": "The array C of size N² is a permutation. The minimum number of swaps needed to sort a permutation equals (size) – (number of cycles) of the permutation that maps each position to the position where its element should finally be.  \n\nFor index (i, j) (0‑based) we have:\n    index = i + j·N\n    value‑1 = (A[i]‑1) + (B[j]‑1)·N\nThus the mapping sends (i, j) → (π(i), σ(j)) where π(i)=A[i]‑1 and σ(j)=B[j]‑1.  π and σ are permutations on {0,…,N‑1}.  The overall permutation on the N×N grid is the direct product of π and σ.\n\nIf π has a cycle of length a and σ a cycle of length b, the a·b cells formed by these two cycles split into gcd(a,b) cycles of the product permutation (each of length lcm(a,b)).  Therefore the total number of cycles is\n    Σ_{cycle of π} Σ_{cycle of σ} gcd(lenπ, lenσ).\nLet cntA[l] be the number of cycles of length l in π and cntB[l] similarly for σ. Then\n    cycles = Σ_{l1} Σ_{l2} cntA[l1]·cntB[l2]·gcd(l1,l2).\nDirect double summation is O(N²) in the worst case.  Using divisor convolution we can compute the sum in O(N log N):\n1. For each d, compute A_mul[d] = Σ_{k} cntA[k·d] (cycles whose length is a multiple of d). Same for B_mul.\n2. Pre‑compute the Möbius function μ up to max N.\n3. For each d, the number of pairs with gcd exactly d is\n       f(d) = Σ_{m multiple of d} μ[m/d]·A_mul[m]·B_mul[m].\n4. The total number of cycles = Σ_{d} d·f(d).\nFinally answer = N² – cycles.\nAll operations fit in 64‑bit signed integers.\n\nThe algorithm per test case:\n- Find cycle lengths of A and B (O(N)).\n- Fill cntA and cntB arrays.\n- Build A_mul and B_mul by iterating over multiples (O(N log N)).\n- Using the pre‑computed μ, compute f(d) and the sum of d·f(d) (O(N log N)).\nOverall complexity per test case: O(N log N) time, O(N) memory.\nThe Möbius array is computed once for the maximum N across all test cases.",
+    "approach": "The array C of size N\u00b2 is a permutation. The minimum number of swaps needed to sort a permutation equals (size) \u2013 (number of cycles) of the permutation that maps each position to the position where its element should finally be.  \n\nFor index (i, j) (0\u2011based) we have:\n    index = i + j\u00b7N\n    value\u20111 = (A[i]\u20111) + (B[j]\u20111)\u00b7N\nThus the mapping sends (i, j) \u2192 (\u03c0(i), \u03c3(j)) where \u03c0(i)=A[i]\u20111 and \u03c3(j)=B[j]\u20111.  \u03c0 and \u03c3 are permutations on {0,\u2026,N\u20111}.  The overall permutation on the N\u00d7N grid is the direct product of \u03c0 and \u03c3.\n\nIf \u03c0 has a cycle of length a and \u03c3 a cycle of length b, the a\u00b7b cells formed by these two cycles split into gcd(a,b) cycles of the product permutation (each of length lcm(a,b)).  Therefore the total number of cycles is\n    \u03a3_{cycle of \u03c0} \u03a3_{cycle of \u03c3} gcd(len\u03c0, len\u03c3).\nLet cntA[l] be the number of cycles of length l in \u03c0 and cntB[l] similarly for \u03c3. Then\n    cycles = \u03a3_{l1} \u03a3_{l2} cntA[l1]\u00b7cntB[l2]\u00b7gcd(l1,l2).\nDirect double summation is O(N\u00b2) in the worst case.  Using divisor convolution we can compute the sum in O(N log N):\n1. For each d, compute A_mul[d] = \u03a3_{k} cntA[k\u00b7d] (cycles whose length is a multiple of d). Same for B_mul.\n2. Pre\u2011compute the M\u00f6bius function \u03bc up to max N.\n3. For each d, the number of pairs with gcd exactly d is\n       f(d) = \u03a3_{m multiple of d} \u03bc[m/d]\u00b7A_mul[m]\u00b7B_mul[m].\n4. The total number of cycles = \u03a3_{d} d\u00b7f(d).\nFinally answer = N\u00b2 \u2013 cycles.\nAll operations fit in 64\u2011bit signed integers.\n\nThe algorithm per test case:\n- Find cycle lengths of A and B (O(N)).\n- Fill cntA and cntB arrays.\n- Build A_mul and B_mul by iterating over multiples (O(N log N)).\n- Using the pre\u2011computed \u03bc, compute f(d) and the sum of d\u00b7f(d) (O(N log N)).\nOverall complexity per test case: O(N log N) time, O(N) memory.\nThe M\u00f6bius array is computed once for the maximum N across all test cases.",
     "timeComplexity": "O(N log N) per test case, where N is the size of the permutations. The total over all test cases respects the given sum limit.",
     "spaceComplexity": "O(N) auxiliary memory per test case (arrays of size N+1).",
     "code": {

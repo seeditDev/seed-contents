@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
+      "Graphs",
       "Disjoint Intervals",
       "Employee Relationships"
     ],
@@ -20,21 +21,21 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN employees (numbered 111 through NNN) working at ShareChat. You are given MMM pairs of employees that do not get along with each other.\n\nArya, the CEO of ShareChat, wants to throw a party. She is still not sure which employees to invite, but her assistant has given her QQQ suggestions. Each suggestion consists of KKK intervals [L1,R1],[L2,R2],…,[LK,RK][L_1, R_1], [L_2, R_2], \\ldots, [L_K, R_K][L1​,R1​],[L2​,R2​],…,[LK​,RK​]; this means that all employees whose numbers lie in the union of these intervals should be invited to the party.\n\nArya is a perfectionist, so she wants all invited employees to get along. You, her second assistant, are the only one she could trust with finding out, for each suggestion, if this condition is satisfied. Complete this task!",
+    "problemStatement": "There are NNN employees (numbered 111 through NNN) working at ShareChat. You are given MMM pairs of employees that do not get along with each other.\n\nArya, the CEO of ShareChat, wants to throw a party. She is still not sure which employees to invite, but her assistant has given her QQQ suggestions. Each suggestion consists of KKK intervals [L1,R1],[L2,R2],\u2026,[LK,RK][L_1, R_1], [L_2, R_2], \\ldots, [L_K, R_K][L1\u200b,R1\u200b],[L2\u200b,R2\u200b],\u2026,[LK\u200b,RK\u200b]; this means that all employees whose numbers lie in the union of these intervals should be invited to the party.\n\nArya is a perfectionist, so she wants all invited employees to get along. You, her second assistant, are the only one she could trust with finding out, for each suggestion, if this condition is satisfied. Complete this task!",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N, M, Q ≤ 2 * 10^5",
-      "1 ≤ u, v ≤ N",
-      "u ≠ v",
-      "1 ≤ K ≤ 2 * 10^5",
-      "1 ≤ Li ≤ Ri ≤ N for each valid i",
-      "[L1, R1], [L2, R2], …, [LK, RK] are pairwise disjoint",
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N, M, Q \u2264 2 * 10^5",
+      "1 \u2264 u, v \u2264 N",
+      "u \u2260 v",
+      "1 \u2264 K \u2264 2 * 10^5",
+      "1 \u2264 Li \u2264 Ri \u2264 N for each valid i",
+      "[L1, R1], [L2, R2], \u2026, [LK, RK] are pairwise disjoint",
       "The sum of K over all test cases does not exceed 2 * 10^5",
       "The sum of N over all test cases does not exceed 2 * 10^5",
       "The sum of M over all test cases does not exceed 2 * 10^5",
       "The sum of Q over all test cases does not exceed 2 * 10^5"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and M. Each of the following M lines contains two space-separated integers u and v indicating that employees u and v do not get along. The next line contains a single integer Q. The following Q lines describe suggestions. Each of these lines contains an integer K, followed by a space and 2K space-separated integers L1,R1,L2,R2,…,LK,RK.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and M. Each of the following M lines contains two space-separated integers u and v indicating that employees u and v do not get along. The next line contains a single integer Q. The following Q lines describe suggestions. Each of these lines contains an integer K, followed by a space and 2K space-separated integers L1,R1,L2,R2,\u2026,LK,RK.",
     "outputFormat": "For each suggestion, print a single line containing the string \"YES\" if all invited employees get along or \"NO\" otherwise.",
     "sampleTestCases": [
       {
@@ -110,8 +111,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph to represent the relationships between employees. We create a graph where each employee is a node, and two nodes are connected by an edge if the corresponding employees do not get along. Then, for each suggestion, we check if all invited employees are in a connected component of the graph. If they are, we print \"YES\"; otherwise, we print \"NO\".",
-    "timeComplexity": "O(T * (M + Q * K)) — where T is the number of test cases, M is the number of employee relationships, Q is the number of suggestions, and K is the maximum number of intervals in a suggestion.",
-    "spaceComplexity": "O(N + M) — where N is the number of employees and M is the number of employee relationships.",
+    "timeComplexity": "O(T * (M + Q * K)) \u2014 where T is the number of test cases, M is the number of employee relationships, Q is the number of suggestions, and K is the maximum number of intervals in a suggestion.",
+    "spaceComplexity": "O(N + M) \u2014 where N is the number of employees and M is the number of employee relationships.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n// Define the structure for a graph\ntypedef struct {\n    int numNodes;\n    int** adjMatrix;\n} Graph;\n\n// Function to create a graph\nGraph* createGraph(int numNodes) {\n    Graph* graph = (Graph*) malloc(sizeof(Graph));\n    graph->numNodes = numNodes;\n    graph->adjMatrix = (int**) malloc(numNodes * sizeof(int*));\n    for (int i = 0; i < numNodes; i++) {\n        graph->adjMatrix[i] = (int*) malloc(numNodes * sizeof(int));\n        for (int j = 0; j < numNodes; j++) {\n            graph->adjMatrix[i][j] = 0;\n        }\n    }\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph* graph, int u, int v) {\n    graph->adjMatrix[u][v] = 1;\n    graph->adjMatrix[v][u] = 1;\n}\n\n// Function to check if all invited employees get along\nint checkInvitedEmployees(Graph* graph, int* intervals, int numIntervals, int numEmployees) {\n    int* visited = (int*) malloc(numEmployees * sizeof(int));\n    for (int i = 0; i < numEmployees; i++) {\n        visited[i] = 0;\n    }\n    for (int i = 0; i < numIntervals; i++) {\n        for (int j = intervals[i * 2]; j <= intervals[i * 2 + 1]; j++) {\n            visited[j] = 1;\n        }\n    }\n    for (int i = 0; i < numEmployees; i++) {\n        if (visited[i] == 1) {\n            for (int j = 0; j < numEmployees; j++) {\n                if (graph->adjMatrix[i][j] == 1 && visited[j] == 1) {\n                    return 0;\n                }\n            }\n        }\n    }\n    return 1;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        Graph* graph = createGraph(N);\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            addEdge(graph, u - 1, v - 1);\n        }\n        int Q;\n        scanf(\"%d\", &Q);\n        for (int q = 0; q < Q; q++) {\n            int K;\n            scanf(\"%d\", &K);\n            int* intervals = (int*) malloc(2 * K * sizeof(int));\n            for (int i = 0; i < 2 * K; i++) {\n                scanf(\"%d\", &intervals[i]);\n            }\n            if (checkInvitedEmployees(graph, intervals, K, N)) {\n                printf(\"YES\\n\");\n            } else {\n                printf(\"NO\\n\");\n            }\n            free(intervals);\n        }\n        for (int i = 0; i < N; i++) {\n            free(graph->adjMatrix[i]);\n        }\n        free(graph->adjMatrix);\n        free(graph);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a graph\nstruct Graph {\n    int numNodes;\n    vector<vector<int>> adjMatrix;\n};\n\n// Function to create a graph\nGraph createGraph(int numNodes) {\n    Graph graph;\n    graph.numNodes = numNodes;\n    graph.adjMatrix.resize(numNodes, vector<int>(numNodes, 0));\n    return graph;\n}\n\n// Function to add an edge to the graph\nvoid addEdge(Graph& graph, int u, int v) {\n    graph.adjMatrix[u][v] = 1;\n    graph.adjMatrix[v][u] = 1;\n}\n\n// Function to check if all invited employees get along\nbool checkInvitedEmployees(const Graph& graph, const vector<int>& intervals, int numIntervals, int numEmployees) {\n    vector<bool> visited(numEmployees, false);\n    for (int i = 0; i < numIntervals; i++) {\n        for (int j = intervals[i * 2]; j <= intervals[i * 2 + 1]; j++) {\n            visited[j] = true;\n        }\n    }\n    for (int i = 0; i < numEmployees; i++) {\n        if (visited[i]) {\n            for (int j = 0; j < numEmployees; j++) {\n                if (graph.adjMatrix[i][j] && visited[j]) {\n                    return false;\n                }\n            }\n        }\n    }\n    return true;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N, M;\n        cin >> N >> M;\n        Graph graph = createGraph(N);\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            cin >> u >> v;\n            addEdge(graph, u - 1, v - 1);\n        }\n        int Q;\n        cin >> Q;\n        for (int q = 0; q < Q; q++) {\n            int K;\n            cin >> K;\n            vector<int> intervals(2 * K);\n            for (int i = 0; i < 2 * K; i++) {\n                cin >> intervals[i];\n            }\n            if (checkInvitedEmployees(graph, intervals, K, N)) {\n                cout << \"YES\" << endl;\n            } else {\n                cout << \"NO\" << endl;\n            }\n        }\n    }\n    return 0;\n}",

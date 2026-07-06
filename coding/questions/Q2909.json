@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "GCD",
+      "Math",
       "Subarray"
     ],
     "companyTags": [],
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an array **A1,A2...AN**, you have to print the size of the largest contiguous subarray such that \nGCD of all integers in that subarray is **1**.\n\nFormally,\n For a subarray **Ai,Ai+1...Aj** where **1 ≤ i &lt; j ≤ N** to be valid: **GCD(Ai,Ai+1...Aj)** should be **1**. You have to print the size of the largest valid subarray.\n\nIf no valid subarray exists, output **-1**.\n\n**Note:**A single element is not considered as a subarray according to the definition of this problem.\n\n**Note: Use scanf/print instead of cin/cout. Large input files.**",
+    "problemStatement": "Given an array **A1,A2...AN**, you have to print the size of the largest contiguous subarray such that \nGCD of all integers in that subarray is **1**.\n\nFormally,\n For a subarray **Ai,Ai+1...Aj** where **1 \u2264 i &lt; j \u2264 N** to be valid: **GCD(Ai,Ai+1...Aj)** should be **1**. You have to print the size of the largest valid subarray.\n\nIf no valid subarray exists, output **-1**.\n\n**Note:**A single element is not considered as a subarray according to the definition of this problem.\n\n**Note: Use scanf/print instead of cin/cout. Large input files.**",
     "constraints": [
       "1 <= T <= 10",
       "2 <= N <= 10^5",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by iterating over all possible subarrays and calculating the GCD of each subarray. The GCD can be calculated using the Euclidean algorithm. The maximum length of the subarray with a GCD of 1 is updated whenever a subarray with a GCD of 1 is found.",
     "timeComplexity": "O(T * N^3) per test case, O(T * N^3) total. The time complexity is cubic due to the nested loops and the GCD calculation.",
-    "spaceComplexity": "O(N) — the dominant structure is the array to store the subarray.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array to store the subarray.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }\nint gcd_array(int arr[], int n) { int result = arr[0]; for (int i = 1; i < n; i++) { result = gcd(result, arr[i]); } return result; }\nint main() { int T; scanf(\"%d\", &T); while (T--) { int N; scanf(\"%d\", &N); int arr[N]; for (int i = 0; i < N; i++) { scanf(\"%d\", &arr[i]); } int max_len = -1; for (int i = 0; i < N; i++) { for (int j = i + 1; j < N; j++) { int subarray[j - i + 1]; for (int k = i; k <= j; k++) { subarray[k - i] = arr[k]; } if (gcd_array(subarray, j - i + 1) == 1) { max_len = (max_len > j - i + 1) ? max_len : j - i + 1; } } } printf(\"%d\\n\", max_len); } return 0; }",
       "C++": "#include <iostream>\n#include <numeric>\nusing namespace std;\nint gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }\nint main() { int T; scanf(\"%d\", &T); while (T--) { int N; scanf(\"%d\", &N); int arr[N]; for (int i = 0; i < N; i++) { scanf(\"%d\", &arr[i]); } int max_len = -1; for (int i = 0; i < N; i++) { for (int j = i + 1; j < N; j++) { int subarray[j - i + 1]; for (int k = i; k <= j; k++) { subarray[k - i] = arr[k]; } int result = subarray[0]; for (int k = 1; k < j - i + 1; k++) { result = gcd(result, subarray[k]); } if (result == 1) { max_len = max(max_len, j - i + 1); } } } printf(\"%d\\n\", max_len); } return 0; }",

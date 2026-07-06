@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Number Theory",
       "Divisibility",
+      "Math",
       "Chinese Remainder Theorem",
+      "Number Theory",
       "Sieve of Eratosthenes"
     ],
     "companyTags": [],
@@ -21,13 +22,13 @@
     ]
   },
   "content": {
-    "problemStatement": "For positive integers aaa and bbb, we say that a fraction ab\\frac{a}{b}ba​ is good if it is equal to mm+1\\frac{m}{m+1}m+1m​ for some positive integer mmm.\n\nYou are given an integer NNN. Find the number of pairs of integers i,ji, ji,j such that 1≤i,j≤N1 \\le i, j \\le N1≤i,j≤N and the fraction ii+1⋅j+1j\\frac{i}{i+1} \\cdot \\frac{j+1}{j}i+1i​⋅jj+1​ is good.",
+    "problemStatement": "For positive integers aaa and bbb, we say that a fraction ab\\frac{a}{b}ba\u200b is good if it is equal to mm+1\\frac{m}{m+1}m+1m\u200b for some positive integer mmm.\n\nYou are given an integer NNN. Find the number of pairs of integers i,ji, ji,j such that 1\u2264i,j\u2264N1 \\le i, j \\le N1\u2264i,j\u2264N and the fraction ii+1\u22c5j+1j\\frac{i}{i+1} \\cdot \\frac{j+1}{j}i+1i\u200b\u22c5jj+1\u200b is good.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 1,000,000"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 1,000,000"
     ],
-    "inputFormat": "The first line contains an integer T – the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 1,000,000).",
-    "outputFormat": "For each test case output a single line with one integer – the number of ordered pairs (i, j) (1 ≤ i, j ≤ N) such that (i/(i+1))·((j+1)/j) equals m/(m+1) for some positive integer m.",
+    "inputFormat": "The first line contains an integer T \u2013 the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 1,000,000).",
+    "outputFormat": "For each test case output a single line with one integer \u2013 the number of ordered pairs (i, j) (1 \u2264 i, j \u2264 N) such that (i/(i+1))\u00b7((j+1)/j) equals m/(m+1) for some positive integer m.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,9 +102,9 @@
     ]
   },
   "solution": {
-    "approach": "For a pair (i, j) let A = i·(j+1) and B = (i+1)·j. The fraction A/B equals m/(m+1) iff m = A/(B‑A) is a positive integer. Since B‑A = j‑i, the condition becomes:\n  • j > i (otherwise m ≤ 0), and\n  • (j‑i) divides i·(j+1).\nDefine d = j‑i (1 ≤ d ≤ N‑1) and write j = i + d. The condition turns into:\n  d | i·(i+d+1).\nBecause i·(i+d+1) ≡ (i mod d)·((i+1) mod d) (mod d), let r = i mod d. The condition is\n  r·(r+1) ≡ 0 (mod d).\nSince r and r+1 are coprime, every prime power p^e dividing d must divide either r or r+1. Hence for each distinct prime power of d we have two independent choices:\n  – r ≡ 0 (mod p^e)  or  – r ≡ -1 (mod p^e).\nBy the Chinese Remainder Theorem this yields exactly 2^{ω(d)} residues r (ω(d) = number of distinct prime factors of d) that satisfy the divisibility.\nFor each such residue r we count how many i (1 ≤ i ≤ N‑d) are congruent to r modulo d. The smallest i with residue r is:\n  first = d   if r = 0,\n  first = r   otherwise.\nIf first ≤ N‑d, the number of valid i is 1 + floor((N‑d‑first)/d).\nSumming this over all residues for every d gives the answer.\nAlgorithm steps for each test case:\n1. Build an SPF (smallest prime factor) array up to N using a linear sieve – O(N).\n2. For each d from 1 to N‑1:\n   a. Extract the distinct prime powers of d using the SPF array.\n   b. Generate all residues r that satisfy r·(r+1) ≡ 0 (mod d) by a recursive CRT combination of the two possibilities (0 or -1) for each prime power. The number of residues never exceeds 2^{ω(d)} ≤ 128 for N ≤ 10^6.\n   c. For each residue compute the contribution of i as described and add to the total.\n3. Output the total.\nThe overall complexity is O(N log log N) for the sieve plus Σ_d 2^{ω(d)} which is well below 2·10^7 for N = 10^6, easily fitting into the time limit. Memory consumption is O(N) for the SPF array.",
-    "timeComplexity": "O(N log log N) per test case (dominated by the linear sieve and the small‑constant work per d).",
-    "spaceComplexity": "O(N) – the SPF array and a few auxiliary vectors.",
+    "approach": "For a pair (i, j) let A = i\u00b7(j+1) and B = (i+1)\u00b7j. The fraction A/B equals m/(m+1) iff m = A/(B\u2011A) is a positive integer. Since B\u2011A = j\u2011i, the condition becomes:\n  \u2022 j > i (otherwise m \u2264 0), and\n  \u2022 (j\u2011i) divides i\u00b7(j+1).\nDefine d = j\u2011i (1 \u2264 d \u2264 N\u20111) and write j = i + d. The condition turns into:\n  d | i\u00b7(i+d+1).\nBecause i\u00b7(i+d+1) \u2261 (i mod d)\u00b7((i+1) mod d) (mod d), let r = i mod d. The condition is\n  r\u00b7(r+1) \u2261 0 (mod d).\nSince r and r+1 are coprime, every prime power p^e dividing d must divide either r or r+1. Hence for each distinct prime power of d we have two independent choices:\n  \u2013 r \u2261 0 (mod p^e)  or  \u2013 r \u2261 -1 (mod p^e).\nBy the Chinese Remainder Theorem this yields exactly 2^{\u03c9(d)} residues r (\u03c9(d) = number of distinct prime factors of d) that satisfy the divisibility.\nFor each such residue r we count how many i (1 \u2264 i \u2264 N\u2011d) are congruent to r modulo d. The smallest i with residue r is:\n  first = d   if r = 0,\n  first = r   otherwise.\nIf first \u2264 N\u2011d, the number of valid i is 1 + floor((N\u2011d\u2011first)/d).\nSumming this over all residues for every d gives the answer.\nAlgorithm steps for each test case:\n1. Build an SPF (smallest prime factor) array up to N using a linear sieve \u2013 O(N).\n2. For each d from 1 to N\u20111:\n   a. Extract the distinct prime powers of d using the SPF array.\n   b. Generate all residues r that satisfy r\u00b7(r+1) \u2261 0 (mod d) by a recursive CRT combination of the two possibilities (0 or -1) for each prime power. The number of residues never exceeds 2^{\u03c9(d)} \u2264 128 for N \u2264 10^6.\n   c. For each residue compute the contribution of i as described and add to the total.\n3. Output the total.\nThe overall complexity is O(N log log N) for the sieve plus \u03a3_d 2^{\u03c9(d)} which is well below 2\u00b710^7 for N = 10^6, easily fitting into the time limit. Memory consumption is O(N) for the SPF array.",
+    "timeComplexity": "O(N log log N) per test case (dominated by the linear sieve and the small\u2011constant work per d).",
+    "spaceComplexity": "O(N) \u2013 the SPF array and a few auxiliary vectors.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdint.h>\n\n"
     }

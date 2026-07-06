@@ -6,14 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Binary Search",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Binary Search",
-      "Greedy",
       "Partition",
-      "Allocation"
+      "Allocation",
+      "Binary Search",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has NNN books in the library where the number of pages in the ithi^{th}ith book is BiB_iBi​. These numbers, B1,B2,…,BNB_1, B_2, \\dots,B_NB1​,B2​,…,BN​, are given to you. Chef will allocate all these NNN books to AAA students in contiguous order, which means that the ithi^{th}ith student will be allocated a contiguous set of books (ie. Bj,Bj+1,…,Bj+kB_j, B_{j+1}, \\dots,B_{j+k}Bj​,Bj+1​,…,Bj+k​, for some jjj and kkk). Every student should be allocated at least one book. **Minimize** the **maximum** sum of pages allocated to a student. Find that **minimum** value.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains two space-separated integers NNN, AAA — the number books and students.\nThe second line of each test case contains NNN space-separated integers B1,B2,…,BNB_1,B_2,\\ldots,B_NB1​,B2​,…,BN​.\n\n\nOutput Format\nFor each test case, output on a new line the answer.",
+    "problemStatement": "Chef has NNN books in the library where the number of pages in the ithi^{th}ith book is BiB_iBi\u200b. These numbers, B1,B2,\u2026,BNB_1, B_2, \\dots,B_NB1\u200b,B2\u200b,\u2026,BN\u200b, are given to you. Chef will allocate all these NNN books to AAA students in contiguous order, which means that the ithi^{th}ith student will be allocated a contiguous set of books (ie. Bj,Bj+1,\u2026,Bj+kB_j, B_{j+1}, \\dots,B_{j+k}Bj\u200b,Bj+1\u200b,\u2026,Bj+k\u200b, for some jjj and kkk). Every student should be allocated at least one book. **Minimize** the **maximum** sum of pages allocated to a student. Find that **minimum** value.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains two space-separated integers NNN, AAA \u2014 the number books and students.\nThe second line of each test case contains NNN space-separated integers B1,B2,\u2026,BNB_1,B_2,\\ldots,B_NB1\u200b,B2\u200b,\u2026,BN\u200b.\n\n\nOutput Format\nFor each test case, output on a new line the answer.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ A ≤ N",
-      "1 ≤ Bi ≤ 10^5",
-      "The sum of N over all test cases does not exceed 2·10^5"
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 A \u2264 N",
+      "1 \u2264 Bi \u2264 10^5",
+      "The sum of N over all test cases does not exceed 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers N and A — the number of books and the number of students. The second line contains N space‑separated integers B1, B2, …, BN, where Bi is the number of pages in the i‑th book.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains two integers N and A \u2014 the number of books and the number of students. The second line contains N space\u2011separated integers B1, B2, \u2026, BN, where Bi is the number of pages in the i\u2011th book.",
     "outputFormat": "For each test case output a single line containing the minimum possible value of the maximum number of pages allocated to any student.",
     "sampleTestCases": [
       {
@@ -111,7 +111,7 @@
   },
   "solution": {
     "approach": "The answer lies between max(Bi) (no student can receive less than the largest single book) and sum(Bi) (one student receives all books). Perform binary search on this range. For a candidate value X, greedily allocate books to the current student until adding the next book would exceed X, then move to the next student. If we need more than A students, X is too small; otherwise X is feasible. The smallest feasible X is the required answer.",
-    "timeComplexity": "O(N log S) per test case, where S = sum of pages. The total over all test cases is O((total N)·log S).",
+    "timeComplexity": "O(N log S) per test case, where S = sum of pages. The total over all test cases is O((total N)\u00b7log S).",
     "spaceComplexity": "O(1) extra besides the input array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint canAllocate(long long *books, int n, int a, long long limit) {\n    int students = 1;\n    long long cur = 0;\n    for (int i = 0; i < n; ++i) {\n        if (books[i] > limit) return 0;\n        if (cur + books[i] > limit) {\n            ++students;\n            cur = books[i];\n            if (students > a) return 0;\n        } else {\n            cur += books[i];\n        }\n    }\n    return 1;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, A; scanf(\"%d %d\", &N, &A);\n        long long *books = (long long*)malloc(N * sizeof(long long));\n        long long lo = 0, hi = 0;\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%lld\", &books[i]);\n            if (books[i] > lo) lo = books[i];\n            hi += books[i];\n        }\n        long long ans = hi;\n        while (lo <= hi) {\n            long long mid = lo + (hi - lo) / 2;\n            if (canAllocate(books, N, A, mid)) {\n                ans = mid;\n                hi = mid - 1;\n            } else {\n                lo = mid + 1;\n            }\n        }\n        printf(\"%lld\\n\", ans);\n        free(books);\n    }\n    return 0;\n}",

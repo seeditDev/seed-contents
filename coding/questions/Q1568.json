@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "KMP",
-      "Prefix Function",
       "Palindrome",
+      "Prefix Function",
+      "KMP",
+      "Strings",
       "String Manipulation"
     ],
     "companyTags": [],
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a string sss consisting of lowercase English letters. You can convert sss into a **palindrome** by adding characters **only at the beginning** of the string.\n\nYour task is to **find the shortest palindrome** that can be obtained using this transformation.\n\nFunction DeclarationFunction NameshortestPalindromeshortestPalindromeshortestPalindrome – This function finds the shortest palindrome that can be formed by adding characters **only at the beginning** of the given string.\n\nParameters\nsss : A string consisting of lowercase English letters.\nReturn Value\nReturns a string representing the **shortest palindrome** that can be obtained by adding characters only at the beginning of sss.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n0≤∣s∣≤5×1040 \\leq |s| \\leq 5 \\times 10^40≤∣s∣≤5×104\nsss consists of lowercase English letters only",
+    "problemStatement": "You are given a string sss consisting of lowercase English letters. You can convert sss into a **palindrome** by adding characters **only at the beginning** of the string.\n\nYour task is to **find the shortest palindrome** that can be obtained using this transformation.\n\nFunction DeclarationFunction NameshortestPalindromeshortestPalindromeshortestPalindrome \u2013 This function finds the shortest palindrome that can be formed by adding characters **only at the beginning** of the given string.\n\nParameters\nsss : A string consisting of lowercase English letters.\nReturn Value\nReturns a string representing the **shortest palindrome** that can be obtained by adding characters only at the beginning of sss.\nConstraints\n1\u2264T\u22641001 \\leq T \\leq 1001\u2264T\u2264100\n0\u2264\u2223s\u2223\u22645\u00d71040 \\leq |s| \\leq 5 \\times 10^40\u2264\u2223s\u2223\u22645\u00d7104\nsss consists of lowercase English letters only",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "0 ≤ |s| ≤ 100000",
+      "1 \u2264 T \u2264 100",
+      "0 \u2264 |s| \u2264 100000",
       "s consists only of lowercase English letters"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100), the number of test cases. Each of the next T lines contains a string s consisting of lowercase English letters (0 ≤ |s| ≤ 100000).",
-    "outputFormat": "For each test case output a single line – the shortest palindrome that can be obtained by adding characters only at the beginning of s.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 100), the number of test cases. Each of the next T lines contains a string s consisting of lowercase English letters (0 \u2264 |s| \u2264 100000).",
+    "outputFormat": "For each test case output a single line \u2013 the shortest palindrome that can be obtained by adding characters only at the beginning of s.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,7 +116,7 @@
   },
   "solution": {
     "approach": "The shortest palindrome obtained by adding characters only at the front is built by keeping the longest palindromic prefix of the original string unchanged and mirroring the remaining suffix. To find the longest palindromic prefix efficiently we use the KMP prefix function on the string \"s#reverse(s)\". The value of the last element of the prefix array gives the length L of the longest prefix of s which is also a suffix of reverse(s), i.e., the longest palindromic prefix. The characters that need to be added are the first |s|-L characters of reverse(s). The final answer is reverse(s)[0..|s|-L-1] + s. The algorithm runs in O(|s|) time per test case and O(|s|) auxiliary space for the prefix array.",
-    "timeComplexity": "O(N) per test case, where N = |s|. Overall O( Σ|s| ) for all test cases.",
+    "timeComplexity": "O(N) per test case, where N = |s|. Overall O( \u03a3|s| ) for all test cases.",
     "spaceComplexity": "O(N) auxiliary space for the prefix function and the reversed string.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n// Compute prefix function (KMP) for a character array\nvoid computePrefix(const char *str, int n, int *pi) {\n    pi[0] = 0;\n    for (int i = 1; i < n; ++i) {\n        int j = pi[i - 1];\n        while (j > 0 && str[i] != str[j])\n            j = pi[j - 1];\n        if (str[i] == str[j])\n            ++j;\n        pi[i] = j;\n    }\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char s[100005];\n        scanf(\"%s\", s);\n        int n = strlen(s);\n        // reverse of s\n        char rev[100005];\n        for (int i = 0; i < n; ++i) rev[i] = s[n - 1 - i];\n        rev[n] = '\\0';\n        // build temporary string s#rev\n        char tmp[200010];\n        sprintf(tmp, \"%s#%s\", s, rev);\n        int m = strlen(tmp);\n        int *pi = (int *)malloc(m * sizeof(int));\n        computePrefix(tmp, m, pi);\n        int L = pi[m - 1]; // length of longest palindromic prefix\n        // output characters to add\n        for (int i = 0; i < n - L; ++i) putchar(rev[i]);\n        printf(\"%s\\n\", s);\n        free(pi);\n    }\n    return 0;\n}",

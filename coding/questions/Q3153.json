@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Magical Numbers",
+      "Product of Digits",
       "Subsequences",
-      "Product of Digits"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To find the Kth magical number, we need to generate all possible numbers and check if they are magical. A number is magical if the sum of the products of its subsequences is even. We can generate all possible subsequences of a number by using bit manipulation. For each subsequence, we calculate the product of its digits and add it to the sum. If the sum is even, the number is magical.",
-    "timeComplexity": "O(T * 2^N * N) — where N is the number of digits in the number",
-    "spaceComplexity": "O(1) — as we only use a constant amount of space",
+    "timeComplexity": "O(T * 2^N * N) \u2014 where N is the number of digits in the number",
+    "spaceComplexity": "O(1) \u2014 as we only use a constant amount of space",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long prod(int* arr, int n) {\n    long long res = 1;\n    for (int i = 0; i < n; i++) {\n        res *= arr[i];\n    }\n    return res;\n}\n\nint isMagical(int num) {\n    int len = 0;\n    int temp = num;\n    while (temp > 0) {\n        len++;\n        temp /= 10;\n    }\n    int* arr = (int*)malloc(len * sizeof(int));\n    temp = num;\n    for (int i = len - 1; i >= 0; i--) {\n        arr[i] = temp % 10;\n        temp /= 10;\n    }\n    long long sum = 0;\n    for (int mask = 1; mask < (1 << len); mask++) {\n        int subLen = 0;\n        int* subArr = (int*)malloc(len * sizeof(int));\n        for (int i = 0; i < len; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subArr[subLen++] = arr[i];\n            }\n        }\n        sum += prod(subArr, subLen);\n        free(subArr);\n    }\n    free(arr);\n    return (sum % 2 == 0);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T-- > 0) {\n        long long K;\n        scanf(\"%lld\", &K);\n        long long num = 0;\n        while (K > 0) {\n            num++;\n            if (isMagical(num)) {\n                K--;\n            }\n        }\n        printf(\"%lld\\n\", num);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nlong long prod(vector<int> arr) {\n    long long res = 1;\n    for (int i = 0; i < arr.size(); i++) {\n        res *= arr[i];\n    }\n    return res;\n}\n\nbool isMagical(int num) {\n    int len = 0;\n    int temp = num;\n    while (temp > 0) {\n        len++;\n        temp /= 10;\n    }\n    vector<int> arr;\n    temp = num;\n    for (int i = len - 1; i >= 0; i--) {\n        arr.push_back(temp % 10);\n        temp /= 10;\n    }\n    long long sum = 0;\n    for (int mask = 1; mask < (1 << len); mask++) {\n        vector<int> subArr;\n        for (int i = 0; i < len; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subArr.push_back(arr[i]);\n            }\n        }\n        sum += prod(subArr);\n    }\n    return (sum % 2 == 0);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T-- > 0) {\n        long long K;\n        cin >> K;\n        long long num = 0;\n        while (K > 0) {\n            num++;\n            if (isMagical(num)) {\n                K--;\n            }\n        }\n        cout << num << endl;\n    }\n    return 0;\n}",

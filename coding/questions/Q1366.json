@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Frequency Sort",
+      "Sorting",
       "Counting Sort",
+      "Frequency Sort",
       "Stable Sorting"
     ],
     "companyTags": [],
@@ -20,32 +21,32 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a list of integers. Your task is to sort the list based on the frequency of each integer in ascending order. If two integers have the same frequency, the one with the smaller value should come first.\n\n\nInput Format\n\nThe first line contains a single integer nnn, the number of integers in the list.\nThe second line contains nnn space separated integers a1,a2,…,ana1,a2,…,ana1,a2,…,an.\n\n\nOutput Format\nPrint the sorted list based on the frequency of each integer.",
+    "problemStatement": "You are given a list of integers. Your task is to sort the list based on the frequency of each integer in ascending order. If two integers have the same frequency, the one with the smaller value should come first.\n\n\nInput Format\n\nThe first line contains a single integer nnn, the number of integers in the list.\nThe second line contains nnn space separated integers a1,a2,\u2026,ana1,a2,\u2026,ana1,a2,\u2026,an.\n\n\nOutput Format\nPrint the sorted list based on the frequency of each integer.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ n ≤ 100",
-      "1 ≤ ai ≤ 100"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 n \u2264 100",
+      "1 \u2264 ai \u2264 100"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer n (1 ≤ n ≤ 100), the number of integers in the list. The second line contains n space-separated integers a1, a2, …, an (1 ≤ ai ≤ 100).",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer n (1 \u2264 n \u2264 100), the number of integers in the list. The second line contains n space-separated integers a1, a2, \u2026, an (1 \u2264 ai \u2264 100).",
     "outputFormat": "For each test case output a single line containing the integers of the list sorted by increasing frequency. If two integers have the same frequency, the smaller integer comes first. Numbers are separated by a single space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n4\n1 2 3 2",
         "output": "1 3 2 2",
-        "explanation": "Frequencies: 1→1, 2→2, 3→1. Sorted by frequency gives 1 and 3 first (both freq 1) and 2 later (freq 2). Between 1 and 3 the smaller value 1 comes first."
+        "explanation": "Frequencies: 1\u21921, 2\u21922, 3\u21921. Sorted by frequency gives 1 and 3 first (both freq 1) and 2 later (freq 2). Between 1 and 3 the smaller value 1 comes first."
       },
       {
         "id": "sample_2",
         "input": "1\n4\n2 1 1 1",
         "output": "2 1 1 1",
-        "explanation": "Frequencies: 2→1, 1→3. 2 (freq 1) appears before all 1s (freq 3)."
+        "explanation": "Frequencies: 2\u21921, 1\u21923. 2 (freq 1) appears before all 1s (freq 3)."
       },
       {
         "id": "sample_3",
         "input": "1\n5\n1 2 2 3 3",
         "output": "1 2 2 3 3",
-        "explanation": "Frequencies: 1→1, 2→2, 3→2. 1 comes first, then 2 and 3 are ordered by value because they share the same frequency."
+        "explanation": "Frequencies: 1\u21921, 2\u21922, 3\u21922. 1 comes first, then 2 and 3 are ordered by value because they share the same frequency."
       }
     ]
   },
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "Count the occurrences of each value (the range is only 1..100, so a simple array of size 101 is enough). Build a list of pairs (value, frequency) for all values that appear. Sort this list primarily by frequency (ascending) and secondarily by value (ascending). Finally, output each value repeated its frequency in the order given by the sorted list.",
-    "timeComplexity": "O(n + m log m) per test case (n – number of elements, m – distinct values, m ≤ 100). Overall O(T·n) for the whole input.",
+    "timeComplexity": "O(n + m log m) per test case (n \u2013 number of elements, m \u2013 distinct values, m \u2264 100). Overall O(T\u00b7n) for the whole input.",
     "spaceComplexity": "O(m) additional space for the frequency array and the list of pairs (at most 101 integers).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {int val; int cnt;} Pair;\n\nint cmp(const void *a, const void *b) {\n    const Pair *x = (const Pair *)a;\n    const Pair *y = (const Pair *)b;\n    if (x->cnt != y->cnt) return x->cnt - y->cnt;\n    return x->val - y->val;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n; scanf(\"%d\", &n);\n        int freq[101] = {0};\n        for (int i = 0; i < n; ++i) {\n            int x; scanf(\"%d\", &x);\n            freq[x]++;\n        }\n        Pair arr[101];\n        int m = 0;\n        for (int v = 1; v <= 100; ++v) if (freq[v]) { arr[m].val = v; arr[m].cnt = freq[v]; ++m; }\n        qsort(arr, m, sizeof(Pair), cmp);\n        int first = 1;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < arr[i].cnt; ++j) {\n                if (!first) printf(\" \");\n                printf(\"%d\", arr[i].val);\n                first = 0;\n            }\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",

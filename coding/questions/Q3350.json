@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Greedy",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Tree Growth",
       "Wood Gathering",
-      "Minimum Months"
+      "Minimum Months",
+      "Tree Growth",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Chef is the head of commercial logging industry that recently bought a farm containing **N** trees. You are given initial height of the i-th tree by **Hi** and the rate of growth of height as **Ri** meters per month. For simplicity, you can assume that all the trees are perfect cylinders of equal radius. This allows us to consider only the height of trees when we talk about the amount of wood. \n\n\n\nIn Chef's country, laws don't allow one to cut a tree partially, so one has to cut the tree completely for gathering wood. Also, laws prohibit cutting trees of heights (strictly) lower than **L** meters. \n\n\n\nToday Chef received an order of **W** meters (of height) of wood. Chef wants to deliver this order as soon as possible. Find out how minimum number of months he should wait after which he will able to fulfill the order. You can assume that Chef's company's sawing machines are very efficient and take negligible amount of time to cut the trees.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ W ≤ 10^18",
-      "1 ≤ L ≤ 10^18",
-      "1 ≤ Hi ≤ 10^9",
-      "1 ≤ Ri ≤ 10^9"
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 W \u2264 10^18",
+      "1 \u2264 L \u2264 10^18",
+      "1 \u2264 Hi \u2264 10^9",
+      "1 \u2264 Ri \u2264 10^9"
     ],
     "inputFormat": "The first line contains three space-separated integers N, W, and L, where N is the number of trees, W is the amount of wood to be gathered, and L is the minimum allowed height of a tree to be cut. Each of the next N lines contains two space-separated integers Hi and Ri, representing the initial height and the rate of growth of the i-th tree.",
     "outputFormat": "The minimum number of months that must pass before the order of W meters of wood can be fulfilled.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a greedy approach. We first calculate the time it takes for each tree to reach the minimum allowed height. Then, we sort the trees based on this time. We start gathering wood from the trees that reach the minimum height first. We keep track of the total wood gathered and the time passed. If the total wood gathered is greater than or equal to the required amount, we return the time passed.",
-    "timeComplexity": "O(N log N) — due to sorting the trees based on the time it takes for them to reach the minimum allowed height.",
-    "spaceComplexity": "O(N) — for storing the trees and their corresponding times.",
+    "timeComplexity": "O(N log N) \u2014 due to sorting the trees based on the time it takes for them to reach the minimum allowed height.",
+    "spaceComplexity": "O(N) \u2014 for storing the trees and their corresponding times.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n#define MAX 100005\n\nstruct Tree {\n    double height;\n    double rate;\n    double time;\n};\n\nint compare(const void *a, const void *b) {\n    struct Tree *tree1 = (struct Tree *)a;\n    struct Tree *tree2 = (struct Tree *)b;\n    if (tree1->time < tree2->time) return -1;\n    else if (tree1->time > tree2->time) return 1;\n    else return 0;\n}\n\nint main() {\n    int N, i;\n    double W, L;\n    scanf(\"%d %lf %lf\", &N, &W, &L);\n    struct Tree trees[N];\n    for (i = 0; i < N; i++) {\n        scanf(\"%lf %lf\", &trees[i].height, &trees[i].rate);\n        if (trees[i].height >= L) trees[i].time = 0;\n        else trees[i].time = (L - trees[i].height) / trees[i].rate;\n    }\n    qsort(trees, N, sizeof(struct Tree), compare);\n    double totalWood = 0;\n    double time = 0;\n    for (i = 0; i < N; i++) {\n        if (time < trees[i].time) time = trees[i].time;\n        totalWood += trees[i].height + trees[i].rate * time;\n        if (totalWood >= W) break;\n    }\n    printf(\"%.0lf\\n\", time);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX 100005\n\nstruct Tree {\n    double height;\n    double rate;\n    double time;\n};\n\nbool compare(Tree tree1, Tree tree2) {\n    return tree1.time < tree2.time;\n}\n\nint main() {\n    int N;\n    double W, L;\n    cin >> N >> W >> L;\n    Tree trees[N];\n    for (int i = 0; i < N; i++) {\n        cin >> trees[i].height >> trees[i].rate;\n        if (trees[i].height >= L) trees[i].time = 0;\n        else trees[i].time = (L - trees[i].height) / trees[i].rate;\n    }\n    sort(trees, trees + N, compare);\n    double totalWood = 0;\n    double time = 0;\n    for (int i = 0; i < N; i++) {\n        if (time < trees[i].time) time = trees[i].time;\n        totalWood += trees[i].height + trees[i].rate * time;\n        if (totalWood >= W) break;\n    }\n    cout << (int)time << endl;\n    return 0;\n}",

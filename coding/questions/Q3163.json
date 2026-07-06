@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Connected Components",
+      "Graphs",
+      "Modular Arithmetic",
       "Dynamic Programming",
-      "Modular Arithmetic"
+      "Connected Components"
     ],
     "companyTags": [],
     "topicTags": [
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a combination of graph traversal and dynamic programming. First, we need to find all connected components in the graph. Then, for each component, we can use dynamic programming to count the number of subsets with at most K nodes. We will use a recursive approach to calculate the number of subsets for each component.",
-    "timeComplexity": "O(T * (N + M) * 2^K) — The time complexity is dominated by the recursive calculation of subsets for each connected component.",
-    "spaceComplexity": "O(N + M) — The space complexity is dominated by the storage of the graph and the dynamic programming table.",
+    "timeComplexity": "O(T * (N + M) * 2^K) \u2014 The time complexity is dominated by the recursive calculation of subsets for each connected component.",
+    "spaceComplexity": "O(N + M) \u2014 The space complexity is dominated by the storage of the graph and the dynamic programming table.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\n// Function to calculate the number of subsets\nlong long calculateSubsets(int n, int k, int **graph) {\n    long long *dp = (long long *)malloc((k + 1) * sizeof(long long));\n    dp[0] = 1;\n    for (int i = 1; i <= k; i++) {\n        dp[i] = (dp[i - 1] * 2) % MOD;\n    }\n    // Calculate the number of subsets for each connected component\n    long long result = 0;\n    for (int i = 0; i < n; i++) {\n        int size = 0;\n        int *component = (int *)malloc(n * sizeof(int));\n        // Perform DFS to find the size of the connected component\n        dfs(graph, i, &size, component);\n        if (size <= k) {\n            result = (result + dp[size]) % MOD;\n        }\n    }\n    free(dp);\n    return result;\n}\n\n// Function to perform DFS\nvoid dfs(int **graph, int node, int *size, int *component) {\n    component[*size] = node;\n    (*size)++;\n    for (int i = 0; i < n; i++) {\n        if (graph[node][i] == 1 && !visited[i]) {\n            visited[i] = 1;\n            dfs(graph, i, size, component);\n        }\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n, m, k;\n        scanf(\"%d %d %d\", &n, &m, &k);\n        int **graph = (int **)malloc(n * sizeof(int *));\n        for (int i = 0; i < n; i++) {\n            graph[i] = (int *)malloc(n * sizeof(int));\n            for (int j = 0; j < n; j++) {\n                graph[i][j] = 0;\n            }\n        }\n        for (int i = 0; i < m; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            graph[u - 1][v - 1] = 1;\n            graph[v - 1][u - 1] = 1;\n        }\n        long long result = calculateSubsets(n, k, graph);\n        printf(\"%lld\\n\", result);\n        for (int i = 0; i < n; i++) {\n            free(graph[i]);\n        }\n        free(graph);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\nlong long calculateSubsets(int n, int k, vector<vector<int>> &graph) {\n    long long *dp = new long long[k + 1];\n    dp[0] = 1;\n    for (int i = 1; i <= k; i++) {\n        dp[i] = (dp[i - 1] * 2) % MOD;\n    }\n    long long result = 0;\n    for (int i = 0; i < n; i++) {\n        int size = 0;\n        vector<int> component;\n        // Perform DFS to find the size of the connected component\n        dfs(graph, i, &size, component);\n        if (size <= k) {\n            result = (result + dp[size]) % MOD;\n        }\n    }\n    delete[] dp;\n    return result;\n}\n\nvoid dfs(vector<vector<int>> &graph, int node, int *size, vector<int> &component) {\n    component.push_back(node);\n    (*size)++;\n    for (int i = 0; i < graph.size(); i++) {\n        if (graph[node][i] == 1 && !visited[i]) {\n            visited[i] = 1;\n            dfs(graph, i, size, component);\n        }\n    }\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n, m, k;\n        cin >> n >> m >> k;\n        vector<vector<int>> graph(n, vector<int>(n, 0));\n        for (int i = 0; i < m; i++) {\n            int u, v;\n            cin >> u >> v;\n            graph[u - 1][v - 1] = 1;\n            graph[v - 1][u - 1] = 1;\n        }\n        long long result = calculateSubsets(n, k, graph);\n        cout << result << endl;\n    }\n    return 0;\n}",

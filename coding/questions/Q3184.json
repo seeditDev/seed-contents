@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Sorting",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Array",
       "Sorting",
       "Queries",
-      "Array"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "You are given an array **A** consisting of **N** positive integers. You have to answer **Q** queries on it of following type: \n\n\n**l r k** : Let **S** denote the sorted (in increasing order) set of elements of array **A** with its indices between **l** and **r**. Note that set **S** contains distinct elements (i.e. no duplicates).\nYou need to find **kth** number in it. If such a number does not exist, i.e. the **S** has less than **k** elements, output -1.\n\n\nAll the indices in the queries are 1-based.",
     "constraints": [
-      "1 ≤ N, Q ≤ 10^5",
-      "1 ≤ Ai ≤ 10^9",
-      "0 ≤ ai, bi, ci, di ≤ N",
-      "1 ≤ li ≤ ri ≤ N",
-      "1 ≤ ki ≤ N"
+      "1 \u2264 N, Q \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^9",
+      "0 \u2264 ai, bi, ci, di \u2264 N",
+      "1 \u2264 li \u2264 ri \u2264 N",
+      "1 \u2264 ki \u2264 N"
     ],
     "inputFormat": "The first line of input contains two space-separated integers N and Q denoting the number of elements in array A, and the number of queries, respectively. The second line of input contains N space-separated integers denoting the array A. Each of the next Q lines contains five integers ai, bi, ci, di, ki.",
     "outputFormat": "For each query, output the answer to the query in a single line. If such a number doesn't exist, output -1.",
@@ -110,8 +111,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first read the input array A and the number of queries Q. Then, for each query, we calculate the left and right indices li and ri using the given formula. We then extract the elements of array A between indices li and ri, sort them in ascending order, and remove duplicates. Finally, we check if the kth number exists in the sorted set and output it if it does, or -1 if it doesn't.",
-    "timeComplexity": "O(Q * N log N) — because for each query, we sort the elements between li and ri, which takes O(N log N) time in the worst case.",
-    "spaceComplexity": "O(N) — because we need to store the elements of array A and the sorted set of elements between li and ri.",
+    "timeComplexity": "O(Q * N log N) \u2014 because for each query, we sort the elements between li and ri, which takes O(N log N) time in the worst case.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the elements of array A and the sorted set of elements between li and ri.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAXN 100005\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    int ans = 0;\n    for (int i = 0; i < Q; i++) {\n        int ai, bi, ci, di, ki;\n        scanf(\"%d %d %d %d %d\", &ai, &bi, &ci, &di, &ki);\n        int li = (ai * (ans > 0 ? ans : 0) + bi) % N + 1;\n        int ri = (ci * (ans > 0 ? ans : 0) + di) % N + 1;\n        if (li > ri) {\n            int temp = li;\n            li = ri;\n            ri = temp;\n        }\n        int temp[ri - li + 1];\n        int idx = 0;\n        for (int j = li - 1; j < ri; j++) {\n            temp[idx++] = A[j];\n        }\n        qsort(temp, idx, sizeof(int), compare);\n        int unique[idx];\n        int unique_idx = 0;\n        for (int j = 0; j < idx; j++) {\n            if (j == 0 || temp[j] != temp[j - 1]) {\n                unique[unique_idx++] = temp[j];\n            }\n        }\n        if (ki <= unique_idx) {\n            ans = unique[ki - 1];\n        } else {\n            ans = -1;\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAXN 100005\nint main() {\n    int N, Q;\n    cin >> N >> Q;\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    int ans = 0;\n    for (int i = 0; i < Q; i++) {\n        int ai, bi, ci, di, ki;\n        cin >> ai >> bi >> ci >> di >> ki;\n        int li = (ai * (ans > 0 ? ans : 0) + bi) % N + 1;\n        int ri = (ci * (ans > 0 ? ans : 0) + di) % N + 1;\n        if (li > ri) {\n            swap(li, ri);\n        }\n        int temp[ri - li + 1];\n        int idx = 0;\n        for (int j = li - 1; j < ri; j++) {\n            temp[idx++] = A[j];\n        }\n        sort(temp, temp + idx);\n        int unique[idx];\n        int unique_idx = 0;\n        for (int j = 0; j < idx; j++) {\n            if (j == 0 || temp[j] != temp[j - 1]) {\n                unique[unique_idx++] = temp[j];\n            }\n        }\n        if (ki <= unique_idx) {\n            ans = unique[ki - 1];\n        } else {\n            ans = -1;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

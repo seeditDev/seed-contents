@@ -11,6 +11,7 @@
     "isPremium": false,
     "tags": [
       "Combinatorics",
+      "Math",
       "Binomial Coefficients"
     ],
     "companyTags": [],
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by precomputing the binomial coefficients up to 6 and then iterating over each car and compartment to count the number of free seats. For each compartment with at least X free seats, we add the binomial coefficient C(free, X) to the total count.",
     "timeComplexity": "O(N) per test case, O(T*N) total, where T is the number of test cases and N is the number of cars.",
-    "spaceComplexity": "O(1) — the space used does not grow with the size of the input, as we only need to store the precomputed binomial coefficients and the current test case's data.",
+    "spaceComplexity": "O(1) \u2014 the space used does not grow with the size of the input, as we only need to store the precomputed binomial coefficients and the current test case's data.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nlong long C[7][7];\n\nint main() {\n    // pre-compute binomial coefficients up to 6\n    for (int n = 0; n <= 6; ++n) {\n        C[n][0] = C[n][n] = 1;\n        for (int k = 1; k < n; ++k) {\n            C[n][k] = C[n-1][k-1] + C[n-1][k];\n        }\n    }\n    int X, N;\n    while (scanf(\"%d %d\", &X, &N) == 2) {\n        char s[55];\n        long long ans = 0;\n        // seat indices for the 9 compartments (0-based)\n        int comp[9][6] = {\n            {0,1,2,3,52,53},   // compartment 1\n            {4,5,6,7,50,51},   // compartment 2\n            {8,9,10,11,48,49}, // compartment 3\n            {12,13,14,15,46,47},\n            {16,17,18,19,44,45},\n            {20,21,22,23,42,43},\n            {24,25,26,27,40,41},\n            {28,29,30,31,38,39},\n            {32,33,34,35,36,37}\n        };\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%s\", s);\n            for (int c = 0; c < 9; ++c) {\n                int free = 0;\n                for (int p = 0; p < 6; ++p) {\n                    if (s[comp[c][p]] == '0') ++free;\n                }\n                if (free >= X) ans += C[free][X];\n            }\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    // pre-compute binomial coefficients up to 6\n    long long C[7][7] = {};\n    for (int n = 0; n <= 6; ++n) {\n        C[n][0] = C[n][n] = 1;\n        for (int k = 1; k < n; ++k) C[n][k] = C[n-1][k-1] + C[n-1][k];\n    }\n    int X, N;\n    while (cin >> X >> N) {\n        vector<string> car(N);\n        long long ans = 0;\n        // seat indices for each compartment (0-based)\n        int comp[9][6] = {\n            {0,1,2,3,52,53}, {4,5,6,7,50,51}, {8,9,10,11,48,49},\n            {12,13,14,15,46,47}, {16,17,18,19,44,45}, {20,21,22,23,42,43},\n            {24,25,26,27,40,41}, {28,29,30,31,38,39}, {32,33,34,35,36,37}\n        };\n        for (int i = 0; i < N; ++i) {\n            cin >> car[i];\n            for (int c = 0; c < 9; ++c) {\n                int free = 0;\n                for (int p = 0; p < 6; ++p) if (car[i][comp[c][p]] == '0') ++free;\n                if (free >= X) ans += C[free][X];\n            }\n        }\n        cout << ans << '\\n';\n    }\n    return 0;\n}\n",

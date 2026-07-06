@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Sorting | Searching",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Interval Stabbing",
-      "Two‑Pointer",
+      "Two\u2011Pointer",
       "Sorting",
-      "Offline Queries"
+      "Offline Queries",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,15 +24,15 @@
   "content": {
     "problemStatement": "The aliens living in outer space are very advanced in technology, \nintelligence and everything, except one, and that is Cooking. \nEach year they spend millions of dollars in research, to crack famous recipes prepared by humans.\n\n\n\nRecently they came to know about Khana-Academy, \na non-profit organization streaming free cooking lesson videos on earth. \nThere are **N** recipes, \nnumbered 1 to **N**, and the video of the ith recipe is live in the time interval [**S**i, **E**i]. \nAn alien can visit earth but can not survive for more than just a small moment (earth is so advanced in pollution). \nAn alien visits the earth at an integer time **t** and instantly downloads the complete video of all the lessons \nthat are live at that moment of time **t** and leaves earth immediately. \nYou are given the visiting times of a small group of **K** aliens. \nFind the number of different recipes aliens can learn by watching the downloaded videos. \nNot just one group of aliens, there are **Q** such groups, \nso you have to find the answer for each of these **Q** groups.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 100000",
-      "1 ≤ Q ≤ 5000",
-      "1 ≤ K ≤ 20",
-      "1 ≤ Si, Ei, tj ≤ 10^9",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 100000",
+      "1 \u2264 Q \u2264 5000",
+      "1 \u2264 K \u2264 20",
+      "1 \u2264 Si, Ei, tj \u2264 10^9",
       "Si < Ei"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases.\nFor each test case:\n- The first line contains an integer N, the number of recipes.\n- The next N lines each contain two integers Si and Ei (1 ≤ Si < Ei ≤ 10^9), the start and end time of the i‑th recipe video (the interval is [Si, Ei)).\n- The next line contains an integer Q, the number of alien groups.\n- Each of the next Q lines describes one group. The line starts with an integer K (1 ≤ K ≤ 20), the number of aliens in the group, followed by K integers t1 … tK – the visiting times of the aliens (1 ≤ tj ≤ 10^9).",
-    "outputFormat": "For each test case, output Q lines. The i‑th line of a test case contains a single integer – the number of distinct recipes that at least one alien of the i‑th group can download.",
+    "inputFormat": "The first line contains an integer T, the number of test cases.\nFor each test case:\n- The first line contains an integer N, the number of recipes.\n- The next N lines each contain two integers Si and Ei (1 \u2264 Si < Ei \u2264 10^9), the start and end time of the i\u2011th recipe video (the interval is [Si, Ei)).\n- The next line contains an integer Q, the number of alien groups.\n- Each of the next Q lines describes one group. The line starts with an integer K (1 \u2264 K \u2264 20), the number of aliens in the group, followed by K integers t1 \u2026 tK \u2013 the visiting times of the aliens (1 \u2264 tj \u2264 10^9).",
+    "outputFormat": "For each test case, output Q lines. The i\u2011th line of a test case contains a single integer \u2013 the number of distinct recipes that at least one alien of the i\u2011th group can download.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -105,9 +106,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we sort all recipes by their start time. For a single group we also sort the K visiting times. Then we sweep the sorted recipes once while maintaining a pointer into the sorted times. For the current recipe [S, E) we advance the pointer until the pointed time is ≥ S. If the pointer is still inside the array and the pointed time < E, the recipe is live at that time and we count it. Because both the recipes and the times are processed in non‑decreasing order, each pointer moves only forward – the whole sweep costs O(N + K) per group. The overall complexity per test case is O(N log N) for the initial sort plus O(Q·(N + K)) for the queries, which fits the limits (worst‑case about 5·10^8 simple operations, acceptable in compiled languages). The algorithm uses only the arrays of intervals, times and a few counters – O(N) extra memory.",
-    "timeComplexity": "O(N log N + Q·(N + K)) per test case (sorting once, then linear sweep per group).",
-    "spaceComplexity": "O(N) – storage for the intervals and auxiliary arrays.",
+    "approach": "For each test case we sort all recipes by their start time. For a single group we also sort the K visiting times. Then we sweep the sorted recipes once while maintaining a pointer into the sorted times. For the current recipe [S, E) we advance the pointer until the pointed time is \u2265 S. If the pointer is still inside the array and the pointed time < E, the recipe is live at that time and we count it. Because both the recipes and the times are processed in non\u2011decreasing order, each pointer moves only forward \u2013 the whole sweep costs O(N + K) per group. The overall complexity per test case is O(N log N) for the initial sort plus O(Q\u00b7(N + K)) for the queries, which fits the limits (worst\u2011case about 5\u00b710^8 simple operations, acceptable in compiled languages). The algorithm uses only the arrays of intervals, times and a few counters \u2013 O(N) extra memory.",
+    "timeComplexity": "O(N log N + Q\u00b7(N + K)) per test case (sorting once, then linear sweep per group).",
+    "spaceComplexity": "O(N) \u2013 storage for the intervals and auxiliary arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {int s; int e;} Interval;\nint cmpInterval(const void *a, const void *b) {\n    const Interval *ia = (const Interval*)a;\n    const Interval *ib = (const Interval*)b;\n    return ia->s - ib->s;\n}\nint cmpInt(const void *a, const void *b) {\n    return (*(int*)a) - (*(int*)b);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        Interval *arr = (Interval*)malloc(sizeof(Interval)*N);\n        for (int i=0;i<N;i++) scanf(\"%d %d\", &arr[i].s, &arr[i].e);\n        qsort(arr, N, sizeof(Interval), cmpInterval);\n        int Q; scanf(\"%d\", &Q);\n        while (Q--) {\n            int K; scanf(\"%d\", &K);\n            int *times = (int*)malloc(sizeof(int)*K);\n            for (int i=0;i<K;i++) scanf(\"%d\", &times[i]);\n            qsort(times, K, sizeof(int), cmpInt);\n            long long ans = 0;\n            int ptr = 0;\n            for (int i=0;i<N;i++) {\n                while (ptr < K && times[ptr] < arr[i].s) ptr++;\n                if (ptr < K && times[ptr] < arr[i].e) ans++;\n            }\n            printf(\"%lld\\n\", ans);\n            free(times);\n        }\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Interval{int s,e;};\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; while(T--){\n        int N;cin>>N; vector<Interval> rec(N);\n        for(int i=0;i<N;i++) cin>>rec[i].s>>rec[i].e;\n        sort(rec.begin(), rec.end(), [](const Interval&a,const Interval&b){return a.s<b.s;});\n        int Q;cin>>Q; while(Q--){\n            int K;cin>>K; vector<int> t(K);\n            for(int i=0;i<K;i++) cin>>t[i];\n            sort(t.begin(), t.end());\n            long long ans=0; int ptr=0;\n            for(const auto &in: rec){\n                while(ptr<K && t[ptr] < in.s) ++ptr;\n                if(ptr<K && t[ptr] < in.e) ++ans;\n            }\n            cout<<ans<<\"\\n\";\n        }\n    }\n    return 0; }\n",

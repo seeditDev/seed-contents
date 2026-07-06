@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming | Strings",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Longest Palindromic Subsequence",
       "DP",
+      "Longest Palindromic Subsequence",
+      "Strings",
       "String"
     ],
     "companyTags": [],
@@ -26,7 +27,7 @@
       "1 <= |S| <= 100",
       "S contains only lowercase English letters"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a single string S consisting of lowercase English letters (1 ≤ |S| ≤ 100).",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10), the number of test cases. Each of the next T lines contains a single string S consisting of lowercase English letters (1 \u2264 |S| \u2264 100).",
     "outputFormat": "For each test case output a single line containing the length of the longest palindromic subsequence of the given string.",
     "sampleTestCases": [
       {
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For each string S we compute the length of the longest palindromic subsequence (LPS). The classic DP formulation uses the fact that LPS of S equals LCS (longest common subsequence) of S and its reverse. Let R be the reverse of S. Define dp[i][j] as the LCS length of the prefixes S[0..i-1] and R[0..j-1]. Transition: if S[i-1]==R[j-1] then dp[i][j]=dp[i-1][j-1]+1 else dp[i][j]=max(dp[i-1][j],dp[i][j-1]). The answer is dp[n][n] where n=|S|. This runs in O(n^2) time and O(n^2) memory, which is fine for n≤100. An optional optimisation reduces memory to O(n) by keeping only two rows, but the full table is clearer.",
-    "timeComplexity": "O(n^2) per test case, where n is the length of the string (≤100). Overall O(T·n^2).",
+    "approach": "For each string S we compute the length of the longest palindromic subsequence (LPS). The classic DP formulation uses the fact that LPS of S equals LCS (longest common subsequence) of S and its reverse. Let R be the reverse of S. Define dp[i][j] as the LCS length of the prefixes S[0..i-1] and R[0..j-1]. Transition: if S[i-1]==R[j-1] then dp[i][j]=dp[i-1][j-1]+1 else dp[i][j]=max(dp[i-1][j],dp[i][j-1]). The answer is dp[n][n] where n=|S|. This runs in O(n^2) time and O(n^2) memory, which is fine for n\u2264100. An optional optimisation reduces memory to O(n) by keeping only two rows, but the full table is clearer.",
+    "timeComplexity": "O(n^2) per test case, where n is the length of the string (\u2264100). Overall O(T\u00b7n^2).",
     "spaceComplexity": "O(n^2) auxiliary space for the DP table (can be reduced to O(n) with a rolling array).",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint max(int a, int b) { return a > b ? a : b; }\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    char s[101];\n    getchar(); // consume newline after T\n    while (T--) {\n        if (!fgets(s, sizeof(s), stdin)) break;\n        s[strcspn(s, \"\\n\")] = '\\0'; // remove trailing newline\n        int n = strlen(s);\n        char r[101];\n        for (int i = 0; i < n; ++i) r[i] = s[n - 1 - i];\n        r[n] = '\\0';\n        static int dp[101][101];\n        for (int i = 0; i <= n; ++i) dp[i][0] = dp[0][i] = 0;\n        for (int i = 1; i <= n; ++i) {\n            for (int j = 1; j <= n; ++j) {\n                if (s[i-1] == r[j-1]) dp[i][j] = dp[i-1][j-1] + 1;\n                else dp[i][j] = max(dp[i-1][j], dp[i][j-1]);\n            }\n        }\n        printf(\"%d\\n\", dp[n][n]);\n    }\n    return 0;\n}",

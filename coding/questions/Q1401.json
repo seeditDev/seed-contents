@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Two Pointers",
-      "Sliding Window"
+      "Sliding Window",
+      "Strings",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef gave you a string SSS of size NNN which contains only lowercase English letters  and asked you to find the length of the longest substring of the string which satisfies the following condition:\n\n\nEach character β\\betaβ should appear at most f(β)f(\\beta)f(β) times.\nHere f(β)f(\\beta)f(β) denotes the index of the character β\\betaβ in the alphabet series. For example f(′a′)f('a')f(′a′) = 111, f(′b′)f('b')f(′b′) = 222 and so on.\n\n**Note:** A substring of a string is a contiguous subsequence of that string.\n\n\nInput Format\n\nFirst-line will contain TTT - the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the size of the string.\nThe second line of every test case contains a string SSS of size NNN.\n\n\nOutput Format\nFor each testcase, output in a single line - the answer to the iii-th test case.",
+    "problemStatement": "Chef gave you a string SSS of size NNN which contains only lowercase English letters  and asked you to find the length of the longest substring of the string which satisfies the following condition:\n\n\nEach character \u03b2\\beta\u03b2 should appear at most f(\u03b2)f(\\beta)f(\u03b2) times.\nHere f(\u03b2)f(\\beta)f(\u03b2) denotes the index of the character \u03b2\\beta\u03b2 in the alphabet series. For example f(\u2032a\u2032)f('a')f(\u2032a\u2032) = 111, f(\u2032b\u2032)f('b')f(\u2032b\u2032) = 222 and so on.\n\n**Note:** A substring of a string is a contiguous subsequence of that string.\n\n\nInput Format\n\nFirst-line will contain TTT - the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the size of the string.\nThe second line of every test case contains a string SSS of size NNN.\n\n\nOutput Format\nFor each testcase, output in a single line - the answer to the iii-th test case.",
     "constraints": [
       "1 <= T <= 2500",
       "1 <= N <= 100000",
@@ -27,7 +28,7 @@
       "S contains only lowercase English letters"
     ],
     "inputFormat": "First line contains an integer T, the number of test cases. Then T test cases follow. Each test case consists of two lines: the first line contains an integer N, the length of the string. The second line contains a string S of length N consisting only lowercase English letters.",
-    "outputFormat": "For each test case, output a single integer – the maximum length of a contiguous substring of S in which every character β appears at most f(β) times, where f(β) is the position of β in the alphabet (a→1, b→2, …, z→26).",
+    "outputFormat": "For each test case, output a single integer \u2013 the maximum length of a contiguous substring of S in which every character \u03b2 appears at most f(\u03b2) times, where f(\u03b2) is the position of \u03b2 in the alphabet (a\u21921, b\u21922, \u2026, z\u219226).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -45,7 +46,7 @@
         "id": "sample_3",
         "input": "1\n10\nabcabcabcd",
         "output": "4",
-        "explanation": "The substring \"abcd\" (positions 6‑9) contains one 'a', one 'b', one 'c' and one 'd', all within their limits. No longer contiguous substring satisfies the constraints, so the answer is 4."
+        "explanation": "The substring \"abcd\" (positions 6\u20119) contains one 'a', one 'b', one 'c' and one 'd', all within their limits. No longer contiguous substring satisfies the constraints, so the answer is 4."
       }
     ]
   },
@@ -113,9 +114,9 @@
     ]
   },
   "solution": {
-    "approach": "The condition for a substring depends only on the frequencies of the 26 letters. For each letter β its allowed frequency is f(β)=position in alphabet (1‑based). Using a sliding window we maintain the current counts of all letters. We extend the right end of the window one character at a time and increase its count. If the count of the newly added character exceeds its allowed limit, we shrink the window from the left until the constraint is satisfied again (decreasing counts of the leftmost characters). At every step the window is the longest valid substring ending at the current right index, so the maximum window size seen during the scan is the answer. The algorithm runs in O(N) per test case because each character is added and removed at most once. The auxiliary memory is a fixed array of size 26.",
-    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
-    "spaceComplexity": "O(1) – only a 26‑element integer array is used",
+    "approach": "The condition for a substring depends only on the frequencies of the 26 letters. For each letter \u03b2 its allowed frequency is f(\u03b2)=position in alphabet (1\u2011based). Using a sliding window we maintain the current counts of all letters. We extend the right end of the window one character at a time and increase its count. If the count of the newly added character exceeds its allowed limit, we shrink the window from the left until the constraint is satisfied again (decreasing counts of the leftmost characters). At every step the window is the longest valid substring ending at the current right index, so the maximum window size seen during the scan is the answer. The algorithm runs in O(N) per test case because each character is added and removed at most once. The auxiliary memory is a fixed array of size 26.",
+    "timeComplexity": "O(N) per test case, O(total\u202fN) over all test cases",
+    "spaceComplexity": "O(1) \u2013 only a 26\u2011element integer array is used",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint maxSubstring(const char *s){\n    int n=strlen(s);\n    int cnt[26]={0};\n    int left=0,best=0;\n    for(int right=0;right<n;++right){\n        int idx=s[right]-'a';\n        ++cnt[idx];\n        while(cnt[idx]>idx+1){\n            int lidx=s[left]-'a';\n            --cnt[lidx];\n            ++left;\n        }\n        int len=right-left+1;\n        if(len>best) best=len;\n    }\n    return best;\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char s[100005];\n        scanf(\"%s\",s);\n        printf(\"%d\\n\",maxSubstring(s));\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint maxSubstring(const string &s){\n    int n=s.size();\n    int cnt[26]={0};\n    int left=0,best=0;\n    for(int right=0;right<n;++right){\n        int idx=s[right]-'a';\n        ++cnt[idx];\n        while(cnt[idx]>idx+1){\n            int lidx=s[left]-'a';\n            --cnt[lidx];\n            ++left;\n        }\n        best=max(best,right-left+1);\n    }\n    return best;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;cin>>T;\n    while(T--){\n        int N;cin>>N;string s;cin>>s;\n        cout<<maxSubstring(s)<<'\\n';\n    }\n    return 0;\n}",

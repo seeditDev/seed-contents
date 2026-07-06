@@ -12,6 +12,7 @@
     "tags": [
       "Run Length Encoding",
       "Sliding Window",
+      "Strings",
       "Greedy"
     ],
     "companyTags": [],
@@ -28,13 +29,13 @@
       "S consists only of lowercase English letters"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N, the length of the string. The second line contains the string S of length N consisting of lowercase English letters.",
-    "outputFormat": "For each test case output a single integer on its own line – the length of the longest boring substring (all characters equal) that occurs more than once in S. If no such substring exists output 0.",
+    "outputFormat": "For each test case output a single integer on its own line \u2013 the length of the longest boring substring (all characters equal) that occurs more than once in S. If no such substring exists output 0.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n3\naaa\n3\nabc\n5\nbcaca\n6\ncaabaa",
         "output": "2\n0\n1\n2",
-        "explanation": "Test case 1: longest boring substring occurring more than once is \"aa\" of length 2.\\nTest case 2: no character repeats, answer 0.\\nTest case 3: characters \"c\" and \"a\" each appear as single‑character boring substrings more than once, so answer 1.\\nTest case 4: substring \"aa\" appears twice, giving answer 2."
+        "explanation": "Test case 1: longest boring substring occurring more than once is \"aa\" of length 2.\\nTest case 2: no character repeats, answer 0.\\nTest case 3: characters \"c\" and \"a\" each appear as single\u2011character boring substrings more than once, so answer 1.\\nTest case 4: substring \"aa\" appears twice, giving answer 2."
       }
     ]
   },
@@ -102,9 +103,9 @@
     ]
   },
   "solution": {
-    "approach": "For each character we only need the two longest contiguous runs of that character. While scanning the string we keep the current run length and when the run ends we update the first and second maximum for that character. For a character with longest run L1 and second longest L2 the longest boring substring that can appear more than once using this character is max(L1-1, L2) – L1-1 accounts for two overlapping occurrences inside a single long run, L2 accounts for using two separate runs. The answer for the test case is the maximum of this value over all 26 characters. The scan is O(N) per test case and uses O(1) extra memory.",
+    "approach": "For each character we only need the two longest contiguous runs of that character. While scanning the string we keep the current run length and when the run ends we update the first and second maximum for that character. For a character with longest run L1 and second longest L2 the longest boring substring that can appear more than once using this character is max(L1-1, L2) \u2013 L1-1 accounts for two overlapping occurrences inside a single long run, L2 accounts for using two separate runs. The answer for the test case is the maximum of this value over all 26 characters. The scan is O(N) per test case and uses O(1) extra memory.",
     "timeComplexity": "O(N) per test case, where N is the length of the string.",
-    "spaceComplexity": "O(1) – only a few integer arrays of size 26 are stored.",
+    "spaceComplexity": "O(1) \u2013 only a few integer arrays of size 26 are stored.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char s[200005]; scanf(\"%s\",s);\n        int best[26][2]; memset(best,0,sizeof(best));\n        int curLen=0; char curChar=0;\n        for(int i=0;i<N;i++){\n            if(i==0 || s[i]!=s[i-1]){\n                if(i!=0){\n                    int idx=curChar-'a';\n                    if(curLen>best[idx][0]){best[idx][1]=best[idx][0];best[idx][0]=curLen;}\n                    else if(curLen>best[idx][1]) best[idx][1]=curLen;\n                }\n                curChar=s[i]; curLen=1;\n            }else curLen++;\n        }\n        // last run\n        int idx=curChar-'a';\n        if(curLen>best[idx][0]){best[idx][1]=best[idx][0];best[idx][0]=curLen;}\n        else if(curLen>best[idx][1]) best[idx][1]=curLen;\n        int ans=0;\n        for(int c=0;c<26;c++){\n            int L1=best[c][0];\n            int L2=best[c][1];\n            int cand = L1>0 ? (L1-1> L2 ? L1-1 : L2) : 0;\n            if(cand>ans) ans=cand;\n        }\n        printf(\"%d\\n\",ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; string s; cin>>N>>s;\n        int best[26][2]={{0}}; // [][0]=max, [][1]=second max\n        int curLen=0; char curChar=0;\n        for(int i=0;i<N;i++){\n            if(i==0 || s[i]!=s[i-1]){\n                if(i!=0){\n                    int idx=curChar-'a';\n                    if(curLen>best[idx][0]){best[idx][1]=best[idx][0];best[idx][0]=curLen;}\n                    else if(curLen>best[idx][1]) best[idx][1]=curLen;\n                }\n                curChar=s[i]; curLen=1;\n            }else curLen++;\n        }\n        // last run\n        int idx=curChar-'a';\n        if(curLen>best[idx][0]){best[idx][1]=best[idx][0];best[idx][0]=curLen;}\n        else if(curLen>best[idx][1]) best[idx][1]=curLen;\n        int ans=0;\n        for(int c=0;c<26;c++){\n            int L1=best[c][0];\n            int L2=best[c][1];\n            int cand = max(L1>0?L1-1:0, L2);\n            ans=max(ans,cand);\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

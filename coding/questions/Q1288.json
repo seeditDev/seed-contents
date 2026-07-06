@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Tree",
-      "Diameter",
+      "Graphs",
       "Two BFS",
-      "DFS"
+      "Tree",
+      "DFS",
+      "Diameter"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,7 +22,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, and rooted at node **1**, find the length of the diameter of the tree (**Note:** Diameter of a tree is the longest path between any two nodes. There can be more than one diameter of a tree with the same length).\n\nFor example, in the following tree, length of the tree's diameter is 4. (one of the diameters is 5-2-1-4-7)\n\n\n\n\nInput Format\n\nThe first line of the input contains a single intege NNN — the number of nodes.\nThe next N−1N - 1N−1 lines describe the edges. The iii-th of these N−1N - 1N−1 lines contains two space-separated integers uiu_iui​ and viv_ivi​, denoting a bidirectional edge between uiu_iui​ and viv_ivi​.\n\n\nOutput Format\n\nOutput on the single line, the length of the diameter of given tree.",
+    "problemStatement": "Given an undirected connected tree with **N** nodes, numbered from **1** to **N**, and rooted at node **1**, find the length of the diameter of the tree (**Note:** Diameter of a tree is the longest path between any two nodes. There can be more than one diameter of a tree with the same length).\n\nFor example, in the following tree, length of the tree's diameter is 4. (one of the diameters is 5-2-1-4-7)\n\n\n\n\nInput Format\n\nThe first line of the input contains a single intege NNN \u2014 the number of nodes.\nThe next N\u22121N - 1N\u22121 lines describe the edges. The iii-th of these N\u22121N - 1N\u22121 lines contains two space-separated integers uiu_iui\u200b and viv_ivi\u200b, denoting a bidirectional edge between uiu_iui\u200b and viv_ivi\u200b.\n\n\nOutput Format\n\nOutput on the single line, the length of the diameter of given tree.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 100000",
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "The diameter of a tree can be found with two depth‑first (or breadth‑first) searches. First, start from any node (e.g., node 1) and compute distances to all nodes; the farthest node found (call it X) is one endpoint of a diameter. Then start a second DFS/BFS from X; the maximum distance reached in this second traversal equals the length of the diameter. This works because in a tree the longest path must have an endpoint that is farthest from any arbitrary start node. The algorithm runs in O(N) time per test case and uses O(N) memory for the adjacency list and distance array.",
-    "timeComplexity": "O(N) per test case, O(ΣN) over all test cases.",
+    "approach": "The diameter of a tree can be found with two depth\u2011first (or breadth\u2011first) searches. First, start from any node (e.g., node 1) and compute distances to all nodes; the farthest node found (call it X) is one endpoint of a diameter. Then start a second DFS/BFS from X; the maximum distance reached in this second traversal equals the length of the diameter. This works because in a tree the longest path must have an endpoint that is farthest from any arbitrary start node. The algorithm runs in O(N) time per test case and uses O(N) memory for the adjacency list and distance array.",
+    "timeComplexity": "O(N) per test case, O(\u03a3N) over all test cases.",
     "spaceComplexity": "O(N) per test case for adjacency list and distance array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Edge {int to; struct Edge* next;} Edge;\n\nvoid addEdge(Edge** head, int u, int v) {\n    Edge* e = (Edge*)malloc(sizeof(Edge));\n    e->to = v; e->next = head[u]; head[u] = e;\n    e = (Edge*)malloc(sizeof(Edge));\n    e->to = u; e->next = head[v]; head[v] = e;\n}\n\nvoid dfs(int node, int parent, int depth, int* dist, Edge** head) {\n    dist[node] = depth;\n    for (Edge* e = head[node]; e; e = e->next) {\n        if (e->to != parent) dfs(e->to, node, depth + 1, dist, head);\n    }\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        Edge** head = (Edge**)calloc(N + 1, sizeof(Edge*));\n        for (int i = 0; i < N - 1; ++i) {\n            int u, v; scanf(\"%d %d\", &u, &v);\n            addEdge(head, u, v);\n        }\n        int* dist = (int*)malloc((N + 1) * sizeof(int));\n        dfs(1, 0, 0, dist, head);\n        int far = 1;\n        for (int i = 2; i <= N; ++i) if (dist[i] > dist[far]) far = i;\n        dfs(far, 0, 0, dist, head);\n        int diameter = 0;\n        for (int i = 1; i <= N; ++i) if (dist[i] > diameter) diameter = dist[i];\n        printf(\"%d\\n\", diameter);\n        for (int i = 1; i <= N; ++i) {\n            Edge* e = head[i];\n            while (e) { Edge* nxt = e->next; free(e); e = nxt; }\n        }\n        free(head);\n        free(dist);\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Intersection",
+      "Bit Manipulation",
       "XOR",
-      "Bit Manipulation"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
   "content": {
     "problemStatement": "**This problem was part of the CodeChef April Challenge.  All user submissions for this contest problem are publicly available here.**\n\nYour grandfather is known in the family for his unconventional sense of humour. Since he made his fortune on the network of\npizza parloursa), he has been giving expensive gifts to the members of the family every Christmas. Receiving the gift,\nhowever, always involves solving a more or less fancy mathematical puzzle.\n\nThis year, your gift was locked in a safe, self-made by your grandfather. The safe was secured with a two digit code: in order to open it\nyou had to provide the correct integer number from the range [0,99]. A bit disgruntled that this year's puzzle would apparently be solved with the force (and not even too brute), you were just about to start examining the numbers, when you heard grandfather's voice - \"Beware, kid! After two unsuccessful attempts the content will be annihilated!\" \"Then how am I supposed to solve this, Grandpa?\" - you asked. \"Go and have a better look at the package\" - grandfather replied.\n\nIndeed, at the bottom of the package you found a city map on which were indicated all the pizza parlours belonging to your grandfather, as well as a long sheet of paper with a sequence of positive integers. After analysing the data for a while you realized that the number of integer values is equal to the number of pizza restaurants... Recognizing that you still have too little input, you went to ask grandfather for further guidance.\n\n\"Ah, all right, I'll solve the riddle for you\" - grandfather relented. \"For each pizza parlour you have to draw such an axis-aligned square that it is centered at the restaurant and half of the length of its side is equal to the corresponding value from the sheet. Then you have to count all the streets on the map which intersect with the square, and write down the **result of calculations**. The result for the last pizza parlour will be your magic number.\"\n\nYou were a bit surprised that grandfather ordered you to draw squares and count streets for all the restaurants (and there were many), since the code would only depend on the last one. Nonetheless you willingly took on the job, drew the square for the last pizza parlour, counted the streets and entered the number. Unfortunately the safe didn't open.\n\nYou rushed to grandfather and told him about the first failed attempt. \"Oh dear, did I forget to mention?\" - the old man was slightly taken aback. \"For each restaurant but the first one, you have to modify both its coordinates by bit-xor'ing them with the result of calculations for the directly preceding restaurant, before drawing the square!\". Will you be able to claim the gift now? You have only one attempt left!",
     "constraints": [
-      "0 ≤ n ≤ 5000",
-      "1 ≤ m ≤ 50000",
-      "0 ≤ coordinates ≤ 1000",
-      "1 ≤ r ≤ 20",
+      "0 \u2264 n \u2264 5000",
+      "1 \u2264 m \u2264 50000",
+      "0 \u2264 coordinates \u2264 1000",
+      "1 \u2264 r \u2264 20",
       "For every square the number of intersecting streets is at most 99"
     ],
-    "inputFormat": "The first line contains two integers n and m (0 ≤ n ≤ 5000, 1 ≤ m ≤ 50000) – the number of streets and the number of pizza parlours. The next n lines each contain four integers x1 y1 x2 y2 (0 ≤ x1,y1,x2,y2 ≤ 1000) describing a street as a line segment. The following m lines each contain three integers x y r (0 ≤ x,y ≤ 1000, 1 ≤ r ≤ 20) – the centre coordinates of a pizza parlour and the value r from the sheet.",
-    "outputFormat": "A single integer – the result of the calculations for the last pizza parlour after applying the XOR-modifications described in the statement.",
+    "inputFormat": "The first line contains two integers n and m (0 \u2264 n \u2264 5000, 1 \u2264 m \u2264 50000) \u2013 the number of streets and the number of pizza parlours. The next n lines each contain four integers x1 y1 x2 y2 (0 \u2264 x1,y1,x2,y2 \u2264 1000) describing a street as a line segment. The following m lines each contain three integers x y r (0 \u2264 x,y \u2264 1000, 1 \u2264 r \u2264 20) \u2013 the centre coordinates of a pizza parlour and the value r from the sheet.",
+    "outputFormat": "A single integer \u2013 the result of the calculations for the last pizza parlour after applying the XOR-modifications described in the statement.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem requires calculating the number of streets that intersect with a square centered at each pizza parlour. The key insight is to use a simple intersection check for each street and the square. The XOR-modification is applied to the coordinates of each pizza parlour (except the first one) before calculating the intersection. The time complexity is O(n*m) due to the nested loop structure, where n is the number of streets and m is the number of pizza parlours.",
     "timeComplexity": "O(n*m) per test case, O(1) total since there is only one test case.",
-    "spaceComplexity": "O(n) — the dominant structure is the array of streets.",
+    "spaceComplexity": "O(n) \u2014 the dominant structure is the array of streets.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {int x1,y1,x2,y2;} Seg;\n\nint main(){\n    int n,m; if(scanf(\"%d %d\",&n,&m)!=2) return 0;\n    Seg *seg = (Seg*)malloc(sizeof(Seg)*n);\n    for(int i=0;i<n;i++) scanf(\"%d %d %d %d\",&seg[i].x1,&seg[i].y1,&seg[i].x2,&seg[i].y2);\n    int prev=0;\n    for(int i=0;i<m;i++){\n        int x,y,r; scanf(\"%d %d %d\",&x,&y,&r);\n        if(i>0){ x ^= prev; y ^= prev; }\n        int xmin = x - r, xmax = x + r, ymin = y - r, ymax = y + r;\n        int cnt = 0;\n        for(int j=0;j<n;j++){\n            int a=seg[j].x1, b=seg[j].y1, c=seg[j].x2, d=seg[j].y2;\n            if( (a < xmin && c < xmin) || (a > xmax && c > xmax) ||\n                (b < ymin && d < ymin) || (b > ymax && d > ymax) ) continue;\n            cnt++;\n        }\n        prev = cnt;\n    }\n    printf(\"%d\\n\",prev);\n    free(seg);\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct Seg{int x1,y1,x2,y2;};\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n,m; if(!(cin>>n>>m)) return 0;\n    vector<Seg> seg(n);\n    for(int i=0;i<n;i++) cin>>seg[i].x1>>seg[i].y1>>seg[i].x2>>seg[i].y2;\n    int prev=0;\n    for(int i=0;i<m;i++){\n        int x,y,r; cin>>x>>y>>r;\n        if(i>0){ x ^= prev; y ^= prev; }\n        int xmin=x-r, xmax=x+r, ymin=y-r, ymax=y+r;\n        int cnt=0;\n        for(const auto &s: seg){\n            if( (s.x1 < xmin && s.x2 < xmin) || (s.x1 > xmax && s.x2 > xmax) ||\n                (s.y1 < ymin && s.y2 < ymin) || (s.y1 > ymax && s.y2 > ymax) ) continue;\n            ++cnt;\n        }\n        prev=cnt;\n    }\n    cout<<prev<<\"\\n\";\n    return 0;\n}\n",

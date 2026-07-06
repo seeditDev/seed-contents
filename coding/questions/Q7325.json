@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Sorting",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Frequency Counting",
       "Sorting",
+      "Frequency Counting",
       "Prefix Sum",
-      "Greedy Selection"
+      "Greedy Selection",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array AAA of size NNN.\n\nFind the **largest** integer KKK such that there exists a subsequence SSS of length KKK where KKK is divisible by the number of **distinct** elements in SSS.\n\n\nInput Format\n\nThe first line contains a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains a positive integer NNN, the length of array AAA.\nThe second line contains NNN space-separated integers, A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ −-− denoting the array AAA.\n\n\nOutput Format\nFor each test case, output the largest valid KKK.",
+    "problemStatement": "You are given an array AAA of size NNN.\n\nFind the **largest** integer KKK such that there exists a subsequence SSS of length KKK where KKK is divisible by the number of **distinct** elements in SSS.\n\n\nInput Format\n\nThe first line contains a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains a positive integer NNN, the length of array AAA.\nThe second line contains NNN space-separated integers, A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b \u2212-\u2212 denoting the array AAA.\n\n\nOutput Format\nFor each test case, output the largest valid KKK.",
     "constraints": [
-      "1 ≤ T ≤ 10^4",
-      "1 ≤ N ≤ 2·10^5",
-      "1 ≤ Ai ≤ N",
-      "Sum of N over all test cases ≤ 2·10^5"
+      "1 \u2264 T \u2264 10^4",
+      "1 \u2264 N \u2264 2\u00b710^5",
+      "1 \u2264 Ai \u2264 N",
+      "Sum of N over all test cases \u2264 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the array. The second line contains N space‑separated integers A1 … AN.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the array. The second line contains N space\u2011separated integers A1 \u2026 AN.",
     "outputFormat": "For each test case output a single line containing the largest integer K such that there exists a subsequence of length K whose length is divisible by the number of distinct elements in that subsequence.",
     "sampleTestCases": [
       {
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed set D of distinct values (|D| = d) the longest subsequence we can build using only values from D has length equal to the total number of occurrences of those values in the whole array, i.e. total = Σ_{x∈D} freq[x]. Any length up to total is achievable by discarding some occurrences while preserving order. The required K must be a multiple of d, therefore the best K for this D is the largest multiple of d not exceeding total: K_D = floor(total / d) * d = total - (total mod d). To maximise K we should, for each possible d, pick the d values with the highest frequencies because that maximises total. Hence: 1. Count frequencies of all distinct numbers. 2. Sort the frequencies in non‑increasing order: f1 ≥ f2 ≥ … ≥ fm (m = number of distinct values). 3. Compute prefix sums pref[i] = f1 + … + fi. 4. For each i (i = 1 … m) compute candidate = pref[i] - (pref[i] % i). 5. Answer is the maximum candidate over all i. The algorithm runs in O(N log N) per test case due to sorting, and O(N) memory.",
-    "timeComplexity": "O(N log N) per test case (dominated by sorting the frequency list). The total over all test cases is O((ΣN) log (ΣN)).",
+    "approach": "For a fixed set D of distinct values (|D| = d) the longest subsequence we can build using only values from D has length equal to the total number of occurrences of those values in the whole array, i.e. total = \u03a3_{x\u2208D} freq[x]. Any length up to total is achievable by discarding some occurrences while preserving order. The required K must be a multiple of d, therefore the best K for this D is the largest multiple of d not exceeding total: K_D = floor(total / d) * d = total - (total mod d). To maximise K we should, for each possible d, pick the d values with the highest frequencies because that maximises total. Hence: 1. Count frequencies of all distinct numbers. 2. Sort the frequencies in non\u2011increasing order: f1 \u2265 f2 \u2265 \u2026 \u2265 fm (m = number of distinct values). 3. Compute prefix sums pref[i] = f1 + \u2026 + fi. 4. For each i (i = 1 \u2026 m) compute candidate = pref[i] - (pref[i] % i). 5. Answer is the maximum candidate over all i. The algorithm runs in O(N log N) per test case due to sorting, and O(N) memory.",
+    "timeComplexity": "O(N log N) per test case (dominated by sorting the frequency list). The total over all test cases is O((\u03a3N) log (\u03a3N)).",
     "spaceComplexity": "O(N) for storing frequencies and the sorted list (the sum of distinct values across a test case).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp_desc(const void *a, const void *b) {\n    int x = *(int *)b - *(int *)a; // descending\n    return x;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    const int MAXN = 200000 + 5;\n    static int freq[MAXN];\n    static int distinct[MAXN];\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int distinctCnt = 0;\n        for (int i = 0; i < N; ++i) {\n            int x; scanf(\"%d\", &x);\n            if (freq[x] == 0) distinct[distinctCnt++] = x;\n            freq[x]++;\n        }\n        int *f = (int *)malloc(distinctCnt * sizeof(int));\n        for (int i = 0; i < distinctCnt; ++i) f[i] = freq[distinct[i]];\n        qsort(f, distinctCnt, sizeof(int), cmp_desc);\n        long long pref = 0, ans = 0;\n        for (int i = 0; i < distinctCnt; ++i) {\n            pref += f[i];\n            long long d = i + 1;\n            long long cand = pref - (pref % d);\n            if (cand > ans) ans = cand;\n        }\n        printf(\"%lld\\n\", ans);\n        // reset frequencies\n        for (int i = 0; i < distinctCnt; ++i) freq[distinct[i]] = 0;\n        free(f);\n    }\n    return 0;\n}",

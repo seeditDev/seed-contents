@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings | Math",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Greedy construction",
+      "Integer arithmetic",
       "Palindrome avoidance",
-      "Integer arithmetic"
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,31 +21,31 @@
     ]
   },
   "content": {
-    "problemStatement": "Given positive integers NNN and KKK, let SSS denote the **smallest number** of NNN digits (with no leading zeros) such that:\n\n\nNo substring of SSS having length **strictly greater** than KKK is a palindrome.\nFind the **sum of digits** of SSS.\n\nNote:\n\n\nA substring of a number is obtained by deleting some (possibly zero) digits from the beginning of the number and some (possibly zero) digits from the end of the number. For example, some substrings of the number 301030103010 are 3010,301,010,01,103010, 301, 010, 01, 103010,301,010,01,10 and 000.\n**Leading zeros** are **considered** in a substring. In the above example, 010010010 and 010101 are **valid** substrings.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two space-separated integers NNN and KKK — as mentioned in the statement.\n\n\nOutput Format\nFor each test case, output on a new line, the sum of digits of the smallest number of NNN digits satisfying the given condition.",
+    "problemStatement": "Given positive integers NNN and KKK, let SSS denote the **smallest number** of NNN digits (with no leading zeros) such that:\n\n\nNo substring of SSS having length **strictly greater** than KKK is a palindrome.\nFind the **sum of digits** of SSS.\n\nNote:\n\n\nA substring of a number is obtained by deleting some (possibly zero) digits from the beginning of the number and some (possibly zero) digits from the end of the number. For example, some substrings of the number 301030103010 are 3010,301,010,01,103010, 301, 010, 01, 103010,301,010,01,10 and 000.\n**Leading zeros** are **considered** in a substring. In the above example, 010010010 and 010101 are **valid** substrings.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two space-separated integers NNN and KKK \u2014 as mentioned in the statement.\n\n\nOutput Format\nFor each test case, output on a new line, the sum of digits of the smallest number of NNN digits satisfying the given condition.",
     "constraints": [
-      "1 ≤ T ≤ 5000",
-      "1 ≤ K < N ≤ 10^9"
+      "1 \u2264 T \u2264 5000",
+      "1 \u2264 K < N \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers N and K (1 ≤ K < N ≤ 10^9).",
-    "outputFormat": "For each test case output a single line containing the sum of the digits of the smallest N‑digit number that has no palindrome substring of length strictly greater than K.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers N and K (1 \u2264 K < N \u2264 10^9).",
+    "outputFormat": "For each test case output a single line containing the sum of the digits of the smallest N\u2011digit number that has no palindrome substring of length strictly greater than K.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n2 1\n3 2",
         "output": "1\n1",
-        "explanation": "For N=2, K=1 the pattern is \"10\" → sum = 1. For N=3, K=2 the pattern is \"100\" → sum = 1."
+        "explanation": "For N=2, K=1 the pattern is \"10\" \u2192 sum = 1. For N=3, K=2 the pattern is \"100\" \u2192 sum = 1."
       },
       {
         "id": "sample_2",
         "input": "3\n5 1\n6 2\n7 3",
         "output": "3\n2\n2",
-        "explanation": "K=1 pattern \"10\" repeats → first 5 digits: 10101, sum=3.\\nK=2 pattern \"100\" repeats → first 6 digits: 100100, sum=2.\\nK=3 pattern \"1000\" repeats → first 7 digits: 1000100, sum=2."
+        "explanation": "K=1 pattern \"10\" repeats \u2192 first 5 digits: 10101, sum=3.\\nK=2 pattern \"100\" repeats \u2192 first 6 digits: 100100, sum=2.\\nK=3 pattern \"1000\" repeats \u2192 first 7 digits: 1000100, sum=2."
       },
       {
         "id": "sample_3",
         "input": "1\n10 4",
         "output": "2",
-        "explanation": "Pattern length is 5 (\"10000\"). First 10 digits are two full blocks, each containing one ‘1’. Sum = 2."
+        "explanation": "Pattern length is 5 (\"10000\"). First 10 digits are two full blocks, each containing one \u20181\u2019. Sum = 2."
       }
     ]
   },
@@ -112,7 +113,7 @@
     ]
   },
   "solution": {
-    "approach": "A palindrome of length > K always contains a palindrome of length K+1, therefore it is enough to forbid palindromes of exactly length K+1. While building the number from the most significant digit, the only new substring that can become a palindrome of length K+1 is the one that ends at the current position. To keep the number minimal we always put the smallest possible digit (0, except the first digit which must be at least 1) that does not create such a palindrome.\n\nWith this greedy rule the constructed pattern is simple: the first digit is 1, then we can place K zeros, after that another 1 is forced (otherwise we would obtain K+1 consecutive zeros, which is a palindrome). The process repeats, giving the infinite periodic string\n\n    P = \"1\" + K·\"0\"\n\nand the answer is the number of ‘1’s in the first N characters of this repetition. Each block of length K+1 contains exactly one ‘1’, so the sum of digits equals the number of blocks needed, i.e.\n\n    answer = ceil(N / (K+1)) = (N + K) // (K+1).\n\nThe formula works for all allowed N and K and runs in O(1) per test case.\n\n**Correctness Proof Sketch**\n1. *No forbidden palindrome*: In the constructed string any substring of length K+1 is either P itself or a rotation of P. In every such string the first and last characters differ (one is ‘1’, the other ‘0’), therefore it cannot be a palindrome. Consequently no longer palindrome can appear.\n2. *Minimality*: Consider any valid N‑digit number. Its first digit cannot be 0, so it is at least 1. After a ‘1’, the next K positions may be 0 because a palindrome of length K+1 is not yet formed. At position K+1 a ‘0’ would create K+1 consecutive zeros, a palindrome, so the digit must be at least 1. Hence the smallest possible digit at every position follows exactly the pattern described above. By induction the greedy construction yields the lexicographically smallest (and thus numerically smallest) valid number.\n3. *Digit sum*: Since the pattern contains exactly one ‘1’ per block of K+1 digits, the total sum of digits equals the number of blocks needed to cover N positions, which is ceil(N/(K+1)).\n\nThus the formula gives the required answer.\n\n**Complexity Analysis**\n- Time: O(T) – constant work per test case.\n- Space: O(1) – only a few integer variables.",
+    "approach": "A palindrome of length > K always contains a palindrome of length K+1, therefore it is enough to forbid palindromes of exactly length K+1. While building the number from the most significant digit, the only new substring that can become a palindrome of length K+1 is the one that ends at the current position. To keep the number minimal we always put the smallest possible digit (0, except the first digit which must be at least 1) that does not create such a palindrome.\n\nWith this greedy rule the constructed pattern is simple: the first digit is 1, then we can place K zeros, after that another 1 is forced (otherwise we would obtain K+1 consecutive zeros, which is a palindrome). The process repeats, giving the infinite periodic string\n\n    P = \"1\" + K\u00b7\"0\"\n\nand the answer is the number of \u20181\u2019s in the first N characters of this repetition. Each block of length K+1 contains exactly one \u20181\u2019, so the sum of digits equals the number of blocks needed, i.e.\n\n    answer = ceil(N / (K+1)) = (N + K) // (K+1).\n\nThe formula works for all allowed N and K and runs in O(1) per test case.\n\n**Correctness Proof Sketch**\n1. *No forbidden palindrome*: In the constructed string any substring of length K+1 is either P itself or a rotation of P. In every such string the first and last characters differ (one is \u20181\u2019, the other \u20180\u2019), therefore it cannot be a palindrome. Consequently no longer palindrome can appear.\n2. *Minimality*: Consider any valid N\u2011digit number. Its first digit cannot be 0, so it is at least 1. After a \u20181\u2019, the next K positions may be 0 because a palindrome of length K+1 is not yet formed. At position K+1 a \u20180\u2019 would create K+1 consecutive zeros, a palindrome, so the digit must be at least 1. Hence the smallest possible digit at every position follows exactly the pattern described above. By induction the greedy construction yields the lexicographically smallest (and thus numerically smallest) valid number.\n3. *Digit sum*: Since the pattern contains exactly one \u20181\u2019 per block of K+1 digits, the total sum of digits equals the number of blocks needed to cover N positions, which is ceil(N/(K+1)).\n\nThus the formula gives the required answer.\n\n**Complexity Analysis**\n- Time: O(T) \u2013 constant work per test case.\n- Space: O(1) \u2013 only a few integer variables.",
     "timeComplexity": "O(T)",
     "spaceComplexity": "O(1)",
     "code": {

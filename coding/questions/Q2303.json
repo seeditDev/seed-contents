@@ -10,9 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Complete Binary Tree",
-      "Dynamic Programming",
-      "Modular Arithmetic"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +22,11 @@
   "content": {
     "problemStatement": "Given a complete binary tree with the height of H, we index the nodes respectively top-down and left-right from 1. The i-th node stores a positive integer Vi. Define Pi as follows: Pi=Vi if the i-th node is a leaf, otherwise Pi=max(Vi*PL, Vi*PR), where L and R are the indices of the left and right children of i, respectively. Your task is to caculate the value of P1.",
     "constraints": [
-      "1 ≤ H ≤ 15",
-      "1 ≤ Vi ≤ 10^9",
+      "1 \u2264 H \u2264 15",
+      "1 \u2264 Vi \u2264 10^9",
       "All arithmetic must be performed modulo 1,000,000,007 only after the maximal product for each node has been selected"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains an integer H, the height of a complete binary tree. The second line contains 2^H - 1 positive integers V1 … V(2^H - 1), the values stored at the nodes indexed in level order (top-down, left-right).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains an integer H, the height of a complete binary tree. The second line contains 2^H - 1 positive integers V1 \u2026 V(2^H - 1), the values stored at the nodes indexed in level order (top-down, left-right).",
     "outputFormat": "For each test case, print a single line containing P1 modulo 1,000,000,007.",
     "sampleTestCases": [
       {
@@ -115,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We start from the leaf nodes and calculate the maximum product for each node. For each internal node, we calculate the maximum product by multiplying the node's value with the maximum product of its left and right children. We use modular arithmetic to avoid overflow.",
     "timeComplexity": "O(2^H) per test case, O(T * 2^H) total. The time complexity is exponential due to the recursive nature of the complete binary tree.",
-    "spaceComplexity": "O(2^H) — the dominant structure is the array used to store the node values.",
+    "spaceComplexity": "O(2^H) \u2014 the dominant structure is the array used to store the node values.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 1000000007LL\nint main(){\n    int T;\n    scanf(\"%d\", &T);\n    while (T--){\n        int H;\n        scanf(\"%d\", &H);\n        int N = (1<<H) - 1;\n        long long V[N+2];\n        for(int i=1;i<=N;i++) scanf(\"%lld\", &V[i]);\n        long long modVal[N+2];\n        for(int i=N;i>=1;i--){\n            if(i*2 > N){ // leaf\n                modVal[i] = V[i] % MOD;\n            }else{\n                long long leftVal = (V[i] % MOD) * modVal[i*2] % MOD;\n                long long rightVal = (V[i] % MOD) * modVal[i*2+1] % MOD;\n                modVal[i] = (leftVal > rightVal) ? leftVal : rightVal;\n            }\n        }\n        printf(\"%lld\\n\", modVal[1]);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007LL;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    cin >> T;\n    while (T--){\n        int H;\n        cin >> H;\n        int N = (1<<H) - 1;\n        vector<long long> V(N+2);\n        for(int i=1;i<=N;i++) cin>>V[i];\n        vector<long long> modVal(N+2);\n        for(int i=N;i>=1;i--){\n            if(i*2 > N){\n                modVal[i] = V[i]%MOD;\n            }else{\n                long long leftVal = (V[i] % MOD) * modVal[i*2] % MOD;\n                long long rightVal = (V[i] % MOD) * modVal[i*2+1] % MOD;\n                modVal[i] = (leftVal > rightVal) ? leftVal : rightVal;\n            }\n        }\n        cout<<modVal[1]<<\"\\n\";\n    }\n    return 0;\n}",

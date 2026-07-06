@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Graph Theory",
+      "Graphs",
       "Floyd-Warshall Algorithm",
-      "Widest Path",
-      "Graph Theory"
+      "Widest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,13 +23,13 @@
   "content": {
     "problemStatement": "Problem Statement",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ V ≤ 200",
-      "0 ≤ E ≤ V·(V-1)/2",
-      "0 ≤ w ≤ 10^9",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 V \u2264 200",
+      "0 \u2264 E \u2264 V\u00b7(V-1)/2",
+      "0 \u2264 w \u2264 10^9",
       "The graph of each test case is connected."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers V and E — the number of vertices (numbered from 0 to V-1) and the number of edges. Each of the next E lines contains three non-negative integers u, v, w describing an undirected edge between vertices u and v with score w.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers V and E \u2014 the number of vertices (numbered from 0 to V-1) and the number of edges. Each of the next E lines contains three non-negative integers u, v, w describing an undirected edge between vertices u and v with score w.",
     "outputFormat": "For each test case, output V lines. The v-th integer on the u-th line is 0 if u = v, otherwise it is the maximal possible minimal edge weight (the widest-path score) among all paths from u to v.",
     "sampleTestCases": [
       {
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem can be solved using the Floyd-Warshall algorithm, which is a dynamic programming approach to find the shortest path between all pairs of vertices in a weighted graph. However, in this case, we need to find the widest path, which is equivalent to finding the shortest path in a graph where the weights are the negative logarithms of the original weights. But since the weights are non-negative integers, we can simply use the minimum of the weights along the path instead of the sum. We initialize the distance matrix with the given edge weights and then apply the Floyd-Warshall algorithm to find the widest path between all pairs of vertices.",
     "timeComplexity": "O(T*V^3) per test case, O(T*V^3) total. The precomputation is done once for each test case.",
-    "spaceComplexity": "O(V^2) — the dominant structure is the distance matrix.",
+    "spaceComplexity": "O(V^2) \u2014 the dominant structure is the distance matrix.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int V,E; scanf(\"%d %d\", &V, &E);\n        long long **best = (long long**)malloc(V*sizeof(long long*));\n        for(int i=0;i<V;i++){\n            best[i]=(long long*)malloc(V*sizeof(long long));\n            for(int j=0;j<V;j++) best[i][j]= (i==j)?0:-1;\n        }\n        for(int e=0;e<E;e++){\n            int u,v; long long w; scanf(\"%d %d %lld\", &u, &v, &w);\n            if(w>best[u][v]) best[u][v]=best[v][u]=w;\n        }\n        for(int k=0;k<V;k++)\n            for(int i=0;i<V;i++) if(i!=k)\n                for(int j=0;j<V;j++) if(j!=k && i!=j){\n                    long long via = best[i][k] < best[k][j] ? best[i][k] : best[k][j];\n                    if(via > best[i][j] || best[i][j] == -1) best[i][j]=via;\n                }\n        for(int i=0;i<V;i++){\n            for(int j=0;j<V;j++){\n                if(j) printf(\" \");\n                if(best[i][j] == -1) printf(\"0\");\n                else printf(\"%lld\", best[i][j]);\n            }\n            printf(\"\\n\");\n        }\n        for(int i=0;i<V;i++) free(best[i]);\n        free(best);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int V,E; cin>>V>>E;\n        vector<vector<long long>> best(V, vector<long long>(V,-1));\n        for(int i=0;i<V;i++) best[i][i]=0;\n        for(int i=0;i<E;i++){\n            int u,v; long long w; cin>>u>>v>>w;\n            best[u][v]=best[v][u]=max(best[u][v], w);\n        }\n        for(int k=0;k<V;k++)\n            for(int i=0;i<V;i++) if(i!=k)\n                for(int j=0;j<V;j++) if(j!=k && i!=j){\n                    long long via = min(best[i][k], best[k][j]);\n                    best[i][j] = max(best[i][j], via);\n                }\n        for(int i=0;i<V;i++){\n            for(int j=0;j<V;j++){\n                if(j) cout<<' ';\n                if(best[i][j] == -1) cout<<0;\n                else cout<<best[i][j];\n            }\n            cout<<'\\n';\n        }\n    }\n    return 0;\n}\n",

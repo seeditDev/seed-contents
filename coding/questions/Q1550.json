@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Sorting | Strings",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Sorting",
-      "Frequency Count",
-      "String Manipulation"
+      "String Manipulation",
+      "Strings",
+      "Frequency Count"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,8 +27,8 @@
       "1 <= |S| <= 5*10^5 (total length over all test cases fits in memory)",
       "S contains only characters with ASCII codes from '0' to '9', 'A' to 'Z' and 'a' to 'z'"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting of uppercase letters, lowercase letters and digits.",
-    "outputFormat": "For each test case output a single line – the characters of S rearranged in decreasing order of frequency. Characters with equal frequency are ordered by increasing ASCII value.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a non\u2011empty string S consisting of uppercase letters, lowercase letters and digits.",
+    "outputFormat": "For each test case output a single line \u2013 the characters of S rearranged in decreasing order of frequency. Characters with equal frequency are ordered by increasing ASCII value.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case count the occurrences of every possible character (ASCII 0‑255). Build a list of (character, frequency) pairs for characters that appear. Sort the list with a comparator that puts higher frequency first and, for equal frequencies, lower ASCII code first. Finally, output each character repeated its frequency times in the sorted order. Counting is O(N) where N is the length of the string, sorting at most 62 distinct characters is O(K log K) with K ≤ 62, so the overall complexity is linear in the input size.",
-    "timeComplexity": "O(N + K log K) per test case, where N is the length of the string and K ≤ 62 is the number of distinct allowed characters. Effectively O(N).",
+    "approach": "For each test case count the occurrences of every possible character (ASCII 0\u2011255). Build a list of (character, frequency) pairs for characters that appear. Sort the list with a comparator that puts higher frequency first and, for equal frequencies, lower ASCII code first. Finally, output each character repeated its frequency times in the sorted order. Counting is O(N) where N is the length of the string, sorting at most 62 distinct characters is O(K log K) with K \u2264 62, so the overall complexity is linear in the input size.",
+    "timeComplexity": "O(N + K log K) per test case, where N is the length of the string and K \u2264 62 is the number of distinct allowed characters. Effectively O(N).",
     "spaceComplexity": "O(K) auxiliary space for the frequency array and the list of pairs.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_LEN 500005\n\ntypedef struct {char ch; int freq;} Pair;\n\nint cmp(const void *a, const void *b) {\n    const Pair *x = (const Pair *)a;\n    const Pair *y = (const Pair *)b;\n    if (x->freq != y->freq) return y->freq - x->freq; // descending frequency\n    return (int)x->ch - (int)y->ch; // ascending ASCII\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    char buffer[MAX_LEN];\n    getchar(); // consume newline after T\n    while (T--) {\n        if (!fgets(buffer, MAX_LEN, stdin)) break;\n        buffer[strcspn(buffer, \"\\n\")] = '\\0';\n        int freq[256] = {0};\n        for (char *p = buffer; *p; ++p) freq[(unsigned char)*p]++;\n        Pair arr[256];\n        int cnt = 0;\n        for (int i = 0; i < 256; ++i) if (freq[i]) {\n            arr[cnt].ch = (char)i;\n            arr[cnt].freq = freq[i];\n            cnt++;\n        }\n        qsort(arr, cnt, sizeof(Pair), cmp);\n        for (int i = 0; i < cnt; ++i) {\n            for (int j = 0; j < arr[i].freq; ++j) putchar(arr[i].ch);\n        }\n        putchar('\\n');\n    }\n    return 0;\n}",

@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "BFS",
       "Grid"
     ],
@@ -21,12 +22,12 @@
   "content": {
     "problemStatement": "Chef lives in Chefland. Chefland can be thought as a two-dimensional grid of dimensions **N**x**M**. Some of the cells of the Chefland are prohibited to visit (denoted by '*'). One can never step on such prohibited cells. There is a city at each at each non-prohibited cell (will be denoted by '.' or 'C' (denoting capital city)).\n\n\n\nSadly people in the capital city of Chefland (denoted by 'C') are lazy for their shopping. So they invented a robot for carrying their groceries. They want to feed a command of at max **105** characters to the robot such that if the robot starts from any cell (non-prohibited) of the grid, it should be able to visit the capital city during its walk. Each character of the command will be one of 'U', 'D', 'L', 'R' denoting the movement to go up, down, left and right cell from the current cell (provided it exists and the cell is not prohibited to visit). Otherwise, the robot will just stay at its current cell. The characters of the command will be followed in the order from left to right. \n\n\n\nNow, after thinking a lot, citizens of Chefland could not come up such a command to feed to robot. So, they ask your help in it. They have come to know from an oracle that it is guaranteed that such a command exists.",
     "constraints": [
-      "4 ≤ N, M ≤ 20",
+      "4 \u2264 N, M \u2264 20",
       "Each cell can be one of three types: 'C', '.', '*'",
       "All border cells are '*'"
     ],
     "inputFormat": "The first line contains two space-separated integers N and M, denoting the dimensions of the grid. Each of the next N lines contains M symbols denoting the map of Chefland.",
-    "outputFormat": "Output one non-empty string corresponding to the command with length ≤ 105 containing only symbols 'U', 'L', 'D', 'R'.",
+    "outputFormat": "Output one non-empty string corresponding to the command with length \u2264 105 containing only symbols 'U', 'L', 'D', 'R'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a breadth-first search (BFS) algorithm. We start by finding the position of the capital city 'C'. Then, we perform a BFS from each non-prohibited cell to find the shortest path to the capital city. We keep track of the commands used to reach the capital city from each cell. Finally, we find the common prefix of all the commands, which will be the command that can be used to reach the capital city from any non-prohibited cell.",
-    "timeComplexity": "O(N*M*105) — because in the worst case, we need to perform a BFS from each cell, and the maximum length of the command is 105.",
-    "spaceComplexity": "O(N*M) — because we need to store the commands used to reach the capital city from each cell.",
+    "timeComplexity": "O(N*M*105) \u2014 because in the worst case, we need to perform a BFS from each cell, and the maximum length of the command is 105.",
+    "spaceComplexity": "O(N*M) \u2014 because we need to store the commands used to reach the capital city from each cell.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 105\n#define MAXN 20\n#define MAXM 20\n\nchar grid[MAXN][MAXM];\nint n, m;\nint dir[][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};\nchar command[MAX];\n\nvoid bfs(int x, int y) {\n    int queue[MAXN*MAXM][2];\n    int front = 0, rear = 0;\n    queue[rear][0] = x;\n    queue[rear++][1] = y;\n    while (front < rear) {\n        x = queue[front][0];\n        y = queue[front++][1];\n        for (int i = 0; i < 4; i++) {\n            int nx = x + dir[i][0];\n            int ny = y + dir[i][1];\n            if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] != '*') {\n                if (grid[nx][ny] == 'C') {\n                    // found the capital city\n                    return;\n                }\n                queue[rear][0] = nx;\n                queue[rear++][1] = ny;\n            }\n        }\n    }\n}\n\nint main() {\n    scanf(\"%d %d\", &n, &m);\n    for (int i = 0; i < n; i++) {\n        scanf(\"%s\", grid[i]);\n    }\n    // find the capital city\n    int cx, cy;\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            if (grid[i][j] == 'C') {\n                cx = i;\n                cy = j;\n            }\n        }\n    }\n    // perform BFS from each non-prohibited cell\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            if (grid[i][j] != '*' && grid[i][j] != 'C') {\n                bfs(i, j);\n            }\n        }\n    }\n    // find the common prefix of all the commands\n    // ... (omitted for brevity)\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n#define MAX 105\n#define MAXN 20\n#define MAXM 20\n\nchar grid[MAXN][MAXM];\nint n, m;\nint dir[][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};\nchar command[MAX];\n\nvoid bfs(int x, int y) {\n    queue<pair<int, int>> q;\n    q.push({x, y});\n    while (!q.empty()) {\n        x = q.front().first;\n        y = q.front().second;\n        q.pop();\n        for (int i = 0; i < 4; i++) {\n            int nx = x + dir[i][0];\n            int ny = y + dir[i][1];\n            if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] != '*') {\n                if (grid[nx][ny] == 'C') {\n                    // found the capital city\n                    return;\n                }\n                q.push({nx, ny});\n            }\n        }\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    for (int i = 0; i < n; i++) {\n        cin >> grid[i];\n    }\n    // find the capital city\n    int cx, cy;\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            if (grid[i][j] == 'C') {\n                cx = i;\n                cy = j;\n            }\n        }\n    }\n    // perform BFS from each non-prohibited cell\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            if (grid[i][j] != '*' && grid[i][j] != 'C') {\n                bfs(i, j);\n            }\n        }\n    }\n    // find the common prefix of all the commands\n    // ... (omitted for brevity)\n    return 0;\n}",

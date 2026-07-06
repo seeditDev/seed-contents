@@ -10,8 +10,9 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Proportion",
       "Permutation",
+      "Proportion",
+      "Math",
       "Brute Force",
       "Simple Math"
     ],
@@ -23,10 +24,10 @@
   "content": {
     "problemStatement": "Chef recently learned about ratios and proportions. He wrote some positive integers **a, b, c, d** on a paper. Chef wants to know whether he can shuffle these numbers so as to make some proportion? Formally, four numbers **x, y, z, w** are said to make a proportion if ratio of **x : y** is same as that of **z : w**.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ a, b, c, d ≤ 1000"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 a, b, c, d \u2264 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains four space‑separated positive integers a, b, c, d (1 ≤ a, b, c, d ≤ 1000).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains four space\u2011separated positive integers a, b, c, d (1 \u2264 a, b, c, d \u2264 1000).",
     "outputFormat": "For each test case, output a single line containing \"Possible\" if the four numbers can be reordered to form a proportion x:y = z:w, otherwise output \"Impossible\".",
     "sampleTestCases": [
       {
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "A proportion x:y = z:w holds iff x*w = y*z. We need to know whether any ordering of the four given numbers satisfies this equality. There are only 4! = 24 possible permutations, so we can simply try all of them. For each permutation (x, y, z, w) we check if x*w == y*z. If any permutation works we answer \"Possible\", otherwise \"Impossible\". The algorithm runs in O(24) per test case, i.e., O(T) overall, and uses O(1) extra space.",
-    "timeComplexity": "O(T) – constant work (24 checks) per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables are used.",
+    "timeComplexity": "O(T) \u2013 constant work (24 checks) per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int a[4];\n        for (int i = 0; i < 4; ++i) scanf(\"%d\", &a[i]);\n        int possible = 0;\n        // generate all permutations using 4 nested loops with distinct indices\n        for (int i = 0; i < 4 && !possible; ++i)\n            for (int j = 0; j < 4 && !possible; ++j) if (j != i)\n                for (int k = 0; k < 4 && !possible; ++k) if (k != i && k != j)\n                    for (int l = 0; l < 4 && !possible; ++l) if (l != i && l != j && l != k) {\n                        long long x = a[i], y = a[j], z = a[k], w = a[l];\n                        if (x * w == y * z) possible = 1;\n                    }\n        printf(\"%s\\n\", possible ? \"Possible\" : \"Impossible\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        vector<int> a(4);\n        for(int i=0;i<4;++i) cin>>a[i];\n        bool ok=false;\n        sort(a.begin(), a.end());\n        do {\n            long long x=a[0], y=a[1], z=a[2], w=a[3];\n            if(x*w==y*z){ ok=true; break; }\n        } while(next_permutation(a.begin(), a.end()));\n        cout << (ok?\"Possible\":\"Impossible\") << '\\n';\n    }\n    return 0;\n}",

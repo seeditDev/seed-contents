@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Generalized Spanning Trees",
       "Graph Theory",
+      "Graphs",
+      "Generalized Spanning Trees",
       "Subset Sum"
     ],
     "companyTags": [],
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "To solve this problem, we first check if the sum of the values of all edges is N-1. If not, we print 1. Otherwise, we check for each non-empty subset of nodes if the sum of the values of edges with both endpoints in the subset exceeds the size of the subset minus 1. If we find such a subset, we print 2, the size of the subset, and the nodes in the subset. If no such subset is found, we print 'GST'.",
     "timeComplexity": "O(T * 2^N * M) per test case, O(T * 2^N * M) total.",
-    "spaceComplexity": "O(M) — for storing the edges.",
+    "spaceComplexity": "O(M) \u2014 for storing the edges.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 50\n#define MAX_M 100\n#define MAX_DENOM 30\n\n// Function to calculate the greatest common divisor\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\n// Function to simplify a fraction\nvoid simplify(int *num, int *denom) {\n    int g = gcd(*num, *denom);\n    *num /= g;\n    *denom /= g;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int edges[M][3];\n        for (int i = 0; i < M; i++) {\n            scanf(\"%d %d %d/%d\", &edges[i][0], &edges[i][1], &edges[i][2], &edges[i][3]);\n            simplify(&edges[i][2], &edges[i][3]);\n        }\n        // Check the first condition\n        int sum = 0;\n        for (int i = 0; i < M; i++) {\n            sum += edges[i][2];\n        }\n        if (sum != N - 1) {\n            printf(\"1\\n\");\n            continue;\n        }\n        // Check the second condition\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int subset_sum = 0;\n            for (int i = 0; i < M; i++) {\n                if ((mask & (1 << (edges[i][0] - 1))) && (mask & (1 << (edges[i][1] - 1)))) {\n                    subset_sum += edges[i][2];\n                }\n            }\n            int subset_size = 0;\n            for (int i = 0; i < N; i++) {\n                if (mask & (1 << i)) subset_size++;\n            }\n            if (subset_sum > subset_size - 1) {\n                printf(\"2\\n\");\n                printf(\"%d\\n\", subset_size);\n                for (int i = 0; i < N; i++) {\n                    if (mask & (1 << i)) printf(\"%d \", i + 1);\n                }\n                printf(\"\\n\");\n                break;\n            }\n        }\n        if (mask == (1 << N)) printf(\"GST\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MAX_N 50\n#define MAX_M 100\n#define MAX_DENOM 30\n\n// Function to calculate the greatest common divisor\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\n// Function to simplify a fraction\nvoid simplify(int &num, int &denom) {\n    int g = gcd(num, denom);\n    num /= g;\n    denom /= g;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        vector<vector<int>> edges(M, vector<int>(4));\n        for (int i = 0; i < M; i++) {\n            cin >> edges[i][0] >> edges[i][1] >> edges[i][2] >> edges[i][3];\n            simplify(edges[i][2], edges[i][3]);\n        }\n        // Check the first condition\n        int sum = 0;\n        for (int i = 0; i < M; i++) {\n            sum += edges[i][2];\n        }\n        if (sum != N - 1) {\n            cout << \"1\" << endl;\n            continue;\n        }\n        // Check the second condition\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int subset_sum = 0;\n            for (int i = 0; i < M; i++) {\n                if ((mask & (1 << (edges[i][0] - 1))) && (mask & (1 << (edges[i][1] - 1)))) {\n                    subset_sum += edges[i][2];\n                }\n            }\n            int subset_size = 0;\n            for (int i = 0; i < N; i++) {\n                if (mask & (1 << i)) subset_size++;\n            }\n            if (subset_sum > subset_size - 1) {\n                cout << \"2\" << endl;\n                cout << subset_size << endl;\n                for (int i = 0; i < N; i++) {\n                    if (mask & (1 << i)) cout << i + 1 << \" \";\n                }\n                cout << endl;\n                break;\n            }\n        }\n        if (mask == (1 << N)) cout << \"GST\" << endl;\n    }\n    return 0;\n}",

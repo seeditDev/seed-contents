@@ -10,14 +10,15 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "CSV",
-      "File Handling",
-      "Exception Handling",
-      "Python csv module",
-      "C file I/O",
       "C++ fstream",
+      "CSV",
+      "Exception Handling",
+      "JavaScript fs",
+      "File Handling",
       "Java IO",
-      "JavaScript fs"
+      "File I/O",
+      "C file I/O",
+      "Python csv module"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,11 +28,11 @@
   "content": {
     "problemStatement": "Q6) A .Explain the process of reading from and writing to CSV files in Python using the csv module.\nMention important functions and give an example for each?    ---4 Marks.",
     "constraints": [
-      "1 ≤ T ≤ 10",
+      "1 \u2264 T \u2264 10",
       "Filenames contain no whitespace",
-      "If a CSV file exists it is non‑empty and fits in memory"
+      "If a CSV file exists it is non\u2011empty and fits in memory"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a filename (a string without whitespace) of a CSV file located in the same directory as the program.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10), the number of test cases. Each of the next T lines contains a filename (a string without whitespace) of a CSV file located in the same directory as the program.",
     "outputFormat": "For each test case output a single line. Print \"Success\" if the program was able to read the entire CSV file and write it back without error. If any exception occurs (e.g., file not found, permission denied) print the exact error message produced by the language runtime.",
     "sampleTestCases": [
       {
@@ -72,7 +73,7 @@
       },
       {
         "id": "tc_3",
-        "label": "non‑existent file",
+        "label": "non\u2011existent file",
         "input": "1\\nmissing.csv",
         "expectedOutput": "[Errno 2] No such file or directory: 'missing.csv'",
         "weight": 2
@@ -118,8 +119,8 @@
     ]
   },
   "solution": {
-    "approach": "For each filename we try to open the file for reading. If the open fails we catch the error and output its message. When the file is opened successfully we read all rows (or the whole content) into memory, close the input, then open the same file for writing (truncating it) and write the stored data back unchanged. Finally we output \"Success\". All operations are wrapped in try/catch (or error‑checking) blocks so that any runtime error is reported exactly as produced by the language.",
-    "timeComplexity": "O(N) per test case where N is the size of the CSV file (number of characters/rows). Total complexity O(T·N).",
+    "approach": "For each filename we try to open the file for reading. If the open fails we catch the error and output its message. When the file is opened successfully we read all rows (or the whole content) into memory, close the input, then open the same file for writing (truncating it) and write the stored data back unchanged. Finally we output \"Success\". All operations are wrapped in try/catch (or error\u2011checking) blocks so that any runtime error is reported exactly as produced by the language.",
+    "timeComplexity": "O(N) per test case where N is the size of the CSV file (number of characters/rows). Total complexity O(T\u00b7N).",
     "spaceComplexity": "O(N) to store the file content while rewriting.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <errno.h>\n\nchar* read_and_write_csv(const char *filename) {\n    FILE *in = fopen(filename, \"r\");\n    if (!in) {\n        char *msg = malloc(256);\n        snprintf(msg, 256, \"%s\", strerror(errno));\n        return msg;\n    }\n    fseek(in, 0, SEEK_END);\n    long size = ftell(in);\n    fseek(in, 0, SEEK_SET);\n    char *buffer = malloc(size + 1);\n    if (!buffer) {\n        fclose(in);\n        char *msg = malloc(256);\n        snprintf(msg, 256, \"Memory allocation failed\");\n        return msg;\n    }\n    fread(buffer, 1, size, in);\n    buffer[size] = '\\0';\n    fclose(in);\n\n    FILE *out = fopen(filename, \"w\");\n    if (!out) {\n        free(buffer);\n        char *msg = malloc(256);\n        snprintf(msg, 256, \"%s\", strerror(errno));\n        return msg;\n    }\n    fwrite(buffer, 1, size, out);\n    fclose(out);\n    free(buffer);\n    char *msg = malloc(8);\n    strcpy(msg, \"Success\");\n    return msg;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    char filename[256];\n    for (int i = 0; i < T; ++i) {\n        scanf(\"%s\", filename);\n        char *res = read_and_write_csv(filename);\n        printf(\"%s\\n\", res);\n        free(res);\n    }\n    return 0;\n}",

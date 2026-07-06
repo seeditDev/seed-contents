@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Greedy",
+    "category": "Arrays",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Arrays",
       "Frequency Counting",
       "Greedy"
     ],
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array AAA of size NNN. In one operation, you can do the following:\n\n\nSelect indices iii and jjj (i≠j)(i\\neq j)(i=j) and set Ai=AjA_i = A_jAi​=Aj​.\nFind the **minimum** number of operations required to make all elements of the array **equal**.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN — the size of the array.\nThe next line contains NNN space-separated integers, denoting the array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** number of operations required to make all elements of the array **equal**.",
+    "problemStatement": "You are given an array AAA of size NNN. In one operation, you can do the following:\n\n\nSelect indices iii and jjj (i\u2260j)(i\\neq j)(i\ue020=j) and set Ai=AjA_i = A_jAi\u200b=Aj\u200b.\nFind the **minimum** number of operations required to make all elements of the array **equal**.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the size of the array.\nThe next line contains NNN space-separated integers, denoting the array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** number of operations required to make all elements of the array **equal**.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 2·10^5",
-      "1 ≤ Ai ≤ N",
-      "The sum of N over all test cases does not exceed 2·10^5"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 2\u00b710^5",
+      "1 \u2264 Ai \u2264 N",
+      "The sum of N over all test cases does not exceed 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers A1, A2, …, AN.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space\u2011separated integers A1, A2, \u2026, AN.",
     "outputFormat": "For each test case output a single line containing the minimum number of operations required to make all array elements equal.",
     "sampleTestCases": [
       {
@@ -39,7 +40,7 @@
         "id": "sample_2",
         "input": "2\\n5\\n7 7 7 7 7\\n6\\n1 2 2 3 3 3",
         "output": "0\\n3",
-        "explanation": "First case all elements already equal → 0 operations.\\nSecond case max frequency =3 (value 3), answer=6-3=3."
+        "explanation": "First case all elements already equal \u2192 0 operations.\\nSecond case max frequency =3 (value 3), answer=6-3=3."
       }
     ]
   },
@@ -61,7 +62,7 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – all distinct",
+        "label": "edge case \u2013 all distinct",
         "input": "1\\n5\\n1 2 3 4 5",
         "expectedOutput": "4",
         "weight": 2
@@ -109,7 +110,7 @@
   "solution": {
     "approach": "In one operation we can copy the value of any element to another position. To minimise the number of operations we should keep the value that already appears most frequently (the mode) and change every other element to this value. Each operation changes exactly one element, therefore the answer for a test case is N minus the maximum frequency of any value in the array.\nAlgorithm per test case:\n1. Read N and the array.\n2. Count frequencies of each value (using a hash map or sorting).\n3. Determine the largest frequency maxFreq.\n4. Output N - maxFreq.\nThe algorithm is linear in N for each test case.",
     "timeComplexity": "O(N) per test case (overall O(total N)).",
-    "spaceComplexity": "O(K) where K is the number of distinct values (≤ N).",
+    "spaceComplexity": "O(K) where K is the number of distinct values (\u2264 N).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp(const void *a, const void *b) {\n    int x = *(const int *)a;\n    int y = *(const int *)b;\n    return x - y;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int *arr = (int *)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n        qsort(arr, N, sizeof(int), cmp);\n        int maxFreq = 0, curFreq = 0, prev = 0;\n        for (int i = 0; i < N; ++i) {\n            if (i == 0 || arr[i] != prev) {\n                curFreq = 1;\n                prev = arr[i];\n            } else {\n                ++curFreq;\n            }\n            if (curFreq > maxFreq) maxFreq = curFreq;\n        }\n        printf(\"%d\\n\", N - maxFreq);\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int N; cin>>N;\n        unordered_map<int,int> freq;\n        int x, maxFreq=0;\n        for(int i=0;i<N;++i){\n            cin>>x;\n            maxFreq = max(maxFreq, ++freq[x]);\n        }\n        cout << N - maxFreq << '\\n';\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Bit Manipulation",
       "Sorting",
-      "Searching"
+      "Bit Manipulation",
+      "Searching",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Given an initially empty integer array (1-indexed) and some queries:\n\n\n\n**Type 0**: Add the integer number **x** at the end of the array. \n**Type 1**: On the interval **L..R** find a number **y**, to maximize (**x xor y**).\n**Type 2**: Delete last **k** numbers in the array\n**Type 3**: On the interval **L..R**, count the number of integers less than or equal to **x**.\n**Type 4**: On the interval **L..R**, find the **kth** smallest integer (**kth** order statistic).",
     "constraints": [
-      "1 ≤ M ≤ 5 * 10^5",
-      "1 ≤ x ≤ 5 * 10^5",
-      "1 ≤ L ≤ R ≤ N",
-      "For query type 2, 1 ≤ k ≤ N",
-      "For query type 4, k ≤ R-L+1"
+      "1 \u2264 M \u2264 5 * 10^5",
+      "1 \u2264 x \u2264 5 * 10^5",
+      "1 \u2264 L \u2264 R \u2264 N",
+      "For query type 2, 1 \u2264 k \u2264 N",
+      "For query type 4, k \u2264 R-L+1"
     ],
     "inputFormat": "The first line contains a single integer M denoting the number of queries. Each query is on a new line and can be one of the following types: Type 0: '0 x' to add the integer x at the end of the array, Type 1: '1 L R x' to find a number y on the interval L..R to maximize (x xor y), Type 2: '2 k' to delete the last k numbers in the array, Type 3: '3 L R x' to count the number of integers less than or equal to x on the interval L..R, Type 4: '4 L R k' to find the kth smallest integer on the interval L..R.",
     "outputFormat": "For each query of type 1, 3, and 4, output the result in a single line.",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem can be solved by maintaining an array of integers and performing the specified queries on it. For Type 1 queries, we need to find the number that maximizes the XOR with the given number. This can be done by iterating over the array and calculating the XOR of each number with the given number, keeping track of the maximum XOR found. For Type 3 queries, we need to count the number of integers less than or equal to the given number. This can be done by iterating over the array and counting the numbers that satisfy the condition. For Type 4 queries, we need to find the kth smallest integer. This can be done by sorting the array and then finding the kth smallest number.",
     "timeComplexity": "O(M * N) per test case, where M is the number of queries and N is the maximum size of the array. The time complexity is dominated by the Type 1 and Type 3 queries, which require iterating over the array.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of integers.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of integers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_SIZE 500005\nint arr[MAX_SIZE];\nint compare(const void* a, const void* b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int M;\n    scanf(\"%d\", &M);\n    int N = 0;\n    for (int i = 0; i < M; i++) {\n        int type;\n        scanf(\"%d\", &type);\n        if (type == 0) {\n            int x;\n            scanf(\"%d\", &x);\n            arr[N++] = x;\n        } else if (type == 1) {\n            int L, R, x;\n            scanf(\"%d %d %d\", &L, &R, &x);\n            int max = 0;\n            for (int j = L - 1; j < R; j++) {\n                max = (max > (arr[j] ^ x)) ? max : (arr[j] ^ x);\n            }\n            printf(\"%d\\n\", max);\n        } else if (type == 2) {\n            int k;\n            scanf(\"%d\", &k);\n            N -= k;\n        } else if (type == 3) {\n            int L, R, x;\n            scanf(\"%d %d %d\", &L, &R, &x);\n            int count = 0;\n            for (int j = L - 1; j < R; j++) {\n                if (arr[j] <= x) count++;\n            }\n            printf(\"%d\\n\", count);\n        } else if (type == 4) {\n            int L, R, k;\n            scanf(\"%d %d %d\", &L, &R, &k);\n            int* temp = (int*)malloc((R - L + 1) * sizeof(int));\n            for (int j = L - 1; j < R; j++) {\n                temp[j - L + 1] = arr[j];\n            }\n            qsort(temp, R - L + 1, sizeof(int), compare);\n            printf(\"%d\\n\", temp[k - 1]);\n            free(temp);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX_SIZE 500005\nint arr[MAX_SIZE];\nint main() {\n    int M;\n    cin >> M;\n    int N = 0;\n    for (int i = 0; i < M; i++) {\n        int type;\n        cin >> type;\n        if (type == 0) {\n            int x;\n            cin >> x;\n            arr[N++] = x;\n        } else if (type == 1) {\n            int L, R, x;\n            cin >> L >> R >> x;\n            int max = 0;\n            for (int j = L - 1; j < R; j++) {\n                max = (max > (arr[j] ^ x)) ? max : (arr[j] ^ x);\n            }\n            cout << max << endl;\n        } else if (type == 2) {\n            int k;\n            cin >> k;\n            N -= k;\n        } else if (type == 3) {\n            int L, R, x;\n            cin >> L >> R >> x;\n            int count = 0;\n            for (int j = L - 1; j < R; j++) {\n                if (arr[j] <= x) count++;\n            }\n            cout << count << endl;\n        } else if (type == 4) {\n            int L, R, k;\n            cin >> L >> R >> k;\n            int* temp = new int[R - L + 1];\n            for (int j = L - 1; j < R; j++) {\n                temp[j - L + 1] = arr[j];\n            }\n            sort(temp, temp + R - L + 1);\n            cout << temp[k - 1] << endl;\n            delete[] temp;\n        }\n    }\n    return 0;\n}",

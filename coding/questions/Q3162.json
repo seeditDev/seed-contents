@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Lighthouses",
       "Quadrants",
-      "Illumination"
+      "Illumination",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,10 +21,10 @@
     ]
   },
   "content": {
-    "problemStatement": "There are **N** islands in the sea, enumerated from **1** to **N**. Each of them is so small that we can consider them as points on a plane. You are given the Cartesian coordinates of all islands. X-axis is directed towards East and Y-axis is directed towards North.\n\nYou need to illuminate all the islands. To do this, you can place lighthouses on some of the islands. You can't place more than one lighthouse on any single island. Each lighthouse can light only one of the 4 quadrants: North-Western, North-Eastern, South-Western or South-Eastern. If some island is located on the border of an illuminated quadrant, it is considered to be illuminated as well. Note that this means that a lighthouse always illuminates it's own island as well.\n\nFind the smallest possible number of lighthouses required to illuminate all the islands (say **L**). Describe their configurations — positions and quadrants illuminated — as well.",
+    "problemStatement": "There are **N** islands in the sea, enumerated from **1** to **N**. Each of them is so small that we can consider them as points on a plane. You are given the Cartesian coordinates of all islands. X-axis is directed towards East and Y-axis is directed towards North.\n\nYou need to illuminate all the islands. To do this, you can place lighthouses on some of the islands. You can't place more than one lighthouse on any single island. Each lighthouse can light only one of the 4 quadrants: North-Western, North-Eastern, South-Western or South-Eastern. If some island is located on the border of an illuminated quadrant, it is considered to be illuminated as well. Note that this means that a lighthouse always illuminates it's own island as well.\n\nFind the smallest possible number of lighthouses required to illuminate all the islands (say **L**). Describe their configurations \u2014 positions and quadrants illuminated \u2014 as well.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 10^5",
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 10^5",
       "The sum of N over all test cases doesn't exceed 5*10^5",
       "Absolute value of each coordinate doesn't exceed 10^9",
       "No two given islands coincide"
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a greedy approach. We first sort the islands based on their x-coordinates. Then, we iterate over the sorted islands and try to place a lighthouse on each island. If an island is not illuminated by any previously placed lighthouse, we place a new lighthouse on it. We keep track of the minimum number of lighthouses required to illuminate all islands.",
-    "timeComplexity": "O(T*N*log(N)) — where T is the number of test cases and N is the number of islands. The sorting step takes O(N*log(N)) time, and the iteration over the sorted islands takes O(N) time.",
-    "spaceComplexity": "O(N) — where N is the number of islands. We need to store the coordinates of all islands.",
+    "timeComplexity": "O(T*N*log(N)) \u2014 where T is the number of test cases and N is the number of islands. The sorting step takes O(N*log(N)) time, and the iteration over the sorted islands takes O(N) time.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of islands. We need to store the coordinates of all islands.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n#define MAX 100005\n\nstruct Island {\n    int x, y;\n};\n\nint compare(const void *a, const void *b) {\n    struct Island *island1 = (struct Island *)a;\n    struct Island *island2 = (struct Island *)b;\n    return island1->x - island2->x;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        struct Island islands[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &islands[i].x, &islands[i].y);\n        }\n        qsort(islands, N, sizeof(struct Island), compare);\n        int lighthouses = 0;\n        int illuminated[N];\n        memset(illuminated, 0, sizeof(illuminated));\n        for (int i = 0; i < N; i++) {\n            if (!illuminated[i]) {\n                lighthouses++;\n                illuminated[i] = 1;\n                for (int j = i + 1; j < N; j++) {\n                    if (islands[j].x >= islands[i].x && islands[j].y <= islands[i].y) {\n                        illuminated[j] = 1;\n                    }\n                }\n            }\n        }\n        printf(\"%d\\n\", lighthouses);\n        for (int i = 0; i < N; i++) {\n            if (illuminated[i]) {\n                printf(\"%d NW\\n\", i + 1);\n            }\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nstruct Island {\n    int x, y;\n};\n\nbool compare(Island a, Island b) {\n    return a.x < b.x;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        Island islands[N];\n        for (int i = 0; i < N; i++) {\n            cin >> islands[i].x >> islands[i].y;\n        }\n        sort(islands, islands + N, compare);\n        int lighthouses = 0;\n        bool illuminated[N];\n        fill(illuminated, illuminated + N, false);\n        for (int i = 0; i < N; i++) {\n            if (!illuminated[i]) {\n                lighthouses++;\n                illuminated[i] = true;\n                for (int j = i + 1; j < N; j++) {\n                    if (islands[j].x >= islands[i].x && islands[j].y <= islands[i].y) {\n                        illuminated[j] = true;\n                    }\n                }\n            }\n        }\n        cout << lighthouses << endl;\n        for (int i = 0; i < N; i++) {\n            if (illuminated[i]) {\n                cout << i + 1 << \" NW\" << endl;\n            }\n        }\n    }\n    return 0;\n}",

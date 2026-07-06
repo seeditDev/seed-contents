@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming | Graph",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
+      "Dynamic Programming",
       "Permutations",
-      "Tree Construction",
-      "Modular Arithmetic"
+      "Tree Construction"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Sereja likes to hang around trees. A tree is an undirected graph on **N** vertices with **N-1** edges and no cycles. Sereja has his own peculiar way of comparing two trees. To describe it, let's start with the way Sereja stores a tree. For every tree, Sereja has a value **V** — the root of the tree, and for every vertex **i**, he has an ordered list **Q[i]** with **L[i]** elements — **Q[i][1], Q[i][2], ..., Q[i][L[i]]** which are children of the vertex **i**. Sereja assumes two trees to be equal if their roots are the same and for every **i**, the ordered list **Q[i]** is the same in both the trees that Sereja compares.\n\n\nSo if Sereja has tree#1 given as **[V=1, Q[1]=[2, 3], Q[2]=[], Q[3]=[]]** and tree#2 given as **[V=1, Q[1]=[3, 2], Q[2]=[], Q[3]=[]]**, they will be considered different because **Q[1]** in the first tree is not equal to **Q[1]** in the second tree.\n\n\nFor any vertex **i**, Sereja calls number of vertices adjacent to it as **E[i]**.\n\n\nGiven an array **C** of **N** elements, Let **f(C)** be the number of different trees (in Sereja's representation) such that there exists a permutation **P[1], P[2], ... , P[N]** so that **E[P[1]]=C[1], E[P[2]]= C[2], ... , E[P[N]]=C[N]**.\n\n\nSereja gives you the array **C**. You have to compute the number **f(C)** modulo **1000000007 (109+7)**.",
+    "problemStatement": "Sereja likes to hang around trees. A tree is an undirected graph on **N** vertices with **N-1** edges and no cycles. Sereja has his own peculiar way of comparing two trees. To describe it, let's start with the way Sereja stores a tree. For every tree, Sereja has a value **V** \u2014 the root of the tree, and for every vertex **i**, he has an ordered list **Q[i]** with **L[i]** elements \u2014 **Q[i][1], Q[i][2], ..., Q[i][L[i]]** which are children of the vertex **i**. Sereja assumes two trees to be equal if their roots are the same and for every **i**, the ordered list **Q[i]** is the same in both the trees that Sereja compares.\n\n\nSo if Sereja has tree#1 given as **[V=1, Q[1]=[2, 3], Q[2]=[], Q[3]=[]]** and tree#2 given as **[V=1, Q[1]=[3, 2], Q[2]=[], Q[3]=[]]**, they will be considered different because **Q[1]** in the first tree is not equal to **Q[1]** in the second tree.\n\n\nFor any vertex **i**, Sereja calls number of vertices adjacent to it as **E[i]**.\n\n\nGiven an array **C** of **N** elements, Let **f(C)** be the number of different trees (in Sereja's representation) such that there exists a permutation **P[1], P[2], ... , P[N]** so that **E[P[1]]=C[1], E[P[2]]= C[2], ... , E[P[N]]=C[N]**.\n\n\nSereja gives you the array **C**. You have to compute the number **f(C)** modulo **1000000007 (109+7)**.",
     "constraints": [
       "1 <= N <= 80",
       "0 <= C[i] <= 80"
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to count the number of ways to construct a tree with the given degree sequence. We start by initializing a 2D array dp, where dp[i][j] represents the number of ways to construct a tree with i vertices and j edges. We then fill up the dp array using the following recurrence relation: dp[i][j] = dp[i-1][j-1] * (i-1) + dp[i-1][j] * (j-1). Finally, we return dp[N][N-1] modulo 1000000007.",
-    "timeComplexity": "O(N^2) — because we are using two nested loops to fill up the dp array.",
-    "spaceComplexity": "O(N^2) — because we are using a 2D array of size N x N to store the dp values.",
+    "timeComplexity": "O(N^2) \u2014 because we are using two nested loops to fill up the dp array.",
+    "spaceComplexity": "O(N^2) \u2014 because we are using a 2D array of size N x N to store the dp values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int* C = (int*)malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &C[i]);\n    }\n    long long* dp = (long long*)malloc((N + 1) * sizeof(long long));\n    dp[0] = 1;\n    for (int i = 1; i <= N; i++) {\n        dp[i] = (dp[i - 1] * i) % MOD;\n    }\n    long long ans = 0;\n    for (int i = 0; i < N; i++) {\n        long long temp = 1;\n        for (int j = 0; j < N; j++) {\n            if (i != j) {\n                temp = (temp * (C[j] + 1)) % MOD;\n            }\n        }\n        ans = (ans + temp) % MOD;\n    }\n    printf(\"%lld\\n\", ans);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> C(N);\n    for (int i = 0; i < N; i++) {\n        cin >> C[i];\n    }\n    long long ans = 0;\n    for (int i = 0; i < N; i++) {\n        long long temp = 1;\n        for (int j = 0; j < N; j++) {\n            if (i != j) {\n                temp = (temp * (C[j] + 1)) % MOD;\n            }\n        }\n        ans = (ans + temp) % MOD;\n    }\n    cout << ans << endl;\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "GCD",
-      "Pairwise Moves"
+      "Pairwise Moves",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to find all possible pairs (i, j) and (p, q) that satisfy the given conditions. We can use a brute force approach to find all such pairs and then count the maximum number of moves that can be made.",
     "timeComplexity": "O(T * N^4) per test case, O(T * N^4) total.",
-    "spaceComplexity": "O(N^2) — for storing the sets S1 and S2.",
+    "spaceComplexity": "O(N^2) \u2014 for storing the sets S1 and S2.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int A[N], B[N];\n        for (int i = 0; i < N; i++) scanf(\"%d\", &A[i]);\n        for (int i = 0; i < N; i++) scanf(\"%d\", &B[i]);\n        int moves = 0;\n        int S1[N][N] = {0}, S2[N][N] = {0};\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                if (B[j] > A[i] && gcd(A[i], B[j]) != 1) {\n                    for (int p = 0; p < N; p++) {\n                        for (int q = 0; q < N; q++) {\n                            if (B[p] < A[q] && gcd(A[q], B[p]) != 1 && gcd(gcd(A[i], B[j]), gcd(A[q], B[p])) != 1 && !S1[i][j] && !S2[p][q]) {\n                                moves++;\n                                S1[i][j] = 1;\n                                S2[p][q] = 1;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n        printf(\"%d\\n\", moves);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int A[N], B[N];\n        for (int i = 0; i < N; i++) cin >> A[i];\n        for (int i = 0; i < N; i++) cin >> B[i];\n        int moves = 0;\n        bool S1[N][N] = {0}, S2[N][N] = {0};\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                if (B[j] > A[i] && gcd(A[i], B[j]) != 1) {\n                    for (int p = 0; p < N; p++) {\n                        for (int q = 0; q < N; q++) {\n                            if (B[p] < A[q] && gcd(A[q], B[p]) != 1 && gcd(gcd(A[i], B[j]), gcd(A[q], B[p])) != 1 && !S1[i][j] && !S2[p][q]) {\n                                moves++;\n                                S1[i][j] = true;\n                                S2[p][q] = true;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n        cout << moves << endl;\n    }\n    return 0;\n}",

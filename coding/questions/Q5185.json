@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Greedy",
-      "Feasibility",
       "Linear constraints",
-      "Minimum number of operations"
+      "Feasibility",
+      "Minimum number of operations",
+      "Dynamic Programming",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,15 +22,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is playing a noob version of the game Flappy Bird with the following rules:\n\n\nThe bird starts at a height HHH at x=0x = 0x=0.\nThere are NNN obstacles (numbered 111 through NNN). For each valid iii, the iii-th obstacle is at a position xix_ixi​ and it has a height hih_ihi​.\nFor each integer iii (0≤i&lt;xN0 \\le i \\lt x_N0≤i&lt;xN​), Chef has the option to click once when the bird is at x=ix = ix=i. Let's denote the bird's height (yyy-coordinate) at that point by jjj. If he clicks, the bird moves to x=i+1x = i+1x=i+1 and y=j+1y = j+1y=j+1. Otherwise, the bird moves to x=i+1x = i+1x=i+1 and y=j−1y = j-1y=j−1.\nThere is no ceiling and all the obstacles extend upwards from the bottom and not the other way around.\nFor each valid iii, the bird crosses the iii-th obstacle successfully if the bird's height at x=xix = x_ix=xi​ is strictly greater than hih_ihi​.\nAt any point before x=xNx = x_Nx=xN​, the bird's height should remain non-negative, otherwise it will drown.\nIf the bird crosses the NNN-th obstacle successfully, Chef wins the game.\nCan you tell Chef if he can win the game (get the bird to cross all the obstacles) and the minimum number of clicks required to win in such a case?",
+    "problemStatement": "Chef is playing a noob version of the game Flappy Bird with the following rules:\n\n\nThe bird starts at a height HHH at x=0x = 0x=0.\nThere are NNN obstacles (numbered 111 through NNN). For each valid iii, the iii-th obstacle is at a position xix_ixi\u200b and it has a height hih_ihi\u200b.\nFor each integer iii (0\u2264i&lt;xN0 \\le i \\lt x_N0\u2264i&lt;xN\u200b), Chef has the option to click once when the bird is at x=ix = ix=i. Let's denote the bird's height (yyy-coordinate) at that point by jjj. If he clicks, the bird moves to x=i+1x = i+1x=i+1 and y=j+1y = j+1y=j+1. Otherwise, the bird moves to x=i+1x = i+1x=i+1 and y=j\u22121y = j-1y=j\u22121.\nThere is no ceiling and all the obstacles extend upwards from the bottom and not the other way around.\nFor each valid iii, the bird crosses the iii-th obstacle successfully if the bird's height at x=xix = x_ix=xi\u200b is strictly greater than hih_ihi\u200b.\nAt any point before x=xNx = x_Nx=xN\u200b, the bird's height should remain non-negative, otherwise it will drown.\nIf the bird crosses the NNN-th obstacle successfully, Chef wins the game.\nCan you tell Chef if he can win the game (get the bird to cross all the obstacles) and the minimum number of clicks required to win in such a case?",
     "constraints": [
-      "1 ≤ T ≤ 3·10^4",
-      "1 ≤ N ≤ 10^5 (sum of N over all test cases ≤ 5·10^5)",
-      "0 ≤ H ≤ 10^9",
-      "1 ≤ x1 < x2 < … < xN ≤ 10^9",
-      "1 ≤ hi ≤ 10^9"
+      "1 \u2264 T \u2264 3\u00b710^4",
+      "1 \u2264 N \u2264 10^5 (sum of N over all test cases \u2264 5\u00b710^5)",
+      "0 \u2264 H \u2264 10^9",
+      "1 \u2264 x1 < x2 < \u2026 < xN \u2264 10^9",
+      "1 \u2264 hi \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and H – the number of obstacles and the initial height of the bird.\n- The second line contains N distinct integers x1, x2, …, xN in strictly increasing order – the x‑coordinates of the obstacles.\n- The third line contains N integers h1, h2, …, hN – the heights of the obstacles.\nAll coordinates are measured in steps; the bird moves from x = 0 to x = xN, one unit per step.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and H \u2013 the number of obstacles and the initial height of the bird.\n- The second line contains N distinct integers x1, x2, \u2026, xN in strictly increasing order \u2013 the x\u2011coordinates of the obstacles.\n- The third line contains N integers h1, h2, \u2026, hN \u2013 the heights of the obstacles.\nAll coordinates are measured in steps; the bird moves from x = 0 to x = xN, one unit per step.",
     "outputFormat": "For each test case output a single line containing the minimum possible number of clicks that lets the bird cross all obstacles, or -1 if it is impossible.",
     "sampleTestCases": [
       {
@@ -110,8 +111,8 @@
     ]
   },
   "solution": {
-    "approach": "Let c_k be the number of clicks performed among the first k steps (0 ≤ k ≤ xN). After k steps the bird’s height is y_k = H + 2·c_k – k. The constraints become:\n1. y_k ≥ 0  ⇒  c_k ≥ ceil((k‑H)/2) (or 0 if k ≤ H).\n2. For every obstacle i at position xi we need y_{xi} > hi ⇒ c_{xi} ≥ floor((hi + xi – H)/2) + 1.\nThus each position k has a lower bound LB_k = max( ceil((k‑H)/2), obstacle‑specific bound if k is an obstacle, 0 ).\nThe sequence c_k is non‑decreasing and can increase by at most 1 per step because at most one click is possible per unit move. Therefore, moving from position p to q (p < q) is feasible iff c_p + (q‑p) ≥ LB_q. If feasible, the minimal possible value at q is c_q = max(LB_q, c_p) (which never exceeds c_p + (q‑p)).\nWe process the positions in increasing order: start at (pos = 0, clicks = 0) and for each obstacle i (and finally the last obstacle position xN) compute its LB, check the feasibility condition, and update the current clicks. The algorithm runs in O(N) per test case because we only look at obstacle positions; the generic lower bound can be evaluated in O(1) using the formula ceil((k‑H)/2) = 0 if k ≤ H else (k‑H+1)//2.\nIf at any step the feasibility test fails, the answer is -1. Otherwise the answer is the final clicks value after processing the last obstacle.",
-    "timeComplexity": "O(N) per test case, where N is the number of obstacles. The total over all test cases is O(5·10^5).",
+    "approach": "Let c_k be the number of clicks performed among the first k steps (0 \u2264 k \u2264 xN). After k steps the bird\u2019s height is y_k = H + 2\u00b7c_k \u2013 k. The constraints become:\n1. y_k \u2265 0  \u21d2  c_k \u2265 ceil((k\u2011H)/2) (or 0 if k \u2264 H).\n2. For every obstacle i at position xi we need y_{xi} > hi \u21d2 c_{xi} \u2265 floor((hi + xi \u2013 H)/2) + 1.\nThus each position k has a lower bound LB_k = max( ceil((k\u2011H)/2), obstacle\u2011specific bound if k is an obstacle, 0 ).\nThe sequence c_k is non\u2011decreasing and can increase by at most 1 per step because at most one click is possible per unit move. Therefore, moving from position p to q (p < q) is feasible iff c_p + (q\u2011p) \u2265 LB_q. If feasible, the minimal possible value at q is c_q = max(LB_q, c_p) (which never exceeds c_p + (q\u2011p)).\nWe process the positions in increasing order: start at (pos = 0, clicks = 0) and for each obstacle i (and finally the last obstacle position xN) compute its LB, check the feasibility condition, and update the current clicks. The algorithm runs in O(N) per test case because we only look at obstacle positions; the generic lower bound can be evaluated in O(1) using the formula ceil((k\u2011H)/2) = 0 if k \u2264 H else (k\u2011H+1)//2.\nIf at any step the feasibility test fails, the answer is -1. Otherwise the answer is the final clicks value after processing the last obstacle.",
+    "timeComplexity": "O(N) per test case, where N is the number of obstacles. The total over all test cases is O(5\u00b710^5).",
     "spaceComplexity": "O(1) extra besides the input arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstatic long long ceil_div(long long a",

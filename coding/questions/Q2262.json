@@ -10,7 +10,8 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Prefix Sum"
+      "Prefix Sum",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved by using a prefix sum array to store the cumulative sum of honey in the field. For each query, we iterate over all possible sub-rectangles of size A x B and check if the sum of honey in the sub-rectangle is greater than or equal to K. We use the prefix sum array to calculate the sum of honey in each sub-rectangle in O(1) time.",
     "timeComplexity": "O(Q * N * M) per test case, O(T * Q * N * M) total. Precomputation is done once to calculate the prefix sum array.",
-    "spaceComplexity": "O(N * M) — the dominant structure is the prefix sum array.",
+    "spaceComplexity": "O(N * M) \u2014 the dominant structure is the prefix sum array.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int N, M, K, Q, A, B;\n    scanf(\"%d %d %d\", &N, &M, &K);\n    int grid[N][M];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            char c;\n            scanf(\" %c\", &c);\n            grid[i][j] = (c == 'H') ? 1 : 0;\n        }\n    }\n    int prefixSum[N + 1][M + 1];\n    for (int i = 0; i <= N; i++) {\n        for (int j = 0; j <= M; j++) {\n            prefixSum[i][j] = 0;\n        }\n    }\n    for (int i = 1; i <= N; i++) {\n        for (int j = 1; j <= M; j++) {\n            prefixSum[i][j] = prefixSum[i - 1][j] + prefixSum[i][j - 1] - prefixSum[i - 1][j - 1] + grid[i - 1][j - 1];\n        }\n    }\n    scanf(\"%d\", &Q);\n    for (int i = 0; i < Q; i++) {\n        scanf(\"%d %d\", &A, &B);\n        int count = 0;\n        for (int x = 0; x <= N - A; x++) {\n            for (int y = 0; y <= M - B; y++) {\n                int sum = prefixSum[x + A][y + B] - prefixSum[x + A][y] - prefixSum[x][y + B] + prefixSum[x][y];\n                if (sum >= K) {\n                    count++;\n                }\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int N, M, K, Q, A, B;\n    cin >> N >> M >> K;\n    int grid[N][M];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < M; j++) {\n            char c;\n            cin >> c;\n            grid[i][j] = (c == 'H') ? 1 : 0;\n        }\n    }\n    int prefixSum[N + 1][M + 1];\n    for (int i = 0; i <= N; i++) {\n        for (int j = 0; j <= M; j++) {\n            prefixSum[i][j] = 0;\n        }\n    }\n    for (int i = 1; i <= N; i++) {\n        for (int j = 1; j <= M; j++) {\n            prefixSum[i][j] = prefixSum[i - 1][j] + prefixSum[i][j - 1] - prefixSum[i - 1][j - 1] + grid[i - 1][j - 1];\n        }\n    }\n    cin >> Q;\n    for (int i = 0; i < Q; i++) {\n        cin >> A >> B;\n        int count = 0;\n        for (int x = 0; x <= N - A; x++) {\n            for (int y = 0; y <= M - B; y++) {\n                int sum = prefixSum[x + A][y + B] - prefixSum[x + A][y] - prefixSum[x][y + B] + prefixSum[x][y];\n                if (sum >= K) {\n                    count++;\n                }\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

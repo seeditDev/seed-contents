@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming | Greedy | Brute Force",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Knapsack",
-      "Enumeration",
       "Bounded Knapsack",
-      "Optimization"
+      "Enumeration",
+      "Optimization",
+      "Knapsack",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,13 +24,13 @@
   "content": {
     "problemStatement": "Cooking Examinations Authority (C.E.A.) is conducting an Ordinary Cooking Level (O.C.L.) test, which tests the candidate skills on three different aspects - Appearance, Flavor and Texture. Chef is planning to appear in this coveted test.\n\nO.C.L. is a **240240240** minute\\textbf{minute}minute test consisting of 202020 problems\\textbf{problems}problems on each&nbsp;aspect\\textbf{each aspect}each&nbsp;aspect (and hence total 606060 problems).\n\nChef figured out that for each\\textbf{each}each problem on Appearance, Flavor and Texture\n\n\nHe requires A,BA, BA,B and CCC minutes respectively to correctly solve that problem.\nHe will be awarded X,YX, YX,Y and ZZZ points respectively when correctly solved that problem.\nChef wonders what are the maximum points PPP that he can get in O.C.L.? Can you help the Chef?\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of testcases. The description of the TTT testcases follows.\nThe first line of each testcase contains 333 space separated integers A,BA, BA,B and CCC.\nThe second line of each testcase contains 333 space separated integers X,YX, YX,Y and ZZZ.\n\n\nOutput Format\nFor each testcase, output a single line containing an integer PPP, which denotes the maximum points that the Chef can score in O.C.L.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ A, B, C ≤ 10",
-      "1 ≤ X, Y, Z ≤ 10^6",
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 A, B, C \u2264 10",
+      "1 \u2264 X, Y, Z \u2264 10^6",
       "At most 20 problems of each type can be solved."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three space‑separated integers A, B, C – the minutes required to solve one problem of Appearance, Flavor and Texture respectively. The second line contains three space‑separated integers X, Y, Z – the points awarded for a correctly solved problem of Appearance, Flavor and Texture respectively.",
-    "outputFormat": "For each test case output a single line containing the maximum total points Chef can obtain within the 240‑minute limit while solving at most 20 problems of each type.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains three space\u2011separated integers A, B, C \u2013 the minutes required to solve one problem of Appearance, Flavor and Texture respectively. The second line contains three space\u2011separated integers X, Y, Z \u2013 the points awarded for a correctly solved problem of Appearance, Flavor and Texture respectively.",
+    "outputFormat": "For each test case output a single line containing the maximum total points Chef can obtain within the 240\u2011minute limit while solving at most 20 problems of each type.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "There are only three kinds of items and at most 20 copies of each. We can simply enumerate how many Appearance (i) and Flavor (j) problems to solve (0 ≤ i, j ≤ 20). For each pair we compute the time already spent (i·A + j·B). If it exceeds 240 minutes we skip the pair. Otherwise the remaining time can be used for Texture problems; the maximum number of Texture problems is min(20, floor(remaining / C)). The total points for this combination are i·X + j·Y + k·Z. We keep the best value over all (i, j) pairs. The enumeration is only 21 × 21 = 441 iterations per test case, easily fast enough.\n\nThe algorithm runs in O(T·21·21) time and O(1) extra space.",
-    "timeComplexity": "O(T * 21 * 21) ≈ O(T)",
+    "approach": "There are only three kinds of items and at most 20 copies of each. We can simply enumerate how many Appearance (i) and Flavor (j) problems to solve (0\u202f\u2264\u202fi,\u202fj\u202f\u2264\u202f20). For each pair we compute the time already spent (i\u00b7A + j\u00b7B). If it exceeds 240 minutes we skip the pair. Otherwise the remaining time can be used for Texture problems; the maximum number of Texture problems is min(20, floor(remaining / C)). The total points for this combination are i\u00b7X + j\u00b7Y + k\u00b7Z. We keep the best value over all (i, j) pairs. The enumeration is only 21\u202f\u00d7\u202f21\u202f=\u202f441 iterations per test case, easily fast enough.\n\nThe algorithm runs in O(T\u00b721\u00b721) time and O(1) extra space.",
+    "timeComplexity": "O(T * 21 * 21) \u2248 O(T)",
     "spaceComplexity": "O(1)",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long A, B, C, X, Y, Z;\n        scanf(\"%lld %lld %lld\", &A, &B, &C);\n        scanf(\"%lld %lld %lld\", &X, &Y, &Z);\n        long long best = 0;\n        for (int i = 0; i <= 20; ++i) {\n            for (int j = 0; j <= 20; ++j) {\n                long long timeUsed = i * A + j * B;\n                if (timeUsed > 240) continue;\n                long long rem = 240 - timeUsed;\n                long long k = rem / C;\n                if (k > 20) k = 20;\n                long long points = i * X + j * Y + k * Z;\n                if (points > best) best = points;\n            }\n        }\n        printf(\"%lld\\n\", best);\n    }\n    return 0;\n}\n",

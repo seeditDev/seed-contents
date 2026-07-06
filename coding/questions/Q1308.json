@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Title Case",
       "String Manipulation",
-      "Acronym Handling"
+      "Acronym Handling",
+      "Title Case",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,7 +27,7 @@
       "1 <= |S| <= 1000",
       "S contains only letters and spaces"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a string S consisting of English letters (a‑z, A‑Z) and spaces. There are no leading, trailing, or multiple consecutive spaces.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a string S consisting of English letters (a\u2011z, A\u2011Z) and spaces. There are no leading, trailing, or multiple consecutive spaces.",
     "outputFormat": "For each test case output a single line: the string S converted to title case. The first character of each word is uppercase and the remaining characters are lowercase, except words that are entirely uppercase (acronyms) which remain unchanged.",
     "sampleTestCases": [
       {
@@ -39,13 +40,13 @@
         "id": "sample_2",
         "input": "3\na\nABC\nhello WORLD",
         "output": "A\nABC\nHello WORLD",
-        "explanation": "Single‑letter word \"a\" becomes \"A\". \"ABC\" is an acronym and stays unchanged. In \"hello WORLD\", \"hello\" becomes \"Hello\" while the acronym \"WORLD\" remains as is."
+        "explanation": "Single\u2011letter word \"a\" becomes \"A\". \"ABC\" is an acronym and stays unchanged. In \"hello WORLD\", \"hello\" becomes \"Hello\" while the acronym \"WORLD\" remains as is."
       },
       {
         "id": "sample_3",
         "input": "3\ncODE\nthe\nJAVASCRIPT is FUN",
         "output": "Code\nThe\nJAVASCRIPT Is FUN",
-        "explanation": "\"cODE\" is not all uppercase, so it is title‑cased to \"Code\". \"the\" becomes \"The\". In the third line, \"JAVASCRIPT\" is an acronym, \"is\" becomes \"Is\", and \"FUN\" stays unchanged."
+        "explanation": "\"cODE\" is not all uppercase, so it is title\u2011cased to \"Code\". \"the\" becomes \"The\". In the third line, \"JAVASCRIPT\" is an acronym, \"is\" becomes \"Is\", and \"FUN\" stays unchanged."
       }
     ]
   },
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case split the line on spaces to obtain the words. For each word check whether all characters are uppercase (using isupper / Character.isUpperCase / str.isupper()). If the word is an acronym, copy it unchanged. Otherwise transform it to title case: make the first character uppercase and the rest lowercase. Re‑join the words with a single space and print the result. The algorithm processes each character exactly once, so the total time is linear in the total length of the input.",
-    "timeComplexity": "O(total number of characters in the input) – each character is examined a constant number of times.",
+    "approach": "For each test case split the line on spaces to obtain the words. For each word check whether all characters are uppercase (using isupper / Character.isUpperCase / str.isupper()). If the word is an acronym, copy it unchanged. Otherwise transform it to title case: make the first character uppercase and the rest lowercase. Re\u2011join the words with a single space and print the result. The algorithm processes each character exactly once, so the total time is linear in the total length of the input.",
+    "timeComplexity": "O(total number of characters in the input) \u2013 each character is examined a constant number of times.",
     "spaceComplexity": "O(L) where L is the length of the current line (the output string).",
     "code": {
       "C": "#include <stdio.h>\n#include <ctype.h>\n#include <string.h>\n#include <stdbool.h>\n\nint main(){\n    int T;\n    if(scanf(\"%d\",&T)!=1) return 0;\n    getchar(); // consume newline after T\n    while(T--){\n        char line[1005];\n        if(!fgets(line,sizeof(line),stdin)) break;\n        line[strcspn(line,\"\\n\")]='\\0'; // remove trailing newline\n        int len=strlen(line);\n        int i=0;\n        while(i<len){\n            int start=i;\n            while(i<len && line[i]!=' ') i++;\n            int end=i; // one past last character of the word\n            bool isAcronym=true;\n            for(int j=start;j<end;++j){\n                if(islower((unsigned char)line[j])){ isAcronym=false; break; }\n            }\n            if(!isAcronym && start<end){\n                line[start]=toupper((unsigned char)line[start]);\n                for(int j=start+1;j<end;++j) line[j]=tolower((unsigned char)line[j]);\n            }\n            if(i<len && line[i]==' ') i++; // skip space\n        }\n        printf(\"%s\\n\",line);\n    }\n    return 0;\n}",

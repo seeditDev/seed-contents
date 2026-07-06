@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Data Structures",
+      "Fast and Slow Pointer",
       "Linked List",
-      "Two Pointers",
-      "Fast and Slow Pointer"
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given the head of a singly linked list AAA of length NNN. The values in the list are A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ respectively. You need to find the value of the middle element of the linked list.\n\nThe middle element of a linked list of length NNN is the (⌊N2⌋+1)(\\lfloor \\frac{N}{2} \\rfloor + 1)(⌊2N​⌋+1)-th element from the head of the list.\n\n\nInput Format\n\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of TTT test cases follows.\n\n\n\n\nThe first line of each test case contains a single integer NNN.\n\n\n\n\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​.\n\n\n\n\n\nOutput Format\n\nFor each test case, the function you complete should return the value of the middle element of the list.\n\n**Note:**\nYou need to complete the function `getMiddleElement` to solve the problem.",
+    "problemStatement": "You are given the head of a singly linked list AAA of length NNN. The values in the list are A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b respectively. You need to find the value of the middle element of the linked list.\n\nThe middle element of a linked list of length NNN is the (\u230aN2\u230b+1)(\\lfloor \\frac{N}{2} \\rfloor + 1)(\u230a2N\u200b\u230b+1)-th element from the head of the list.\n\n\nInput Format\n\n\nThe first line of the input contains a single integer TTT - the number of test cases. The description of TTT test cases follows.\n\n\n\n\nThe first line of each test case contains a single integer NNN.\n\n\n\n\nThe second line of each test case contains NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b.\n\n\n\n\n\nOutput Format\n\nFor each test case, the function you complete should return the value of the middle element of the list.\n\n**Note:**\nYou need to complete the function `getMiddleElement` to solve the problem.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 100000",
       "1 <= Ai <= 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space‑separated integers representing the node values from head to tail.",
-    "outputFormat": "For each test case output a single line containing the value of the middle element of the linked list. The middle element is the (⌊N/2⌋+1)-th node from the head.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space\u2011separated integers representing the node values from head to tail.",
+    "outputFormat": "For each test case output a single line containing the value of the middle element of the linked list. The middle element is the (\u230aN/2\u230b+1)-th node from the head.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -39,7 +40,7 @@
         "id": "sample_2",
         "input": "2\n3\n1 2 3\n4\n1 2 3 4",
         "output": "2\n3",
-        "explanation": "First list N=3 → middle position 2 → value 2. Second list N=4 → middle position 3 → value 3."
+        "explanation": "First list N=3 \u2192 middle position 2 \u2192 value 2. Second list N=4 \u2192 middle position 3 \u2192 value 3."
       },
       {
         "id": "sample_3",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we traverse the list with two pointers: `slow` moves one node at a time, `fast` moves two nodes at a time. When `fast` reaches the end (NULL) or has no next node, `slow` will be positioned at the required middle node because it has advanced exactly ⌊N/2⌋ steps. The value stored in `slow` is the answer. This runs in O(N) time and O(1) extra space.",
-    "timeComplexity": "O(N) per test case, where N is the length of the list. Overall O(T·N).",
+    "approach": "For each test case we traverse the list with two pointers: `slow` moves one node at a time, `fast` moves two nodes at a time. When `fast` reaches the end (NULL) or has no next node, `slow` will be positioned at the required middle node because it has advanced exactly \u230aN/2\u230b steps. The value stored in `slow` is the answer. This runs in O(N) time and O(1) extra space.",
+    "timeComplexity": "O(N) per test case, where N is the length of the list. Overall O(T\u00b7N).",
     "spaceComplexity": "O(1) auxiliary space (the list itself is given as input).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int val;\n    struct Node* next;\n} Node;\n\nint getMiddleElement(Node* head) {\n    Node* slow = head;\n    Node* fast = head;\n    while (fast != NULL && fast->next != NULL) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow->val;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        Node *head = NULL, *tail = NULL;\n        for (int i = 0; i < N; ++i) {\n            int x; scanf(\"%d\", &x);\n            Node* nd = (Node*)malloc(sizeof(Node));\n            nd->val = x; nd->next = NULL;\n            if (!head) head = tail = nd; else { tail->next = nd; tail = nd; }\n        }\n        printf(\"%d\\n\", getMiddleElement(head));\n        while (head) { Node* tmp = head; head = head->next; free(tmp); }\n    }\n    return 0;\n}",

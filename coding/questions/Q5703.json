@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Searching",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Lower Bound",
       "Prefix Sum",
       "Binary Search",
-      "Lower Bound"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,25 +21,25 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an array AAA  in sorted order, and QQQ queries that contain iii and xxx for each query you have to find smallest j such that j≥ij \\geq ij≥i and ∑k=ijAk≥x\\sum_{k=i}^j A_k \\geq x∑k=ij​Ak​≥x. If the answer doesn’t exist, report −1-1−1 as the value of jjj.\n\n\nInput Format\n\nThe first line of input contains 2 integers NNN - size of array AAA and QQQ - number of queries\nThe second line contains NNN space-separated integers A1,A2,……,ANA_1, A_2,……, A_NA1​,A2​,……,AN​\nEach of the next QQQ lines contains a 2 integer iii and xxx for each query.\n\n\nOutput Format\n\nOutput QQQ space-separated integers with mthm^{th}mth integer as jjj value for mthm^{th}mth query.",
+    "problemStatement": "Given an array AAA  in sorted order, and QQQ queries that contain iii and xxx for each query you have to find smallest j such that j\u2265ij \\geq ij\u2265i and \u2211k=ijAk\u2265x\\sum_{k=i}^j A_k \\geq x\u2211k=ij\u200bAk\u200b\u2265x. If the answer doesn\u2019t exist, report \u22121-1\u22121 as the value of jjj.\n\n\nInput Format\n\nThe first line of input contains 2 integers NNN - size of array AAA and QQQ - number of queries\nThe second line contains NNN space-separated integers A1,A2,\u2026\u2026,ANA_1, A_2,\u2026\u2026, A_NA1\u200b,A2\u200b,\u2026\u2026,AN\u200b\nEach of the next QQQ lines contains a 2 integer iii and xxx for each query.\n\n\nOutput Format\n\nOutput QQQ space-separated integers with mthm^{th}mth integer as jjj value for mthm^{th}mth query.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ Q ≤ 10^5",
-      "1 ≤ A_i ≤ 10^9",
-      "1 ≤ i ≤ N",
-      "1 ≤ x ≤ 10^11",
-      "∑ N over all test cases ≤ 10^5",
-      "∑ Q over all test cases ≤ 10^5"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 Q \u2264 10^5",
+      "1 \u2264 A_i \u2264 10^9",
+      "1 \u2264 i \u2264 N",
+      "1 \u2264 x \u2264 10^11",
+      "\u2211 N over all test cases \u2264 10^5",
+      "\u2211 Q over all test cases \u2264 10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains two integers N and Q. The second line contains N space‑separated integers A1 … AN (the array is given in non‑decreasing order). Each of the next Q lines contains two integers i and x describing a query.",
-    "outputFormat": "For each test case output Q space‑separated integers on a single line. The m‑th integer is the smallest index j (j ≥ i) such that the sum A_i + A_{i+1} + … + A_j ≥ x. If no such j exists output -1.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains two integers N and Q. The second line contains N space\u2011separated integers A1 \u2026 AN (the array is given in non\u2011decreasing order). Each of the next Q lines contains two integers i and x describing a query.",
+    "outputFormat": "For each test case output Q space\u2011separated integers on a single line. The m\u2011th integer is the smallest index j (j \u2265 i) such that the sum A_i + A_{i+1} + \u2026 + A_j \u2265 x. If no such j exists output -1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n5 4\n10 20 30 40 50\n1 5\n2 60\n1 149\n1 151",
         "output": "1 4 5 -1",
-        "explanation": "For the only test case:\\nQuery1 i=1,x=5 → A1=10≥5 so j=1.\\nQuery2 i=2,x=60 → sum(2..3)=50<60, sum(2..4)=90≥60 so j=4.\\nQuery3 i=1,x=149 → sum(1..5)=150≥149 so j=5.\\nQuery4 i=1,x=151 → total sum=150<151, no j exists → -1."
+        "explanation": "For the only test case:\\nQuery1 i=1,x=5 \u2192 A1=10\u22655 so j=1.\\nQuery2 i=2,x=60 \u2192 sum(2..3)=50<60, sum(2..4)=90\u226560 so j=4.\\nQuery3 i=1,x=149 \u2192 sum(1..5)=150\u2265149 so j=5.\\nQuery4 i=1,x=151 \u2192 total sum=150<151, no j exists \u2192 -1."
       }
     ]
   },
@@ -106,8 +107,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case compute a prefix sum array P where P[0]=0 and P[k]=A1+…+Ak (64‑bit). For a query (i,x) we need the smallest j≥i with P[j]‑P[i‑1] ≥ x, i.e. P[j] ≥ P[i‑1]+x. Because P is strictly increasing (all A_i>0) we can binary‑search the first position ≥ target in the range [i, N]. If such position exists answer=j, otherwise answer=-1. The binary search is O(log N) per query, giving O(N+Q log N) per test case.",
-    "timeComplexity": "O(N + Q·log N) per test case",
+    "approach": "For each test case compute a prefix sum array P where P[0]=0 and P[k]=A1+\u2026+Ak (64\u2011bit). For a query (i,x) we need the smallest j\u2265i with P[j]\u2011P[i\u20111] \u2265 x, i.e. P[j] \u2265 P[i\u20111]+x. Because P is strictly increasing (all A_i>0) we can binary\u2011search the first position \u2265 target in the range [i, N]. If such position exists answer=j, otherwise answer=-1. The binary search is O(log N) per query, giving O(N+Q log N) per test case.",
+    "timeComplexity": "O(N + Q\u00b7log N) per test case",
     "spaceComplexity": "O(N) for the prefix sum array",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint lower_bound(long long *arr, int left, int right, long long target) {\n    int lo = left, hi = right, ans = -1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (arr[mid] >= target) {\n            ans = mid;\n            hi = mid - 1;\n        } else {\n            lo = mid + 1;\n        }\n    }\n    return ans;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N, Q; scanf(\"%d %d\", &N, &Q);\n        long long *pref = (long long*)malloc((N+1)*sizeof(long long));\n        pref[0] = 0;\n        for (int i = 1; i <= N; ++i) {\n            long long val; scanf(\"%lld\", &val);\n            pref[i] = pref[i-1] + val;\n        }\n        for (int qi = 0; qi < Q; ++qi) {\n            int i; long long x; scanf(\"%d %lld\", &i, &x);\n            long long target = pref[i-1] + x;\n            int j = lower_bound(pref, i, N, target);\n            if (j == -1) printf(\"-1\"); else printf(\"%d\", j);\n            if (qi + 1 < Q) printf(\" \");\n        }\n        if (T) printf(\"\\n\");\n        free(pref);\n    }\n    return 0;\n}",

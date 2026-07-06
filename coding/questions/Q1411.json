@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Binary Search",
+      "Flattened Array",
       "Matrix",
-      "Flattened Array"
+      "Searching",
+      "Binary Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an **N × M** matrix where:\n\n\nEach row is sorted in **ascending** order.\nThe first integer of each row is **greater** than the last integer of the **previous** row.\nYour task is to find if an integer **Target** exists in the matrix.\n\n**Note:** You must implement a solution with a time complexity faster than **O(N + M)**.\n\n\nInput Format\n\nThe first line contains two integers, `N` and `M`, separated by a space, representing the number of rows and columns in the matrix, respectively.\nThe next `N` lines each contain `M` integers, representing the elements of the matrix.\nThe final line contains a single integer, `Target`, which is the value to search for in the matrix.\n\n\nOutput Format\n\nPrint **YES** if the `Target` exists in the matrix.\nPrint **NO** otherwise.",
+    "problemStatement": "You are given an **N \u00d7 M** matrix where:\n\n\nEach row is sorted in **ascending** order.\nThe first integer of each row is **greater** than the last integer of the **previous** row.\nYour task is to find if an integer **Target** exists in the matrix.\n\n**Note:** You must implement a solution with a time complexity faster than **O(N + M)**.\n\n\nInput Format\n\nThe first line contains two integers, `N` and `M`, separated by a space, representing the number of rows and columns in the matrix, respectively.\nThe next `N` lines each contain `M` integers, representing the elements of the matrix.\nThe final line contains a single integer, `Target`, which is the value to search for in the matrix.\n\n\nOutput Format\n\nPrint **YES** if the `Target` exists in the matrix.\nPrint **NO** otherwise.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N, M ≤ 1000",
-      "-10^4 ≤ matrix[i][j], Target ≤ 10^4",
-      "The matrix obeys the sorted row and row‑to‑row ordering properties."
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N, M \u2264 1000",
+      "-10^4 \u2264 matrix[i][j], Target \u2264 10^4",
+      "The matrix obeys the sorted row and row\u2011to\u2011row ordering properties."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains two integers N and M (1 ≤ N, M ≤ 1000). The next N lines each contain M integers describing the matrix rows. The matrix satisfies: each row is sorted in ascending order and the first element of a row is greater than the last element of the previous row. The last line of the test case contains a single integer Target.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains two integers N and M (1 \u2264 N, M \u2264 1000). The next N lines each contain M integers describing the matrix rows. The matrix satisfies: each row is sorted in ascending order and the first element of a row is greater than the last element of the previous row. The last line of the test case contains a single integer Target.",
     "outputFormat": "For each test case output a single line containing \"YES\" if Target exists in the matrix, otherwise \"NO\".",
     "sampleTestCases": [
       {
@@ -46,7 +47,7 @@
         "id": "sample_3",
         "input": "1\n1 1\n1\n1",
         "output": "YES",
-        "explanation": "Single‑element matrix contains the target."
+        "explanation": "Single\u2011element matrix contains the target."
       }
     ]
   },
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "Because each row is sorted and the first element of a row is larger than the last element of the previous row, the whole N×M matrix can be viewed as a single sorted 1‑D array of length N·M. We can perform a classic binary search on this virtual array: treat an index k as row = k / M and col = k % M, retrieve matrix[row][col] and compare with Target. Adjust the search interval accordingly. This yields O(log(N·M)) time and O(1) extra space per test case.",
-    "timeComplexity": "O(log(N·M)) per test case, total O(T·log(N·M)).",
+    "approach": "Because each row is sorted and the first element of a row is larger than the last element of the previous row, the whole N\u00d7M matrix can be viewed as a single sorted 1\u2011D array of length N\u00b7M. We can perform a classic binary search on this virtual array: treat an index k as row = k / M and col = k % M, retrieve matrix[row][col] and compare with Target. Adjust the search interval accordingly. This yields O(log(N\u00b7M)) time and O(1) extra space per test case.",
+    "timeComplexity": "O(log(N\u00b7M)) per test case, total O(T\u00b7log(N\u00b7M)).",
     "spaceComplexity": "O(1) auxiliary space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n\nbool searchMatrix(int rows, int cols, int target, int matrix[1000][1000]) {\n    int left = 0, right = rows * cols - 1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        int val = matrix[mid / cols][mid % cols];\n        if (val == target) return true;\n        if (val < target) left = mid + 1; else right = mid - 1;\n    }\n    return false;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, M, target;\n        scanf(\"%d %d\", &N, &M);\n        int matrix[1000][1000];\n        for (int i = 0; i < N; ++i) {\n            for (int j = 0; j < M; ++j) {\n                scanf(\"%d\", &matrix[i][j]);\n            }\n        }\n        scanf(\"%d\", &target);\n        printf(searchMatrix(N, M, target, matrix) ? \"YES\\n\" : \"NO\\n\");\n    }\n    return 0;\n}",

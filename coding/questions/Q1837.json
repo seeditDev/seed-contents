@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Tree Traversal",
+      "Graphs",
       "Preorder Traversal"
     ],
     "companyTags": [],
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "TaskGiven a binary tree, complete the function preOrderTraversal to print the Preorder traversal of the tree.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, NNN space separated integers - the preorder traversal of the given tree.",
+    "problemStatement": "TaskGiven a binary tree, complete the function preOrderTraversal to print the Preorder traversal of the tree.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN \u2014 the number of nodes in the binary tree.\nNext N\u22121N - 1N\u22121 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi\u200b,ci\u200b,Ri\u200b, describing the tree with edge informations - pip_ipi\u200b is an integer denoting the parent node of the iiith edge, cic_ici\u200b is child node, and the letter RiR_iRi\u200b denotes whether the child is left child or right child, it's value is `L` if cic_ici\u200b is left child of pip_ipi\u200b, else `R`.\n\n\nOutput Format\nOutput on the single line, NNN space separated integers - the preorder traversal of the given tree.",
     "constraints": [
       "1 <= N <= 100000",
       "1 <= p, c <= 100000",
@@ -27,7 +28,7 @@
       "All node values are distinct"
     ],
     "inputFormat": "The first line contains an integer N, the number of nodes in the binary tree. The next N-1 lines contain three space-separated values: p, c, and R, where p is the parent node, c is the child node, and R is either 'L' (c is the left child of p) or 'R' (c is the right child of p).",
-    "outputFormat": "For each test case, output a single line with N space-separated integers – the preorder traversal of the given tree.",
+    "outputFormat": "For each test case, output a single line with N space-separated integers \u2013 the preorder traversal of the given tree.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To solve this problem, we first construct the binary tree based on the given edges. Then, we perform a preorder traversal of the tree, which visits the root node first, then recursively traverses the left subtree, and finally the right subtree. We use a stack to implement the preorder traversal iteratively.",
     "timeComplexity": "O(N) per test case, where N is the number of nodes in the tree. The time complexity is linear with respect to the number of nodes in the tree because we visit each node exactly once during the preorder traversal.",
-    "spaceComplexity": "O(N) — the dominant structure is the stack used for the preorder traversal, which in the worst case can contain all nodes of the tree.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the stack used for the preorder traversal, which in the worst case can contain all nodes of the tree.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int N; scanf(\"%d\", &N);\n    // allocate arrays sized by max possible node value (100000) + 1\n    static int left[100005];\n    static int right[100005];\n    static char isChild[100005];\n    for (int i = 0; i <= 100000; ++i) { left[i]=right[i]=0; isChild[i]=0; }\n    int maxNode = 0;\n    for (int i = 0; i < N-1; ++i) {\n        int p, c; char dir;\n        scanf(\"%d %d %c\", &p, &c, &dir);\n        if (dir == 'L') left[p] = c; else right[p] = c;\n        isChild[c] = 1;\n        if (p > maxNode) maxNode = p;\n        if (c > maxNode) maxNode = c;\n    }\n    int root = 1; // default when N==1\n    if (N > 1) {\n        for (int i = 1; i <= maxNode; ++i) {\n            if ((left[i] || right[i] || isChild[i]) && !isChild[i]) { root = i; break; }\n        }\n    }\n    // iterative preorder using manual stack\n    int stack[100005];\n    int top = -1;\n    stack[++top] = root;\n    while (top >= 0) {\n        int node = stack[top--];\n        printf(\"%d \", node);\n        if (right[node]) stack[++top] = right[node];\n        if (left[node])  stack[++top] = left[node];\n    }\n    printf(\"\\n\");\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N; cin>>N;\n    unordered_map<int,int> left, right;\n    unordered_set<int> child, nodes;\n    for(int i=0;i<N-1;++i){\n        int p,c; char dir; cin>>p>>c>>dir;\n        if(dir=='L') left[p]=c; else right[p]=c;\n        child.insert(c);\n        nodes.insert(p); nodes.insert(c);\n    }\n    int root = 0;\n    if(N==1){\n        // only one node, its value is the only number that appears in nodes (if any) else 1\n        if(!nodes.empty()) root = *nodes.begin(); else root = 1;\n    } else {\n        for(int v: nodes) if(!child.count(v)) { root=v; break; }\n    }\n    vector<int> st; st.reserve(N);\n    st.push_back(root);\n    while(!st.empty()){\n        int node = st.back(); st.pop_back();\n        cout<<node<<' ';\n        if(right.count(node)) st.push_back(right[node]);\n        if(left.count(node))  st.push_back(left[node]);\n    }\n    cout<<\"\\n\";\n    return 0;\n}",

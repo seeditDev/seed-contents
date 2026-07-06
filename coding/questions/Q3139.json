@@ -10,8 +10,9 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
-      "String Manipulation"
+      "String Manipulation",
+      "Strings",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,8 +22,8 @@
   "content": {
     "problemStatement": "Chef has found two very old sheets of paper, each of which originally contained a string of lowercase Latin letters. The strings on both the sheets have equal lengths. However, since the sheets are very old, some letters have become unreadable.\n\nChef would like to estimate the difference between these strings. Let's assume that the first string is named **S1**, and the second **S2**. The unreadable symbols are specified with the question mark symbol '?'. The difference between the strings equals to the number of positions **i**, such that **S1i** is not equal to **S2i**, where **S1i** and **S2i** denote the symbol at the **i** the position in **S1** and **S2**, respectively.\n\nChef would like to know the minimal and the maximal difference between the two strings, if he changes all unreadable symbols to lowercase Latin letters. Now that you're fully aware of Chef's programming expertise, you might have guessed that he needs you help solving this problem as well. Go on, help him!",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ |S1| = |S2| ≤ 100",
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 |S1| = |S2| \u2264 100",
       "S1 and S2 contain only 'a'-'z' and '?'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, two lines follow: the first line is string S1, the second line is string S2. Both strings have the same length and consist of lowercase Latin letters and the character '?'.",
@@ -101,7 +102,7 @@
   },
   "solution": {
     "approach": "Traverse both strings position by position. For each index i:\n- If both characters are known (not '?') and different, the difference is unavoidable, so increase both minimal and maximal counters.\n- If at least one character is '?', we can choose them equal to avoid a difference (so minimal does not increase) but we can also choose them different to create a difference (so maximal always increases).\n- If both characters are known and equal, nothing changes.\nThe minimal difference is the count of positions where both are known and different. The maximal difference is the count of positions where the characters are not both known and equal, i.e., all positions except those where both are known and equal.",
-    "timeComplexity": "O(N) per test case, where N is the length of the strings. Overall O(T·N).",
+    "timeComplexity": "O(N) per test case, where N is the length of the strings. Overall O(T\u00b7N).",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char S1[101], S2[101];\n        scanf(\"%s %s\", S1, S2);\n        int len = strlen(S1);\n        int minDiff = 0, maxDiff = 0;\n        for (int i = 0; i < len; ++i) {\n            if (S1[i] != S2[i]) {\n                if (S1[i] != '?' && S2[i] != '?') {\n                    minDiff++;\n                }\n                maxDiff++;\n            } else {\n                // characters are equal; only case where max does NOT increase is when both are known and equal\n                // when both are '?' they are equal now but we can make them different\n                if (S1[i] == '?' && S2[i] == '?') {\n                    maxDiff++;\n                }\n            }\n        }\n        printf(\"%d %d\\n\", minDiff, maxDiff);\n    }\n    return 0;\n}",

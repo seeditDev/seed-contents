@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Subset Sums",
-      "Sorting"
+      "Sorting",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Mahesh got a beautiful array named **A** as a birthday gift from his beautiful girlfriend Namratha. There are **N** positive integers in that array. Mahesh loved the array so much that he started to spend a lot of time on it everyday. One day, he wrote down all possible subsets of the array. Then for each subset, he calculated the sum of elements in that subset and wrote it down on a paper. Unfortunately, Mahesh lost the beautiful array :(. He still has the paper on which he wrote all subset sums. Your task is to rebuild beautiful array **A** and help the couple stay happy :)",
     "constraints": [
-      "1 ≤ T ≤ 50",
-      "1 ≤ N ≤ 15",
-      "0 ≤ Values on paper ≤ 10^9",
+      "1 \u2264 T \u2264 50",
+      "1 \u2264 N \u2264 15",
+      "0 \u2264 Values on paper \u2264 10^9",
       "All input values are valid. A solution always exists."
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case contains two lines. The first line of each test case contains one integer N, the number of elements in array A. The second line of each test case contains 2^N integers, the values written on paper.",
@@ -103,7 +104,7 @@
   "solution": {
     "approach": "The key insight is to recognize that the subset sums can be used to reconstruct the original array. By sorting the subset sums and then finding the differences between consecutive non-zero sums, we can determine the elements of the original array. This approach works because each element of the array contributes to the sum of exactly half of the subsets, and the differences between consecutive non-zero sums will be equal to the elements of the array.",
     "timeComplexity": "O(T * (2^N) * log(2^N)) per test case, O(T * (2^N) * log(2^N)) total. The time complexity is dominated by the sorting of the subset sums.",
-    "spaceComplexity": "O(2^N) — the dominant structure is the array of subset sums.",
+    "spaceComplexity": "O(2^N) \u2014 the dominant structure is the array of subset sums.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n#include <time.h>\n#include <stdint.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int *arr = (int*)malloc(1 << N * sizeof(int));\n        for (int i = 0; i < (1 << N); i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        qsort(arr, (1 << N), sizeof(int), compare);\n        int *ans = (int*)malloc(N * sizeof(int));\n        ans[0] = arr[1];\n        for (int i = 1; i < N; i++) {\n            ans[i] = arr[(1 << i)] - arr[(1 << (i - 1))];\n        }\n        qsort(ans, N, sizeof(int), compare);\n        for (int i = 0; i < N; i++) {\n            printf(\"%d \", ans[i]);\n        }\n        printf(\"\\n\");\n        free(arr);\n        free(ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int *arr = new int[1 << N];\n        for (int i = 0; i < (1 << N); i++) {\n            cin >> arr[i];\n        }\n        sort(arr, arr + (1 << N));\n        int *ans = new int[N];\n        ans[0] = arr[1];\n        for (int i = 1; i < N; i++) {\n            ans[i] = arr[(1 << i)] - arr[(1 << (i - 1))];\n        }\n        sort(ans, ans + N);\n        for (int i = 0; i < N; i++) {\n            cout << ans[i] << \" \";\n        }\n        cout << endl;\n        delete[] arr;\n        delete[] ans;\n    }\n    return 0;\n}",

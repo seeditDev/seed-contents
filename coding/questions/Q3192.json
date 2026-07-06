@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "LCM",
-      "Modular Arithmetic"
+      "Math",
+      "Modular Arithmetic",
+      "LCM"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +22,16 @@
   "content": {
     "problemStatement": "Chef is exploring a new mathematical problem, which can be stated as follows:\n\n\n\n\n\n\n \n\n\nwhere **[x]** means greatest integer which doesn't exceed **x**.\n\n\n\n\nChef wants you to answer some questions for a given pair of integers **N**, **K**: \nWhat is the  ** least common multiple** of **F(N, 1)**, **F(N, 2)**, ... , **F(N, K)** modulo **109 + 7**.\n\n\nChef is not willing to give you all queries at once. Instead, he gives you the first query and suggests you generate all the following queries in this way:\n\n\n**Ni = 1 + (A * Answeri-1 + Ci) mod M **,\n\n**Ki = 1 + (B * Answeri-1 + Di) mod Ni**, \n\nwhere **Answeri** is the answer for the **i**th query.",
     "constraints": [
-      "1 ≤ T ≤ 10^6",
-      "0 ≤ A, B, Ci, Di < M ≤ 10^5",
-      "1 ≤ K1 ≤ N1 < M",
-      "Subtask1: 1 ≤ M ≤ 10",
-      "Subtask2: 1 ≤ T ≤ 10^2, 1 ≤ M ≤ 10^3",
+      "1 \u2264 T \u2264 10^6",
+      "0 \u2264 A, B, Ci, Di < M \u2264 10^5",
+      "1 \u2264 K1 \u2264 N1 < M",
+      "Subtask1: 1 \u2264 M \u2264 10",
+      "Subtask2: 1 \u2264 T \u2264 10^2, 1 \u2264 M \u2264 10^3",
       "Subtask3: A = B = 0",
       "Subtask4: No additional constraints"
     ],
     "inputFormat": "The first line contains an integer T denoting the number of questions. The second line contains two space-separated integers N1 and K1. The third line contains three space-separated integers A, B, and M. The next line contains T-1 space-separated integers: C2, C3, ..., CT. The last line contains T-1 space-separated integers: D2, D3, ..., DT.",
-    "outputFormat": "For each test case, output a single integer — the answer for the given query.",
+    "outputFormat": "For each test case, output a single integer \u2014 the answer for the given query.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -111,8 +112,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first need to calculate the value of F(N, K) for each query. Then, we calculate the LCM of F(N, 1), F(N, 2), ..., F(N, K) modulo 10^9 + 7. We use the formula for LCM and modular arithmetic to avoid overflow.",
-    "timeComplexity": "O(T * K * log(N)) — where T is the number of test cases, K is the maximum value of K, and N is the maximum value of N. The time complexity is dominated by the calculation of LCM and modular arithmetic.",
-    "spaceComplexity": "O(1) — the space complexity is constant as we only use a fixed amount of space to store the input and output values.",
+    "timeComplexity": "O(T * K * log(N)) \u2014 where T is the number of test cases, K is the maximum value of K, and N is the maximum value of N. The time complexity is dominated by the calculation of LCM and modular arithmetic.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant as we only use a fixed amount of space to store the input and output values.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 1000000007\nlong long gcd(long long a, long long b) { return b == 0 ? a : gcd(b, a % b); }\nlong long lcm(long long a, long long b) { return (a * b) / gcd(a, b); }\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int A, B, M;\n        scanf(\"%d %d %d\", &A, &B, &M);\n        int C[T - 1], D[T - 1];\n        for (int i = 0; i < T - 1; i++) {\n            scanf(\"%d\", &C[i]);\n        }\n        for (int i = 0; i < T - 1; i++) {\n            scanf(\"%d\", &D[i]);\n        }\n        long long ans = 1;\n        for (int i = 1; i <= K; i++) {\n            ans = lcm(ans, (N / i) * i);\n            ans %= MOD;\n        }\n        printf(\"%lld\\n\", ans);\n        N = (1 + (A * ans + C[0]) % M);\n        K = (1 + (B * ans + D[0]) % N);\n        for (int i = 1; i < T - 1; i++) {\n            ans = 1;\n            for (int j = 1; j <= K; j++) {\n                ans = lcm(ans, (N / j) * j);\n                ans %= MOD;\n            }\n            printf(\"%lld\\n\", ans);\n            N = (1 + (A * ans + C[i]) % M);\n            K = (1 + (B * ans + D[i]) % N);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#define MOD 1000000007\nusing namespace std;\nlong long gcd(long long a, long long b) { return b == 0 ? a : gcd(b, a % b); }\nlong long lcm(long long a, long long b) { return (a * b) / gcd(a, b); }\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        int A, B, M;\n        cin >> A >> B >> M;\n        int C[T - 1], D[T - 1];\n        for (int i = 0; i < T - 1; i++) {\n            cin >> C[i];\n        }\n        for (int i = 0; i < T - 1; i++) {\n            cin >> D[i];\n        }\n        long long ans = 1;\n        for (int i = 1; i <= K; i++) {\n            ans = lcm(ans, (N / i) * i);\n            ans %= MOD;\n        }\n        cout << ans << endl;\n        N = (1 + (A * ans + C[0]) % M);\n        K = (1 + (B * ans + D[0]) % N);\n        for (int i = 1; i < T - 1; i++) {\n            ans = 1;\n            for (int j = 1; j <= K; j++) {\n                ans = lcm(ans, (N / j) * j);\n                ans %= MOD;\n            }\n            cout << ans << endl;\n            N = (1 + (A * ans + C[i]) % M);\n            K = (1 + (B * ans + D[i]) % N);\n        }\n    }\n    return 0;\n}",

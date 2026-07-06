@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Two Pointers",
-      "Sorting"
+      "Sorting",
+      "Arrays",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,12 +20,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is arranging dishes on a table.\n\nYou are given an array of dishes with NNN dishes. Each dish has a number (positive, negative, or zero).\n\nChef wants to know:\n\n**Can we pick any 3 different dishes indices such that their total is exactly 0?**\n\nYour task is to find all such unique triplets.\n\n\nA valid triplet contains 3 different numbers (on different indices) from the array.\nThe same triplet should not repeat.\nPrint each triplet in non-decreasing order.\nIf no triplet exists return empty array that will be treated as print -1.\nFunction DeclarationFunction NamefindZeroSumTripletsfindZeroSumTripletsfindZeroSumTriplets – This function finds all unique triplets in the array whose sum is exactly zero.\n\nParameters\nnumsnumsnums : A reference to an integer array containing NNN elements, where each element can be positive, negative, or zero.\nReturn Value\nReturns a 2D array containing all **unique triplets** whose sum is `0`.\nEach triplet is sorted in **non-decreasing order**.\nIf no such triplet exists, return an **empty array** (this will be treated as printing `-1`).\nConstraints\n3≤N≤30003 \\leq N \\leq 30003≤N≤3000\n−100000≤nums[i]≤100000-100000 \\leq nums[i] \\leq 100000−100000≤nums[i]≤100000\n\nInput Format\n\nThe first line contains a single integer NNN — the number of elements in the array.\nThe second line contains NNN space-separated integers representing the array elements.\n\n\nOutput Format\n\nPrint all valid triplets, one triplet per line.\nEach triplet should contain three space-separated integers.\nIf no triplet exists, print `-1`.",
+    "problemStatement": "Chef is arranging dishes on a table.\n\nYou are given an array of dishes with NNN dishes. Each dish has a number (positive, negative, or zero).\n\nChef wants to know:\n\n**Can we pick any 3 different dishes indices such that their total is exactly 0?**\n\nYour task is to find all such unique triplets.\n\n\nA valid triplet contains 3 different numbers (on different indices) from the array.\nThe same triplet should not repeat.\nPrint each triplet in non-decreasing order.\nIf no triplet exists return empty array that will be treated as print -1.\nFunction DeclarationFunction NamefindZeroSumTripletsfindZeroSumTripletsfindZeroSumTriplets \u2013 This function finds all unique triplets in the array whose sum is exactly zero.\n\nParameters\nnumsnumsnums : A reference to an integer array containing NNN elements, where each element can be positive, negative, or zero.\nReturn Value\nReturns a 2D array containing all **unique triplets** whose sum is `0`.\nEach triplet is sorted in **non-decreasing order**.\nIf no such triplet exists, return an **empty array** (this will be treated as printing `-1`).\nConstraints\n3\u2264N\u226430003 \\leq N \\leq 30003\u2264N\u22643000\n\u2212100000\u2264nums[i]\u2264100000-100000 \\leq nums[i] \\leq 100000\u2212100000\u2264nums[i]\u2264100000\n\nInput Format\n\nThe first line contains a single integer NNN \u2014 the number of elements in the array.\nThe second line contains NNN space-separated integers representing the array elements.\n\n\nOutput Format\n\nPrint all valid triplets, one triplet per line.\nEach triplet should contain three space-separated integers.\nIf no triplet exists, print `-1`.",
     "constraints": [
-      "3 ≤ N ≤ 3000",
-      "-100000 ≤ nums[i] ≤ 100000"
+      "3 \u2264 N \u2264 3000",
+      "-100000 \u2264 nums[i] \u2264 100000"
     ],
-    "inputFormat": "First line contains a single integer N — the number of elements in the array. The second line contains N space-separated integers representing the array elements.",
+    "inputFormat": "First line contains a single integer N \u2014 the number of elements in the array. The second line contains N space-separated integers representing the array elements.",
     "outputFormat": "Print all valid triplets, one triplet per line. Each triplet should contain three space-separated integers. If no triplet exists, print '-1'.",
     "sampleTestCases": [
       {
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved by using a two-pointer technique. First, we sort the array. Then, for each element in the array, we use two pointers, one starting from the next element and one from the end of the array, to find a pair of elements that sum up to the negation of the current element. If we find such a pair, we add it to the result and move both pointers. If the sum is less than zero, we move the left pointer to the right. If the sum is greater than zero, we move the right pointer to the left.",
     "timeComplexity": "O(N^2) per test case, O(T * N^2) total. The sorting step takes O(N log N) time.",
-    "spaceComplexity": "O(N) — for storing the result.",
+    "spaceComplexity": "O(N) \u2014 for storing the result.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nvoid findZeroSumTriplets(int* nums, int n) {\n    qsort(nums, n, sizeof(int), compare);\n    int found = 0;\n\n    for (int i = 0; i < n - 2; i++) {\n        if (i > 0 && nums[i] == nums[i-1]) continue;\n\n        int left = i + 1, right = n - 1;\n        while (left < right) {\n            int sum = nums[i] + nums[left] + nums[right];\n            if (sum == 0) {\n                printf(\"%d %d %d\\n\", nums[i], nums[left], nums[right]);\n                found = 1;\n                // Skip duplicates\n                while (left < right && nums[left] == nums[left + 1]) left++;\n                while (left < right && nums[right] == nums[right - 1]) right--;\n                left++;\n                right--;\n            } else if (sum < 0) {\n                left++;\n            } else {\n                right--;\n            }\n        }\n    }\n\n    if (!found) {\n        printf(\"-1\\n\");\n    }\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nvector<vector<int>> findZeroSumTriplets(vector<int>& nums) {\n    sort(nums.begin(), nums.end());\n    vector<vector<int>> result;\n    int n = nums.size();\n\n    for (int i = 0; i < n - 2; i++) {\n        if (i > 0 && nums[i] == nums[i-1]) continue;\n\n        int left = i + 1, right = n - 1;\n        while (left < right) {\n            int sum = nums[i] + nums[left] + nums[right];\n            if (sum == 0) {\n                result.push_back({nums[i], nums[left], nums[right]});\n                // Skip duplicates\n                while (left < right && nums[left] == nums[left + 1]) left++;\n                while (left < right && nums[right] == nums[right - 1]) right--;\n                left++;\n                right--;\n            } else if (sum < 0) {\n                left++;\n            } else {\n                right--;\n            }\n        }\n    }\n\n    return result;\n}\n",

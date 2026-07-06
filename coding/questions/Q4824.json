@@ -10,11 +10,12 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "DP",
       "Prefix",
-      "Greedy",
+      "DP",
+      "Optimization",
       "Frequency Counting",
-      "Optimization"
+      "Dynamic Programming",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN guests (numbered 111 through NNN) coming to Chef's wedding. Each guest is part of a family; for each valid iii, the iii-th guest is part of family FiF_iFi​. You need to help Chef find an optimal seating arrangement.\n\nChef may buy a number of tables, which are large enough for any number of guests, but the people sitting at each table must have consecutive numbers ― for any two guests iii and jjj (i&lt;ji \\lt ji&lt;j) sitting at the same table, guests i+1,i+2,…,j−1i+1, i+2, \\ldots, j-1i+1,i+2,…,j−1 must also sit at that table. Chef would have liked to seat all guests at a single table; however, he noticed that two guests iii and jjj are likely to get into an argument if Fi=FjF_i = F_jFi​=Fj​ and they are sitting at the same table.\n\nEach table costs KKK rupees. Chef defines the inefficiency of a seating arrangement as the total cost of tables plus the number of guests who are likely to get into an argument with another guest. Tell Chef the minimum possible inefficiency which he can achieve.",
+    "problemStatement": "There are NNN guests (numbered 111 through NNN) coming to Chef's wedding. Each guest is part of a family; for each valid iii, the iii-th guest is part of family FiF_iFi\u200b. You need to help Chef find an optimal seating arrangement.\n\nChef may buy a number of tables, which are large enough for any number of guests, but the people sitting at each table must have consecutive numbers \u2015 for any two guests iii and jjj (i&lt;ji \\lt ji&lt;j) sitting at the same table, guests i+1,i+2,\u2026,j\u22121i+1, i+2, \\ldots, j-1i+1,i+2,\u2026,j\u22121 must also sit at that table. Chef would have liked to seat all guests at a single table; however, he noticed that two guests iii and jjj are likely to get into an argument if Fi=FjF_i = F_jFi\u200b=Fj\u200b and they are sitting at the same table.\n\nEach table costs KKK rupees. Chef defines the inefficiency of a seating arrangement as the total cost of tables plus the number of guests who are likely to get into an argument with another guest. Tell Chef the minimum possible inefficiency which he can achieve.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N <= 1000",
       "1 <= K <= 1000",
       "1 <= Fi <= 100"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and K — the number of guests and the cost of one table. The second line contains N integers F1, F2, …, FN where Fi denotes the family of the i‑th guest.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and K \u2014 the number of guests and the cost of one table. The second line contains N integers F1, F2, \u2026, FN where Fi denotes the family of the i\u2011th guest.",
     "outputFormat": "For each test case output a single line containing the minimum possible inefficiency.",
     "sampleTestCases": [
       {
@@ -104,8 +105,8 @@
     ]
   },
   "solution": {
-    "approach": "We need to partition the sequence of guests into contiguous groups (tables). The cost of a partition is the number of tables multiplied by K plus, for each table, the number of guests that have at least one other guest of the same family at that table. For a table, if a family appears f times, it contributes f to the inefficiency when f>1. The optimal solution can be found with DP: dp[i] = minimum inefficiency for the first i guests (1‑based). dp[0]=0. For each i from 1 to N we try all possible previous cut positions j (0 <= j < i). The segment (j+1 … i) forms the last table. Its extra cost = K + duplicateCount(j+1,i). We compute duplicateCount on the fly while extending the segment leftwards: keep a frequency array of size 101, and a variable dup. When a family’s frequency becomes 2 we add 2 to dup (both guests now count), and when it becomes >2 we add 1 (the new guest also counts). This yields O(N^2) time per test case, which is fine for N ≤ 1000. The overall complexity is O(T·N^2) time and O(N) extra space.",
-    "timeComplexity": "O(T * N^2) where N ≤ 1000",
+    "approach": "We need to partition the sequence of guests into contiguous groups (tables). The cost of a partition is the number of tables multiplied by K plus, for each table, the number of guests that have at least one other guest of the same family at that table. For a table, if a family appears f times, it contributes f to the inefficiency when f>1. The optimal solution can be found with DP: dp[i] = minimum inefficiency for the first i guests (1\u2011based). dp[0]=0. For each i from 1 to N we try all possible previous cut positions j (0 <= j < i). The segment (j+1 \u2026 i) forms the last table. Its extra cost = K + duplicateCount(j+1,i). We compute duplicateCount on the fly while extending the segment leftwards: keep a frequency array of size 101, and a variable dup. When a family\u2019s frequency becomes 2 we add 2 to dup (both guests now count), and when it becomes >2 we add 1 (the new guest also counts). This yields O(N^2) time per test case, which is fine for N \u2264 1000. The overall complexity is O(T\u00b7N^2) time and O(N) extra space.",
+    "timeComplexity": "O(T * N^2) where N \u2264 1000",
     "spaceComplexity": "O(N) for the dp array and O(101) for the frequency counter",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N, K; scanf(\"%d %d\", &N, &K);\n        int F[1005];\n        for(int i=1;i<=N;i++) scanf(\"%d\", &F[i]);\n        int dp[1005];\n        const int INF = 1e9;\n        dp[0]=0;\n        for(int i=1;i<=N;i++) dp[i]=INF;\n        for(int i=1;i<=N;i++){\n            int freq[101];\n            memset(freq,0,sizeof(freq));\n            int dup=0;\n            for(int j=i;j>=1;j--){\n                int fam=F[j];\n                freq[fam]++;\n                if(freq[fam]==2) dup+=2; // both guests now count\n                else if(freq[fam]>2) dup+=1; // new guest adds one more duplicate\n                int cost = dp[j-1] + K + dup;\n                if(cost < dp[i]) dp[i]=cost;\n            }\n        }\n        printf(\"%d\\n\", dp[N]);\n    }\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Simulation",
-      "Query Processing"
+      "Query Processing",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,17 +20,17 @@
     ]
   },
   "content": {
-    "problemStatement": "A rating system for cricket players is built by Mr.Bugs Bunny and as expected, it has lot of bugs. The initial ratings of N players  ( numbered 0 to N-1 ) are given and we refer it as array V0. The system is expected to answer simple queries of the form, find the top-2 maximum ratings among players from i to j ( inclusive ). Top-2 maximum means the first two elements of the ratings sorted in non-increasing order.\nDue to bugs in the system, an unexpected update occurs after output of each query and this creates a new version of the ratings array V. We refer the Kth version of the ratings arrays as VK. Also, for a query, the system queries on some previous version of V. Mr. Bunny gave the exact details of the bugs as follows,\n\n\n\nGiven Q queries numbered 1 to Q in order and values of A B C D M,\n\n\n\n\nFor a query number K, the query is made on the array Vt , where t = ( A * R1 + D ) % K, and R1 is the maximum rating in the query range of the previous query. For the first query, consider R1 = 0.\n\n\n\nFor a query number K, let R1 and R2 be the top-2 maximum ratings ( R1 ≥ R2 ). After it outputs this answer, the system changes the rating of a player. Specifically, the rating of player number ( B * R1 + D ) % N is changed to ( C * R2 + D ) % M. This update is on the array V(K-1) and a new version VK is created.\n\n\nYou can not fix these bugs, but can you guess the output produced by this system. For more clarity, check the pseudo code below.\n\n\nread array V0;\nR1 = 0, R2 = 0;\nfor K = 1 to Q\n     t = ( A * R1 + D ) % K\n     read qi qj\n     R1, R2 = top-2 Maximum ratings in range [qi..qj] in the array Vt\n     Output R1 R2\n     VK = Update array V(K-1) by changing V(K-1) [ ( B * R1 + D ) % N ] = ( C * R2 + D ) % M\nend-for\n\nNote:",
+    "problemStatement": "A rating system for cricket players is built by Mr.Bugs Bunny and as expected, it has lot of bugs. The initial ratings of N players  ( numbered 0 to N-1 ) are given and we refer it as array V0. The system is expected to answer simple queries of the form, find the top-2 maximum ratings among players from i to j ( inclusive ). Top-2 maximum means the first two elements of the ratings sorted in non-increasing order.\nDue to bugs in the system, an unexpected update occurs after output of each query and this creates a new version of the ratings array V. We refer the Kth version of the ratings arrays as VK. Also, for a query, the system queries on some previous version of V. Mr. Bunny gave the exact details of the bugs as follows,\n\n\n\nGiven Q queries numbered 1 to Q in order and values of A B C D M,\n\n\n\n\nFor a query number K, the query is made on the array Vt , where t = ( A * R1 + D ) % K, and R1 is the maximum rating in the query range of the previous query. For the first query, consider R1 = 0.\n\n\n\nFor a query number K, let R1 and R2 be the top-2 maximum ratings ( R1 \u2265 R2 ). After it outputs this answer, the system changes the rating of a player. Specifically, the rating of player number ( B * R1 + D ) % N is changed to ( C * R2 + D ) % M. This update is on the array V(K-1) and a new version VK is created.\n\n\nYou can not fix these bugs, but can you guess the output produced by this system. For more clarity, check the pseudo code below.\n\n\nread array V0;\nR1 = 0, R2 = 0;\nfor K = 1 to Q\n     t = ( A * R1 + D ) % K\n     read qi qj\n     R1, R2 = top-2 Maximum ratings in range [qi..qj] in the array Vt\n     Output R1 R2\n     VK = Update array V(K-1) by changing V(K-1) [ ( B * R1 + D ) % N ] = ( C * R2 + D ) % M\nend-for\n\nNote:",
     "constraints": [
-      "2 ≤ N ≤ 100,000",
-      "0 ≤ V0[i], M < 1,000,000,000",
-      "M ≥ 2",
-      "2 ≤ A, B, C, D ≤ 100,000",
-      "1 ≤ Q ≤ 100,000",
-      "0 ≤ qi < qj < N"
+      "2 \u2264 N \u2264 100,000",
+      "0 \u2264 V0[i], M < 1,000,000,000",
+      "M \u2265 2",
+      "2 \u2264 A, B, C, D \u2264 100,000",
+      "1 \u2264 Q \u2264 100,000",
+      "0 \u2264 qi < qj < N"
     ],
     "inputFormat": "First line contains 6 integers N M A B C D. Second line contains N integers, the initial ratings of N players in order. Third line contains Q (number of queries). Next Q lines contain the query number K, and two integers qi qj.",
-    "outputFormat": "For each query, output the top-2 maximum ratings R1 R2 (R1 ≥ R2) in a new line.",
+    "outputFormat": "For each query, output the top-2 maximum ratings R1 R2 (R1 \u2265 R2) in a new line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "The problem requires simulating the given queries and updates on the array. We start with the initial ratings array V0 and process each query one by one. For each query, we find the top-2 maximum ratings in the specified range of the current version of the ratings array. After outputting the top-2 maximum ratings, we update the ratings array according to the given rules and create a new version of the ratings array.",
     "timeComplexity": "O(Q * N log N) per test case, where Q is the number of queries and N is the number of players. This is because for each query, we sort the ratings in the specified range to find the top-2 maximum ratings.",
-    "spaceComplexity": "O(N) — we need to store the ratings array and the updated versions of the ratings array.",
+    "spaceComplexity": "O(N) \u2014 we need to store the ratings array and the updated versions of the ratings array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int N, M, A, B, C, D, Q;\n    scanf(\"%d %d %d %d %d %d\", &N, &M, &A, &B, &C, &D);\n    int *V0 = (int*)malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &V0[i]);\n    }\n    scanf(\"%d\", &Q);\n    int R1 = 0, R2 = 0;\n    for (int K = 1; K <= Q; K++) {\n        int t = (A * R1 + D) % K;\n        int qi, qj;\n        scanf(\"%d %d\", &qi, &qj);\n        int *temp = (int*)malloc((qj - qi + 1) * sizeof(int));\n        for (int i = qi; i <= qj; i++) {\n            temp[i - qi] = V0[i];\n        }\n        qsort(temp, qj - qi + 1, sizeof(int), compare);\n        R1 = temp[qj - qi];\n        R2 = temp[qj - qi - 1];\n        printf(\"%d %d\\n\", R1, R2);\n        int index = (B * R1 + D) % N;\n        V0[index] = (C * R2 + D) % M;\n        free(temp);\n    }\n    free(V0);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M, A, B, C, D, Q;\n    cin >> N >> M >> A >> B >> C >> D;\n    int *V0 = new int[N];\n    for (int i = 0; i < N; i++) {\n        cin >> V0[i];\n    }\n    cin >> Q;\n    int R1 = 0, R2 = 0;\n    for (int K = 1; K <= Q; K++) {\n        int t = (A * R1 + D) % K;\n        int qi, qj;\n        cin >> qi >> qj;\n        int *temp = new int[qj - qi + 1];\n        for (int i = qi; i <= qj; i++) {\n            temp[i - qi] = V0[i];\n        }\n        sort(temp, temp + qj - qi + 1, greater<int>());\n        R1 = temp[0];\n        R2 = temp[1];\n        cout << R1 << \" \" << R2 << endl;\n        int index = (B * R1 + D) % N;\n        V0[index] = (C * R2 + D) % M;\n        delete[] temp;\n    }\n    delete[] V0;\n    return 0;\n}",

@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We create a 2D array dp where dp[i][j] represents the minimum number of steps required to make the first i elements of array A equal to the first i elements of array B, with the last element being increased by j modulo 4. We fill up the dp array by iterating over the elements of the arrays and considering all possible increases for each element.",
     "timeComplexity": "O(T * n * 4) per test case, O(T * n * 4) total.",
-    "spaceComplexity": "O(n * 4) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(n * 4) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T, n;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &n);\n        int A[n], B[n];\n        for (int i = 0; i < n; i++) scanf(\"%d\", &A[i]);\n        for (int i = 0; i < n; i++) scanf(\"%d\", &B[i]);\n        int dp[n][4] = {0};\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < 4; j++) {\n                if (i == 0) {\n                    dp[i][j] = (A[i] + j) % 4 == B[i] ? j : 1e9;\n                } else {\n                    int min = 1e9;\n                    for (int k = 0; k < 4; k++) {\n                        if ((A[i] + k) % 4 == B[i]) {\n                            min = min < dp[i-1][j] + k ? min : dp[i-1][j] + k;\n                        }\n                    }\n                    dp[i][j] = min;\n                }\n            }\n        }\n        int min = 1e9;\n        for (int i = 0; i < 4; i++) min = min < dp[n-1][i] ? min : dp[n-1][i];\n        printf(\"%d\\n\", min);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <climits>\nusing namespace std;\nint main() {\n    int T, n;\n    cin >> T;\n    while (T--) {\n        cin >> n;\n        int A[n], B[n];\n        for (int i = 0; i < n; i++) cin >> A[i];\n        for (int i = 0; i < n; i++) cin >> B[i];\n        int dp[n][4] = {0};\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < 4; j++) {\n                if (i == 0) {\n                    dp[i][j] = (A[i] + j) % 4 == B[i] ? j : 1e9;\n                } else {\n                    int min = 1e9;\n                    for (int k = 0; k < 4; k++) {\n                        if ((A[i] + k) % 4 == B[i]) {\n                            min = min < dp[i-1][j] + k ? min : dp[i-1][j] + k;\n                        }\n                    }\n                    dp[i][j] = min;\n                }\n            }\n        }\n        cout << *min_element(dp[n-1], dp[n-1] + 4) << endl;\n    }\n    return 0;\n}",

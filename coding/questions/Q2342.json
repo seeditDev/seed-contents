@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Probability"
+      "Math",
+      "Probability",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the expected number of evaluations for each possible order of variables. We can then find the minimum expected number of evaluations among all possible orders.",
     "timeComplexity": "O(T * 2^N * N) per test case, where N is the number of variables. O(T * 2^N * N) total.",
-    "spaceComplexity": "O(2^N) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(2^N) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_VARS 1000\n#define MAX_EXPR_LENGTH 30000\n\n// Function to calculate the expected number of evaluations\ndouble calculate_expected_evaluations(char *expression, double *probabilities, int n) {\n    double expected_evaluations = 0.0;\n    // Iterate over all possible orders of evaluation\n    for (int i = 0; i < (1 << n); i++) {\n        double current_state = 0.0;\n        // Iterate over the variables in the current order\n        for (int j = 0; j < n; j++) {\n            if ((i & (1 << j)) != 0) {\n                current_state += probabilities[j];\n            }\n        }\n        expected_evaluations += current_state;\n    }\n    return expected_evaluations / (1 << n);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    for (int i = 0; i < t; i++) {\n        char expression[MAX_EXPR_LENGTH];\n        fgets(expression, sizeof(expression), stdin);\n        int n;\n        scanf(\"%d\", &n);\n        double probabilities[n];\n        for (int j = 0; j < n; j++) {\n            char var_name[6];\n            scanf(\"%s %lf\", var_name, &probabilities[j]);\n        }\n        double expected_evaluations = calculate_expected_evaluations(expression, probabilities, n);\n        printf(\"%.6f\\n\", expected_evaluations);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nconst int MAX_VARS = 1000;\nconst int MAX_EXPR_LENGTH = 30000;\n\n// Function to calculate the expected number of evaluations\ndouble calculate_expected_evaluations(const string &expression, const vector<double> &probabilities) {\n    double expected_evaluations = 0.0;\n    int n = probabilities.size();\n    // Iterate over all possible orders of evaluation\n    for (int i = 0; i < (1 << n); i++) {\n        double current_state = 0.0;\n        // Iterate over the variables in the current order\n        for (int j = 0; j < n; j++) {\n            if ((i & (1 << j)) != 0) {\n                current_state += probabilities[j];\n            }\n        }\n        expected_evaluations += current_state;\n    }\n    return expected_evaluations / (1 << n);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    for (int i = 0; i < t; i++) {\n        string expression;\n        cin.ignore();\n        getline(cin, expression);\n        int n;\n        cin >> n;\n        vector<double> probabilities(n);\n        for (int j = 0; j < n; j++) {\n            string var_name;\n            cin >> var_name;\n            cin >> probabilities[j];\n        }\n        double expected_evaluations = calculate_expected_evaluations(expression, probabilities);\n        printf(\"%.6f\\n\", expected_evaluations);\n    }\n    return 0;\n}",

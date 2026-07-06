@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Range Graphs",
       "Connected Graphs",
+      "Dynamic Programming",
       "Modular Arithmetic"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "In this problem, we study about Range Graphs - a special family of bipartite graphs. A bipartite graph with nnn vertices on the left part (numbered from 1 to nnn) and mmm on the right part (numbered from n+1n+1n+1 to n+mn + mn+m), is said to be a Range Graph, if each vertex on the left satisfies the following property - the numbers of its set of neighbors should form a consecutive range/segment on the right.\n\nFor example, suppose nnn = 10 and mmm = 13. Then the vertices on the left are {1, 2, ..., 10} and the ones on the right are {11, 12, ..., 23}. Now, suppose the neighbors of vertex 7 were {12, 14, 15, 19}, then this would not be a Range Graph, because they aren't consecutive numbers. So for it to be a Range Graph, the neighbors could potentially be, say, {12, 13, 14, 15}.\n\nYour task is to find the total number of **connected** Range Graphs which have nnn vertices on left and mmm on the right. Output your answer modulo 109+710^9 + 7109+7.\n\nNote that two Range Graphs are considered to be different if there are two vertices i and j such that one of the graphs has an edge between them, but the other graph doesn't. In other words, the edge set should be different. A graph is said to be connected if every vertex is reachable from every other vertex through some sequence of edges.\n\n**Note: The source limit (ie. the size of your program file) for this problem is lower than usual. It is 10 KB.**\n\n###Input\n\n\nThe first line of the input contains an integer TTT denoting the number of test cases. The description of the test cases follows.\nThe only line of each test case contains two space-separated integers n,mn, mn,m.\n###Output:\nFor each test case, output an integer corresponding to the answer of the problem.\n\n###Constraints\n\n\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤n,m≤25001 \\leq n, m \\leq 25001≤n,m≤2500\n1≤n∗m≤25001 \\leq n * m \\leq 25001≤n∗m≤2500",
+    "problemStatement": "In this problem, we study about Range Graphs - a special family of bipartite graphs. A bipartite graph with nnn vertices on the left part (numbered from 1 to nnn) and mmm on the right part (numbered from n+1n+1n+1 to n+mn + mn+m), is said to be a Range Graph, if each vertex on the left satisfies the following property - the numbers of its set of neighbors should form a consecutive range/segment on the right.\n\nFor example, suppose nnn = 10 and mmm = 13. Then the vertices on the left are {1, 2, ..., 10} and the ones on the right are {11, 12, ..., 23}. Now, suppose the neighbors of vertex 7 were {12, 14, 15, 19}, then this would not be a Range Graph, because they aren't consecutive numbers. So for it to be a Range Graph, the neighbors could potentially be, say, {12, 13, 14, 15}.\n\nYour task is to find the total number of **connected** Range Graphs which have nnn vertices on left and mmm on the right. Output your answer modulo 109+710^9 + 7109+7.\n\nNote that two Range Graphs are considered to be different if there are two vertices i and j such that one of the graphs has an edge between them, but the other graph doesn't. In other words, the edge set should be different. A graph is said to be connected if every vertex is reachable from every other vertex through some sequence of edges.\n\n**Note: The source limit (ie. the size of your program file) for this problem is lower than usual. It is 10 KB.**\n\n###Input\n\n\nThe first line of the input contains an integer TTT denoting the number of test cases. The description of the test cases follows.\nThe only line of each test case contains two space-separated integers n,mn, mn,m.\n###Output:\nFor each test case, output an integer corresponding to the answer of the problem.\n\n###Constraints\n\n\n1\u2264T\u22641051 \\leq T \\leq 10^51\u2264T\u2264105\n1\u2264n,m\u226425001 \\leq n, m \\leq 25001\u2264n,m\u22642500\n1\u2264n\u2217m\u226425001 \\leq n * m \\leq 25001\u2264n\u2217m\u22642500",
     "constraints": [
       "1 <= T <= 10^5",
       "1 <= n, m <= 2500",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of connected Range Graphs for each possible value of n and m. We will use a 2D array dp where dp[i][j] represents the number of connected Range Graphs with i vertices on the left and j vertices on the right. We will fill up this array in a bottom-up manner, using the previously computed values to calculate the current value.",
-    "timeComplexity": "O(T * n * m) — we loop over each test case, and for each test case, we fill up the dp array which takes O(n * m) time.",
-    "spaceComplexity": "O(n * m) — we need to store the dp array which has a size of O(n * m).",
+    "timeComplexity": "O(T * n * m) \u2014 we loop over each test case, and for each test case, we fill up the dp array which takes O(n * m) time.",
+    "spaceComplexity": "O(n * m) \u2014 we need to store the dp array which has a size of O(n * m).",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#define MOD 1000000007\nint dp[2501][2501];\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        for (int i = 0; i <= n; i++) {\n            for (int j = 0; j <= m; j++) {\n                if (i == 0 || j == 0) {\n                    dp[i][j] = 1;\n                } else {\n                    dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;\n                }\n            }\n        }\n        printf(\"%d\\n\", dp[n][m]);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint dp[2501][2501];\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n, m;\n        cin >> n >> m;\n        for (int i = 0; i <= n; i++) {\n            for (int j = 0; j <= m; j++) {\n                if (i == 0 || j == 0) {\n                    dp[i][j] = 1;\n                } else {\n                    dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;\n                }\n            }\n        }\n        cout << dp[n][m] << endl;\n    }\n    return 0;\n}",

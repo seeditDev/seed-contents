@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Dynamic Programming",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Maximum Subarray",
       "Kadane's Algorithm",
+      "Offline Queries",
       "Filtering",
-      "Offline Queries"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,16 +22,16 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given two sequences A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ and C1,C2,…,CNC_1, C_2, \\ldots, C_NC1​,C2​,…,CN​. For each valid iii, CiC_iCi​ is the colour of AiA_iAi​.\n\nYou should answer QQQ queries. In each query:\n\n\nYou are given two colours xxx and yyy.\nConsider the subsequence of AAA which contains only elements AiA_iAi​ such that Ci=xC_i = xCi​=x or Ci=yC_i = yCi​=y (in the original order). Let's denote it by BBB.\nFor each contiguous subsequence of BBB (including empty subsequence), consider the sum of all its elements. Find the maximum of these sums.",
+    "problemStatement": "You are given two sequences A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b and C1,C2,\u2026,CNC_1, C_2, \\ldots, C_NC1\u200b,C2\u200b,\u2026,CN\u200b. For each valid iii, CiC_iCi\u200b is the colour of AiA_iAi\u200b.\n\nYou should answer QQQ queries. In each query:\n\n\nYou are given two colours xxx and yyy.\nConsider the subsequence of AAA which contains only elements AiA_iAi\u200b such that Ci=xC_i = xCi\u200b=x or Ci=yC_i = yCi\u200b=y (in the original order). Let's denote it by BBB.\nFor each contiguous subsequence of BBB (including empty subsequence), consider the sum of all its elements. Find the maximum of these sums.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N, Q ≤ 15 (for the official test files, as required by the statement)",
-      "|Ai| ≤ 10^9",
-      "1 ≤ Ci ≤ N",
-      "x ≠ y"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N, Q \u2264 15 (for the official test files, as required by the statement)",
+      "|Ai| \u2264 10^9",
+      "1 \u2264 Ci \u2264 N",
+      "x \u2260 y"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q.\n- The second line contains N integers A1 … AN.\n- The third line contains N integers C1 … CN (colors of the elements).\n- Then Q lines follow, each containing two integers x and y describing a query.\nAll numbers are separated by single spaces.",
-    "outputFormat": "For each query, output a single line with one integer – the maximum possible sum of a contiguous subsequence of the filtered array B (elements whose colour is x or y). The empty subsequence is allowed, so the answer is never negative.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q.\n- The second line contains N integers A1 \u2026 AN.\n- The third line contains N integers C1 \u2026 CN (colors of the elements).\n- Then Q lines follow, each containing two integers x and y describing a query.\nAll numbers are separated by single spaces.",
+    "outputFormat": "For each query, output a single line with one integer \u2013 the maximum possible sum of a contiguous subsequence of the filtered array B (elements whose colour is x or y). The empty subsequence is allowed, so the answer is never negative.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -104,8 +105,8 @@
     ]
   },
   "solution": {
-    "approach": "For each query we build the subsequence B that consists of all Ai whose colour is either x or y, preserving the original order. The required answer is the maximum sum of a contiguous sub‑array of B, with the empty sub‑array allowed. This is exactly the classic maximum sub‑array problem, solved by Kadane's algorithm in O(|B|) time. Because the limits for N and Q are tiny (≤15) we can afford to run Kadane independently for every query, giving an overall O(N·Q) per test case, which easily fits the limits.\nAlgorithm per query:\n1. Initialise cur = 0, best = 0.\n2. Scan the original array from i = 0 to N‑1.\n   - If Ci equals x or y, set cur = max(0, cur + Ai) and best = max(best, cur).\n   - Otherwise skip the element (it breaks the contiguous segment).\n3. After the scan, best is the answer (0 already accounts for the empty subsequence).",
-    "timeComplexity": "O(N·Q) per test case (worst‑case 225 operations because N,Q ≤ 15).",
+    "approach": "For each query we build the subsequence B that consists of all Ai whose colour is either x or y, preserving the original order. The required answer is the maximum sum of a contiguous sub\u2011array of B, with the empty sub\u2011array allowed. This is exactly the classic maximum sub\u2011array problem, solved by Kadane's algorithm in O(|B|) time. Because the limits for N and Q are tiny (\u226415) we can afford to run Kadane independently for every query, giving an overall O(N\u00b7Q) per test case, which easily fits the limits.\nAlgorithm per query:\n1. Initialise cur = 0, best = 0.\n2. Scan the original array from i = 0 to N\u20111.\n   - If Ci equals x or y, set cur = max(0, cur + Ai) and best = max(best, cur).\n   - Otherwise skip the element (it breaks the contiguous segment).\n3. After the scan, best is the answer (0 already accounts for the empty subsequence).",
+    "timeComplexity": "O(N\u00b7Q) per test case (worst\u2011case 225 operations because N,Q \u2264 15).",
     "spaceComplexity": "O(1) additional memory besides the input arrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,Q; scanf(\"%d %d\",&N,&Q);\n        long long *A = (long long*)malloc(N*sizeof(long long));\n        int *C = (int*)malloc(N*sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%lld\",&A[i]);\n        for(int i=0;i<N;i++) scanf(\"%d\",&C[i]);\n        for(int qi=0; qi<Q; ++qi){\n            int x,y; scanf(\"%d %d\",&x,&y);\n            long long cur=0, best=0;\n            for(int i=0;i<N;i++) if(C[i]==x || C[i]==y){\n                cur = cur + A[i];\n                if(cur<0) cur=0;\n                if(cur>best) best=cur;\n            }\n            printf(\"%lld\\n\",best);\n        }\n        free(A); free(C);\n    }\n    return 0;\n}",

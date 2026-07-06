@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Binary Search Tree",
-      "Preorder Traversal",
       "Level Order Traversal",
+      "Preorder Traversal",
+      "Binary Search Tree",
+      "Data Structures",
       "Recursion"
     ],
     "companyTags": [],
@@ -21,15 +22,15 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array of integers `preorder`, which represents the **preorder traversal** of a **Binary Search Tree (BST)**.\nYour task is to **construct the BST** from this traversal and return the **root node** of the tree.\n\nIt is **guaranteed** that a valid BST can always be constructed from the given `preorder` traversal.\n\nA **Binary Search Tree (BST)** is a binary tree where:\n\n\nEvery node’s left child and its descendants have values **less than** the node’s value.\nEvery node’s right child and its descendants have values **greater than** the node’s value.\nA **preorder traversal** of a binary tree visits:\n\n\nThe node itself,\nThen its left subtree,\nThen its right subtree.\nFunction Declaration\n\n**Function Name**\n\n\n\nbstFromPreorderbstFromPreorderbstFromPreorder\n\n\n\n**Parameters**\n\n\n\npreorderpreorderpreorder: A list (or array) of integers representing the preorder traversal of a Binary Search Tree (BST).\n\n\n\n**Return Value**\n\n\n\nReturns the root node of the Binary Search Tree constructed from the given preorder traversal.",
+    "problemStatement": "You are given an array of integers `preorder`, which represents the **preorder traversal** of a **Binary Search Tree (BST)**.\nYour task is to **construct the BST** from this traversal and return the **root node** of the tree.\n\nIt is **guaranteed** that a valid BST can always be constructed from the given `preorder` traversal.\n\nA **Binary Search Tree (BST)** is a binary tree where:\n\n\nEvery node\u2019s left child and its descendants have values **less than** the node\u2019s value.\nEvery node\u2019s right child and its descendants have values **greater than** the node\u2019s value.\nA **preorder traversal** of a binary tree visits:\n\n\nThe node itself,\nThen its left subtree,\nThen its right subtree.\nFunction Declaration\n\n**Function Name**\n\n\n\nbstFromPreorderbstFromPreorderbstFromPreorder\n\n\n\n**Parameters**\n\n\n\npreorderpreorderpreorder: A list (or array) of integers representing the preorder traversal of a Binary Search Tree (BST).\n\n\n\n**Return Value**\n\n\n\nReturns the root node of the Binary Search Tree constructed from the given preorder traversal.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 1000",
       "1 <= preorder[i] <= 1000",
       "All values in a test case are distinct"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of nodes in the preorder traversal. The second line contains N space‑separated distinct integers representing the preorder traversal of a BST.",
-    "outputFormat": "For each test case, output a single line containing the level‑order traversal of the constructed BST. Node values are printed in order, separated by a single space, and a newline follows each test case.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of nodes in the preorder traversal. The second line contains N space\u2011separated distinct integers representing the preorder traversal of a BST.",
+    "outputFormat": "For each test case, output a single line containing the level\u2011order traversal of the constructed BST. Node values are printed in order, separated by a single space, and a newline follows each test case.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,9 +116,9 @@
     ]
   },
   "solution": {
-    "approach": "We reconstruct the BST directly from its preorder sequence using the classic recursive bound method. While scanning the preorder array from left to right we keep the current index. For a recursive call we also keep the allowed value range [min,max]. The next value belongs to the current subtree only if it lies inside the range. If it does, we create a node, advance the index and recursively build its left subtree with range [min, value‑1] and its right subtree with range [value+1, max]. Because each element is processed exactly once, the construction runs in O(N) time. After the tree is built we perform a standard breadth‑first search (queue) to obtain the level‑order traversal. Both steps use O(N) additional memory for the tree and the queue.",
-    "timeComplexity": "O(N) per test case – each element is visited once during construction and once during the BFS level order traversal.",
-    "spaceComplexity": "O(N) – the tree nodes and the BFS queue together store at most N nodes.",
+    "approach": "We reconstruct the BST directly from its preorder sequence using the classic recursive bound method. While scanning the preorder array from left to right we keep the current index. For a recursive call we also keep the allowed value range [min,max]. The next value belongs to the current subtree only if it lies inside the range. If it does, we create a node, advance the index and recursively build its left subtree with range [min, value\u20111] and its right subtree with range [value+1, max]. Because each element is processed exactly once, the construction runs in O(N) time. After the tree is built we perform a standard breadth\u2011first search (queue) to obtain the level\u2011order traversal. Both steps use O(N) additional memory for the tree and the queue.",
+    "timeComplexity": "O(N) per test case \u2013 each element is visited once during construction and once during the BFS level order traversal.",
+    "spaceComplexity": "O(N) \u2013 the tree nodes and the BFS queue together store at most N nodes.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\ntypedef struct Node {\n    int data;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\nNode* newNode(int data) {\n    Node* n = (Node*)malloc(sizeof(Node));\n    n->data = data;\n    n->left = n->right = NULL;\n    return n;\n}\n\nNode* construct(int* pre, int* idx, int n, int min, int max) {\n    if (*idx >= n) return NULL;\n    int val = pre[*idx];\n    if (val < min || val > max) return NULL;\n    Node* root = newNode(val);\n    (*idx)++;\n    root->left = construct(pre, idx, n, min, val - 1);\n    root->right = construct(pre, idx, n, val + 1, max);\n    return root;\n}\n\nvoid levelOrder(Node* root) {\n    if (!root) return;\n    Node* q[1005];\n    int front = 0, rear = 0;\n    q[rear++] = root;\n    while (front < rear) {\n        Node* cur = q[front++];\n        printf(\"%d \", cur->data);\n        if (cur->left) q[rear++] = cur->left;\n        if (cur->right) q[rear++] = cur->right;\n    }\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int* pre = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &pre[i]);\n        int idx = 0;\n        Node* root = construct(pre, &idx, N, INT_MIN, INT_MAX);\n        levelOrder(root);\n        printf(\"\\n\");\n        free(pre);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int data;\n    Node* left;\n    Node* right;\n    Node(int v) : data(v), left(nullptr), right(nullptr) {}\n};\n\nNode* construct(const vector<int>& pre, int& idx, int minVal, int maxVal) {\n    if (idx >= (int)pre.size()) return nullptr;\n    int val = pre[idx];\n    if (val < minVal || val > maxVal) return nullptr;\n    Node* root = new Node(val);\n    ++idx;\n    root->left = construct(pre, idx, minVal, val - 1);\n    root->right = construct(pre, idx, val + 1, maxVal);\n    return root;\n}\n\nvoid levelOrder(Node* root) {\n    if (!root) return;\n    queue<Node*> q;\n    q.push(root);\n    while (!q.empty()) {\n        Node* cur = q.front(); q.pop();\n        cout << cur->data << ' ';\n        if (cur->left) q.push(cur->left);\n        if (cur->right) q.push(cur->right);\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        int N; cin >> N;\n        vector<int> pre(N);\n        for (int i = 0; i < N; ++i) cin >> pre[i];\n        int idx = 0;\n        Node* root = construct(pre, idx, INT_MIN, INT_MAX);\n        levelOrder(root);\n        cout << '\\n';\n    }\n    return 0;\n}",

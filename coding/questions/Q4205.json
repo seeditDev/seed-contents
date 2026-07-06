@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,17 +19,17 @@
     ]
   },
   "content": {
-    "problemStatement": "Let's call an integer sequence nice if the sum of its elements is divisible by a given integer KKK. You are given an integer sequence A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​. Hasan wanted to find the number of nice subsequences of this sequence. However, this problem is too easy, so Hasan decided to add an extra constraint.\n\nFor an arbitrary non-empty sequence of indices i1&lt;i2&lt;…&lt;iLi_1 \\lt i_2 \\lt \\ldots \\lt i_Li1​&lt;i2​&lt;…&lt;iL​, let's call a subsequence Ai1,Ai2,…,AiLA_{i_1}, A_{i_2}, \\ldots, A_{i_L}Ai1​​,Ai2​​,…,AiL​​ very nice if it is nice and iL−i1≥Wi_L-i_1 \\ge WiL​−i1​≥W. Help Hasan and find the number of very nice subsequences. Since this number may be very large, compute it modulo 109+710^9+7109+7.",
+    "problemStatement": "Let's call an integer sequence nice if the sum of its elements is divisible by a given integer KKK. You are given an integer sequence A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. Hasan wanted to find the number of nice subsequences of this sequence. However, this problem is too easy, so Hasan decided to add an extra constraint.\n\nFor an arbitrary non-empty sequence of indices i1&lt;i2&lt;\u2026&lt;iLi_1 \\lt i_2 \\lt \\ldots \\lt i_Li1\u200b&lt;i2\u200b&lt;\u2026&lt;iL\u200b, let's call a subsequence Ai1,Ai2,\u2026,AiLA_{i_1}, A_{i_2}, \\ldots, A_{i_L}Ai1\u200b\u200b,Ai2\u200b\u200b,\u2026,AiL\u200b\u200b very nice if it is nice and iL\u2212i1\u2265Wi_L-i_1 \\ge WiL\u200b\u2212i1\u200b\u2265W. Help Hasan and find the number of very nice subsequences. Since this number may be very large, compute it modulo 109+710^9+7109+7.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 10^5",
-      "2 ≤ K ≤ 50",
-      "0 ≤ W ≤ N - 1",
-      "0 ≤ Ai ≤ K - 1 for each valid i",
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 10^5",
+      "2 \u2264 K \u2264 50",
+      "0 \u2264 W \u2264 N - 1",
+      "0 \u2264 Ai \u2264 K - 1 for each valid i",
       "the sum of N over all test cases does not exceed 3 * 10^5"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains three space-separated integers N, K and W. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of very nice subsequences modulo 10^9 + 7.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains three space-separated integers N, K and W. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of very nice subsequences modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -104,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of very nice subsequences. We will maintain a 2D array dp where dp[i][j] represents the number of very nice subsequences ending at index i with sum j modulo K. We will iterate over the array and for each element, we will update the dp array accordingly. We will also keep track of the number of very nice subsequences ending at each index and having a sum divisible by K.",
-    "timeComplexity": "O(T * N * K) — where T is the number of test cases, N is the maximum length of the array, and K is the maximum possible sum modulo K.",
-    "spaceComplexity": "O(N * K) — where N is the maximum length of the array and K is the maximum possible sum modulo K.",
+    "timeComplexity": "O(T * N * K) \u2014 where T is the number of test cases, N is the maximum length of the array, and K is the maximum possible sum modulo K.",
+    "spaceComplexity": "O(N * K) \u2014 where N is the maximum length of the array and K is the maximum possible sum modulo K.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K, W;\n        scanf(\"%d %d %d\", &N, &K, &W);\n        int* A = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        long long** dp = (long long**)malloc((N + 1) * sizeof(long long*));\n        for (int i = 0; i <= N; i++) {\n            dp[i] = (long long*)malloc((K) * sizeof(long long));\n        }\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = 0;\n            }\n        }\n        dp[0][0] = 1;\n        long long ans = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = dp[i - 1][j];\n                int sum = (j + A[i - 1]) % K;\n                dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n                if (i >= W + 1 && sum == 0) {\n                    ans = (ans + dp[i - 1][j]) % MOD;\n                }\n            }\n        }\n        printf(\"%lld\\n\", ans);\n        free(A);\n        for (int i = 0; i <= N; i++) {\n            free(dp[i]);\n        }\n        free(dp);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K, W;\n        cin >> N >> K >> W;\n        vector<int> A(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        vector<vector<long long>> dp(N + 1, vector<long long>(K, 0));\n        dp[0][0] = 1;\n        long long ans = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = dp[i - 1][j];\n                int sum = (j + A[i - 1]) % K;\n                dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n                if (i >= W + 1 && sum == 0) {\n                    ans = (ans + dp[i - 1][j]) % MOD;\n                }\n            }\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

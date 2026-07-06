@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Math",
       "Least Common Multiple",
-      "Modular Arithmetic",
-      "Dynamic Programming"
+      "Dynamic Programming",
+      "Modular Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "In this problem Sereja is interested in number of arrays **A[1], A[2], ..., A[N] (1 ≤ A[i] ≤ M, A[i] - integer)** \nsuch that least common multiple (**LCM**) of all its elements is divisible by number **D**. \n\n\n\nPlease, find sum of answers to the problem with **D = L, D = L+1, ..., D = R**. As answer could be large, please output it modulo \n(109 + 7).",
+    "problemStatement": "In this problem Sereja is interested in number of arrays **A[1], A[2], ..., A[N] (1 \u2264 A[i] \u2264 M, A[i] - integer)** \nsuch that least common multiple (**LCM**) of all its elements is divisible by number **D**. \n\n\n\nPlease, find sum of answers to the problem with **D = L, D = L+1, ..., D = R**. As answer could be large, please output it modulo \n(109 + 7).",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 5*10^6",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of arrays A[1], A[2], ..., A[N] such that the least common multiple (LCM) of all its elements is divisible by D, for each D from L to R. We can then sum up these values and take the result modulo (10^9 + 7). The key insight is to use the inclusion-exclusion principle to efficiently calculate the LCM.",
-    "timeComplexity": "O(T * (R - L + 1) * M * N) — the time complexity is dominated by the nested loops over the test cases, the range of D, the possible values of M, and the length of the array N.",
-    "spaceComplexity": "O(M) — the space complexity is dominated by the storage needed for the dynamic programming table, which has size M.",
+    "timeComplexity": "O(T * (R - L + 1) * M * N) \u2014 the time complexity is dominated by the nested loops over the test cases, the range of D, the possible values of M, and the length of the array N.",
+    "spaceComplexity": "O(M) \u2014 the space complexity is dominated by the storage needed for the dynamic programming table, which has size M.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nlong long gcd(long long a, long long b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nlong long lcm(long long a, long long b) {\n    return (a * b) / gcd(a, b);\n}\n\nlong long powmod(long long base, long long exponent, long long mod) {\n    long long result = 1;\n    while (exponent > 0) {\n        if (exponent % 2 == 1) result = (result * base) % mod;\n        exponent /= 2;\n        base = (base * base) % mod;\n    }\n    return result;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M, L, R;\n        scanf(\"%d %d %d %d\", &N, &M, &L, &R);\n        long long sum = 0;\n        for (int D = L; D <= R; D++) {\n            long long count = 0;\n            for (int mask = 0; mask < (1 << M); mask++) {\n                long long lcm_val = 1;\n                int num = 0;\n                for (int i = 0; i < M; i++) {\n                    if ((mask & (1 << i)) != 0) {\n                        lcm_val = lcm(lcm_val, i + 1);\n                        num++;\n                    }\n                }\n                if (lcm_val % D == 0 && num == N) count++;\n            }\n            sum = (sum + count) % MOD;\n        }\n        printf(\"%lld\\n\", sum);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\n#define MOD 1000000007\n\nlong long gcd(long long a, long long b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nlong long lcm(long long a, long long b) {\n    return (a * b) / gcd(a, b);\n}\n\nlong long powmod(long long base, long long exponent, long long mod) {\n    long long result = 1;\n    while (exponent > 0) {\n        if (exponent % 2 == 1) result = (result * base) % mod;\n        exponent /= 2;\n        base = (base * base) % mod;\n    }\n    return result;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M, L, R;\n        cin >> N >> M >> L >> R;\n        long long sum = 0;\n        for (int D = L; D <= R; D++) {\n            long long count = 0;\n            for (int mask = 0; mask < (1 << M); mask++) {\n                long long lcm_val = 1;\n                int num = 0;\n                for (int i = 0; i < M; i++) {\n                    if ((mask & (1 << i)) != 0) {\n                        lcm_val = lcm(lcm_val, i + 1);\n                        num++;\n                    }\n                }\n                if (lcm_val % D == 0 && num == N) count++;\n            }\n            sum = (sum + count) % MOD;\n        }\n        cout << sum << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Modular Arithmetic",
       "Combinatorics",
-      "Matrix Operations"
+      "Matrix Operations",
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "\"But I’m no longer the troublemaker you think I am!\" - Naruto Uzumaki\n\nSakshi had a matrix with NNN rows (numbered 111 through NNN) and MMM columns (numbered 111 through MMM). Initially, all cells of this matrix contained 000-s. Let's denote a cell in row rrr and column ccc by (r,c)(r, c)(r,c).\n\nSakshi is well-known for troubling others. This time, her friends Nikki and Mansi planned to take revenge and teach her a lesson, so they changed her matrix by performing the following operation QQQ times:\n\n\nChoose any valid cell (x,y)(x, y)(x,y).\nAdd 111 to all the cells in row xxx.\nAdd 111 to all the cells in column yyy.\nThen, Nikki and Mansi challenged Sakshi to find the total number of ways to perform a sequence of QQQ operations on the initial matrix such that at the end, exactly ZZZ cells in the matrix contain odd integers. Sakshi is not good at math, since she has spent all her life troubling others, so this time, she really needs your help. Help Sakshi count the number of ways. Since the answer may be large, compute it modulo 998,244,353998,244,353998,244,353.\n\nNote: Two ways to perform a sequence of operations are considered different if there is a valid iii such that the cell chosen in the iii-th operation in one sequence is different from the cell chosen in the iii-th operation in the other sequence. For example, if we choose the cells (1,1)(1,1)(1,1) and (2,2)(2,2)(2,2) in this order, it is different from choosing the cells (2,2)(2,2)(2,2) and (1,1)(1,1)(1,1).",
+    "problemStatement": "\"But I\u2019m no longer the troublemaker you think I am!\" - Naruto Uzumaki\n\nSakshi had a matrix with NNN rows (numbered 111 through NNN) and MMM columns (numbered 111 through MMM). Initially, all cells of this matrix contained 000-s. Let's denote a cell in row rrr and column ccc by (r,c)(r, c)(r,c).\n\nSakshi is well-known for troubling others. This time, her friends Nikki and Mansi planned to take revenge and teach her a lesson, so they changed her matrix by performing the following operation QQQ times:\n\n\nChoose any valid cell (x,y)(x, y)(x,y).\nAdd 111 to all the cells in row xxx.\nAdd 111 to all the cells in column yyy.\nThen, Nikki and Mansi challenged Sakshi to find the total number of ways to perform a sequence of QQQ operations on the initial matrix such that at the end, exactly ZZZ cells in the matrix contain odd integers. Sakshi is not good at math, since she has spent all her life troubling others, so this time, she really needs your help. Help Sakshi count the number of ways. Since the answer may be large, compute it modulo 998,244,353998,244,353998,244,353.\n\nNote: Two ways to perform a sequence of operations are considered different if there is a valid iii such that the cell chosen in the iii-th operation in one sequence is different from the cell chosen in the iii-th operation in the other sequence. For example, if we choose the cells (1,1)(1,1)(1,1) and (2,2)(2,2)(2,2) in this order, it is different from choosing the cells (2,2)(2,2)(2,2) and (1,1)(1,1)(1,1).",
     "constraints": [
       "1 <= T <= 50",
       "1 <= N, M <= 2000",
@@ -28,7 +29,7 @@
       "1 <= Q <= 10^18"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The first and only line of each test case contains four space-separated integers N, M, Q and Z.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of ways to perform a sequence of operations modulo 998,244,353.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of ways to perform a sequence of operations modulo 998,244,353.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming and modular arithmetic. We need to calculate the number of ways to perform Q operations such that exactly Z cells in the matrix contain odd integers. We can use a 2D array dp where dp[i][j] represents the number of ways to perform i operations such that j cells contain odd integers. We can then use the properties of modular arithmetic to calculate the final result.",
-    "timeComplexity": "O(T * N * M * Q) — explain: per query is O(N * M * Q), total is O(T * N * M * Q)",
-    "spaceComplexity": "O(N * M * Q) — explain what dominates",
+    "timeComplexity": "O(T * N * M * Q) \u2014 explain: per query is O(N * M * Q), total is O(T * N * M * Q)",
+    "spaceComplexity": "O(N * M * Q) \u2014 explain what dominates",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 998244353\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M, Q, Z;\n        scanf(\"%d %d %d %d\", &N, &M, &Q, &Z);\n        long long dp[N * M + 1];\n        dp[0] = 1;\n        for (int i = 1; i <= Q; i++) {\n            long long ndp[N * M + 1];\n            for (int j = 0; j <= N * M; j++) ndp[j] = 0;\n            for (int j = 0; j <= N * M; j++) {\n                if (dp[j] == 0) continue;\n                for (int k = 0; k <= N * M; k++) {\n                    if (j + k > N * M) break;\n                    ndp[j + k] = (ndp[j + k] + dp[j] * powmod(N * M - j - k + 1, MOD - 2)) % MOD;\n                }\n            }\n            for (int j = 0; j <= N * M; j++) dp[j] = ndp[j];\n        }\n        printf(\"%lld\\n\", dp[Z]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 998244353\nusing namespace std;\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M, Q, Z;\n        cin >> N >> M >> Q >> Z;\n        vector<long long> dp(N * M + 1, 0);\n        dp[0] = 1;\n        for (int i = 1; i <= Q; i++) {\n            vector<long long> ndp(N * M + 1, 0);\n            for (int j = 0; j <= N * M; j++) {\n                if (dp[j] == 0) continue;\n                for (int k = 0; k <= N * M; k++) {\n                    if (j + k > N * M) break;\n                    ndp[j + k] = (ndp[j + k] + dp[j] * powmod(N * M - j - k + 1, MOD - 2)) % MOD;\n                }\n            }\n            for (int j = 0; j <= N * M; j++) dp[j] = ndp[j];\n        }\n        cout << dp[Z] << endl;\n    }\n    return 0;\n}",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Prime Numbers",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,10 +20,10 @@
     ]
   },
   "content": {
-    "problemStatement": "You are currently in charge of a large multinational company. You have many projects in hand. There are **N** employees currently in your company, all of whom have a unique ID, numbered from **1** to **N**. You want to form a non-empty set of teams of equal sizes from these employees such that each employee works in exactly one team. Your task is to find the number of ways to form such sets of teams.\n\nTwo ways are different if there exists at least one pair of employees who are in the same team in one way but belong to different teams in the other way.\n\nThere is an interesting property of **N**: it can be expressed as **p1×p2p_1 \\times p_2p1​×p2​**, where both **p1p_1p1​** and **p2p_2p2​** are prime numbers (**p1p_1p1​** may be equal to **p2p_2p2​**) and **Max(p1,p2)&lt;10×Min(p1,p2)\\text{Max}(p_1, p_2) &lt; 10 \\times \\text{Min}(p_1, p_2)Max(p1​,p2​)&lt;10×Min(p1​,p2​)**. You need to output the number of ways modulo **q**, where **q** will always be a prime number.\n\n\nInput Format\nThe first line of each input contains a single integer **T**, which denotes the number of test cases. Each case starts with a line containing two integers, **L** and **q**, where **L** is the number of lines to follow and **q** is a prime number.\n\n\nEach of the next **L** lines contains a single integer **N**.\n\n\n\nOutput Format\nFor each test case, output \"**Case :**\" in a separate line, where **x** denotes the test case number. Then for each line containing **N**, print the number of ways modulo **q**. Follow Sample Input and Output for details.",
+    "problemStatement": "You are currently in charge of a large multinational company. You have many projects in hand. There are **N** employees currently in your company, all of whom have a unique ID, numbered from **1** to **N**. You want to form a non-empty set of teams of equal sizes from these employees such that each employee works in exactly one team. Your task is to find the number of ways to form such sets of teams.\n\nTwo ways are different if there exists at least one pair of employees who are in the same team in one way but belong to different teams in the other way.\n\nThere is an interesting property of **N**: it can be expressed as **p1\u00d7p2p_1 \\times p_2p1\u200b\u00d7p2\u200b**, where both **p1p_1p1\u200b** and **p2p_2p2\u200b** are prime numbers (**p1p_1p1\u200b** may be equal to **p2p_2p2\u200b**) and **Max(p1,p2)&lt;10\u00d7Min(p1,p2)\\text{Max}(p_1, p_2) &lt; 10 \\times \\text{Min}(p_1, p_2)Max(p1\u200b,p2\u200b)&lt;10\u00d7Min(p1\u200b,p2\u200b)**. You need to output the number of ways modulo **q**, where **q** will always be a prime number.\n\n\nInput Format\nThe first line of each input contains a single integer **T**, which denotes the number of test cases. Each case starts with a line containing two integers, **L** and **q**, where **L** is the number of lines to follow and **q** is a prime number.\n\n\nEach of the next **L** lines contains a single integer **N**.\n\n\n\nOutput Format\nFor each test case, output \"**Case :**\" in a separate line, where **x** denotes the test case number. Then for each line containing **N**, print the number of ways modulo **q**. Follow Sample Input and Output for details.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ L ≤ 20",
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 L \u2264 20",
       "1 < q < 5000",
       "1 < N < 10^12"
     ],
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use the concept of modular arithmetic and the properties of prime numbers. We need to find the number of ways to form sets of teams of equal sizes from N employees, where each employee works in exactly one team. We can use the formula for combinations to calculate the number of ways to form teams, and then take the result modulo q to get the final answer.",
-    "timeComplexity": "O(T * L) — explain: per query is O(1), total is O(T * L)",
-    "spaceComplexity": "O(1) — explain: we only need a constant amount of space to store the input and output values",
+    "timeComplexity": "O(T * L) \u2014 explain: per query is O(1), total is O(T * L)",
+    "spaceComplexity": "O(1) \u2014 explain: we only need a constant amount of space to store the input and output values",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int L, q;\n        scanf(\"%d %d\", &L, &q);\n        printf(\"Case %d:\\n\", t + 1);\n        for (int i = 0; i < L; i++) {\n            long long N;\n            scanf(\"%lld\", &N);\n            long long result = 1;\n            for (long long j = 2; j * j <= N; j++) {\n                if (N % j == 0) {\n                    int count = 0;\n                    while (N % j == 0) {\n                        N /= j;\n                        count++;\n                    }\n                    result = (result * (j - 1)) % q;\n                    for (int k = 1; k < count; k++) {\n                        result = (result * j) % q;\n                    }\n                }\n            }\n            if (N > 1) {\n                result = (result * (N - 1)) % q;\n            }\n            printf(\"%lld\\n\", result);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int L, q;\n        cin >> L >> q;\n        cout << \"Case \" << t + 1 << \":\\n\";\n        for (int i = 0; i < L; i++) {\n            long long N;\n            cin >> N;\n            long long result = 1;\n            for (long long j = 2; j * j <= N; j++) {\n                if (N % j == 0) {\n                    int count = 0;\n                    while (N % j == 0) {\n                        N /= j;\n                        count++;\n                    }\n                    result = (result * (j - 1)) % q;\n                    for (int k = 1; k < count; k++) {\n                        result = (result * j) % q;\n                    }\n                }\n            }\n            if (N > 1) {\n                result = (result * (N - 1)) % q;\n            }\n            cout << result << endl;\n        }\n    }\n    return 0;\n}",

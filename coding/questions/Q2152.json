@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Union-Find",
-      "Graph Theory"
+      "Graph Theory",
+      "Graphs",
+      "Union-Find"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using the Union-Find algorithm, also known as the disjoint-set data structure. We initialize each city as its own set, and then iterate through the roads, merging the sets of the cities that are connected by each road. The number of steps required to perform the unification is equal to the number of sets minus one.",
     "timeComplexity": "O(T * k * alpha(k)) per test case, where alpha(k) is the inverse Ackermann function, which grows very slowly. The total time complexity is O(T * k * alpha(k)).",
-    "spaceComplexity": "O(k) — the dominant structure is the parent array.",
+    "spaceComplexity": "O(k) \u2014 the dominant structure is the parent array.",
     "code": {
       "C": "#include <stdio.h>\nint find(int* parent, int x) {\n    if (parent[x] != x) {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nvoid unionSet(int* parent, int* rank, int x, int y) {\n    int rootX = find(parent, x);\n    int rootY = find(parent, y);\n    if (rootX != rootY) {\n        if (rank[rootX] < rank[rootY]) {\n            parent[rootX] = rootY;\n        } else if (rank[rootX] > rank[rootY]) {\n            parent[rootY] = rootX;\n        } else {\n            parent[rootY] = rootX;\n            rank[rootX]++;\n        }\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int k;\n        scanf(\"%d\", &k);\n        int* parent = (int*)malloc(k * sizeof(int));\n        int* rank = (int*)malloc(k * sizeof(int));\n        for (int i = 0; i < k; i++) {\n            parent[i] = i;\n            rank[i] = 0;\n        }\n        for (int i = 1; i < k; i++) {\n            int p;\n            scanf(\"%d\", &p);\n            unionSet(parent, rank, i, p);\n        }\n        int count = 0;\n        for (int i = 0; i < k; i++) {\n            if (parent[i] == i) {\n                count++;\n            }\n        }\n        printf(\"%d\\n\", count - 1);\n        free(parent);\n        free(rank);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint find(int* parent, int x) {\n    if (parent[x] != x) {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nvoid unionSet(int* parent, int* rank, int x, int y) {\n    int rootX = find(parent, x);\n    int rootY = find(parent, y);\n    if (rootX != rootY) {\n        if (rank[rootX] < rank[rootY]) {\n            parent[rootX] = rootY;\n        } else if (rank[rootX] > rank[rootY]) {\n            parent[rootY] = rootX;\n        } else {\n            parent[rootY] = rootX;\n            rank[rootX]++;\n        }\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int k;\n        cin >> k;\n        int* parent = new int[k];\n        int* rank = new int[k];\n        for (int i = 0; i < k; i++) {\n            parent[i] = i;\n            rank[i] = 0;\n        }\n        for (int i = 1; i < k; i++) {\n            int p;\n            cin >> p;\n            unionSet(parent, rank, i, p);\n        }\n        int count = 0;\n        for (int i = 0; i < k; i++) {\n            if (parent[i] == i) {\n                count++;\n            }\n        }\n        cout << count - 1 << endl;\n        delete[] parent;\n        delete[] rank;\n    }\n    return 0;\n}",

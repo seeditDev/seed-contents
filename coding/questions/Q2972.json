@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Permutations",
-      "Similar Strings"
+      "Similar Strings",
+      "Strings",
+      "Permutations"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to calculate the total number of permutations of the string A and then subtract the number of similar string pairs. We use the concept of permutations with repetition to calculate the total number of permutations. For similar string pairs, we consider all possible pairs of characters in the string and count the number of pairs that can be swapped to get similar strings.",
     "timeComplexity": "O(T * n) per test case, where n is the length of the string A. O(T * n) total.",
-    "spaceComplexity": "O(n) — the dominant structure is the frequency array of size 26.",
+    "spaceComplexity": "O(n) \u2014 the dominant structure is the frequency array of size 26.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nlong long factorial(int n) {\n    long long result = 1;\n    for (int i = 2; i <= n; i++) {\n        result = (result * i) % MOD;\n    }\n    return result;\n}\n\nlong long power(long long base, int exponent) {\n    long long result = 1;\n    while (exponent > 0) {\n        if (exponent % 2 == 1) {\n            result = (result * base) % MOD;\n        }\n        base = (base * base) % MOD;\n        exponent /= 2;\n    }\n    return result;\n}\n\nlong long inverse(long long num) {\n    return power(num, MOD - 2);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char A[100005];\n        scanf(\"%s\", A);\n        int n = strlen(A);\n        int freq[26] = {0};\n        for (int i = 0; i < n; i++) {\n            freq[A[i] - 'a']++;\n        }\n        long long total_permutations = factorial(n);\n        for (int i = 0; i < 26; i++) {\n            total_permutations = (total_permutations * inverse(factorial(freq[i]))) % MOD;\n        }\n        long long similar_strings = 0;\n        for (int i = 0; i < 26; i++) {\n            for (int j = i + 1; j < 26; j++) {\n                if (freq[i] > 0 && freq[j] > 0) {\n                    similar_strings = (similar_strings + (freq[i] * freq[j]) % MOD) % MOD;\n                }\n            }\n        }\n        printf(\"%lld\\n\", ((total_permutations * total_permutations) % MOD - similar_strings * 2 % MOD + MOD) % MOD);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n#define MOD 1000000007\n\nlong long factorial(int n) {\n    long long result = 1;\n    for (int i = 2; i <= n; i++) {\n        result = (result * i) % MOD;\n    }\n    return result;\n}\n\nlong long power(long long base, int exponent) {\n    long long result = 1;\n    while (exponent > 0) {\n        if (exponent % 2 == 1) {\n            result = (result * base) % MOD;\n        }\n        base = (base * base) % MOD;\n        exponent /= 2;\n    }\n    return result;\n}\n\nlong long inverse(long long num) {\n    return power(num, MOD - 2);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        string A;\n        cin >> A;\n        int n = A.size();\n        int freq[26] = {0};\n        for (int i = 0; i < n; i++) {\n            freq[A[i] - 'a']++;\n        }\n        long long total_permutations = factorial(n);\n        for (int i = 0; i < 26; i++) {\n            total_permutations = (total_permutations * inverse(factorial(freq[i]))) % MOD;\n        }\n        long long similar_strings = 0;\n        for (int i = 0; i < 26; i++) {\n            for (int j = i + 1; j < 26; j++) {\n                if (freq[i] > 0 && freq[j] > 0) {\n                    similar_strings = (similar_strings + (freq[i] * freq[j]) % MOD) % MOD;\n                }\n            }\n        }\n        cout << ((total_permutations * total_permutations) % MOD - similar_strings * 2 % MOD + MOD) % MOD << endl;\n    }\n    return 0;\n}",

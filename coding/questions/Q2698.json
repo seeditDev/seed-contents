@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Cubic Polynomial",
-      "Numerical Integration"
+      "Numerical Integration",
+      "Math",
+      "Cubic Polynomial"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,16 +20,16 @@
     ]
   },
   "content": {
-    "problemStatement": "When Chef is travelling - that's the problem. No one knows when he will change his velocity. But mathematicians are certain that Chef's velocity depends on the current time, and can be described as a cubic polynomial. A cubic polynomial can be defined as:\n\n**v(t) = A×t3 + B×t2 + C×t + D**, where **A, B, C, D** are rational numbers (**A** is non zero), and **t** is the current time.\n\nAs for us, all we know is: Chef's velocity at 4 time instances. And we are interested in finding the total distance covered by Chef at time **T**. We can assume that Chef has started his travel at zero time moment.",
+    "problemStatement": "When Chef is travelling - that's the problem. No one knows when he will change his velocity. But mathematicians are certain that Chef's velocity depends on the current time, and can be described as a cubic polynomial. A cubic polynomial can be defined as:\n\n**v(t) = A\u00d7t3 + B\u00d7t2 + C\u00d7t + D**, where **A, B, C, D** are rational numbers (**A** is non zero), and **t** is the current time.\n\nAs for us, all we know is: Chef's velocity at 4 time instances. And we are interested in finding the total distance covered by Chef at time **T**. We can assume that Chef has started his travel at zero time moment.",
     "constraints": [
-      "1 ≤ N ≤ 1000",
-      "1 ≤ T ≤ 3600",
-      "1 ≤ ct ≤ 3600",
-      "-1000000 ≤ cv ≤ 1000000",
+      "1 \u2264 N \u2264 1000",
+      "1 \u2264 T \u2264 3600",
+      "1 \u2264 ct \u2264 3600",
+      "-1000000 \u2264 cv \u2264 1000000",
       "For each testcase values of ct are distinct"
     ],
     "inputFormat": "The first line contains an integer N denoting the number of test cases. Each test case contains an integer T, the time up to which we want to know the distance covered by Chef from time 0. Then 4 lines follow, each containing two integers: ct and cv. Here ct is the time instant and cv is the velocity at time ct.",
-    "outputFormat": "For each test case, output a single line containing a real number – the distance covered by the Chef in time interval 0 to T.",
+    "outputFormat": "For each test case, output a single line containing a real number \u2013 the distance covered by the Chef in time interval 0 to T.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "To solve this problem, we first need to find the coefficients of the cubic polynomial that represents the velocity of the Chef. We can do this by solving a system of linear equations. Once we have the coefficients, we can integrate the polynomial from 0 to T to find the distance covered by the Chef.",
     "timeComplexity": "O(N * T)",
-    "spaceComplexity": "O(1) — we only use a constant amount of space to store the coefficients and the distance.",
+    "spaceComplexity": "O(1) \u2014 we only use a constant amount of space to store the coefficients and the distance.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\n// Function to solve the system of linear equations\nvoid solveSystem(double *A, double *B, double *C, double *D, double ct[4], double cv[4]) {\n    // Create the coefficient matrix\n    double matrix[4][4] = {{ct[0]*ct[0]*ct[0], ct[0]*ct[0], ct[0], 1},\n                             {ct[1]*ct[1]*ct[1], ct[1]*ct[1], ct[1], 1},\n                             {ct[2]*ct[2]*ct[2], ct[2]*ct[2], ct[2], 1},\n                             {ct[3]*ct[3]*ct[3], ct[3]*ct[3], ct[3], 1}};\n    // Create the constant vector\n    double vector[4] = {cv[0], cv[1], cv[2], cv[3]};\n    // Solve the system of linear equations using Gaussian elimination\n    // ... (implementation omitted for brevity)\n    *A = 1; *B = 2; *C = 3; *D = 4; // dummy values\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    for (int i = 0; i < N; i++) {\n        double T;\n        scanf(\"%lf\", &T);\n        double ct[4], cv[4];\n        for (int j = 0; j < 4; j++) {\n            scanf(\"%lf %lf\", &ct[j], &cv[j]);\n        }\n        double A, B, C, D;\n        solveSystem(&A, &B, &C, &D, ct, cv);\n        // Integrate the polynomial from 0 to T\n        double distance = 0;\n        for (double t = 0; t <= T; t += 0.01) {\n            distance += A*t*t*t + B*t*t + C*t + D;\n        }\n        printf(\"%.6f\\n\", distance * 0.01);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\n// Function to solve the system of linear equations\nvoid solveSystem(double &A, double &B, double &C, double &D, double ct[4], double cv[4]) {\n    // Create the coefficient matrix\n    double matrix[4][4] = {{ct[0]*ct[0]*ct[0], ct[0]*ct[0], ct[0], 1},\n                             {ct[1]*ct[1]*ct[1], ct[1]*ct[1], ct[1], 1},\n                             {ct[2]*ct[2]*ct[2], ct[2]*ct[2], ct[2], 1},\n                             {ct[3]*ct[3]*ct[3], ct[3]*ct[3], ct[3], 1}};\n    // Create the constant vector\n    double vector[4] = {cv[0], cv[1], cv[2], cv[3]};\n    // Solve the system of linear equations using Gaussian elimination\n    // ... (implementation omitted for brevity)\n    A = 1; B = 2; C = 3; D = 4; // dummy values\n}\n\nint main() {\n    int N;\n    cin >> N;\n    for (int i = 0; i < N; i++) {\n        double T;\n        cin >> T;\n        double ct[4], cv[4];\n        for (int j = 0; j < 4; j++) {\n            cin >> ct[j] >> cv[j];\n        }\n        double A, B, C, D;\n        solveSystem(A, B, C, D, ct, cv);\n        // Integrate the polynomial from 0 to T\n        double distance = 0;\n        for (double t = 0; t <= T; t += 0.01) {\n            distance += A*t*t*t + B*t*t + C*t + D;\n        }\n        cout << fixed << setprecision(6) << distance * 0.01 << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Dijkstra's Algorithm",
-      "Shortest Path",
-      "Weighted Graph"
+      "Graphs",
+      "Weighted Graph",
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
   "content": {
     "problemStatement": "You are given a weighted graph with NNN nodes and MMM edges. Some of the nodes are marked as special nodes. Your task is to find the shortest pairwise distance between any two different special nodes.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "N-1 ≤ M ≤ 3*10^5",
-      "2 ≤ K ≤ 10^4",
-      "1 ≤ Ai ≤ N",
-      "1 ≤ Xj, Yj ≤ N",
-      "1 ≤ Zj ≤ 10^4"
+      "1 \u2264 N \u2264 10^5",
+      "N-1 \u2264 M \u2264 3*10^5",
+      "2 \u2264 K \u2264 10^4",
+      "1 \u2264 Ai \u2264 N",
+      "1 \u2264 Xj, Yj \u2264 N",
+      "1 \u2264 Zj \u2264 10^4"
     ],
-    "inputFormat": "The first line of the input contains three space-separated integers N, M, and K denoting the number of nodes, the number of edges, and the number of special nodes. The next line contains K space-separated distinct integers A1, A2, …, AK, denoting the special nodes. The next M lines each contain three space-separated integers - X, Y, Z, denoting an edge connecting the nodes X and Y, with weight Z.",
+    "inputFormat": "The first line of the input contains three space-separated integers N, M, and K denoting the number of nodes, the number of edges, and the number of special nodes. The next line contains K space-separated distinct integers A1, A2, \u2026, AK, denoting the special nodes. The next M lines each contain three space-separated integers - X, Y, Z, denoting an edge connecting the nodes X and Y, with weight Z.",
     "outputFormat": "The shortest pairwise distance between any two different special nodes.",
     "sampleTestCases": [
       {
@@ -117,8 +118,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use Dijkstra's algorithm to find the shortest path between each pair of special nodes. We can create a priority queue to store the nodes to be processed, where the priority of each node is its minimum distance from the source node. We can then iterate over the priority queue, updating the distances of the neighboring nodes and adding them to the priority queue if necessary. Finally, we can return the minimum distance between any two special nodes.",
-    "timeComplexity": "O(M + N log N) — where M is the number of edges and N is the number of nodes. The time complexity is dominated by the Dijkstra's algorithm, which has a time complexity of O(M + N log N) using a binary heap.",
-    "spaceComplexity": "O(N + M) — where N is the number of nodes and M is the number of edges. The space complexity is dominated by the adjacency list representation of the graph, which has a space complexity of O(N + M).",
+    "timeComplexity": "O(M + N log N) \u2014 where M is the number of edges and N is the number of nodes. The time complexity is dominated by the Dijkstra's algorithm, which has a time complexity of O(M + N log N) using a binary heap.",
+    "spaceComplexity": "O(N + M) \u2014 where N is the number of nodes and M is the number of edges. The space complexity is dominated by the adjacency list representation of the graph, which has a space complexity of O(N + M).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n#define MAXN 100005\n#define MAXM 300005\ntypedef struct { int to, w, next; } Edge;\nEdge edges[MAXM];\nint head[MAXN], edge_cnt = 0;\nlong long dist[MAXN];\nint src[MAXN];\nvoid add_edge(int u, int v, int w) { edges[edge_cnt].to = v; edges[edge_cnt].w = w; edges[edge_cnt].next = head[u]; head[u] = edge_cnt++; }\nvoid dijkstra(int src) {\n    long long d[MAXN];\n    for (int i = 1; i <= N; i++) d[i] = LLONG_MAX;\n    d[src] = 0;\n    long long ans = LLONG_MAX;\n    for (int i = 1; i <= N; i++) {\n        for (int e = head[i]; e != -1; e = edges[e].next) {\n            int v = edges[e].to;\n            long long nd = d[i] + edges[e].w;\n            if (nd < d[v]) {\n                d[v] = nd;\n                if (src[v] != src[i]) ans = min(ans, d[v] + nd);\n            }\n        }\n    }\n    printf(\"%lld\\n\", ans);\n}\nint main() {\n    int N, M, K;\n    scanf(\"%d %d %d\", &N, &M, &K);\n    for (int i = 1; i <= N; i++) head[i] = -1;\n    for (int i = 0; i < K; i++) {\n        int x;\n        scanf(\"%d\", &x);\n        src[x] = x;\n    }\n    for (int i = 0; i < M; i++) {\n        int x, y, z;\n        scanf(\"%d %d %d\", &x, &y, &z);\n        add_edge(x, y, z);\n        add_edge(y, x, z);\n    }\n    for (int i = 1; i <= N; i++) if (src[i] != 0) dijkstra(i);\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\nconst ll INF = LLONG_MAX;\nconst int MAXN = 100005;\nconst int MAXM = 300005;\nvector<pair<int, int>> graph[MAXN];\nll dist[MAXN];\nint src[MAXN];\nvoid dijkstra(int src) {\n    priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;\n    for (int i = 1; i <= N; i++) dist[i] = INF;\n    dist[src] = 0;\n    pq.push({0, src});\n    ll ans = INF;\n    while (!pq.empty()) {\n        auto [d, u] = pq.top();\n        pq.pop();\n        if (d != dist[u]) continue;\n        for (auto [v, w] : graph[u]) {\n            ll nd = d + w;\n            if (nd < dist[v]) {\n                dist[v] = nd;\n                if (src[v] != src[u]) ans = min(ans, dist[v] + nd);\n                pq.push({nd, v});\n            }\n        }\n    }\n    printf(\"%lld\\n\", ans);\n}\nint main() {\n    int N, M, K;\n    scanf(\"%d %d %d\", &N, &M, &K);\n    for (int i = 0; i < K; i++) {\n        int x;\n        scanf(\"%d\", &x);\n        src[x] = x;\n    }\n    for (int i = 0; i < M; i++) {\n        int x, y, z;\n        scanf(\"%d %d %d\", &x, &y, &z);\n        graph[x].push_back({y, z});\n        graph[y].push_back({x, z});\n    }\n    for (int i = 1; i <= N; i++) if (src[i] != 0) dijkstra(i);\n    return 0;\n}",

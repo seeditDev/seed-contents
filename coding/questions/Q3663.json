@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Palindrome",
-      "Hamming Distance",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Strings",
+      "Hamming Distance"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Hasan is a computer science student, he likes his study field, especially programming and algorithms, but he doesn’t like attending classes at all since they are very boring, especially that the quality of education in his college is extremely low, but sometimes he is forced to attend in order to maintain his attendance rate otherwise he will be prevented from doing final exams!\n \n\n\n\nCurrently Hasan is attending `communication skills` class and he is now feeling very bored especially that he thinks such course should not belong to a computer science program, luckily he remembered a problem that one of his friends has given him so he decided to spend the time thinking about it, the problem states:\n\n\n\nGiven a string S of length N of lower English letters, find how many strings T exists of length N of lower English letters such that T is palindrome and hamming distance between T and S is at most K. since the answer is large find the remainder modulo 109 + 7\n\n\n\nSince you also don’t like `communication skills` classes you decided to solve this problem too.\n\n\n\n&nbsp;",
+    "problemStatement": "Hasan is a computer science student, he likes his study field, especially programming and algorithms, but he doesn\u2019t like attending classes at all since they are very boring, especially that the quality of education in his college is extremely low, but sometimes he is forced to attend in order to maintain his attendance rate otherwise he will be prevented from doing final exams!\n \n\n\n\nCurrently Hasan is attending `communication skills` class and he is now feeling very bored especially that he thinks such course should not belong to a computer science program, luckily he remembered a problem that one of his friends has given him so he decided to spend the time thinking about it, the problem states:\n\n\n\nGiven a string S of length N of lower English letters, find how many strings T exists of length N of lower English letters such that T is palindrome and hamming distance between T and S is at most K. since the answer is large find the remainder modulo 109 + 7\n\n\n\nSince you also don\u2019t like `communication skills` classes you decided to solve this problem too.\n\n\n\n&nbsp;",
     "constraints": [
-      "1 ≤ T ≤ 10,000",
-      "1 ≤ N ≤ 300,000",
-      "1 ≤ sum of N in all test-cases ≤ 1,000,000",
-      "0 ≤ K ≤ N",
+      "1 \u2264 T \u2264 10,000",
+      "1 \u2264 N \u2264 300,000",
+      "1 \u2264 sum of N in all test-cases \u2264 1,000,000",
+      "0 \u2264 K \u2264 N",
       "String S will consist of English lower letters."
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. Each test-case is described with two lines, the first line of each test-case contains two integers N and K. The second line of each test-case will contains the string S of length N.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the number of palindromic strings with a hamming distance of at most K from the given string S. We will iterate over the string S and for each character, we will consider two cases: the character is the same as the corresponding character in the palindrome, or it is different. We will use a 2D array dp where dp[i][j] represents the number of palindromic strings of length i with a hamming distance of at most j from the first i characters of S.",
-    "timeComplexity": "O(T * N * K) — where T is the number of test cases, N is the length of the string S, and K is the maximum allowed hamming distance.",
-    "spaceComplexity": "O(N * K) — for the 2D array dp.",
+    "timeComplexity": "O(T * N * K) \u2014 where T is the number of test cases, N is the length of the string S, and K is the maximum allowed hamming distance.",
+    "spaceComplexity": "O(N * K) \u2014 for the 2D array dp.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MOD 1000000007\nint dp[300001][300001];\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        char S[N + 1];\n        scanf(\"%s\", S);\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                dp[i][j] = 0;\n            }\n        }\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                if (i < N / 2 + 1) {\n                    for (int c = 0; c < 26; c++) {\n                        int nj = j + (S[i - 1] - 'a' != c);\n                        if (nj <= K) {\n                            dp[i][nj] = (dp[i][nj] + dp[i - 1][j]) % MOD;\n                        }\n                    }\n                } else {\n                    int c = S[N - i] - 'a';\n                    int nj = j + (S[i - 1] - 'a' != c);\n                    if (nj <= K) {\n                        dp[i][nj] = (dp[i][nj] + dp[i - 1][j]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int j = 0; j <= K; j++) {\n            ans = (ans + dp[N][j]) % MOD;\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n#define MOD 1000000007\nint dp[300001][300001];\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        string S;\n        cin >> S;\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                dp[i][j] = 0;\n            }\n        }\n        dp[0][0] = 1;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j <= K; j++) {\n                if (i < N / 2 + 1) {\n                    for (int c = 0; c < 26; c++) {\n                        int nj = j + (S[i - 1] - 'a' != c);\n                        if (nj <= K) {\n                            dp[i][nj] = (dp[i][nj] + dp[i - 1][j]) % MOD;\n                        }\n                    }\n                } else {\n                    int c = S[N - i] - 'a';\n                    int nj = j + (S[i - 1] - 'a' != c);\n                    if (nj <= K) {\n                        dp[i][nj] = (dp[i][nj] + dp[i - 1][j]) % MOD;\n                    }\n                }\n            }\n        }\n        int ans = 0;\n        for (int j = 0; j <= K; j++) {\n            ans = (ans + dp[N][j]) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Statistics",
-      "Median",
       "Variance",
-      "Mode"
+      "Math",
+      "Mode",
+      "Statistics",
+      "Median"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "To solve this problem, we first read the input and store the values in an array. Then, we sort the array in non-decreasing order. Next, we calculate the median, variance, and mode of the array. The median is the middle value in the sorted array. The variance is the average of the squared differences from the mean. The mode is the value that appears most frequently in the array.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting operation dominates the time complexity.",
-    "spaceComplexity": "O(N) — the dominant structure is the array to store the input values.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array to store the input values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\nint cmp_int(const void *a, const void *b) {\n    int x = *(const int *)a;\n    int y = *(const int *)b;\n    return (x > y) - (x < y);\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char col[101];\n        int n;\n        scanf(\"%s %d\", col, &n);\n        int *arr = (int *)malloc(n * sizeof(int));\n        for (int i = 0; i < n; ++i) {\n            scanf(\"%d\", &arr[i]);\n        }\n        qsort(arr, n, sizeof(int), cmp_int);\n        // output sorted values\n        for (int i = 0; i < n; ++i) {\n            printf(\"%d\", arr[i]);\n            if (i + 1 < n) printf(\" \");\n        }\n        printf(\"\\n\");\n        // median\n        double median;\n        if (n % 2 == 1) median = arr[n/2];\n        else median = (arr[n/2 - 1] + arr[n/2]) / 2.0;\n        // mean for variance\n        double sum = 0.0;\n        for (int i = 0; i < n; ++i) sum += arr[i];\n        double mean = sum / n;\n        double var = 0.0;\n        for (int i = 0; i < n; ++i) {\n            double diff = arr[i] - mean;\n            var += diff * diff;\n        }\n        var /= n;\n        // mode\n        // frequency map using simple array offset (values are within [-1e6,1e6])\n        const int OFFSET = 1000000;\n        static int freq[2000001];\n        memset(freq, 0, sizeof(freq));\n        int maxFreq = 0;\n        int mode = INT_MAX;\n        for (int i = 0; i < n; ++i) {\n            int idx = arr[i] + OFFSET;\n            freq[idx]++;\n            if (freq[idx] > maxFreq || (freq[idx] == maxFreq && arr[i] < mode)) {\n                maxFreq = freq[idx];\n                mode = arr[i];\n            }\n        }\n        printf(\"Median: %.1f Variance: %.1f Mode: %d\\n\", median, var, mode);\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        string col; int n; cin>>col>>n;\n        vector<long long> a(n);\n        for(int i=0;i<n;++i) cin>>a[i];\n        sort(a.begin(), a.end());\n        for(int i=0;i<n;++i){\n            if(i) cout<<' ';\n            cout<<a[i];\n        }\n        cout<<\"\\n\";\n        double median;\n        if(n%2) median = a[n/2];\n        else median = (a[n/2-1]+a[n/2])/2.0;\n        double sum=0.0; for(auto v:a) sum+=v;\n        double mean=sum/n;\n        double var=0.0; for(auto v:a){ double d=v-mean; var+=d*d; }\n        var/=n;\n        unordered_map<long long,int> mp;\n        int maxFreq=0; long long mode=LLONG_MAX;\n        for(auto v:a){\n            int f=++mp[v];\n            if(f>maxFreq || (f==maxFreq && v<mode)){\n                maxFreq=f; mode=v;\n            }\n        }\n        cout<<fixed<<setprecision(1);\n        cout<<\"Median: \"<<median<<\" Variance: \"<<var<<\" Mode: \"<<mode<<\"\\n\";\n    }\n    return 0;\n}",

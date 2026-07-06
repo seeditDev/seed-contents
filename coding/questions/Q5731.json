@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Binary Search",
+      "Sorted Array",
       "Offline Queries",
-      "Sorted Array"
+      "Searching",
+      "Binary Search"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,20 +23,20 @@
   "content": {
     "problemStatement": "The Chef gives you a non-decreasing sorted array AAA of NNN integers and ask you QQQ queries. Each query contains an integer XXX and your task is to determine whether this element is in the array.\n\nFirst, complete the function \"init\" in the code snippet (with no returning value) that takes two arguments - an integer NNN and the array of integers AAA of size NNN. This function is called only once per test case, at the beginning of the test case. The function of \"init\" is to help you initialize values that you need to use later in the queries.\n\nComplete the function \"isItThere\" in the code snippet, returning string either \"Found\" or \"Not Found\" - depending on whether the element XXX, given as the only argument of the function, is in the array. This function will be called QQQ times after the function \"init\" is called.\n\n\nInput Format\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nThe first line of each testcase contains two integers N,QN, QN,Q.\nThe second line of each testcase contains NNN elements - representing the array AAA.\nThe next QQQ lines of each testcase contain an integer XXX\n\nNote: You need to complete the functions in the submit solution tab:\n\n\nvoid init(int n, int a[]){...}\n\n\nstring isItThere(int x){...}\n\n\n\nOutput Format\nFor each testcase, the single line of output will contain a string passed by the function isItThere and it should be either \"Found\" or \"Not Found\".",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N, Q ≤ 100000",
-      "1 ≤ Ai, X ≤ 10^9",
-      "The sum of N + Q over all test cases does not exceed 2·10^5",
-      "Array A is given in non‑decreasing order (duplicates may appear)."
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N, Q \u2264 100000",
+      "1 \u2264 Ai, X \u2264 10^9",
+      "The sum of N + Q over all test cases does not exceed 2\u00b710^5",
+      "Array A is given in non\u2011decreasing order (duplicates may appear)."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q, the size of the sorted array and the number of queries.\n- The second line contains N integers A1, A2, ..., AN in non‑decreasing order.\n- Each of the next Q lines contains a single integer X, the value to be searched.\nAll integers fit in 32‑bit signed range.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q, the size of the sorted array and the number of queries.\n- The second line contains N integers A1, A2, ..., AN in non\u2011decreasing order.\n- Each of the next Q lines contains a single integer X, the value to be searched.\nAll integers fit in 32\u2011bit signed range.",
     "outputFormat": "For each query, output a line containing either \"Found\" if X exists in the array or \"Not Found\" otherwise. The answers for all test cases are printed in the order they are processed.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\n3 2\\n1 5 10\\n2\\n10",
         "output": "Not Found\\nFound",
-        "explanation": "The array is [1,5,10]. Query 2 is absent → Not Found. Query 10 exists → Found."
+        "explanation": "The array is [1,5,10]. Query 2 is absent \u2192 Not Found. Query 10 exists \u2192 Found."
       },
       {
         "id": "sample_2",
@@ -47,7 +48,7 @@
         "id": "sample_3",
         "input": "2\\n1 2\\n100\\n100\\n99\\n4 1\\n1 2 3 4\\n3",
         "output": "Found\\nNot Found\\nFound",
-        "explanation": "First test case: array [100]; queries 100 → Found, 99 → Not Found. Second test case: array [1,2,3,4]; query 3 → Found."
+        "explanation": "First test case: array [100]; queries 100 \u2192 Found, 99 \u2192 Not Found. Second test case: array [1,2,3,4]; query 3 \u2192 Found."
       }
     ]
   },
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "Because the array is already sorted, each query can be answered independently with a binary search. The initialization step simply stores the array for later use. For every X we perform a standard binary search (or use library functions) which runs in O(log N) time. This yields a total complexity of O(N + Q·log N) per test case, well within the limits.",
-    "timeComplexity": "O(N + Q·log N) per test case (reading the array is O(N), each query is O(log N)).",
+    "approach": "Because the array is already sorted, each query can be answered independently with a binary search. The initialization step simply stores the array for later use. For every X we perform a standard binary search (or use library functions) which runs in O(log N) time. This yields a total complexity of O(N + Q\u00b7log N) per test case, well within the limits.",
+    "timeComplexity": "O(N + Q\u00b7log N) per test case (reading the array is O(N), each query is O(log N)).",
     "spaceComplexity": "O(N) to store the sorted array.",
     "code": {
       "C": "#include <stdio.h>\\n#include <stdlib.h>\\n\\nint compare(const void *a, const void *b){\\n    return (*(int*)a) - (*(int*)b);\\n}\\n\\nint main(){\\n    int T;\\n    if(scanf(\"%d\", &T)!=1) return 0;\\n    while(T--){\\n        int N, Q;\\n        scanf(\"%d %d\", &N, &Q);\\n        int *arr = (int*)malloc(N * sizeof(int));\\n        for(int i=0;i<N;i++) scanf(\"%d\", &arr[i]);\\n        while(Q--){\\n            int x;\\n            scanf(\"%d\", &x);\\n            int *p = (int*)bsearch(&x, arr, N, sizeof(int), compare);\\n            if(p) printf(\"Found\\n\");\\n            else printf(\"Not Found\\n\");\\n        }\\n        free(arr);\\n    }\\n    return 0;\\n}\\n",

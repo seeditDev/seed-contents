@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Prim's Algorithm",
-      "Minimum Spanning Tree",
-      "Priority Queue"
+      "Graphs",
+      "Priority Queue",
+      "Minimum Spanning Tree"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using Prim's algorithm, which is a greedy algorithm that finds a minimum spanning tree for a connected weighted undirected graph. The algorithm starts with an arbitrary vertex and grows the tree by adding the minimum-weight edge that connects a vertex in the tree to a vertex not yet in the tree.",
     "timeComplexity": "O(m log m) per test case, O(T * m log m) total. The time complexity is dominated by the priority queue operations.",
-    "spaceComplexity": "O(m + n) — the space complexity is dominated by the adjacency list representation of the graph and the priority queue.",
+    "spaceComplexity": "O(m + n) \u2014 the space complexity is dominated by the adjacency list representation of the graph and the priority queue.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define N 1000\n#define M 1000000\n\nint n, m;\nint adj[N][N];\nint vis[N];\nint edge_count;\nint edges[M][3];\n\nint cmp(const void *a, const void *b) {\n    int *edgeA = (int *)a;\n    int *edgeB = (int *)b;\n    return edgeA[2] - edgeB[2];\n}\n\nvoid push_edge(int u, int v, int w) {\n    edges[edge_count][0] = u;\n    edges[edge_count][1] = v;\n    edges[edge_count][2] = w;\n    edge_count++;\n}\n\nvoid prims(int source) {\n    int mst_weight = 0;\n    int mst_count = 0;\n    vis[source] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (adj[i][j] && !vis[j]) {\n                push_edge(i, j, adj[i][j]);\n            }\n        }\n    }\n    qsort(edges, edge_count, sizeof(edges[0]), cmp);\n    for (int i = 0; i < edge_count; i++) {\n        int u = edges[i][0];\n        int v = edges[i][1];\n        int w = edges[i][2];\n        if (!vis[v]) {\n            vis[v] = 1;\n            mst_weight += w;\n            mst_count++;\n            printf(\"%d %d\\n\", u, v);\n        }\n    }\n    printf(\"%d\\n\", mst_weight);\n}\n\nint main() {\n    scanf(\"%d %d\", &n, &m);\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            adj[i][j] = 0;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        adj[u][v] = w;\n        adj[v][u] = w;\n    }\n    prims(1);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\nusing namespace std;\n\nconst int N = 1000;\nconst int M = 1000000;\n\nint n, m;\nint adj[N][N];\nint vis[N];\nint edge_count;\nint edges[M][3];\n\nstruct Edge {\n    int u, v, w;\n    bool operator<(const Edge &other) const {\n        return w > other.w;\n    }\n};\n\npriority_queue<Edge> pq;\n\nvoid push_edge(int u, int v, int w) {\n    pq.push({u, v, w});\n}\n\nvoid prims(int source) {\n    int mst_weight = 0;\n    vis[source] = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (adj[i][j] && !vis[j]) {\n                push_edge(i, j, adj[i][j]);\n            }\n        }\n    }\n    while (!pq.empty()) {\n        Edge edge = pq.top();\n        pq.pop();\n        int u = edge.u;\n        int v = edge.v;\n        int w = edge.w;\n        if (!vis[v]) {\n            vis[v] = 1;\n            mst_weight += w;\n            cout << u << \" \" << v << endl;\n        }\n    }\n    cout << mst_weight << endl;\n}\n\nint main() {\n    cin >> n >> m;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            adj[i][j] = 0;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        adj[u][v] = w;\n        adj[v][u] = w;\n    }\n    prims(1);\n    return 0;\n}",

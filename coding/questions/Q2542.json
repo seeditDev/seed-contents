@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular arithmetic",
       "DIVPRO calculation",
-      "Modular arithmetic"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem requires calculating the DIVPRO value for each L-digit number and counting the numbers with a DIVPRO value equal to V. We can iterate over all possible L-digit numbers, calculate the DIVPRO value for each number, and increment the count if the DIVPRO value matches V. To avoid overflow, we use modular arithmetic to calculate the count modulo 2^32.",
     "timeComplexity": "O(T * 10^L) per test case, O(T * 10^L) total. The time complexity is exponential in L due to the iteration over all possible L-digit numbers.",
-    "spaceComplexity": "O(1) — the space complexity is constant as we only use a fixed amount of space to store the count and the current number.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant as we only use a fixed amount of space to store the count and the current number.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int L;\n        uint64_t V;\n        scanf(\"%d %llu\", &L, &V);\n        uint32_t count = 0;\n        uint64_t min = (1ULL << (L - 1));\n        uint64_t max = (1ULL << L) - 1;\n        for (uint64_t num = min; num <= max; num++) {\n            uint64_t divpro = num;\n            int len = 0;\n            uint64_t temp = num;\n            while (temp) {\n                len++;\n                temp /= 10;\n            }\n            temp = num;\n            int i = 0;\n            while (i < len - 1) {\n                int digit = temp % 10;\n                temp /= 10;\n                if (i % 2 == 0) {\n                    if (digit == 0) break;\n                    divpro /= digit;\n                } else {\n                    divpro *= digit;\n                }\n                i++;\n            }\n            if (i == len - 1 && divpro == V) count++;\n        }\n        printf(\"%u\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n\nint main() {\n    int T;\n    std::cin >> T;\n    while (T--) {\n        int L;\n        uint64_t V;\n        std::cin >> L >> V;\n        uint32_t count = 0;\n        uint64_t min = (1ULL << (L - 1));\n        uint64_t max = (1ULL << L) - 1;\n        for (uint64_t num = min; num <= max; num++) {\n            uint64_t divpro = num;\n            int len = 0;\n            uint64_t temp = num;\n            while (temp) {\n                len++;\n                temp /= 10;\n            }\n            temp = num;\n            int i = 0;\n            while (i < len - 1) {\n                int digit = temp % 10;\n                temp /= 10;\n                if (i % 2 == 0) {\n                    if (digit == 0) break;\n                    divpro /= digit;\n                } else {\n                    divpro *= digit;\n                }\n                i++;\n            }\n            if (i == len - 1 && divpro == V) count++;\n        }\n        std::cout << count << std::endl;\n    }\n    return 0;\n}",

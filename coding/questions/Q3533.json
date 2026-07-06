@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming | Greedy | Sorting",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Two Pointer",
       "Sorting",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Two Pointer",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "Due to demonetization, normal people went to ATMs for fetching cash, while some opted for cashless transactions. Many people have already started using **netcoins**.\n\nIn netcoins, each transaction is represented by a block. For a transaction to be accepted, its block has to be added to a chain of verified blocks. The coder of netcoin is very suspicious, so when a new block is added to the verified chain, the entire chain is verified again.\n\nYou are given the time taken to verify each block. It is guaranteed that all the verification times are distinct. Hacker Shanker has done some black money transactions hidden across **N** given blocks. These transactions will only be detected when all the **N** blocks are verified.\n\nNetcoins uses a rather simple algorithm to figure out the order in which to add the given **N** transactions into a new, empty verified chain. It takes an array of **N** transactions as input and keeps 2 pointers - one initially at the beginning and another initially at the end. It then compares the block pointed by the 2 pointers and adds the block which requires the lesser verification time to the verified chain. Once this block has been added, the entire verified chain is verified again, spending time equal to the sum of the verification times of each block in the current verified chain. The corresponding pointer is moved, so that, both the pointers always point to the leftmost and rightmost unverified blocks in the array given to the algorithm.\n\nHacker Shanker wants to escape and hide. For that, he needs as much time as possible before all the **N** transactions are verified. For that, he can order the **N** transactions however he wants and then send the array as input to the algorithm. He wants to find out the maximum amount of time taken to verify all the **N** transactions, among all the possible orderings of the array.\n\n\nInput Format\nThe first line contains an integer **T** denoting the number of test cases. **T** test cases follow.\n\n\nThe only line of each test case contains an integer **N**, denoting the number of transactions.\n\n\nThe second line of each test case contains **N** space-separated integers **Ai** denoting the time taken in verifying transaction **i**.\n\n\n\nOutput Format\nFor each test case, output an integer corresponding to the maximum amount of time taken to verify all the blocks, among all the possible input orderings.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 105",
-      "1 ≤ Ai ≤ 106",
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 105",
+      "1 \u2264 Ai \u2264 106",
       "All the Ai's in a particular test case will be distinct"
     ],
     "inputFormat": "The first line contains an integer T denoting the number of test cases. Each test case consists of two lines. The first line contains an integer N, denoting the number of transactions. The second line contains N space-separated integers Ai denoting the time taken in verifying transaction i.",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To maximize the time taken to verify all the blocks, we need to sort the blocks in ascending order of their verification times. Then, we use a two-pointer approach to add the blocks to the verified chain. We start by adding the block with the smallest verification time, then the block with the next smallest verification time, and so on. After adding each block, we verify the entire chain, which takes time equal to the sum of the verification times of each block in the current verified chain.",
-    "timeComplexity": "O(T * N log N) — due to sorting the blocks for each test case",
-    "spaceComplexity": "O(N) — for storing the blocks for each test case",
+    "timeComplexity": "O(T * N log N) \u2014 due to sorting the blocks for each test case",
+    "spaceComplexity": "O(N) \u2014 for storing the blocks for each test case",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int *arr = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        qsort(arr, N, sizeof(int), compare);\n        long long sum = 0;\n        long long total = 0;\n        for (int i = 0; i < N; i++) {\n            sum += arr[i];\n            total += sum;\n        }\n        printf(\"%lld\\n\", total);\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int *arr = new int[N];\n        for (int i = 0; i < N; i++) {\n            cin >> arr[i];\n        }\n        sort(arr, arr + N);\n        long long sum = 0;\n        long long total = 0;\n        for (int i = 0; i < N; i++) {\n            sum += arr[i];\n            total += sum;\n        }\n        cout << total << endl;\n        delete[] arr;\n    }\n    return 0;\n}",

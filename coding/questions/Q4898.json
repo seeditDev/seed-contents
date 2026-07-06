@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "LCM",
-      "Prime Factorization",
+      "Math",
       "DP over subsets",
+      "Prime Factorization",
       "Number Theory",
       "Greedy"
     ],
@@ -22,12 +23,12 @@
     ]
   },
   "content": {
-    "problemStatement": "A manufacturing project consists of exactly KKK tasks. The board overviewing the project wants to hire KKK teams of workers — one for each task. All teams begin working simultaneously.\n\nObviously, there must be at least one person in each team. For a team of AAA workers, it takes exactly AAA days to complete the task they are hired for. Each team acts independently, unaware of the status of other teams (whether they have completed their tasks or not), and submits their result for approval on the AAA-th day.\n\nHowever, the board approves the project only if all KKK teams complete their tasks on the same day — it rejects everything submitted on any other day. The day after a team finds out that its result was rejected, it resumes work on the same task afresh. Therefore, as long as a team of AAA workers keeps getting rejected, it submits a new result of their task for approval on the AAA-th, 2A2A2A-th, 3A3A3A-th day etc.\n\nThe board wants to hire workers in such a way that it takes exactly XXX days to complete the project. Find the smallest number of workers it needs to hire.",
+    "problemStatement": "A manufacturing project consists of exactly KKK tasks. The board overviewing the project wants to hire KKK teams of workers \u2014 one for each task. All teams begin working simultaneously.\n\nObviously, there must be at least one person in each team. For a team of AAA workers, it takes exactly AAA days to complete the task they are hired for. Each team acts independently, unaware of the status of other teams (whether they have completed their tasks or not), and submits their result for approval on the AAA-th day.\n\nHowever, the board approves the project only if all KKK teams complete their tasks on the same day \u2014 it rejects everything submitted on any other day. The day after a team finds out that its result was rejected, it resumes work on the same task afresh. Therefore, as long as a team of AAA workers keeps getting rejected, it submits a new result of their task for approval on the AAA-th, 2A2A2A-th, 3A3A3A-th day etc.\n\nThe board wants to hire workers in such a way that it takes exactly XXX days to complete the project. Find the smallest number of workers it needs to hire.",
     "constraints": [
-      "1 ≤ T ≤ 40",
-      "1 ≤ K, X ≤ 10^6"
+      "1 \u2264 T \u2264 40",
+      "1 \u2264 K, X \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers K and X.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers K and X.",
     "outputFormat": "For each test case output a single line containing the minimum possible total number of workers needed.",
     "sampleTestCases": [
       {
@@ -102,9 +103,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we factorise X into its prime powers p_i^{e_i}. Let these values be a[0..m-1] where m is the number of distinct primes (m ≤ 7 because X ≤ 10^6). Any team size must be a divisor of X, therefore each a[i] must appear in at least one team, otherwise the LCM would miss the required exponent of p_i. The problem becomes: split the multiset {a[0],…,a[m-1]} into at most K groups, each group representing one team whose size is the product of the prime powers inside the group. The LCM of all team sizes will then be X. Adding extra teams of size 1 does not change the LCM and costs exactly 1 worker per team.\n\nIf K ≥ m we can keep every prime power in its own team and fill the remaining K‑m teams with size 1. The answer is sum(a[i]) + (K‑m).\n\nIf K < m we must merge some prime powers. Because m ≤ 7 we can enumerate all partitions using DP over subsets. For every subset mask we pre‑compute prod[mask] = product of a[i] for i in mask. DP[mask][g] = minimal sum of team sizes needed to cover exactly the elements of mask using g groups. Transition: DP[mask][g] = min_{sub ⊆ mask, sub ≠ 0} ( DP[mask \\ sub][g‑1] + prod[sub] ). The answer is min_{g=1..K} DP[fullMask][g] + (K‑g) (the extra 1‑worker teams). The DP runs in O(3^m) which is trivial for m ≤ 7.\n\nOverall complexity per test case: O(√X) for factorisation + O(3^m) ≤ O(√X + 2187). Memory O(2^m).",
-    "timeComplexity": "O(√X) per test case for factorisation (X ≤ 10^6) plus O(3^m) ≤ O(2200) for the DP. Overall well within limits.",
-    "spaceComplexity": "O(2^m) ≤ O(128) for the DP tables.",
+    "approach": "For each test case we factorise X into its prime powers p_i^{e_i}. Let these values be a[0..m-1] where m is the number of distinct primes (m \u2264 7 because X \u2264 10^6). Any team size must be a divisor of X, therefore each a[i] must appear in at least one team, otherwise the LCM would miss the required exponent of p_i. The problem becomes: split the multiset {a[0],\u2026,a[m-1]} into at most K groups, each group representing one team whose size is the product of the prime powers inside the group. The LCM of all team sizes will then be X. Adding extra teams of size 1 does not change the LCM and costs exactly 1 worker per team.\n\nIf K \u2265 m we can keep every prime power in its own team and fill the remaining K\u2011m teams with size 1. The answer is sum(a[i]) + (K\u2011m).\n\nIf K < m we must merge some prime powers. Because m \u2264 7 we can enumerate all partitions using DP over subsets. For every subset mask we pre\u2011compute prod[mask] = product of a[i] for i in mask. DP[mask][g] = minimal sum of team sizes needed to cover exactly the elements of mask using g groups. Transition: DP[mask][g] = min_{sub \u2286 mask, sub \u2260 0} ( DP[mask \\ sub][g\u20111] + prod[sub] ). The answer is min_{g=1..K} DP[fullMask][g] + (K\u2011g) (the extra 1\u2011worker teams). The DP runs in O(3^m) which is trivial for m \u2264 7.\n\nOverall complexity per test case: O(\u221aX) for factorisation + O(3^m) \u2264 O(\u221aX + 2187). Memory O(2^m).",
+    "timeComplexity": "O(\u221aX) per test case for factorisation (X \u2264 10^6) plus O(3^m) \u2264 O(2200) for the DP. Overall well within limits.",
+    "spaceComplexity": "O(2^m) \u2264 O(128) for the DP tables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n\n"
     }

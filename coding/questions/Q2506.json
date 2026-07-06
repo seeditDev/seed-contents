@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Permutations",
-      "Distance Calculation"
+      "Math",
+      "Distance Calculation",
+      "Permutations"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by generating all permutations of the spots and calculating the total length of the wire used for each permutation. The minimum length of the unused wire is then calculated by subtracting the minimum total length of the wire used from the given length of the wire.",
     "timeComplexity": "O(T * N!) per test case, O(T * N!) total. The time complexity is due to generating all permutations of the spots.",
-    "spaceComplexity": "O(N) — the dominant structure is the array to store the spots.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array to store the spots.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint calculate_wire_length(int *spots, int n) {\n    int wire_length = 0;\n    for (int i = 0; i < n; i++) {\n        if (i == 0) {\n            wire_length += spots[i];\n        } else {\n            wire_length += abs(spots[i] - spots[i-1]);\n        }\n    }\n    wire_length += (n + 1) - spots[n-1];\n    return wire_length;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    for (int i = 0; i < t; i++) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int *spots = (int*)malloc(n * sizeof(int));\n        for (int j = 0; j < n; j++) {\n            spots[j] = j + 1;\n        }\n        int min_wire_length = 1000000;\n        do {\n            int wire_length = calculate_wire_length(spots, n);\n            if (wire_length < min_wire_length) {\n                min_wire_length = wire_length;\n            }\n        } while (next_permutation(spots, spots + n));\n        if (m < min_wire_length) {\n            printf(\"-1\\n\");\n        } else {\n            printf(\"%d\\n\", m - min_wire_length);\n        }\n        free(spots);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint calculate_wire_length(int *spots, int n) {\n    int wire_length = 0;\n    for (int i = 0; i < n; i++) {\n        if (i == 0) {\n            wire_length += spots[i];\n        } else {\n            wire_length += abs(spots[i] - spots[i-1]);\n        }\n    }\n    wire_length += (n + 1) - spots[n-1];\n    return wire_length;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    for (int i = 0; i < t; i++) {\n        int n, m;\n        cin >> n >> m;\n        int *spots = new int[n];\n        for (int j = 0; j < n; j++) {\n            spots[j] = j + 1;\n        }\n        int min_wire_length = 1000000;\n        do {\n            int wire_length = calculate_wire_length(spots, n);\n            if (wire_length < min_wire_length) {\n                min_wire_length = wire_length;\n            }\n        } while (next_permutation(spots, spots + n));\n        if (m < min_wire_length) {\n            cout << -1 << endl;\n        } else {\n            cout << m - min_wire_length << endl;\n        }\n        delete[] spots;\n    }\n    return 0;\n}",

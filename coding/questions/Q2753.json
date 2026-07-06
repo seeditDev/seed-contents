@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "String Matching"
+      "String Matching",
+      "Strings",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming and string matching. We can create a 2D table to store the maximum number of occurrences of dictionary words for each prefix of the string. Then, we can fill the table by iterating over the string and the dictionary words. Finally, we can construct the lexicographically minimal string by tracing back the table.",
     "timeComplexity": "O(T * N * M * L) per test case, where L is the maximum length of a dictionary word. O(T * N * M * L) total.",
-    "spaceComplexity": "O(N * M) — the dominant structure is the 2D table.",
+    "spaceComplexity": "O(N * M) \u2014 the dominant structure is the 2D table.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        char str[N + 1];\n        scanf(\"%s\", str);\n        char dict[M][101];\n        for (int i = 0; i < M; i++) {\n            scanf(\"%s\", dict[i]);\n        }\n        int dp[N + 1] = {0};\n        char res[N + 1] = {0};\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < M; j++) {\n                int len = strlen(dict[j]);\n                if (i >= len) {\n                    int match = 1;\n                    for (int k = 0; k < len; k++) {\n                        if (str[i - len + k] != '?' && str[i - len + k] != dict[j][k]) {\n                            match = 0;\n                            break;\n                        }\n                    }\n                    if (match) {\n                        if (dp[i - len] + 1 > dp[i]) {\n                            dp[i] = dp[i - len] + 1;\n                            strncpy(res + i - len, dict[j], len);\n                        }\n                    }\n                }\n            }\n        }\n        printf(\"%d\\n\", dp[N]);\n        printf(\"%s\\n\", res);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        string str;\n        cin >> str;\n        vector<string> dict(M);\n        for (int i = 0; i < M; i++) {\n            cin >> dict[i];\n        }\n        vector<int> dp(N + 1, 0);\n        vector<string> res(N + 1, \"\");\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < M; j++) {\n                int len = dict[j].size();\n                if (i >= len) {\n                    int match = 1;\n                    for (int k = 0; k < len; k++) {\n                        if (str[i - len + k] != '?' && str[i - len + k] != dict[j][k]) {\n                            match = 0;\n                            break;\n                        }\n                    }\n                    if (match) {\n                        if (dp[i - len] + 1 > dp[i]) {\n                            dp[i] = dp[i - len] + 1;\n                            res[i] = dict[j];\n                        }\n                    }\n                }\n            }\n        }\n        cout << dp[N] << endl;\n        cout << res[N] << endl;\n    }\n    return 0;\n}",

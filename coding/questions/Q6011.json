@@ -10,9 +10,8 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
-      "Math",
-      "Implementation"
+      "Implementation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,10 +21,10 @@
   "content": {
     "problemStatement": "There are two problems in a contest.\n\n\nProblem `A` is worth 500500500 points at the start of the contest.\nProblem `B` is worth 100010001000 points at the start of the contest.\nOnce the contest starts, after each minute:\n\n\nMaximum points of Problem `A` reduce by 222 points .\nMaximum points of Problem `B` reduce by 444 points.\nIt is known that Chef requires XXX minutes to solve Problem `A` correctly and YYY minutes to solve Problem `B` correctly.\n\nFind the **maximum** number of points Chef can score if he optimally decides the order of attempting both the problems.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains of a single line of input, two integers XXX and YYY - the time required to solve problems AAA and BBB in minutes respectively.\n\n\nOutput Format\nFor each test case, output in a single line, the **maximum** number of points Chef can score if he optimally decides the order of attempting both the problems.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ X, Y ≤ 1000"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 X, Y \u2264 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and Y — the minutes Chef needs to solve problem A and problem B respectively.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers X and Y \u2014 the minutes Chef needs to solve problem A and problem B respectively.",
     "outputFormat": "For each test case output a single line containing the maximum total points Chef can obtain by choosing the optimal order of attempting the two problems.",
     "sampleTestCases": [
       {
@@ -38,7 +37,7 @@
         "id": "sample_2",
         "input": "2\n1 1\n250 10",
         "output": "1492\n960",
-        "explanation": "Test case 1: Order B→A yields 1000-4*1=996 and 500-2*2=496, total 1492 which is larger than the opposite order.\\nTest case 2: Solving B first gives 1000-4*10=960 points, while A becomes zero, total 960. Solving A first gives zero for both, so 960 is optimal."
+        "explanation": "Test case 1: Order B\u2192A yields 1000-4*1=996 and 500-2*2=496, total 1492 which is larger than the opposite order.\\nTest case 2: Solving B first gives 1000-4*10=960 points, while A becomes zero, total 960. Solving A first gives zero for both, so 960 is optimal."
       },
       {
         "id": "sample_3",
@@ -112,9 +111,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we evaluate the two possible orders:\n1. Solve A first, then B. After X minutes Chef submits A and gets max(0, 500 − 2·X) points. After an additional Y minutes (total X+Y) he submits B and gets max(0, 1000 − 4·(X+Y)) points.\n2. Solve B first, then A. After Y minutes Chef submits B and gets max(0, 1000 − 4·Y) points. After an additional X minutes (total X+Y) he submits A and gets max(0, 500 − 2·(X+Y)) points.\nThe answer is the larger of the two totals. The computation is O(1) per test case, so O(T) overall.\nWe clamp negative scores to zero because a problem cannot yield negative points.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables.",
+    "approach": "For each test case we evaluate the two possible orders:\n1. Solve A first, then B. After X minutes Chef submits A and gets max(0, 500\u202f\u2212\u202f2\u00b7X) points. After an additional Y minutes (total X+Y) he submits B and gets max(0, 1000\u202f\u2212\u202f4\u00b7(X+Y)) points.\n2. Solve B first, then A. After Y minutes Chef submits B and gets max(0, 1000\u202f\u2212\u202f4\u00b7Y) points. After an additional X minutes (total X+Y) he submits A and gets max(0, 500\u202f\u2212\u202f2\u00b7(X+Y)) points.\nThe answer is the larger of the two totals. The computation is O(1) per test case, so O(T) overall.\nWe clamp negative scores to zero because a problem cannot yield negative points.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long X, Y;\n        scanf(\"%lld %lld\", &X, &Y);\n        long long a_first = 500 - 2 * X;\n        if (a_first < 0) a_first = 0;\n        long long b_after_a = 1000 - 4 * (X + Y);\n        if (b_after_a < 0) b_after_a = 0;\n        long long total1 = a_first + b_after_a;\n\n        long long b_first = 1000 - 4 * Y;\n        if (b_first < 0) b_first = 0;\n        long long a_after_b = 500 - 2 * (X + Y);\n        if (a_after_b < 0) a_after_b = 0;\n        long long total2 = b_first + a_after_b;\n\n        long long ans = total1 > total2 ? total1 : total2;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long X, Y; cin >> X >> Y;\n        long long a_first = max(0LL, 500LL - 2LL * X);\n        long long b_after_a = max(0LL, 1000LL - 4LL * (X + Y));\n        long long total1 = a_first + b_after_a;\n        long long b_first = max(0LL, 1000LL - 4LL * Y);\n        long long a_after_b = max(0LL, 500LL - 2LL * (X + Y));\n        long long total2 = b_first + a_after_b;\n        cout << max(total1, total2) << '\\n';\n    }\n    return 0;\n}\n",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Prime Factors",
       "GCD",
-      "Euclidean Algorithm"
+      "Prime Factors",
+      "Euclidean Algorithm",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,29 +23,29 @@
   "content": {
     "problemStatement": "Mario has reached Bowser's Castle and is inches away from rescuing Princess Peach. He has to answer the following problem at the gate to be allowed to enter. Can you help him?\n\nLet S(M)S(M)S(M) denote the set of all prime factors of MMM.\n\nGiven two positive integers AAA and BBB, determine whether AAA is divisible by all elements in S(B)S(B)S(B).\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single line of input, AAA and BBB, as mentioned in the statement.\n\n\nOutput Format\nFor each test case, print `YES` if AAA is divisible by all elements in S(B)S(B)S(B) and `NO` otherwise.\n\n\nYou may print each character of the string in uppercase or lowercase (for example, the strings `YES`, `yEs`, `yes`, and `yeS` will all be treated as identical).",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ A, B ≤ 10^18"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 A, B \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers A and B (1 ≤ A, B ≤ 10^18).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers A and B (1 \u2264 A, B \u2264 10^18).",
     "outputFormat": "For each test case output a single line containing \"YES\" if A is divisible by every prime factor of B, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n21 63\n72 72\n25 20",
         "output": "YES\nYES\nNO",
-        "explanation": "Test case 1: B=63 has prime factors {3,7}. Both divide A=21 → YES.\\nTest case 2: B=72 has prime factors {2,3}. Both divide A=72 → YES.\\nTest case 3: B=20 has prime factors {2,5}. A=25 is not divisible by 2 → NO."
+        "explanation": "Test case 1: B=63 has prime factors {3,7}. Both divide A=21 \u2192 YES.\\nTest case 2: B=72 has prime factors {2,3}. Both divide A=72 \u2192 YES.\\nTest case 3: B=20 has prime factors {2,5}. A=25 is not divisible by 2 \u2192 NO."
       },
       {
         "id": "sample_2",
         "input": "2\n10 1\n7 49",
         "output": "YES\nYES",
-        "explanation": "When B=1 it has no prime factors, condition is vacuously true → YES.\\nB=49 has prime factor {7} and 7 divides A=7 → YES."
+        "explanation": "When B=1 it has no prime factors, condition is vacuously true \u2192 YES.\\nB=49 has prime factor {7} and 7 divides A=7 \u2192 YES."
       },
       {
         "id": "sample_3",
         "input": "2\n6 13\n30 12",
         "output": "NO\nYES",
-        "explanation": "B=13 is prime and does not divide A=6 → NO.\\nB=12 has prime factors {2,3}; both divide A=30 → YES."
+        "explanation": "B=13 is prime and does not divide A=6 \u2192 NO.\\nB=12 has prime factors {2,3}; both divide A=30 \u2192 YES."
       }
     ]
   },
@@ -112,9 +113,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we only need to know whether every prime that divides B also divides A. Let g = gcd(A, B). All prime factors of B that also divide A are contained in g. We can repeatedly remove from B the common part g: while g > 1 { B /= g; g = gcd(A, B); }. After the loop, if B becomes 1 then every prime factor of the original B was removed, meaning each of them divides A → answer YES; otherwise some prime factor remained → answer NO. This uses only the Euclidean algorithm and runs in O(log min(A,B)) per test case.",
-    "timeComplexity": "O(T * log(min(A, B))) – each gcd computation is logarithmic and the loop runs at most the number of distinct prime factors of B (≤ 60 for 64‑bit numbers).",
-    "spaceComplexity": "O(1) – only a few 64‑bit variables are used.",
+    "approach": "For each test case we only need to know whether every prime that divides B also divides A. Let g = gcd(A, B). All prime factors of B that also divide A are contained in g. We can repeatedly remove from B the common part g: while g > 1 { B /= g; g = gcd(A, B); }. After the loop, if B becomes 1 then every prime factor of the original B was removed, meaning each of them divides A \u2192 answer YES; otherwise some prime factor remained \u2192 answer NO. This uses only the Euclidean algorithm and runs in O(log min(A,B)) per test case.",
+    "timeComplexity": "O(T * log(min(A, B))) \u2013 each gcd computation is logarithmic and the loop runs at most the number of distinct prime factors of B (\u2264 60 for 64\u2011bit numbers).",
+    "spaceComplexity": "O(1) \u2013 only a few 64\u2011bit variables are used.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic uint64_t gcd_uint64(uint64_t a, uint64_t b) {\n    while (b) {\n        uint64_t t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t A, B;\n        scanf(\"%llu %llu\", &A, &B);\n        uint64_t g = gcd_uint64(A, B);\n        while (g > 1) {\n            B /= g;\n            g = gcd_uint64(A, B);\n        }\n        if (B == 1) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nusing int64 = long long;\nusing u64 = unsigned long long;\n\nstatic u64 gcd_u64(u64 a, u64 b) {\n    while (b) {\n        u64 t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        u64 A, B; cin >> A >> B;\n        u64 g = gcd_u64(A, B);\n        while (g > 1) {\n            B /= g;\n            g = gcd_u64(A, B);\n        }\n        cout << (B == 1 ? \"YES\" : \"NO\") << '\\n';\n    }\n    return 0;\n}",

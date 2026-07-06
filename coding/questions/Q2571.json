@@ -6,13 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "GCD",
-      "Smallest Prime Factor",
-      "Math"
+      "Math",
+      "Smallest Prime Factor"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,12 +22,12 @@
   "content": {
     "problemStatement": "The Little Elephant from the Zoo of Lviv has an array **A** that consists of **N** positive integers. Let **A[i]** be the **i**-th number in this array (**i = 1, 2, ..., N**).\n\n\n\nFind the minimal number **x &gt; 1** such that **x** is a divisor of all integers from array **A**. More formally, this **x** should satisfy the following relations:\n\n\n\n**A[1] mod x = 0**, **A[2] mod x = 0**, ..., **A[N] mod x = 0**,\n\n\n\nwhere **mod** stands for the modulo operation. For example, ** 8 mod 3 = 2**, ** 2 mod 2 = 0**, **100 mod 5 = 0** and so on. If such number does not exist, output **-1**.",
     "constraints": [
-      "1 ≤ T ≤ 100000",
-      "1 ≤ N ≤ 100000",
+      "1 \u2264 T \u2264 100000",
+      "1 \u2264 N \u2264 100000",
       "The sum of N over all test cases does not exceed 100000",
-      "1 ≤ A[i] ≤ 100000"
+      "1 \u2264 A[i] \u2264 100000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line of a test case contains an integer N (the size of the array). The second line contains N space‑separated positive integers A[1] … A[N].",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line of a test case contains an integer N (the size of the array). The second line contains N space\u2011separated positive integers A[1] \u2026 A[N].",
     "outputFormat": "For each test case output a single line containing the minimal integer x > 1 that divides every element of the array. If no such integer exists output -1.",
     "sampleTestCases": [
       {
@@ -115,7 +115,7 @@
   },
   "solution": {
     "approach": "For each test case compute the greatest common divisor (GCD) of all numbers in the array. If the GCD equals 1 there is no integer >1 that divides all numbers, so answer is -1. Otherwise the answer is the smallest divisor of the GCD that is larger than 1, i.e., the smallest prime factor of the GCD. To obtain it we try dividing the GCD by integers from 2 up to sqrt(GCD); the first divisor found is the answer. If none is found, the GCD itself is prime and is the answer.",
-    "timeComplexity": "Computing the GCD over N numbers takes O(N·log maxA). Finding the smallest divisor takes O(√g) where g is the GCD (≤ maxA). Overall per test case O(N + √maxA).",
+    "timeComplexity": "Computing the GCD over N numbers takes O(N\u00b7log\u202fmaxA). Finding the smallest divisor takes O(\u221ag) where g is the GCD (\u2264\u202fmaxA). Overall per test case O(N\u202f+\u202f\u221amaxA).",
     "spaceComplexity": "O(1) additional space besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n\nint gcd_int(int a, int b) {\n    while (b) {\n        int t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    int T; \n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; \n        scanf(\"%d\", &N);\n        int g = 0;\n        for (int i = 0; i < N; ++i) {\n            int x; scanf(\"%d\", &x);\n            if (i == 0) g = x; else g = gcd_int(g, x);\n        }\n        if (g == 1) {\n            printf(\"-1\\n\");\n            continue;\n        }\n        int ans = g;\n        for (int d = 2; d * d <= g; ++d) {\n            if (g % d == 0) { ans = d; break; }\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Bit Manipulation",
+      "Bitmask",
       "Bitwise OR",
-      "Greedy",
-      "Bitmask"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +21,21 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array AAA consisting of NNN non-negative integers.\n\nIt is guaranteed that AAA contains **at least two distinct** elements.\n\nYou are also given a non-negative integer XXX.\n\nFor each YYY (0≤Y≤X)(0 \\leq Y \\leq X)(0≤Y≤X), we create an array BBB of size NNN such that Bi=Ai∣YB_i = A_i | YBi​=Ai​∣Y, where ∣|∣ denotes the bitwise OR operation.\n\nFind the **largest** integer Y(Y≤X)Y(Y \\leq X)Y(Y≤X) such that the array BBB contains **at least two distinct** elements.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains two integers NNN and XXX — the length of the array AAA and maximum value of YYY allowed.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1,A_2,\\ldots,A_NA1​,A2​,…,AN​,  representing the array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the largest YYY satisfying the condition.",
+    "problemStatement": "You are given an array AAA consisting of NNN non-negative integers.\n\nIt is guaranteed that AAA contains **at least two distinct** elements.\n\nYou are also given a non-negative integer XXX.\n\nFor each YYY (0\u2264Y\u2264X)(0 \\leq Y \\leq X)(0\u2264Y\u2264X), we create an array BBB of size NNN such that Bi=Ai\u2223YB_i = A_i | YBi\u200b=Ai\u200b\u2223Y, where \u2223|\u2223 denotes the bitwise OR operation.\n\nFind the **largest** integer Y(Y\u2264X)Y(Y \\leq X)Y(Y\u2264X) such that the array BBB contains **at least two distinct** elements.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains two integers NNN and XXX \u2014 the length of the array AAA and maximum value of YYY allowed.\nThe second line of each test case contains NNN space-separated integers A1,A2,\u2026,ANA_1,A_2,\\ldots,A_NA1\u200b,A2\u200b,\u2026,AN\u200b,  representing the array AAA.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the largest YYY satisfying the condition.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "2 ≤ N ≤ 10^5",
-      "0 ≤ Ai, X < 2^30",
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f10^5",
+      "2\u202f\u2264\u202fN\u202f\u2264\u202f10^5",
+      "0\u202f\u2264\u202fAi,\u202fX\u202f<\u202f2^30",
       "The sum of N over all test cases does not exceed 10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X — the size of the array and the maximum allowed value of Y. The second line contains N space‑separated non‑negative integers A1, A2, …, AN. It is guaranteed that the array contains at least two distinct elements and 0 ≤ Ai, X < 2^30.",
-    "outputFormat": "For each test case, output a single line containing the largest integer Y (0 ≤ Y ≤ X) such that after replacing every Ai by Ai | Y the resulting array contains at least two distinct values.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains two integers N and X \u2014 the size of the array and the maximum allowed value of Y. The second line contains N space\u2011separated non\u2011negative integers A1, A2, \u2026, AN. It is guaranteed that the array contains at least two distinct elements and 0\u202f\u2264\u202fAi,\u202fX\u202f<\u202f2^30.",
+    "outputFormat": "For each test case, output a single line containing the largest integer Y (0\u202f\u2264\u202fY\u202f\u2264\u202fX) such that after replacing every Ai by Ai\u202f|\u202fY the resulting array contains at least two distinct values.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n3 5\n1 1 2\n5 10\n4 5 2 3 5\n3 3\n1 1 3",
         "output": "5\n10\n1",
-        "explanation": "Test case 1: Y=5 gives B=[5,5,7] – two distinct values, and no larger Y ≤5 works.\nTest case 2: Y=10 gives B=[14,15,10,11,15] – distinct values exist, and 10 is the maximum allowed.\nTest case 3: Y=1 gives B=[1,1,3] – distinct, while Y=2 makes all elements 3, so answer is 1."
+        "explanation": "Test case 1: Y=5 gives B=[5,5,7] \u2013 two distinct values, and no larger Y \u22645 works.\nTest case 2: Y=10 gives B=[14,15,10,11,15] \u2013 distinct values exist, and 10 is the maximum allowed.\nTest case 3: Y=1 gives B=[1,1,3] \u2013 distinct, while Y=2 makes all elements 3, so answer is 1."
       }
     ]
   },
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "Let D be the bitmask of all positions where the original array is not uniform, i.e. D = OR_{i}(Ai xor A0). After applying Y, all elements become equal iff Y contains all bits of D ((Y & D) == D). Therefore we need the maximum Y ≤ X that does NOT satisfy (Y & D) == D. We build the answer greedily from the most significant bit to the least: for each bit, try to set it in the current answer, keep the candidate ≤ X, and ensure that the candidate still misses at least one bit of D (or equivalently that the array after OR with the candidate still has at least two distinct values). If both conditions hold we keep the bit, otherwise we leave it 0. This yields the largest feasible Y. The check can be performed directly by verifying that the array after OR with the candidate has at least two distinct values (function ok). The algorithm runs in O(N·B) per test case, where B = 30 (constant), which easily fits the limits.",
-    "timeComplexity": "O(N·30) per test case, i.e., O(N) overall because the number of bits is constant.",
+    "approach": "Let D be the bitmask of all positions where the original array is not uniform, i.e. D = OR_{i}(Ai xor A0). After applying Y, all elements become equal iff Y contains all bits of D ((Y & D) == D). Therefore we need the maximum Y\u202f\u2264\u202fX that does NOT satisfy (Y & D) == D. We build the answer greedily from the most significant bit to the least: for each bit, try to set it in the current answer, keep the candidate \u2264\u202fX, and ensure that the candidate still misses at least one bit of D (or equivalently that the array after OR with the candidate still has at least two distinct values). If both conditions hold we keep the bit, otherwise we leave it 0. This yields the largest feasible Y. The check can be performed directly by verifying that the array after OR with the candidate has at least two distinct values (function ok). The algorithm runs in O(N\u00b7B) per test case, where B\u202f=\u202f30 (constant), which easily fits the limits.",
+    "timeComplexity": "O(N\u00b730) per test case, i.e., O(N) overall because the number of bits is constant.",
     "spaceComplexity": "O(N) to store the input array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n\nbool ok(int *A, int N, int Y) {\n    int first = A[0] | Y;\n    for (int i = 1; i < N; ++i) {\n        if ((A[i] | Y) != first) return true; // at least two distinct\n    }\n    return false;\n}\n\nint main() {\n    int T; scanf(\"%d\", &T);\n    while (T--) {\n        int N, X; scanf(\"%d %d\", &N, &X);\n        int A[100000];\n        for (int i = 0; i < N; ++i) scanf(\"%d\", &A[i]);\n        int ans = 0;\n        for (int b = 29; b >= 0; --b) {\n            int cand = ans | (1 << b);\n            if (cand <= X && ok(A, N, cand)) ans = cand;\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

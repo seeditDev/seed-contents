@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Greedy",
-      "Sorting"
+      "Sorting",
+      "Dynamic Programming",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,9 +20,9 @@
     ]
   },
   "content": {
-    "problemStatement": "Indraneel would like a build a pyramid of wooden blocks. A pyramid is built by placing a square block, say NNN cms by NNN cms, at the base, place another square block N−1N-1N−1 cms by N−1N-1N−1 cms on top of that, a square block of N−2N-2N−2 cms by N−2N-2N−2 cms on top of that and so on, ending with a 111 cm by 111 cm block on top. The height of such a pyramid is NNN.\n\nIndraneel has with him MMM rectangular blocks of wood. He is willing to shape them into square blocks. His only cutting tool is a shaver that can be used to shave off the wood from any edge to reduce its length. This means that he can never get two square blocks from a single rectangular block.\n\nFor example, suppose the dimensions of the rectangular blocks available with Indraneel are 8×88 \\times 88×8, 2×82 \\times 82×8, 2×12 \\times 12×1  and 2×22 \\times 22×2. Then, he can build a pyramid of height 333 (the 2×12 \\times 12×1 block can be shaved to give a 1×11 \\times 11×1 block, and the 8×88 \\times 88×8 block can be shaved down to a 3×33 \\times 33×3 block.)\n\nGiven the dimensions of the blocks available, your task is determine the height of the tallest pyramid that Indraneel can build.\n\nInput:The first line of the input contains a single integer MMM indicating the number of blocks of wood available. This is followed by MMM lines of input (lines 2,3,...,M+12, 3,...,M+12,3,...,M+1) each containing the description of a block. A block is described by two integers iii and jjj indicating the lengths of the two sides of the block. No block is longer or wider than 100000010000001000000 cms.\n\nOutput:A single line with a single integer indicating the height of the tallest pyramid that Indraneel can build.",
+    "problemStatement": "Indraneel would like a build a pyramid of wooden blocks. A pyramid is built by placing a square block, say NNN cms by NNN cms, at the base, place another square block N\u22121N-1N\u22121 cms by N\u22121N-1N\u22121 cms on top of that, a square block of N\u22122N-2N\u22122 cms by N\u22122N-2N\u22122 cms on top of that and so on, ending with a 111 cm by 111 cm block on top. The height of such a pyramid is NNN.\n\nIndraneel has with him MMM rectangular blocks of wood. He is willing to shape them into square blocks. His only cutting tool is a shaver that can be used to shave off the wood from any edge to reduce its length. This means that he can never get two square blocks from a single rectangular block.\n\nFor example, suppose the dimensions of the rectangular blocks available with Indraneel are 8\u00d788 \\times 88\u00d78, 2\u00d782 \\times 82\u00d78, 2\u00d712 \\times 12\u00d71  and 2\u00d722 \\times 22\u00d72. Then, he can build a pyramid of height 333 (the 2\u00d712 \\times 12\u00d71 block can be shaved to give a 1\u00d711 \\times 11\u00d71 block, and the 8\u00d788 \\times 88\u00d78 block can be shaved down to a 3\u00d733 \\times 33\u00d73 block.)\n\nGiven the dimensions of the blocks available, your task is determine the height of the tallest pyramid that Indraneel can build.\n\nInput:The first line of the input contains a single integer MMM indicating the number of blocks of wood available. This is followed by MMM lines of input (lines 2,3,...,M+12, 3,...,M+12,3,...,M+1) each containing the description of a block. A block is described by two integers iii and jjj indicating the lengths of the two sides of the block. No block is longer or wider than 100000010000001000000 cms.\n\nOutput:A single line with a single integer indicating the height of the tallest pyramid that Indraneel can build.",
     "constraints": [
-      "1 ≤ M ≤ 1000000",
+      "1 \u2264 M \u2264 1000000",
       "All block dimensions are bounded by 1000000 cms"
     ],
     "inputFormat": "The first line contains a single integer M indicating the number of blocks of wood available. This is followed by M lines of input, each containing the description of a block. A block is described by two integers i and j indicating the lengths of the two sides of the block.",
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first sort the blocks based on their smaller side length in descending order. Then, we try to build the pyramid from the largest block to the smallest. We use a greedy approach to select the blocks for the pyramid. If a block can be used to build the next level of the pyramid, we use it. Otherwise, we move to the next block.",
-    "timeComplexity": "O(M log M) — due to sorting the blocks",
-    "spaceComplexity": "O(M) — for storing the blocks",
+    "timeComplexity": "O(M log M) \u2014 due to sorting the blocks",
+    "spaceComplexity": "O(M) \u2014 for storing the blocks",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return (*y < *x) - (*y > *x);\n}\nint main() {\n    int M;\n    scanf(\"%d\", &M);\n    int *blocks = (int *)malloc(2 * M * sizeof(int));\n    for (int i = 0; i < M; i++) {\n        scanf(\"%d %d\", &blocks[2 * i], &blocks[2 * i + 1]);\n        if (blocks[2 * i] < blocks[2 * i + 1]) {\n            int temp = blocks[2 * i];\n            blocks[2 * i] = blocks[2 * i + 1];\n            blocks[2 * i + 1] = temp;\n        }\n    }\n    for (int i = 0; i < M; i++) {\n        qsort(&blocks[2 * i], 1, sizeof(int), compare);\n    }\n    int height = 0;\n    int current = 1000000;\n    for (int i = 0; i < M; i++) {\n        if (blocks[2 * i] >= current) {\n            height++;\n            current--;\n        }\n    }\n    printf(\"%d\\n\", height);\n    free(blocks);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int M;\n    cin >> M;\n    int *blocks = new int[2 * M];\n    for (int i = 0; i < M; i++) {\n        cin >> blocks[2 * i] >> blocks[2 * i + 1];\n        if (blocks[2 * i] < blocks[2 * i + 1]) {\n            swap(blocks[2 * i], blocks[2 * i + 1]);\n        }\n    }\n    sort(blocks, blocks + 2 * M, greater<int>());\n    int height = 0;\n    int current = 1000000;\n    for (int i = 0; i < 2 * M; i++) {\n        if (blocks[i] >= current) {\n            height++;\n            current--;\n        }\n    }\n    cout << height << endl;\n    delete[] blocks;\n    return 0;\n}",

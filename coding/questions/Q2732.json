@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Strings | Math",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Cube Cakes",
+      "Sub-cubes",
       "Similarity",
-      "Sub-cubes"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "This winter our chef plans to unveil his latest creation - Cube Cakes. As the name suggests, this new delicacy is a cake in the form of a perfect cube with secret ingredients from the chef's inventory. Since it is a relatively new creation of the chef, he wants to master the ability to make perfectly identical Cube Cakes. For this, he wants you to write a program that will calculate the similarity between two given Cube Cakes. \n\n\n Each Cube Cake can be represented as a cube of size **N** where each cell of the cube contains a lowercase alphabet ('a'-'z').  The similarity between two Cube Cakes ( of size ** N **  each ) is defined as the maximum sized common sub-cube that exists at exactly the same position in both the Cube Cakes. Two sub-cubes are said to be common if at-least **P%** of their corresponding characters are equal. You need to find the size **S** of the largest such sub-cube and also the number of common sub-cubes of size **S** in the Cube Cake.",
     "constraints": [
-      "1 ≤ T ≤ 40",
-      "1 ≤ N ≤ 40",
-      "0 ≤ P ≤ 100",
+      "1 \u2264 T \u2264 40",
+      "1 \u2264 N \u2264 40",
+      "0 \u2264 P \u2264 100",
       "|SA|, |SB| = N3"
     ],
-    "inputFormat": "The first line contains an integer T denoting the number of test cases. Then the descriptions of testcases follows. The first line of each testcase contains integers N (the size of the Cube Cakes A and B that are to be compared) and P. The next line contains a string SA containing N3 lowercase characters ('a'-'z'), where the A[i][j][k]th element of the Cube Cake A is given by SA[ i*N*N + j*N + k ] where 0 ≤ i, j, k ≤ N-1. The next line contains a string SB containing N3 lowercase characters ('a'-'z'), SB is the description of the Cube Cake B in the way analogical to A.",
+    "inputFormat": "The first line contains an integer T denoting the number of test cases. Then the descriptions of testcases follows. The first line of each testcase contains integers N (the size of the Cube Cakes A and B that are to be compared) and P. The next line contains a string SA containing N3 lowercase characters ('a'-'z'), where the A[i][j][k]th element of the Cube Cake A is given by SA[ i*N*N + j*N + k ] where 0 \u2264 i, j, k \u2264 N-1. The next line contains a string SB containing N3 lowercase characters ('a'-'z'), SB is the description of the Cube Cake B in the way analogical to A.",
     "outputFormat": "For every test case, print in a single line the similarity between the two Cube Cakes S and the number of common sub-cubes of size S. If there is no common sub cube present, just print -1 in a single line.",
     "sampleTestCases": [
       {
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to compare the two Cube Cakes A and B. We start by comparing the largest possible sub-cubes and then move to smaller ones. For each sub-cube size, we check if at least P% of the corresponding characters are equal. If they are, we update the similarity S and the count of common sub-cubes. We continue this process until we find a sub-cube size that has at least one common sub-cube or until we reach a sub-cube size of 1.",
-    "timeComplexity": "O(T * N^6) — because for each test case, we are comparing all possible sub-cubes of the Cube Cakes A and B.",
-    "spaceComplexity": "O(N^3) — because we need to store the Cube Cakes A and B.",
+    "timeComplexity": "O(T * N^6) \u2014 because for each test case, we are comparing all possible sub-cubes of the Cube Cakes A and B.",
+    "spaceComplexity": "O(N^3) \u2014 because we need to store the Cube Cakes A and B.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, P;\n        scanf(\"%d %d\", &N, &P);\n        char SA[N*N*N], SB[N*N*N];\n        scanf(\"%s\", SA);\n        scanf(\"%s\", SB);\n        int S = -1, count = 0;\n        for (int size = N; size >= 1; size--) {\n            int match = 0;\n            for (int i = 0; i <= N - size; i++) {\n                for (int j = 0; j <= N - size; j++) {\n                    for (int k = 0; k <= N - size; k++) {\n                        int equal = 0;\n                        for (int x = 0; x < size; x++) {\n                            for (int y = 0; y < size; y++) {\n                                for (int z = 0; z < size; z++) {\n                                    if (SA[(i+x)*N*N + (j+y)*N + (k+z)] == SB[(i+x)*N*N + (j+y)*N + (k+z)]) {\n                                        equal++;\n                                    }\n                                }\n                            }\n                        }\n                        if ((double)equal / (size*size*size) * 100 >= P) {\n                            match++;\n                        }\n                    }\n                }\n            }\n            if (match > 0) {\n                S = size;\n                count = match;\n                break;\n            }\n        }\n        if (S == -1) {\n            printf(\"-1\\n\");\n        } else {\n            printf(\"%d %d\\n\", S, count);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, P;\n        cin >> N >> P;\n        string SA, SB;\n        cin >> SA >> SB;\n        int S = -1, count = 0;\n        for (int size = N; size >= 1; size--) {\n            int match = 0;\n            for (int i = 0; i <= N - size; i++) {\n                for (int j = 0; j <= N - size; j++) {\n                    for (int k = 0; k <= N - size; k++) {\n                        int equal = 0;\n                        for (int x = 0; x < size; x++) {\n                            for (int y = 0; y < size; y++) {\n                                for (int z = 0; z < size; z++) {\n                                    if (SA[(i+x)*N*N + (j+y)*N + (k+z)] == SB[(i+x)*N*N + (j+y)*N + (k+z)]) {\n                                        equal++;\n                                    }\n                                }\n                            }\n                        }\n                        if ((double)equal / (size*size*size) * 100 >= P) {\n                            match++;\n                        }\n                    }\n                }\n            }\n            if (match > 0) {\n                S = size;\n                count = match;\n                break;\n            }\n        }\n        if (S == -1) {\n            cout << -1 << endl;\n        } else {\n            cout << S << \" \" << count << endl;\n        }\n    }\n    return 0;\n}",

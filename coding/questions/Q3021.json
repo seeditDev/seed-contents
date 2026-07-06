@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Matrix Exponentiation",
-      "Modular Arithmetic"
+      "Math",
+      "Modular Arithmetic",
+      "Matrix Exponentiation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,7 +28,7 @@
       "1 <= M <= 10^18",
       "1 <= Ai <= 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains three space-separated integers N, x, and M, where N is the size of the array, x is the index of the element to find, and M is the number of times to repeat the operation. The second line contains N space-separated integers A1, A2, …, AN.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains three space-separated integers N, x, and M, where N is the size of the array, x is the index of the element to find, and M is the number of times to repeat the operation. The second line contains N space-separated integers A1, A2, \u2026, AN.",
     "outputFormat": "For each test case, print the xth element of the array after performing the operation M times, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using matrix exponentiation. The operation can be represented as a matrix multiplication. By exponentiating this matrix M times, we can find the xth element of the array after M operations.",
     "timeComplexity": "O(log M) per test case, O(T * log M) total.",
-    "spaceComplexity": "O(1) — the space used does not grow with the size of the input.",
+    "spaceComplexity": "O(1) \u2014 the space used does not grow with the size of the input.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nlong long matrix[2][2];\nlong long result[2][2];\n\nvoid multiply(long long a[2][2], long long b[2][2]) {\n    long long c[2][2];\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            c[i][j] = 0;\n            for (int k = 0; k < 2; k++) {\n                c[i][j] += a[i][k] * b[k][j];\n                c[i][j] %= MOD;\n            }\n        }\n    }\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            a[i][j] = c[i][j];\n        }\n    }\n}\n\nvoid power(long long a[2][2], long long n) {\n    if (n == 1) return;\n    if (n % 2 == 0) {\n        power(a, n / 2);\n        multiply(a, a);\n    } else {\n        power(a, n / 2);\n        multiply(a, a);\n        multiply(a, matrix);\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, x, M;\n        scanf(\"%d %d %d\", &N, &x, &M);\n        long long A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%lld\", &A[i]);\n        }\n        matrix[0][0] = 1;\n        matrix[0][1] = 1;\n        matrix[1][0] = 0;\n        matrix[1][1] = 1;\n        result[0][0] = 1;\n        result[0][1] = 0;\n        result[1][0] = 0;\n        result[1][1] = 1;\n        power(matrix, M);\n        long long answer = (result[0][0] * A[x - 1] + result[0][1] * A[x - 2]) % MOD;\n        if(x == 1) answer = A[x - 1];\n        printf(\"%lld\\n\", answer);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\nvoid multiply(long long a[2][2], long long b[2][2], long long c[2][2]) {\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 2; j++) {\n            c[i][j] = 0;\n            for (int k = 0; k < 2; k++) {\n                c[i][j] += a[i][k] * b[k][j];\n                c[i][j] %= MOD;\n            }\n        }\n    }\n}\n\nvoid power(long long a[2][2], long long n, long long result[2][2]) {\n    if (n == 1) {\n        for (int i = 0; i < 2; i++) {\n            for (int j = 0; j < 2; j++) {\n                result[i][j] = a[i][j];\n            }\n        }\n        return;\n    }\n    if (n % 2 == 0) {\n        long long temp[2][2];\n        power(a, n / 2, temp);\n        multiply(temp, temp, result);\n    } else {\n        long long temp[2][2];\n        power(a, n / 2, temp);\n        multiply(temp, temp, temp);\n        multiply(temp, a, result);\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, x, M;\n        cin >> N >> x >> M;\n        vector<long long> A(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        long long matrix[2][2] = {{1, 1}, {0, 1}};\n        long long result[2][2];\n        power(matrix, M, result);\n        long long answer = 0;\n        if(x == 1) answer = A[x - 1];\n        else answer = (result[0][0] * A[x - 1] + result[0][1] * A[x - 2]) % MOD;\n        cout << answer << endl;\n    }\n    return 0;\n}",

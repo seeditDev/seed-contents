@@ -11,7 +11,8 @@
     "isPremium": true,
     "tags": [
       "Repetition-Free Numbers",
-      "Number Theory"
+      "Number Theory",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "A repetition-free number is one in which each digit {1,2,3,…,9}\\{1,2,3,…,9\\}{1,2,3,…,9} appears at most once and the digit 000 does not appear. A repetition-free number can have at most nine digits, but may also have fewer than nine digits. Some examples of repetition-free numbers are 9,32,489,987619, 32, 489, 987619,32,489,98761 and 983245983245983245.\n\nYou will be given an integer NNN with at most nine digits. Your task is to print out the smallest repetition-free number bigger than NNN. For example, for 999999 the answer is 123123123, for 881881881 the answer is 891891891, and for 133133133 the answer is 134134134.\n\nInput:A single line with a single integer with at most 999 digits.\n\nOutput:A single line containing the smallest repetition-free number bigger than the given number. If there is no repetition-free number bigger than the given number, print 000.",
+    "problemStatement": "A repetition-free number is one in which each digit {1,2,3,\u2026,9}\\{1,2,3,\u2026,9\\}{1,2,3,\u2026,9} appears at most once and the digit 000 does not appear. A repetition-free number can have at most nine digits, but may also have fewer than nine digits. Some examples of repetition-free numbers are 9,32,489,987619, 32, 489, 987619,32,489,98761 and 983245983245983245.\n\nYou will be given an integer NNN with at most nine digits. Your task is to print out the smallest repetition-free number bigger than NNN. For example, for 999999 the answer is 123123123, for 881881881 the answer is 891891891, and for 133133133 the answer is 134134134.\n\nInput:A single line with a single integer with at most 999 digits.\n\nOutput:A single line containing the smallest repetition-free number bigger than the given number. If there is no repetition-free number bigger than the given number, print 000.",
     "constraints": [
       "1 <= length of N <= 999",
       "N consists of digits from 0 to 9"
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "To find the smallest repetition-free number bigger than the given number, we can start by checking if the given number is already repetition-free. If it is, we can try to increment the number while keeping it repetition-free. If it's not, we can try to find the smallest repetition-free number that is bigger than the given number. We can use a backtracking approach to generate all possible repetition-free numbers and find the smallest one that is bigger than the given number.",
-    "timeComplexity": "O(10^length of N) — because in the worst case, we have to generate all possible repetition-free numbers of the same length as the given number.",
-    "spaceComplexity": "O(length of N) — because we need to store the current repetition-free number being generated.",
+    "timeComplexity": "O(10^length of N) \u2014 because in the worst case, we have to generate all possible repetition-free numbers of the same length as the given number.",
+    "spaceComplexity": "O(length of N) \u2014 because we need to store the current repetition-free number being generated.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint isRepetitionFree(char *num) {\n    int len = strlen(num);\n    for (int i = 0; i < len; i++) {\n        for (int j = i + 1; j < len; j++) {\n            if (num[i] == num[j]) return 0;\n        }\n    }\n    return 1;\n}\n\nvoid findNextRepetitionFree(char *num) {\n    int len = strlen(num);\n    int i = len - 1;\n    while (i >= 0 && num[i] == '9') i--;\n    if (i >= 0) {\n        num[i]++;\n        for (int j = i + 1; j < len; j++) num[j] = '0';\n    } else {\n        num[0] = '1';\n        for (int j = 1; j <= len; j++) num[j] = '0';\n    }\n    while (!isRepetitionFree(num)) findNextRepetitionFree(num);\n}\n\nint main() {\n    char num[1000];\n    scanf(\"%s\", num);\n    findNextRepetitionFree(num);\n    printf(\"%s\\n\", num);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nbool isRepetitionFree(string num) {\n    for (int i = 0; i < num.length(); i++) {\n        for (int j = i + 1; j < num.length(); j++) {\n            if (num[i] == num[j]) return false;\n        }\n    }\n    return true;\n}\n\nvoid findNextRepetitionFree(string &num) {\n    int i = num.length() - 1;\n    while (i >= 0 && num[i] == '9') i--;\n    if (i >= 0) {\n        num[i]++;\n        for (int j = i + 1; j < num.length(); j++) num[j] = '0';\n    } else {\n        num = \"1\" + string(num.length(), '0');\n    }\n    while (!isRepetitionFree(num)) findNextRepetitionFree(num);\n}\n\nint main() {\n    string num;\n    cin >> num;\n    findNextRepetitionFree(num);\n    cout << num << endl;\n    return 0;\n}",

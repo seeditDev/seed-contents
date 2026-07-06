@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Sorting",
-      "Prefix Sum"
+      "Prefix Sum",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first generate all possible contiguous subarrays of A and calculate their sums. Then, we sort these sums in non-increasing order. Finally, we output the first K elements of the sorted list.",
-    "timeComplexity": "O(N^3 log N) — generating all subarrays takes O(N^3), and sorting the sums takes O(N^3 log N). However, since K is limited to min(N*(N+1)/2, 10^5), the actual time complexity is closer to O(N^3 log K).",
-    "spaceComplexity": "O(N^3) — we need to store the sums of all possible subarrays.",
+    "timeComplexity": "O(N^3 log N) \u2014 generating all subarrays takes O(N^3), and sorting the sums takes O(N^3 log N). However, since K is limited to min(N*(N+1)/2, 10^5), the actual time complexity is closer to O(N^3 log K).",
+    "spaceComplexity": "O(N^3) \u2014 we need to store the sums of all possible subarrays.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <math.h>\n#define MAX 100005\nint compare(const void *a, const void *b) {\n    return (*(int*)b - *(int*)a);\n}\nint main() {\n    int N, K;\n    scanf(\"%d %d\", &N, &K);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    int sums[N * (N + 1) / 2];\n    int index = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = i; j < N; j++) {\n            int sum = 0;\n            for (int k = i; k <= j; k++) {\n                sum += A[k];\n            }\n            sums[index++] = sum;\n        }\n    }\n    qsort(sums, N * (N + 1) / 2, sizeof(int), compare);\n    for (int i = 0; i < K; i++) {\n        printf(\"%d \", sums[i]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nconst int MAX = 100005;\nint main() {\n    int N, K;\n    cin >> N >> K;\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    int sums[N * (N + 1) / 2];\n    int index = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = i; j < N; j++) {\n            int sum = 0;\n            for (int k = i; k <= j; k++) {\n                sum += A[k];\n            }\n            sums[index++] = sum;\n        }\n    }\n    sort(sums, sums + N * (N + 1) / 2, greater<int>());\n    for (int i = 0; i < K; i++) {\n        cout << sums[i] << \" \";\n    }\n    return 0;\n}",

@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
-      "Simulation",
       "Integer Division",
-      "Ceil"
+      "Math",
+      "Simulation",
+      "Ceil",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +22,19 @@
     ]
   },
   "content": {
-    "problemStatement": "Alice and Bob both bought a full cake each.\n\nAlice's cake has AAA slices, and Bob's cake has BBB slices.\n\nAlice will be unhappy if she has strictly less slices than Bob does. Similarly, Bob will be unhappy if he has strictly less slices than Alice does.\n\nCharlie doesn't want either of his friends to be unhappy, so he proposes a solution: while either Alice or Bob are unhappy, he will attempt to restore happiness by eating half the remaining slices (rounded up) of whoever has **more** of them.\n\nFor example,\n\n\nIf A=8A = 8A=8 and B=5B = 5B=5, Charlie will eat half of Alice's slices, which is 82=4\\frac{8}{2} = 428​=4 slices.\nIf A=2A = 2A=2 and B=5B = 5B=5, Charlie will eat half of Bob's slices, which is 52\\frac{5}{2}25​ slices - rounded up, this is 333 slices.\nHow many slices of cake will Charlie eat in total?\n\nThe sample tests below have an explained example.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first and only line of input contains two space-separated integers AAA and BBB: Alice's and Bob's initial number of slices.\n\n\nOutput Format\nFor each test case, output on a new line the number of slices of cake Charlie will eat.",
+    "problemStatement": "Alice and Bob both bought a full cake each.\n\nAlice's cake has AAA slices, and Bob's cake has BBB slices.\n\nAlice will be unhappy if she has strictly less slices than Bob does. Similarly, Bob will be unhappy if he has strictly less slices than Alice does.\n\nCharlie doesn't want either of his friends to be unhappy, so he proposes a solution: while either Alice or Bob are unhappy, he will attempt to restore happiness by eating half the remaining slices (rounded up) of whoever has **more** of them.\n\nFor example,\n\n\nIf A=8A = 8A=8 and B=5B = 5B=5, Charlie will eat half of Alice's slices, which is 82=4\\frac{8}{2} = 428\u200b=4 slices.\nIf A=2A = 2A=2 and B=5B = 5B=5, Charlie will eat half of Bob's slices, which is 52\\frac{5}{2}25\u200b slices - rounded up, this is 333 slices.\nHow many slices of cake will Charlie eat in total?\n\nThe sample tests below have an explained example.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first and only line of input contains two space-separated integers AAA and BBB: Alice's and Bob's initial number of slices.\n\n\nOutput Format\nFor each test case, output on a new line the number of slices of cake Charlie will eat.",
     "constraints": [
       "1 <= T <= 10^4",
       "1 <= A, B <= 100"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers A and B – the initial number of slices Alice and Bob have.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers A and B \u2013 the initial number of slices Alice and Bob have.",
     "outputFormat": "For each test case output a single line with the total number of slices Charlie eats until Alice and Bob have the same number of slices.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n10 8\n13 13\n28 100\n3 14",
         "output": "14\n0\n122\n11",
-        "explanation": "Test case 1: 10 vs 8 → eat 5 (10→5), then 8→4, then 5→2, then 4→2. Total 5+4+3+2=14.\\nTest case 2: already equal, total 0.\\nTest case 3: steps described in the statement, total 122.\\nTest case 4: 3 vs 14 → eat 7 (14→7), then 7→3, total 7+4=11."
+        "explanation": "Test case 1: 10 vs 8 \u2192 eat 5 (10\u21925), then 8\u21924, then 5\u21922, then 4\u21922. Total 5+4+3+2=14.\\nTest case 2: already equal, total 0.\\nTest case 3: steps described in the statement, total 122.\\nTest case 4: 3 vs 14 \u2192 eat 7 (14\u21927), then 7\u21923, total 7+4=11."
       },
       {
         "id": "sample_2",
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "For each test case we repeatedly apply the rule while A != B. If A > B, Charlie eats ceil(A/2) slices, which leaves floor(A/2) slices for Alice; otherwise he does the same for Bob. The amount eaten each step is (larger+1)//2 and the larger value becomes larger//2. We accumulate the eaten amount. Because each operation at least halves the larger value, the loop runs O(log max(A,B)) steps, which is trivial for the given limits.",
-    "timeComplexity": "O(T * log(max(A,B))) – at most about 7 iterations per test case because A,B ≤ 100.",
+    "timeComplexity": "O(T * log(max(A,B))) \u2013 at most about 7 iterations per test case because A,B \u2264 100.",
     "spaceComplexity": "O(1) additional space per test case.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int A, B;\n        scanf(\"%d %d\", &A, &B);\n        long long total = 0;\n        while (A != B) {\n            if (A > B) {\n                int eat = (A + 1) / 2; // ceil(A/2)\n                total += eat;\n                A = A / 2; // floor(A/2)\n            } else {\n                int eat = (B + 1) / 2;\n                total += eat;\n                B = B / 2;\n            }\n        }\n        printf(\"%lld\\n\", total);\n    }\n    return 0;\n}",

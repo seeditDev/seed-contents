@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Rock Paper Scissors",
-      "Game Theory"
+      "Game Theory",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -37,7 +38,7 @@
         "id": "sample_2",
         "input": "4\nWater Rock\nWater Paper\nRock Rock\nScissors Paper",
         "output": "Round 1: Computer\nRound 2: You\nRound 3: Tie\nRound 4: You\nYou won the overall match",
-        "explanation": "Round1: Water loses to Rock → computer wins. Round2: Water beats Paper → you win. Round3: both choose Rock → tie. Round4: Scissors beats Paper → you win. You have 2 wins, computer 1, so you win overall."
+        "explanation": "Round1: Water loses to Rock \u2192 computer wins. Round2: Water beats Paper \u2192 you win. Round3: both choose Rock \u2192 tie. Round4: Scissors beats Paper \u2192 you win. You have 2 wins, computer 1, so you win overall."
       },
       {
         "id": "sample_3",
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The key insight is to determine the winning conditions for each choice. Rock beats Scissors and Water, Paper beats Rock, Scissors beats Paper, and Water beats Paper and Scissors. We can use a simple if-else statement to determine the winner of each round. We keep track of the number of wins for each player and output the overall result at the end.",
     "timeComplexity": "O(N) per test case, O(T*N) total. No precomputation is done.",
-    "spaceComplexity": "O(1) — the space used does not grow with the size of the input, only a constant amount of space is used.",
+    "spaceComplexity": "O(1) \u2014 the space used does not grow with the size of the input, only a constant amount of space is used.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint result(const char *a, const char *b){\n    if(strcmp(a,b)==0) return 0; // tie\n    // a beats b ? return 1 : -1\n    if(strcmp(a,\"Rock\")==0){\n        if(strcmp(b,\"Scissors\")==0 || strcmp(b,\"Water\")==0) return 1;\n        else return -1; // b is Paper\n    }\n    if(strcmp(a,\"Paper\")==0){\n        if(strcmp(b,\"Rock\")==0) return 1;\n        else return -1; // b is Scissors or Water\n    }\n    if(strcmp(a,\"Scissors\")==0){\n        if(strcmp(b,\"Paper\")==0) return 1;\n        else return -1; // b is Rock or Water\n    }\n    if(strcmp(a,\"Water\")==0){\n        if(strcmp(b,\"Paper\")==0 || strcmp(b,\"Scissors\")==0) return 1;\n        else return -1; // b is Rock\n    }\n    return 0; // should never reach\n}\n\nint main(){\n    int N; if(scanf(\"%d\",&N)!=1) return 0;\n    char you[20], comp[20];\n    int youWins=0, compWins=0;\n    for(int i=1;i<=N;i++){\n        scanf(\"%s %s\",you,comp);\n        int r=result(you,comp);\n        if(r==1){\n            printf(\"Round %d: You\\n\",i);\n            youWins++;\n        }else if(r==-1){\n            printf(\"Round %d: Computer\\n\",i);\n            compWins++;\n        }else{\n            printf(\"Round %d: Tie\\n\",i);\n        }\n    }\n    if(youWins>compWins) printf(\"You won the overall match\\n\");\n    else if(compWins>youWins) printf(\"Computer won the overall match\\n\");\n    else printf(\"Match tied\\n\");\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint result(const string &a, const string &b){\n    if(a==b) return 0;\n    if(a==\"Rock\") return (b==\"Scissors\"||b==\"Water\")?1:-1;\n    if(a==\"Paper\") return (b==\"Rock\")?1:-1;\n    if(a==\"Scissors\") return (b==\"Paper\")?1:-1;\n    if(a==\"Water\") return (b==\"Paper\"||b==\"Scissors\")?1:-1;\n    return 0;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N; if(!(cin>>N)) return 0;\n    string you, comp;\n    int youWins=0, compWins=0;\n    for(int i=1;i<=N;i++){\n        cin>>you>>comp;\n        int r=result(you,comp);\n        if(r==1){ cout<<\"Round \"<<i<<\": You\\n\"; youWins++; }\n        else if(r==-1){ cout<<\"Round \"<<i<<\": Computer\\n\"; compWins++; }\n        else{ cout<<\"Round \"<<i<<\": Tie\\n\"; }\n    }\n    if(youWins>compWins) cout<<\"You won the overall match\\n\";\n    else if(compWins>youWins) cout<<\"Computer won the overall match\\n\";\n    else cout<<\"Match tied\\n\";\n    return 0;\n}\n",

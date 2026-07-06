@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "Floyd-Warshall Algorithm",
-      "Shortest Path",
-      "All Pairs Shortest Path"
+      "All Pairs Shortest Path",
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an undirected weighted graph it has NNN vertices and MMM edges. \n\nYou are tasked to find the length of the shortest path duvd_{uv}duv​ between each pair of vertices uuu and vvv.\n\nTaskImplement the Floyd-Warshall Algorithm to solve the problem\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i−thi-thi−th of these MMM lines contains three space-separated integers uiu_iui​, viv_ivi​ and wiw_iwi​ denoting there exists an edge between uiu_iui​ and viv_ivi​ with weight wiw_iwi​.\n\n\nOutput Format\nOutput a Matrix of N x N dimension - i−thi-thi−th  line has the distance from node iii to all the other nodes.\nIf there exists no path from iii to jjj output -1 instead.",
+    "problemStatement": "You are given an undirected weighted graph it has NNN vertices and MMM edges. \n\nYou are tasked to find the length of the shortest path duvd_{uv}duv\u200b between each pair of vertices uuu and vvv.\n\nTaskImplement the Floyd-Warshall Algorithm to solve the problem\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i\u2212thi-thi\u2212th of these MMM lines contains three space-separated integers uiu_iui\u200b, viv_ivi\u200b and wiw_iwi\u200b denoting there exists an edge between uiu_iui\u200b and viv_ivi\u200b with weight wiw_iwi\u200b.\n\n\nOutput Format\nOutput a Matrix of N x N dimension - i\u2212thi-thi\u2212th  line has the distance from node iii to all the other nodes.\nIf there exists no path from iii to jjj output -1 instead.",
     "constraints": [
-      "1 ≤ N ≤ 100",
-      "1 ≤ M ≤ N*(N-1)/2",
-      "1 ≤ u, v ≤ N",
-      "1 ≤ w ≤ 10^8"
+      "1 \u2264 N \u2264 100",
+      "1 \u2264 M \u2264 N*(N-1)/2",
+      "1 \u2264 u, v \u2264 N",
+      "1 \u2264 w \u2264 10^8"
     ],
     "inputFormat": "First line contains two integers N and M, denoting the number of vertices and edges. Next M lines describe the edges. Each of these M lines contains three space-separated integers u, v, and w, denoting there exists an edge between u and v with weight w.",
     "outputFormat": "Output a Matrix of N x N dimension - the i-th line has the distance from node i to all the other nodes. If there exists no path from i to j, output -1 instead.",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using the Floyd-Warshall Algorithm, which is an algorithm for finding the shortest paths in a weighted graph with positive or negative edge weights. The algorithm works by considering all possible paths of length 1, 2, ..., n, where n is the number of vertices in the graph. For each pair of vertices, it checks if there is a shorter path by going through an intermediate vertex.",
     "timeComplexity": "O(N^3) per test case, where N is the number of vertices. This is because the Floyd-Warshall Algorithm has a time complexity of O(N^3).",
-    "spaceComplexity": "O(N^2) — the dominant structure is the adjacency matrix of size N x N.",
+    "spaceComplexity": "O(N^2) \u2014 the dominant structure is the adjacency matrix of size N x N.",
     "code": {
       "C": "#include <stdio.h>\nconst int INF = 1e9;\nint min(int a, int b) { return (a < b) ? a : b; }\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    int dp[n + 1][n + 1];\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if(i == j) dp[i][j] = 0;\n            else dp[i][j] = INF;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        scanf(\"%d %d %d\", &u, &v, &w);\n        dp[u][v] = w;\n        dp[v][u] = w;\n    }\n    for (int k = 1; k <= n; k++) {\n        for (int u = 1; u <= n; u++) {\n            for (int v = 1; v <= n; v++) {\n                dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v]);\n            }\n        }\n    }\n    for (int u = 1; u <= n; u++) {\n        for (int v = 1; v <= n; v++) {\n            if (dp[u][v] == INF) {\n                printf(\"-1 \");\n            } else {\n                printf(\"%d \", dp[u][v]);\n            }\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nconst int INF = 1e9;\nint main() {\n    int n, m;\n    cin >> n >> m;\n    int dp[n + 1][n + 1];\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            if(i == j) dp[i][j] = 0;\n            else dp[i][j] = INF;\n        }\n    }\n    for (int i = 0; i < m; i++) {\n        int u, v, w;\n        cin >> u >> v >> w;\n        dp[u][v] = w;\n        dp[v][u] = w;\n    }\n    for (int k = 1; k <= n; k++) {\n        for (int u = 1; u <= n; u++) {\n            for (int v = 1; v <= n; v++) {\n                dp[u][v] = min(dp[u][v], dp[u][k] + dp[k][v]);\n            }\n        }\n    }\n    for (int u = 1; u <= n; u++) {\n        for (int v = 1; v <= n; v++) {\n            if (dp[u][v] == INF) {\n                cout << -1 << \" \";\n            } else {\n                cout << dp[u][v] << \" \";\n            }\n        }\n        cout << \"\\n\";\n    }\n    return 0;\n}",

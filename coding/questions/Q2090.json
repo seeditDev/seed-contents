@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "String",
-      "Mapping",
       "ASCII",
+      "Strings",
+      "Mapping",
+      "String",
       "List Comprehension"
     ],
     "companyTags": [],
@@ -25,16 +26,16 @@
     "constraints": [
       "1 <= T <= 10",
       "0 <= |S| <= 100",
-      "Only standard ASCII letters are considered (A‑Z, a‑z)."
+      "Only standard ASCII letters are considered (A\u2011Z, a\u2011z)."
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a string S (0 ≤ |S| ≤ 100) which may include letters, spaces, punctuation, or digits.",
-    "outputFormat": "For each test case output a single line containing a Python‑style list of integers representing the positions of the alphabetic characters in S (A/a = 1, B/b = 2, …, Z/z = 26). Non‑alphabetic characters are ignored. The list must be formatted exactly as shown in the examples, e.g., [1, 2, 3].",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10), the number of test cases. Each of the next T lines contains a string S (0 \u2264 |S| \u2264 100) which may include letters, spaces, punctuation, or digits.",
+    "outputFormat": "For each test case output a single line containing a Python\u2011style list of integers representing the positions of the alphabetic characters in S (A/a = 1, B/b = 2, \u2026, Z/z = 26). Non\u2011alphabetic characters are ignored. The list must be formatted exactly as shown in the examples, e.g., [1, 2, 3].",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\nThe sunset sets at twelve o' clock.\\n",
         "output": "[20, 8, 5, 19, 21, 14, 19, 5, 20, 19, 5, 20, 19, 1, 20, 20, 23, 5, 12, 22, 5, 15, 3, 12, 15, 3, 11]\\n",
-        "explanation": "All alphabetic characters are converted: T→20, h→8, e→5, s→19, u→21, n→14, ... resulting in the displayed list."
+        "explanation": "All alphabetic characters are converted: T\u219220, h\u21928, e\u21925, s\u219219, u\u219221, n\u219214, ... resulting in the displayed list."
       },
       {
         "id": "sample_2",
@@ -115,7 +116,7 @@
   },
   "solution": {
     "approach": "For each test case iterate over the characters of the input string. If a character is alphabetic (checked with isalpha / Character.isLetter / str.isalpha), convert it to lowercase, compute its position as ord(ch) - ord('a') + 1 (or equivalent), and store the result. Finally print the collected positions in list format. The algorithm is linear in the length of the string and uses O(L) extra space for the result of each test case.",
-    "timeComplexity": "O(total length of all strings) – each character is examined once.",
+    "timeComplexity": "O(total length of all strings) \u2013 each character is examined once.",
     "spaceComplexity": "O(L) per test case for the list of positions, where L is the number of alphabetic characters in the string.",
     "code": {
       "C": "#include <stdio.h>\\n#include <ctype.h>\\n#include <string.h>\\n\\nint main() {\\n    int T;\\n    if (scanf(\"%d\", &T) != 1) return 0;\\n    getchar(); // consume newline after T\\n    char line[256];\\n    for (int tc = 0; tc < T; ++tc) {\\n        if (!fgets(line, sizeof(line), stdin)) break;\\n        size_t len = strlen(line);\\n        if (len && line[len-1] == '\\\\n') line[--len] = '\\\\0';\\n        int first = 1;\\n        printf(\"[\");\\n        for (size_t i = 0; i < len; ++i) {\\n            if (isalpha((unsigned char)line[i])) {\\n                int pos = tolower((unsigned char)line[i]) - 'a' + 1;\\n                if (!first) printf(\", \");\\n                printf(\"%d\", pos);\\n                first = 0;\\n            }\\n        }\\n        printf(\"]\\\\n\");\\n    }\\n    return 0;\\n}",

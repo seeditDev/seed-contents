@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Greedy",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Traversal",
+      "Graphs",
       "Greedy Algorithm",
       "Distance Calculation"
     ],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "There are **N** special points on the 2-D plane. You can travel from a special point (**xi**, **yi**) to another special point (**xj**, **yj**) if and only if |**xi** - **xj**| + |**yi** - **yj**| ≥ **D**.\n\nYou need to find the largest integer **D**, such that we can start at some special point and visit each of the other special points, directly or through other special points. Note that you can visit a special point more than once.",
+    "problemStatement": "There are **N** special points on the 2-D plane. You can travel from a special point (**xi**, **yi**) to another special point (**xj**, **yj**) if and only if |**xi** - **xj**| + |**yi** - **yj**| \u2265 **D**.\n\nYou need to find the largest integer **D**, such that we can start at some special point and visit each of the other special points, directly or through other special points. Note that you can visit a special point more than once.",
     "constraints": [
       "1 <= T <= 50",
       "2 <= N <= 10^6",
@@ -115,8 +116,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a greedy algorithm. We start by calculating the distance between each pair of points. Then, we sort the distances in descending order. We initialize the maximum distance D to be the largest distance between any two points. We then try to visit all points using this D. If we can visit all points, we return D. Otherwise, we decrease D by 1 and repeat the process until we can visit all points.",
-    "timeComplexity": "O(T * N^2 * log(N)) — The time complexity is dominated by the sorting of distances between points.",
-    "spaceComplexity": "O(N^2) — The space complexity is dominated by the storage of distances between points.",
+    "timeComplexity": "O(T * N^2 * log(N)) \u2014 The time complexity is dominated by the sorting of distances between points.",
+    "spaceComplexity": "O(N^2) \u2014 The space complexity is dominated by the storage of distances between points.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n#define MAXN 1000000\n#define MAXT 50\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int T, N, i, j, k, D, xi, yi, xj, yj, dist;\n    int points[MAXN][2];\n    int distances[MAXN * MAXN];\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        for (i = 0; i < N; i++) {\n            scanf(\"%d %d\", &xi, &yi);\n            points[i][0] = xi;\n            points[i][1] = yi;\n        }\n        k = 0;\n        for (i = 0; i < N; i++) {\n            for (j = i + 1; j < N; j++) {\n                xi = points[i][0];\n                yi = points[i][1];\n                xj = points[j][0];\n                yj = points[j][1];\n                dist = abs(xi - xj) + abs(yi - yj);\n                distances[k++] = dist;\n            }\n        }\n        qsort(distances, k, sizeof(int), compare);\n        D = distances[k - 1];\n        while (1) {\n            int visited[MAXN];\n            for (i = 0; i < N; i++) {\n                visited[i] = 0;\n            }\n            visited[0] = 1;\n            int count = 1;\n            for (i = 0; i < N; i++) {\n                if (visited[i]) {\n                    for (j = 0; j < N; j++) {\n                        if (!visited[j]) {\n                            xi = points[i][0];\n                            yi = points[i][1];\n                            xj = points[j][0];\n                            yj = points[j][1];\n                            dist = abs(xi - xj) + abs(yi - yj);\n                            if (dist >= D) {\n                                visited[j] = 1;\n                                count++;\n                            }\n                        }\n                    }\n                }\n            }\n            if (count == N) {\n                printf(\"%d\\n\", D);\n                break;\n            }\n            D--;\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n#define MAXN 1000000\n#define MAXT 50\nint main() {\n    int T, N, i, j, k, D, xi, yi, xj, yj, dist;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        vector<pair<int, int>> points(N);\n        for (i = 0; i < N; i++) {\n            cin >> xi >> yi;\n            points[i] = make_pair(xi, yi);\n        }\n        vector<int> distances;\n        for (i = 0; i < N; i++) {\n            for (j = i + 1; j < N; j++) {\n                xi = points[i].first;\n                yi = points[i].second;\n                xj = points[j].first;\n                yj = points[j].second;\n                dist = abs(xi - xj) + abs(yi - yj);\n                distances.push_back(dist);\n            }\n        }\n        sort(distances.rbegin(), distances.rend());\n        D = distances[0];\n        while (1) {\n            vector<bool> visited(N, false);\n            visited[0] = true;\n            int count = 1;\n            for (i = 0; i < N; i++) {\n                if (visited[i]) {\n                    for (j = 0; j < N; j++) {\n                        if (!visited[j]) {\n                            xi = points[i].first;\n                            yi = points[i].second;\n                            xj = points[j].first;\n                            yj = points[j].second;\n                            dist = abs(xi - xj) + abs(yi - yj);\n                            if (dist >= D) {\n                                visited[j] = true;\n                                count++;\n                            }\n                        }\n                    }\n                }\n            }\n            if (count == N) {\n                cout << D << endl;\n                break;\n            }\n            D--;\n        }\n    }\n    return 0;\n}",

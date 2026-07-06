@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Fibonacci Series",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math",
+      "Fibonacci Series"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using the properties of the Fibonacci series and modular arithmetic. The equivalent resistance at the left ends of the circuit having N blocks can be calculated using the formula F_{2N-1}/F_{2N} where F_n is the nth Fibonacci number. To avoid overflow, we use modular arithmetic to calculate the Fibonacci numbers.",
     "timeComplexity": "O(T * log(N)) per test case, O(T * log(N)) total. The time complexity is due to the fast doubling method used to calculate the Fibonacci numbers.",
-    "spaceComplexity": "O(1) — the space complexity is constant as we only use a fixed amount of space to store the input and output values.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant as we only use a fixed amount of space to store the input and output values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\n// fast doubling: returns (F(n), F(n+1)) modulo mod\nstatic void fib(uint64_t n, uint64_t mod, uint64_t *fn, uint64_t *fn1) {\n    if (n == 0) { *fn = 0; *fn1 = 1 % mod; return; }\n    uint64_t a, b;\n    fib(n >> 1, mod, &a, &b); // a = F(k), b = F(k+1)\n    uint64_t c = (a * ((2 * b % mod + mod) - a)) % mod; // F(2k)\n    uint64_t d = (a * a % mod + b * b % mod) % mod;      // F(2k+1)\n    if ((n & 1) == 0) {\n        *fn = c;\n        *fn1 = d;\n    } else {\n        *fn = d;\n        *fn1 = (c + d) % mod;\n    }\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t N, M; scanf(\"%llu %llu\", &N, &M);\n        uint64_t k = 2 * N; // we need F_{2N} and F_{2N-1}\n        uint64_t fk, fk1;\n        fib(k, M, &fk, &fk1); // fk = F_{2N}, fk1 = F_{2N+1}\n        // F_{2N-1} = (fk1 - fk) mod M\n        uint64_t fkm1 = (fk1 + M - fk) % M;\n        printf(\"%llu/%llu\\n\", fkm1, fk);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nusing int64 = long long;\n\npair<int64,int64> fib(int64 n, int64 mod) {\n    if (n == 0) return {0, 1 % mod};\n    auto p = fib(n >> 1, mod);\n    int64 a = p.first;   // F(k)\n    int64 b = p.second;  // F(k+1)\n    int64 c = (a * ((2 * b % mod + mod) - a)) % mod;          // F(2k)\n    int64 d = (a * a % mod + b * b % mod) % mod;              // F(2k+1)\n    if ((n & 1) == 0) return {c, d};\n    else return {d, (c + d) % mod};\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        long long N, M; cin >> N >> M;\n        long long k = 2 * N;\n        auto pr = fib(k, M); // pr.first = F_{2N}, pr.second = F_{2N+1}\n        long long F2N = pr.first;\n        long long F2Nplus1 = pr.second;\n        long long F2Nminus1 = (F2Nplus1 + M - F2N) % M;\n        cout << F2Nminus1 << '/' << F2N << '\\n';\n    }\n    return 0;\n}\n",

@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "XOR",
+      "Bit Manipulation",
       "Right Shift",
-      "Greedy",
-      "String Processing"
+      "XOR",
+      "String Processing",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,21 +22,21 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has the binary representation SSS of a number XXX with him. He can modify the number by applying the following operation **exactly once**:\n\n\nMake X:=X⊕⌊X2Y⌋X := X \\oplus \\lfloor \\frac{X}{2^{Y}} \\rfloorX:=X⊕⌊2YX​⌋, where (1≤Y≤∣S∣)(1 \\leq Y \\leq |S|)(1≤Y≤∣S∣) and ⊕\\oplus⊕ denotes the bitwise XOR operation.\nChef wants to **maximize** the value of XXX after performing the operation. Help Chef in determining the value of YYY which will maximize the value of XXX after the operation.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of inputs - the first containing the length of binary string SSS.\nThe second line of input contains the binary string SSS.\n\n\nOutput Format\nFor each test case, output on a new line, the value of YYY which will maximize the value of XXX after the operation.",
+    "problemStatement": "Chef has the binary representation SSS of a number XXX with him. He can modify the number by applying the following operation **exactly once**:\n\n\nMake X:=X\u2295\u230aX2Y\u230bX := X \\oplus \\lfloor \\frac{X}{2^{Y}} \\rfloorX:=X\u2295\u230a2YX\u200b\u230b, where (1\u2264Y\u2264\u2223S\u2223)(1 \\leq Y \\leq |S|)(1\u2264Y\u2264\u2223S\u2223) and \u2295\\oplus\u2295 denotes the bitwise XOR operation.\nChef wants to **maximize** the value of XXX after performing the operation. Help Chef in determining the value of YYY which will maximize the value of XXX after the operation.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of inputs - the first containing the length of binary string SSS.\nThe second line of input contains the binary string SSS.\n\n\nOutput Format\nFor each test case, output on a new line, the value of YYY which will maximize the value of XXX after the operation.",
     "constraints": [
-      "1 ≤ T ≤ 5·10^4",
-      "1 ≤ N ≤ 10^5",
-      "Sum of N over all test cases ≤ 5·10^5",
+      "1 \u2264 T \u2264 5\u00b710^4",
+      "1 \u2264 N \u2264 10^5",
+      "Sum of N over all test cases \u2264 5\u00b710^5",
       "S consists only of characters '0' and '1' and its first character is always '1'."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N – the length of the binary string S. The second line contains the binary string S of length N (the most significant bit is the first character).",
-    "outputFormat": "For each test case output a single integer Y (1 ≤ Y ≤ N) on its own line – the value of Y that maximises X ⊕ ⌊X/2^Y⌋ after performing the operation exactly once.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N \u2013 the length of the binary string S. The second line contains the binary string S of length N (the most significant bit is the first character).",
+    "outputFormat": "For each test case output a single integer Y (1 \u2264 Y \u2264 N) on its own line \u2013 the value of Y that maximises X \u2295 \u230aX/2^Y\u230b after performing the operation exactly once.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n2\n10\n2\n11\n3\n101\n3\n110",
         "output": "1\n2\n1\n2",
-        "explanation": "For each binary string we locate the first '0' after the leading '1'. Their positions (0‑based from the left) are 1, 2, 1 and 2 respectively, which are the required Y values."
+        "explanation": "For each binary string we locate the first '0' after the leading '1'. Their positions (0\u2011based from the left) are 1, 2, 1 and 2 respectively, which are the required Y values."
       }
     ]
   },
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "Let X be the integer represented by S. The operation is X := X xor (X >> Y). In binary, for each bit position i (0 = least‑significant), the resulting bit is r_i = b_i xor b_{i+Y} (b_{i+Y}=0 if i+Y ≥ N). The most significant bits (positions N‑1 … N‑Y) stay unchanged. The first position from the most significant side where the result can differ is the bit at index Y (0‑based from the left). Its new value becomes NOT b_{Y}. Therefore, if there exists a '0' in S after the leading '1', choosing Y equal to the index of the leftmost such '0' flips that 0 to 1, making the resulting number strictly larger than the original and larger than any choice that flips a less significant zero. If S contains no '0' (i.e., S is all '1's), any Y ≤ N makes the result ≤ X, while Y = N yields X xor 0 = X, which is maximal. Hence the optimal Y is:\n• Scan S from left to right starting at position 1. If a '0' is found at position j (0‑based), answer = j.\n• If no '0' is found, answer = N.\nThe algorithm is O(N) per test case and uses O(1) extra memory.",
-    "timeComplexity": "O(N) per test case, O(ΣN) over all test cases (≤ 5·10^5).",
+    "approach": "Let X be the integer represented by S. The operation is X := X xor (X >> Y). In binary, for each bit position i (0 = least\u2011significant), the resulting bit is r_i = b_i xor b_{i+Y} (b_{i+Y}=0 if i+Y \u2265 N). The most significant bits (positions N\u20111 \u2026 N\u2011Y) stay unchanged. The first position from the most significant side where the result can differ is the bit at index Y (0\u2011based from the left). Its new value becomes NOT b_{Y}. Therefore, if there exists a '0' in S after the leading '1', choosing Y equal to the index of the leftmost such '0' flips that 0 to 1, making the resulting number strictly larger than the original and larger than any choice that flips a less significant zero. If S contains no '0' (i.e., S is all '1's), any Y \u2264 N makes the result \u2264 X, while Y = N yields X xor 0 = X, which is maximal. Hence the optimal Y is:\n\u2022 Scan S from left to right starting at position 1. If a '0' is found at position j (0\u2011based), answer = j.\n\u2022 If no '0' is found, answer = N.\nThe algorithm is O(N) per test case and uses O(1) extra memory.",
+    "timeComplexity": "O(N) per test case, O(\u03a3N) over all test cases (\u2264 5\u00b710^5).",
     "spaceComplexity": "O(1) additional space besides the input string.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char S[100005]; scanf(\"%s\", S);\n        int ans = N; // default when all '1'\n        for (int i = 1; i < N; ++i) {\n            if (S[i] == '0') { ans = i; break; }\n        }\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",

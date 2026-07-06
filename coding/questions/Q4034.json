@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
       "Cycle Detection",
+      "Graphs",
       "Path Counting"
     ],
     "companyTags": [],
@@ -22,13 +23,13 @@
   "content": {
     "problemStatement": "The structure of the company ShareChat can be described by a simple graph (without multiedges and self-loops) with NNN vertices numbered 111 through NNN and MMM edges numbered 111 through MMM. Each vertex of this graph is part of at most one simple cycle.\n\nFor each edge, you should find the number of simple paths that contain this edge and only contain at most one edge which belongs to a cycle.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 2*10^5",
-      "1 ≤ M ≤ 5*10^6",
-      "1 ≤ u, v ≤ N"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 2*10^5",
+      "1 \u2264 M \u2264 5*10^6",
+      "1 \u2264 u, v \u2264 N"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The first line of each test case contains two space-separated integers N and M. M lines follow. For each valid i, the i-th of these lines contains two space-separated integers u and v, denoting the vertices connected by edge i.",
-    "outputFormat": "For each test case, print M lines. For each i (1≤i≤M), the i-th of these lines should contain a single integer — the number of paths for edge i.",
+    "outputFormat": "For each test case, print M lines. For each i (1\u2264i\u2264M), the i-th of these lines should contain a single integer \u2014 the number of paths for edge i.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a graph traversal algorithm such as Depth-First Search (DFS) to detect cycles and count the number of paths that contain each edge. We will also use a technique called 'low-link' values to keep track of the smallest index reachable from each node, which helps us to detect cycles.",
-    "timeComplexity": "O(T*(N+M)) — because we are performing DFS for each test case, and in the worst case, we might need to visit all nodes and edges.",
-    "spaceComplexity": "O(N+M) — because we need to store the graph and the low-link values for each node.",
+    "timeComplexity": "O(T*(N+M)) \u2014 because we are performing DFS for each test case, and in the worst case, we might need to visit all nodes and edges.",
+    "spaceComplexity": "O(N+M) \u2014 because we need to store the graph and the low-link values for each node.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 200005\n#define MAXM 5000005\n\n// Define the structure for a graph edge\ntypedef struct Edge {\n    int u, v;\n} Edge;\n\n// Define the structure for a graph\ntypedef struct Graph {\n    int n, m;\n    Edge *edges;\n} Graph;\n\n// Function to read input and build the graph\nGraph readInput() {\n    Graph g;\n    scanf(\"%d %d\", &g.n, &g.m);\n    g.edges = (Edge *)malloc(g.m * sizeof(Edge));\n    for (int i = 0; i < g.m; i++) {\n        scanf(\"%d %d\", &g.edges[i].u, &g.edges[i].v);\n    }\n    return g;\n}\n\n// Function to perform DFS and count paths\nvoid dfs(Graph g, int u, int parent, int *low, int *disc, int *time, int *pathCount) {\n    static int time = 0;\n    disc[u] = low[u] = time++;\n    for (int i = 0; i < g.m; i++) {\n        if (g.edges[i].u == u) {\n            int v = g.edges[i].v;\n            if (disc[v] == -1) {\n                dfs(g, v, u, low, disc, time, pathCount);\n                low[u] = min(low[u], low[v]);\n                if (low[v] > disc[u]) {\n                    // Edge i is a bridge, increment path count\n                    pathCount[i]++;\n                }\n            } else if (v != parent) {\n                low[u] = min(low[u], disc[v]);\n            }\n        }\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        Graph g = readInput();\n        int *low = (int *)malloc(g.n * sizeof(int));\n        int *disc = (int *)malloc(g.n * sizeof(int));\n        int *pathCount = (int *)malloc(g.m * sizeof(int));\n        for (int i = 0; i < g.n; i++) {\n            disc[i] = -1;\n        }\n        for (int i = 0; i < g.m; i++) {\n            pathCount[i] = 0;\n        }\n        for (int i = 0; i < g.n; i++) {\n            if (disc[i] == -1) {\n                dfs(g, i, -1, low, disc, 0, pathCount);\n            }\n        }\n        for (int i = 0; i < g.m; i++) {\n            printf(\"%d\\n\", pathCount[i]);\n        }\n        free(low);\n        free(disc);\n        free(pathCount);\n        free(g.edges);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Define the structure for a graph edge\nstruct Edge {\n    int u, v;\n};\n\n// Define the structure for a graph\nstruct Graph {\n    int n, m;\n    vector<Edge> edges;\n};\n\n// Function to read input and build the graph\nGraph readInput() {\n    Graph g;\n    cin >> g.n >> g.m;\n    g.edges.resize(g.m);\n    for (int i = 0; i < g.m; i++) {\n        cin >> g.edges[i].u >> g.edges[i].v;\n    }\n    return g;\n}\n\n// Function to perform DFS and count paths\nvoid dfs(Graph g, int u, int parent, vector<int> &low, vector<int> &disc, int &time, vector<int> &pathCount) {\n    disc[u] = low[u] = time++;\n    for (int i = 0; i < g.m; i++) {\n        if (g.edges[i].u == u) {\n            int v = g.edges[i].v;\n            if (disc[v] == -1) {\n                dfs(g, v, u, low, disc, time, pathCount);\n                low[u] = min(low[u], low[v]);\n                if (low[v] > disc[u]) {\n                    // Edge i is a bridge, increment path count\n                    pathCount[i]++;\n                }\n            } else if (v != parent) {\n                low[u] = min(low[u], disc[v]);\n            }\n        }\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        Graph g = readInput();\n        vector<int> low(g.n, 0);\n        vector<int> disc(g.n, -1);\n        vector<int> pathCount(g.m, 0);\n        int time = 0;\n        for (int i = 0; i < g.n; i++) {\n            if (disc[i] == -1) {\n                dfs(g, i, -1, low, disc, time, pathCount);\n            }\n        }\n        for (int i = 0; i < g.m; i++) {\n            cout << pathCount[i] << endl;\n        }\n    }\n    return 0;\n}",

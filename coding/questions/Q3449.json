@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Greedy",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree Traversal",
+      "Graphs",
       "Greedy Algorithm"
     ],
     "companyTags": [],
@@ -26,8 +27,8 @@
       "1 <= ti <= h <= 24",
       "0 <= mx <= 10"
     ],
-    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. For each test case, the first line of input contains two integers n and h. The next line contains n space-separated integers — t1, t2, ..., tn. The following n lines describe the structure of Game's levels: the x-th of them contains an integer mx followed by mx integers — the levels that get unlocked after completing level x.",
-    "outputFormat": "For each test case, output a single integer — the minimum number of working days necessary to complete the Game.",
+    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. For each test case, the first line of input contains two integers n and h. The next line contains n space-separated integers \u2014 t1, t2, ..., tn. The following n lines describe the structure of Game's levels: the x-th of them contains an integer mx followed by mx integers \u2014 the levels that get unlocked after completing level x.",
+    "outputFormat": "For each test case, output a single integer \u2014 the minimum number of working days necessary to complete the Game.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a greedy algorithm. We start by initializing a stack with the first level. Then, we enter a loop where we keep popping levels from the stack, completing them, and adding their unlocked levels back to the stack. We keep track of the time spent on each day and increment the day counter whenever we exceed the time limit h. The key observation here is that we should always complete the levels in the order that minimizes the number of days. This can be achieved by always completing the level that takes the most time first.",
-    "timeComplexity": "O(T * n) — where T is the number of test cases and n is the number of levels in the game. The reason for this time complexity is that in the worst case, we might have to traverse all levels for each test case.",
-    "spaceComplexity": "O(n) — where n is the number of levels in the game. The reason for this space complexity is that in the worst case, we might have to store all levels in the stack.",
+    "timeComplexity": "O(T * n) \u2014 where T is the number of test cases and n is the number of levels in the game. The reason for this time complexity is that in the worst case, we might have to traverse all levels for each test case.",
+    "spaceComplexity": "O(n) \u2014 where n is the number of levels in the game. The reason for this space complexity is that in the worst case, we might have to store all levels in the stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n, h;\n        scanf(\"%d %d\", &n, &h);\n        int *t = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &t[i]);\n        }\n        int **m = (int**)malloc(n * sizeof(int*));\n        for (int i = 0; i < n; i++) {\n            m[i] = (int*)malloc(11 * sizeof(int));\n            int mx;\n            scanf(\"%d\", &mx);\n            m[i][0] = mx;\n            for (int j = 1; j <= mx; j++) {\n                scanf(\"%d\", &m[i][j]);\n            }\n        }\n        int days = 0;\n        int time = 0;\n        int *stack = (int*)malloc(n * sizeof(int));\n        int top = -1;\n        stack[++top] = 0;\n        while (top >= 0) {\n            int x = stack[top--];\n            time += t[x];\n            if (time > h) {\n                time = t[x];\n                days++;\n            }\n            for (int i = 1; i <= m[x][0]; i++) {\n                stack[++top] = m[x][i] - 1;\n            }\n        }\n        printf(\"%d\\n\", days + 1);\n        free(t);\n        for (int i = 0; i < n; i++) {\n            free(m[i]);\n        }\n        free(m);\n        free(stack);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n, h;\n        cin >> n >> h;\n        vector<int> t(n);\n        for (int i = 0; i < n; i++) {\n            cin >> t[i];\n        }\n        vector<vector<int>> m(n);\n        for (int i = 0; i < n; i++) {\n            int mx;\n            cin >> mx;\n            m[i].push_back(mx);\n            for (int j = 0; j < mx; j++) {\n                int x;\n                cin >> x;\n                m[i].push_back(x);\n            }\n        }\n        int days = 0;\n        int time = 0;\n        vector<int> stack;\n        stack.push_back(0);\n        while (!stack.empty()) {\n            int x = stack.back();\n            stack.pop_back();\n            time += t[x];\n            if (time > h) {\n                time = t[x];\n                days++;\n            }\n            for (int i = 1; i <= m[x][0]; i++) {\n                stack.push_back(m[x][i] - 1);\n            }\n        }\n        cout << days + 1 << endl;\n    }\n    return 0;\n}",

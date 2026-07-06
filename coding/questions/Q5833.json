@@ -10,10 +10,11 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Parity",
       "Digits",
-      "Greedy",
-      "Simple Observation"
+      "Parity",
+      "Math",
+      "Simple Observation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,23 +24,23 @@
   "content": {
     "problemStatement": "You are given a positive integer NNN. You have to split **each digit** of NNN into either of two **non-empty** subsequences AAA or BBB.\n\nFor example, if N=104N = 104N=104, some possible values of (A,B)(A, B)(A,B) can be (10,4),(14,0)(10, 4), (14, 0)(10,4),(14,0) and (1,4)(1, 4)(1,4). Note that, after separating the digits into AAA and BBB, these subsequences are considered as **positive integers** and thus leading zeros can be omitted.\n\nLet us define a function F(X,Y)=(X+Y)%2F(X,Y) = (X+Y) \\%2F(X,Y)=(X+Y)%2. Find out whether it is possible to find two non-empty subsequences AAA and BBB formed out of NNN such that F(A,B)=0F(A,B) = 0F(A,B)=0.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains of a single line of input, one integer NNN.\n\n\nOutput Format\nFor each test case, print YES\\texttt{YES}YES if it is possible to find two non-empty subsequences AAA and BBB formed out of NNN such that F(A,B)=0F(A,B) = 0F(A,B)=0. Otherwise, print NO\\texttt{NO}NO.\n\n\nYou may print each character of the string in uppercase or lowercase (for example, the strings YeS\\texttt{YeS}YeS, yEs\\texttt{yEs}yEs, yes\\texttt{yes}yes and YES\\texttt{YES}YES will all be treated as identical).",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "10 ≤ N ≤ 10^9"
+      "1 \u2264 T \u2264 1000",
+      "10 \u2264 N \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single positive integer N (10 ≤ N ≤ 10^9).",
-    "outputFormat": "For each test case output a single line containing \"YES\" if it is possible to split the digits of N into two non‑empty subsequences A and B such that (A+B) is even, otherwise output \"NO\".",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single positive integer N (10 \u2264 N \u2264 10^9).",
+    "outputFormat": "For each test case output a single line containing \"YES\" if it is possible to split the digits of N into two non\u2011empty subsequences A and B such that (A+B) is even, otherwise output \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\\n10\\n73452",
         "output": "NO\\nYES",
-        "explanation": "For N=10 the digits are 1 (odd) and 0 (even); each parity appears only once, so any split gives opposite parities and (A+B) is odd → NO. For N=73452 there are multiple odd digits (7,3,5) and multiple even digits (4,2); we can put an odd digit as the last of both A and B (e.g., A ends with 5, B ends with 3) giving same parity → YES."
+        "explanation": "For N=10 the digits are 1 (odd) and 0 (even); each parity appears only once, so any split gives opposite parities and (A+B) is odd \u2192 NO. For N=73452 there are multiple odd digits (7,3,5) and multiple even digits (4,2); we can put an odd digit as the last of both A and B (e.g., A ends with 5, B ends with 3) giving same parity \u2192 YES."
       },
       {
         "id": "sample_2",
         "input": "3\\n22\\n21\\n1010",
         "output": "YES\\nNO\\nYES",
-        "explanation": "22 has two even digits → YES. 21 has one even and one odd digit → NO. 1010 has three even digits (0,0,0) and one odd (1); at least two evens exist → YES."
+        "explanation": "22 has two even digits \u2192 YES. 21 has one even and one odd digit \u2192 NO. 1010 has three even digits (0,0,0) and one odd (1); at least two evens exist \u2192 YES."
       }
     ]
   },
@@ -107,8 +108,8 @@
     ]
   },
   "solution": {
-    "approach": "For any integer the parity (odd/even) of the whole number is determined solely by its last digit. After splitting the digits of N into two subsequences A and B, the parity of A is the parity of the rightmost digit assigned to A, and similarly for B. The sum A+B is even iff both A and B have the same parity. Therefore we only need to know whether we can assign at least one digit to each subsequence such that the chosen last digits have the same parity. This is possible exactly when N contains at least two digits of the same parity (two evens or two odds). If the count of even digits ≥2 or the count of odd digits ≥2 we answer YES, otherwise NO. The algorithm scans the decimal representation of N, counts even and odd digits, and decides based on the counts.",
-    "timeComplexity": "O(T·L) where L is the number of digits of N (L ≤ 10).",
+    "approach": "For any integer the parity (odd/even) of the whole number is determined solely by its last digit. After splitting the digits of N into two subsequences A and B, the parity of A is the parity of the rightmost digit assigned to A, and similarly for B. The sum A+B is even iff both A and B have the same parity. Therefore we only need to know whether we can assign at least one digit to each subsequence such that the chosen last digits have the same parity. This is possible exactly when N contains at least two digits of the same parity (two evens or two odds). If the count of even digits \u22652 or the count of odd digits \u22652 we answer YES, otherwise NO. The algorithm scans the decimal representation of N, counts even and odd digits, and decides based on the counts.",
+    "timeComplexity": "O(T\u00b7L) where L is the number of digits of N (L \u2264 10).",
     "spaceComplexity": "O(1).",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        char s[20]; scanf(\"%s\",s);\n        int even=0,odd=0;\n        for(int i=0;s[i];++i){\n            int d=s[i]-'0';\n            if(d%2) odd++; else even++;\n        }\n        if(even>=2||odd>=2) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}\n",

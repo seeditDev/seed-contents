@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Dynamic Programming",
-      "Optimization"
+      "Optimization",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming. We maintain a dp array where dp[i] represents the minimum cost of maintaining the backup disks up to the i-th month. We also maintain a prev array to keep track of the previous hard disk used. For each month, we try all possible hard disks and update dp[i] and prev[i] accordingly.",
     "timeComplexity": "O(n*m^2) per test case, O(T*n*m^2) total.",
-    "spaceComplexity": "O(m) — the dominant structure is the dp array.",
+    "spaceComplexity": "O(m) \u2014 the dominant structure is the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MAX 100\n#define MAXM 200\n#define MAXN 100\nint main() {\n    int t = 1;\n    while (t--) {\n        char setName[20];\n        int n, m;\n        scanf(\"%s %d %d\", setName, &n, &m);\n        int prices[MAXN][MAXM];\n        char names[MAXN][20];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%s\", names[i]);\n            for (int j = 0; j < m; j++) {\n                scanf(\"%d\", &prices[i][j]);\n            }\n        }\n        int dp[MAXM];\n        int prev[MAXM];\n        for (int i = 0; i < m; i++) {\n            dp[i] = 1000000;\n            prev[i] = -1;\n        }\n        dp[0] = prices[0][0];\n        for (int i = 1; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                for (int k = 0; k < i; k++) {\n                    int cost = dp[k] + prices[j][i] - (prices[j][i] - 100);\n                    if (cost < dp[i]) {\n                        dp[i] = cost;\n                        prev[i] = k;\n                    }\n                }\n            }\n        }\n        printf(\"%s\\n\", setName);\n        printf(\"Tk %d\\n\", dp[m - 1]);\n        int i = m - 1;\n        while (i >= 0) {\n            printf(\"%s for %d month(s)\\n\", names[prev[i]], i - prev[i] + 1);\n            i = prev[i];\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n#define MAX 100\n#define MAXM 200\n#define MAXN 100\nint main() {\n    int t = 1;\n    while (t--) {\n        string setName;\n        int n, m;\n        cin >> setName >> n >> m;\n        int prices[MAXN][MAXM];\n        string names[MAXN];\n        for (int i = 0; i < n; i++) {\n            cin >> names[i];\n            for (int j = 0; j < m; j++) {\n                cin >> prices[i][j];\n            }\n        }\n        int dp[MAXM];\n        int prev[MAXM];\n        for (int i = 0; i < m; i++) {\n            dp[i] = 1000000;\n            prev[i] = -1;\n        }\n        dp[0] = prices[0][0];\n        for (int i = 1; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                for (int k = 0; k < i; k++) {\n                    int cost = dp[k] + prices[j][i] - (prices[j][i] - 100);\n                    if (cost < dp[i]) {\n                        dp[i] = cost;\n                        prev[i] = k;\n                    }\n                }\n            }\n        }\n        cout << setName << endl;\n        cout << \"Tk \" << dp[m - 1] << endl;\n        int i = m - 1;\n        while (i >= 0) {\n            cout << names[prev[i]] << \" for \" << i - prev[i] + 1 << \" month(s)\" << endl;\n            i = prev[i];\n        }\n        cout << endl;\n    }\n    return 0;\n}",

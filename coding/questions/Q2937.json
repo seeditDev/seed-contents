@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Factorial",
       "Modular Arithmetic",
-      "Factorial"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "To solve this problem, we can use the properties of modular arithmetic to efficiently calculate the value of F(p1) + F(p2) + ... + F(pn) modulo m. We can calculate the factorial of each number up to the maximum value of pi and store them in an array. Then, for each pi, we can calculate F(pi) using the stored factorials and add it to the total sum. Finally, we can return the total sum modulo m.",
     "timeComplexity": "O(n * max(pi)) per test case, O(T * n * max(pi)) total. Precomputation is done once for factorials.",
-    "spaceComplexity": "O(max(pi)) — the dominant structure is the array to store factorials.",
+    "spaceComplexity": "O(max(pi)) \u2014 the dominant structure is the array to store factorials.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n#define MAX_PI 100000\nint64_t factorial[MAX_PI + 1];\n\nvoid precompute_factorials() {\n    factorial[0] = 1;\n    for (int i = 1; i <= MAX_PI; i++) {\n        factorial[i] = (factorial[i - 1] * i) % 1000000007;\n    }\n}\n\nint64_t calculate_F(int64_t x) {\n    int64_t result = 0;\n    for (int i = 1; i <= x; i++) {\n        result = (result + i * (factorial[i] + x)) % 1000000007;\n    }\n    return result;\n}\n\nint main() {\n    precompute_factorials();\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    int64_t sum = 0;\n    for (int i = 0; i < n; i++) {\n        int64_t pi;\n        scanf(\"%lld\", &pi);\n        sum = (sum + calculate_F(pi)) % m;\n    }\n    printf(\"%lld\\n\", sum);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n#define MAX_PI 100000\nint64_t factorial[MAX_PI + 1];\n\nvoid precompute_factorials() {\n    factorial[0] = 1;\n    for (int i = 1; i <= MAX_PI; i++) {\n        factorial[i] = (factorial[i - 1] * i) % 1000000007;\n    }\n}\n\nint64_t calculate_F(int64_t x) {\n    int64_t result = 0;\n    for (int i = 1; i <= x; i++) {\n        result = (result + i * (factorial[i] + x)) % 1000000007;\n    }\n    return result;\n}\n\nint main() {\n    precompute_factorials();\n    std::ios::sync_with_stdio(false);\n    std::cin.tie(NULL);\n    int n, m;\n    std::cin >> n >> m;\n    int64_t sum = 0;\n    for (int i = 0; i < n; i++) {\n        int64_t pi;\n        std::cin >> pi;\n        sum = (sum + calculate_F(pi)) % m;\n    }\n    std::cout << sum << std::endl;\n    return 0;\n}",

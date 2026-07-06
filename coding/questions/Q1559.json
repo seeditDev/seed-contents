@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Stack",
-      "Parentheses Validation"
+      "Strings",
+      "Parentheses Validation",
+      "Stack"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,11 +20,11 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is given a string **SSS** consisting only of the characters **`(`** and **`)`**. Chef wants to make this parentheses string valid by performing the **minimum number of insertions**.\n\nA parentheses string is considered **valid** if and only if one of the following conditions holds:\n\n\nIt is an empty string, or\nIt can be written as **ABABAB**, where both **AAA** and **BBB** are valid parentheses strings, or\nIt can be written as **(A)(A)(A)**, where **AAA** is a valid parentheses string.\nIn one move, Chef is allowed to **insert one parenthesis**, either **`(`** or **`)`**, at **any position** in the string.\n\nChef wants to know the **minimum number of insertions** required to make the given string valid.\n\nYour task is to help Chef compute this minimum number for each test case.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**minAddToMakeValidNaiveminAddToMakeValidNaiveminAddToMakeValidNaive**\n\n\n\n**Parameters:**\n\n\n\n**sss** (`string`)\nA string consisting only of the characters **`(`** and **`)`**.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **minimum number of insertions** required to make the parentheses string valid.\n\n\nInput FormatThe first line contains a single integer **TTT** — the number of test cases.\n\nEach of the next **TTT** lines contains a string **SSS**, consisting only of the characters **`(`** and **`)`**.\n\nOutput FormatFor each test case, print a single integer — the **minimum number of insertions** required to make the parentheses string valid.\n\nConstraints\n1≤T≤1001 \\le T \\le 1001≤T≤100\n1≤∣S∣≤10001 \\le |S| \\le 10001≤∣S∣≤1000\nS[i]∈′(′,′)′S[i] \\in { '(', ')' }S[i]∈′(′,′)′",
+    "problemStatement": "Chef is given a string **SSS** consisting only of the characters **`(`** and **`)`**. Chef wants to make this parentheses string valid by performing the **minimum number of insertions**.\n\nA parentheses string is considered **valid** if and only if one of the following conditions holds:\n\n\nIt is an empty string, or\nIt can be written as **ABABAB**, where both **AAA** and **BBB** are valid parentheses strings, or\nIt can be written as **(A)(A)(A)**, where **AAA** is a valid parentheses string.\nIn one move, Chef is allowed to **insert one parenthesis**, either **`(`** or **`)`**, at **any position** in the string.\n\nChef wants to know the **minimum number of insertions** required to make the given string valid.\n\nYour task is to help Chef compute this minimum number for each test case.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**minAddToMakeValidNaiveminAddToMakeValidNaiveminAddToMakeValidNaive**\n\n\n\n**Parameters:**\n\n\n\n**sss** (`string`)\nA string consisting only of the characters **`(`** and **`)`**.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **minimum number of insertions** required to make the parentheses string valid.\n\n\nInput FormatThe first line contains a single integer **TTT** \u2014 the number of test cases.\n\nEach of the next **TTT** lines contains a string **SSS**, consisting only of the characters **`(`** and **`)`**.\n\nOutput FormatFor each test case, print a single integer \u2014 the **minimum number of insertions** required to make the parentheses string valid.\n\nConstraints\n1\u2264T\u22641001 \\le T \\le 1001\u2264T\u2264100\n1\u2264\u2223S\u2223\u226410001 \\le |S| \\le 10001\u2264\u2223S\u2223\u22641000\nS[i]\u2208\u2032(\u2032,\u2032)\u2032S[i] \\in { '(', ')' }S[i]\u2208\u2032(\u2032,\u2032)\u2032",
     "constraints": [
       "1 <= T <= 100",
       "1 <= |S| <= 1000",
-      "S[i] ∈ {'(', ')'}"
+      "S[i] \u2208 {'(', ')'}"
     ],
     "inputFormat": "First line contains T, the number of test cases. Each test case contains a string S consisting only of the characters '(' and ')'.",
     "outputFormat": "For each test case, print the minimum number of insertions required to make the parentheses string valid.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved using a stack data structure. We iterate through the string and push every opening parenthesis into the stack. When we encounter a closing parenthesis, we check if the stack is empty. If it is, we increment the count of insertions needed. If the stack is not empty, we pop the opening parenthesis from the stack. Finally, we add the remaining size of the stack to the count of insertions needed, as these opening parentheses do not have corresponding closing parentheses.",
     "timeComplexity": "O(T * |S|) per test case, O(T * |S|) total.",
-    "spaceComplexity": "O(|S|) — for the stack.",
+    "spaceComplexity": "O(|S|) \u2014 for the stack.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint minAddToMakeValidNaive(char *s) {\n    int moves = 0;\n    int len = strlen(s);\n    int *stack = (int *)malloc(len * sizeof(int));\n    int top = -1;\n\n    for (int i = 0; i < len; i++) {\n        if (s[i] == '(') {\n            stack[++top] = s[i];\n        } else {\n            if (top == -1) {\n                moves++;\n            } else {\n                top--;\n            }\n        }\n    }\n\n    moves += top + 1;\n    free(stack);\n    return moves;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    getchar();\n\n    for (int i = 0; i < T; i++) {\n        char s[1001];\n        fgets(s, 1001, stdin);\n        s[strcspn(s, \"\\n\")] = 0;\n        printf(\"%d\\n\", minAddToMakeValidNaive(s));\n    }\n\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint minAddToMakeValidNaive(string s) {\n    int moves = 0;\n    stack<char> st;\n\n    for (char c : s) {\n        if (c == '(') {\n            st.push(c);\n        } else {\n            if (st.empty()) {\n                moves++;\n            } else {\n                st.pop();\n            }\n        }\n    }\n\n    moves += st.size();\n    return moves;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    cin.ignore();\n\n    for (int i = 0; i < T; i++) {\n        string s;\n        getline(cin, s);\n        cout << minAddToMakeValidNaive(s) << endl;\n    }\n\n    return 0;\n}",

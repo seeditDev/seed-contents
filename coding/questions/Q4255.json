@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Bellman-Ford Algorithm",
+      "Graphs",
       "Negative Cycle Detection",
       "Shortest Path"
     ],
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a directed graph with NNN vertices (numbered 111 through NNN) and MMM weighted edges. For each vertex of the graph, find the minimum cost of a walk that passes through this vertex, or determine that the minimum does not exist, i.e. for any integer mmm, there is a walk with cost smaller than mmm.\n\n**Notes:**\n\n\nA walk in a directed graph is a sequence of vertices v1,v2,…,vKv_1, v_2, \\ldots, v_Kv1​,v2​,…,vK​ for some positive integer KKK, and an associated (possibly empty) sequence of edges e1,e2,…,eK−1e_1, e_2, \\ldots, e_{K-1}e1​,e2​,…,eK−1​ such that for each valid iii, edge eie_iei​ goes from vertex viv_ivi​ to vertex vi+1v_{i+1}vi+1​.\nThe cost of a walk is the sum of weights of edges e1,e2,…,eK−1e_1, e_2, \\ldots, e_{K-1}e1​,e2​,…,eK−1​; if K=1K = 1K=1, the cost is 000.\nA walk passes through vertex uuu if uuu belongs to the sequence v1,v2,…,vKv_1, v_2, \\ldots, v_Kv1​,v2​,…,vK​.",
+    "problemStatement": "You are given a directed graph with NNN vertices (numbered 111 through NNN) and MMM weighted edges. For each vertex of the graph, find the minimum cost of a walk that passes through this vertex, or determine that the minimum does not exist, i.e. for any integer mmm, there is a walk with cost smaller than mmm.\n\n**Notes:**\n\n\nA walk in a directed graph is a sequence of vertices v1,v2,\u2026,vKv_1, v_2, \\ldots, v_Kv1\u200b,v2\u200b,\u2026,vK\u200b for some positive integer KKK, and an associated (possibly empty) sequence of edges e1,e2,\u2026,eK\u22121e_1, e_2, \\ldots, e_{K-1}e1\u200b,e2\u200b,\u2026,eK\u22121\u200b such that for each valid iii, edge eie_iei\u200b goes from vertex viv_ivi\u200b to vertex vi+1v_{i+1}vi+1\u200b.\nThe cost of a walk is the sum of weights of edges e1,e2,\u2026,eK\u22121e_1, e_2, \\ldots, e_{K-1}e1\u200b,e2\u200b,\u2026,eK\u22121\u200b; if K=1K = 1K=1, the cost is 000.\nA walk passes through vertex uuu if uuu belongs to the sequence v1,v2,\u2026,vKv_1, v_2, \\ldots, v_Kv1\u200b,v2\u200b,\u2026,vK\u200b.",
     "constraints": [
-      "1 ≤ T ≤ 50",
-      "1 ≤ N, M ≤ 1000",
-      "|w| ≤ 10^6"
+      "1 \u2264 T \u2264 50",
+      "1 \u2264 N, M \u2264 1000",
+      "|w| \u2264 10^6"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and M. Each of the next M lines contains three space-separated integers u, v, and w describing an edge from vertex u to vertex v with weight w.",
-    "outputFormat": "For each test case, print N lines. For each valid i, if the minimum cost of a walk through vertex i does not exist, the i-th of these lines should contain the string \"INF\". Otherwise, it should contain a single integer — the minimum cost.",
+    "outputFormat": "For each test case, print N lines. For each valid i, if the minimum cost of a walk through vertex i does not exist, the i-th of these lines should contain the string \"INF\". Otherwise, it should contain a single integer \u2014 the minimum cost.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use the Bellman-Ford algorithm to find the shortest path from each vertex to all other vertices. We will maintain two arrays, st and en, to store the minimum cost of reaching each vertex from the start and end of the walk, respectively. We will then use these arrays to calculate the minimum cost of a walk through each vertex. If a negative cycle is detected, we will mark the minimum cost as -INF to indicate that it does not exist.",
-    "timeComplexity": "O(T * (N + M) * N) — where T is the number of test cases, N is the number of vertices, and M is the number of edges.",
-    "spaceComplexity": "O(N + M) — where N is the number of vertices and M is the number of edges.",
+    "timeComplexity": "O(T * (N + M) * N) \u2014 where T is the number of test cases, N is the number of vertices, and M is the number of edges.",
+    "spaceComplexity": "O(N + M) \u2014 where N is the number of vertices and M is the number of edges.",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\n#define INF (1LL << 60)\n#define MAXN 1100\n#define MAXM 1100\n\nint n, m;\nlong long st[MAXN], en[MAXN], ans[MAXN];\n\nstruct Edge {\n    int u, v;\n    long long w;\n};\n\nEdge edges[MAXM];\n\nvoid relax(bool detectNegativeCycle) {\n    for (int i = 0; i < m; i++) {\n        int u = edges[i].u;\n        int v = edges[i].v;\n        long long w = edges[i].w;\n\n        if (detectNegativeCycle) {\n            if (st[u] > w + st[v])\n                st[u] = -INF;\n\n            if (en[v] > w + en[u])\n                en[v] = -INF;\n        } else {\n            if (st[u] > w + st[v])\n                st[u] = w + st[v];\n\n            if (en[v] > w + en[u])\n                en[v] = w + en[u];\n        }\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        scanf(\"%d %d\", &n, &m);\n\n        for (int i = 0; i < n; i++) {\n            st[i] = 0;\n            en[i] = 0;\n        }\n\n        for (int i = 0; i < m; i++) {\n            scanf(\"%d %d %lld\", &edges[i].u, &edges[i].v, &edges[i].w);\n            edges[i].u--;  // convert to 0-based\n            edges[i].v--;\n        }\n\n        for (int i = 0; i < 2 * n; i++) {\n            relax(false);\n        }\n\n        for (int i = 0; i < n; i++) {\n            ans[i] = st[i] + en[i];\n        }\n\n        for (int i = 0; i < 2 * n; i++) {\n            relax(true);\n        }\n\n        for (int i = 0; i < n; i++) {\n            if (ans[i] == st[i] + en[i]) {\n                printf(\"%lld\\n\", ans[i]);\n            } else {\n                printf(\"INF\\n\");\n            }\n        }\n    }\n\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\n\nconst long long INF = 1e15;\nconst int MAXN = 1100;\nconst int MAXM = 1100;\n\nint n, m;\nlong long st[MAXN], en[MAXN], ans[MAXN];\n\nstruct Edge {\n    int u, v;\n    long long w;\n};\n\nEdge edges[MAXM];\n\nvoid relax(bool detectNegativeCycle) {\n    for (int i = 0; i < m; i++) {\n        int u = edges[i].u;\n        int v = edges[i].v;\n        long long w = edges[i].w;\n\n        if (detectNegativeCycle) {\n            if (st[u] > w + st[v])\n                st[u] = -INF;\n\n            if (en[v] > w + en[u])\n                en[v] = -INF;\n        } else {\n            st[u] = min(st[u], w + st[v]);\n            en[v] = min(en[v], w + en[u]);\n        }\n    }\n}\n\nint main() {\n    int t;\n    cin >> t;\n\n    while (t--) {\n        cin >> n >> m;\n\n        for (int i = 0; i < n; i++) {\n            st[i] = 0;\n            en[i] = 0;\n        }\n\n        for (int i = 0; i < m; i++) {\n            cin >> edges[i].u >> edges[i].v >> edges[i].w;\n            edges[i].u--;  // convert to 0-based\n            edges[i].v--;\n        }\n\n        for (int i = 0; i < 2 * n; i++) {\n            relax(false);\n        }\n\n        for (int i = 0; i < n; i++) {\n            ans[i] = st[i] + en[i];\n        }\n\n        for (int i = 0; i < 2 * n; i++) {\n            relax(true);\n        }\n\n        for (int i = 0; i < n; i++) {\n            if (ans[i] == st[i] + en[i]) {\n                cout << ans[i] << '\\n';\n            } else {\n                cout << \"INF\\n\";\n            }\n        }\n    }\n\n    return 0;\n}",

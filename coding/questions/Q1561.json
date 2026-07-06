@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Substring",
-      "String Repetition"
+      "String Repetition",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given two strings **AAA** and **BBB**, consisting of lowercase English letters.\n\nIn one operation, you may repeat string **AAA** any number of times and concatenate the results.\n\nYour task is to find the **minimum number of repetitions** required so that **BBB** appears as a **substring** of the repeated string.\n\nIf no such number of repetitions exists, return **−1-1−1**.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**repeatedStringMatchrepeatedStringMatchrepeatedStringMatch**\n\n\n\n**Parameters:**\n\n\n\n**AAA** (`string`)\nThe base string that can be repeated any number of times.\n**BBB** (`string`)\nThe target string that must appear as a substring.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **minimum number of repetitions** of **AAA** needed so that **BBB** is a substring.\nReturns **−1-1−1** if it is impossible.\n\n\n\nInput Format\nThe first line contains a single integer **TTT** — the number of test cases.\n\n\nFor each test case:\n\n\n\nThe first line contains the string **AAA**.\nThe second line contains the string **BBB**.\n\n\n\nOutput Format\nFor each test case, print a single integer — the **minimum number of repetitions** of **AAA** needed so that **BBB** is a substring, or **−1-1−1** if it is impossible.",
+    "problemStatement": "You are given two strings **AAA** and **BBB**, consisting of lowercase English letters.\n\nIn one operation, you may repeat string **AAA** any number of times and concatenate the results.\n\nYour task is to find the **minimum number of repetitions** required so that **BBB** appears as a **substring** of the repeated string.\n\nIf no such number of repetitions exists, return **\u22121-1\u22121**.\n\nFunction Declaration\n\n**Function Name:**\n\n\n\n**repeatedStringMatchrepeatedStringMatchrepeatedStringMatch**\n\n\n\n**Parameters:**\n\n\n\n**AAA** (`string`)\nThe base string that can be repeated any number of times.\n**BBB** (`string`)\nThe target string that must appear as a substring.\n\n\n\n**Return Value:**\n\n\n\nReturns an `int` representing the **minimum number of repetitions** of **AAA** needed so that **BBB** is a substring.\nReturns **\u22121-1\u22121** if it is impossible.\n\n\n\nInput Format\nThe first line contains a single integer **TTT** \u2014 the number of test cases.\n\n\nFor each test case:\n\n\n\nThe first line contains the string **AAA**.\nThe second line contains the string **BBB**.\n\n\n\nOutput Format\nFor each test case, print a single integer \u2014 the **minimum number of repetitions** of **AAA** needed so that **BBB** is a substring, or **\u22121-1\u22121** if it is impossible.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= |A|, |B| <= 10000",
       "A and B consist only of lowercase English letters"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains string A, the base string that can be repeated any number of times, and the second line contains string B, the target string that must appear as a substring.",
-    "outputFormat": "For each test case, print a single integer — the minimum number of repetitions of A needed so that B is a substring, or -1 if it is impossible.",
+    "outputFormat": "For each test case, print a single integer \u2014 the minimum number of repetitions of A needed so that B is a substring, or -1 if it is impossible.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to calculate the minimum number of repetitions required to cover the length of string B. We use the formula base = (lenB + lenA - 1) / lenA to calculate the minimum number of repetitions. We then check if string B is a substring of the repeated string A for base and base + 1 repetitions.",
     "timeComplexity": "O(T * (|A| + |B|)) per test case, O(T * (|A| + |B|)) total.",
-    "spaceComplexity": "O(|A| * (base + 1)) — the dominant structure is the repeated string A.",
+    "spaceComplexity": "O(|A| * (base + 1)) \u2014 the dominant structure is the repeated string A.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nint repeatedStringMatch(const char *A, const char *B) {\n    int lenA = strlen(A);\n    int lenB = strlen(B);\n    int base = (lenB + lenA - 1) / lenA; // ceil\n    int maxCopies = base + 1;\n    int bufSize = lenA * maxCopies + 1;\n    char *rep = (char *)malloc(bufSize);\n    rep[0] = '\\0';\n    for (int i = 0; i < base; ++i) strcat(rep, A);\n    if (strstr(rep, B) != NULL) {\n        free(rep);\n        return base;\n    }\n    strcat(rep, A); // one more copy\n    if (strstr(rep, B) != NULL) {\n        free(rep);\n        return base + 1;\n    }\n    free(rep);\n    return -1;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char A[10005];\n        char B[10005];\n        scanf(\"%s\", A);\n        scanf(\"%s\", B);\n        printf(\"%d\\n\", repeatedStringMatch(A, B));\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint repeatedStringMatch(const string &A, const string &B) {\n    int lenA = A.size();\n    int lenB = B.size();\n    int base = (lenB + lenA - 1) / lenA; // ceil\n    string rep;\n    rep.reserve(lenA * (base + 1));\n    for (int i = 0; i < base; ++i) rep += A;\n    if (rep.find(B) != string::npos) return base;\n    rep += A;\n    if (rep.find(B) != string::npos) return base + 1;\n    return -1;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; \n    if (!(cin >> T)) return 0;\n    while (T--) {\n        string A, B;\n        cin >> A >> B;\n        cout << repeatedStringMatch(A, B) << '\\n';\n    }\n    return 0;\n}",

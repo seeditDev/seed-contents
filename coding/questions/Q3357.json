@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Hamming Distance",
+      "Arithmetic Progression",
       "Good Strings",
-      "Arithmetic Progression"
+      "Strings",
+      "Hamming Distance"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "A string **str** is called a good string if there does not exist three difference indices **i, j, k** such that **i, j, k** are  consecutive three terms of an arithmetic progression and **str[i] = str[j] = str[k]**. \n\n\nYou are given a string **s** and two integers **K**, **A**. You have to find the number of good strings **t** with alphabet size **A** (i.e. if **A = 1**, then string can only have a's and if **A = 2**, string can only contain 'a' or 'b'. e.g. if **A = 2**, **t** can be aa, ab, bb etc., for **A = 3**, string can only contain 'a', 'b' and 'c', i.e. it can be aab bac, bbb, cbb etc.) of length **|s|** such that hamming distance between strings **s** and **t** is less than or equal to **K**. As the answer could be very large, print answers modulo **109 + 7**.\n\n\n\nHamming distance between two strings of same size is defined as the number of indices where their corresponding characters differ. Formally, for two strings **s, t** of length **N**, hamming distance will be number of indices **1 ≤ i ≤ N** such that **s[i] != t[i]**.",
+    "problemStatement": "A string **str** is called a good string if there does not exist three difference indices **i, j, k** such that **i, j, k** are  consecutive three terms of an arithmetic progression and **str[i] = str[j] = str[k]**. \n\n\nYou are given a string **s** and two integers **K**, **A**. You have to find the number of good strings **t** with alphabet size **A** (i.e. if **A = 1**, then string can only have a's and if **A = 2**, string can only contain 'a' or 'b'. e.g. if **A = 2**, **t** can be aa, ab, bb etc., for **A = 3**, string can only contain 'a', 'b' and 'c', i.e. it can be aab bac, bbb, cbb etc.) of length **|s|** such that hamming distance between strings **s** and **t** is less than or equal to **K**. As the answer could be very large, print answers modulo **109 + 7**.\n\n\n\nHamming distance between two strings of same size is defined as the number of indices where their corresponding characters differ. Formally, for two strings **s, t** of length **N**, hamming distance will be number of indices **1 \u2264 i \u2264 N** such that **s[i] != t[i]**.",
     "constraints": [
       "1 <= T <= 50",
       "1 <= |s| <= 50",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We will generate all possible strings of length |s| with alphabet size A, and then check if the string is good and if the Hamming distance between the string and s is less than or equal to K. We will use a recursive function to generate all possible strings and check the conditions.",
-    "timeComplexity": "O(T * A^|s| * |s|) — because we are generating all possible strings of length |s| with alphabet size A, and for each string, we are checking if it is good and if the Hamming distance is less than or equal to K.",
-    "spaceComplexity": "O(|s|) — because we need to store the current string and the string s.",
+    "timeComplexity": "O(T * A^|s| * |s|) \u2014 because we are generating all possible strings of length |s| with alphabet size A, and for each string, we are checking if it is good and if the Hamming distance is less than or equal to K.",
+    "spaceComplexity": "O(|s|) \u2014 because we need to store the current string and the string s.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <string.h>\n#define MOD 1000000007\nint countGoodStrings(int A, int K, char *s) {\n    int n = strlen(s);\n    int count = 0;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        int hammingDistance = 0;\n        char t[n + 1];\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) == 0) {\n                t[i] = s[i];\n            } else {\n                t[i] = 'a' + (mask & (A - 1));\n                hammingDistance++;\n            }\n        }\n        t[n] = '\\0';\n        if (hammingDistance <= K && isGoodString(t)) {\n            count++;\n        }\n    }\n    return count % MOD;\n}\nint isGoodString(char *s) {\n    int n = strlen(s);\n    for (int i = 0; i < n - 2; i++) {\n        for (int j = i + 1; j < n - 1; j++) {\n            int k = 2 * j - i;\n            if (k < n && s[i] == s[j] && s[j] == s[k]) {\n                return 0;\n            }\n        }\n    }\n    return 1;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int A, K;\n        scanf(\"%d %d\", &A, &K);\n        char s[51];\n        scanf(\"%s\", s);\n        printf(\"%d\\n\", countGoodStrings(A, K, s));\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <string>\nusing namespace std;\n#define MOD 1000000007\nint countGoodStrings(int A, int K, string s) {\n    int n = s.size();\n    int count = 0;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        int hammingDistance = 0;\n        string t;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) == 0) {\n                t += s[i];\n            } else {\n                t += 'a' + (mask & (A - 1));\n                hammingDistance++;\n            }\n        }\n        if (hammingDistance <= K && isGoodString(t)) {\n            count++;\n        }\n    }\n    return count % MOD;\n}\nbool isGoodString(string s) {\n    int n = s.size();\n    for (int i = 0; i < n - 2; i++) {\n        for (int j = i + 1; j < n - 1; j++) {\n            int k = 2 * j - i;\n            if (k < n && s[i] == s[j] && s[j] == s[k]) {\n                return false;\n            }\n        }\n    }\n    return true;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int A, K;\n        cin >> A >> K;\n        string s;\n        cin >> s;\n        cout << countGoodStrings(A, K, s) << endl;\n    }\n    return 0;\n}",

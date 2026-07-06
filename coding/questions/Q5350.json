@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Digit DP",
-      "Modulo",
-      "Number Theory"
+      "Number Theory",
+      "Dynamic Programming",
+      "Modulo"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Ujan is a software developer. He is developing a software that takes two integers LLL and RRR and outputs the count of integers in the sequence L,L+1,…,R−1,RL,L+1,\\ldots,R-1,RL,L+1,…,R−1,R whose sum of digits (SOD) is divisible by 333.\n\nHe has developed the user interface (UI) quite easily. He is having a hard time finding the logic to solve the problem. As you are not only a good friend of Ujan but also a good problem solver, he asks you to help him out.\n\nCan you solve the problem for your friend, Ujan?\n\n\nInput Format\n\nThe first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe only line of each test case contains two integer L,RL,RL,R.\n\n\nOutput Format\nFor each test case, print a single line containing one integer equal to the count of of integers in the sequence, whose sum of digits is divisible by 333 .",
+    "problemStatement": "Ujan is a software developer. He is developing a software that takes two integers LLL and RRR and outputs the count of integers in the sequence L,L+1,\u2026,R\u22121,RL,L+1,\\ldots,R-1,RL,L+1,\u2026,R\u22121,R whose sum of digits (SOD) is divisible by 333.\n\nHe has developed the user interface (UI) quite easily. He is having a hard time finding the logic to solve the problem. As you are not only a good friend of Ujan but also a good problem solver, he asks you to help him out.\n\nCan you solve the problem for your friend, Ujan?\n\n\nInput Format\n\nThe first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe only line of each test case contains two integer L,RL,RL,R.\n\n\nOutput Format\nFor each test case, print a single line containing one integer equal to the count of of integers in the sequence, whose sum of digits is divisible by 333 .",
     "constraints": [
-      "1 ≤ T ≤ 10^4",
-      "1 ≤ L ≤ R ≤ 10^18"
+      "1 \u2264 T \u2264 10^4",
+      "1 \u2264 L \u2264 R \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers L and R (1 ≤ L ≤ R ≤ 10^18), separated by a space.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers L and R (1 \u2264 L \u2264 R \u2264 10^18), separated by a space.",
     "outputFormat": "For each test case output a single line containing the count of integers X in the interval [L, R] whose sum of decimal digits is divisible by 3.",
     "sampleTestCases": [
       {
@@ -106,8 +107,8 @@
     ]
   },
   "solution": {
-    "approach": "For a number X we need to know whether the sum of its decimal digits is 0 (mod 3). The property depends only on the remainder of the digit sum modulo 3, which has only three states (0,1,2). We can count how many numbers ≤ X have digit‑sum ≡ 0 (mod 3) using a classic digit DP:\n1. Process the decimal representation of X from the most significant digit to the least.\n2. DP state: (position, current_mod, tight) where tight indicates whether the prefix built so far is exactly equal to the prefix of X.\n3. Transition: try all possible next digits (0‑9, limited by tight). New_mod = (current_mod + digit) % 3.\n4. When all positions are processed, return 1 if current_mod == 0 else 0.\nThe DP runs in O(number_of_digits * 3 * 2) ≈ 19*6 operations per query, which is trivial for T up to 10^4. The answer for a test case is f(R) - f(L‑1), where f(Y) is the DP count for numbers ≤ Y.\nThe implementation uses memoisation (or an iterative table) and works with 64‑bit integers.",
-    "timeComplexity": "O(T * D * 3) where D ≤ 19 (number of decimal digits of 10^18). Effectively O(T).",
+    "approach": "For a number X we need to know whether the sum of its decimal digits is 0 (mod 3). The property depends only on the remainder of the digit sum modulo 3, which has only three states (0,1,2). We can count how many numbers \u2264 X have digit\u2011sum \u2261 0 (mod 3) using a classic digit DP:\n1. Process the decimal representation of X from the most significant digit to the least.\n2. DP state: (position, current_mod, tight) where tight indicates whether the prefix built so far is exactly equal to the prefix of X.\n3. Transition: try all possible next digits (0\u20119, limited by tight). New_mod = (current_mod + digit) % 3.\n4. When all positions are processed, return 1 if current_mod == 0 else 0.\nThe DP runs in O(number_of_digits * 3 * 2) \u2248 19*6 operations per query, which is trivial for T up to 10^4. The answer for a test case is f(R) - f(L\u20111), where f(Y) is the DP count for numbers \u2264 Y.\nThe implementation uses memoisation (or an iterative table) and works with 64\u2011bit integers.",
+    "timeComplexity": "O(T * D * 3) where D \u2264 19 (number of decimal digits of 10^18). Effectively O(T).",
     "spaceComplexity": "O(D * 3 * 2) for the memo table, i.e., O(1) extra memory.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdint.h>\n\nstatic long long dp[20][3][2];\nstatic int digits[20];\nstatic int len;\n\nlong long dfs(int pos, int mod, int tight) {\n    if (pos == len) return mod == 0 ? 1 : 0;\n    long long *memo = &dp[pos][mod][tight];\n    if (*memo != -1) return *memo;\n    long long res = 0;\n    int limit = tight ? digits[pos] : 9;\n    for (int d = 0; d <= limit; ++d) {\n        int ntight = tight && (d == limit);\n        res += dfs(pos + 1, (mod + d) % 3, ntight);\n    }\n    return *memo = res;\n}\n\nlong long count_upto(long long x) {\n    if (x < 0) return 0;\n    len = 0;\n    // extract digits\n    char buf[32];\n    sprintf(buf, \"%lld\", x);\n    len = strlen(buf);\n    for (int i = 0; i < len; ++i) digits[i] = buf[i] - '0';\n    memset(dp, -1, sizeof(dp));\n    return dfs(0, 0, 1);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        long long L, R; scanf(\"%lld %lld\", &L, &R);\n        long long ans = count_upto(R) - count_upto(L - 1);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}\n",

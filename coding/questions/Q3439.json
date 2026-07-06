@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Coin Change Problem",
       "Greedy Algorithm",
-      "Coin Change Problem"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,10 +22,10 @@
   "content": {
     "problemStatement": "Lumpy is a bus driver. Today, the conductor is absent so Lumpy has to do the conductor's job as well. There are **N** creatures in the bus. Sometimes the creatures don't carry change and can't pay the exact amount of the fare. Each creature in the bus today has paid an amount\ngreater than his/her fare. You are given information about the **extra** amount paid by each creature, by an array **A** of size **N**, where **Ai** denotes the extra amount paid by the **i**-th creature, in rupees.\n\n\n\nAfter the end of the trip, Lumpy noticed that he had **P** one rupee coins and **Q** two rupee coins. He wants to pay back the creatures using this money. Being a kind hearted moose, Lumpy wants to pay back as many creatures as he can. Note that Lumpy will \nnot pay back the **i**-th creature if he can't pay the **exact** amount that the **i**-th creature requires with the coins that he possesses. \n\nLumpy is busy driving the bus and doesn't want to calculate the maximum number of creatures he can satisfy - He will surely cause an accident if he tries to do so. Can you help him out with this task?",
     "constraints": [
-      "1 ≤ T ≤ 10^6",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ Ai ≤ 10^9",
-      "0 ≤ P, Q ≤ 10^14",
+      "1 \u2264 T \u2264 10^6",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^9",
+      "0 \u2264 P, Q \u2264 10^14",
       "Sum of N over all the cases does not exceed 10^6"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. For each test case, the first line consists of three space-separated integers N, P, and Q. The second line consists of N space-separated integers A containing N space integers, where the i-th integer denotes Ai.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "The problem can be solved using a greedy algorithm. First, sort the array A in ascending order. Then, iterate over the sorted array and try to pay back each creature using the available coins. If a creature can be paid back, decrement the corresponding coin count and increment the count of paid creatures. The algorithm terminates when all creatures have been processed or there are no more coins available.",
-    "timeComplexity": "O(T * N log N) — due to sorting the array A for each test case",
-    "spaceComplexity": "O(N) — for storing the array A",
+    "timeComplexity": "O(T * N log N) \u2014 due to sorting the array A for each test case",
+    "spaceComplexity": "O(N) \u2014 for storing the array A",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, P, Q;\n        scanf(\"%d %d %d\", &N, &P, &Q);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        qsort(A, N, sizeof(int), compare);\n        int paid = 0;\n        for (int i = 0; i < N; i++) {\n            if (A[i] == 1 && P > 0) {\n                paid++;\n                P--;\n            } else if (A[i] == 2 && Q > 0) {\n                paid++;\n                Q--;\n            } else if (A[i] > 2 && P >= A[i]) {\n                paid++;\n                P -= A[i];\n            } else if (A[i] > 2 && Q * 2 + P >= A[i]) {\n                paid++;\n                Q -= (A[i] - P) / 2;\n                P -= A[i] % 2;\n            }\n        }\n        printf(\"%d\\n\", paid);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, P, Q;\n        cin >> N >> P >> Q;\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        sort(A, A + N);\n        int paid = 0;\n        for (int i = 0; i < N; i++) {\n            if (A[i] == 1 && P > 0) {\n                paid++;\n                P--;\n            } else if (A[i] == 2 && Q > 0) {\n                paid++;\n                Q--;\n            } else if (A[i] > 2 && P >= A[i]) {\n                paid++;\n                P -= A[i];\n            } else if (A[i] > 2 && Q * 2 + P >= A[i]) {\n                paid++;\n                Q -= (A[i] - P) / 2;\n                P -= A[i] % 2;\n            }\n        }\n        cout << paid << endl;\n    }\n    return 0;\n}",

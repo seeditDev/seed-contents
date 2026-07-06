@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Prime Numbers",
       "Sieve of Eratosthenes",
       "Precomputation",
+      "Prime Numbers",
+      "Math",
       "Counting Pairs"
     ],
     "companyTags": [],
@@ -23,11 +24,11 @@
   "content": {
     "problemStatement": "Problem Statement**Levy's conjecture**, named after **Hyman Levy**, states that all odd integers greater than **5** can be represented as the sum of an odd prime number and an even semiprime. To put it algebraically, **2n + 1 = p + 2q** always has a solution in primes **p** and **q** (not necessary to be distinct) for **n &gt; 2**. (Source: Wikipedia)\n\nIn this problem, given a positive integer **N** (not necessary to be odd integer greater than **5**). Your task is to calculate how many distinct ordered pairs **(p, q)** such that **N = p + 2q**, where **p** and **q** are primes.",
     "constraints": [
-      "1 ≤ T ≤ 100000",
-      "1 ≤ N ≤ 10000"
+      "1 \u2264 T \u2264 100000",
+      "1 \u2264 N \u2264 10000"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100000), the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 10000).",
-    "outputFormat": "For each test case output a single line containing the number of ordered pairs (p, q) of prime numbers such that N = p + 2·q.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 100000), the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 10000).",
+    "outputFormat": "For each test case output a single line containing the number of ordered pairs (p, q) of prime numbers such that N = p + 2\u00b7q.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "1. Use the Sieve of Eratosthenes to generate all prime numbers up to 10000. 2. Store the primes in a list. 3. Pre‑compute an answer array ans[0…10000] where ans[x] is the number of ordered pairs (p, q) with p and q prime and p + 2·q = x.   For every prime p and for every prime q (in increasing order) compute sum = p + 2*q; if sum exceeds 10000 break the inner loop because larger q only increase the sum. Increment ans[sum]. 4. After the pre‑computation each query is answered in O(1) by printing ans[N].",
-    "timeComplexity": "Sieve: O(MAXN log log MAXN). Double loop over primes: O(P²) where P ≈ 1229 (≈1.5·10⁶ operations). Answering each test case: O(1). Overall O(MAXN log log MAXN + P² + T).",
+    "approach": "1. Use the Sieve of Eratosthenes to generate all prime numbers up to 10000. 2. Store the primes in a list. 3. Pre\u2011compute an answer array ans[0\u202610000] where ans[x] is the number of ordered pairs (p, q) with p and q prime and p + 2\u00b7q = x.   For every prime p and for every prime q (in increasing order) compute sum = p + 2*q; if sum exceeds 10000 break the inner loop because larger q only increase the sum. Increment ans[sum]. 4. After the pre\u2011computation each query is answered in O(1) by printing ans[N].",
+    "timeComplexity": "Sieve: O(MAXN log log MAXN). Double loop over primes: O(P\u00b2) where P \u2248 1229 (\u22481.5\u00b710\u2076 operations). Answering each test case: O(1). Overall O(MAXN log log MAXN + P\u00b2 + T).",
     "spaceComplexity": "O(MAXN) for the sieve array and the answer array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n\n#define MAXN 10000\n\nint main() {\n    bool isPrime[MAXN + 1];\n    for (int i = 0; i <= MAXN; ++i) isPrime[i] = true;\n    isPrime[0] = isPrime[1] = false;\n    for (int i = 2; i * i <= MAXN; ++i) {\n        if (isPrime[i]) {\n            for (int j = i * i; j <= MAXN; j += i) isPrime[j] = false;\n        }\n    }\n    int primes[1300];\n    int pcnt = 0;\n    for (int i = 2; i <= MAXN; ++i) if (isPrime[i]) primes[pcnt++] = i;\n\n    int ans[MAXN + 1] = {0};\n    for (int i = 0; i < pcnt; ++i) {\n        for (int j = 0; j < pcnt; ++j) {\n            int sum = primes[i] + 2 * primes[j];\n            if (sum > MAXN) break;\n            ++ans[sum];\n        }\n    }\n\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        printf(\"%d\\n\", ans[N]);\n    }\n    return 0;\n}",

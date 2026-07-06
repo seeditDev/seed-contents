@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
+      "Dynamic Programming",
       "Fibonacci Numbers",
-      "Subset Sum",
-      "Modular Arithmetic"
+      "Subset Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "Chef's love for Fibonacci numbers helps him to design following interesting problem.\n\nHe defines a function **F** for an array **S** as follows:\n\n\n\n\nwhere\n\n\n**Si** denotes a **non-empty** subset of multiset **S**.\n**sum(Si)** denotes the sum of all element of multiset **Si**.\n**Fibonacci(x)** denotes the **xth** Fibonacci number.\nGiven an array **A** consisting of **N** elements. Chef asked you to process following two types of queries on this array accurately and efficiently.\n\n\n**C X Y:** Change the value of **Xth** element of array to **Y** i.e **AX = Y**.\n**Q L R:** Compute function **F** over the subarray defined by the elements of array **A** in the range **L** to **R**, both inclusive.\n\nPlease see the Note section if you need details regarding Fibonacci function.",
     "constraints": [
-      "1 ≤ N, M ≤ 10^5",
-      "1 ≤ Ai, Y ≤ 10^9",
-      "1 ≤ L, R, X ≤ N",
+      "1 \u2264 N, M \u2264 10^5",
+      "1 \u2264 Ai, Y \u2264 10^9",
+      "1 \u2264 L, R, X \u2264 N",
       "type = {'C', 'Q'}"
     ],
     "inputFormat": "The first line contains two space-separated integers N and M, denoting the size of array A and the number of queries to be performed. The next line contains N space-separated integers denoting the elements of array A. Each of the next M lines contains a query having one of the mentioned two types: 'C X Y' to change the value of the Xth element of array A to Y, or 'Q L R' to compute function F over the subarray defined by the elements of array A in the range L to R, both inclusive.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to precompute the Fibonacci numbers up to a certain limit. Then, for each query of type 'Q', we can iterate over all possible subsets of the subarray and calculate the sum of each subset. Finally, we can use the precomputed Fibonacci numbers to calculate the value of function F. For queries of type 'C', we can simply update the value of the corresponding element in the array.",
-    "timeComplexity": "O(M * 2^R) — where M is the number of queries and R is the maximum length of the subarray. The time complexity is dominated by the iteration over all possible subsets of the subarray.",
-    "spaceComplexity": "O(N + M) — where N is the size of the array and M is the number of queries. The space complexity is dominated by the storage of the array and the precomputed Fibonacci numbers.",
+    "timeComplexity": "O(M * 2^R) \u2014 where M is the number of queries and R is the maximum length of the subarray. The time complexity is dominated by the iteration over all possible subsets of the subarray.",
+    "spaceComplexity": "O(N + M) \u2014 where N is the size of the array and M is the number of queries. The space complexity is dominated by the storage of the array and the precomputed Fibonacci numbers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n#define MAXN 100005\n#define MAXM 100005\n\nlong long fib[MAXN];\n\nvoid precompute_fib() {\n    fib[1] = 1;\n    fib[2] = 1;\n    for (int i = 3; i < MAXN; i++) {\n        fib[i] = (fib[i-1] + fib[i-2]) % MOD;\n    }\n}\n\nlong long calculate_f(int* arr, int l, int r) {\n    long long res = 0;\n    int n = r - l + 1;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        long long sum = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                sum = (sum + arr[l + i]) % MOD;\n            }\n        }\n        res = (res + fib[sum]) % MOD;\n    }\n    return res;\n}\n\nint main() {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n    int* arr = (int*) malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    precompute_fib();\n    for (int i = 0; i < m; i++) {\n        char type;\n        scanf(\" %c\", &type);\n        if (type == 'C') {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n            arr[x-1] = y;\n        } else {\n            int l, r;\n            scanf(\"%d %d\", &l, &r);\n            printf(\"%lld\\n\", calculate_f(arr, l-1, r-1));\n        }\n    }\n    free(arr);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 1000000007\n#define MAXN 100005\n#define MAXM 100005\n\nlong long fib[MAXN];\n\nvoid precompute_fib() {\n    fib[1] = 1;\n    fib[2] = 1;\n    for (int i = 3; i < MAXN; i++) {\n        fib[i] = (fib[i-1] + fib[i-2]) % MOD;\n    }\n}\n\nlong long calculate_f(const std::vector<int>& arr, int l, int r) {\n    long long res = 0;\n    int n = r - l + 1;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        long long sum = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                sum = (sum + arr[l + i]) % MOD;\n            }\n        }\n        res = (res + fib[sum]) % MOD;\n    }\n    return res;\n}\n\nint main() {\n    int n, m;\n    std::cin >> n >> m;\n    std::vector<int> arr(n);\n    for (int i = 0; i < n; i++) {\n        std::cin >> arr[i];\n    }\n    precompute_fib();\n    for (int i = 0; i < m; i++) {\n        char type;\n        std::cin >> type;\n        if (type == 'C') {\n            int x, y;\n            std::cin >> x >> y;\n            arr[x-1] = y;\n        } else {\n            int l, r;\n            std::cin >> l >> r;\n            std::cout << calculate_f(arr, l-1, r-1) << std::endl;\n        }\n    }\n    return 0;\n}",

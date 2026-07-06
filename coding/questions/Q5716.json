@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Strings | Game Theory",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Two Pointers",
-      "Greedy Strategy",
+      "Deque Construction",
+      "Strings",
       "Sorting",
-      "Deque Construction"
+      "Greedy Strategy",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,15 +22,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Initially, Alice and Bob both have a bag of NNN stones each with every stone having a **lowercase alphabet** written on it. Both players know the stones of the other player.\n\nAlice and Bob want to create a string SSS of length 2⋅N2 \\cdot N2⋅N using the stones they have. They play a game to create the string. The rules of the game are as follows:\n\n\nInitially, all the indices of SSS are empty.\nAlice starts the game. The players take alternating turns. In each turn, the player can choose one of the stones from their bag and place it at any empty index iii (1≤i≤2⋅N)(1 \\le i \\le 2 \\cdot N)(1≤i≤2⋅N) of SSS.\nThe game ends when both the players have used all their stones.\nAlice wants SSS to be as lexicographically small as possible while Bob wants SSS to be as lexicographically large as possible.\nFind the final string SSS formed by characters written on stones if both Alice and Bob play optimally!\n\n**Note:** A string XXX is lexicographically smaller than a string YYY if and only if one of the following holds:\n\n\nXXX is a prefix of YYY and X≠YX \\ne YX=Y\nIn the first position where XXX and YYY differ, the string XXX has a letter that appears earlier in the alphabet than the corresponding letter in YYY.\n\nInput Format\n\nThe first line contains an integer TTT - the number of test cases. The description of TTT test cases follows:\nThe first line of each test case contains an integer NNN - the number of stones each player has.\nThe second line of each test case contains a string AAA of length NNN describing the stones in Alice's bag initially.\nThe third line of each test case contains a string BBB of length NNN describing the stones in Bob's bag initially.\n\n\nOutput Format\nFor each test case, print the final string SSS formed if Alice and Bob play optimally.",
+    "problemStatement": "Initially, Alice and Bob both have a bag of NNN stones each with every stone having a **lowercase alphabet** written on it. Both players know the stones of the other player.\n\nAlice and Bob want to create a string SSS of length 2\u22c5N2 \\cdot N2\u22c5N using the stones they have. They play a game to create the string. The rules of the game are as follows:\n\n\nInitially, all the indices of SSS are empty.\nAlice starts the game. The players take alternating turns. In each turn, the player can choose one of the stones from their bag and place it at any empty index iii (1\u2264i\u22642\u22c5N)(1 \\le i \\le 2 \\cdot N)(1\u2264i\u22642\u22c5N) of SSS.\nThe game ends when both the players have used all their stones.\nAlice wants SSS to be as lexicographically small as possible while Bob wants SSS to be as lexicographically large as possible.\nFind the final string SSS formed by characters written on stones if both Alice and Bob play optimally!\n\n**Note:** A string XXX is lexicographically smaller than a string YYY if and only if one of the following holds:\n\n\nXXX is a prefix of YYY and X\u2260YX \\ne YX\ue020=Y\nIn the first position where XXX and YYY differ, the string XXX has a letter that appears earlier in the alphabet than the corresponding letter in YYY.\n\nInput Format\n\nThe first line contains an integer TTT - the number of test cases. The description of TTT test cases follows:\nThe first line of each test case contains an integer NNN - the number of stones each player has.\nThe second line of each test case contains a string AAA of length NNN describing the stones in Alice's bag initially.\nThe third line of each test case contains a string BBB of length NNN describing the stones in Bob's bag initially.\n\n\nOutput Format\nFor each test case, print the final string SSS formed if Alice and Bob play optimally.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 100000",
-      "Sum of N over all test cases ≤ 200000",
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 100000",
+      "Sum of N over all test cases \u2264 200000",
       "A and B consist only of lowercase letters"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N – the number of stones each player has.\n- A line with a string A of length N – the letters on Alice's stones.\n- A line with a string B of length N – the letters on Bob's stones.\nAll letters are lowercase English characters.",
-    "outputFormat": "For each test case output a single line containing the final string S of length 2·N formed when both players play optimally.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with integer N \u2013 the number of stones each player has.\n- A line with a string A of length N \u2013 the letters on Alice's stones.\n- A line with a string B of length N \u2013 the letters on Bob's stones.\nAll letters are lowercase English characters.",
+    "outputFormat": "For each test case output a single line containing the final string S of length 2\u00b7N formed when both players play optimally.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "1. Sort Alice's letters increasingly and keep only the smallest ceil(N/2) letters – the rest will never be used because Alice can always discard her larger letters.\n2. Sort Bob's letters decreasingly and keep only the largest floor(N/2) letters – the rest are useless for Bob.\n3. Let aL, aR be pointers to the leftmost and rightmost usable letters of Alice, and bL, bR for Bob.\n4. Build the answer in a character array ans[2N] with two free positions: left (L) starting at 0 and right (R) starting at 2N‑1.\n5. Simulate the game for 2N turns. On Alice's turn (even turn index):\n   - If aL ≤ aR and A[aL] < B[bL] then place A[aL] at ans[L] and ++aL, ++L.\n   - Otherwise place A[aR] at ans[R] and --aR, --R.\n   On Bob's turn (odd turn index):\n   - If bL ≤ bR and A[aL] < B[bL] then place B[bL] at ans[L] and ++bL, ++L.\n   - Otherwise place B[bR] at ans[R] and --bR, --R.\n6. After all turns ans is the required final string.\nThe greedy rule is optimal: whenever the smallest remaining Alice character is strictly smaller than the largest remaining Bob character, the current player can improve the lexicographic outcome by fixing a character at the leftmost free position; otherwise they are forced to sacrifice a character at the rightmost position.\nThe algorithm runs in O(N log N) per test case for sorting, and O(N) for the construction.",
-    "timeComplexity": "O(N log N) per test case (dominated by sorting). The total over all test cases is O( Σ N log N ) ≤ O(2·10^5 log 10^5).",
+    "approach": "1. Sort Alice's letters increasingly and keep only the smallest ceil(N/2) letters \u2013 the rest will never be used because Alice can always discard her larger letters.\n2. Sort Bob's letters decreasingly and keep only the largest floor(N/2) letters \u2013 the rest are useless for Bob.\n3. Let aL, aR be pointers to the leftmost and rightmost usable letters of Alice, and bL, bR for Bob.\n4. Build the answer in a character array ans[2N] with two free positions: left (L) starting at 0 and right (R) starting at 2N\u20111.\n5. Simulate the game for 2N turns. On Alice's turn (even turn index):\n   - If aL \u2264 aR and A[aL] < B[bL] then place A[aL] at ans[L] and ++aL, ++L.\n   - Otherwise place A[aR] at ans[R] and --aR, --R.\n   On Bob's turn (odd turn index):\n   - If bL \u2264 bR and A[aL] < B[bL] then place B[bL] at ans[L] and ++bL, ++L.\n   - Otherwise place B[bR] at ans[R] and --bR, --R.\n6. After all turns ans is the required final string.\nThe greedy rule is optimal: whenever the smallest remaining Alice character is strictly smaller than the largest remaining Bob character, the current player can improve the lexicographic outcome by fixing a character at the leftmost free position; otherwise they are forced to sacrifice a character at the rightmost position.\nThe algorithm runs in O(N log N) per test case for sorting, and O(N) for the construction.",
+    "timeComplexity": "O(N log N) per test case (dominated by sorting). The total over all test cases is O( \u03a3 N log N ) \u2264 O(2\u00b710^5 log 10^5).",
     "spaceComplexity": "O(N) for the sorted arrays and the answer string.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint cmp_asc(const void *a, const void *b) { return *(char*)a - *(char*)b; }\nint cmp_desc(const void *a, const void *b) { return *(char*)b - *(char*)a; }\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        char A_raw[100005], B_raw[100005];\n        scanf(\"%s\", A_raw);\n        scanf(\"%s\", B_raw);\n        // sort Alice ascending\n        qsort(A_raw, N, sizeof(char), cmp_asc);\n        // sort Bob descending\n        qsort(B_raw, N, sizeof(char), cmp_desc);\n        int a_keep = (N+1)/2; // ceil(N/2)\n        int b_keep = N/2;     // floor(N/2)\n        char *A = (char*)malloc(a_keep * sizeof(char));\n        char *B = (char*)malloc(b_keep * sizeof(char));\n        memcpy(A, A_raw, a_keep);\n        memcpy(B, B_raw, b_keep);\n        int aL=0, aR=a_keep-1, bL=0, bR=b_keep-1;\n        int L=0, R=2*N-1;\n        char *ans = (char*)malloc((2*N+1)*sizeof(char));\n        for(int turn=0; turn<2*N; ++turn){\n            if(turn%2==0){ // Alice\n                if(aL<=aR && (bL>bR || A[aL] < B[bL])){\n                    ans[L++] = A[aL++];\n                }else{\n                    ans[R--] = A[aR--];\n                }\n            }else{ // Bob\n                if(bL<=bR && (aL>aR || A[aL] < B[bL])){\n                    ans[L++] = B[bL++];\n                }else{\n                    ans[R--] = B[bR--];\n                }\n            }\n        }\n        ans[2*N] = '\\0';\n        printf(\"%s\\n\", ans);\n        free(A); free(B); free(ans);\n    }\n    return 0;\n}\n",

@@ -6,15 +6,16 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graphs",
+      "Hash Set",
       "Complement Graph",
-      "BFS",
-      "Connected Components",
       "Degree Check",
-      "Hash Set"
+      "BFS",
+      "Connected Components"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,16 +23,16 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a graph GGG with NNN vertices (numbered 111 through NNN) and MMM edges. You should partition the vertices of GGG into two sets AAA and BBB such that:\n\n\neach vertex of GGG belongs to exactly one of these sets\nAAA is non-empty\nAAA is an independent set in GGG, i.e. for each pair of vertices u,v∈Au, v \\in Au,v∈A, GGG does not contain an edge (u,v)(u, v)(u,v)\nfor each vertex a∈Aa \\in Aa∈A and each vertex b∈Bb \\in Bb∈B, there is an edge (a,b)(a, b)(a,b) in GGG\nFind the number of such partitions (A,B)(A, B)(A,B). Also, give an example of one of these partitions or determine that no such partition exists.\n\nTwo partitions are considered different if there is a vertex that is in the set AAA in one partition and in the set BBB in the other partition.",
+    "problemStatement": "You are given a graph GGG with NNN vertices (numbered 111 through NNN) and MMM edges. You should partition the vertices of GGG into two sets AAA and BBB such that:\n\n\neach vertex of GGG belongs to exactly one of these sets\nAAA is non-empty\nAAA is an independent set in GGG, i.e. for each pair of vertices u,v\u2208Au, v \\in Au,v\u2208A, GGG does not contain an edge (u,v)(u, v)(u,v)\nfor each vertex a\u2208Aa \\in Aa\u2208A and each vertex b\u2208Bb \\in Bb\u2208B, there is an edge (a,b)(a, b)(a,b) in GGG\nFind the number of such partitions (A,B)(A, B)(A,B). Also, give an example of one of these partitions or determine that no such partition exists.\n\nTwo partitions are considered different if there is a vertex that is in the set AAA in one partition and in the set BBB in the other partition.",
     "constraints": [
-      "1 ≤ T ≤ 5·10^5",
-      "1 ≤ N, M ≤ 5·10^5",
-      "Sum of N over all test cases ≤ 5·10^5",
-      "Sum of M over all test cases ≤ 5·10^5",
-      "1 ≤ u, v ≤ N"
+      "1 \u2264 T \u2264 5\u00b710^5",
+      "1 \u2264 N, M \u2264 5\u00b710^5",
+      "Sum of N over all test cases \u2264 5\u00b710^5",
+      "Sum of M over all test cases \u2264 5\u00b710^5",
+      "1 \u2264 u, v \u2264 N"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M – the number of vertices and edges. The next M lines each contain two integers u and v (1‑based) denoting an undirected edge. The graph has no self‑loops or multiple edges.",
-    "outputFormat": "For each test case output two lines. The first line contains a single integer – the number of partitions (A,B) that satisfy the conditions. The second line contains a string of length N consisting of '1' and '0'. If no partition exists, the string must be all '0'. Otherwise, a '1' at position i means vertex i belongs to set A, and '0' means it belongs to set B.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M \u2013 the number of vertices and edges. The next M lines each contain two integers u and v (1\u2011based) denoting an undirected edge. The graph has no self\u2011loops or multiple edges.",
+    "outputFormat": "For each test case output two lines. The first line contains a single integer \u2013 the number of partitions (A,B) that satisfy the conditions. The second line contains a string of length N consisting of '1' and '0'. If no partition exists, the string must be all '0'. Otherwise, a '1' at position i means vertex i belongs to set A, and '0' means it belongs to set B.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -105,9 +106,9 @@
     ]
   },
   "solution": {
-    "approach": "For a set A to be valid we need:\n1. A is non‑empty and independent in the original graph (no edges inside A).\n2. Every vertex of A is adjacent to every vertex of B = V\\A.\nIn the complement graph (edges where the original graph has none) condition 1 means that A is a clique, and condition 2 means that there are no edges from A to B in the complement. Hence A must be a connected component of the complement graph that is a complete subgraph (a clique).\\n\\nAlgorithm per test case:\\n• Build adjacency lists of the original graph and store each vertex degree. Also store each adjacency list in an unordered_set for O(1) neighbour checks.\\n• Find all connected components of the complement graph without constructing it explicitly. Keep a set `unvisited` of vertices not yet assigned to a component. For a vertex v taken from the queue, all vertices u still in `unvisited` that are **not** neighbours of v in the original graph are adjacent to v in the complement and belong to the same component. Those u are removed from `unvisited` and pushed to the BFS queue. This runs in O(N+M).\\n• For each discovered component C (size = sz) compute the sum of original degrees `sumDeg`. The component is a valid A iff `sumDeg == sz * (N - sz)`. The equality guarantees that there are no edges inside C (independence) and that every vertex of C is connected to all vertices outside C.\\n• Count all components satisfying the equality. Store the first such component to output an example partition.\\n\\nIf no component satisfies the condition, answer is 0 and the output string is N zeros; otherwise the string has '1' on positions belonging to the stored component and '0' elsewhere.",
-    "timeComplexity": "O(N + M) per test case – each vertex is removed from the unvisited set once and each edge is examined at most twice during neighbour checks.",
-    "spaceComplexity": "O(N + M) – adjacency lists, degree array, visited flags and the set of unvisited vertices.",
+    "approach": "For a set A to be valid we need:\n1. A is non\u2011empty and independent in the original graph (no edges inside A).\n2. Every vertex of A is adjacent to every vertex of B = V\\A.\nIn the complement graph (edges where the original graph has none) condition\u202f1 means that A is a clique, and condition\u202f2 means that there are no edges from A to B in the complement. Hence A must be a connected component of the complement graph that is a complete subgraph (a clique).\\n\\nAlgorithm per test case:\\n\u2022 Build adjacency lists of the original graph and store each vertex degree. Also store each adjacency list in an unordered_set for O(1) neighbour checks.\\n\u2022 Find all connected components of the complement graph without constructing it explicitly. Keep a set `unvisited` of vertices not yet assigned to a component. For a vertex v taken from the queue, all vertices u still in `unvisited` that are **not** neighbours of v in the original graph are adjacent to v in the complement and belong to the same component. Those u are removed from `unvisited` and pushed to the BFS queue. This runs in O(N+M).\\n\u2022 For each discovered component C (size = sz) compute the sum of original degrees `sumDeg`. The component is a valid A iff `sumDeg == sz * (N - sz)`. The equality guarantees that there are no edges inside C (independence) and that every vertex of C is connected to all vertices outside C.\\n\u2022 Count all components satisfying the equality. Store the first such component to output an example partition.\\n\\nIf no component satisfies the condition, answer is 0 and the output string is N zeros; otherwise the string has '1' on positions belonging to the stored component and '0' elsewhere.",
+    "timeComplexity": "O(N + M) per test case \u2013 each vertex is removed from the unvisited set once and each edge is examined at most twice during neighbour checks.",
+    "spaceComplexity": "O(N + M) \u2013 adjacency lists, degree array, visited flags and the set of unvisited vertices.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <stdbool.h>\n#include <stdint.h>\n#include <inttypes.h>\n#include <unordered_set>\n#include <set>\n#include <vector>\n#include <queue>\n\n"
     }

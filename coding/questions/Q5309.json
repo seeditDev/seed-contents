@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Constructive Algorithms",
       "Parity",
-      "Matrix"
+      "Matrix",
+      "Constructive Algorithms",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a NNN ×\\times× NNN grid. You need to fill each cell of the grid with 111 or −1-1−1. You need to fill the grid in a way such that the following conditions are met :-\n\n\nFor **every** column - (Sum of values present in the column) x (Product of values present in the column) &lt; 000\nFor **every** row - (Sum of values present in the row) x (Product of values present in the row) &lt; 000\nIt is guaranteed that there exists at least one way to fill the grid under given constraints such that both the conditions are satisifed. If there exists multiple ways to fill the grid by satisfying both the conditions, you can print any.\n\n\nInput Format\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nEach testcase contains a single integer NNN\n\n\nOutput Format\n\nFor each test case, print the grid of size NNN ×\\times× NNN . Print NNN lines where each line will contain NNN integers ( 111 or −1-1−1 ) separated by a space.",
+    "problemStatement": "You are given a NNN \u00d7\\times\u00d7 NNN grid. You need to fill each cell of the grid with 111 or \u22121-1\u22121. You need to fill the grid in a way such that the following conditions are met :-\n\n\nFor **every** column - (Sum of values present in the column) x (Product of values present in the column) &lt; 000\nFor **every** row - (Sum of values present in the row) x (Product of values present in the row) &lt; 000\nIt is guaranteed that there exists at least one way to fill the grid under given constraints such that both the conditions are satisifed. If there exists multiple ways to fill the grid by satisfying both the conditions, you can print any.\n\n\nInput Format\n\nFirst line will contain TTT, number of testcases. Then the testcases follow.\nEach testcase contains a single integer NNN\n\n\nOutput Format\n\nFor each test case, print the grid of size NNN \u00d7\\times\u00d7 NNN . Print NNN lines where each line will contain NNN integers ( 111 or \u22121-1\u22121 ) separated by a space.",
     "constraints": [
       "1 <= T <= 10",
       "2 <= N <= 500"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then T lines follow, each containing a single integer N (2 ≤ N ≤ 500).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Then T lines follow, each containing a single integer N (2 \u2264 N \u2264 500).",
     "outputFormat": "For each test case output N lines, each line containing N integers separated by a single space. Each integer must be either 1 or -1. The printed grid must satisfy the conditions described in the statement. Print the grids of consecutive test cases one after another (no extra blank lines are required).",
     "sampleTestCases": [
       {
@@ -100,8 +101,8 @@
     ]
   },
   "solution": {
-    "approach": "The condition (sum of a line) * (product of a line) < 0 means that the sum and the product must have opposite signs. Since every cell is either 1 or -1, the product of a row/column is 1 when the number of -1's in that line is even, and -1 when it is odd. Therefore:\n- If we make the product 1, the sum must be negative.\n- If we make the product -1, the sum must be positive.\n\nConstruction:\n* Even N: fill the whole N×N grid with -1. Each row/column contains N (even) -1's, so the product is 1 and the sum is -N < 0 → condition holds.\n* Odd N: fill the grid with 1 and put a -1 on every diagonal cell (or any permutation of -1's, one per row and column). Each row/column now contains exactly one -1 (odd count) → product = -1, and the sum is (N‑1)·1 + (‑1) = N‑2 > 0 (because N ≥ 3) → condition holds.\nBoth constructions run in O(N²) time and use O(1) extra space.\nThe algorithm is straightforward: for each test case read N, decide which construction to use, and output the matrix.",
-    "timeComplexity": "O(T * N²) – we write N² numbers for each test case.",
+    "approach": "The condition (sum of a line) * (product of a line) < 0 means that the sum and the product must have opposite signs. Since every cell is either 1 or -1, the product of a row/column is 1 when the number of -1's in that line is even, and -1 when it is odd. Therefore:\n- If we make the product 1, the sum must be negative.\n- If we make the product -1, the sum must be positive.\n\nConstruction:\n* Even N: fill the whole N\u00d7N grid with -1. Each row/column contains N (even) -1's, so the product is 1 and the sum is -N < 0 \u2192 condition holds.\n* Odd N: fill the grid with 1 and put a -1 on every diagonal cell (or any permutation of -1's, one per row and column). Each row/column now contains exactly one -1 (odd count) \u2192 product = -1, and the sum is (N\u20111)\u00b71 + (\u20111) = N\u20112 > 0 (because N \u2265 3) \u2192 condition holds.\nBoth constructions run in O(N\u00b2) time and use O(1) extra space.\nThe algorithm is straightforward: for each test case read N, decide which construction to use, and output the matrix.",
+    "timeComplexity": "O(T * N\u00b2) \u2013 we write N\u00b2 numbers for each test case.",
     "spaceComplexity": "O(1) additional space (output not counted).",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        if (N % 2 == 0) {\n            // even N: all -1\n            for (int i = 0; i < N; ++i) {\n                for (int j = 0; j < N; ++j) {\n                    if (j) printf(\" \");\n                    printf(\"-1\");\n                }\n                printf(\"\\n\");\n            }\n        } else {\n            // odd N: 1 everywhere, -1 on diagonal\n            for (int i = 0; i < N; ++i) {\n                for (int j = 0; j < N; ++j) {\n                    if (j) printf(\" \");\n                    if (i == j) printf(\"-1\");\n                    else printf(\"1\");\n                }\n                printf(\"\\n\");\n            }\n        }\n    }\n    return 0;\n}\n",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Bit Manipulation",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Bitwise AND Operation",
       "Range Minimum Queries",
-      "Bitwise AND Operation"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "You are given an array of **N** integers. You should support the following queries on this array.\n\n\n\n**0 L R** : Find the minimum integer in the range **AL, AL+1, ..., AR**.\n**1 L R X** :  You should apply the assignment **A[i] = A[i] &amp; X**, for all indices **i** in range **[L, R]**, where **&amp;** denotes bitwise AND operation.",
     "constraints": [
-      "1 ≤ N, Q ≤ 10^5",
-      "1 ≤ Ai, X ≤ 10^9",
-      "1 ≤ L ≤ R ≤ N"
+      "1 \u2264 N, Q \u2264 10^5",
+      "1 \u2264 Ai, X \u2264 10^9",
+      "1 \u2264 L \u2264 R \u2264 N"
     ],
     "inputFormat": "The first line contains two space-separated integers N and Q, where N is the number of elements in the array and Q is the number of queries. The second line contains N integer numbers denoting the array A. Each of the next Q lines contains one of the queries described above.",
     "outputFormat": "For each query of the type 0, output a single line containing the answer of the query.",
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a segment tree data structure to store the minimum values in the array and support range minimum queries. We also need to update the segment tree when a query of type 1 is encountered, which involves applying the bitwise AND operation to the elements in the specified range.",
-    "timeComplexity": "O(Q * log N) — where Q is the number of queries and N is the number of elements in the array. The time complexity is dominated by the segment tree operations, which take O(log N) time per query.",
-    "spaceComplexity": "O(N) — where N is the number of elements in the array. The space complexity is dominated by the segment tree, which requires O(N) space to store the minimum values.",
+    "timeComplexity": "O(Q * log N) \u2014 where Q is the number of queries and N is the number of elements in the array. The time complexity is dominated by the segment tree operations, which take O(log N) time per query.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of elements in the array. The space complexity is dominated by the segment tree, which requires O(N) space to store the minimum values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\nint min(int a, int b) { return a < b ? a : b; }\nint tree[4 * MAXN];\nvoid build(int node, int start, int end, int arr[]) {\n    if (start == end) {\n        tree[node] = arr[start];\n    } else {\n        int mid = (start + end) / 2;\n        build(2 * node, start, mid, arr);\n        build(2 * node + 1, mid + 1, end, arr);\n        tree[node] = min(tree[2 * node], tree[2 * node + 1]);\n    }\n}\nint query(int node, int start, int end, int l, int r) {\n    if (r < start || end < l) {\n        return 1000000007;\n    }\n    if (l <= start && end <= r) {\n        return tree[node];\n    }\n    int mid = (start + end) / 2;\n    return min(query(2 * node, start, mid, l, r), query(2 * node + 1, mid + 1, end, l, r));\n}\nvoid update(int node, int start, int end, int l, int r, int x) {\n    if (r < start || end < l) {\n        return;\n    }\n    if (start == end) {\n        tree[node] = tree[node] & x;\n    } else {\n        int mid = (start + end) / 2;\n        update(2 * node, start, mid, l, r, x);\n        update(2 * node + 1, mid + 1, end, l, r, x);\n        tree[node] = min(tree[2 * node], tree[2 * node + 1]);\n    }\n}\nint main() {\n    int n, q;\n    scanf(\"%d %d\", &n, &q);\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    build(1, 0, n - 1, arr);\n    while (q--) {\n        int type;\n        scanf(\"%d\", &type);\n        if (type == 0) {\n            int l, r;\n            scanf(\"%d %d\", &l, &r);\n            printf(\"%d\\n\", query(1, 0, n - 1, l - 1, r - 1));\n        } else {\n            int l, r, x;\n            scanf(\"%d %d %d\", &l, &r, &x);\n            update(1, 0, n - 1, l - 1, r - 1, x);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nconst int MAXN = 100005;\nint tree[4 * MAXN];\nvoid build(int node, int start, int end, int arr[]) {\n    if (start == end) {\n        tree[node] = arr[start];\n    } else {\n        int mid = (start + end) / 2;\n        build(2 * node, start, mid, arr);\n        build(2 * node + 1, mid + 1, end, arr);\n        tree[node] = min(tree[2 * node], tree[2 * node + 1]);\n    }\n}\nint query(int node, int start, int end, int l, int r) {\n    if (r < start || end < l) {\n        return 1000000007;\n    }\n    if (l <= start && end <= r) {\n        return tree[node];\n    }\n    int mid = (start + end) / 2;\n    return min(query(2 * node, start, mid, l, r), query(2 * node + 1, mid + 1, end, l, r));\n}\nvoid update(int node, int start, int end, int l, int r, int x) {\n    if (r < start || end < l) {\n        return;\n    }\n    if (start == end) {\n        tree[node] = tree[node] & x;\n    } else {\n        int mid = (start + end) / 2;\n        update(2 * node, start, mid, l, r, x);\n        update(2 * node + 1, mid + 1, end, l, r, x);\n        tree[node] = min(tree[2 * node], tree[2 * node + 1]);\n    }\n}\nint main() {\n    int n, q;\n    cin >> n >> q;\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n    build(1, 0, n - 1, arr);\n    while (q--) {\n        int type;\n        cin >> type;\n        if (type == 0) {\n            int l, r;\n            cin >> l >> r;\n            cout << query(1, 0, n - 1, l - 1, r - 1) << endl;\n        } else {\n            int l, r, x;\n            cin >> l >> r >> x;\n            update(1, 0, n - 1, l - 1, r - 1, x);\n        }\n    }\n    return 0;\n}",

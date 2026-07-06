@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Bit Manipulation",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Sliding Window",
-      "Bitwise XOR"
+      "Bitwise XOR",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,12 +22,12 @@
   "content": {
     "problemStatement": "There are **N** ice-creams placed in a row in a shop, where the **i**-th has cost **C[i]** and flavor **F[i]**. Chef wants to buy some **consecutive segment** of ice-creams so that their total cost doesn't exceed his budget **K**, and he can mix some subset of bought ice-creams to make a new ice-cream with maximum possible flavor.\n\nMixing m ice-creams of flavors **A1, A2, .., Am** will result in an ice-cream of flavor equal to **A1 ^ A2 ^ ... ^ Am** where **^** is the xor operation. \n\nWhat is maximum possible flavor that Chef can get?\nIt's guaranteed that at least one ice-cream has cost that doesn't exceed Chef's budget.",
     "constraints": [
-      "1 ≤ T ≤ 10,000",
-      "1 ≤ N ≤ 100,000",
-      "1 ≤ K ≤ 10^14",
-      "1 ≤ F[i] ≤ 10^9",
-      "1 ≤ C[i] ≤ 10^9",
-      "C[i] ≤ K for at least one i"
+      "1 \u2264 T \u2264 10,000",
+      "1 \u2264 N \u2264 100,000",
+      "1 \u2264 K \u2264 10^14",
+      "1 \u2264 F[i] \u2264 10^9",
+      "1 \u2264 C[i] \u2264 10^9",
+      "C[i] \u2264 K for at least one i"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with a line containing two integers N and K, where N is the number of ice creams and K is the budget. The next N lines contain two integers each, representing the cost and flavor of each ice cream.",
     "outputFormat": "For each test case, output the maximum possible flavor that the chef can get.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a sliding window approach. We maintain a window of ice creams that we can afford, and for each window, we calculate the maximum flavor we can get by trying all possible subsets of ice creams in the window and calculating their XOR. We keep track of the maximum flavor seen so far.",
-    "timeComplexity": "O(T * N * 2^N) — for each test case, we iterate over all possible windows of ice creams, and for each window, we try all possible subsets of ice creams.",
-    "spaceComplexity": "O(N) — we need to store the costs and flavors of the ice creams.",
+    "timeComplexity": "O(T * N * 2^N) \u2014 for each test case, we iterate over all possible windows of ice creams, and for each window, we try all possible subsets of ice creams.",
+    "spaceComplexity": "O(N) \u2014 we need to store the costs and flavors of the ice creams.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int64_t costs[N], flavors[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%lld %d\", &costs[i], &flavors[i]);\n        }\n        int max_flavor = 0;\n        for (int i = 0; i < N; i++) {\n            int64_t sum = 0;\n            for (int j = i; j < N; j++) {\n                sum += costs[j];\n                if (sum > K) break;\n                int flavor = 0;\n                for (int mask = 0; mask < (1 << (j - i + 1)); mask++) {\n                    int curr_flavor = 0;\n                    for (int k = 0; k < j - i + 1; k++) {\n                        if ((mask & (1 << k)) != 0) {\n                            curr_flavor ^= flavors[i + k];\n                        }\n                    }\n                    max_flavor = (max_flavor > curr_flavor) ? max_flavor : curr_flavor;\n                }\n            }\n        }\n        printf(\"%d\\n\", max_flavor);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n\nint main() {\n    int T;\n    std::cin >> T;\n    while (T--) {\n        int N, K;\n        std::cin >> N >> K;\n        std::int64_t costs[N], flavors[N];\n        for (int i = 0; i < N; i++) {\n            std::cin >> costs[i] >> flavors[i];\n        }\n        int max_flavor = 0;\n        for (int i = 0; i < N; i++) {\n            std::int64_t sum = 0;\n            for (int j = i; j < N; j++) {\n                sum += costs[j];\n                if (sum > K) break;\n                int flavor = 0;\n                for (int mask = 0; mask < (1 << (j - i + 1)); mask++) {\n                    int curr_flavor = 0;\n                    for (int k = 0; k < j - i + 1; k++) {\n                        if ((mask & (1 << k)) != 0) {\n                            curr_flavor ^= flavors[i + k];\n                        }\n                    }\n                    max_flavor = (max_flavor > curr_flavor) ? max_flavor : curr_flavor;\n                }\n            }\n        }\n        std::cout << max_flavor << std::endl;\n    }\n    return 0;\n}",

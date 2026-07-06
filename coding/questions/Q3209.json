@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "String Comparison",
       "Longest Common Subsequence",
-      "Brute Force",
-      "String Comparison"
+      "Strings",
+      "Brute Force"
     ],
     "companyTags": [],
     "topicTags": [
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To find the minimum possible length of the LCS, we can generate all possible strings of length m (the hidden omen) and calculate the LCS of each generated string with all the given strings. The minimum LCS length found across all generated strings is the answer. This approach involves brute force and dynamic programming for LCS calculation.",
-    "timeComplexity": "O(T * 2^m * n * m^2) — because for each test case, we generate 2^m possible strings, compare each with n given strings, and the LCS calculation itself takes O(m^2) time.",
-    "spaceComplexity": "O(m) — for storing the current string being generated and the LCS table.",
+    "timeComplexity": "O(T * 2^m * n * m^2) \u2014 because for each test case, we generate 2^m possible strings, compare each with n given strings, and the LCS calculation itself takes O(m^2) time.",
+    "spaceComplexity": "O(m) \u2014 for storing the current string being generated and the LCS table.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MAX 15\n\nint min(int a, int b) { return a < b ? a : b; }\n\nint lcs(char *s1, char *s2, int m) {\n    int dp[m + 1][m + 1];\n    for (int i = 0; i <= m; i++) {\n        for (int j = 0; j <= m; j++) {\n            if (i == 0 || j == 0)\n                dp[i][j] = 0;\n            else if (s1[i - 1] == s2[j - 1])\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            else\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n    }\n    return dp[m][m];\n}\n\nint main() {\n    int T, n, m;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &n);\n        char s[n][MAX], omen[MAX];\n        for (int i = 0; i < n; i++)\n            scanf(\"%s\", s[i]);\n        scanf(\"%d\", &m);\n        int min_lcs = n * m;\n        for (int mask = 0; mask < (1 << m); mask++) {\n            for (int i = 0; i < m; i++)\n                omen[i] = (mask & (1 << i)) ? 'b' : 'a';\n            omen[m] = '\\0';\n            int max_lcs_for_omen = 0;\n            for (int i = 0; i < n; i++)\n                max_lcs_for_omen = max(max_lcs_for_omen, lcs(s[i], omen, m));\n            min_lcs = min(min_lcs, max_lcs_for_omen);\n        }\n        printf(\"%d\\n\", min_lcs);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint lcs(string &s1, string &s2) {\n    int m = s1.size();\n    int dp[m + 1][m + 1];\n    for (int i = 0; i <= m; i++) {\n        for (int j = 0; j <= m; j++) {\n            if (i == 0 || j == 0)\n                dp[i][j] = 0;\n            else if (s1[i - 1] == s2[j - 1])\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            else\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n    }\n    return dp[m][m];\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        string s[n];\n        for (int i = 0; i < n; i++)\n            cin >> s[i];\n        int m = s[0].size();\n        int min_lcs = n * m;\n        for (int mask = 0; mask < (1 << m); mask++) {\n            string omen;\n            for (int i = 0; i < m; i++)\n                omen += (mask & (1 << i)) ? 'b' : 'a';\n            int max_lcs_for_omen = 0;\n            for (int i = 0; i < n; i++)\n                max_lcs_for_omen = max(max_lcs_for_omen, lcs(s[i], omen));\n            min_lcs = min(min_lcs, max_lcs_for_omen);\n        }\n        cout << min_lcs << endl;\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Sorting | Two Pointers",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Two Pointer",
       "Sorting",
-      "Set Intersection"
+      "Set Intersection",
+      "Two Pointer",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Given two one-dimensional arrays, find the intersection of the sets represented by them. The intersection should contain only unique elements in ascending order.\n\n\nInput Format\n\nThe first line contains two integers, NNN and MMM, representing the sizes of the first and second arrays, respectively.\nThe second line contains NNN integers, representing the elements of the first array.\nThe third line contains MMM integers, representing the elements of the second array.\n\n\nOutput Format\n\nPrint the elements of the intersection, separated by spaces. If the intersection is empty, print nothing.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N, M ≤ 500",
-      "1 ≤ array elements ≤ 1000"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N, M \u2264 500",
+      "1 \u2264 array elements \u2264 1000"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. For each test case:\n- The first line contains two integers N and M (1 ≤ N, M ≤ 500), the sizes of the two arrays.\n- The second line contains N integers, the elements of the first array.\n- The third line contains M integers, the elements of the second array.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10), the number of test cases. For each test case:\n- The first line contains two integers N and M (1 \u2264 N, M \u2264 500), the sizes of the two arrays.\n- The second line contains N integers, the elements of the first array.\n- The third line contains M integers, the elements of the second array.",
     "outputFormat": "For each test case, print the unique elements that appear in both arrays, sorted in ascending order and separated by a single space. Print an empty line if there is no common element.",
     "sampleTestCases": [
       {
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "For each test case sort both arrays (O(N log N + M log M)). Then use two pointers to walk through the sorted arrays. When the values are equal, output the value if it is different from the previously output value (to keep uniqueness). Advance both pointers; otherwise advance the pointer with the smaller value. This yields the intersection in ascending order with O(N+M) extra work after sorting.",
-    "timeComplexity": "O(N log N + M log M) per test case due to sorting; the two‑pointer scan is O(N+M).",
+    "timeComplexity": "O(N log N + M log M) per test case due to sorting; the two\u2011pointer scan is O(N+M).",
     "spaceComplexity": "O(1) extra besides the input arrays (ignoring the space used by sorting algorithms).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmp(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int *a = (int*)malloc(n * sizeof(int));\n        int *b = (int*)malloc(m * sizeof(int));\n        for (int i = 0; i < n; ++i) scanf(\"%d\", &a[i]);\n        for (int i = 0; i < m; ++i) scanf(\"%d\", &b[i]);\n        qsort(a, n, sizeof(int), cmp);\n        qsort(b, m, sizeof(int), cmp);\n        int i = 0, j = 0;\n        int first = 1;\n        while (i < n && j < m) {\n            if (a[i] < b[j]) ++i;\n            else if (a[i] > b[j]) ++j;\n            else {\n                if (first || (i > 0 && a[i] != a[i-1])) {\n                    if (!first) printf(\" \");\n                    printf(\"%d\", a[i]);\n                    first = 0;\n                }\n                ++i; ++j;\n            }\n        }\n        printf(\"\\n\");\n        free(a);\n        free(b);\n    }\n    return 0;\n}",

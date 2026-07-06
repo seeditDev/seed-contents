@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,7 +27,7 @@
       "1 <= sum of N over all test cases <= 5 * 10^6"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first and only line of each test case contains two space-separated integers N and K.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of possible final arrays modulo 163577857.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of possible final arrays modulo 163577857.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use combinatorial reasoning and modular arithmetic. For each test case, we need to calculate the number of distinct colorings of the final array. This can be done by considering the number of ways to choose the start and end indices of the subarray to be painted for each friend. We will use the formula for combinations to calculate this. We will also apply modular arithmetic to avoid overflow and ensure the result is within the given range.",
-    "timeComplexity": "O(T * N) — explain: per query is O(N), total is O(T * N)",
-    "spaceComplexity": "O(1) — explain: we only use a constant amount of space to store the input and output values",
+    "timeComplexity": "O(T * N) \u2014 explain: per query is O(N), total is O(T * N)",
+    "spaceComplexity": "O(1) \u2014 explain: we only use a constant amount of space to store the input and output values",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n#define MOD 163577857\n\nint64_t powmod(int64_t base, int64_t exponent, int64_t mod) {\n    int64_t result = 1;\n    while (exponent > 0) {\n        if (exponent & 1) {\n            result = (result * base) % mod;\n        }\n        exponent >>= 1;\n        base = (base * base) % mod;\n    }\n    return result;\n}\n\nint64_t inverse(int64_t a, int64_t m) {\n    int64_t m0 = m;\n    int64_t y = 0, x = 1;\n    if (m == 1)\n        return 0;\n    while (a > 1) {\n        int64_t q = a / m;\n        int64_t t = m;\n        m = a % m;\n        a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0)\n        x += m0;\n    return x;\n}\n\nint64_t combination(int64_t n, int64_t k, int64_t mod) {\n    int64_t numerator = 1;\n    for (int64_t i = 1; i <= k; i++) {\n        numerator = (numerator * (n - i + 1)) % mod;\n    }\n    int64_t denominator = 1;\n    for (int64_t i = 1; i <= k; i++) {\n        denominator = (denominator * i) % mod;\n    }\n    return (numerator * inverse(denominator, mod)) % mod;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int64_t n, k;\n        scanf(\"%lld %lld\", &n, &k);\n        int64_t result = 0;\n        for (int64_t i = 0; i <= k - 1; i++) {\n            result = (result + combination(n + i, i + 1, MOD)) % MOD;\n        }\n        printf(\"%lld\\n\", result);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cstdint>\n#define MOD 163577857\n\nint64_t powmod(int64_t base, int64_t exponent, int64_t mod) {\n    int64_t result = 1;\n    while (exponent > 0) {\n        if (exponent & 1) {\n            result = (result * base) % mod;\n        }\n        exponent >>= 1;\n        base = (base * base) % mod;\n    }\n    return result;\n}\n\nint64_t inverse(int64_t a, int64_t m) {\n    int64_t m0 = m;\n    int64_t y = 0, x = 1;\n    if (m == 1)\n        return 0;\n    while (a > 1) {\n        int64_t q = a / m;\n        int64_t t = m;\n        m = a % m;\n        a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0)\n        x += m0;\n    return x;\n}\n\nint64_t combination(int64_t n, int64_t k, int64_t mod) {\n    int64_t numerator = 1;\n    for (int64_t i = 1; i <= k; i++) {\n        numerator = (numerator * (n - i + 1)) % mod;\n    }\n    int64_t denominator = 1;\n    for (int64_t i = 1; i <= k; i++) {\n        denominator = (denominator * i) % mod;\n    }\n    return (numerator * inverse(denominator, mod)) % mod;\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n    while (t--) {\n        int64_t n, k;\n        std::cin >> n >> k;\n        int64_t result = 0;\n        for (int64_t i = 0; i <= k - 1; i++) {\n            result = (result + combination(n + i, i + 1, MOD)) % MOD;\n        }\n        std::cout << result << std::endl;\n    }\n    return 0;\n}",

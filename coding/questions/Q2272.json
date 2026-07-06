@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Backtracking",
+    "category": "Recursion & Backtracking",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Knights",
+      "Recursion & Backtracking",
       "Chessboard",
+      "Knights",
       "Backtracking"
     ],
     "companyTags": [],
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using a backtracking approach. We start by initializing an empty board and then try to place a knight in each position. If it's safe to place a knight in a position, we mark it as occupied and recursively try to place knights in the remaining positions. If we can't place a knight in any position, we backtrack and try a different position.",
     "timeComplexity": "O(M*N*8^(M*N)) per test case, O(T*M*N*8^(M*N)) total. The time complexity is exponential due to the backtracking approach.",
-    "spaceComplexity": "O(M*N) — the dominant structure is the board.",
+    "spaceComplexity": "O(M*N) \u2014 the dominant structure is the board.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n#define MAX_M 30\n#define MAX_N 30\n\nbool isSafe(int board[MAX_M][MAX_N], int m, int n, int row, int col) {\n    int knight_moves[][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};\n    for (int i = 0; i < 8; i++) {\n        int new_row = row + knight_moves[i][0];\n        int new_col = col + knight_moves[i][1];\n        if (new_row >= 0 && new_row < m && new_col >= 0 && new_col < n && board[new_row][new_col] == 1) {\n            return false;\n        }\n    }\n    return true;\n}\n\nint place_knights(int board[MAX_M][MAX_N], int m, int n, int row, int col, int count) {\n    if (row == m) {\n        return count;\n    }\n    if (col == n) {\n        return place_knights(board, m, n, row + 1, 0, count);\n    }\n    if (board[row][col] == -1) {\n        return place_knights(board, m, n, row, col + 1, count);\n    }\n    if (isSafe(board, m, n, row, col)) {\n        board[row][col] = 1;\n        int new_count = place_knights(board, m, n, row, col + 1, count + 1);\n        board[row][col] = 0;\n        return new_count;\n    }\n    return place_knights(board, m, n, row, col + 1, count);\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int m, n;\n        scanf(\"%d %d\", &m, &n);\n        int board[MAX_M][MAX_N];\n        for (int i = 0; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                char c;\n                scanf(\" %c\", &c);\n                if (c == '.') {\n                    board[i][j] = 0;\n                } else {\n                    board[i][j] = -1;\n                }\n            }\n        }\n        printf(\"%d\\n\", place_knights(board, m, n, 0, 0, 0));\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MAX_M 30\n#define MAX_N 30\n\nbool isSafe(vector<vector<int>>& board, int m, int n, int row, int col) {\n    int knight_moves[][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};\n    for (int i = 0; i < 8; i++) {\n        int new_row = row + knight_moves[i][0];\n        int new_col = col + knight_moves[i][1];\n        if (new_row >= 0 && new_row < m && new_col >= 0 && new_col < n && board[new_row][new_col] == 1) {\n            return false;\n        }\n    }\n    return true;\n}\n\nint place_knights(vector<vector<int>>& board, int m, int n, int row, int col, int count) {\n    if (row == m) {\n        return count;\n    }\n    if (col == n) {\n        return place_knights(board, m, n, row + 1, 0, count);\n    }\n    if (board[row][col] == -1) {\n        return place_knights(board, m, n, row, col + 1, count);\n    }\n    if (isSafe(board, m, n, row, col)) {\n        board[row][col] = 1;\n        int new_count = place_knights(board, m, n, row, col + 1, count + 1);\n        board[row][col] = 0;\n        return new_count;\n    }\n    return place_knights(board, m, n, row, col + 1, count);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int t;\n    cin >> t;\n    while (t--) {\n        int m, n;\n        cin >> m >> n;\n        vector<vector<int>> board(m, vector<int>(n));\n        for (int i = 0; i < m; i++) {\n            for (int j = 0; j < n; j++) {\n                char c;\n                cin >> c;\n                if (c == '.') {\n                    board[i][j] = 0;\n                } else {\n                    board[i][j] = -1;\n                }\n            }\n        }\n        cout << place_knights(board, m, n, 0, 0, 0) << endl;\n    }\n    return 0;\n}",

@@ -6,15 +6,16 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Data Structures | Number Theory | Greedy",
+    "category": "Greedy",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Prime Factorization",
-      "Sieve of Eratosthenes",
+      "Multiset",
       "Heap",
+      "Greedy",
+      "Prime Factorization",
       "Lazy Deletion",
-      "Multiset"
+      "Sieve of Eratosthenes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array AAA consisting of NNN integers along with QQQ queries.\n\nFor each query:\n\n\nXXX : Given an integer XXX, print and **remove** the **minimum** element in the array kkk, such that gcd(X,k)&gt;1\\texttt{gcd} (X, k) \\gt 1gcd(X,k)&gt;1, where gcd\\texttt{gcd}gcd denotes the greatest common divisor.\n\nIf no value present in the array satisfies the condition, print and remove the **minimum** element of the array.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case consists of a single integer NNN — the number of elements in the array.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1,A_2,\\ldots,A_NA1​,A2​,…,AN​ — the elements of the array AAA.\nThe third line contains one integer QQQ, denoting the number of queries.\nThe next line contains QQQ space-separated integers, where the ithi^{th}ith integer is XiX_iXi​, denoting the ithi^{th}ith query.\n\n\n\n\nOutput Format\nFor each test case, print QQQ space-separated integers denoting the answer to each query.",
+    "problemStatement": "You are given an array AAA consisting of NNN integers along with QQQ queries.\n\nFor each query:\n\n\nXXX : Given an integer XXX, print and **remove** the **minimum** element in the array kkk, such that gcd(X,k)&gt;1\\texttt{gcd} (X, k) \\gt 1gcd(X,k)&gt;1, where gcd\\texttt{gcd}gcd denotes the greatest common divisor.\n\nIf no value present in the array satisfies the condition, print and remove the **minimum** element of the array.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case consists of a single integer NNN \u2014 the number of elements in the array.\nThe second line of each test case contains NNN space-separated integers A1,A2,\u2026,ANA_1,A_2,\\ldots,A_NA1\u200b,A2\u200b,\u2026,AN\u200b \u2014 the elements of the array AAA.\nThe third line contains one integer QQQ, denoting the number of queries.\nThe next line contains QQQ space-separated integers, where the ithi^{th}ith integer is XiX_iXi\u200b, denoting the ithi^{th}ith query.\n\n\n\n\nOutput Format\nFor each test case, print QQQ space-separated integers denoting the answer to each query.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ Q ≤ N ≤ 2·10^5 (sum of N over all test cases ≤ 2·10^5, sum of Q over all test cases ≤ 2·10^5)",
-      "1 ≤ Ai, Xi ≤ 10^6"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 Q \u2264 N \u2264 2\u00b710^5 (sum of N over all test cases \u2264 2\u00b710^5, sum of Q over all test cases \u2264 2\u00b710^5)",
+      "1 \u2264 Ai, Xi \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains N, the size of the array. Second line contains N space‑separated integers A1 … AN. Third line contains Q, the number of queries. Fourth line contains Q space‑separated integers X1 … XQ.",
-    "outputFormat": "For each test case output Q space‑separated integers on a single line – the value printed for each query in the order they are processed.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains N, the size of the array. Second line contains N space\u2011separated integers A1 \u2026 AN. Third line contains Q, the number of queries. Fourth line contains Q space\u2011separated integers X1 \u2026 XQ.",
+    "outputFormat": "For each test case output Q space\u2011separated integers on a single line \u2013 the value printed for each query in the order they are processed.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,9 +104,9 @@
     ]
   },
   "solution": {
-    "approach": "Pre‑compute the smallest prime factor (SPF) for every number up to 10^6 using a linear sieve. For each test case keep:\n1. cnt[v] – how many copies of value v are still present.\n2. a global min‑heap (priority_queue with smallest on top) containing every element.\n3. For every prime p a separate min‑heap that stores all elements divisible by p.\nWhen reading the initial array, factorise each element into its distinct prime factors using the SPF table and push the element into the global heap and into each heap of its prime factors.\nFor a query X, factorise X into distinct primes P. For each p in P look at the top of heap[p] and discard elements whose cnt is zero (lazy deletion). The smallest among those tops is the candidate that shares a divisor >1 with X. If no such candidate exists, clean the global heap in the same lazy way and take its top. Output the chosen value, decrement its cnt, and the element will be ignored in future heap clean‑ups.\nAll operations on a heap are O(log size). Each element is inserted once per its distinct prime factor and removed at most once from each heap, so the total work is O((N+Q)·log N) plus the O(MAX log log MAX) sieve. This easily fits the limits.",
-    "timeComplexity": "O((N + Q) · log N + MAX_A · log log MAX_A) per test file, where MAX_A = 10^6.",
-    "spaceComplexity": "O(N · ω(A) + MAX_A) where ω(A) is the maximum number of distinct prime factors of any Ai (≤7 for 10^6).",
+    "approach": "Pre\u2011compute the smallest prime factor (SPF) for every number up to 10^6 using a linear sieve. For each test case keep:\n1. cnt[v] \u2013 how many copies of value v are still present.\n2. a global min\u2011heap (priority_queue with smallest on top) containing every element.\n3. For every prime p a separate min\u2011heap that stores all elements divisible by p.\nWhen reading the initial array, factorise each element into its distinct prime factors using the SPF table and push the element into the global heap and into each heap of its prime factors.\nFor a query X, factorise X into distinct primes P. For each p in P look at the top of heap[p] and discard elements whose cnt is zero (lazy deletion). The smallest among those tops is the candidate that shares a divisor >1 with X. If no such candidate exists, clean the global heap in the same lazy way and take its top. Output the chosen value, decrement its cnt, and the element will be ignored in future heap clean\u2011ups.\nAll operations on a heap are O(log\u202fsize). Each element is inserted once per its distinct prime factor and removed at most once from each heap, so the total work is O((N+Q)\u00b7log\u202fN) plus the O(MAX\u202flog\u202flog\u202fMAX) sieve. This easily fits the limits.",
+    "timeComplexity": "O((N + Q) \u00b7 log N + MAX_A \u00b7 log log MAX_A) per test file, where MAX_A = 10^6.",
+    "spaceComplexity": "O(N \u00b7 \u03c9(A) + MAX_A) where \u03c9(A) is the maximum number of distinct prime factors of any Ai (\u22647 for 10^6).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\n#define MAXV 1000000\n\n"
     }

@@ -10,6 +10,7 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Math",
       "Geometry",
       "Collinearity"
     ],
@@ -25,7 +26,7 @@
       "1 <= N <= 10000",
       "-15000 <= Xi, Yi <= 15000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N – the number of documented milestones. The next N lines each contain two integers Xi and Yi separated by a space, the coordinates of a milestone.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N \u2013 the number of documented milestones. The next N lines each contain two integers Xi and Yi separated by a space, the coordinates of a milestone.",
     "outputFormat": "For each test case, output a single line containing the maximum number of milestones that lie on the same straight line.",
     "sampleTestCases": [
       {
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "To solve this problem, we can use the concept of slope. For each pair of milestones, we calculate the slope of the line passing through them. We use a hashmap to store the frequency of each slope. The maximum frequency of slope plus one (for the anchor point) gives us the maximum number of collinear milestones.",
     "timeComplexity": "O(T * N^2) per test case, O(T * N^2) total. The precomputation is done once for each test case.",
-    "spaceComplexity": "O(N) — the dominant structure is the hashmap used to store the frequency of each slope.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the hashmap used to store the frequency of each slope.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint gcd_int(int a, int b){\n    if(a<0) a=-a; if(b<0) b=-b;\n    while(b){int t=a%b; a=b; b=t;} return a;\n}\n\ntypedef struct{int dx, dy;} Dir;\nint cmp_dir(const void *a, const void *b){\n    Dir *x=(Dir*)a, *y=(Dir*)b;\n    if(x->dx!=y->dx) return x->dx - y->dx;\n    return x->dy - y->dy;\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int *X = (int*)malloc(N*sizeof(int));\n        int *Y = (int*)malloc(N*sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%d %d\",&X[i],&Y[i]);\n        int best = (N>0)?1:0;\n        Dir *arr = (Dir*)malloc((N-1)*sizeof(Dir));\n        for(int i=0;i<N;i++){\n            int cnt=0;\n            for(int j=0;j<N;j++) if(j!=i){\n                int dx = X[j]-X[i];\n                int dy = Y[j]-Y[i];\n                if(dx==0 && dy==0) continue; // not possible because distinct\n                int g = gcd_int(dx,dy);\n                dx/=g; dy/=g;\n                if(dx<0){dx=-dx; dy=-dy;}\n                else if(dx==0 && dy<0){dy=-dy;}\n                arr[cnt].dx=dx; arr[cnt].dy=dy; cnt++;\n            }\n            qsort(arr,cnt,sizeof(Dir),cmp_dir);\n            int cur=1; for(int k=1;k<cnt;k++){\n                if(arr[k].dx==arr[k-1].dx && arr[k].dy==arr[k-1].dy) cur++; else cur=1;\n                if(cur+1>best) best=cur+1; // +1 for anchor\n            }\n        }\n        printf(\"%d\\n\",best);\n        free(X); free(Y); free(arr);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nstruct PairHash{\n    size_t operator()(const pair<int,int>&p) const noexcept{\n        return ((uint64_t)(unsigned)p.first<<32) ^ (unsigned)p.second;\n    }\n};\nint gcd_int(int a,int b){ if(a<0) a=-a; if(b<0) b=-b; while(b){int t=a%b; a=b; b=t;} return a; }\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> X(N),Y(N);\n        for(int i=0;i<N;i++) cin>>X[i]>>Y[i];\n        int best = (N>0)?1:0;\n        for(int i=0;i<N;i++){\n            unordered_map<pair<int,int>,int,PairHash> mp;\n            mp.reserve(N*2);\n            for(int j=0;j<N;j++) if(j!=i){\n                int dx = X[j]-X[i];\n                int dy = Y[j]-Y[i];\n                int g = gcd_int(dx,dy);\n                dx/=g; dy/=g;\n                if(dx<0){dx=-dx; dy=-dy;}\n                else if(dx==0 && dy<0){dy=-dy;}\n                auto key = make_pair(dx,dy);\n                int c = ++mp[key];\n                best = max(best, c+1);\n            }\n        }\n        cout<<best<<\"\\n\";\n    }\n    return 0;\n}\n",

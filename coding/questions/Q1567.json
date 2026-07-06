@@ -6,13 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy | Math",
+    "category": "Greedy",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Modulo",
+      "Counting",
       "Greedy",
-      "Counting"
+      "Modulo"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an integer array nums of length N and an integer value.\n\n\nIn one operation, you may add or subtract value from any element of the array any number of times (including zero).\nEach element can be modified independently, and values may become negative.\nYour task is to determine the maximum possible MEX of the array after performing these operations.\n**The MEX (Minimum EXcluded number) of an array is the smallest non-negative integer that is not present in the array.**\n\nFunction DeclarationFunction NamefindMaxMexfindMaxMexfindMaxMex\n\nParameters\nnumsnumsnums : A reference to an integer array of size NNN.\nvaluevaluevalue : An integer that can be added to or subtracted from any array element any number of times.\nReturn Value\nReturns an integer representing the **maximum possible MEX** that can be achieved after performing any number of operations.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤N,value≤1051 \\leq N, value \\leq 10^51≤N,value≤105\n−109≤nums[i]≤109-10^9 \\leq nums[i] \\leq 10^9−109≤nums[i]≤109\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe first line contains two integers NNN and valuevaluevalue — the size of the array and the operation value.\nThe second line contains NNN integers — the elements of the array numsnumsnums.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the **maximum possible MEX** after performing the operations.",
+    "problemStatement": "You are given an integer array nums of length N and an integer value.\n\n\nIn one operation, you may add or subtract value from any element of the array any number of times (including zero).\nEach element can be modified independently, and values may become negative.\nYour task is to determine the maximum possible MEX of the array after performing these operations.\n**The MEX (Minimum EXcluded number) of an array is the smallest non-negative integer that is not present in the array.**\n\nFunction DeclarationFunction NamefindMaxMexfindMaxMexfindMaxMex\n\nParameters\nnumsnumsnums : A reference to an integer array of size NNN.\nvaluevaluevalue : An integer that can be added to or subtracted from any array element any number of times.\nReturn Value\nReturns an integer representing the **maximum possible MEX** that can be achieved after performing any number of operations.\nConstraints\n1\u2264T\u2264101 \\leq T \\leq 101\u2264T\u226410\n1\u2264N,value\u22641051 \\leq N, value \\leq 10^51\u2264N,value\u2264105\n\u2212109\u2264nums[i]\u2264109-10^9 \\leq nums[i] \\leq 10^9\u2212109\u2264nums[i]\u2264109\n\nInput Format\n\nThe first line contains a single integer TTT \u2014 the number of test cases.\nFor each test case:\n\nThe first line contains two integers NNN and valuevaluevalue \u2014 the size of the array and the operation value.\nThe second line contains NNN integers \u2014 the elements of the array numsnumsnums.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer \u2014 the **maximum possible MEX** after performing the operations.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 100000",
@@ -34,7 +34,7 @@
         "id": "sample_1",
         "input": "1\\n5 3\\n1 2 3 4 5",
         "output": "3",
-        "explanation": "Residues modulo 3 are [1,2,0,1,2]. We can produce 0 using the element with residue 0, 1 using a residue‑1 element, and 2 using a residue‑2 element. No element remains with residue 0, so 3 cannot be produced. Hence MEX = 3."
+        "explanation": "Residues modulo 3 are [1,2,0,1,2]. We can produce 0 using the element with residue 0, 1 using a residue\u20111 element, and 2 using a residue\u20112 element. No element remains with residue 0, so 3 cannot be produced. Hence MEX = 3."
       },
       {
         "id": "sample_2",
@@ -46,7 +46,7 @@
         "id": "sample_3",
         "input": "1\\n6 1\\n5 -2 7 0 3 9",
         "output": "6",
-        "explanation": "When value = 1 every integer is reachable from any element, so we can create 0…5 using the six elements. The next missing number is 6."
+        "explanation": "When value = 1 every integer is reachable from any element, so we can create 0\u20265 using the six elements. The next missing number is 6."
       }
     ]
   },
@@ -68,21 +68,21 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – all same residue",
+        "label": "edge case \u2013 all same residue",
         "input": "1\\n3 5\\n-5 -10 -15",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case 1 – missing residue 0",
+        "label": "general case 1 \u2013 missing residue 0",
         "input": "1\\n6 4\\n1 5 9 13 2 6",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case 2 – some residues missing later",
+        "label": "general case 2 \u2013 some residues missing later",
         "input": "1\\n7 3\\n0 3 6 9 12 1 4",
         "expectedOutput": "2",
         "weight": 2
@@ -114,7 +114,7 @@
     ]
   },
   "solution": {
-    "approach": "Each element can be increased or decreased by multiples of `value`. Therefore an element can be transformed into any integer that has the same remainder modulo `value` as the original element.  The only thing that matters is how many elements we have for each residue class 0 … value‑1.\n\nWe count the occurrences of each residue. To build the numbers 0,1,2,… we need one element whose residue equals the current number modulo `value`. While the needed residue still has a spare element we consume it and move to the next number. The first number whose required residue is exhausted is the MEX.\n\nAlgorithm per test case:\n1. Initialise an array `cnt[value]` with zeros.\n2. For each array element `x` compute `r = ((x % value) + value) % value` and increment `cnt[r]`.\n3. Set `mex = 0`. While `cnt[mex % value] > 0` decrement that counter and increment `mex`.\n4. Output `mex`.\n\nThe loop runs at most `N + value` iterations, which is O(N) in practice.\n\nEdge cases handled:\n- `value = 1` → every integer is reachable, answer is `N`.\n- Negative numbers are correctly normalised to a non‑negative residue.\n- If a residue class is missing from the start, the answer is 0.\n",
+    "approach": "Each element can be increased or decreased by multiples of `value`. Therefore an element can be transformed into any integer that has the same remainder modulo `value` as the original element.  The only thing that matters is how many elements we have for each residue class 0 \u2026 value\u20111.\n\nWe count the occurrences of each residue. To build the numbers 0,1,2,\u2026 we need one element whose residue equals the current number modulo `value`. While the needed residue still has a spare element we consume it and move to the next number. The first number whose required residue is exhausted is the MEX.\n\nAlgorithm per test case:\n1. Initialise an array `cnt[value]` with zeros.\n2. For each array element `x` compute `r = ((x % value) + value) % value` and increment `cnt[r]`.\n3. Set `mex = 0`. While `cnt[mex % value] > 0` decrement that counter and increment `mex`.\n4. Output `mex`.\n\nThe loop runs at most `N + value` iterations, which is O(N) in practice.\n\nEdge cases handled:\n- `value = 1` \u2192 every integer is reachable, answer is `N`.\n- Negative numbers are correctly normalised to a non\u2011negative residue.\n- If a residue class is missing from the start, the answer is 0.\n",
     "timeComplexity": "O(N) per test case (counting residues) plus O(answer) for the while loop, overall O(N).",
     "spaceComplexity": "O(value) for the residue counters.",
     "code": {

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Sorting",
-      "Energy Calculation"
+      "Energy Calculation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Sereja has **N** boxes and **M** stones. There is a parameter energy associated with each empty box, denoted by **Ei**. He wants to move each stone into some box. After moving all the stones into the boxes, he wants to compute the total energy of box/stone system. For that he believes that a contribution of box into energy of the system can be computed as follows. If box **i** contains **s** stones and there are total **k** boxes out there containing more than **s** stones, then contribution of box **i** into the system of energy will be given by **Ei** × **k**.\n\nSereja wants the box/stone system to be most stable, i.e. it should have least possible energy. Find out minimum possible energy of this system.",
+    "problemStatement": "Sereja has **N** boxes and **M** stones. There is a parameter energy associated with each empty box, denoted by **Ei**. He wants to move each stone into some box. After moving all the stones into the boxes, he wants to compute the total energy of box/stone system. For that he believes that a contribution of box into energy of the system can be computed as follows. If box **i** contains **s** stones and there are total **k** boxes out there containing more than **s** stones, then contribution of box **i** into the system of energy will be given by **Ei** \u00d7 **k**.\n\nSereja wants the box/stone system to be most stable, i.e. it should have least possible energy. Find out minimum possible energy of this system.",
     "constraints": [
       "1 <= T <= 7",
       "7 <= N, M <= 77777",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to distribute the stones in a way that minimizes the energy of the system. This can be achieved by sorting the energies of the boxes and then distributing the stones in a way that the boxes with higher energies have fewer stones. The algorithm used is a greedy approach where we first sort the energies of the boxes and then distribute the stones.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting of energies takes O(N log N) time and this is done for each test case.",
-    "spaceComplexity": "O(N) — the dominant structure is the array to store the energies of the boxes.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array to store the energies of the boxes.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int E[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &E[i]);\n        }\n        qsort(E, N, sizeof(int), compare);\n        int stones[N];\n        int totalEnergy = 0;\n        for (int i = 0; i < N; i++) {\n            stones[i] = M / N;\n            if (i < M % N) {\n                stones[i]++;\n            }\n        }\n        for (int i = 0; i < N; i++) {\n            int k = 0;\n            for (int j = 0; j < N; j++) {\n                if (stones[j] > stones[i]) {\n                    k++;\n                }\n            }\n            totalEnergy += E[i] * k;\n        }\n        printf(\"%d\\n\", totalEnergy);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        int E[N];\n        for (int i = 0; i < N; i++) {\n            cin >> E[i];\n        }\n        sort(E, E + N);\n        int stones[N];\n        int totalEnergy = 0;\n        for (int i = 0; i < N; i++) {\n            stones[i] = M / N;\n            if (i < M % N) {\n                stones[i]++;\n            }\n        }\n        for (int i = 0; i < N; i++) {\n            int k = 0;\n            for (int j = 0; j < N; j++) {\n                if (stones[j] > stones[i]) {\n                    k++;\n                }\n            }\n            totalEnergy += E[i] * k;\n        }\n        cout << totalEnergy << endl;\n    }\n    return 0;\n}",

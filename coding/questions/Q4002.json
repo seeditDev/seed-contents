@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming | Backtracking",
+    "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Dynamic Programming",
       "Permutations",
       "Backtracking"
     ],
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You have a sequence aaa with length NNN created by removing some elements (possibly zero) from a permutation of numbers (1,2,…,N)(1, 2, \\dots, N)(1,2,…,N). When an element is removed, the length of the sequence doesn't change, but there is an empty spot left where the removed element was. You also have an integer KKK.\n\nLet's call a permutation p1,p2,…,pNp_1, p_2, \\dots, p_Np1​,p2​,…,pN​ good if:\n\n\nit is possible replace empty spots in aaa by numbers in such a way that we obtain the permutation ppp\nthe number of positions iii (1&lt;i≤N1 \\lt i \\le N1&lt;i≤N) such that pi&gt;pi−1p_i \\gt p_{i-1}pi​&gt;pi−1​ is equal to KKK\nYour task is to find the number of good permutations.",
+    "problemStatement": "You have a sequence aaa with length NNN created by removing some elements (possibly zero) from a permutation of numbers (1,2,\u2026,N)(1, 2, \\dots, N)(1,2,\u2026,N). When an element is removed, the length of the sequence doesn't change, but there is an empty spot left where the removed element was. You also have an integer KKK.\n\nLet's call a permutation p1,p2,\u2026,pNp_1, p_2, \\dots, p_Np1\u200b,p2\u200b,\u2026,pN\u200b good if:\n\n\nit is possible replace empty spots in aaa by numbers in such a way that we obtain the permutation ppp\nthe number of positions iii (1&lt;i\u2264N1 \\lt i \\le N1&lt;i\u2264N) such that pi&gt;pi\u22121p_i \\gt p_{i-1}pi\u200b&gt;pi\u22121\u200b is equal to KKK\nYour task is to find the number of good permutations.",
     "constraints": [
-      "1 ≤ T ≤ 300",
-      "0 ≤ K < N ≤ 8",
+      "1 \u2264 T \u2264 300",
+      "0 \u2264 K < N \u2264 8",
       "Each integer between 1 and N inclusive appears in the sequence at most once"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and K. The second line contains N space-separated integers a1, a2, …, aN. Each element of this sequence is either 0 (indicating an empty spot previously occupied by a removed element) or an integer between 1 and N inclusive.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of good permutations.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and K. The second line contains N space-separated integers a1, a2, \u2026, aN. Each element of this sequence is either 0 (indicating an empty spot previously occupied by a removed element) or an integer between 1 and N inclusive.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of good permutations.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -106,9 +107,9 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we can use a backtracking approach. We start by initializing an empty permutation and then try to fill it with the given numbers. We use a recursive function to try all possible permutations and count the ones that satisfy the condition. The condition is that the number of positions i (1 < i ≤ N) such that pi > pi-1 is equal to K.",
-    "timeComplexity": "O(N!) — because in the worst case, we have to try all possible permutations of N numbers.",
-    "spaceComplexity": "O(N) — because we need to store the current permutation and the given sequence.",
+    "approach": "To solve this problem, we can use a backtracking approach. We start by initializing an empty permutation and then try to fill it with the given numbers. We use a recursive function to try all possible permutations and count the ones that satisfy the condition. The condition is that the number of positions i (1 < i \u2264 N) such that pi > pi-1 is equal to K.",
+    "timeComplexity": "O(N!) \u2014 because in the worst case, we have to try all possible permutations of N numbers.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the current permutation and the given sequence.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint count = 0;\n\nvoid backtrack(int* a, int* p, int n, int k, int i, int prev) {\n    if (i == n) {\n        int cnt = 0;\n        for (int j = 1; j < n; j++) {\n            if (p[j] > p[j-1]) cnt++;\n        }\n        if (cnt == k) count++;\n        return;\n    }\n    if (a[i] != 0) {\n        p[i] = a[i];\n        backtrack(a, p, n, k, i+1, p[i]);\n    } else {\n        for (int j = 1; j <= n; j++) {\n            int found = 0;\n            for (int l = 0; l < i; l++) {\n                if (p[l] == j) {\n                    found = 1;\n                    break;\n                }\n            }\n            if (!found) {\n                p[i] = j;\n                backtrack(a, p, n, k, i+1, p[i]);\n                p[i] = 0;\n            }\n        }\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        int n, k;\n        scanf(\"%d %d\", &n, &k);\n        int* a = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &a[i]);\n        }\n        int* p = (int*) malloc(n * sizeof(int));\n        count = 0;\n        backtrack(a, p, n, k, 0, -1);\n        printf(\"%d\\n\", count);\n        free(a);\n        free(p);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\n\nint count = 0;\n\nvoid backtrack(int* a, int* p, int n, int k, int i, int prev) {\n    if (i == n) {\n        int cnt = 0;\n        for (int j = 1; j < n; j++) {\n            if (p[j] > p[j-1]) cnt++;\n        }\n        if (cnt == k) count++;\n        return;\n    }\n    if (a[i] != 0) {\n        p[i] = a[i];\n        backtrack(a, p, n, k, i+1, p[i]);\n    } else {\n        for (int j = 1; j <= n; j++) {\n            int found = 0;\n            for (int l = 0; l < i; l++) {\n                if (p[l] == j) {\n                    found = 1;\n                    break;\n                }\n            }\n            if (!found) {\n                p[i] = j;\n                backtrack(a, p, n, k, i+1, p[i]);\n                p[i] = 0;\n            }\n        }\n    }\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        int n, k;\n        cin >> n >> k;\n        int* a = new int[n];\n        for (int i = 0; i < n; i++) {\n            cin >> a[i];\n        }\n        int* p = new int[n];\n        count = 0;\n        backtrack(a, p, n, k, 0, -1);\n        cout << count << endl;\n        delete[] a;\n        delete[] p;\n    }\n    return 0;\n}",

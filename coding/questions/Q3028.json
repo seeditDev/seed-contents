@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "BFS",
-      "DFS",
       "Graph Traversal",
+      "Graphs",
+      "DFS",
+      "BFS",
       "Probability"
     ],
     "companyTags": [],
@@ -21,7 +22,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Consider a maze like this one, encoded in ASCII as a grid of **R** by **C** cells, denoted by characters # (a wall) and o (a walkable cell). The top left cell of the maze is the start and the bottom right one is the goal. All walkable cells are initially white.\n\n\n\nCell B is reachable from cell A iff A and B are both walkable and it's possible to get to B by starting at A and moving only to walkable cells in the four cardinal directions — up, right, down and left.\n\n\n\nThe maze is complicated and you're too lazy. That's why you try to solve it using the following algorithm:\n\n\n\nPick a white walkable cell at random and click on it.\n\n\nThe cell you picked in the first step and all cells reachable from it turn red.\n\n\nIf there's a red path from the start to the goal, you have solved the maze.\n\nElse: goto first step.\n\n(Note that once a cell turns red, it will remain red until the maze is solved. Also note that this algorithm will always terminate.)\n\n\n\nWhat's the expected number of clicks (expectation value of the number of clicks) you'll have to make to solve the maze?",
+    "problemStatement": "Consider a maze like this one, encoded in ASCII as a grid of **R** by **C** cells, denoted by characters # (a wall) and o (a walkable cell). The top left cell of the maze is the start and the bottom right one is the goal. All walkable cells are initially white.\n\n\n\nCell B is reachable from cell A iff A and B are both walkable and it's possible to get to B by starting at A and moving only to walkable cells in the four cardinal directions \u2014 up, right, down and left.\n\n\n\nThe maze is complicated and you're too lazy. That's why you try to solve it using the following algorithm:\n\n\n\nPick a white walkable cell at random and click on it.\n\n\nThe cell you picked in the first step and all cells reachable from it turn red.\n\n\nIf there's a red path from the start to the goal, you have solved the maze.\n\nElse: goto first step.\n\n(Note that once a cell turns red, it will remain red until the maze is solved. Also note that this algorithm will always terminate.)\n\n\n\nWhat's the expected number of clicks (expectation value of the number of clicks) you'll have to make to solve the maze?",
     "constraints": [
       "1 <= T <= 100",
       "1 <= R*C <= 50000",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a combination of graph traversal algorithms (BFS or DFS) to find all reachable cells from the start and the goal. We then calculate the probability of reaching the goal from the start in one click, which is the number of cells that can reach the goal divided by the total number of reachable cells from the start. The expected number of clicks is then calculated using the formula for the expected value of a geometric distribution.",
-    "timeComplexity": "O(T * (R*C)^2) — because in the worst case, we might need to perform BFS or DFS from each cell in the maze for each test case.",
-    "spaceComplexity": "O(R*C) — for storing the maze and the visited cells during BFS or DFS.",
+    "timeComplexity": "O(T * (R*C)^2) \u2014 because in the worst case, we might need to perform BFS or DFS from each cell in the maze for each test case.",
+    "spaceComplexity": "O(R*C) \u2014 for storing the maze and the visited cells during BFS or DFS.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX 50005\n\nint R, C;\nchar maze[MAX][MAX];\nint visited[MAX][MAX];\nint directions[][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};\n\nint is_valid(int x, int y) {\n    return x >= 0 && x < R && y >= 0 && y < C && maze[x][y] == 'o' && !visited[x][y];\n}\n\nvoid bfs(int x, int y) {\n    visited[x][y] = 1;\n    for (int i = 0; i < 4; i++) {\n        int nx = x + directions[i][0];\n        int ny = y + directions[i][1];\n        if (is_valid(nx, ny)) {\n            bfs(nx, ny);\n        }\n    }\n}\n\nint count_reachable_cells(int x, int y) {\n    memset(visited, 0, sizeof(visited));\n    bfs(x, y);\n    int count = 0;\n    for (int i = 0; i < R; i++) {\n        for (int j = 0; j < C; j++) {\n            if (visited[i][j]) {\n                count++;\n            }\n        }\n    }\n    return count;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &R, &C);\n        for (int i = 0; i < R; i++) {\n            scanf(\"%s\", maze[i]);\n        }\n        int start_reachable = count_reachable_cells(0, 0);\n        int goal_reachable = count_reachable_cells(R-1, C-1);\n        double probability = (double)goal_reachable / start_reachable;\n        double expected_clicks = 1 / probability;\n        printf(\"%.6f\\n\", expected_clicks);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nconst int MAX = 50005;\nconst int directions[][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};\n\nint R, C;\nchar maze[MAX][MAX];\nbool visited[MAX][MAX];\n\nbool is_valid(int x, int y) {\n    return x >= 0 && x < R && y >= 0 && y < C && maze[x][y] == 'o' && !visited[x][y];\n}\n\nvoid bfs(int x, int y) {\n    visited[x][y] = true;\n    for (int i = 0; i < 4; i++) {\n        int nx = x + directions[i][0];\n        int ny = y + directions[i][1];\n        if (is_valid(nx, ny)) {\n            bfs(nx, ny);\n        }\n    }\n}\n\nint count_reachable_cells(int x, int y) {\n    memset(visited, 0, sizeof(visited));\n    bfs(x, y);\n    int count = 0;\n    for (int i = 0; i < R; i++) {\n        for (int j = 0; j < C; j++) {\n            if (visited[i][j]) {\n                count++;\n            }\n        }\n    }\n    return count;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        cin >> R >> C;\n        for (int i = 0; i < R; i++) {\n            cin >> maze[i];\n        }\n        int start_reachable = count_reachable_cells(0, 0);\n        int goal_reachable = count_reachable_cells(R-1, C-1);\n        double probability = (double)goal_reachable / start_reachable;\n        double expected_clicks = 1 / probability;\n        cout << fixed << setprecision(6) << expected_clicks << endl;\n    }\n    return 0;\n}",

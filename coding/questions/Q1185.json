@@ -10,8 +10,8 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Longest Increasing Subsequence",
-      "Dynamic Programming"
+      "Dynamic Programming",
+      "Longest Increasing Subsequence"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +114,7 @@
   "solution": {
     "approach": "The key insight is to use dynamic programming to solve this problem. We maintain an array `tails` where `tails[i]` is the smallest tail of all increasing subsequences of length `i`. For each element `x` in the array, we find the largest `i` such that `tails[i] < x` and update `tails[i+1]` to be `x`. The length of the longest increasing subsequence is the length of the `tails` array.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total.",
-    "spaceComplexity": "O(N) — the dominant structure is the `tails` array.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the `tails` array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int *a = (int*)malloc(N * sizeof(int));\n        for(int i=0;i<N;i++) scanf(\"%d\", &a[i]);\n        int *tails = (int*)malloc(N * sizeof(int));\n        int len = 0;\n        for(int i=0;i<N;i++){\n            int x = a[i];\n            int l = 0, r = len;\n            while(l < r){\n                int m = (l + r) / 2;\n                if(tails[m] < x) l = m + 1; else r = m;\n            }\n            tails[l] = x;\n            if(l == len) len++;\n        }\n        printf(\"%d\\n\", len);\n        free(a);\n        free(tails);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        for(int &v: a) cin>>v;\n        vector<int> tails;\n        tails.reserve(N);\n        for(int x: a){\n            auto it = lower_bound(tails.begin(), tails.end(), x);\n            if(it==tails.end()) tails.push_back(x);\n            else *it = x;\n        }\n        cout << tails.size() << '\\n';\n    }\n    return 0;\n}",

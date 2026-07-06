@@ -10,10 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "XOR",
       "Prefix XOR",
-      "Range XOR",
-      "Math"
+      "XOR",
+      "Bit Manipulation",
+      "Range XOR"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has a tasty ingredient ― an integer KKK. He defines a tasty matrix AAA with NNN rows (numbered 111 through NNN) and MMM columns (numbered 111 through MMM) as Ai,j=K+i+jA_{i, j} = K + i + jAi,j​=K+i+j for each valid i,ji,ji,j.\n\nCurrently, Chef is busy in the kitchen making this tasty matrix. Help him find the bitwise XOR of all elements of this matrix.",
+    "problemStatement": "Chef has a tasty ingredient \u2015 an integer KKK. He defines a tasty matrix AAA with NNN rows (numbered 111 through NNN) and MMM columns (numbered 111 through MMM) as Ai,j=K+i+jA_{i, j} = K + i + jAi,j\u200b=K+i+j for each valid i,ji,ji,j.\n\nCurrently, Chef is busy in the kitchen making this tasty matrix. Help him find the bitwise XOR of all elements of this matrix.",
     "constraints": [
       "1 <= T <= 100000",
       "1 <= N, M <= 2000000",
@@ -29,14 +29,14 @@
       "The sum of N over all test cases does not exceed 2000000",
       "The sum of M over all test cases does not exceed 2000000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space‑separated integers N, M and K.",
-    "outputFormat": "For each test case output a single line containing the bitwise XOR of all elements A[i][j] = K + i + j of the N×M matrix.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated integers N, M and K.",
+    "outputFormat": "For each test case output a single line containing the bitwise XOR of all elements A[i][j] = K + i + j of the N\u00d7M matrix.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\\n2 2 5\\n2 3 7",
         "output": "14\\n5",
-        "explanation": "For the first case the matrix is [[7,8],[8,9]] and 7⊕8⊕8⊕9 = 14. For the second case the matrix is [[9,10,11],[10,11,12]] and its XOR is 5."
+        "explanation": "For the first case the matrix is [[7,8],[8,9]] and 7\u22958\u22958\u22959 = 14. For the second case the matrix is [[9,10,11],[10,11,12]] and its XOR is 5."
       },
       {
         "id": "sample_2",
@@ -116,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed row i (1‑based) the elements are K+i+1, K+i+2, … , K+i+M. This is a consecutive range of length M. The XOR of a range [L,R] can be obtained in O(1) using the well‑known function f(x) = XOR of all numbers from 0 to x, which depends only on x mod 4. For each row we compute rowXor = f(K+i+M) ^ f(K+i), and XOR all rowXor values. Because the total sum of N over all test cases is ≤2·10⁶, iterating over rows is fast enough. The algorithm runs in O(total N) time and O(1) extra memory.",
-    "timeComplexity": "O(total N) across all test cases (≤ 2·10⁶)",
+    "approach": "For a fixed row i (1\u2011based) the elements are K+i+1, K+i+2, \u2026 , K+i+M. This is a consecutive range of length M. The XOR of a range [L,R] can be obtained in O(1) using the well\u2011known function f(x) = XOR of all numbers from 0 to x, which depends only on x mod 4. For each row we compute rowXor = f(K+i+M) ^ f(K+i), and XOR all rowXor values. Because the total sum of N over all test cases is \u22642\u00b710\u2076, iterating over rows is fast enough. The algorithm runs in O(total N) time and O(1) extra memory.",
+    "timeComplexity": "O(total N) across all test cases (\u2264 2\u00b710\u2076)",
     "spaceComplexity": "O(1)",
     "code": {
       "C": "#include <stdio.h>\n\nstatic inline long long xor_upto(long long x) {\n    switch (x & 3LL) {\n        case 0: return x;\n        case 1: return 1LL;\n        case 2: return x + 1LL;\n        default: return 0LL; // case 3\n    }\n}\n\nstatic inline long long range_xor(long long l, long long r) {\n    return xor_upto(r) ^ xor_upto(l - 1);\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long N, M, K; scanf(\"%lld %lld %lld\", &N, &M, &K);\n        long long base = K + 2; // because i and j start from 1\n        long long ans = 0;\n        for (long long x = 0; x < N; ++x) {\n            long long L = base + x;\n            long long R = L + M - 1;\n            ans ^= range_xor(L, R);\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

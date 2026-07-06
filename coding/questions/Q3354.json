@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Random Generation",
       "Subsequence",
-      "Random Generation"
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a **uniformly randomly generated** string **S**, consisting of letters from the set **{\"A\", \"B\"}**. Your task is to find a string **T** that appears in **S** as a subsequence **exactly twice**.\n\nIn other words, you need to find such a string **T**, that there exist **exactly two** sets of indexes **i1, i2, ..., i|T|** and **j1, j2, ..., j|T|** such that there exists some **k**, where  **ik ≠ jk** and **S{i1...i|T|} = S{j1...j|T|} = T**.",
+    "problemStatement": "You are given a **uniformly randomly generated** string **S**, consisting of letters from the set **{\"A\", \"B\"}**. Your task is to find a string **T** that appears in **S** as a subsequence **exactly twice**.\n\nIn other words, you need to find such a string **T**, that there exist **exactly two** sets of indexes **i1, i2, ..., i|T|** and **j1, j2, ..., j|T|** such that there exists some **k**, where  **ik \u2260 jk** and **S{i1...i|T|} = S{j1...j|T|} = T**.",
     "constraints": [
       "1 <= T <= 10",
       "2 <= N <= 5000"
@@ -112,8 +113,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by generating all possible subsequences of the given string S and then count their occurrences. If a subsequence occurs exactly twice, we can output it as the result. If no such subsequence is found, we output -1.",
-    "timeComplexity": "O(2^N * N) — because we are generating all possible subsequences of the string S and then counting their occurrences.",
-    "spaceComplexity": "O(2^N * N) — because we need to store all generated subsequences and their counts.",
+    "timeComplexity": "O(2^N * N) \u2014 because we are generating all possible subsequences of the string S and then counting their occurrences.",
+    "spaceComplexity": "O(2^N * N) \u2014 because we need to store all generated subsequences and their counts.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint countSubsequence(char *s, char *sub) {\n    int count = 0;\n    int len = strlen(s);\n    int subLen = strlen(sub);\n    for (int i = 0; i < (1 << len); i++) {\n        int j = 0;\n        int k = 0;\n        for (int bit = 0; bit < len; bit++) {\n            if ((i & (1 << bit)) != 0) {\n                if (s[bit] == sub[j]) {\n                    j++;\n                }\n            }\n        }\n        if (j == subLen) {\n            count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while (t--) {\n        char s[5005];\n        scanf(\"%s\", s);\n        int len = strlen(s);\n        int found = 0;\n        for (int i = 0; i < (1 << len); i++) {\n            char sub[5005];\n            int j = 0;\n            for (int bit = 0; bit < len; bit++) {\n                if ((i & (1 << bit)) != 0) {\n                    sub[j++] = s[bit];\n                }\n            }\n            sub[j] = '\\0';\n            if (countSubsequence(s, sub) == 2) {\n                printf(\"%s\\n\", sub);\n                found = 1;\n                break;\n            }\n        }\n        if (!found) {\n            printf(\"-1\\n\");\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint countSubsequence(string s, string sub) {\n    int count = 0;\n    int len = s.length();\n    int subLen = sub.length();\n    for (int i = 0; i < (1 << len); i++) {\n        int j = 0;\n        int k = 0;\n        for (int bit = 0; bit < len; bit++) {\n            if ((i & (1 << bit)) != 0) {\n                if (s[bit] == sub[j]) {\n                    j++;\n                }\n            }\n        }\n        if (j == subLen) {\n            count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    while (t--) {\n        string s;\n        cin >> s;\n        int len = s.length();\n        int found = 0;\n        for (int i = 0; i < (1 << len); i++) {\n            string sub;\n            for (int bit = 0; bit < len; bit++) {\n                if ((i & (1 << bit)) != 0) {\n                    sub += s[bit];\n                }\n            }\n            if (countSubsequence(s, sub) == 2) {\n                cout << sub << endl;\n                found = 1;\n                break;\n            }\n        }\n        if (!found) {\n            cout << -1 << endl;\n        }\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "String Manipulation",
       "Set",
-      "Parsing"
+      "String Manipulation",
+      "Parsing",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,31 +23,31 @@
   "content": {
     "problemStatement": "Your task is to write a program to\n\n\nRemove the extra spaces at the start and end of the string using strip().\nSplit the cleaned string into words using split().\nConvert the list of words into a tuple and print the number of unique words in the tuple.\n\nInput Format\nA single line containing the sentence (string with words separated by spaces, may have leading/trailing spaces).\n\n\n\nOutput Format\nPrint the count of unique words in the tuple.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "Each sentence length ≤ 100 characters",
-      "Words contain only printable non‑space characters",
-      "Total number of words in a sentence ≤ 20"
+      "1 \u2264 T \u2264 10",
+      "Each sentence length \u2264 100 characters",
+      "Words contain only printable non\u2011space characters",
+      "Total number of words in a sentence \u2264 20"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a sentence consisting of words separated by spaces. Sentences may have leading or trailing spaces and may contain multiple consecutive spaces.",
-    "outputFormat": "For each test case output a single integer on its own line – the number of distinct words in the sentence after removing leading/trailing spaces and splitting by whitespace.",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 10), the number of test cases. Each of the next T lines contains a sentence consisting of words separated by spaces. Sentences may have leading or trailing spaces and may contain multiple consecutive spaces.",
+    "outputFormat": "For each test case output a single integer on its own line \u2013 the number of distinct words in the sentence after removing leading/trailing spaces and splitting by whitespace.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\\nhello world hello python\\ndata science data data AI AI",
         "output": "3\\n3",
-        "explanation": "First sentence after stripping and splitting gives words [hello, world, hello, python]; distinct words are {hello, world, python} → 3. Second sentence yields [data, science, data, data, AI, AI]; distinct words are {data, science, AI} → 3."
+        "explanation": "First sentence after stripping and splitting gives words [hello, world, hello, python]; distinct words are {hello, world, python} \u2192 3. Second sentence yields [data, science, data, data, AI, AI]; distinct words are {data, science, AI} \u2192 3."
       },
       {
         "id": "sample_2",
         "input": "3\\n   single   \\n   \\nalpha beta gamma alpha beta",
         "output": "1\\n0\\n3",
-        "explanation": "Test case 1: after stripping we have \\\"single\\\" → 1 unique word. Test case 2: line contains only spaces → no words → 0. Test case 3: words are [alpha, beta, gamma, alpha, beta]; distinct set {alpha, beta, gamma} → 3."
+        "explanation": "Test case 1: after stripping we have \\\"single\\\" \u2192 1 unique word. Test case 2: line contains only spaces \u2192 no words \u2192 0. Test case 3: words are [alpha, beta, gamma, alpha, beta]; distinct set {alpha, beta, gamma} \u2192 3."
       },
       {
         "id": "sample_3",
         "input": "1\\nPython python PYTHON",
         "output": "3",
-        "explanation": "Words are case‑sensitive, so \\\"Python\\\", \\\"python\\\" and \\\"PYTHON\\\" are three different strings."
+        "explanation": "Words are case\u2011sensitive, so \\\"Python\\\", \\\"python\\\" and \\\"PYTHON\\\" are three different strings."
       }
     ]
   },
@@ -114,9 +115,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we first strip leading and trailing whitespace from the line. Then we split the cleaned line on one or more whitespace characters to obtain the list of words. By inserting each word into a hash set (or using a set in Python) we automatically keep only distinct words. The size of the set is the required answer. This works in linear time with respect to the number of characters in the line and uses O(k) extra memory where k is the number of distinct words (≤ 20).",
-    "timeComplexity": "O(total number of characters across all test cases) – each character is examined a constant number of times.",
-    "spaceComplexity": "O(k) per test case, where k ≤ 20 is the number of distinct words.",
+    "approach": "For each test case we first strip leading and trailing whitespace from the line. Then we split the cleaned line on one or more whitespace characters to obtain the list of words. By inserting each word into a hash set (or using a set in Python) we automatically keep only distinct words. The size of the set is the required answer. This works in linear time with respect to the number of characters in the line and uses O(k) extra memory where k is the number of distinct words (\u2264 20).",
+    "timeComplexity": "O(total number of characters across all test cases) \u2013 each character is examined a constant number of times.",
+    "spaceComplexity": "O(k) per test case, where k \u2264 20 is the number of distinct words.",
     "code": {
       "C": "#include <stdio.h>\\n#include <string.h>\\n#include <ctype.h>\\n\\n#define MAX_LINE 256\\n#define MAX_WORDS 30\\n\\n/* Trim leading and trailing spaces in place */\\nvoid trim(char *s) {\\n    int i, start = 0, end = strlen(s) - 1;\\n    while (start < (int)strlen(s) && isspace((unsigned char)s[start])) start++;\\n    while (end >= start && isspace((unsigned char)s[end])) end--;\\n    for (i = start; i <= end; ++i) s[i - start] = s[i];\\n    s[i - start] = '\\0';\\n}\\n\\nint main() {\\n    int T;\\n    if (scanf(\"%d\", &T) != 1) return 0;\\n    getchar(); // consume newline after T\\n    char line[MAX_LINE];\\n    for (int tc = 0; tc < T; ++tc) {\\n        if (!fgets(line, sizeof(line), stdin)) break;\\n        line[strcspn(line, \"\\n\")] = '\\0';\\n        trim(line);\\n        char *token = strtok(line, \" \");\\n        char *words[MAX_WORDS];\\n        int cnt = 0;\\n        while (token && cnt < MAX_WORDS) {\\n            words[cnt++] = token;\\n            token = strtok(NULL, \" \");\\n        }\\n        int unique = 0;\\n        for (int i = 0; i < cnt; ++i) {\\n            int seen = 0;\\n            for (int j = 0; j < i; ++j) {\\n                if (strcmp(words[i], words[j]) == 0) { seen = 1; break; }\\n            }\\n            if (!seen) unique++;\\n        }\\n        printf(\"%d\\n\", unique);\\n    }\\n    return 0;\\n}",
       "C++": "#include <bits/stdc++.h>\\nusing namespace std;\\n\\nint main() {\\n    ios::sync_with_stdio(false);\\n    cin.tie(nullptr);\\n    int T;\\n    if (!(cin >> T)) return 0;\\n    string dummy; getline(cin, dummy); // consume endline after T\\n    for (int tc = 0; tc < T; ++tc) {\\n        string line;\\n        getline(cin, line);\\n        // strip leading/trailing spaces\\n        size_t start = line.find_first_not_of(' ');\\n        size_t end = line.find_last_not_of(' ');\\n        if (start == string::npos) {\\n            cout << 0 << '\\n';\\n            continue;\\n        }\\n        line = line.substr(start, end - start + 1);\\n        stringstream ss(line);\\n        string word;\\n        unordered_set<string> uniq;\\n        while (ss >> word) uniq.insert(word);\\n        cout << uniq.size() << '\\n';\\n    }\\n    return 0;\\n}",

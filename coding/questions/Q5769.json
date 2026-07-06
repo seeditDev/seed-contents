@@ -10,10 +10,11 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Prefix Sum",
       "Array",
+      "Minimize Maximum",
       "Two Processors",
-      "Minimize Maximum"
+      "Prefix Sum",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +22,14 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN tasks waiting in line to be executed. The execution time for the ithi^{th}ith task is AiA_iAi​ seconds.\n\nChef has **two processors** to execute these NNN tasks. Both these processors work simultaneously. Each processor executes the assigned tasks one by one.\n\nChef assigns a **prefix** of these tasks to the first processor and the remaining tasks to the second processor.\n\nFor example, if there are 333 tasks, Chef can do one of the following:\n\n\nAssign no task to the first processor. This means, the second processor will execute tasks 1,21, 21,2 and 333.\nAssign task 111 to the first processor. This means, the second processor will execute tasks 222 and 333.\nAssign tasks 111 and 222 to the first processor. This means, the second processor will execute task 333.\nAssign tasks 1,21, 21,2 and 333 to the first processor. Thus, second processor would execute no tasks.\nFind the **minimum** time in which all the tasks can be executed.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nThe first line of each test case contains a single integer NNN, the number of tasks waiting to be executed.\nThe second line of each test case contains NNN space separated positive integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ denoting the execution time for each task.\n\n\nOutput Format\nFor each test case, output in a single line, the minimum time in which all tasks can be executed.",
+    "problemStatement": "There are NNN tasks waiting in line to be executed. The execution time for the ithi^{th}ith task is AiA_iAi\u200b seconds.\n\nChef has **two processors** to execute these NNN tasks. Both these processors work simultaneously. Each processor executes the assigned tasks one by one.\n\nChef assigns a **prefix** of these tasks to the first processor and the remaining tasks to the second processor.\n\nFor example, if there are 333 tasks, Chef can do one of the following:\n\n\nAssign no task to the first processor. This means, the second processor will execute tasks 1,21, 21,2 and 333.\nAssign task 111 to the first processor. This means, the second processor will execute tasks 222 and 333.\nAssign tasks 111 and 222 to the first processor. This means, the second processor will execute task 333.\nAssign tasks 1,21, 21,2 and 333 to the first processor. Thus, second processor would execute no tasks.\nFind the **minimum** time in which all the tasks can be executed.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nThe first line of each test case contains a single integer NNN, the number of tasks waiting to be executed.\nThe second line of each test case contains NNN space separated positive integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b denoting the execution time for each task.\n\n\nOutput Format\nFor each test case, output in a single line, the minimum time in which all tasks can be executed.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ Ai ≤ 10^5",
-      "The sum of N over all test cases does not exceed 2·10^5"
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^5",
+      "The sum of N over all test cases does not exceed 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of tasks. The second line contains N space‑separated positive integers A1, A2, …, AN denoting the execution time of each task in order.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of tasks. The second line contains N space\u2011separated positive integers A1, A2, \u2026, AN denoting the execution time of each task in order.",
     "outputFormat": "For each test case output a single line containing the minimum possible time needed to finish all tasks when the first processor receives a prefix of the tasks and the second processor receives the remaining suffix.",
     "sampleTestCases": [
       {
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case compute the total sum S of all task times. While scanning the array keep a running prefix sum P (the time taken by the first processor if it receives the first i tasks). For each i (including i = 0 meaning no task for the first processor) the time needed for the whole system is max(P, S‑P). The answer is the minimum of this value over all i. This works because the second processor always receives the suffix, so its total time is S‑P. The optimal split is the prefix whose sum is closest to S/2.",
-    "timeComplexity": "O(N) per test case, where N is the number of tasks in that test case. The total across all test cases is O(2·10^5).",
+    "approach": "For each test case compute the total sum S of all task times. While scanning the array keep a running prefix sum P (the time taken by the first processor if it receives the first i tasks). For each i (including i = 0 meaning no task for the first processor) the time needed for the whole system is max(P, S\u2011P). The answer is the minimum of this value over all i. This works because the second processor always receives the suffix, so its total time is S\u2011P. The optimal split is the prefix whose sum is closest to S/2.",
+    "timeComplexity": "O(N) per test case, where N is the number of tasks in that test case. The total across all test cases is O(2\u00b710^5).",
     "spaceComplexity": "O(1) extra space besides the input array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long total = 0;\n        long long *a = (long long*)malloc(N * sizeof(long long));\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%lld\", &a[i]);\n            total += a[i];\n        }\n        long long pref = 0;\n        long long ans = total; // worst case\n        // consider split before first element (i=0)\n        ans = total; // max(0,total)\n        for (int i = 0; i < N; ++i) {\n            pref += a[i];\n            long long cur = pref > (total - pref) ? pref : (total - pref);\n            if (cur < ans) ans = cur;\n        }\n        printf(\"%lld\\n\", ans);\n        free(a);\n    }\n    return 0;\n}",

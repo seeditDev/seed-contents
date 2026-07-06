@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Parentheses",
-      "Greedy",
-      "Two-pointer"
+      "Strings",
+      "Two-pointer",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,13 +21,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has a special string called the parenthesisStringparenthesisStringparenthesisString that contains only three types of characters: `'('`, `')'`, and `'*'`. Chef wants to determine if this parenthesisStringparenthesisStringparenthesisString is valid according to some strict rules. The rules are:\n\n\nEvery `'('` must have a matching `')'` that comes after it.\nEvery `')'` must have a matching `'('` that comes before it.\nThe character `'*'` can represent either `'('`, `')'`, or an empty string.\nHelp Chef by writing a program that checks whether the given parenthesisStringparenthesisStringparenthesisString can be considered valid under these conditions.\n\nFunction DeclarationFunction NameisValidParenthesisStringisValidParenthesisStringisValidParenthesisString – This function checks whether a given parenthesis string containing '(', ')', and '' can be considered valid by interpreting '' as '(', ')', or an empty string.\n\nParameters\nparenthesisStringparenthesisStringparenthesisString : A string consisting only of characters '(', ')', and '*', representing Chef’s parenthesis string.\nReturn Value\nReturns truetruetrue if the parenthesis string can be valid.\nReturns falsefalsefalse otherwise.\nConstraints\n1≤T≤1051 \\leq T \\leq 10^51≤T≤105\n1≤∣parenthesisString∣≤1001 \\leq |parenthesisString| \\leq 1001≤∣parenthesisString∣≤100\nEach character of parenthesisStringparenthesisStringparenthesisString is either `'('`, `')'`, or `'*'`.\n\nInput Format\n\nThe first line contains a single integer TTT — the number of test cases.\nFor each test case:\n\nThe next line contains a string parenthesisStringparenthesisStringparenthesisString.\n\n\n\n\nOutput Format\n\nFor each test case, print truetruetrue if the parenthesis string is valid, or falsefalsefalse otherwise.",
+    "problemStatement": "Chef has a special string called the parenthesisStringparenthesisStringparenthesisString that contains only three types of characters: `'('`, `')'`, and `'*'`. Chef wants to determine if this parenthesisStringparenthesisStringparenthesisString is valid according to some strict rules. The rules are:\n\n\nEvery `'('` must have a matching `')'` that comes after it.\nEvery `')'` must have a matching `'('` that comes before it.\nThe character `'*'` can represent either `'('`, `')'`, or an empty string.\nHelp Chef by writing a program that checks whether the given parenthesisStringparenthesisStringparenthesisString can be considered valid under these conditions.\n\nFunction DeclarationFunction NameisValidParenthesisStringisValidParenthesisStringisValidParenthesisString \u2013 This function checks whether a given parenthesis string containing '(', ')', and '' can be considered valid by interpreting '' as '(', ')', or an empty string.\n\nParameters\nparenthesisStringparenthesisStringparenthesisString : A string consisting only of characters '(', ')', and '*', representing Chef\u2019s parenthesis string.\nReturn Value\nReturns truetruetrue if the parenthesis string can be valid.\nReturns falsefalsefalse otherwise.\nConstraints\n1\u2264T\u22641051 \\leq T \\leq 10^51\u2264T\u2264105\n1\u2264\u2223parenthesisString\u2223\u22641001 \\leq |parenthesisString| \\leq 1001\u2264\u2223parenthesisString\u2223\u2264100\nEach character of parenthesisStringparenthesisStringparenthesisString is either `'('`, `')'`, or `'*'`.\n\nInput Format\n\nThe first line contains a single integer TTT \u2014 the number of test cases.\nFor each test case:\n\nThe next line contains a string parenthesisStringparenthesisStringparenthesisString.\n\n\n\n\nOutput Format\n\nFor each test case, print truetruetrue if the parenthesis string is valid, or falsefalsefalse otherwise.",
     "constraints": [
       "1 <= T <= 100000",
       "1 <= |S| <= 100",
-      "S[i] ∈ {'(', ')', '*'}"
+      "S[i] \u2208 {'(', ')', '*'}"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S consisting only of characters '(', ')', and '*'.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a non\u2011empty string S consisting only of characters '(', ')', and '*'.",
     "outputFormat": "For each test case output a single line containing \"true\" if the string can be interpreted as a valid parenthesis sequence, otherwise output \"false\".",
     "sampleTestCases": [
       {
@@ -108,7 +109,7 @@
   },
   "solution": {
     "approach": "Traverse the string while maintaining two counters: low = minimal possible number of unmatched '(' and high = maximal possible number of unmatched '(' at the current position. For '(' increase both counters. For ')' decrease both (but low cannot go below 0). For '*' treat it as either '(' or ')' or empty: increase high (as '(') and decrease low (as ')') if low>0. If at any point high becomes negative, there are too many ')' and the string is invalid. After processing all characters the string is valid iff low == 0 (we can close all '(') and high >= 0. This greedy scan works in O(|S|) time and O(1) extra space.",
-    "timeComplexity": "O(|S|) per test case, total O( Σ|S| ) ≤ O(T·100).",
+    "timeComplexity": "O(|S|) per test case, total O( \u03a3|S| ) \u2264 O(T\u00b7100).",
     "spaceComplexity": "O(1) additional space.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char s[105];\n        scanf(\"%100s\", s);\n        int low = 0, high = 0;\n        for (int i = 0; s[i]; ++i) {\n            if (s[i] == '(') {\n                low++; high++;\n            } else if (s[i] == ')') {\n                if (low > 0) low--;\n                high--;\n            } else { // '*'\n                if (low > 0) low--;\n                high++;\n            }\n            if (high < 0) break;\n        }\n        if (high >= 0 && low == 0) printf(\"true\\n\");\n        else printf(\"false\\n\");\n    }\n    return 0;\n}",

@@ -11,9 +11,10 @@
     "isPremium": true,
     "tags": [
       "Set",
-      "Hash Table",
+      "Complexity Analysis",
       "Distinct Elements",
-      "Complexity Analysis"
+      "Hash Table",
+      "Data Structures"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,26 +22,26 @@
     ]
   },
   "content": {
-    "problemStatement": "Given an array of size nnn, find the number of distinct elements in the array.\n\nChef already tried an attempt to solve the above problem and he came up with this code.\n\nThe approach is simple, for each new number that is obtained, iterate over the previously obtained numbers and if a match is found then add one to the count of distinct numbers obtained so far, otherwise leave it as is (add zero).\n\nHowever when Chef submitted the above code he got Time Limit Exceeded.\n\nDetermine the worst case time complexity of Chef's code.\n\nIt can be shown that the worst case time complexity is Θ(na)\\mathcal{\\Theta}(n^a)Θ(na) where aaa is an integer.\n\nFirst find the value of aaa, and then optimise Chef's code using the data structures that you have learnt.\n\n(Hint: Think about sets/ dictionary and how it could be used to solve this problem.)",
+    "problemStatement": "Given an array of size nnn, find the number of distinct elements in the array.\n\nChef already tried an attempt to solve the above problem and he came up with this code.\n\nThe approach is simple, for each new number that is obtained, iterate over the previously obtained numbers and if a match is found then add one to the count of distinct numbers obtained so far, otherwise leave it as is (add zero).\n\nHowever when Chef submitted the above code he got Time Limit Exceeded.\n\nDetermine the worst case time complexity of Chef's code.\n\nIt can be shown that the worst case time complexity is \u0398(na)\\mathcal{\\Theta}(n^a)\u0398(na) where aaa is an integer.\n\nFirst find the value of aaa, and then optimise Chef's code using the data structures that you have learnt.\n\n(Hint: Think about sets/ dictionary and how it could be used to solve this problem.)",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ n ≤ 10^5",
-      "0 ≤ Ai ≤ 10^9"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 n \u2264 10^5",
+      "0 \u2264 Ai \u2264 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 ≤ n ≤ 10^5), the size of the array. The next n lines each contain a single integer Ai (0 ≤ Ai ≤ 10^9).",
-    "outputFormat": "For each test case output two lines. The first line contains the integer a, the exponent of the worst‑case time complexity of Chef's naive algorithm (always 2). The second line contains the number of distinct values in the given array.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer n (1 \u2264 n \u2264 10^5), the size of the array. The next n lines each contain a single integer Ai (0 \u2264 Ai \u2264 10^9).",
+    "outputFormat": "For each test case output two lines. The first line contains the integer a, the exponent of the worst\u2011case time complexity of Chef's naive algorithm (always 2). The second line contains the number of distinct values in the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\n3\n1\n2\n1",
         "output": "2\n2",
-        "explanation": "There is only one test case. The array is [1,2,1]. Distinct values are {1,2} → count 2. The exponent a of Chef's naive algorithm is always 2."
+        "explanation": "There is only one test case. The array is [1,2,1]. Distinct values are {1,2} \u2192 count 2. The exponent a of Chef's naive algorithm is always 2."
       },
       {
         "id": "sample_2",
         "input": "2\n5\n5\n5\n5\n5\n5\n4\n10\n20\n30\n40",
         "output": "2\n1\n2\n4",
-        "explanation": "First test case: all five numbers are equal → only 1 distinct value. Second test case: all four numbers are different → 4 distinct values. a = 2 for both."
+        "explanation": "First test case: all five numbers are equal \u2192 only 1 distinct value. Second test case: all four numbers are different \u2192 4 distinct values. a = 2 for both."
       }
     ]
   },
@@ -108,8 +109,8 @@
     ]
   },
   "solution": {
-    "approach": "Chef's original double loop checks each new element against all previously seen elements. In the worst case (all elements distinct) the number of comparisons is 1+2+...+(n‑1) = n(n‑1)/2 = Θ(n^2), so a = 2. To optimise we store already seen values in a hash‑based set (unordered_set in C++, HashSet in Java, set in Python/JS). While reading the array we insert each element into the set; insertion and lookup are O(1) average. After processing the whole array the size of the set equals the number of distinct values.",
-    "timeComplexity": "O(n) average per test case (set insertions). Overall O(T·n).",
+    "approach": "Chef's original double loop checks each new element against all previously seen elements. In the worst case (all elements distinct) the number of comparisons is 1+2+...+(n\u20111) = n(n\u20111)/2 = \u0398(n^2), so a = 2. To optimise we store already seen values in a hash\u2011based set (unordered_set in C++, HashSet in Java, set in Python/JS). While reading the array we insert each element into the set; insertion and lookup are O(1) average. After processing the whole array the size of the set equals the number of distinct values.",
+    "timeComplexity": "O(n) average per test case (set insertions). Overall O(T\u00b7n).",
     "spaceComplexity": "O(n) for the set storing distinct elements.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint cmp(const void *a, const void *b) {\n    long long va = *(const long long *)a;\n    long long vb = *(const long long *)b;\n    return (va > vb) - (va < vb);\n}\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int n; scanf(\"%d\", &n);\n        long long *arr = (long long *)malloc(n * sizeof(long long));\n        for (int i = 0; i < n; ++i) scanf(\"%lld\", &arr[i]);\n        qsort(arr, n, sizeof(long long), cmp);\n        int distinct = 0;\n        for (int i = 0; i < n; ++i) {\n            if (i == 0 || arr[i] != arr[i-1]) ++distinct;\n        }\n        free(arr);\n        printf(\"2\\n%d\\n\", distinct);\n    }\n    return 0;\n}",

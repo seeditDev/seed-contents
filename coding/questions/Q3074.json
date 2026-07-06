@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
+      "Dynamic Programming",
       "Fibonacci Numbers",
-      "Subset Sum",
-      "Modular Arithmetic"
+      "Subset Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,11 +23,11 @@
   "content": {
     "problemStatement": "Apurva is obsessed with Fibonacci numbers. She finds Fibonacci numbers very interesting. Fibonacci numbers can be defined as given below. \n\n\n\nFib(1) = 1 , Fib(2) = 1.\n\n\n\nFib(n) = Fib(n-1) + Fib(n-2) for  n &gt; 2 .  \n\n\n Given a set  ** S ** having **N** elements and an integer **K**, She wants to find out the value of **FIBOSUM(S)**. \n\n\n\nWhere **sum(s)** represents the sum of elements  in set **s**.\n\n\n\n**Note**  that values might be repeated in the set, two subsets will be called different if there is an index **i** such that **S[i]** is occurring in one of the subset and not in another.  \n\n\n\nAs the value of **FIBOSUM(S)** can be very large, print it modulo **99991**.",
     "constraints": [
-      "1 ≤ K ≤ N",
-      "1 ≤ N ≤ 20 (Subtask #1)",
-      "1 ≤ N ≤ 2000 (Subtask #2)",
-      "1 ≤ N ≤ 50000 (Subtask #3)",
-      "1 ≤ value in set ≤ 10^9"
+      "1 \u2264 K \u2264 N",
+      "1 \u2264 N \u2264 20 (Subtask #1)",
+      "1 \u2264 N \u2264 2000 (Subtask #2)",
+      "1 \u2264 N \u2264 50000 (Subtask #3)",
+      "1 \u2264 value in set \u2264 10^9"
     ],
     "inputFormat": "The first line contains two integers N and K separated by a space, where N is the number of elements in the set S and K is an integer. The next line contains N space-separated integers denoting the set S.",
     "outputFormat": "The output is the value of FIBOSUM(S) modulo 99991.",
@@ -116,8 +117,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the sum of all subsets of the given set S and then calculate the Fibonacci numbers. We will use a recursive approach to generate all subsets and calculate their sums. Then, we will calculate the Fibonacci numbers and sum them up. Finally, we will take the result modulo 99991.",
-    "timeComplexity": "O(2^N * log(N)) — because we are generating all subsets of the set S and calculating their sums, and then calculating the Fibonacci numbers.",
-    "spaceComplexity": "O(N) — because we need to store the set S and the Fibonacci numbers.",
+    "timeComplexity": "O(2^N * log(N)) \u2014 because we are generating all subsets of the set S and calculating their sums, and then calculating the Fibonacci numbers.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the set S and the Fibonacci numbers.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 99991\n#define MAXN 50000\nlong long fib[MAXN + 1];\nvoid calculateFibonacci() {\n    fib[1] = 1;\n    fib[2] = 1;\n    for (int i = 3; i <= MAXN; i++) {\n        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;\n    }\n}\nlong long calculateSubsetSum(int* arr, int n, int k) {\n    long long sum = 0;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        long long subsetSum = 0;\n        int count = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subsetSum += arr[i];\n                count++;\n            }\n        }\n        if (count == k) {\n            sum = (sum + fib[count]) % MOD;\n        }\n    }\n    return sum;\n}\nint main() {\n    int t = 1;\n    while (t--) {\n        int n, k;\n        scanf(\"%d %d\", &n, &k);\n        int* arr = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        calculateFibonacci();\n        long long result = calculateSubsetSum(arr, n, k);\n        printf(\"%lld\\n\", result);\n        free(arr);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 99991\n#define MAXN 50000\nlong long fib[MAXN + 1];\nvoid calculateFibonacci() {\n    fib[1] = 1;\n    fib[2] = 1;\n    for (int i = 3; i <= MAXN; i++) {\n        fib[i] = (fib[i - 1] + fib[i - 2]) % MOD;\n    }\n}\nlong long calculateSubsetSum(std::vector<int>& arr, int n, int k) {\n    long long sum = 0;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        long long subsetSum = 0;\n        int count = 0;\n        for (int i = 0; i < n; i++) {\n            if ((mask & (1 << i)) != 0) {\n                subsetSum += arr[i];\n                count++;\n            }\n        }\n        if (count == k) {\n            sum = (sum + fib[count]) % MOD;\n        }\n    }\n    return sum;\n}\nint main() {\n    int t = 1;\n    while (t--) {\n        int n, k;\n        std::cin >> n >> k;\n        std::vector<int> arr(n);\n        for (int i = 0; i < n; i++) {\n            std::cin >> arr[i];\n        }\n        calculateFibonacci();\n        long long result = calculateSubsetSum(arr, n, k);\n        std::cout << result << std::endl;\n    }\n    return 0;\n}",

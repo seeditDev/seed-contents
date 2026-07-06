@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Sorting",
       "Greedy Algorithm",
-      "Sorting"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,11 +22,11 @@
   "content": {
     "problemStatement": "Chef Ciel got enormous cooking power from the Evil Book.\nInstead, Ciel must devote 666 magical power to the Evil Book.\n\n\n\nOther than Ciel, there are **N** chefs in the world.\nThe **i**-th chef has **Ci** cooking power and **Mi** magical power.\nCiel may get **Mi** magical power by defeating the **i**-th chef in a cooking battle, which needs **Ci** effort.\nAfter that, the **i**-th chef's magical power **Mi** becomes 0.\n\n\n\nThe Evil Book can help her, if she gives **X** magical power to the Evil Book.\nThat is, by consuming **X** magical power, she can choose some **i** and multiply by 1/3 both the **i**-th chef's cooking power **Ci** and his magical power **Mi**.\nNote that she can't take the help of the Evil Book unless she has at least **X** magical power.\n\n\n\nFirstly, Ciel has no magical power.\nWhat's the minimum total effort for collecting at least 666 magical power?",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 10",
-      "10 ≤ X < 666",
-      "0 ≤ Ci ≤ 10^9",
-      "0 ≤ Mi ≤ 10^9"
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 10",
+      "10 \u2264 X < 666",
+      "0 \u2264 Ci \u2264 10^9",
+      "0 \u2264 Mi \u2264 10^9"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Then T test cases follow. Each test case contains N+1 lines. The first line for each test case has 2 integers N and X. The (i+1)-th line for each test case has 2 integers Ci and Mi.",
     "outputFormat": "For each test case, print the minimum total effort (rounded to the nearest integer) for collecting at least 666 magical power. If it is impossible to collect 666 magical power, print 'impossible'.",
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The key insight is to sort the chefs based on the ratio of their cooking power to their magical power. Then, we iterate over the sorted list and add the cooking power and magical power of each chef to the total effort and total magical power, respectively. If we have enough magical power to use the Evil Book, we divide the cooking power and magical power of the current chef by 3 and subtract X from the total magical power.",
     "timeComplexity": "O(T * N log N) per test case, O(T * N log N) total. The sorting operation takes O(N log N) time, and we do this for each test case.",
-    "spaceComplexity": "O(N) — we need to store the list of chefs.",
+    "spaceComplexity": "O(N) \u2014 we need to store the list of chefs.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <math.h>\n#define MAX_N 100\n#define MAX_MAGICAL_POWER 1000000000\n\nstruct Chef {\n    int cookingPower;\n    int magicalPower;\n};\n\nint compareChefs(const void *a, const void *b) {\n    struct Chef *chefA = (struct Chef *)a;\n    struct Chef *chefB = (struct Chef *)b;\n    double ratioA = (double)chefA->cookingPower / chefA->magicalPower;\n    double ratioB = (double)chefB->cookingPower / chefB->magicalPower;\n    if (ratioA < ratioB) return -1;\n    if (ratioA > ratioB) return 1;\n    return 0;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int t = 0; t < T; t++) {\n        int N, X;\n        scanf(\"%d %d\", &N, &X);\n        struct Chef chefs[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &chefs[i].cookingPower, &chefs[i].magicalPower);\n        }\n        qsort(chefs, N, sizeof(struct Chef), compareChefs);\n        int totalEffort = 0;\n        int totalMagicalPower = 0;\n        for (int i = 0; i < N; i++) {\n            if (totalMagicalPower >= X) {\n                chefs[i].cookingPower /= 3;\n                chefs[i].magicalPower /= 3;\n                totalMagicalPower -= X;\n            }\n            totalEffort += chefs[i].cookingPower;\n            totalMagicalPower += chefs[i].magicalPower;\n            if (totalMagicalPower >= 666) break;\n        }\n        if (totalMagicalPower >= 666) {\n            printf(\"%d\\n\", (int)round(totalEffort));\n        } else {\n            printf(\"impossible\\n\");\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nstruct Chef {\n    int cookingPower;\n    int magicalPower;\n};\n\nbool compareChefs(const Chef &a, const Chef &b) {\n    return (double)a.cookingPower / a.magicalPower < (double)b.cookingPower / b.magicalPower;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    for (int t = 0; t < T; t++) {\n        int N, X;\n        cin >> N >> X;\n        Chef chefs[N];\n        for (int i = 0; i < N; i++) {\n            cin >> chefs[i].cookingPower >> chefs[i].magicalPower;\n        }\n        sort(chefs, chefs + N, compareChefs);\n        int totalEffort = 0;\n        int totalMagicalPower = 0;\n        for (int i = 0; i < N; i++) {\n            if (totalMagicalPower >= X) {\n                chefs[i].cookingPower /= 3;\n                chefs[i].magicalPower /= 3;\n                totalMagicalPower -= X;\n            }\n            totalEffort += chefs[i].cookingPower;\n            totalMagicalPower += chefs[i].magicalPower;\n            if (totalMagicalPower >= 666) break;\n        }\n        if (totalMagicalPower >= 666) {\n            cout << (int)round(totalEffort) << endl;\n        } else {\n            cout << \"impossible\" << endl;\n        }\n    }\n    return 0;\n}",

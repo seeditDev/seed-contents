@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Bit Manipulation | Greedy",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Gray code",
-      "XOR",
       "Permutation counting",
-      "Bitwise operations"
+      "XOR",
+      "Gray code",
+      "Bitwise operations",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +22,20 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef's professor gave him homework to find a permutation of length 2N2^N2N such that each integer from 000 to 2N−12^N  - 12N−1 appears **exactly once** in the permutation and the maximum bitwise XOR of any **even length** subarray is minimized.\n\nChef wonders how many such permutations are there. Help Chef to find out the number of permutations modulo (109+7)(10^9 + 7)(109+7), satisfying the above conditions and also help him find one such permutation.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nThe only line of each test case contains an integer NNN.\n\n\nOutput Format\n\nFor each test case, print two lines of output.\nIn the first line, print the number of permutations modulo (109+7)(10^9+7)(109+7), for which maximum bitwise xor of any even-length subarray is minimized.\nIn the next line, print 2N2^N2N space-separated numbers denoting any such permutation.",
+    "problemStatement": "Chef's professor gave him homework to find a permutation of length 2N2^N2N such that each integer from 000 to 2N\u221212^N  - 12N\u22121 appears **exactly once** in the permutation and the maximum bitwise XOR of any **even length** subarray is minimized.\n\nChef wonders how many such permutations are there. Help Chef to find out the number of permutations modulo (109+7)(10^9 + 7)(109+7), satisfying the above conditions and also help him find one such permutation.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nThe only line of each test case contains an integer NNN.\n\n\nOutput Format\n\nFor each test case, print two lines of output.\nIn the first line, print the number of permutations modulo (109+7)(10^9+7)(109+7), for which maximum bitwise xor of any even-length subarray is minimized.\nIn the next line, print 2N2^N2N space-separated numbers denoting any such permutation.",
     "constraints": [
-      "1 ≤ T ≤ 18",
-      "1 ≤ N ≤ 18",
-      "Sum of 2^N over all test cases ≤ 10^6"
+      "1 \u2264 T \u2264 18",
+      "1 \u2264 N \u2264 18",
+      "Sum of 2^N over all test cases \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then T lines follow, each containing a single integer N.\nFor each test case you have to consider the set {0,1,…,2^N‑1}.",
-    "outputFormat": "For each test case output two lines.\nFirst line: the number of permutations of length 2^N that achieve the minimal possible value of the maximum XOR of any even‑length subarray, modulo 1 000 000 007.\nSecond line: any one such optimal permutation – 2^N space‑separated integers.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Then T lines follow, each containing a single integer N.\nFor each test case you have to consider the set {0,1,\u2026,2^N\u20111}.",
+    "outputFormat": "For each test case output two lines.\nFirst line: the number of permutations of length 2^N that achieve the minimal possible value of the maximum XOR of any even\u2011length subarray, modulo 1\u202f000\u202f000\u202f007.\nSecond line: any one such optimal permutation \u2013 2^N space\u2011separated integers.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n1\n2",
         "output": "2\n0 1\n8\n3 2 0 1",
-        "explanation": "For N=1 the set is {0,1}. Both permutations [0,1] and [1,0] achieve the minimal maximal XOR (which is 1). Hence count = 1·2^1 = 2. The program prints one of them, e.g., 0 1.\nFor N=2 the set is {0,1,2,3}. The permutation produced by the algorithm is (i xor (i>>1)) xor 3 → [3,2,0,1]. The maximal XOR over all even‑length subarrays equals 2, which is optimal. The number of optimal permutations is 2·2^2 = 8."
+        "explanation": "For N=1 the set is {0,1}. Both permutations [0,1] and [1,0] achieve the minimal maximal XOR (which is 1). Hence count = 1\u00b72^1 = 2. The program prints one of them, e.g., 0 1.\nFor N=2 the set is {0,1,2,3}. The permutation produced by the algorithm is (i xor (i>>1)) xor 3 \u2192 [3,2,0,1]. The maximal XOR over all even\u2011length subarrays equals 2, which is optimal. The number of optimal permutations is 2\u00b72^2 = 8."
       }
     ]
   },
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed N the optimal value of the maximal XOR over all even‑length subarrays is N. It can be achieved by any permutation that is a bitwise complement of the binary Gray code of order N. The Gray code G(i)=i xor (i>>1) visits every number from 0 to 2^N‑1 exactly once and any two consecutive elements differ in exactly one bit. If we complement every element (X xor (2^N‑1)) the same property holds and the XOR of any even‑length subarray never exceeds N. Hence every permutation of the form P[i] = (i xor (i>>1)) xor ((1<<N)-1) is optimal.\n\nCounting optimal permutations: the first element of the Gray code can be chosen arbitrarily among the 2^N numbers, and the direction (forward or reverse) can be chosen independently for each of the N bits, giving exactly N·2^N distinct optimal permutations. Therefore the answer for the count is N·2^N (mod 1e9+7).\n\nAlgorithm per test case:\n1. Compute pow = 1<<N and mask = pow‑1.\n2. Count = (N * pow) mod MOD.\n3. Build the permutation: for i from 0 to pow‑1, val = (i ^ (i>>1)) ^ mask; store val.\n4. Output count and the permutation.\nThe construction runs in O(2^N) time and O(2^N) memory, which satisfies the limits.",
-    "timeComplexity": "O(2^N) per test case (total O( Σ 2^N ) ≤ 10^6).",
+    "approach": "For a fixed N the optimal value of the maximal XOR over all even\u2011length subarrays is N. It can be achieved by any permutation that is a bitwise complement of the binary Gray code of order N. The Gray code G(i)=i xor (i>>1) visits every number from 0 to 2^N\u20111 exactly once and any two consecutive elements differ in exactly one bit. If we complement every element (X xor (2^N\u20111)) the same property holds and the XOR of any even\u2011length subarray never exceeds N. Hence every permutation of the form P[i] = (i xor (i>>1)) xor ((1<<N)-1) is optimal.\n\nCounting optimal permutations: the first element of the Gray code can be chosen arbitrarily among the 2^N numbers, and the direction (forward or reverse) can be chosen independently for each of the N bits, giving exactly N\u00b72^N distinct optimal permutations. Therefore the answer for the count is N\u00b72^N (mod 1e9+7).\n\nAlgorithm per test case:\n1. Compute pow = 1<<N and mask = pow\u20111.\n2. Count = (N * pow) mod MOD.\n3. Build the permutation: for i from 0 to pow\u20111, val = (i ^ (i>>1)) ^ mask; store val.\n4. Output count and the permutation.\nThe construction runs in O(2^N) time and O(2^N) memory, which satisfies the limits.",
+    "timeComplexity": "O(2^N) per test case (total O( \u03a3 2^N ) \u2264 10^6).",
     "spaceComplexity": "O(2^N) for the permutation of the current test case.",
     "code": {
       "C": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007LL;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        long long pow = 1LL<<N;\n        long long cnt = ( (long long)N * pow ) % MOD;\n        cout<<cnt<<\"\\n\";\n        long long mask = pow-1;\n        for(long long i=0;i<pow;i++){\n            long long val = (i ^ (i>>1)) ^ mask;\n            cout<<val<<(i+1==pow? '\\n':' ');\n        }\n    }\n    return 0;\n}",

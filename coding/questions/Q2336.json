@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Binary Strings",
       "Hash Function",
-      "Memoization",
-      "Binary Strings"
+      "Dynamic Programming",
+      "Memoization"
     ],
     "companyTags": [],
     "topicTags": [
@@ -116,7 +117,7 @@
   "solution": {
     "approach": "The problem can be solved using dynamic programming with memoization. The idea is to calculate the hash value for each possible binary string and store the results in a memoization table to avoid redundant calculations. The hash function is defined recursively, and we can use a bottom-up approach to fill the memoization table.",
     "timeComplexity": "O(T * A * E * V) per test case, O(T * A * E * V) total. The precomputation is done once for each test case.",
-    "spaceComplexity": "O(A * E * V) — the dominant structure is the memoization table.",
+    "spaceComplexity": "O(A * E * V) \u2014 the dominant structure is the memoization table.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MOD 1000000007\nint dp[51][51][1001];\nint hash(int A, int E, int V) {\n    if (A == 0 && E == 0) return V == 0;\n    if (V < A) return 0;\n    if (dp[A][E][V] != -1) return dp[A][E][V];\n    int res = 0;\n    for (int i = 0; i <= E; i++) {\n        int j = E - i;\n        res += hash(A, i, V - A) * hash(0, j, 0);\n        res %= MOD;\n    }\n    dp[A][E][V] = res;\n    return res;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int A, E, V;\n        scanf(\"%d %d %d\", &A, &E, &V);\n        memset(dp, -1, sizeof(dp));\n        printf(\"%d\\n\", hash(A, E, V));\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#define MOD 1000000007\nusing namespace std;\nint dp[51][51][1001];\nint hash(int A, int E, int V) {\n    if (A == 0 && E == 0) return V == 0;\n    if (V < A) return 0;\n    if (dp[A][E][V] != -1) return dp[A][E][V];\n    int res = 0;\n    for (int i = 0; i <= E; i++) {\n        int j = E - i;\n        res += hash(A, i, V - A) * hash(0, j, 0);\n        res %= MOD;\n    }\n    dp[A][E][V] = res;\n    return res;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int A, E, V;\n        cin >> A >> E >> V;\n        memset(dp, -1, sizeof(dp));\n        cout << hash(A, E, V) << endl;\n    }\n    return 0;\n}",

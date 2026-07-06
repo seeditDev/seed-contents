@@ -6,14 +6,15 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Binary Tree",
-      "Preorder Traversal",
+      "Graphs",
+      "Stack",
       "Iterative Approach",
-      "Stack"
+      "Preorder Traversal"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,11 +22,11 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given the level-order representation of a binary tree (with `null` representing missing nodes).\nYour task is to print the **preorder traversal** (Root → Left → Right) of the binary tree.\n\nFollow-upThe recursive approach is simple — can you implement it **iteratively** using a stack?\n\n**Function Declaration****Function Name**preorderTraversalpreorderTraversalpreorderTraversal\n\n**Parameters**\nrootrootroot : A pointer/reference to the root node of the binary tree.\n**Return Value**\nReturns an **array of integers**.\nConstraints:\n1≤T≤101 \\leq T \\leq 101≤T≤10\n0≤N≤1000 \\leq N \\leq 1000≤N≤100\n−100≤Node.val≤100-100 \\leq \\text{Node.val} \\leq 100−100≤Node.val≤100\nThe input represents a valid binary tree structure.",
+    "problemStatement": "You are given the level-order representation of a binary tree (with `null` representing missing nodes).\nYour task is to print the **preorder traversal** (Root \u2192 Left \u2192 Right) of the binary tree.\n\nFollow-upThe recursive approach is simple \u2014 can you implement it **iteratively** using a stack?\n\n**Function Declaration****Function Name**preorderTraversalpreorderTraversalpreorderTraversal\n\n**Parameters**\nrootrootroot : A pointer/reference to the root node of the binary tree.\n**Return Value**\nReturns an **array of integers**.\nConstraints:\n1\u2264T\u2264101 \\leq T \\leq 101\u2264T\u226410\n0\u2264N\u22641000 \\leq N \\leq 1000\u2264N\u2264100\n\u2212100\u2264Node.val\u2264100-100 \\leq \\text{Node.val} \\leq 100\u2212100\u2264Node.val\u2264100\nThe input represents a valid binary tree structure.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 1000",
-      "-100 ≤ Node.val ≤ 100"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 1000",
+      "-100 \u2264 Node.val \u2264 100"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: The first line contains an integer N, the number of elements in the array. The second line contains N space-separated integers representing the level-order traversal of the binary tree. Use -1 to denote a missing (non-existent) child.",
     "outputFormat": "For each test case, print the preorder traversal of the tree as space-separated values.",
@@ -109,8 +110,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we will first create a binary tree from the given level-order traversal. Then, we will use an iterative approach with a stack to perform the preorder traversal of the tree. The preorder traversal visits the root node first, then recursively traverses the left subtree, and finally the right subtree.",
-    "timeComplexity": "O(N) — where N is the number of nodes in the tree. This is because we visit each node exactly once during the preorder traversal.",
-    "spaceComplexity": "O(N) — where N is the number of nodes in the tree. This is because in the worst case, the stack can contain all nodes at the last level of the tree, which can have up to N/2 nodes.",
+    "timeComplexity": "O(N) \u2014 where N is the number of nodes in the tree. This is because we visit each node exactly once during the preorder traversal.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of nodes in the tree. This is because in the worst case, the stack can contain all nodes at the last level of the tree, which can have up to N/2 nodes.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Define the structure for a tree node\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n// Function to create a new node\nNode* createNode(int val) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    if (!newNode) {\n        printf(\"Memory error\n\");\n        return NULL;\n    }\n    newNode->val = val;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to perform preorder traversal iteratively\nvoid preorderTraversal(Node* root) {\n    if (root == NULL) return;\n\n    // Create a stack and push the root node\n    Node** stack = (Node**) malloc(sizeof(Node*) * 1000);\n    int top = -1;\n    stack[++top] = root;\n\n    while (top != -1) {\n        Node* temp = stack[top--];\n        printf(\"%d \", temp->val);\n\n        // Push right and left children into the stack\n        if (temp->right) stack[++top] = temp->right;\n        if (temp->left) stack[++top] = temp->left;\n    }\n    free(stack);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        Node* root = NULL;\n        Node** nodes = (Node**) malloc(sizeof(Node*) * N);\n        for (int i = 0; i < N; i++) {\n            int val;\n            scanf(\"%d\", &val);\n            if (val == -1) {\n                nodes[i] = NULL;\n            } else {\n                nodes[i] = createNode(val);\n            }\n        }\n        // Create the binary tree from the level-order traversal\n        if (N > 0 && nodes[0] != NULL) {\n            root = nodes[0];\n            int index = 0;\n            for (int i = 0; i < N; i++) {\n                if (nodes[i] == NULL) continue;\n                index++;\n                if (index < N) nodes[i]->left = nodes[index];\n                index++;\n                if (index < N) nodes[i]->right = nodes[index];\n            }\n        }\n        preorderTraversal(root);\n        printf(\"\\n\");\n        free(nodes);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <stack>\nusing namespace std;\n\n// Define the structure for a tree node\nstruct Node {\n    int val;\n    Node* left;\n    Node* right;\n};\n\n// Function to create a new node\nNode* createNode(int val) {\n    Node* newNode = new Node();\n    newNode->val = val;\n    newNode->left = newNode->right = NULL;\n    return newNode;\n}\n\n// Function to perform preorder traversal iteratively\nvoid preorderTraversal(Node* root) {\n    if (root == NULL) return;\n\n    // Create a stack and push the root node\n    stack<Node*> s;\n    s.push(root);\n\n    while (!s.empty()) {\n        Node* temp = s.top();\n        s.pop();\n        cout << temp->val << \" \";\n\n        // Push right and left children into the stack\n        if (temp->right) s.push(temp->right);\n        if (temp->left) s.push(temp->left);\n    }\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        Node* root = NULL;\n        Node** nodes = new Node*[N];\n        for (int i = 0; i < N; i++) {\n            int val;\n            cin >> val;\n            if (val == -1) {\n                nodes[i] = NULL;\n            } else {\n                nodes[i] = createNode(val);\n            }\n        }\n        // Create the binary tree from the level-order traversal\n        if (N > 0 && nodes[0] != NULL) {\n            root = nodes[0];\n            int index = 0;\n            for (int i = 0; i < N; i++) {\n                if (nodes[i] == NULL) continue;\n                index++;\n                if (index < N) nodes[i]->left = nodes[index];\n                index++;\n                if (index < N) nodes[i]->right = nodes[index];\n            }\n        }\n        preorderTraversal(root);\n        cout << endl;\n        delete[] nodes;\n    }\n    return 0;\n}",

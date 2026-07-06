@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Prefix Sum",
       "Sliding Window",
-      "Majority Vote"
+      "Majority Vote",
+      "Prefix Sum",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "The country of BitLand is divided into **N** districts, and these districts are arranged in a circle: **1, 2, 3, ..., N**, where **i** and **i+1** are adjacent for all **1 ≤ i ≤ N-1**, and also **1** and **N** are adjacent. It is given that **N = o1 * o2**, where **o1** and **o2** are odd integers.\n\n\n\nThere are only 2 political parties in BitLand: the Zeros and the Ones. There was an election, in which each district chose it's representative who is either a Zero or a One. We know this data. i.e. for each of the **N** districts, we know whether their representative is a Zero or a One.\n\n\n\nThe **N** districts should be partitioned into **o1** states, where each state consists of **o2** consecutive districts.\n\n\nFor example, if **o1 = 5** and **o2=3**, then **N=15**, and {1,2,3} would be a valid state. {2,3,4}, {13,14,15}, {14,15,1}, {15,1,2} are other examples of valid states. But {3,5,6} is not a valid state, because the districts are not consecutive.\n\n\n\nA state gets a One Governor if, among all the **o2** district representatives belonging to it, there are more One district representatives than Zero representatives. And it gets a Governor who is from the Zero party, if the majority of its district representatives are from the Zero party. And because **o2** is odd, there will be no ties.\n\n\n\nThe President of BitLand will be a One if the majority of the **o1** state Governors are Ones. Otherwise, the President will be from the Zero party.\n\n\n\nBut the state boundaries have not been fixed yet. Given just the district-wise data (i.e. whether each district's representative is a Zero or a One), you need to find if there is a way to partition them into states such that the President is a One.",
+    "problemStatement": "The country of BitLand is divided into **N** districts, and these districts are arranged in a circle: **1, 2, 3, ..., N**, where **i** and **i+1** are adjacent for all **1 \u2264 i \u2264 N-1**, and also **1** and **N** are adjacent. It is given that **N = o1 * o2**, where **o1** and **o2** are odd integers.\n\n\n\nThere are only 2 political parties in BitLand: the Zeros and the Ones. There was an election, in which each district chose it's representative who is either a Zero or a One. We know this data. i.e. for each of the **N** districts, we know whether their representative is a Zero or a One.\n\n\n\nThe **N** districts should be partitioned into **o1** states, where each state consists of **o2** consecutive districts.\n\n\nFor example, if **o1 = 5** and **o2=3**, then **N=15**, and {1,2,3} would be a valid state. {2,3,4}, {13,14,15}, {14,15,1}, {15,1,2} are other examples of valid states. But {3,5,6} is not a valid state, because the districts are not consecutive.\n\n\n\nA state gets a One Governor if, among all the **o2** district representatives belonging to it, there are more One district representatives than Zero representatives. And it gets a Governor who is from the Zero party, if the majority of its district representatives are from the Zero party. And because **o2** is odd, there will be no ties.\n\n\n\nThe President of BitLand will be a One if the majority of the **o1** state Governors are Ones. Otherwise, the President will be from the Zero party.\n\n\n\nBut the state boundaries have not been fixed yet. Given just the district-wise data (i.e. whether each district's representative is a Zero or a One), you need to find if there is a way to partition them into states such that the President is a One.",
     "constraints": [
-      "1 ≤ T ≤ 100",
+      "1 \u2264 T \u2264 100",
       "o1,o2 will be odd positive integers.",
-      "1 ≤ Summation of o1*o2 over all testcases ≤ 10^6",
-      "0 ≤ di ≤ 1"
+      "1 \u2264 Summation of o1*o2 over all testcases \u2264 10^6",
+      "0 \u2264 di \u2264 1"
     ],
     "inputFormat": "The first line contains one integer, T, which is the number of testcases. The first line of each testcase contains two space separated integers, o1 and o2, which are the number of states, and number of districts in each state, respectively. The next line of each testcase contains N = o1 * o2 space separated integers: d1, d2, .., dN. If di is 1, then it signifies that District i has chosen a One representative. If di is 0, then they have a Zero representative.",
     "outputFormat": "Each testcase should be in a new line, and should contain 1, if the President can be a One, and 0 otherwise.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a prefix sum array to keep track of the cumulative sum of the district representatives. Then, we can use a sliding window of size o2 to calculate the majority vote for each state. If the majority vote for a state is 1, we increment the count of One Governors. Finally, we check if the count of One Governors is more than half of o1. If it is, we output 1, otherwise we output 0.",
-    "timeComplexity": "O(T * o1 * o2) — because we are iterating over all test cases, and for each test case, we are iterating over all districts to calculate the prefix sum, and then iterating over all possible states to calculate the majority vote.",
-    "spaceComplexity": "O(o1 * o2) — because we need to store the prefix sum array and the district representatives array.",
+    "timeComplexity": "O(T * o1 * o2) \u2014 because we are iterating over all test cases, and for each test case, we are iterating over all districts to calculate the prefix sum, and then iterating over all possible states to calculate the majority vote.",
+    "spaceComplexity": "O(o1 * o2) \u2014 because we need to store the prefix sum array and the district representatives array.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int o1, o2;\n        scanf(\"%d %d\", &o1, &o2);\n        int N = o1 * o2;\n        int d[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &d[i]);\n        }\n        int prefixSum[N + 1] = {0};\n        for (int i = 0; i < N; i++) {\n            prefixSum[i + 1] = prefixSum[i] + d[i];\n        }\n        int oneGovernors = 0;\n        for (int i = 0; i < o1; i++) {\n            int stateSum = prefixSum[i * o2 + o2] - prefixSum[i * o2];\n            if (stateSum > o2 / 2) {\n                oneGovernors++;\n            }\n        }\n        if (oneGovernors > o1 / 2) {\n            printf(\"1\\n\");\n        } else {\n            printf(\"0\\n\");\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int o1, o2;\n        cin >> o1 >> o2;\n        int N = o1 * o2;\n        int d[N];\n        for (int i = 0; i < N; i++) {\n            cin >> d[i];\n        }\n        int prefixSum[N + 1] = {0};\n        for (int i = 0; i < N; i++) {\n            prefixSum[i + 1] = prefixSum[i] + d[i];\n        }\n        int oneGovernors = 0;\n        for (int i = 0; i < o1; i++) {\n            int stateSum = prefixSum[i * o2 + o2] - prefixSum[i * o2];\n            if (stateSum > o2 / 2) {\n                oneGovernors++;\n            }\n        }\n        if (oneGovernors > o1 / 2) {\n            cout << 1 << endl;\n        } else {\n            cout << 0 << endl;\n        }\n    }\n    return 0;\n}",

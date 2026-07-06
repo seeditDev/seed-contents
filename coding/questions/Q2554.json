@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "String Manipulation",
+      "Simulation",
       "Mapping",
-      "Simulation"
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,13 +23,13 @@
   "content": {
     "problemStatement": "A tourist is visiting Byteland. The tourist knows English very well. The language of Byteland is rather different from English. To be exact it differs in following points:\n\n\nBytelandian alphabet has the same letters as English one, but possibly different in meaning. Like 'A' in Bytelandian may be 'M' in English. However this does **not** mean that 'M' in Bytelandian must be 'A' in English. More formally, Bytelindian alphabet is a permutation of English alphabet. It will be given to you and could be any possible permutation. Don't assume any other condition.\nPeople of Byteland don't like to use invisible character for separating words. Hence instead of space (' ') they use underscore ('_'). Other punctuation symbols, like '?', '!' remain the same as in English.\nThe tourist is carrying \"The dummies guide to Bytelandian\", for translation. The book is serving his purpose nicely. But he is addicted to sharing on BaceFook, and shares his numerous conversations in Byteland on it. The conversations are rather long, and it is quite tedious to translate for his English friends, so he asks you to help him by writing a program to do the same.",
     "constraints": [
-      "1 ≤ T ≤ 100",
+      "1 \u2264 T \u2264 100",
       "M is a permutation of the 26 lowercase English letters",
-      "1 ≤ length of each sentence ≤ 100",
+      "1 \u2264 length of each sentence \u2264 100",
       "Sentences contain only letters, '_' and the punctuation symbols . , ! ?"
     ],
-    "inputFormat": "The first line contains an integer T and a string M separated by a space. T is the number of test cases (1 ≤ T ≤ 100). M is a permutation of the 26 English lowercase letters representing the Bytelandian→English mapping for lowercase letters. Then T lines follow, each line is a Bytelandian sentence S (1 ≤ |S| ≤ 100) consisting of letters (a‑z, A‑Z), underscores '_' and punctuation symbols '.', ',', '!', '?'.",
-    "outputFormat": "For each test case output the English translation of S on its own line. Replace every '_' with a space, translate each lowercase letter c to M[c‑'a'], translate each uppercase letter C to the uppercase of M[lower(C)‑'a'], and keep punctuation unchanged.",
+    "inputFormat": "The first line contains an integer T and a string M separated by a space. T is the number of test cases (1 \u2264 T \u2264 100). M is a permutation of the 26 English lowercase letters representing the Bytelandian\u2192English mapping for lowercase letters. Then T lines follow, each line is a Bytelandian sentence S (1\u202f\u2264\u202f|S|\u202f\u2264\u202f100) consisting of letters (a\u2011z, A\u2011Z), underscores '_' and punctuation symbols '.', ',', '!', '?'.",
+    "outputFormat": "For each test case output the English translation of S on its own line. Replace every '_' with a space, translate each lowercase letter c to M[c\u2011'a'], translate each uppercase letter C to the uppercase of M[lower(C)\u2011'a'], and keep punctuation unchanged.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "Create a direct lookup table from Bytelandian letters to English letters using the given permutation M. For each character of a sentence: if it is '_' output a space; if it is a lowercase letter replace it by M[letter‑'a']; if it is an uppercase letter replace it by the uppercase of M[lower‑'a']; otherwise (punctuation) copy it unchanged. Process each test case independently. The algorithm runs in O(total number of characters) time and O(1) extra space.",
-    "timeComplexity": "O(total length of all sentences) ≤ O(T·100)",
+    "approach": "Create a direct lookup table from Bytelandian letters to English letters using the given permutation M. For each character of a sentence: if it is '_' output a space; if it is a lowercase letter replace it by M[letter\u2011'a']; if it is an uppercase letter replace it by the uppercase of M[lower\u2011'a']; otherwise (punctuation) copy it unchanged. Process each test case independently. The algorithm runs in O(total number of characters) time and O(1) extra space.",
+    "timeComplexity": "O(total length of all sentences) \u2264 O(T\u00b7100)",
     "spaceComplexity": "O(1) besides the input strings",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\nint main(){\n    int T; char M[27];\n    if(scanf(\"%d %26s\", &T, M)!=2) return 0;\n    getchar(); // consume newline after M\n    char S[101];\n    while(T--){\n        if(!fgets(S,101,stdin)) break;\n        S[strcspn(S,\"\\n\")] = '\\0';\n        for(int i=0; S[i]; ++i){\n            if(S[i]=='_') S[i]=' ';\n            else if(islower(S[i])) S[i]=M[S[i]-'a'];\n            else if(isupper(S[i])) S[i]=toupper(M[tolower(S[i])-'a']);\n        }\n        printf(\"%s\\n\", S);\n    }\n    return 0;\n}",

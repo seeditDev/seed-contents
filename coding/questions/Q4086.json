@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Dynamic Programming",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
+      "Successive Differences",
       "Longest Common Subsequence",
       "Dynamic Programming",
-      "Successive Differences"
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Indraneel's student has given him data from two sets of experiments that the student has performed. Indraneel wants to establish a correlation between the two sets of data. Each data set is a sequence of NNN numbers. The two data sets do not match number for number, but Indraneel believes that this is because data has been shifted due to inexact tuning of the equipment.\n\nFor example, consider the following two sequences:\n\n \n\n`  3  8   4  23  9  11  28\n  2  3  22  26  8  16  12\n` \n\nIndraneel observes that if we consider the subsequences 3,4,23,93,4,23,93,4,23,9 and 2,3,22,82,3,22,82,3,22,8 and examine their successive differences we get 1,19,−141,19,-141,19,−14. He considers these two subsequences to be \"identical\". He would like to find the longest such pair of subsequences so that the successive differences are identical. Your task is to help him do this.\n\nInput:The first line of the input will contain a single integer NNN indicating the number of data points in each of Indraneel's student's data sets. This is followed by two lines, each containing NNN integers.\n\nOutput:The output consists of three lines. The first line of output contains a single integer indicating the length of the longest pair of subsequences (one from each sequence) that has identical successive differences. This is followed by two lines each containing the corresponding subsequences. If there is more than one answer, it suffices to print one.",
+    "problemStatement": "Indraneel's student has given him data from two sets of experiments that the student has performed. Indraneel wants to establish a correlation between the two sets of data. Each data set is a sequence of NNN numbers. The two data sets do not match number for number, but Indraneel believes that this is because data has been shifted due to inexact tuning of the equipment.\n\nFor example, consider the following two sequences:\n\n \n\n`  3  8   4  23  9  11  28\n  2  3  22  26  8  16  12\n` \n\nIndraneel observes that if we consider the subsequences 3,4,23,93,4,23,93,4,23,9 and 2,3,22,82,3,22,82,3,22,8 and examine their successive differences we get 1,19,\u2212141,19,-141,19,\u221214. He considers these two subsequences to be \"identical\". He would like to find the longest such pair of subsequences so that the successive differences are identical. Your task is to help him do this.\n\nInput:The first line of the input will contain a single integer NNN indicating the number of data points in each of Indraneel's student's data sets. This is followed by two lines, each containing NNN integers.\n\nOutput:The output consists of three lines. The first line of output contains a single integer indicating the length of the longest pair of subsequences (one from each sequence) that has identical successive differences. This is followed by two lines each containing the corresponding subsequences. If there is more than one answer, it suffices to print one.",
     "constraints": [
       "1 <= N <= 150",
       "0 <= each data point <= 1000"
@@ -101,8 +102,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to find the longest common subsequence of successive differences between the two sequences. We first calculate the successive differences for each sequence, then use a 2D array to store the lengths of common subsequences. We iterate over the differences, updating the lengths of common subsequences and keeping track of the maximum length found. Finally, we reconstruct the longest pair of subsequences with identical successive differences.",
-    "timeComplexity": "O(N^2) — we iterate over the sequences to calculate successive differences, then over the differences to find the longest common subsequence.",
-    "spaceComplexity": "O(N^2) — we use a 2D array to store the lengths of common subsequences.",
+    "timeComplexity": "O(N^2) \u2014 we iterate over the sequences to calculate successive differences, then over the differences to find the longest common subsequence.",
+    "spaceComplexity": "O(N^2) \u2014 we use a 2D array to store the lengths of common subsequences.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 150\n\nint max(int a, int b) { return a > b ? a : b; }\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int seq1[MAXN], seq2[MAXN];\n    for (int i = 0; i < N; i++) scanf(\"%d\", &seq1[i]);\n    for (int i = 0; i < N; i++) scanf(\"%d\", &seq2[i]);\n\n    int diff1[MAXN - 1], diff2[MAXN - 1];\n    for (int i = 0; i < N - 1; i++) {\n        diff1[i] = seq1[i + 1] - seq1[i];\n        diff2[i] = seq2[i + 1] - seq2[i];\n    }\n\n    int dp[MAXN][MAXN] = {0};\n    int maxLen = 0, maxEnd1 = 0, maxEnd2 = 0;\n    for (int i = 0; i < N - 1; i++) {\n        for (int j = 0; j < N - 1; j++) {\n            if (diff1[i] == diff2[j]) {\n                if (i == 0 || j == 0) dp[i][j] = 1;\n                else dp[i][j] = dp[i - 1][j - 1] + 1;\n                if (dp[i][j] > maxLen) {\n                    maxLen = dp[i][j];\n                    maxEnd1 = i;\n                    maxEnd2 = j;\n                }\n            }\n        }\n    }\n\n    printf(\"%d\\n\", maxLen + 1);\n    for (int i = maxEnd1; i >= maxEnd1 - maxLen + 1; i--) printf(\"%d \", seq1[i]);\n    printf(\"\\n\");\n    for (int i = maxEnd2; i >= maxEnd2 - maxLen + 1; i--) printf(\"%d \", seq2[i]);\n    printf(\"\\n\");\n\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> seq1(N), seq2(N);\n    for (int i = 0; i < N; i++) cin >> seq1[i];\n    for (int i = 0; i < N; i++) cin >> seq2[i];\n\n    vector<int> diff1(N - 1), diff2(N - 1);\n    for (int i = 0; i < N - 1; i++) {\n        diff1[i] = seq1[i + 1] - seq1[i];\n        diff2[i] = seq2[i + 1] - seq2[i];\n    }\n\n    vector<vector<int>> dp(N, vector<int>(N, 0));\n    int maxLen = 0, maxEnd1 = 0, maxEnd2 = 0;\n    for (int i = 0; i < N - 1; i++) {\n        for (int j = 0; j < N - 1; j++) {\n            if (diff1[i] == diff2[j]) {\n                if (i == 0 || j == 0) dp[i][j] = 1;\n                else dp[i][j] = dp[i - 1][j - 1] + 1;\n                if (dp[i][j] > maxLen) {\n                    maxLen = dp[i][j];\n                    maxEnd1 = i;\n                    maxEnd2 = j;\n                }\n            }\n        }\n    }\n\n    cout << maxLen + 1 << endl;\n    for (int i = maxEnd1; i >= maxEnd1 - maxLen + 1; i--) cout << seq1[i] << \" \";\n    cout << endl;\n    for (int i = maxEnd2; i >= maxEnd2 - maxLen + 1; i--) cout << seq2[i] << \" \";\n    cout << endl;\n\n    return 0;\n}",

@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Minimal Operations",
       "Segment Transformation",
-      "Minimal Operations"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Read problems statements in Russian hereProblem StatementChef has a sequence of **N** segments: [**L1**, **R1**], [**L2**, **R2**], ..., [**LN**, **RN**]. He wants to transform the first segment to the last one (with index **N**). His plan is to do this big deal with a number of transformations: firstly he will transform\n\nthe first segment to the second one, then to the third one, then to the fourth one, and so on till **N**-th one.\n\n\nChef can use operation of a single type: shift one segment border by one unit. So, if he has segment [**L**, **R**], he can transform it into one of the following segments: [**L + 1**, **R**] (we will denote such operation with string L+), [**L**, **R + 1**] (will be denoted as R+), [**L - 1**, **R**] (L-), [**L**, **R - 1**] (R-). Chef doesn't like empty segments, therefore he cannot use any operation that makes a segment empty (**L = R**).\n\n\nChef really wants to transform his segment as fast as possible. Please, help him. Find the sequence with minimal number of operations that transforms his segment. If there are multiple such sequences pick the lexicographically minimal one.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "1 ≤ N ≤ 1000",
-      "-1000 ≤ Li < Ri ≤ 1000"
+      "1 \u2264 T \u2264 1000",
+      "1 \u2264 N \u2264 1000",
+      "-1000 \u2264 Li < Ri \u2264 1000"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with a line containing an integer N, the number of segments. The following N lines contain pairs of integers Li and Ri, denoting the i-th segment.",
     "outputFormat": "For each test case, print the minimal number of operations on a new line, followed by the sequence of operations without any whitespaces.",
@@ -102,7 +103,7 @@
   "solution": {
     "approach": "The key insight is to transform the segments one by one, starting from the first segment to the last. At each step, we choose the operation that minimizes the difference between the current segment and the target segment. We use a greedy approach to select the operations, ensuring that we always choose the operation that reduces the difference the most.",
     "timeComplexity": "O(N) per test case, O(T*N) total. No precomputation is done.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of segments.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of segments.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int Li, Ri, Lj, Rj;\n        scanf(\"%d %d\", &Li, &Ri);\n        int operations = 0;\n        char sequence[10000] = \"\";\n        for (int i = 1; i < N; i++) {\n            scanf(\"%d %d\", &Lj, &Rj);\n            while (Li < Lj) {\n                Li++;\n                operations++;\n                strcat(sequence, \"L+\");\n            }\n            while (Li > Lj) {\n                Li--;\n                operations++;\n                strcat(sequence, \"L-\");\n            }\n            while (Ri < Rj) {\n                Ri++;\n                operations++;\n                strcat(sequence, \"R+\");\n            }\n            while (Ri > Rj) {\n                Ri--;\n                operations++;\n                strcat(sequence, \"R-\");\n            }\n        }\n        printf(\"%d\\n\", operations);\n        printf(\"%s\\n\", sequence);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int Li, Ri, Lj, Rj;\n        cin >> Li >> Ri;\n        int operations = 0;\n        string sequence = \"\";\n        for (int i = 1; i < N; i++) {\n            cin >> Lj >> Rj;\n            while (Li < Lj) {\n                Li++;\n                operations++;\n                sequence += \"L+\";\n            }\n            while (Li > Lj) {\n                Li--;\n                operations++;\n                sequence += \"L-\";\n            }\n            while (Ri < Rj) {\n                Ri++;\n                operations++;\n                sequence += \"R+\";\n            }\n            while (Ri > Rj) {\n                Ri--;\n                operations++;\n                sequence += \"R-\";\n            }\n        }\n        cout << operations << endl;\n        cout << sequence << endl;\n    }\n    return 0;\n}",

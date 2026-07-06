@@ -12,7 +12,8 @@
     "tags": [
       "Exponentiation",
       "Fast Power",
-      "Bit Manipulation"
+      "Bit Manipulation",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,13 +23,13 @@
   "content": {
     "problemStatement": "Write a function named **calculatePower** that takes two integer, **base** and **exponent** respectively, and returns the result of raising **base** to the power of **exponent**",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "−10^9 ≤ base ≤ 10^9",
-      "0 ≤ exponent ≤ 30",
-      "All results fit in a signed 64‑bit integer"
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f1000",
+      "\u221210^9\u202f\u2264\u202fbase\u202f\u2264\u202f10^9",
+      "0\u202f\u2264\u202fexponent\u202f\u2264\u202f30",
+      "All results fit in a signed 64\u2011bit integer"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 1000), the number of test cases. Each of the next T lines contains two space‑separated integers: base (−10^9 ≤ base ≤ 10^9) and exponent (0 ≤ exponent ≤ 30).",
-    "outputFormat": "For each test case output a single line with base raised to the power exponent. The result fits in a signed 64‑bit integer.",
+    "inputFormat": "The first line contains an integer T (1\u202f\u2264\u202fT\u202f\u2264\u202f1000), the number of test cases. Each of the next T lines contains two space\u2011separated integers: base (\u221210^9\u202f\u2264\u202fbase\u202f\u2264\u202f10^9) and exponent (0\u202f\u2264\u202fexponent\u202f\u2264\u202f30).",
+    "outputFormat": "For each test case output a single line with base raised to the power exponent. The result fits in a signed 64\u2011bit integer.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -40,7 +41,7 @@
         "id": "sample_2",
         "input": "2\\n5 0\\n3 4",
         "output": "1\\n81",
-        "explanation": "First test case: any number to the power 0 is 1. Second test case: 3⁴ = 81."
+        "explanation": "First test case: any number to the power 0 is 1. Second test case: 3\u2074 = 81."
       },
       {
         "id": "sample_3",
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we need to compute base^exponent. A naïve loop multiplying base exponent times would be O(exponent) which is acceptable for exponent ≤ 30, but using binary exponentiation (fast power) reduces the work to O(log exponent). The algorithm keeps a result initialized to 1. While exponent > 0, if the current exponent bit is 1 we multiply result by the current base. Then we square the base and shift exponent right by one. This works for negative bases as well because multiplication preserves sign. The algorithm uses only 64‑bit integers, and because the problem guarantees the final value fits in signed 64‑bit, no overflow checks are required.",
-    "timeComplexity": "O(log exponent) per test case, i.e. at most O(log 30) ≈ O(5) operations, so total O(T · log exponent).",
+    "approach": "For each test case we need to compute base^exponent. A na\u00efve loop multiplying base exponent times would be O(exponent) which is acceptable for exponent \u2264\u202f30, but using binary exponentiation (fast power) reduces the work to O(log\u202fexponent). The algorithm keeps a result initialized to 1. While exponent > 0, if the current exponent bit is 1 we multiply result by the current base. Then we square the base and shift exponent right by one. This works for negative bases as well because multiplication preserves sign. The algorithm uses only 64\u2011bit integers, and because the problem guarantees the final value fits in signed 64\u2011bit, no overflow checks are required.",
+    "timeComplexity": "O(log\u202fexponent) per test case, i.e. at most O(log\u202f30) \u2248 O(5) operations, so total O(T\u202f\u00b7\u202flog\u202fexponent).",
     "spaceComplexity": "O(1) auxiliary space.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nint64_t fastPower(int64_t base, int exponent) {\n    int64_t result = 1;\n    while (exponent > 0) {\n        if (exponent & 1) result *= base;\n        base *= base;\n        exponent >>= 1;\n    }\n    return result;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int64_t base;\n        int exponent;\n        if (scanf(\"%lld %d\", &base, &exponent) != 2) break;\n        int64_t ans = fastPower(base, exponent);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

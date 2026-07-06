@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
       "Cycle Detection",
+      "Graphs",
       "Union-Find"
     ],
     "companyTags": [],
@@ -20,16 +21,16 @@
     ]
   },
   "content": {
-    "problemStatement": "In an undirected unweighted graph, an edge of the graph is said to be lucky if it is a part of some cycle of the graph.\n\nYou are given a list **E** of **M** edges. We define **f(i)** as the number of intervals **[l, r]** (**1 ≤ l ≤ i ≤ r ≤ M**) such that if you build a graph from edges **El, El+1, ..., Er**, the edge **Ei** will be a lucky edge in this graph.\n\nYour task is to calculate the values of **f(1), f(2), ..., f(M)**.",
+    "problemStatement": "In an undirected unweighted graph, an edge of the graph is said to be lucky if it is a part of some cycle of the graph.\n\nYou are given a list **E** of **M** edges. We define **f(i)** as the number of intervals **[l, r]** (**1 \u2264 l \u2264 i \u2264 r \u2264 M**) such that if you build a graph from edges **El, El+1, ..., Er**, the edge **Ei** will be a lucky edge in this graph.\n\nYour task is to calculate the values of **f(1), f(2), ..., f(M)**.",
     "constraints": [
-      "1 ≤ T ≤ 50",
-      "1 ≤ M ≤ 5000",
-      "1 ≤ sum of M over all test-cases ≤ 20000",
-      "1 ≤ ui, vi ≤ 10000",
-      "ui ≠ vi"
+      "1 \u2264 T \u2264 50",
+      "1 \u2264 M \u2264 5000",
+      "1 \u2264 sum of M over all test-cases \u2264 20000",
+      "1 \u2264 ui, vi \u2264 10000",
+      "ui \u2260 vi"
     ],
     "inputFormat": "The first line contains an integer T denoting the number of test cases. Each test case starts with a line containing an integer M, the number of edges. Each of the next M lines contains two space-separated integers ui and vi, denoting the i-th edge connects nodes ui and vi.",
-    "outputFormat": "For each test case, output a single line containing M integers, where the i-th integer is the value of f(i), representing the number of intervals [l, r] (1 ≤ l ≤ i ≤ r ≤ M) such that if you build a graph from edges El, El+1, ..., Er, the edge Ei will be a lucky edge in this graph.",
+    "outputFormat": "For each test case, output a single line containing M integers, where the i-th integer is the value of f(i), representing the number of intervals [l, r] (1 \u2264 l \u2264 i \u2264 r \u2264 M) such that if you build a graph from edges El, El+1, ..., Er, the edge Ei will be a lucky edge in this graph.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -110,8 +111,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Union-Find data structure to keep track of the connected components in the graph. We iterate over each edge and check if adding it to the graph creates a cycle. If it does, we increment the count of lucky edges for the current interval. We use a nested loop to consider all possible intervals [l, r] for each edge i.",
-    "timeComplexity": "O(T * M^3) — because for each test case, we have a nested loop structure that checks all intervals for each edge, and within that, we perform Union-Find operations which take nearly constant time.",
-    "spaceComplexity": "O(M + N) — where M is the number of edges and N is the number of nodes, because we need to store the parent and rank information for each node in the Union-Find data structure, and also store the edges.",
+    "timeComplexity": "O(T * M^3) \u2014 because for each test case, we have a nested loop structure that checks all intervals for each edge, and within that, we perform Union-Find operations which take nearly constant time.",
+    "spaceComplexity": "O(M + N) \u2014 where M is the number of edges and N is the number of nodes, because we need to store the parent and rank information for each node in the Union-Find data structure, and also store the edges.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 10000\nint parent[MAXN], rank[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y);\nif (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; }\nelse { parent[rootx] = rooty; if (rank[rootx] == rank[rooty]) rank[rooty]++; }}\n}\nint main() {\nint T, M, ui, vi, i, j, k, count;\nscanf(\"%d\", &T);\nwhile (T--) {\nscanf(\"%d\", &M);\nfor (i = 0; i < M; i++) {\nscanf(\"%d %d\", &ui, &vi);\n// Initialize Union-Find for this edge\nfor (j = 0; j < MAXN; j++) { parent[j] = j; rank[j] = 0; }\n// Check all intervals for this edge\ncount = 0;\nfor (j = 0; j <= i; j++) {\nfor (k = i; k < M; k++) {\n// Add edges in the current interval to the Union-Find\nif (j == 0 && k == i) {\nif (find(ui - 1) != find(vi - 1)) unionSet(ui - 1, vi - 1);\nelse count++;\n}\nelse {\nscanf(\"%d %d\", &ui, &vi);\nif (find(ui - 1) != find(vi - 1)) unionSet(ui - 1, vi - 1);\n}\n}\n}\nprintf(\"%d \", count);\n}\nprintf(\"\\n\");\n}\nreturn 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 10000;\nint parent[MAXN], rank[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y);\nif (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; }\nelse { parent[rootx] = rooty; if (rank[rootx] == rank[rooty]) rank[rooty]++; }}\n}\nint main() {\nint T, M, ui, vi, i, j, k, count;\ncin >> T;\nwhile (T--) {\ncin >> M;\nfor (i = 0; i < M; i++) {\ncin >> ui >> vi;\n// Initialize Union-Find for this edge\nfor (j = 0; j < MAXN; j++) { parent[j] = j; rank[j] = 0; }\n// Check all intervals for this edge\ncount = 0;\nfor (j = 0; j <= i; j++) {\nfor (k = i; k < M; k++) {\n// Add edges in the current interval to the Union-Find\nif (j == 0 && k == i) {\nif (find(ui - 1) != find(vi - 1)) unionSet(ui - 1, vi - 1);\nelse count++;\n}\nelse {\ncin >> ui >> vi;\nif (find(ui - 1) != find(vi - 1)) unionSet(ui - 1, vi - 1);\n}\n}\n}\ncout << count << \" \";\n}\ncout << endl;\n}\nreturn 0;\n}",

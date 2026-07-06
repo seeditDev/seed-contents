@@ -10,6 +10,7 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Searching",
       "Binary Search"
     ],
     "companyTags": [],
@@ -18,16 +19,16 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a sorted array of integers called arrarrarr in ascending order. Your task is to find the first and last positions of a given integer keykeykey.\n\n\nIf keykeykey is not present in the array, return [−1,−1][-1, -1][−1,−1].\nYour solution must have a runtime complexity of **O(log n)**.\nFunction DeclarationFunction NamesearchRangesearchRangesearchRange – This function finds the first and last occurrence of a given key in a sorted array.\n\nParameters\narrarrarr : A reference to a sorted array of integers (may contain duplicates).\nkeykeykey : The integer value whose first and last positions are to be found.\nReturn Value\nReturns a vector of two integers:\n\nFirst occurrence index of keykeykey\nLast occurrence index of keykeykey\n\n\nReturns [−1,−1][-1, -1][−1,−1] if keykeykey is not present.\nConstraints\n0≤arr.length≤1050 \\leq arr.length \\leq 10^50≤arr.length≤105\n−109≤arr[i]≤109-10^9 \\leq arr[i] \\leq 10^9−109≤arr[i]≤109\narrarrarr is sorted in **non-decreasing order**\n−109≤key≤109-10^9 \\leq key \\leq 10^9−109≤key≤109\n\nInput Format\n\nThe first line contains an integer TTT — number of test cases.\nFor each test case:\n\nOne line containing two integers: nnn and keykeykey\nOne line containing nnn space-separated integers — the sorted array\n\n\n\n\nOutput Format\n\nFor each test case, print two integers:\n\nfirst occurrence index and last occurrence index",
+    "problemStatement": "You are given a sorted array of integers called arrarrarr in ascending order. Your task is to find the first and last positions of a given integer keykeykey.\n\n\nIf keykeykey is not present in the array, return [\u22121,\u22121][-1, -1][\u22121,\u22121].\nYour solution must have a runtime complexity of **O(log n)**.\nFunction DeclarationFunction NamesearchRangesearchRangesearchRange \u2013 This function finds the first and last occurrence of a given key in a sorted array.\n\nParameters\narrarrarr : A reference to a sorted array of integers (may contain duplicates).\nkeykeykey : The integer value whose first and last positions are to be found.\nReturn Value\nReturns a vector of two integers:\n\nFirst occurrence index of keykeykey\nLast occurrence index of keykeykey\n\n\nReturns [\u22121,\u22121][-1, -1][\u22121,\u22121] if keykeykey is not present.\nConstraints\n0\u2264arr.length\u22641050 \\leq arr.length \\leq 10^50\u2264arr.length\u2264105\n\u2212109\u2264arr[i]\u2264109-10^9 \\leq arr[i] \\leq 10^9\u2212109\u2264arr[i]\u2264109\narrarrarr is sorted in **non-decreasing order**\n\u2212109\u2264key\u2264109-10^9 \\leq key \\leq 10^9\u2212109\u2264key\u2264109\n\nInput Format\n\nThe first line contains an integer TTT \u2014 number of test cases.\nFor each test case:\n\nOne line containing two integers: nnn and keykeykey\nOne line containing nnn space-separated integers \u2014 the sorted array\n\n\n\n\nOutput Format\n\nFor each test case, print two integers:\n\nfirst occurrence index and last occurrence index",
     "constraints": [
       "1 <= T <= 10^5",
       "0 <= n <= 10^5",
       "-10^9 <= arr[i] <= 10^9",
       "-10^9 <= key <= 10^9",
-      "arr is sorted in non‑decreasing order"
+      "arr is sorted in non\u2011decreasing order"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers n and key, where n is the size of the sorted array (may be zero) and key is the target value. The second line contains n space‑separated integers in non‑decreasing order. If n is zero the second line is empty.",
-    "outputFormat": "For each test case output two integers separated by a space: the index of the first occurrence of key and the index of the last occurrence of key in the array. Use 0‑based indexing. If key does not appear, output \"-1 -1\".",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers n and key, where n is the size of the sorted array (may be zero) and key is the target value. The second line contains n space\u2011separated integers in non\u2011decreasing order. If n is zero the second line is empty.",
+    "outputFormat": "For each test case output two integers separated by a space: the index of the first occurrence of key and the index of the last occurrence of key in the array. Use 0\u2011based indexing. If key does not appear, output \"-1 -1\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "Because the array is sorted we can locate the first and last occurrence of the target with two independent binary searches. The first search moves the right bound leftwards when the target is found, thus remembering the leftmost index. The second search moves the left bound rightwards when the target is found, thus remembering the rightmost index. Both runs take O(log n) time and O(1) extra space.",
-    "timeComplexity": "O(log n) per test case, total O(T·log n).",
+    "timeComplexity": "O(log n) per test case, total O(T\u00b7log n).",
     "spaceComplexity": "O(1) besides the input array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint findFirst(int *arr, int n, int key) {\n    int left = 0, right = n - 1, first = -1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (arr[mid] < key) left = mid + 1;\n        else if (arr[mid] > key) right = mid - 1;\n        else { first = mid; right = mid - 1; }\n    }\n    return first;\n}\n\nint findLast(int *arr, int n, int key) {\n    int left = 0, right = n - 1, last = -1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2;\n        if (arr[mid] < key) left = mid + 1;\n        else if (arr[mid] > key) right = mid - 1;\n        else { last = mid; left = mid + 1; }\n    }\n    return last;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, key; scanf(\"%d %d\", &n, &key);\n        int *arr = NULL;\n        if (n > 0) {\n            arr = (int*)malloc(n * sizeof(int));\n            for (int i = 0; i < n; ++i) scanf(\"%d\", &arr[i]);\n        }\n        int first = findFirst(arr, n, key);\n        int last  = findLast(arr, n, key);\n        printf(\"%d %d\\n\", first, last);\n        free(arr);\n    }\n    return 0;\n}",

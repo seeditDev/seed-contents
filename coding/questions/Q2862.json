@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved by counting the number of pairs of arcs with different colors that intersect. We can use a combinatorial approach to count the number of intersections. For each pair of points with the same color, we can count the number of points with a different color that lie between them. This can be done using a simple iteration over the points.",
     "timeComplexity": "O(N^2) per test case, O(T*N^2) total.",
-    "spaceComplexity": "O(N) — for storing the points.",
+    "spaceComplexity": "O(N) \u2014 for storing the points.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return x[0] - y[0];\n}\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int *A = (int *)malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    int *points = (int *)malloc(2 * N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        points[2 * i] = i;\n        points[2 * i + 1] = A[i];\n    }\n    qsort(points, N, 2 * sizeof(int), compare);\n    long long ans = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = i + 1; j < N; j++) {\n            if (points[2 * i + 1] == points[2 * j + 1] && points[2 * i] < points[2 * j]) {\n                ans += (j - i - 1);\n            }\n        }\n    }\n    printf(\"%lld\\n\", ans % MOD);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\nstruct Point {\n    int x, y;\n};\nbool compare(const Point &a, const Point &b) {\n    return a.x < b.x;\n}\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int N;\n    cin >> N;\n    Point *points = new Point[N];\n    for (int i = 0; i < N; i++) {\n        cin >> points[i].y;\n        points[i].x = i;\n    }\n    sort(points, points + N, compare);\n    long long ans = 0;\n    for (int i = 0; i < N; i++) {\n        for (int j = i + 1; j < N; j++) {\n            if (points[i].y == points[j].y && points[i].x < points[j].x) {\n                ans += (j - i - 1);\n            }\n        }\n    }\n    cout << ans % MOD << endl;\n    return 0;\n}",

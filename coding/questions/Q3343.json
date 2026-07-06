@@ -6,13 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Sprague-Grundy",
-      "Subtraction Game",
       "Impartial Game",
+      "Subtraction Game",
       "Math"
     ],
     "companyTags": [],
@@ -21,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Tuzik and Vanya are playing the following game.\n\nThey have an **N × M** board and a chip to indicate the current game position. The chip can be placed on any one cell of the game board, each of which is uniquely identified by an ordered pair of positive integers **(r, c)**, where **1 ≤ r ≤ N** is the row number and **1 ≤ c ≤ M** is the column number.\n\nInitially, the chip is placed at the cell identified as **(1, 1)**. For his move, a player can move it either **1, 2 or 3** cells up, or **1 or 2** cells to the right. The player who can not move the chip loses. In other words, a player suffers defeat if the chip is placed in the cell **(N, M)** at the start of his turn.\n\nTuzik starts the game. You have to determine who will win the game if both players play optimally.",
+    "problemStatement": "Tuzik and Vanya are playing the following game.\n\nThey have an **N \u00d7 M** board and a chip to indicate the current game position. The chip can be placed on any one cell of the game board, each of which is uniquely identified by an ordered pair of positive integers **(r, c)**, where **1 \u2264 r \u2264 N** is the row number and **1 \u2264 c \u2264 M** is the column number.\n\nInitially, the chip is placed at the cell identified as **(1, 1)**. For his move, a player can move it either **1, 2 or 3** cells up, or **1 or 2** cells to the right. The player who can not move the chip loses. In other words, a player suffers defeat if the chip is placed in the cell **(N, M)** at the start of his turn.\n\nTuzik starts the game. You have to determine who will win the game if both players play optimally.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N, M <= 1000000"
@@ -33,13 +33,13 @@
         "id": "sample_1",
         "input": "2\n4 4\n2 2",
         "output": "Tuzik\nVanya",
-        "explanation": "For (4,4): (N-1)%4 = 3, (M-1)%3 = 0, xor = 3 ≠ 0 → Tuzik wins. For (2,2): (N-1)%4 = 1, (M-1)%3 = 1, xor = 0 → Vanya wins."
+        "explanation": "For (4,4): (N-1)%4 = 3, (M-1)%3 = 0, xor = 3 \u2260 0 \u2192 Tuzik wins. For (2,2): (N-1)%4 = 1, (M-1)%3 = 1, xor = 0 \u2192 Vanya wins."
       },
       {
         "id": "sample_2",
         "input": "3\n1 1\n1 5\n5 4",
         "output": "Vanya\nTuzik\nVanya",
-        "explanation": "Case 1: both piles are zero → xor 0 → Vanya. Case 2: row pile 0, col pile (5-1)%3=1 → xor 1 → Tuzik. Case 3: (5-1)%4=0, (4-1)%3=0 → xor 0 → Vanya."
+        "explanation": "Case 1: both piles are zero \u2192 xor 0 \u2192 Vanya. Case 2: row pile 0, col pile (5-1)%3=1 \u2192 xor 1 \u2192 Tuzik. Case 3: (5-1)%4=0, (4-1)%3=0 \u2192 xor 0 \u2192 Vanya."
       }
     ]
   },
@@ -108,8 +108,8 @@
   },
   "solution": {
     "approach": "The game can be seen as two independent subtraction games: one on the remaining rows (size N-1) with moves {1,2,3} and one on the remaining columns (size M-1) with moves {1,2}. The Grundy number for a subtraction set {1,2,3} repeats every 4 positions as g = (size) mod 4. For {1,2} it repeats every 3 positions as g = (size) mod 3. The overall Grundy number is the xor of the two independent Grundy numbers. The starting position is losing (Vanya wins) iff this xor is 0; otherwise Tuzik wins.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables.",
     "code": {
       "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        long long N, M; scanf(\"%lld %lld\", &N, &M);\n        int gRow = (int)((N-1) % 4);\n        int gCol = (int)((M-1) % 3);\n        if((gRow ^ gCol) != 0) printf(\"Tuzik\\n\");\n        else printf(\"Vanya\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N,M; cin>>N>>M;\n        int gRow = (N-1)%4;\n        int gCol = (M-1)%3;\n        cout << ((gRow ^ gCol) ? \"Tuzik\" : \"Vanya\") << '\\n';\n    }\n    return 0;\n}",

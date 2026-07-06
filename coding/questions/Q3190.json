@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Probability",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Expected Value",
       "Rectangles",
-      "Grid"
+      "Grid",
+      "Expected Value",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,9 +23,9 @@
   "content": {
     "problemStatement": "Today is the planned day tor Thik and Ayvak's wedding. Kark is infatuated with Ayvak. He offers to play a game with Thik. Whosoever wins, will get to marry Ayvak. Ayvak, who values games of chance over all the other things in life, agrees to this.\n\n\n\nKark sets up an **N** by **M** grid (**N** rows, **M** columns), labelled from left to right and top to bottom consecutively with numbers from 1 to M*N, with 1 at the top left corner and M*N at the bottom right corner. For example, a labelled 3 by 6 grid looks as follows:\n\n\n\n\nKark has already painted **K** unit squares of the grid with a heart each. Next, Thik randomly picks a rectangle with sides on the grid lines, and having a positive area, with each valid rectangle having an equal probability of being chosen. Three distinct possibilities for Thik's rectangle in the 3 by 6 grid are shown below: \n\n\n\n\nThe nine different rectangles in a 2 by 2 grid are shown below:\n\n\n\n\nIf Thik's rectangle contains at least half of the hearts, Thik gets to marry Ayvak. Otherwise, Kark will marry Ayvak. Kark wants to know whether or not he has an advantage here, so he wants to know the expected value of the number of hearts a randomly chosen rectangle will cover. I'm sure that you have a good heart, so please, cover this job for him.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N, M ≤ 10^7",
-      "1 ≤ K ≤ 10^5",
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N, M \u2264 10^7",
+      "1 \u2264 K \u2264 10^5",
       "Each of the K integers representing a heart are between 1 and N*M, inclusive. All K integers are distinct."
     ],
     "inputFormat": "The first line of input contains one integer T, the number of test cases. For each test case, the first line contains 3 space-separated integers N, M, K, as described in the problem statement. The next line contains K space-separated integers, each a single number from 1 to M*N, representing a square that is painted with a heart.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the expected value of the number of hearts a randomly chosen rectangle will cover. We can do this by iterating over all possible rectangles, counting the number of hearts in each rectangle, and then calculating the average. The key insight here is that the probability of choosing a rectangle is equal to the area of the rectangle divided by the total area of the grid.",
-    "timeComplexity": "O(T * N * M * K) — explain: per query is O(N * M * K), total is O(T * N * M * K)",
-    "spaceComplexity": "O(N * M) — explain what dominates: we need to store the grid and the hearts",
+    "timeComplexity": "O(T * N * M * K) \u2014 explain: per query is O(N * M * K), total is O(T * N * M * K)",
+    "spaceComplexity": "O(N * M) \u2014 explain what dominates: we need to store the grid and the hearts",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M, K;\n        scanf(\"%d %d %d\", &N, &M, &K);\n        int hearts[K];\n        for (int i = 0; i < K; i++) {\n            scanf(\"%d\", &hearts[i]);\n        }\n        double expectedValue = 0;\n        int totalRectangles = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                for (int k = i; k < N; k++) {\n                    for (int l = j; l < M; l++) {\n                        int rectangleHearts = 0;\n                        for (int m = 0; m < K; m++) {\n                            int heartX = (hearts[m] - 1) % M;\n                            int heartY = (hearts[m] - 1) / M;\n                            if (heartX >= j && heartX <= l && heartY >= i && heartY <= k) {\n                                rectangleHearts++;\n                            }\n                        }\n                        expectedValue += rectangleHearts;\n                        totalRectangles++;\n                    }\n                }\n            }\n        }\n        printf(\"%.9f\\n\", expectedValue / totalRectangles);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M, K;\n        cin >> N >> M >> K;\n        int hearts[K];\n        for (int i = 0; i < K; i++) {\n            cin >> hearts[i];\n        }\n        double expectedValue = 0;\n        int totalRectangles = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < M; j++) {\n                for (int k = i; k < N; k++) {\n                    for (int l = j; l < M; l++) {\n                        int rectangleHearts = 0;\n                        for (int m = 0; m < K; m++) {\n                            int heartX = (hearts[m] - 1) % M;\n                            int heartY = (hearts[m] - 1) / M;\n                            if (heartX >= j && heartX <= l && heartY >= i && heartY <= k) {\n                                rectangleHearts++;\n                            }\n                        }\n                        expectedValue += rectangleHearts;\n                        totalRectangles++;\n                    }\n                }\n            }\n        }\n        cout << fixed;\n        cout.precision(9);\n        cout << expectedValue / totalRectangles << endl;\n    }\n    return 0;\n}",

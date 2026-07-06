@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Combinatorics",
-      "Modular Arithmetic"
+      "Modular Arithmetic",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,7 +27,7 @@
       "1 <= K <= 1000"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first and only line of each test case contains two space-separated integers N and K.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of ways to replace bricks, modulo 10^9 + 7.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of ways to replace bricks, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use combinatorial reasoning and modular arithmetic. We need to calculate the number of ways to choose K bricks out of 2N bricks such that no two chosen bricks share a side. This can be done by considering the bricks as a sequence and choosing K positions out of 2N positions such that no two chosen positions are adjacent. We can use the formula for combinations with repetition to calculate this. The time complexity is O(T*K) and the space complexity is O(1).",
-    "timeComplexity": "O(T*K) — per query is O(K), total is O(T*K)",
-    "spaceComplexity": "O(1) — constant space",
+    "timeComplexity": "O(T*K) \u2014 per query is O(K), total is O(T*K)",
+    "spaceComplexity": "O(1) \u2014 constant space",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\nlong long inv(long long a) {\n    return powmod(a, MOD - 2);\n}\nlong long comb(long long n, long long k) {\n    long long num = 1, den = 1;\n    for (long long i = 1; i <= k; i++) {\n        num = (num * (n - i + 1)) % MOD;\n        den = (den * i) % MOD;\n    }\n    return (num * inv(den)) % MOD;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long N, K;\n        scanf(\"%lld %lld\", &N, &K);\n        long long ans = 0;\n        for (long long i = 0; i <= K; i++) {\n            long long ways = comb(N - K + 1, i) * comb(N - i, K - i);\n            ways %= MOD;\n            ans = (ans + ways) % MOD;\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\nlong long inv(long long a) {\n    return powmod(a, MOD - 2);\n}\nlong long comb(long long n, long long k) {\n    long long num = 1, den = 1;\n    for (long long i = 1; i <= k; i++) {\n        num = (num * (n - i + 1)) % MOD;\n        den = (den * i) % MOD;\n    }\n    return (num * inv(den)) % MOD;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long N, K;\n        cin >> N >> K;\n        long long ans = 0;\n        for (long long i = 0; i <= K; i++) {\n            long long ways = comb(N - K + 1, i) * comb(N - i, K - i);\n            ways %= MOD;\n            ans = (ans + ways) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

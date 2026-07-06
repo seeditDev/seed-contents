@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": true,
     "tags": [
+      "In\u2011place Modification",
+      "Data Structures",
       "Linked List",
-      "Two Pointers",
-      "In‑place Modification"
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef gave you the headheadhead of a sorted linked list which may contain duplicate values. You've to remove all the duplicate values and return the sorted linked list such that it does not contain any duplicates.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the length of array.\nThe second line of every test case contains NNN integers - A1,A2,..,AN A_1,A_2,..,A_NA1​,A2​,..,AN​ denoting the integers in the array.\nIt is guaranteed that the array is sorted\nYou don't need to read or print anything. Just complete the function removeDuplicates() which takes the head of the linked list as input.\n\n\nOutput Format\nReturn the head of the sorted linked list without duplicates.",
+    "problemStatement": "Chef gave you the headheadhead of a sorted linked list which may contain duplicate values. You've to remove all the duplicate values and return the sorted linked list such that it does not contain any duplicates.\n\n\nInput Format\n\nFirst-line will contain TTT, the number of test cases. Then the test cases follow.\nEach test case contains two lines of input.\nThe first line of every test case contains an integer NNN - the length of array.\nThe second line of every test case contains NNN integers - A1,A2,..,AN A_1,A_2,..,A_NA1\u200b,A2\u200b,..,AN\u200b denoting the integers in the array.\nIt is guaranteed that the array is sorted\nYou don't need to read or print anything. Just complete the function removeDuplicates() which takes the head of the linked list as input.\n\n\nOutput Format\nReturn the head of the sorted linked list without duplicates.",
     "constraints": [
       "1 <= T <= 1000",
       "1 <= N <= 10^5",
       "1 <= Ai <= 10^9",
-      "Sum of N over all test cases does not exceed 5·10^5"
+      "Sum of N over all test cases does not exceed 5\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space‑separated integers A1 … AN in non‑decreasing order.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the length of the linked list. The second line contains N space\u2011separated integers A1 \u2026 AN in non\u2011decreasing order.",
     "outputFormat": "For each test case output the values of the linked list after removing all duplicate nodes. Print the values in a single line separated by a single space. Print a newline after each test case.",
     "sampleTestCases": [
       {
@@ -46,7 +47,7 @@
         "id": "sample_3",
         "input": "1\n1\n42",
         "output": "42",
-        "explanation": "A single‑element list has no duplicates, so it is printed unchanged."
+        "explanation": "A single\u2011element list has no duplicates, so it is printed unchanged."
       }
     ]
   },
@@ -68,7 +69,7 @@
       },
       {
         "id": "tc_3",
-        "label": "edge case – all distinct",
+        "label": "edge case \u2013 all distinct",
         "input": "1\n5\n2 4 6 8 10",
         "expectedOutput": "2 4 6 8 10",
         "weight": 2
@@ -115,7 +116,7 @@
   },
   "solution": {
     "approach": "Because the list is already sorted, duplicate values appear consecutively. Traverse the list with a single pointer. For each node, compare its value with the next node's value. If they are equal, bypass the next node (current->next = current->next->next) and delete it (or let the garbage collector free it). Otherwise move the pointer forward. This runs in O(N) time and O(1) extra space per test case.",
-    "timeComplexity": "O(N) per test case, where N is the length of the list. Overall O(∑N).",
+    "timeComplexity": "O(N) per test case, where N is the length of the list. Overall O(\u2211N).",
     "spaceComplexity": "O(1) auxiliary space (the list itself is reused).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int val;\n    struct Node *next;\n} Node;\n\nNode* build(int n) {\n    Node *head = NULL, *tail = NULL;\n    for (int i = 0; i < n; ++i) {\n        int x; scanf(\"%d\", &x);\n        Node *tmp = (Node*)malloc(sizeof(Node));\n        tmp->val = x; tmp->next = NULL;\n        if (!head) head = tail = tmp; else { tail->next = tmp; tail = tmp; }\n    }\n    return head;\n}\n\nNode* removeDuplicates(Node* head) {\n    Node *cur = head;\n    while (cur && cur->next) {\n        if (cur->val == cur->next->val) {\n            Node *dup = cur->next;\n            cur->next = dup->next;\n            free(dup);\n        } else {\n            cur = cur->next;\n        }\n    }\n    return head;\n}\n\nvoid printList(Node* head) {\n    for (Node* p = head; p; p = p->next) {\n        printf(\"%d\", p->val);\n        if (p->next) printf(\" \");\n    }\n    printf(\"\\n\");\n}\n\nvoid freeList(Node* head) {\n    while (head) { Node* tmp = head; head = head->next; free(tmp); }\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        Node* head = build(N);\n        head = removeDuplicates(head);\n        printList(head);\n        freeList(head);\n    }\n    return 0;\n}",

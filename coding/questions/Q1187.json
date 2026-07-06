@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Two Pointers",
       "Sliding Window",
-      "Prefix Sum"
+      "Arrays",
+      "Prefix Sum",
+      "Two Pointers"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,14 +29,14 @@
       "0 <= Wi <= 1000000000",
       "Sum of N over all test cases <= 1000000"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: first line contains an integer N. Second line contains N space‑separated integers C1 … CN (0 ≤ Ci < N). Third line contains N space‑separated integers W1 … WN (0 ≤ Wi ≤ 10^9).",
-    "outputFormat": "For each test case output a single line containing the maximum possible sum of a contiguous sub‑array whose C‑values are all distinct.",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: first line contains an integer N. Second line contains N space\u2011separated integers C1 \u2026 CN (0 \u2264 Ci < N). Third line contains N space\u2011separated integers W1 \u2026 WN (0 \u2264 Wi \u2264 10^9).",
+    "outputFormat": "For each test case output a single line containing the maximum possible sum of a contiguous sub\u2011array whose C\u2011values are all distinct.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "1\\n5\\n0 1 2 0 2\\n5 6 7 8 2",
         "output": "21",
-        "explanation": "The best unique sub‑array is indices 1‑3 (0‑based) with C = [1,2,0] and sum W = 6+7+8 = 21."
+        "explanation": "The best unique sub\u2011array is indices 1\u20113 (0\u2011based) with C = [1,2,0] and sum W = 6+7+8 = 21."
       },
       {
         "id": "sample_2",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "We need the maximum sum of a sub‑array where the colour identifiers C are all different. This is a classic sliding‑window (two‑pointer) problem. While expanding the right end of the window we keep track of the last position where each colour appeared. If the new colour has already appeared inside the current window, we move the left pointer just after its previous occurrence, subtracting the weights of the elements that leave the window. The current window always contains distinct colours, its sum is maintained incrementally, and the best sum seen so far is the answer. The algorithm runs in O(N) time per test case because each index is added to and removed from the window at most once, and uses O(N) auxiliary space for the last‑occurrence array.",
-    "timeComplexity": "O(N) per test case, O(total N) over all test cases",
+    "approach": "We need the maximum sum of a sub\u2011array where the colour identifiers C are all different. This is a classic sliding\u2011window (two\u2011pointer) problem. While expanding the right end of the window we keep track of the last position where each colour appeared. If the new colour has already appeared inside the current window, we move the left pointer just after its previous occurrence, subtracting the weights of the elements that leave the window. The current window always contains distinct colours, its sum is maintained incrementally, and the best sum seen so far is the answer. The algorithm runs in O(N) time per test case because each index is added to and removed from the window at most once, and uses O(N) auxiliary space for the last\u2011occurrence array.",
+    "timeComplexity": "O(N) per test case, O(total\u202fN) over all test cases",
     "spaceComplexity": "O(N) auxiliary space for the array storing the last index of each colour",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int *c = (int*)malloc(N*sizeof(int));\n        long long *w = (long long*)malloc(N*sizeof(long long));\n        for(int i=0;i<N;++i) scanf(\"%d\",&c[i]);\n        for(int i=0;i<N;++i) scanf(\"%lld\",&w[i]);\n        int *last = (int*)malloc(N*sizeof(int));\n        for(int i=0;i<N;++i) last[i] = -1;\n        int left = 0; long long cur = 0, best = 0;\n        for(int right=0; right<N; ++right){\n            int col = c[right];\n            if(last[col] >= left){\n                while(left <= last[col]){ cur -= w[left]; ++left; }\n            }\n            cur += w[right];\n            if(cur > best) best = cur;\n            last[col] = right;\n        }\n        printf(\"%lld\\n\",best);\n        free(c); free(w); free(last);\n    }\n    return 0;\n}",

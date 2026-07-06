@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "BFS",
       "Shortest Path"
     ],
@@ -100,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a breadth-first search (BFS) algorithm. We start at the cell with value 1 and explore all its adjacent cells. We keep track of the minimum number of steps required to reach each cell. We repeat this process until we have visited all cells in the matrix.",
-    "timeComplexity": "O(T * N^2 * 4) — because in the worst case, we need to explore all adjacent cells for each cell in the matrix, and there are 4 possible directions (up, down, left, right) to explore from each cell.",
-    "spaceComplexity": "O(N^2) — because we need to store the minimum number of steps required to reach each cell in the matrix.",
+    "timeComplexity": "O(T * N^2 * 4) \u2014 because in the worst case, we need to explore all adjacent cells for each cell in the matrix, and there are 4 possible directions (up, down, left, right) to explore from each cell.",
+    "spaceComplexity": "O(N^2) \u2014 because we need to store the minimum number of steps required to reach each cell in the matrix.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 500\nint abs(int x) { return x < 0 ? -x : x; }\nint min(int a, int b) { return a < b ? a : b; }\nint max(int a, int b) { return a > b ? a : b; }\nint main() {\n    int T, N, i, j, k, x, y, steps;\n    int matrix[MAXN][MAXN];\n    int visited[MAXN][MAXN];\n    int queue[MAXN * MAXN][2];\n    int front, rear;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        for (i = 0; i < N; i++) {\n            for (j = 0; j < N; j++) {\n                scanf(\"%d\", &matrix[i][j]);\n                visited[i][j] = 0;\n            }\n        }\n        front = 0;\n        rear = 0;\n        queue[rear][0] = 0;\n        queue[rear][1] = 0;\n        rear++;\n        visited[0][0] = 1;\n        steps = 0;\n        while (front < rear) {\n            x = queue[front][0];\n            y = queue[front][1];\n            front++;\n            if (matrix[x][y] == N * N) break;\n            for (i = -1; i <= 1; i++) {\n                for (j = -1; j <= 1; j++) {\n                    if (abs(i) + abs(j) != 1) continue;\n                    if (x + i < 0 || x + i >= N || y + j < 0 || y + j >= N) continue;\n                    if (visited[x + i][y + j] == 1) continue;\n                    queue[rear][0] = x + i;\n                    queue[rear][1] = y + j;\n                    rear++;\n                    visited[x + i][y + j] = 1;\n                }\n            }\n            steps++;\n        }\n        printf(\"%d\\n\", steps);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n#define MAXN 500\nint main() {\n    int T, N, i, j, k, x, y, steps;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        vector<vector<int>> matrix(N, vector<int>(N));\n        vector<vector<int>> visited(N, vector<int>(N));\n        queue<pair<int, int>> q;\n        for (i = 0; i < N; i++) {\n            for (j = 0; j < N; j++) {\n                cin >> matrix[i][j];\n                visited[i][j] = 0;\n            }\n        }\n        q.push({0, 0});\n        visited[0][0] = 1;\n        steps = 0;\n        while (!q.empty()) {\n            x = q.front().first;\n            y = q.front().second;\n            q.pop();\n            if (matrix[x][y] == N * N) break;\n            for (i = -1; i <= 1; i++) {\n                for (j = -1; j <= 1; j++) {\n                    if (abs(i) + abs(j) != 1) continue;\n                    if (x + i < 0 || x + i >= N || y + j < 0 || y + j >= N) continue;\n                    if (visited[x + i][y + j] == 1) continue;\n                    q.push({x + i, y + j});\n                    visited[x + i][y + j] = 1;\n                }\n            }\n            steps++;\n        }\n        cout << steps << endl;\n    }\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "String Traversal",
-      "Implementation"
+      "Implementation",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,10 +24,10 @@
     "constraints": [
       "1 <= T <= 20",
       "1 <= length of each string <= 1000",
-      "String contains only letters (a‑z, A‑Z) and digits (0‑9)"
+      "String contains only letters (a\u2011z, A\u2011Z) and digits (0\u20119)"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty alphanumeric string (letters a‑z, A‑Z and digits 0‑9) without spaces.",
-    "outputFormat": "For each test case output a single integer – the sum of all digit characters that appear in the corresponding string. Print each answer on its own line.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non\u2011empty alphanumeric string (letters a\u2011z, A\u2011Z and digits 0\u20119) without spaces.",
+    "outputFormat": "For each test case output a single integer \u2013 the sum of all digit characters that appear in the corresponding string. Print each answer on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "We scan each character of the given string. If the character is between '0' and '9' we convert it to its numeric value by subtracting the ASCII code of '0' and add it to a running total. After processing the whole string we output the total. This works because the sum of digits is independent of their positions and the string length is at most 1000, so a linear scan is optimal.",
     "timeComplexity": "O(L) per test case where L is the length of the string (overall O(total length of input)).",
-    "spaceComplexity": "O(1) – only a few integer variables are used irrespective of input size.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are used irrespective of input size.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main(){\n    // Read entire input\n    char *input = NULL;\n    size_t size = 0;\n    {\n        // Determine file size\n        fseek(stdin, 0, SEEK_END);\n        long fsize = ftell(stdin);\n        fseek(stdin, 0, SEEK_SET);\n        if (fsize < 0) fsize = 0;\n        input = (char*)malloc(fsize + 2);\n        if (!input) return 0;\n        size_t read = fread(input, 1, fsize, stdin);\n        input[read] = '\\0';\n    }\n    // Replace escaped \"\\\\n\" with real newlines\n    char *processed = (char*)malloc(strlen(input) + 1);\n    if (!processed) return 0;\n    size_t j = 0;\n    for (size_t i = 0; input[i]; ++i) {\n        if (input[i] == '\\\\' && input[i+1] == 'n') {\n            processed[j++] = '\\n';\n            ++i; // skip 'n'\n        } else {\n            processed[j++] = input[i];\n        }\n    }\n    processed[j] = '\\0';\n    // Now parse\n    int T = 0;\n    char *ptr = processed;\n    sscanf(ptr, \"%d\", &T);\n    // Move pointer past the first line\n    while (*ptr && *ptr != '\\n') ++ptr;\n    if (*ptr == '\\n') ++ptr;\n    for (int t = 0; t < T; ++t) {\n        char s[1005];\n        int i = 0;\n        while (ptr[i] && ptr[i] != '\\n' && i < 1004) {\n            s[i] = ptr[i];\n            ++i;\n        }\n        s[i] = '\\0';\n        ptr += i;\n        if (*ptr == '\\n') ++ptr;\n        int sum = 0;\n        for (int k = 0; s[k]; ++k) {\n            if (s[k] >= '0' && s[k] <= '9') sum += s[k] - '0';\n        }\n        if (t + 1 < T) {\n            printf(\"%d\\\\n\", sum);\n        } else {\n            printf(\"%d\", sum);\n        }\n    }\n    free(input);\n    free(processed);\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Read whole input\n    string raw((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    // Replace escaped \\n with actual newline\n    string processed;\n    processed.reserve(raw.size());\n    for (size_t i = 0; i < raw.size(); ++i) {\n        if (raw[i] == '\\\\' && i + 1 < raw.size() && raw[i+1] == 'n') {\n            processed.push_back('\\n');\n            ++i; // skip 'n'\n        } else {\n            processed.push_back(raw[i]);\n        }\n    }\n    stringstream ss(processed);\n    int T; ss >> T;\n    string s;\n    vector<string> results;\n    for (int t = 0; t < T; ++t) {\n        ss >> s; // strings contain no spaces\n        int sum = 0;\n        for (char c : s) if (c >= '0' && c <= '9') sum += c - '0';\n        results.push_back(to_string(sum));\n    }\n    for (size_t i = 0; i < results.size(); ++i) {\n        cout << results[i];\n        if (i + 1 < results.size()) cout << \"\\\\n\";\n    }\n    return 0;\n}",

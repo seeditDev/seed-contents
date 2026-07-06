@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Parsing",
+      "Linear Scan",
       "String Manipulation",
-      "Linear Scan"
+      "Parsing",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +21,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Great! You have successfully built a **Log File Parser** using C++. 🎉\n\nYour program can now **create, view, filter, search, and analyze logs** with ease through a simple menu-driven interface.\n\nHere are some improvements you can try:\n\n\n**Use a Database** – Replace the plain text file with a lightweight database like SQLite for structured storage and faster access.\n**Enhanced Filtering** – Add support for combined filters (e.g., log level + keyword or date-based search).\n**Log Export Feature** – Enable users to export filtered or complete logs to a CSV or JSON file for external use.\n**Final Updates:**\n\nEnsure all core functionalities (viewing, filtering, searching, statistics) work reliably.\n\n\n\n\nTest edge cases such as:\n\n\n\nInvalid or unsupported log levels\nEmpty or missing log files\nKeywords that yield no results\n\n\n\nImprove usability with clear messages, user prompts, and error handling.\n\n\n\nTry implementing these improvements to make your C++ Log File Parser even more feature-rich and user-friendly! 🚀",
+    "problemStatement": "Great! You have successfully built a **Log File Parser** using C++. \ud83c\udf89\n\nYour program can now **create, view, filter, search, and analyze logs** with ease through a simple menu-driven interface.\n\nHere are some improvements you can try:\n\n\n**Use a Database** \u2013 Replace the plain text file with a lightweight database like SQLite for structured storage and faster access.\n**Enhanced Filtering** \u2013 Add support for combined filters (e.g., log level + keyword or date-based search).\n**Log Export Feature** \u2013 Enable users to export filtered or complete logs to a CSV or JSON file for external use.\n**Final Updates:**\n\nEnsure all core functionalities (viewing, filtering, searching, statistics) work reliably.\n\n\n\n\nTest edge cases such as:\n\n\n\nInvalid or unsupported log levels\nEmpty or missing log files\nKeywords that yield no results\n\n\n\nImprove usability with clear messages, user prompts, and error handling.\n\n\n\nTry implementing these improvements to make your C++ Log File Parser even more feature-rich and user-friendly! \ud83d\ude80",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 1000",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 1000",
       "LOG_LEVEL is one of DEBUG, INFO, WARNING, ERROR, CRITICAL",
-      "KEYWORD length ≤ 50",
-      "MESSAGE length ≤ 200"
+      "KEYWORD length \u2264 50",
+      "MESSAGE length \u2264 200"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n1. A line with an integer N (1 ≤ N ≤ 1000), the number of log entries.\n2. N lines follow, each in the exact format \"LOG_LEVEL KEYWORD: MESSAGE\" where LOG_LEVEL ∈ {DEBUG, INFO, WARNING, ERROR, CRITICAL}, KEYWORD contains no spaces, and MESSAGE may contain spaces.\n3. A line with the filter criteria. The filter is either two tokens \"LOG_LEVEL KEYWORD\" (both must match) or a single token \"LOG_LEVEL\" (only the level must match). Tokens are separated by a single space.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n1. A line with an integer N (1 \u2264 N \u2264 1000), the number of log entries.\n2. N lines follow, each in the exact format \"LOG_LEVEL KEYWORD: MESSAGE\" where LOG_LEVEL \u2208 {DEBUG, INFO, WARNING, ERROR, CRITICAL}, KEYWORD contains no spaces, and MESSAGE may contain spaces.\n3. A line with the filter criteria. The filter is either two tokens \"LOG_LEVEL KEYWORD\" (both must match) or a single token \"LOG_LEVEL\" (only the level must match). Tokens are separated by a single space.",
     "outputFormat": "For each test case, output every log entry that satisfies the filter, preserving the original order, each on its own line in the same format as the input. If no entry matches, output a single line \"No logs found.\". Print a blank line between consecutive test cases (i.e., after each test case except the last).",
     "sampleTestCases": [
       {
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we store the N log lines. The filter line is split into tokens – the first token is always the required log level, the second token (if present) is the required keyword. Then we iterate over the stored logs in order. For each log we locate the first ':' character, take the substring before it, split it by whitespace to obtain the level and keyword. A log matches if its level equals the filter level and, when a filter keyword is provided, its keyword also equals the filter keyword. Matching logs are printed immediately (or collected). If no log matches we print \"No logs found.\". After processing a test case we output an extra blank line unless it is the last test case. The algorithm is O(N) per test case and uses O(N) memory to store the logs.",
-    "timeComplexity": "O(T · N) where N is the number of logs in each test case (linear scan).",
+    "approach": "For each test case we store the N log lines. The filter line is split into tokens \u2013 the first token is always the required log level, the second token (if present) is the required keyword. Then we iterate over the stored logs in order. For each log we locate the first ':' character, take the substring before it, split it by whitespace to obtain the level and keyword. A log matches if its level equals the filter level and, when a filter keyword is provided, its keyword also equals the filter keyword. Matching logs are printed immediately (or collected). If no log matches we print \"No logs found.\". After processing a test case we output an extra blank line unless it is the last test case. The algorithm is O(N) per test case and uses O(N) memory to store the logs.",
+    "timeComplexity": "O(T\u202f\u00b7\u202fN) where N is the number of logs in each test case (linear scan).",
     "spaceComplexity": "O(N) per test case to store the log strings.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_LINE 512\n\nvoid trim_newline(char *s) {\n    size_t len = strlen(s);\n    if (len && s[len-1] == '\\n') s[len-1] = '\\0';\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; if (scanf(\"%d\", &N) != 1) return 0;\n        getchar(); // consume endline after N\n        char **logs = (char**)malloc(N * sizeof(char*));\n        for (int i = 0; i < N; ++i) {\n            logs[i] = (char*)malloc(MAX_LINE);\n            fgets(logs[i], MAX_LINE, stdin);\n            trim_newline(logs[i]);\n        }\n        char filterLine[MAX_LINE];\n        fgets(filterLine, MAX_LINE, stdin);\n        trim_newline(filterLine);\n        char filterLevel[20] = \"\", filterKeyword[60] = \"\";\n        int parts = sscanf(filterLine, \"%19s %59s\", filterLevel, filterKeyword);\n        int printed = 0;\n        for (int i = 0; i < N; ++i) {\n            char level[20], keyword[60];\n            if (sscanf(logs[i], \"%19s %59[^:]:\", level, keyword) != 2) continue;\n            int match = 0;\n            if (parts == 2) {\n                if (strcmp(level, filterLevel) == 0 && strcmp(keyword, filterKeyword) == 0) match = 1;\n            } else if (parts == 1) {\n                if (strcmp(level, filterLevel) == 0) match = 1;\n            }\n            if (match) {\n                printf(\"%s\\n\", logs[i]);\n                printed = 1;\n            }\n        }\n        if (!printed) printf(\"No logs found.\\n\");\n        if (T) printf(\"\\n\"); // blank line between test cases\n        for (int i = 0; i < N; ++i) free(logs[i]);\n        free(logs);\n    }\n    return 0;\n}",

@@ -21,9 +21,9 @@
   "content": {
     "problemStatement": "Kirito faced a dangerous labyrinth, and now he requires your help.\n\nHe's in a tunnel which contains **N** different rooms. Each room contains **Ai** monsters inside it. He starts from room **1**. Every time he stays near a room **X**, he may go in and clear it from monsters, or just leave the room locked and move to the room **X+1**. However, if he clears a room with **K** monsters, and the next room he clears consists of **L** monsters, then the greatest common divisor of **K** and **L** must be greater than **1**, otherwise he will die (awful curse). Formally, let us say that the order of rooms he visited is **i1**,  **i2**, , ..., **it**. Then gcd(**Aij**, **Aij + 1**) **&gt; 1** for all **j &lt; t**. Help him cross all the rooms by clearing the maximum number of rooms.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ ai ≤ 10^7"
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 ai \u2264 10^7"
     ],
     "inputFormat": "The first line of input contains an integer T denoting the number of test cases. The first line of each test case contains one integer N denoting the number elements in sequence. The second line of each test case contains N integers where i-th integer is number of monsters in room Ai.",
     "outputFormat": "For each test case, output the maximum number of rooms he could clear.",
@@ -101,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming. We will create a DP array where dp[i] will store the maximum number of rooms that can be cleared up to the i-th room. We will iterate over each room and for each room, we will check all previous rooms. If the GCD of the number of monsters in the current room and the previous room is greater than 1, we will update dp[i] with the maximum of its current value and dp[j] + 1.",
-    "timeComplexity": "O(T * N^2) — because for each test case, we are iterating over each room and for each room, we are checking all previous rooms.",
-    "spaceComplexity": "O(N) — because we are using a DP array of size N.",
+    "timeComplexity": "O(T * N^2) \u2014 because for each test case, we are iterating over each room and for each room, we are checking all previous rooms.",
+    "spaceComplexity": "O(N) \u2014 because we are using a DP array of size N.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nint max(int a, int b) {\n    return (a > b) ? a : b;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int* arr = (int*) malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        int* dp = (int*) malloc(N * sizeof(int));\n        dp[0] = 1;\n        for (int i = 1; i < N; i++) {\n            dp[i] = 1;\n            for (int j = 0; j < i; j++) {\n                if (gcd(arr[i], arr[j]) > 1) {\n                    dp[i] = max(dp[i], dp[j] + 1);\n                }\n            }\n        }\n        int max_val = 0;\n        for (int i = 0; i < N; i++) {\n            max_val = max(max_val, dp[i]);\n        }\n        printf(\"%d\\n\", max_val);\n        free(arr);\n        free(dp);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<int> arr(N);\n        for (int i = 0; i < N; i++) {\n            cin >> arr[i];\n        }\n        vector<int> dp(N, 1);\n        for (int i = 1; i < N; i++) {\n            for (int j = 0; j < i; j++) {\n                if (gcd(arr[i], arr[j]) > 1) {\n                    dp[i] = max(dp[i], dp[j] + 1);\n                }\n            }\n        }\n        int max_val = *max_element(dp.begin(), dp.end());\n        cout << max_val << endl;\n    }\n    return 0;\n}",

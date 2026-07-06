@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Backtracking",
+    "category": "Recursion & Backtracking",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Recursion & Backtracking",
       "Integer Partitioning",
       "Backtracking"
     ],
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "This is a rather simple problem to describe. You will be given three numbers S,PS, PS,P and kkk. Your task is to find if there are integers n1,n2,...,nkn_1, n_2,...,n_kn1​,n2​,...,nk​ such that n1+n2+...+nk=Sn_1 + n_2 +...+ n_k = Sn1​+n2​+...+nk​=S, n1⋅n2⋅...⋅nk=Pn_1 \\cdot n_2 \\cdot ... \\cdot n_k = Pn1​⋅n2​⋅...⋅nk​=P. If such integers exist, print them out. If no such sequence of integers exist, then print `\"NO\"`.\n\nFor example if S=11,P=48S=11, P=48S=11,P=48 and k=3k=3k=3 then 3,43, 43,4 and 444 is a solution. On the other hand, if S=11,P=100S=11, P=100S=11,P=100 and k=3k=3k=3, there is no solution and you should print `\"NO\"`.\n\nInput:A single line with three integers S,PS, PS,P and kkk.\n\nOutput:A single word `\"NO\"` or a seqence of kkk integers n1,n2,...,nkn_1, n_2,..., n_kn1​,n2​,...,nk​ on a single line. (The nin_ini​'s must add up to SSS and their product must be PPP).",
+    "problemStatement": "This is a rather simple problem to describe. You will be given three numbers S,PS, PS,P and kkk. Your task is to find if there are integers n1,n2,...,nkn_1, n_2,...,n_kn1\u200b,n2\u200b,...,nk\u200b such that n1+n2+...+nk=Sn_1 + n_2 +...+ n_k = Sn1\u200b+n2\u200b+...+nk\u200b=S, n1\u22c5n2\u22c5...\u22c5nk=Pn_1 \\cdot n_2 \\cdot ... \\cdot n_k = Pn1\u200b\u22c5n2\u200b\u22c5...\u22c5nk\u200b=P. If such integers exist, print them out. If no such sequence of integers exist, then print `\"NO\"`.\n\nFor example if S=11,P=48S=11, P=48S=11,P=48 and k=3k=3k=3 then 3,43, 43,4 and 444 is a solution. On the other hand, if S=11,P=100S=11, P=100S=11,P=100 and k=3k=3k=3, there is no solution and you should print `\"NO\"`.\n\nInput:A single line with three integers S,PS, PS,P and kkk.\n\nOutput:A single word `\"NO\"` or a seqence of kkk integers n1,n2,...,nkn_1, n_2,..., n_kn1\u200b,n2\u200b,...,nk\u200b on a single line. (The nin_ini\u200b's must add up to SSS and their product must be PPP).",
     "constraints": [
       "1 <= k <= 4",
       "1 <= S <= 1000",
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "The problem can be solved using a backtracking approach. We start by trying to find a combination of k numbers that sum up to S and multiply to P. We can use a recursive function to try all possible combinations.",
-    "timeComplexity": "O(k * S) — explain: per query is O(k * S), total is O(T * k * S)",
-    "spaceComplexity": "O(k) — explain: we need to store the current combination of k numbers",
+    "timeComplexity": "O(k * S) \u2014 explain: per query is O(k * S), total is O(T * k * S)",
+    "spaceComplexity": "O(k) \u2014 explain: we need to store the current combination of k numbers",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid find_numbers(int S, int P, int k, int current_sum, int current_product, int* current_numbers, int current_index) {\n    if (current_index == k) {\n        if (current_sum == S && current_product == P) {\n            for (int i = 0; i < k; i++) {\n                printf(\"%d \", current_numbers[i]);\n            }\n            printf(\"\\n\");\n            exit(0);\n        }\n        return;\n    }\n    for (int i = 1; i <= S; i++) {\n        if (current_sum + i <= S && current_product * i <= P) {\n            current_numbers[current_index] = i;\n            find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n        }\n    }\n}\n\nint main() {\n    int S, P, k;\n    scanf(\"%d %d %d\", &S, &P, &k);\n    int* current_numbers = (int*) malloc(k * sizeof(int));\n    find_numbers(S, P, k, 0, 1, current_numbers, 0);\n    printf(\"NO\\n\");\n    free(current_numbers);\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\n\nvoid find_numbers(int S, int P, int k, int current_sum, int current_product, int* current_numbers, int current_index) {\n    if (current_index == k) {\n        if (current_sum == S && current_product == P) {\n            for (int i = 0; i < k; i++) {\n                cout << current_numbers[i] << \" \";\n            }\n            cout << endl;\n            exit(0);\n        }\n        return;\n    }\n    for (int i = 1; i <= S; i++) {\n        if (current_sum + i <= S && current_product * i <= P) {\n            current_numbers[current_index] = i;\n            find_numbers(S, P, k, current_sum + i, current_product * i, current_numbers, current_index + 1);\n        }\n    }\n}\n\nint main() {\n    int S, P, k;\n    cin >> S >> P >> k;\n    int* current_numbers = new int[k];\n    find_numbers(S, P, k, 0, 1, current_numbers, 0);\n    cout << \"NO\" << endl;\n    delete[] current_numbers;\n    return 0;\n}",

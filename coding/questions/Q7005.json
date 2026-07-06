@@ -10,10 +10,11 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Fixed Points",
       "Permutation",
       "Cyclic Shift",
-      "Fixed Points",
-      "Construction"
+      "Construction",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,19 +22,19 @@
     ]
   },
   "content": {
-    "problemStatement": "A permutation PPP - [P1,P2,...,PN][P_1, P_2, ..., P_N][P1​,P2​,...,PN​] of size NNN is an array of size NNN consisting of integers 111, 222, .... NNN each exactly once, in some order.\n\nDefine f(P)=f(P) = f(P)= number of fixed points, i.e. number of iii such that (Pi=i)(P_i = i)(Pi​=i).\n\nA cyclic shift of [P1,P2,....,PN][P_1, P_2, ...., P_N][P1​,P2​,....,PN​] is [PX+1,…,PN,P1,P2,...,PX][P_{X + 1}, \\ldots, P_N, P_1, P_2, ..., P_{X}][PX+1​,…,PN​,P1​,P2​,...,PX​] for each 1≤X≤N1 \\le X \\le N1≤X≤N. Note that there are exactly NNN cyclic shifts.\n\nDefine g(P)=max⁡(f(Q))g(P) = \\max(f(Q))g(P)=max(f(Q)) over all QQQ which are cyclic shifts of PPP.\n\nConstruct a permutation of size NNN which has minimum value of g(P)g(P)g(P) among all permutations of size NNN.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer, NNN, the size of the permutation.\n\n\nOutput Format\nFor each test case, output the permutation ppp which minimized the value g(p)g(p)g(p).",
+    "problemStatement": "A permutation PPP - [P1,P2,...,PN][P_1, P_2, ..., P_N][P1\u200b,P2\u200b,...,PN\u200b] of size NNN is an array of size NNN consisting of integers 111, 222, .... NNN each exactly once, in some order.\n\nDefine f(P)=f(P) = f(P)= number of fixed points, i.e. number of iii such that (Pi=i)(P_i = i)(Pi\u200b=i).\n\nA cyclic shift of [P1,P2,....,PN][P_1, P_2, ...., P_N][P1\u200b,P2\u200b,....,PN\u200b] is [PX+1,\u2026,PN,P1,P2,...,PX][P_{X + 1}, \\ldots, P_N, P_1, P_2, ..., P_{X}][PX+1\u200b,\u2026,PN\u200b,P1\u200b,P2\u200b,...,PX\u200b] for each 1\u2264X\u2264N1 \\le X \\le N1\u2264X\u2264N. Note that there are exactly NNN cyclic shifts.\n\nDefine g(P)=max\u2061(f(Q))g(P) = \\max(f(Q))g(P)=max(f(Q)) over all QQQ which are cyclic shifts of PPP.\n\nConstruct a permutation of size NNN which has minimum value of g(P)g(P)g(P) among all permutations of size NNN.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer, NNN, the size of the permutation.\n\n\nOutput Format\nFor each test case, output the permutation ppp which minimized the value g(p)g(p)g(p).",
     "constraints": [
       "1 <= T <= 500",
       "1 <= N <= 500"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 500).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 500).",
     "outputFormat": "For each test case output a permutation of size N that minimizes g(P). Print the N integers separated by a single space on one line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n1\n3\n6",
         "output": "1\n2 1 3\n2 1 4 3 6 5",
-        "explanation": "For N=1 the only permutation is [1] (g=1). For N=3 we swap the first two numbers and keep 3 fixed → [2,1,3]; its cyclic shifts have at most one fixed point, so g=1 which is optimal. For N=6 (even) we swap every adjacent pair → [2,1,4,3,6,5]; any cyclic shift contains at most two fixed points, achieving the optimal value g=2."
+        "explanation": "For N=1 the only permutation is [1] (g=1). For N=3 we swap the first two numbers and keep 3 fixed \u2192 [2,1,3]; its cyclic shifts have at most one fixed point, so g=1 which is optimal. For N=6 (even) we swap every adjacent pair \u2192 [2,1,4,3,6,5]; any cyclic shift contains at most two fixed points, achieving the optimal value g=2."
       }
     ]
   },
@@ -101,7 +102,7 @@
     ]
   },
   "solution": {
-    "approach": "We need a permutation P that makes the maximum number of fixed points among all its N cyclic shifts as small as possible. Observations:\n- For N = 1 the only permutation has g(P) = 1.\n- For even N we can pairwise swap adjacent elements: P = [2,1,4,3,6,5,…]. In any cyclic shift at most two positions can coincide, therefore the optimal value is g(P)=2.\n- For odd N (N>1) we swap all pairs except the last element and keep the last element fixed: P = [2,1,4,3,6,5,…,N]. The fixed element guarantees at least one fixed point, but any shift contains at most one fixed point, so the optimal value is g(P)=1.\nThe construction is O(N) per test case and provably optimal because:\n* For even N a permutation without any fixed point exists, but any cyclic shift of length N will align the two elements of at least one swapped pair, giving at least two fixed points. Hence g(P)≥2.\n* For odd N any permutation must contain at least one fixed point (pigeon‑hole principle on parity of cycles), and the above construction achieves g(P)=1, which is optimal.\nAlgorithm:\n1. Read T.\n2. For each test case read N.\n3. Initialise an array ans[1..N].\n4. For i = 1; i+1 < N; i += 2 set ans[i] = i+1 and ans[i+1] = i.\n5. If N is odd set ans[N] = N (the last element stays in place).\n6. Output ans.\nComplexities: Time O(T·N), Space O(N) per test case.",
+    "approach": "We need a permutation P that makes the maximum number of fixed points among all its N cyclic shifts as small as possible. Observations:\n- For N = 1 the only permutation has g(P) = 1.\n- For even N we can pairwise swap adjacent elements: P = [2,1,4,3,6,5,\u2026]. In any cyclic shift at most two positions can coincide, therefore the optimal value is g(P)=2.\n- For odd N (N>1) we swap all pairs except the last element and keep the last element fixed: P = [2,1,4,3,6,5,\u2026,N]. The fixed element guarantees at least one fixed point, but any shift contains at most one fixed point, so the optimal value is g(P)=1.\nThe construction is O(N) per test case and provably optimal because:\n* For even N a permutation without any fixed point exists, but any cyclic shift of length N will align the two elements of at least one swapped pair, giving at least two fixed points. Hence g(P)\u22652.\n* For odd N any permutation must contain at least one fixed point (pigeon\u2011hole principle on parity of cycles), and the above construction achieves g(P)=1, which is optimal.\nAlgorithm:\n1. Read T.\n2. For each test case read N.\n3. Initialise an array ans[1..N].\n4. For i = 1; i+1 < N; i += 2 set ans[i] = i+1 and ans[i+1] = i.\n5. If N is odd set ans[N] = N (the last element stays in place).\n6. Output ans.\nComplexities: Time O(T\u00b7N), Space O(N) per test case.",
     "timeComplexity": "O(T * N)",
     "spaceComplexity": "O(N) per test case (output array)",
     "code": {

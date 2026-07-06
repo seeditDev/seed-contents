@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Recursion | Data Structures",
+    "category": "Data Structures",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
       "Tree",
       "DFS",
       "Preorder Traversal",
+      "Data Structures",
       "Iterative Stack"
     ],
     "companyTags": [],
@@ -21,16 +22,16 @@
     ]
   },
   "content": {
-    "problemStatement": "Traversing a binary tree is involves visiting all the nodes in the tree in a specific order. The purpose of tree traversal is to access each node exactly once so that the data within the nodes can be processed. There are several methods to traverse a binary tree.\n\nLet's learn about Pre Order traversal.\n\nPre-order traversal involves visiting the root node first, then recursively visiting the left subtree, and finally the right subtree.\n\nPseudo code:\n\n`void preOrder(node root) {\n    if (root == null) {\n        return\n    }\n    print(root-&gt;value)\n    preOrder(root-&gt;left)\n    preOrder(root-&gt;right)\n}\n`Video Explanation\nFor example, check the preorder traversal of the following binary tree\n\n\nTaskGiven a binary tree, complete the function preOrderTraversal to print the Preorder traversal of the tree.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, NNN space separated integers - the preorder traversal of the given tree.",
+    "problemStatement": "Traversing a binary tree is involves visiting all the nodes in the tree in a specific order. The purpose of tree traversal is to access each node exactly once so that the data within the nodes can be processed. There are several methods to traverse a binary tree.\n\nLet's learn about Pre Order traversal.\n\nPre-order traversal involves visiting the root node first, then recursively visiting the left subtree, and finally the right subtree.\n\nPseudo code:\n\n`void preOrder(node root) {\n    if (root == null) {\n        return\n    }\n    print(root-&gt;value)\n    preOrder(root-&gt;left)\n    preOrder(root-&gt;right)\n}\n`Video Explanation\nFor example, check the preorder traversal of the following binary tree\n\n\nTaskGiven a binary tree, complete the function preOrderTraversal to print the Preorder traversal of the tree.\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN \u2014 the number of nodes in the binary tree.\nNext N\u22121N - 1N\u22121 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi\u200b,ci\u200b,Ri\u200b, describing the tree with edge informations - pip_ipi\u200b is an integer denoting the parent node of the iiith edge, cic_ici\u200b is child node, and the letter RiR_iRi\u200b denotes whether the child is left child or right child, it's value is `L` if cic_ici\u200b is left child of pip_ipi\u200b, else `R`.\n\n\nOutput Format\nOutput on the single line, NNN space separated integers - the preorder traversal of the given tree.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 100000",
       "1 <= pi, ci <= 100000",
-      "Ri ∈ {'L','R'}",
+      "Ri \u2208 {'L','R'}",
       "All node values are distinct"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains an integer N, the number of nodes in the binary tree.\n- The next N‑1 lines each contain three space‑separated values: pi ci Ri, where pi is the parent node, ci is the child node, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi). All node values are distinct integers.",
-    "outputFormat": "For each test case output a single line containing N space‑separated integers – the preorder traversal of the given tree.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains an integer N, the number of nodes in the binary tree.\n- The next N\u20111 lines each contain three space\u2011separated values: pi ci Ri, where pi is the parent node, ci is the child node, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi). All node values are distinct integers.",
+    "outputFormat": "For each test case output a single line containing N space\u2011separated integers \u2013 the preorder traversal of the given tree.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -105,7 +106,7 @@
   },
   "solution": {
     "approach": "For each test case we first reconstruct the tree using two arrays left[] and right[] where left[x] stores the left child of node x (0 if none) and right[x] stores the right child. While reading the edges we also mark every child node. The root is the only node that never appears as a child. After the root is identified we perform an iterative preorder traversal using an explicit stack (push right child first, then left child) so that the left subtree is processed before the right one. The visited nodes are printed in order.",
-    "timeComplexity": "O(N) per test case – each edge is processed once and each node is visited once during the traversal.",
+    "timeComplexity": "O(N) per test case \u2013 each edge is processed once and each node is visited once during the traversal.",
     "spaceComplexity": "O(N) per test case for the left, right and isChild arrays plus the stack (at most O(N) in the worst case of a skewed tree).",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    const int MAXV = 100000 + 5;\n    int *left = (int*)calloc(MAXV, sizeof(int));\n    int *right = (int*)calloc(MAXV, sizeof(int));\n    int *isChild = (int*)calloc(MAXV, sizeof(int));\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        memset(left, 0, MAXV * sizeof(int));\n        memset(right, 0, MAXV * sizeof(int));\n        memset(isChild, 0, MAXV * sizeof(int));\n        int maxNode = 0;\n        for (int i = 0; i < N-1; ++i) {\n            int p, c; char dir;\n            scanf(\"%d %d %c\", &p, &c, &dir);\n            if (dir == 'L') left[p] = c; else right[p] = c;\n            isChild[c] = 1;\n            if (p > maxNode) maxNode = p;\n            if (c > maxNode) maxNode = c;\n        }\n        int root = -1;\n        for (int i = 1; i <= maxNode; ++i) {\n            if ((left[i] || right[i] || isChild[i]) && !isChild[i]) { root = i; break; }\n        }\n        int *stack = (int*)malloc((N+5) * sizeof(int));\n        int top = -1;\n        stack[++top] = root;\n        int first = 1;\n        while (top >= 0) {\n            int node = stack[top--];\n            if (first) { printf(\"%d\", node); first = 0; }\n            else printf(\" %d\", node);\n            if (right[node]) stack[++top] = right[node];\n            if (left[node])  stack[++top] = left[node];\n        }\n        printf(\"\\n\");\n        free(stack);\n    }\n    free(left); free(right); free(isChild);\n    return 0;\n}",

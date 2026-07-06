@@ -6,14 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation | Greedy",
+    "category": "Greedy",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Greedy",
+      "Sorting",
       "Bitwise AND",
       "Prefix",
-      "Sorting"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "After learning about the bitwise AND operation, Ridbit challenged Ashishgup to solve the following problem.\n\nLet's denote the bitwise AND of one or more integers a1,a2,…,aka_1, a_2, \\ldots, a_ka1​,a2​,…,ak​ by AND(a1,a2,…,ak)AND(a_1, a_2, \\ldots, a_k)AND(a1​,a2​,…,ak​). For example, AND(7,3,5)=1AND(7, 3, 5) = 1AND(7,3,5)=1. In particular, for an integer xxx, AND(x)=xAND(x) = xAND(x)=x.\n\nGiven a sequence of integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​, Ridbit wants Ashishgup to reorder its elements (possibly leaving the sequence unchanged) in such a way that in the resulting sequence AAA, the sum of the values of bitwise AND for all prefixes of the sequence, i.e. ∑i=1NAND(A1,A2,…Ai)\\sum_{i=1}^N AND(A_1, A_2, \\ldots A_i)∑i=1N​AND(A1​,A2​,…Ai​), is maximum possible.\n\nFind the maximum value of this sum.",
+    "problemStatement": "After learning about the bitwise AND operation, Ridbit challenged Ashishgup to solve the following problem.\n\nLet's denote the bitwise AND of one or more integers a1,a2,\u2026,aka_1, a_2, \\ldots, a_ka1\u200b,a2\u200b,\u2026,ak\u200b by AND(a1,a2,\u2026,ak)AND(a_1, a_2, \\ldots, a_k)AND(a1\u200b,a2\u200b,\u2026,ak\u200b). For example, AND(7,3,5)=1AND(7, 3, 5) = 1AND(7,3,5)=1. In particular, for an integer xxx, AND(x)=xAND(x) = xAND(x)=x.\n\nGiven a sequence of integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b, Ridbit wants Ashishgup to reorder its elements (possibly leaving the sequence unchanged) in such a way that in the resulting sequence AAA, the sum of the values of bitwise AND for all prefixes of the sequence, i.e. \u2211i=1NAND(A1,A2,\u2026Ai)\\sum_{i=1}^N AND(A_1, A_2, \\ldots A_i)\u2211i=1N\u200bAND(A1\u200b,A2\u200b,\u2026Ai\u200b), is maximum possible.\n\nFind the maximum value of this sum.",
     "constraints": [
       "1 <= T <= 1000",
       "1 <= N <= 2^20",
       "0 <= Ai < N",
       "Sum of N over all test cases does not exceed 2^20"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with an integer N, the length of the array. The next line contains N space‑separated integers A1 … AN.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case starts with an integer N, the length of the array. The next line contains N space\u2011separated integers A1 \u2026 AN.",
     "outputFormat": "For each test case output a single line with the maximum possible sum of bitwise AND values of all prefixes after an optimal reordering.",
     "sampleTestCases": [
       {
@@ -50,7 +50,7 @@
       },
       {
         "id": "tc_2",
-        "label": "all equal non‑zero",
+        "label": "all equal non\u2011zero",
         "input": "1\n3\n7 7 7",
         "expectedOutput": "21",
         "weight": 2
@@ -103,9 +103,9 @@
     ]
   },
   "solution": {
-    "approach": "The AND of a prefix can only stay the same or lose bits when we add more elements. To keep the sum large we want the prefix AND to stay as high as possible for as many steps as possible. Greedy strategy: 1) Place the largest element first – it gives the biggest first prefix value. 2) While the current prefix AND is non‑zero, repeatedly choose an unused element that maximises (current AND element). This keeps the most bits alive. After the current AND becomes zero, any remaining order contributes 0, so we can stop. The loop runs at most the number of bits (≤31 for the given limits) because each iteration must drop at least one bit, giving O(N·bits) time.",
-    "timeComplexity": "O(N * B) per test case, where B ≤ 31 is the number of bits (practically ≤ 31).",
-    "spaceComplexity": "O(N) for the array and a used‑flag array.",
+    "approach": "The AND of a prefix can only stay the same or lose bits when we add more elements. To keep the sum large we want the prefix AND to stay as high as possible for as many steps as possible. Greedy strategy: 1) Place the largest element first \u2013 it gives the biggest first prefix value. 2) While the current prefix AND is non\u2011zero, repeatedly choose an unused element that maximises (current AND element). This keeps the most bits alive. After the current AND becomes zero, any remaining order contributes 0, so we can stop. The loop runs at most the number of bits (\u226431 for the given limits) because each iteration must drop at least one bit, giving O(N\u00b7bits) time.",
+    "timeComplexity": "O(N * B) per test case, where B \u2264 31 is the number of bits (practically \u2264 31).",
+    "spaceComplexity": "O(N) for the array and a used\u2011flag array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int a[N];\n        for(int i=0;i<N;i++) scanf(\"%d\",&a[i]);\n        bool used[N]; for(int i=0;i<N;i++) used[i]=false;\n        int maxIdx=0; for(int i=1;i<N;i++) if(a[i]>a[maxIdx]) maxIdx=i;\n        int cur=a[maxIdx]; used[maxIdx]=true; long long ans=cur;\n        while(cur!=0){\n            int best=-1, bestIdx=-1;\n            for(int i=0;i<N;i++) if(!used[i]){\n                int val=cur & a[i];\n                if(val>best){ best=val; bestIdx=i; }\n            }\n            if(bestIdx==-1) break;\n            used[bestIdx]=true; cur=best; ans+=cur;\n        }\n        printf(\"%lld\\n\",ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        for(int &x:a) cin>>x;\n        vector<char> used(N,0);\n        int maxIdx=0;\n        for(int i=1;i<N;i++) if(a[i]>a[maxIdx]) maxIdx=i;\n        int cur=a[maxIdx]; used[maxIdx]=1;\n        long long ans=cur;\n        while(cur!=0){\n            int best=-1,bestIdx=-1;\n            for(int i=0;i<N;i++) if(!used[i]){\n                int val=cur & a[i];\n                if(val>best){ best=val; bestIdx=i; }\n            }\n            if(bestIdx==-1) break;\n            used[bestIdx]=1;\n            cur=best; ans+=cur;\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

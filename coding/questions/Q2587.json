@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "String Manipulation",
       "Greedy Algorithm",
-      "String Manipulation"
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "In Chefland every **word** contains exactly two letters. There exist two alphabets **A** of size **N** and **B** of size **M**, where the first letter of every word comes from **A**, and the second letter of every word comes from **B**.\n\nEvery **sentence** is a space-separated list of words such that each letter from **A** is used exactly once in some word of the sentence and each letter from **B** is used at most once. In particular, each sentence contains exactly **N** words.\n\nAn **article** contains exactly one sentence per line. Chef would like to avoid excessive word repetition, so he provides an upper bound for each word, specifying the number of times you can use that word in the article. Chef has no time so he asks you to write the longest possible article under the given constraints.",
     "constraints": [
-      "1 ≤ T ≤ 2",
-      "1 ≤ N, M ≤ 94",
-      "0 ≤ C(W) ≤ 10^7",
+      "1 \u2264 T \u2264 2",
+      "1 \u2264 N, M \u2264 94",
+      "0 \u2264 C(W) \u2264 10^7",
       "All characters in A are different and A contains exactly N characters",
       "All characters in B are different and B contains exactly M characters",
       "Each character in A and B has ASCII code from 33 to 126, inclusive",
@@ -119,7 +120,7 @@
   "solution": {
     "approach": "The problem can be solved using a greedy algorithm. We first initialize a dictionary to store the frequency of each word. Then, we iterate over the words and their frequencies. For each word, we check if it can be added to the current sentence. If it can, we add it and decrement its frequency. We repeat this process until we have used up all the words or we cannot add any more words to the current sentence. We then start a new sentence and repeat the process. The key insight here is that we always try to add the word with the highest frequency first, so that we can use up as many words as possible in each sentence.",
     "timeComplexity": "O(T * N * M) per test case, O(T * N * M) total. The time complexity is linear with respect to the input size.",
-    "spaceComplexity": "O(N * M) — the dominant structure is the dictionary used to store the frequency of each word.",
+    "spaceComplexity": "O(N * M) \u2014 the dominant structure is the dictionary used to store the frequency of each word.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        char A[100], B[100];\n        scanf(\"%d %s %d %s\", &N, A, &M, B);\n        int wordCounts[N * M];\n        char words[N * M][3];\n        for (int i = 0; i < N * M; i++) {\n            scanf(\"%s %d\", words[i], &wordCounts[i]);\n        }\n        // Greedy algorithm to construct sentences\n        int sentenceCount = 0;\n        int wordIndex = 0;\n        while (wordIndex < N * M) {\n            int sentenceWordCount = 0;\n            char sentence[1000] = \"\";\n            for (int i = wordIndex; i < N * M; i++) {\n                if (wordCounts[i] > 0) {\n                    strcat(sentence, words[i]);\n                    strcat(sentence, \" \");\n                    wordCounts[i]--;\n                    sentenceWordCount++;\n                }\n            }\n            sentenceCount++;\n            wordIndex += sentenceWordCount;\n        }\n        printf(\"%d\\n\", sentenceCount);\n        // Output compressed article\n        printf(\"%d\\n\", sentenceCount);\n        for (int i = 0; i < sentenceCount; i++) {\n            printf(\"1 %s\\n\", sentence);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        string A, B;\n        cin >> N >> A >> M >> B;\n        int wordCounts[N * M];\n        string words[N * M];\n        for (int i = 0; i < N * M; i++) {\n            cin >> words[i] >> wordCounts[i];\n        }\n        // Greedy algorithm to construct sentences\n        int sentenceCount = 0;\n        int wordIndex = 0;\n        while (wordIndex < N * M) {\n            int sentenceWordCount = 0;\n            string sentence = \"\";\n            for (int i = wordIndex; i < N * M; i++) {\n                if (wordCounts[i] > 0) {\n                    sentence += words[i] + \" \";\n                    wordCounts[i]--;\n                    sentenceWordCount++;\n                }\n            }\n            sentenceCount++;\n            wordIndex += sentenceWordCount;\n        }\n        cout << sentenceCount << endl;\n        // Output compressed article\n        cout << sentenceCount << endl;\n        for (int i = 0; i < sentenceCount; i++) {\n            cout << \"1 \" << sentence << endl;\n        }\n    }\n    return 0;\n}",

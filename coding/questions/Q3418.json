@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Probability",
       "Convex Hull",
       "Polygon",
-      "Probability"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef holds all his secret recipes inside his house. For this reason, Chef's house is closed off by walls, thus it is very secure. You can think of the walls as a **simple polygon** in the 2D plane, and you can consider the thickness of the walls to be negligible, i.e., **0**.\n\nUnfortunately, bad guys plan to steal his recipes. To do so, they plan to send a single agent to parachute in a uniformly-chosen random point in the region  **[-107,107] × [-107,107]**. (This point need not be a lattice point.) Once the agent parachutes down that point, he then deploys in his exact location a special weapon called the **pulverizer**, which is designed to destroy walls. The pulverizer works by firing a laser that rotates 360 degrees clockwise, initially pointing north. This laser beam completely destroys the part of the wall it hits.\n\nOnce the walls are destroyed, the rest of the bad guys can now attack the house more easily.\n\nUnfortunately, it's not guaranteed that the pulverizer will be able to destroy every bit of the wall. This is because the laser can only hit (and destroy) the first wall it hits, so if there's another part of the wall behind it, that part cannot be destroyed.\n\nWe will call the plan **successful** if all parts of the wall are destroyed. The following image illustrates it more clearly:\n\nIn this example, only the first image demonstrates a successful plan.\n\nAs head of security of Chef's house, can you determine the probability of a successful plan?",
+    "problemStatement": "Chef holds all his secret recipes inside his house. For this reason, Chef's house is closed off by walls, thus it is very secure. You can think of the walls as a **simple polygon** in the 2D plane, and you can consider the thickness of the walls to be negligible, i.e., **0**.\n\nUnfortunately, bad guys plan to steal his recipes. To do so, they plan to send a single agent to parachute in a uniformly-chosen random point in the region  **[-107,107] \u00d7 [-107,107]**. (This point need not be a lattice point.) Once the agent parachutes down that point, he then deploys in his exact location a special weapon called the **pulverizer**, which is designed to destroy walls. The pulverizer works by firing a laser that rotates 360 degrees clockwise, initially pointing north. This laser beam completely destroys the part of the wall it hits.\n\nOnce the walls are destroyed, the rest of the bad guys can now attack the house more easily.\n\nUnfortunately, it's not guaranteed that the pulverizer will be able to destroy every bit of the wall. This is because the laser can only hit (and destroy) the first wall it hits, so if there's another part of the wall behind it, that part cannot be destroyed.\n\nWe will call the plan **successful** if all parts of the wall are destroyed. The following image illustrates it more clearly:\n\nIn this example, only the first image demonstrates a successful plan.\n\nAs head of security of Chef's house, can you determine the probability of a successful plan?",
     "constraints": [
       "1 <= T <= 40000",
       "3 <= N <= 100000",
@@ -105,8 +106,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the probability of a successful plan by the bad guys. This involves calculating the area of the region where the pulverizer can be placed such that it can destroy the entire wall. We can use the Shoelace formula to calculate the area of the polygon. Then, we need to calculate the area of the region where the pulverizer can be placed. This region is the area of the polygon minus the area of the regions where the pulverizer cannot be placed. We can use geometric reasoning to calculate these areas.",
-    "timeComplexity": "O(T * N) — where T is the number of test cases and N is the number of vertices in the polygon. The time complexity is dominated by the calculation of the area of the polygon and the regions where the pulverizer cannot be placed.",
-    "spaceComplexity": "O(N) — where N is the number of vertices in the polygon. The space complexity is dominated by the storage of the vertices of the polygon.",
+    "timeComplexity": "O(T * N) \u2014 where T is the number of test cases and N is the number of vertices in the polygon. The time complexity is dominated by the calculation of the area of the polygon and the regions where the pulverizer cannot be placed.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of vertices in the polygon. The space complexity is dominated by the storage of the vertices of the polygon.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        double x[N], y[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%lf %lf\", &x[i], &y[i]);\n        }\n        double area = 0;\n        for (int i = 0; i < N; i++) {\n            int j = (i + 1) % N;\n            area += x[i] * y[j] - x[j] * y[i];\n        }\n        area = fabs(area) / 2;\n        double probability = 0;\n        // Calculate the probability of a successful plan\n        printf(\"%.6f\\n\", probability);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        double x[N], y[N];\n        for (int i = 0; i < N; i++) {\n            cin >> x[i] >> y[i];\n        }\n        double area = 0;\n        for (int i = 0; i < N; i++) {\n            int j = (i + 1) % N;\n            area += x[i] * y[j] - x[j] * y[i];\n        }\n        area = fabs(area) / 2;\n        double probability = 0;\n        // Calculate the probability of a successful plan\n        cout << fixed << setprecision(6) << probability << endl;\n    }\n    return 0;\n}",

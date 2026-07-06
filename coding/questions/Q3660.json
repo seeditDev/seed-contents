@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Math | Simulation",
+    "category": "Arrays",
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "Simulation",
+      "Multiset",
       "Priority Queue",
-      "Multiset"
+      "Simulation",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,7 +23,7 @@
   "content": {
     "problemStatement": "Hussain is very bored, and has a lot of exams lined up next week. But he doesn't want to study. As usual, he decided to fail his exams and play with Hasan instead (who has already failed). Hussain invented this new game to play with Hasan. \n\nHussain shows Hasan a multiset of integers. (A multiset is a collection of elements where there can be duplicates). In every move Hussain removes a maximum number from this multiset and divides it by 2 (integer division, which is rounded down).\n\nIf after dividing, the number is still positive (greater than 0) he re-inserts it back into the multiset. \n\nBefore the start of the game, Hussain shows Hasan the numbers in his multiset.\n\nHussain asks Hasan, **M** questions. The **i-th** question will be denoted by **Q[i]**, and Hasan must find the value of the number Hussain will be dividing (before he performs the division) after **Q[i]**-1 moves. That is, what is the value of the number on which the **Q[i]**-th division is performed?\n\nCan you help Hasan and answer the queries?",
     "constraints": [
-      "1 ≤ N, M ≤ 10^6",
+      "1 \u2264 N, M \u2264 10^6",
       "The queries are given in chronological order. That is, Q[i] > Q[i-1]",
       "Every element of the multiset will be a positive integer less than 2^63",
       "It's guaranteed that the set will contain at least one element at the time of any query"
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a priority queue to simulate the process. We start by adding all the elements from the multiset into the priority queue. Then, for each query, we remove the maximum element from the queue, divide it by 2, and add it back to the queue if it's still positive. We keep track of the removed elements to answer the queries.",
-    "timeComplexity": "O(M * logN) — where M is the number of queries and N is the initial size of the multiset. The reason is that we perform a priority queue operation for each query, and each operation takes O(logN) time.",
-    "spaceComplexity": "O(N) — where N is the initial size of the multiset. The reason is that we need to store all the elements from the multiset in the priority queue.",
+    "timeComplexity": "O(M * logN) \u2014 where M is the number of queries and N is the initial size of the multiset. The reason is that we perform a priority queue operation for each query, and each operation takes O(logN) time.",
+    "spaceComplexity": "O(N) \u2014 where N is the initial size of the multiset. The reason is that we need to store all the elements from the multiset in the priority queue.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Structure to represent a priority queue node\ntypedef struct Node {\n    int data;\n    struct Node* next;\n} Node;\n\n// Structure to represent a priority queue\ntypedef struct PriorityQueue {\n    Node* head;\n} PriorityQueue;\n\n// Function to create a new priority queue node\nNode* createNode(int data) {\n    Node* newNode = (Node*) malloc(sizeof(Node));\n    newNode->data = data;\n    newNode->next = NULL;\n    return newNode;\n}\n\n// Function to insert a new node into the priority queue\nvoid insert(PriorityQueue* queue, int data) {\n    Node* newNode = createNode(data);\n    if (queue->head == NULL || queue->head->data < newNode->data) {\n        newNode->next = queue->head;\n        queue->head = newNode;\n    } else {\n        Node* current = queue->head;\n        while (current->next != NULL && current->next->data > newNode->data) {\n            current = current->next;\n        }\n        newNode->next = current->next;\n        current->next = newNode;\n    }\n}\n\n// Function to remove and return the maximum element from the priority queue\nint removeMax(PriorityQueue* queue) {\n    if (queue->head == NULL) {\n        return -1;\n    }\n    int max = queue->head->data;\n    Node* temp = queue->head;\n    queue->head = queue->head->next;\n    free(temp);\n    return max;\n}\n\nint main() {\n    int N, M;\n    scanf(\"%d %d\", &N, &M);\n    PriorityQueue queue;\n    queue.head = NULL;\n    for (int i = 0; i < N; i++) {\n        int num;\n        scanf(\"%d\", &num);\n        insert(&queue, num);\n    }\n    for (int i = 0; i < M; i++) {\n        int Q;\n        scanf(\"%d\", &Q);\n        for (int j = 0; j < Q - 1; j++) {\n            int max = removeMax(&queue);\n            if (max / 2 > 0) {\n                insert(&queue, max / 2);\n            }\n        }\n        int max = removeMax(&queue);\n        printf(\"%d\\n\", max);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    cin >> N >> M;\n    priority_queue<int> queue;\n    for (int i = 0; i < N; i++) {\n        int num;\n        cin >> num;\n        queue.push(num);\n    }\n    for (int i = 0; i < M; i++) {\n        int Q;\n        cin >> Q;\n        for (int j = 0; j < Q - 1; j++) {\n            int max = queue.top();\n            queue.pop();\n            if (max / 2 > 0) {\n                queue.push(max / 2);\n            }\n        }\n        int max = queue.top();\n        cout << max << endl;\n    }\n    return 0;\n}",

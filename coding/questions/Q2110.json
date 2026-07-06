@@ -11,8 +11,9 @@
     "isPremium": false,
     "tags": [
       "Exponentiation",
+      "functools.partial",
       "Binary Exponentiation",
-      "functools.partial"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "In this task, you will create a partial power function using Python's functools.partial. The goal is to create a function that can generate new functions for calculating specific powers of numbers.\n\nYou need to implement a function called `create_power_func(power)` that takes a power as an argument and returns a new function. This new function should take a number as input and return that number raised to the specified power.\n\nFor example, if we call `create_power_func(2)`, it should return a function that squares its input. If we call `create_power_func(3)`, it should return a function that cubes its input.\n\nHere's an example of how it should work:\n\n`square = create_power_func(2)\ncube = create_power_func(3)\n\nprint(square(4))  # Output: 16\nprint(cube(3))    # Output: 27\n`Your task is to implement the `create_power_func` function using `functools.partial`.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "0 ≤ p ≤ 10",
-      "0 ≤ x ≤ 10^9",
-      "Result fits into the language’s arbitrary‑precision integer type"
+      "1\u202f\u2264\u202fT\u202f\u2264\u202f1000",
+      "0\u202f\u2264\u202fp\u202f\u2264\u202f10",
+      "0\u202f\u2264\u202fx\u202f\u2264\u202f10^9",
+      "Result fits into the language\u2019s arbitrary\u2011precision integer type"
     ],
-    "inputFormat": "The first line contains an integer T – the number of test cases. Each of the next T lines contains two integers p and x separated by a space, where p is the exponent (0 ≤ p ≤ 10) and x is the base (0 ≤ x ≤ 10^9).",
+    "inputFormat": "The first line contains an integer T \u2013 the number of test cases. Each of the next T lines contains two integers p and x separated by a space, where p is the exponent (0\u202f\u2264\u202fp\u202f\u2264\u202f10) and x is the base (0\u202f\u2264\u202fx\u202f\u2264\u202f10^9).",
     "outputFormat": "For each test case output a single line containing x raised to the power p. The results are printed in the same order as the test cases.",
     "sampleTestCases": [
       {
@@ -114,9 +115,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we need to compute x^p. Because p ≤ 10 a naïve multiplication loop would be sufficient, but using binary exponentiation (repeated squaring) guarantees O(log p) time and works for any p. In Python we showcase the requested use of functools.partial: we create a generic power function pow_func(a,b)=a**b and then fix the exponent with partial, producing a function that only needs the base. The same logic is implemented directly in the other languages. The algorithm for each test case:\n1. Read p and x.\n2. Compute result = 1.\n3. While p > 0:\n   • If the lowest bit of p is 1, multiply result by x.\n   • Square x.\n   • Shift p right by one.\n4. Output result.\nThe loop runs at most log2(p) ≤ 4 iterations, so the total complexity is O(T·log p) which is effectively O(T). The memory usage is O(1).",
-    "timeComplexity": "O(T·log p) – at most 4 iterations per test case because p ≤ 10, effectively O(T)",
-    "spaceComplexity": "O(1) – only a few integer variables are stored",
+    "approach": "For each test case we need to compute x^p. Because p \u2264 10 a na\u00efve multiplication loop would be sufficient, but using binary exponentiation (repeated squaring) guarantees O(log\u202fp) time and works for any p. In Python we showcase the requested use of functools.partial: we create a generic power function pow_func(a,b)=a**b and then fix the exponent with partial, producing a function that only needs the base. The same logic is implemented directly in the other languages. The algorithm for each test case:\n1. Read p and x.\n2. Compute result = 1.\n3. While p > 0:\n   \u2022 If the lowest bit of p is 1, multiply result by x.\n   \u2022 Square x.\n   \u2022 Shift p right by one.\n4. Output result.\nThe loop runs at most log2(p) \u2264 4 iterations, so the total complexity is O(T\u00b7log\u202fp) which is effectively O(T). The memory usage is O(1).",
+    "timeComplexity": "O(T\u00b7log\u202fp) \u2013 at most 4 iterations per test case because p \u2264 10, effectively O(T)",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are stored",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nuint64_t power_uint64(uint64_t base, uint64_t exp){\n    uint64_t result = 1;\n    while(exp){\n        if(exp & 1ULL) result *= base;\n        base *= base;\n        exp >>= 1ULL;\n    }\n    return result;\n}\n\nint main(){\n    int T;\n    if(scanf(\"%d\", &T)!=1) return 0;\n    for(int tc=0; tc<T; ++tc){\n        unsigned long long p, x;\n        if(scanf(\"%llu %llu\", &p, &x)!=2) break;\n        printf(\"%llu\\n\", power_uint64(x, p));\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nunsigned long long power_ull(unsigned long long base, unsigned long long exp){\n    unsigned long long result = 1;\n    while(exp){\n        if(exp & 1ULL) result *= base;\n        base *= base;\n        exp >>= 1ULL;\n    }\n    return result;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        unsigned long long p, x; cin>>p>>x;\n        cout<<power_ull(x, p)<<\"\\n\";\n    }\n    return 0;\n}",

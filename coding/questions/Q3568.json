@@ -6,10 +6,11 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
+      "Graphs",
       "Eulerian Path",
       "Graph Orientation"
     ],
@@ -113,8 +114,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to check if the given graph has an Eulerian path. An Eulerian path is a path that visits every edge in the graph exactly once. If the graph has an Eulerian path, we can orient the edges to make the graph tourist-friendly. We can use Hierholzer's algorithm to find an Eulerian path in the graph.",
-    "timeComplexity": "O(E + N) — because we need to iterate over all edges and vertices in the graph to find an Eulerian path.",
-    "spaceComplexity": "O(E + N) — because we need to store the adjacency list of the graph and the Eulerian path.",
+    "timeComplexity": "O(E + N) \u2014 because we need to iterate over all edges and vertices in the graph to find an Eulerian path.",
+    "spaceComplexity": "O(E + N) \u2014 because we need to store the adjacency list of the graph and the Eulerian path.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\n#define MAXE 200005\nint N, E;\nint in[MAXN], out[MAXN];\nint edge[MAXE][2];\nint ans[MAXE][2];\nvoid dfs(int u) {\n    while (in[u] < out[u]) {\n        int v = edge[in[u]][1];\n        in[u]++;\n        dfs(v);\n    }\n}\nint main() {\n    scanf(\"%d %d\", &N, &E);\n    for (int i = 0; i < E; i++) {\n        scanf(\"%d %d\", &edge[i][0], &edge[i][1]);\n        out[edge[i][0]]++;\n        in[edge[i][1]]++;\n    }\n    int start = 0;\n    for (int i = 1; i <= N; i++) {\n        if (out[i] - in[i] == 1) {\n            start = i;\n            break;\n        }\n    }\n    if (start == 0) {\n        printf(\"NO\\n\");\n        return 0;\n    }\n    dfs(start);\n    printf(\"YES\\n\");\n    for (int i = 0; i < E; i++) {\n        printf(\"%d %d\\n\", ans[i][0], ans[i][1]);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 100005;\nconst int MAXE = 200005;\nint N, E;\nint in[MAXN], out[MAXN];\nvector<pair<int, int>> edge;\nvector<pair<int, int>> ans;\nvoid dfs(int u) {\n    while (in[u] < out[u]) {\n        int v = edge[in[u]].second;\n        in[u]++;\n        dfs(v);\n    }\n}\nint main() {\n    cin >> N >> E;\n    for (int i = 0; i < E; i++) {\n        int u, v;\n        cin >> u >> v;\n        edge.push_back({u, v});\n        out[u]++;\n        in[v]++;\n    }\n    int start = 0;\n    for (int i = 1; i <= N; i++) {\n        if (out[i] - in[i] == 1) {\n            start = i;\n            break;\n        }\n    }\n    if (start == 0) {\n        cout << \"NO\" << endl;\n        return 0;\n    }\n    dfs(start);\n    cout << \"YES\" << endl;\n    for (int i = 0; i < E; i++) {\n        cout << edge[i].first << \" \" << edge[i].second << endl;\n    }\n    return 0;\n}",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays | Sliding Window",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
       "Sliding Window",
-      "Array Rotation"
+      "Array Rotation",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,8 +22,8 @@
   "content": {
     "problemStatement": "Chef has a binary array **A** of length **N**. He also has a frame that can focus on at max **K** consecutive elements of the array. \n\nChef has a lovely dog which likes to do following two things.  \n\n\n\nShifting the array **A** to the right by one element (**N**-th element becomes 1st, 1st becomes 2nd and so on) \nAsking Chef what is the maximal number of elements equal to 1, that can be captured by a frame (frame can capture **not more** than **K** consecutive elements of array).\n\n\nHelp Chef entertain his Dog!",
     "constraints": [
-      "1 ≤ N, K, P ≤ 10^5",
-      "0 ≤ Ai ≤ 1"
+      "1 \u2264 N, K, P \u2264 10^5",
+      "0 \u2264 Ai \u2264 1"
     ],
     "inputFormat": "The first line of each test case contains three integers N, K, and P denoting the number of elements in array A, size of a frame, and the number of Dog's requests. The second line contains N space-separated integers A1, A2, ..., AN denoting the elements of array. The third line contains a string consisting of P characters, i-th character stands for dog's i-th question and equals '!' if Dog shifts the array and '?' if dog asks what is the maximal number of ones captured by the frame.",
     "outputFormat": "For each Dog's question output a single line containing an integer corresponding to the answer of the question.",
@@ -100,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a sliding window approach to find the maximum number of ones in the array that can be captured by the frame. We also need to handle the rotation of the array when the dog shifts it. We can use a queue data structure to efficiently rotate the array.",
-    "timeComplexity": "O(P * K) — explain: per query is O(K), total is O(P * K)",
-    "spaceComplexity": "O(N) — explain: we need to store the array of size N",
+    "timeComplexity": "O(P * K) \u2014 explain: per query is O(K), total is O(P * K)",
+    "spaceComplexity": "O(N) \u2014 explain: we need to store the array of size N",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint maxOnes(int* arr, int n, int k) {\n    int maxOnes = 0;\n    int windowOnes = 0;\n    for (int i = 0; i < k; i++) {\n        windowOnes += arr[i];\n    }\n    maxOnes = windowOnes;\n    for (int i = k; i < n; i++) {\n        windowOnes = windowOnes - arr[i - k] + arr[i];\n        maxOnes = (maxOnes > windowOnes) ? maxOnes : windowOnes;\n    }\n    return maxOnes;\n}\n\nint main() {\n    int t = 1;\n    while (t--) {\n        int n, k, p;\n        scanf(\"%d %d %d\", &n, &k, &p);\n        int* arr = (int*) malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &arr[i]);\n        }\n        char* queries = (char*) malloc((p + 1) * sizeof(char));\n        scanf(\"%s\", queries);\n        for (int i = 0; i < p; i++) {\n            if (queries[i] == '!') {\n                int temp = arr[n - 1];\n                for (int j = n - 1; j > 0; j--) {\n                    arr[j] = arr[j - 1];\n                }\n                arr[0] = temp;\n            } else {\n                printf(\"%d\\n\", maxOnes(arr, n, k));\n            }\n        }\n        free(arr);\n        free(queries);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\nint maxOnes(vector<int>& arr, int k) {\n    int maxOnes = 0;\n    int windowOnes = 0;\n    for (int i = 0; i < k; i++) {\n        windowOnes += arr[i];\n    }\n    maxOnes = windowOnes;\n    for (int i = k; i < arr.size(); i++) {\n        windowOnes = windowOnes - arr[i - k] + arr[i];\n        maxOnes = (maxOnes > windowOnes) ? maxOnes : windowOnes;\n    }\n    return maxOnes;\n}\n\nint main() {\n    int t = 1;\n    while (t--) {\n        int n, k, p;\n        cin >> n >> k >> p;\n        vector<int> arr(n);\n        for (int i = 0; i < n; i++) {\n            cin >> arr[i];\n        }\n        string queries;\n        cin >> queries;\n        for (int i = 0; i < p; i++) {\n            if (queries[i] == '!') {\n                int temp = arr[n - 1];\n                for (int j = n - 1; j > 0; j--) {\n                    arr[j] = arr[j - 1];\n                }\n                arr[0] = temp;\n            } else {\n                cout << maxOnes(arr, k) << endl;\n            }\n        }\n    }\n    return 0;\n}",

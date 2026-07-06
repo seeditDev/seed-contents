@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Frequency Analysis",
-      "Substitution Cipher"
+      "Substitution Cipher",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Once upon a time chef decided to learn encodings. And, obviously, he started with the easiest one (well, actually the easiest after Caesar cypher) – substitution cypher.\n\n \nBut very soon Chef got bored with encoding/decoding, so he started thinking how to hack this cypher. \nHe already knows some algorithm, which is not always correct, \nbut it’s sufficient for now. Here is its description.\n\n\n\n\nImagine we know frequency sequence of English letters (this means, that letters are sorted by their frequency of appearing in English texts, in ascending order).\nAnd let’s find frequency sequence of cyphered letters (if some of them appear equal number of times, then first in frequency sequence will be lower letter between them).\nNow, using this two frequency sequences we can recover plain text. Just substitute cyphered letter with origin one, if they are at same positions in sequences. \n\n\n\nNow, Chef has frequency sequence of English letters and cypher text. And he asks you to recover plain text. Please, help him.",
+    "problemStatement": "Once upon a time chef decided to learn encodings. And, obviously, he started with the easiest one (well, actually the easiest after Caesar cypher) \u2013 substitution cypher.\n\n \nBut very soon Chef got bored with encoding/decoding, so he started thinking how to hack this cypher. \nHe already knows some algorithm, which is not always correct, \nbut it\u2019s sufficient for now. Here is its description.\n\n\n\n\nImagine we know frequency sequence of English letters (this means, that letters are sorted by their frequency of appearing in English texts, in ascending order).\nAnd let\u2019s find frequency sequence of cyphered letters (if some of them appear equal number of times, then first in frequency sequence will be lower letter between them).\nNow, using this two frequency sequences we can recover plain text. Just substitute cyphered letter with origin one, if they are at same positions in sequences. \n\n\n\nNow, Chef has frequency sequence of English letters and cypher text. And he asks you to recover plain text. Please, help him.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
+      "1 \u2264 T \u2264 1000",
       "The frequency sequence length is exactly 26 and is a permutation of 'a'-'z'.",
-      "1 ≤ length of each encrypted text ≤ 150000",
-      "Sum of lengths of all encrypted texts ≤ 150000"
+      "1 \u2264 length of each encrypted text \u2264 150000",
+      "Sum of lengths of all encrypted texts \u2264 150000"
     ],
-    "inputFormat": "First line contains T, the number of test cases. Each test case consists of two lines: the first line is a string of length 26 containing all lowercase English letters – the frequency sequence of English letters (ordered from least frequent to most frequent). The second line is the encrypted text, which may contain any printable characters.",
-    "outputFormat": "For each test case output a single line – the decrypted text obtained by the described frequency-based substitution. The case of alphabetic characters must be preserved, all non-alphabetic characters are printed unchanged.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case consists of two lines: the first line is a string of length 26 containing all lowercase English letters \u2013 the frequency sequence of English letters (ordered from least frequent to most frequent). The second line is the encrypted text, which may contain any printable characters.",
+    "outputFormat": "For each test case output a single line \u2013 the decrypted text obtained by the described frequency-based substitution. The case of alphabetic characters must be preserved, all non-alphabetic characters are printed unchanged.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved by first analyzing the frequency of characters in the given encrypted text and then mapping them to the corresponding characters in the frequency sequence of English letters. This mapping is used to substitute the characters in the encrypted text to obtain the decrypted text.",
     "timeComplexity": "O(T * N log N) per test case, where N is the length of the encrypted text. The overall time complexity is O(T * N log N) due to the sorting operation.",
-    "spaceComplexity": "O(N) — the dominant structure is the array used to store the frequency of characters in the encrypted text.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array used to store the frequency of characters in the encrypted text.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\n\nint cmp(const void *a, const void *b) {\n    const int *pa = (const int *)a;\n    const int *pb = (const int *)b;\n    if (pa[1] != pb[1]) return pa[1] - pb[1]; // frequency ascending\n    return pa[0] - pb[0]; // letter ascending\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    getchar(); // consume newline after T\n    char freqSeq[27];\n    char text[150005];\n    for (int tc = 0; tc < T; ++tc) {\n        fgets(freqSeq, sizeof(freqSeq), stdin);\n        size_t len = strlen(freqSeq);\n        if (len && freqSeq[len-1] == '\\n') freqSeq[--len] = '\\0';\n        fgets(text, sizeof(text), stdin);\n        len = strlen(text);\n        if (len && text[len-1] == '\\n') text[--len] = '\\0';\n        int cnt[26] = {0};\n        for (size_t i = 0; i < len; ++i) {\n            if (isalpha((unsigned char)text[i])) {\n                cnt[tolower((unsigned char)text[i]) - 'a']++;\n            }\n        }\n        int arr[26][2]; // [letter, count]\n        for (int i = 0; i < 26; ++i) {\n            arr[i][0] = i;\n            arr[i][1] = cnt[i];\n        }\n        qsort(arr, 26, sizeof(arr[0]), cmp);\n        char map[26];\n        for (int i = 0; i < 26; ++i) {\n            int cipherIdx = arr[i][0];\n            map[cipherIdx] = freqSeq[i];\n        }\n        for (size_t i = 0; i < len; ++i) {\n            char c = text[i];\n            if (isalpha((unsigned char)c)) {\n                char low = tolower((unsigned char)c);\n                char dec = map[low - 'a'];\n                if (isupper((unsigned char)c)) dec = toupper((unsigned char)dec);\n                putchar(dec);\n            } else {\n                putchar(c);\n            }\n        }\n        putchar('\\n');\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; string line; getline(cin,line); // consume endline\n    while(T--) {\n        string freqSeq; getline(cin,freqSeq);\n        string text; getline(cin,text);\n        int cnt[26] = {};\n        for(char c: text) if(isalpha(static_cast<unsigned char>(c))) cnt[tolower(c)-'a']++;\n        vector<pair<int,int>> v; // (letter, count)\n        for(int i=0;i<26;++i) v.push_back({i,cnt[i]});\n        sort(v.begin(), v.end(), [](auto &a, auto &b){\n            if(a.second!=b.second) return a.second<b.second; // freq asc\n            return a.first<b.first; // letter asc\n        });\n        char mp[26];\n        for(int i=0;i<26;++i) mp[v[i].first] = freqSeq[i];\n        for(char c: text){\n            if(isalpha(static_cast<unsigned char>(c))){\n                char low = tolower(c);\n                char dec = mp[low-'a'];\n                if(isupper(c)) dec = toupper(dec);\n                cout<<dec;\n            } else cout<<c;\n        }\n        if(T) cout<<'\\n';\n    }\n    return 0;\n}",

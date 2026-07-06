@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "String Manipulation",
-      "Reversal"
+      "Reversal",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,8 +22,8 @@
   "content": {
     "problemStatement": "Chef recently printed directions from his home to a hot new restaurant across the town, but forgot to print the directions to get back home. Help Chef to transform the directions to get home from the restaurant.\n\nA set of directions consists of several instructions. The first instruction is of the form \"Begin on XXX\", indicating the street that the route begins on. Each subsequent instruction is of the form \"Left on XXX\" or \"Right on XXX\", indicating a turn onto the specified road.\n\nWhen reversing directions, all left turns become right turns and vice versa, and the order of roads and turns is reversed. See the sample input for examples.",
     "constraints": [
-      "1 ≤ T ≤ 15",
-      "2 ≤ N ≤ 40",
+      "1 \u2264 T \u2264 15",
+      "2 \u2264 N \u2264 40",
       "Each line in the input will contain at most 50 characters, will contain only alphanumeric characters and spaces and will not contain consecutive spaces nor trailing spaces"
     ],
     "inputFormat": "First line contains T, the number of test cases. Each test case begins with an integer N, the number of instructions in the route. N lines follow, each with exactly one instruction in the format described above.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to reverse the order of instructions and swap left and right turns. We iterate through the instructions in reverse order, starting from the last instruction. For each instruction, we check if it's a left or right turn and print the corresponding reversed instruction.",
     "timeComplexity": "O(N) per test case, O(T*N) total. No precomputation is done.",
-    "spaceComplexity": "O(N) — the dominant structure is the array of instructions.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the array of instructions.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T, N;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        char instructions[N][50];\n        for (int i = 0; i < N; i++) {\n            fgets(instructions[i], 50, stdin);\n            instructions[i][strcspn(instructions[i], \"\\n\")] = 0;\n        }\n        printf(\"Begin on %s\\n\", instructions[N - 1] + 7);\n        for (int i = N - 2; i > 0; i--) {\n            if (strcmp(instructions[i], \"Left on\") == 0) {\n                printf(\"Right on %s\\n\", instructions[i] + 7);\n            } else if (strcmp(instructions[i], \"Right on\") == 0) {\n                printf(\"Left on %s\\n\", instructions[i] + 8);\n            }\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    int T, N;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        string instructions[N];\n        for (int i = 0; i < N; i++) {\n            getline(cin, instructions[i]);\n        }\n        string last = instructions[N - 1];\n        size_t pos = last.find(\" on \");\n        cout << \"Begin on \" << last.substr(pos + 4) << endl;\n        for (int i = N - 2; i > 0; i--) {\n            if (instructions[i].find(\"Left on\") == 0) {\n                cout << \"Right on \" << instructions[i].substr(7) << endl;\n            } else if (instructions[i].find(\"Right on\") == 0) {\n                cout << \"Left on \" << instructions[i].substr(8) << endl;\n            }\n        }\n        cout << endl;\n    }\n    return 0;\n}",

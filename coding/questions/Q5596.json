@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming | Strings",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "DP on two sequences",
       "Prefix sums",
-      "Greedy not sufficient"
+      "Strings",
+      "Greedy not sufficient",
+      "DP on two sequences"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You have two binary strings AAA and BBB, both of length NNN. You have to merge both the binary strings to form a new binary string CCC of length 2⋅N2 \\cdot N2⋅N. The relative order of characters in the original binary strings AAA and BBB should not change in the binary string CCC.\n\nFor example, if A=01011A = {\\color{blue}01011}A=01011 and B=10100B = {\\color{red}10100}B=10100, one possible way to merge them to form CCC is: C=0101101100C = {\\color{blue}0}{\\color{red}1}{\\color{red}0}{\\color{blue}1}{\\color{red}1}{\\color{blue}0}{\\color{blue}1}{\\color{blue}1}{\\color{red}0}{\\color{red}0}C=0101101100.\n\n**Minimize** the number of inversions in the merged binary string CCC.\n\nAs a reminder, a pair of indices (i,j)(i, j)(i,j) is an inversion for binary string CCC if and only if 1≤i&lt;j≤∣C∣1 \\leq i \\lt j \\leq |C|1≤i&lt;j≤∣C∣, Ci=1C_i = 1Ci​=1 and Cj=0C_j = 0Cj​=0.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains a single integer NNN — the length of the binary strings AAA and BBB.\nThe second line of each test case contains the binary string AAA.\nThe third line of each test case contains the binary string BBB.\n\n\nOutput Format\nFor each test case, output a single line containing the **minimum** number of inversions in the merged binary string CCC.",
+    "problemStatement": "You have two binary strings AAA and BBB, both of length NNN. You have to merge both the binary strings to form a new binary string CCC of length 2\u22c5N2 \\cdot N2\u22c5N. The relative order of characters in the original binary strings AAA and BBB should not change in the binary string CCC.\n\nFor example, if A=01011A = {\\color{blue}01011}A=01011 and B=10100B = {\\color{red}10100}B=10100, one possible way to merge them to form CCC is: C=0101101100C = {\\color{blue}0}{\\color{red}1}{\\color{red}0}{\\color{blue}1}{\\color{red}1}{\\color{blue}0}{\\color{blue}1}{\\color{blue}1}{\\color{red}0}{\\color{red}0}C=0101101100.\n\n**Minimize** the number of inversions in the merged binary string CCC.\n\nAs a reminder, a pair of indices (i,j)(i, j)(i,j) is an inversion for binary string CCC if and only if 1\u2264i&lt;j\u2264\u2223C\u22231 \\leq i \\lt j \\leq |C|1\u2264i&lt;j\u2264\u2223C\u2223, Ci=1C_i = 1Ci\u200b=1 and Cj=0C_j = 0Cj\u200b=0.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains a single integer NNN \u2014 the length of the binary strings AAA and BBB.\nThe second line of each test case contains the binary string AAA.\nThe third line of each test case contains the binary string BBB.\n\n\nOutput Format\nFor each test case, output a single line containing the **minimum** number of inversions in the merged binary string CCC.",
     "constraints": [
       "1 <= T <= 1000",
       "1 <= N <= 1000",
@@ -28,7 +29,7 @@
       "A and B consist only of characters '0' and '1'"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line contains integer N, the length of the two binary strings. The second line contains the binary string A of length N. The third line contains the binary string B of length N.",
-    "outputFormat": "For each test case output a single line with the minimum possible number of inversions in a merged string C of length 2·N.",
+    "outputFormat": "For each test case output a single line with the minimum possible number of inversions in a merged string C of length 2\u00b7N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,9 +115,9 @@
     ]
   },
   "solution": {
-    "approach": "Let prefA[i] be the number of '1's in the first i characters of A (0 ≤ i ≤ N) and similarly prefB[j] for B. While merging we keep the relative order inside each string, therefore after taking i characters from A and j characters from B the total number of '1's already placed is prefA[i] + prefB[j]. If the next taken character is a '0', it creates an inversion with each previously placed '1'. Hence the additional cost is exactly the current number of placed '1's; if the next character is a '1' it adds no immediate cost. Define dp[i][j] as the minimum inversions after taking i characters from A and j characters from B. Transition:  • Take next character from A:  added = (A[i] == '0') ? (prefA[i] + prefB[j]) : 0;  dp[i+1][j] = min(dp[i+1][j], dp[i][j] + added)  • Take next character from B:  added = (B[j] == '0') ? (prefA[i] + prefB[j]) : 0;  dp[i][j+1] = min(dp[i][j+1], dp[i][j] + added)  Initialise dp[0][0] = 0 and fill the table for 0 ≤ i, j ≤ N. The answer is dp[N][N]. The table has (N+1)² states, each processed in O(1), giving O(N²) time and O(N²) memory per test case, which is fine for N ≤ 1000 and total N ≤ 2000.",
-    "timeComplexity": "O(N²) per test case, total O( Σ N² ) ≤ O(2·10⁶ ) for the given limits.",
-    "spaceComplexity": "O(N²) for the DP table (can be reduced to O(N) with rolling array, but not required).",
+    "approach": "Let prefA[i] be the number of '1's in the first i characters of A (0 \u2264 i \u2264 N) and similarly prefB[j] for B. While merging we keep the relative order inside each string, therefore after taking i characters from A and j characters from B the total number of '1's already placed is prefA[i] + prefB[j]. If the next taken character is a '0', it creates an inversion with each previously placed '1'. Hence the additional cost is exactly the current number of placed '1's; if the next character is a '1' it adds no immediate cost. Define dp[i][j] as the minimum inversions after taking i characters from A and j characters from B. Transition:  \u2022 Take next character from A:  added = (A[i] == '0') ? (prefA[i] + prefB[j]) : 0;  dp[i+1][j] = min(dp[i+1][j], dp[i][j] + added)  \u2022 Take next character from B:  added = (B[j] == '0') ? (prefA[i] + prefB[j]) : 0;  dp[i][j+1] = min(dp[i][j+1], dp[i][j] + added)  Initialise dp[0][0] = 0 and fill the table for 0\u202f\u2264\u202fi,\u202fj\u202f\u2264\u202fN. The answer is dp[N][N]. The table has (N+1)\u00b2 states, each processed in O(1), giving O(N\u00b2) time and O(N\u00b2) memory per test case, which is fine for N \u2264 1000 and total N \u2264 2000.",
+    "timeComplexity": "O(N\u00b2) per test case, total O( \u03a3 N\u00b2 ) \u2264 O(2\u00b710\u2076 ) for the given limits.",
+    "spaceComplexity": "O(N\u00b2) for the DP table (can be reduced to O(N) with rolling array, but not required).",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <limits.h>\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        char A[1005], B[1005];\n        scanf(\"%s\", A);\n        scanf(\"%s\", B);\n        int prefA[1005]={0}, prefB[1005]={0};\n        for(int i=0;i<N;i++) prefA[i+1]=prefA[i]+(A[i]=='1');\n        for(int i=0;i<N;i++) prefB[i+1]=prefB[i]+(B[i]=='1');\n        static long long dp[1005][1005];\n        for(int i=0;i<=N;i++) for(int j=0;j<=N;j++) dp[i][j]=LLONG_MAX/4;\n        dp[0][0]=0;\n        for(int i=0;i<=N;i++){\n            for(int j=0;j<=N;j++){\n                long long cur=dp[i][j];\n                if(cur==LLONG_MAX/4) continue;\n                if(i<N){\n                    long long add = (A[i]=='0') ? (prefA[i]+prefB[j]) : 0;\n                    if(cur+add < dp[i+1][j]) dp[i+1][j]=cur+add;\n                }\n                if(j<N){\n                    long long add = (B[j]=='0') ? (prefA[i]+prefB[j]) : 0;\n                    if(cur+add < dp[i][j+1]) dp[i][j+1]=cur+add;\n                }\n            }\n        }\n        printf(\"%lld\\n\", dp[N][N]);\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        string A,B; cin>>A>>B;\n        vector<int> prefA(N+1,0), prefB(N+1,0);\n        for(int i=0;i<N;i++) prefA[i+1]=prefA[i]+(A[i]=='1');\n        for(int i=0;i<N;i++) prefB[i+1]=prefB[i]+(B[i]=='1');\n        const long long INF = (1LL<<60);\n        vector<vector<long long>> dp(N+1, vector<long long>(N+1, INF));\n        dp[0][0]=0;\n        for(int i=0;i<=N;i++){\n            for(int j=0;j<=N;j++){\n                long long cur=dp[i][j];\n                if(cur==INF) continue;\n                if(i<N){\n                    long long add = (A[i]=='0') ? (prefA[i]+prefB[j]) : 0;\n                    dp[i+1][j]=min(dp[i+1][j], cur+add);\n                }\n                if(j<N){\n                    long long add = (B[j]=='0') ? (prefA[i]+prefB[j]) : 0;\n                    dp[i][j+1]=min(dp[i][j+1], cur+add);\n                }\n            }\n        }\n        cout<<dp[N][N]<<\"\\n\";\n    }\n    return 0;\n}\n",

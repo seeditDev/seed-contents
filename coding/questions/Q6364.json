@@ -6,15 +6,16 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "Hashing",
-      "Slopes",
+      "Collinear Points",
       "GCD",
-      "Hash Map",
-      "Collinear Points"
+      "Hashing",
+      "Math",
+      "Slopes",
+      "Hash Map"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,14 +23,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Given NNN points of the form (xi,yi)(x_i, y_i)(xi​,yi​) on a 222-D plane. Find the **maximum** number of points that lie on the same straight line.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains an integer NNN  — the number of points.\nThe next NNN lines contain two space-separated integers xix_ixi​, yiy_iyi​ — the coordinate of the ithi^{th}ith point.\n\n\nOutput Format\nFor each test case, output on a new line the **maximum** number of points that lie on the same straight line.",
+    "problemStatement": "Given NNN points of the form (xi,yi)(x_i, y_i)(xi\u200b,yi\u200b) on a 222-D plane. Find the **maximum** number of points that lie on the same straight line.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first line of each test case contains an integer NNN  \u2014 the number of points.\nThe next NNN lines contain two space-separated integers xix_ixi\u200b, yiy_iyi\u200b \u2014 the coordinate of the ithi^{th}ith point.\n\n\nOutput Format\nFor each test case, output on a new line the **maximum** number of points that lie on the same straight line.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 15",
       "-10^9 <= xi, yi <= 10^9",
       "The sum of N over all test cases does not exceed 2000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of points. The next N lines each contain two space‑separated integers xi and yi, the coordinates of a point.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of points. The next N lines each contain two space\u2011separated integers xi and yi, the coordinates of a point.",
     "outputFormat": "For each test case output a single line containing the maximum number of points that lie on the same straight line.",
     "sampleTestCases": [
       {
@@ -104,8 +105,8 @@
     ]
   },
   "solution": {
-    "approach": "For each point i treat it as an anchor. For every other point j compute the direction vector (dx, dy) = (xj‑xi, yj‑yi). Reduce the vector by dividing both components by their greatest common divisor and enforce a unique sign (make dx non‑negative; if dx==0 make dy positive). Use a hash map to count how many points share the same reduced direction from i. Keep track of duplicate points that have exactly the same coordinates as i. For the current anchor the best line contains maxCount (the highest frequency in the map) + duplicates + 1 (the anchor itself). The answer for the test case is the maximum over all anchors. The algorithm runs in O(N^2) time and O(N) extra space per test case.",
-    "timeComplexity": "O(N^2) per test case, where N ≤ 15, easily fits the limits.",
+    "approach": "For each point i treat it as an anchor. For every other point j compute the direction vector (dx, dy) = (xj\u2011xi, yj\u2011yi). Reduce the vector by dividing both components by their greatest common divisor and enforce a unique sign (make dx non\u2011negative; if dx==0 make dy positive). Use a hash map to count how many points share the same reduced direction from i. Keep track of duplicate points that have exactly the same coordinates as i. For the current anchor the best line contains maxCount (the highest frequency in the map) + duplicates + 1 (the anchor itself). The answer for the test case is the maximum over all anchors. The algorithm runs in O(N^2) time and O(N) extra space per test case.",
+    "timeComplexity": "O(N^2) per test case, where N \u2264 15, easily fits the limits.",
     "spaceComplexity": "O(N) for the hash map used for each anchor.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nlong long gcd_ll(long long a, long long b) {\n    if (a < 0) a = -a;\n    if (b < 0) b = -b;\n    while (b) { long long t = a % b; a = b; b = t; }\n    return a;\n}\n\ntypedef struct { long long dx, dy; } Pair;\n\nint pair_cmp(const void *a, const void *b) {\n    const Pair *p = a, *q = b;\n    if (p->dx != q->dx) return p->dx < q->dx ? -1 : 1;\n    if (p->dy != q->dy) return p->dy < q->dy ? -1 : 1;\n    return 0;\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long *x = malloc(N * sizeof(long long));\n        long long *y = malloc(N * sizeof(long long));\n        for (int i = 0; i < N; ++i) scanf(\"%lld %lld\", &x[i], &y[i]);\n        int best = 1;\n        for (int i = 0; i < N; ++i) {\n            int dup = 0;\n            Pair *arr = malloc((N-1) * sizeof(Pair));\n            int cnt = 0;\n            for (int j = 0; j < N; ++j) if (j != i) {\n                long long dx = x[j] - x[i];\n                long long dy = y[j] - y[i];\n                if (dx == 0 && dy == 0) { dup++; continue; }\n                long long g = gcd_ll(dx, dy);\n                dx /= g; dy /= g;\n                if (dx < 0 || (dx == 0 && dy < 0)) { dx = -dx; dy = -dy; }\n                arr[cnt].dx = dx; arr[cnt].dy = dy; cnt++;\n            }\n            if (cnt > 0) {\n                qsort(arr, cnt, sizeof(Pair), pair_cmp);\n                int cur = 1, localMax = 1;\n                for (int k = 1; k < cnt; ++k) {\n                    if (arr[k].dx == arr[k-1].dx && arr[k].dy == arr[k-1].dy) {\n                        cur++;\n                    } else {\n                        if (cur > localMax) localMax = cur;\n                        cur = 1;\n                    }\n                }\n                if (cur > localMax) localMax = cur;\n                if (localMax + dup + 1 > best) best = localMax + dup + 1;\n            } else {\n                if (dup + 1 > best) best = dup + 1;\n            }\n            free(arr);\n        }\n        printf(\"%d\\n\", best);\n        free(x); free(y);\n    }\n    return 0;\n}\n",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Greedy",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Subsequence operations",
       "Greedy counting",
+      "Subsequence operations",
+      "Strings",
       "Set of characters"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Given a string AAA of length NNN consisting of lowercase English alphabet letters.\n\nYou are allowed to perform the following operation on the string AAA any number of times:\n\n\nSelect a **non-empty** subsequence SSS of the array [1,2,3,…,N][1,2,3,\\ldots,N][1,2,3,…,N] and any lowercase English alphabet α\\alphaα;\nChange AiA_iAi​ to α\\alphaα for all i∈Si \\in Si∈S.\nFind the minimum number of operations required to convert AAA into a given string BBB of length NNN consisting of lowercase English alphabet letters.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases. The description of TTT test cases follow.\nThe first line of each test case contains an integer NNN - the length of the string AAA and BBB.\nThe second line of each test case contains the string AAA.\nThe third line of each test case contains the string BBB.\n\n\nOutput Format\nFor each test case, output the **minimum** number of operations required to convert string AAA into string BBB.",
+    "problemStatement": "Given a string AAA of length NNN consisting of lowercase English alphabet letters.\n\nYou are allowed to perform the following operation on the string AAA any number of times:\n\n\nSelect a **non-empty** subsequence SSS of the array [1,2,3,\u2026,N][1,2,3,\\ldots,N][1,2,3,\u2026,N] and any lowercase English alphabet \u03b1\\alpha\u03b1;\nChange AiA_iAi\u200b to \u03b1\\alpha\u03b1 for all i\u2208Si \\in Si\u2208S.\nFind the minimum number of operations required to convert AAA into a given string BBB of length NNN consisting of lowercase English alphabet letters.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases. The description of TTT test cases follow.\nThe first line of each test case contains an integer NNN - the length of the string AAA and BBB.\nThe second line of each test case contains the string AAA.\nThe third line of each test case contains the string BBB.\n\n\nOutput Format\nFor each test case, output the **minimum** number of operations required to convert string AAA into string BBB.",
     "constraints": [
       "1 <= T <= 10^4",
       "1 <= N <= 10^5",
@@ -28,13 +29,13 @@
       "A and B contain only lowercase English letters"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the length of the strings. The second line contains string A of length N. The third line contains string B of length N. All strings consist of lowercase English letters.",
-    "outputFormat": "For each test case output a single integer on its own line – the minimum number of operations required to transform A into B.",
+    "outputFormat": "For each test case output a single integer on its own line \u2013 the minimum number of operations required to transform A into B.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n2\nab\ncd\n3\naaa\nbab\n4\nabcd\naaab",
         "output": "2\n1\n2",
-        "explanation": "Test case 1: need characters 'c' and 'd' → 2 operations.\\nTest case 2: only character 'b' is needed → 1 operation.\\nTest case 3: need characters 'a' and 'b' → 2 operations."
+        "explanation": "Test case 1: need characters 'c' and 'd' \u2192 2 operations.\\nTest case 2: only character 'b' is needed \u2192 1 operation.\\nTest case 3: need characters 'a' and 'b' \u2192 2 operations."
       }
     ]
   },
@@ -102,9 +103,9 @@
     ]
   },
   "solution": {
-    "approach": "In one operation we can choose any subset of positions and change all of them to the same character α. Therefore, for each character c we can in a single operation change *all* positions i where B[i] = c and A[i] ≠ c to c. Doing this for every character that actually needs a change yields a feasible solution. It is also optimal because any operation can affect only one final character, so at least one operation is required for each distinct character that appears in B at a mismatching position. Hence the answer is the number of distinct characters c such that there exists an index i with A[i] ≠ B[i] and B[i] = c.",
-    "timeComplexity": "O(N) per test case, where N is the length of the strings. Overall O(total N) ≤ 10^5.",
-    "spaceComplexity": "O(1) – only a fixed size boolean array of size 26 is used.",
+    "approach": "In one operation we can choose any subset of positions and change all of them to the same character \u03b1. Therefore, for each character c we can in a single operation change *all* positions i where B[i] = c and A[i] \u2260 c to c. Doing this for every character that actually needs a change yields a feasible solution. It is also optimal because any operation can affect only one final character, so at least one operation is required for each distinct character that appears in B at a mismatching position. Hence the answer is the number of distinct characters c such that there exists an index i with A[i] \u2260 B[i] and B[i] = c.",
+    "timeComplexity": "O(N) per test case, where N is the length of the strings. Overall O(total N) \u2264 10^5.",
+    "spaceComplexity": "O(1) \u2013 only a fixed size boolean array of size 26 is used.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char A[100005], B[100005];\n        scanf(\"%s\",A);\n        scanf(\"%s\",B);\n        int need[26]={0};\n        for(int i=0;i<N;i++) if(A[i]!=B[i]) need[B[i]-'a']=1;\n        int ans=0; for(int i=0;i<26;i++) ans+=need[i];\n        printf(\"%d\\n\",ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        string A,B; cin>>A>>B;\n        bool need[26] = {};\n        for(int i=0;i<N;i++) if(A[i]!=B[i]) need[B[i]-'a']=true;\n        int ans=0; for(int i=0;i<26;i++) ans+=need[i];\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

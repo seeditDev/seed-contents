@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Simulation",
+    "category": "Graphs",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Simulation",
+      "Graphs",
       "Sorting",
-      "Greedy",
-      "Graph"
+      "Simulation",
+      "Graph",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,13 +22,13 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN athletes (numbered 111 through NNN) in a line. For each valid iii, the iii-th athlete starts at the position iii and his speed is ViV_iVi​, i.e. for any real number t≥0t \\ge 0t≥0, the position of the iii-th athlete at the time ttt is i+Vi⋅ti + V_i \\cdot ti+Vi​⋅t.\n\nUnfortunately, one of the athletes is infected with a virus at the time t=0t = 0t=0. This virus only spreads from an infected athlete to another whenever their positions are the same at the same time. A newly infected athlete may then infect others as well.\n\nWe do not know which athlete is infected initially. However, if we wait long enough, a specific set of athletes (depending on the athlete that was infected initially) will become infected. Your task is to find the size of this set, i.e. the final number of infected people, in the best and worst possible scenario.",
+    "problemStatement": "There are NNN athletes (numbered 111 through NNN) in a line. For each valid iii, the iii-th athlete starts at the position iii and his speed is ViV_iVi\u200b, i.e. for any real number t\u22650t \\ge 0t\u22650, the position of the iii-th athlete at the time ttt is i+Vi\u22c5ti + V_i \\cdot ti+Vi\u200b\u22c5t.\n\nUnfortunately, one of the athletes is infected with a virus at the time t=0t = 0t=0. This virus only spreads from an infected athlete to another whenever their positions are the same at the same time. A newly infected athlete may then infect others as well.\n\nWe do not know which athlete is infected initially. However, if we wait long enough, a specific set of athletes (depending on the athlete that was infected initially) will become infected. Your task is to find the size of this set, i.e. the final number of infected people, in the best and worst possible scenario.",
     "constraints": [
       "1 <= T <= 10000",
       "3 <= N <= 5",
       "0 <= Vi <= 5 for every i"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N (number of athletes). The second line contains N space‑separated integers V1,V2,…,VN denoting the speed of each athlete. Athletes are numbered from 1 to N and initially stand at positions 1…N.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines: the first line contains an integer N (number of athletes). The second line contains N space\u2011separated integers V1,V2,\u2026,VN denoting the speed of each athlete. Athletes are numbered from 1 to N and initially stand at positions 1\u2026N.",
     "outputFormat": "For each test case output a single line with two integers: the minimum possible final number of infected athletes and the maximum possible final number of infected athletes, considering all choices of the initially infected athlete.",
     "sampleTestCases": [
       {
@@ -102,8 +103,8 @@
     ]
   },
   "solution": {
-    "approach": "Two athletes i<j meet iff Vi > Vj. The meeting time is t = (j-i)/(Vi-Vj). All possible meetings are independent of the infection state, so we can pre‑compute every meeting as an event (time, i, j) and sort the events by time. For a fixed initially infected athlete s we simulate the spread: start with only s infected, then scan the sorted events. When an event (i,j) is processed, if exactly one of i or j is already infected, the other becomes infected (the infection time of the newly infected athlete is the current event time, which is non‑decreasing). After all events are processed the number of infected athletes is known. Repeating the simulation for every possible s (N ≤ 5) gives the minimum and maximum final infected counts. The algorithm runs in O(N^3) per test case (N^2 events, N simulations), which is trivial for N ≤ 5.",
-    "timeComplexity": "O(N^3) per test case (with N ≤ 5 this is at most a few hundred operations). Overall O(T * N^3).",
+    "approach": "Two athletes i<j meet iff Vi > Vj. The meeting time is t = (j-i)/(Vi-Vj). All possible meetings are independent of the infection state, so we can pre\u2011compute every meeting as an event (time, i, j) and sort the events by time. For a fixed initially infected athlete s we simulate the spread: start with only s infected, then scan the sorted events. When an event (i,j) is processed, if exactly one of i or j is already infected, the other becomes infected (the infection time of the newly infected athlete is the current event time, which is non\u2011decreasing). After all events are processed the number of infected athletes is known. Repeating the simulation for every possible s (N \u2264 5) gives the minimum and maximum final infected counts. The algorithm runs in O(N^3) per test case (N^2 events, N simulations), which is trivial for N \u2264 5.",
+    "timeComplexity": "O(N^3) per test case (with N \u2264 5 this is at most a few hundred operations). Overall O(T * N^3).",
     "spaceComplexity": "O(N^2) to store the list of meeting events.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\ntypedef struct { double t; int a; int b; } Event;\nint cmpEvent(const void *x, const void *y) {\n    double diff = ((Event*)x)->t - ((Event*)y)->t;\n    if (diff < 0) return -1;\n    if (diff > 0) return 1;\n    return 0;\n}\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int V[5];\n        for(int i=0;i<N;i++) scanf(\"%d\", &V[i]);\n        Event ev[10]; int ec=0;\n        for(int i=0;i<N;i++){\n            for(int j=i+1;j<N;j++){\n                if(V[i]>V[j]){\n                    ev[ec].t = (double)(j-i)/(V[i]-V[j]);\n                    ev[ec].a = i; ev[ec].b = j; ec++;\n                }\n            }\n        }\n        qsort(ev, ec, sizeof(Event), cmpEvent);\n        int best=N, worst=1;\n        for(int start=0; start<N; ++start){\n            bool inf[5]={0}; inf[start]=true;\n            for(int e=0;e<ec;e++){\n                int a=ev[e].a, b=ev[e].b;\n                if(inf[a] && !inf[b]) inf[b]=true;\n                else if(inf[b] && !inf[a]) inf[a]=true;\n            }\n            int cnt=0; for(int i=0;i<N;i++) if(inf[i]) cnt++;\n            if(cnt<best) best=cnt;\n            if(cnt>worst) worst=cnt;\n        }\n        printf(\"%d %d\\n\", best, worst);\n    }\n    return 0;\n}",

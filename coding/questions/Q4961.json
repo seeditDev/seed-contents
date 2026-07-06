@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Greedy | Simulation",
+    "category": "Strings",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Time conversion",
       "String parsing",
-      "Linear scan"
+      "Linear scan",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,21 +21,21 @@
     ]
   },
   "content": {
-    "problemStatement": "A time is a string in the format `\"HH:MM AM\"` or `\"HH:MM PM\"` (without quotes), where `HH` and `MM` are always two-digit numbers. A day starts at 12:00 AM and ends at 11:59 PM. You may refer here for understanding the 12-hour clock format.\n\nChef has scheduled a meeting with his friends at a time PPP. He has NNN friends (numbered 111 through NNN); for each valid iii, the iii-th friend is available from a time LiL_iLi​ to a time RiR_iRi​ (both inclusive). For each friend, can you help Chef find out if this friend will be able to attend the meeting? More formally, check if Li≤P≤RiL_i \\leq P \\leq R_iLi​≤P≤Ri​ for each valid iii.",
+    "problemStatement": "A time is a string in the format `\"HH:MM AM\"` or `\"HH:MM PM\"` (without quotes), where `HH` and `MM` are always two-digit numbers. A day starts at 12:00 AM and ends at 11:59 PM. You may refer here for understanding the 12-hour clock format.\n\nChef has scheduled a meeting with his friends at a time PPP. He has NNN friends (numbered 111 through NNN); for each valid iii, the iii-th friend is available from a time LiL_iLi\u200b to a time RiR_iRi\u200b (both inclusive). For each friend, can you help Chef find out if this friend will be able to attend the meeting? More formally, check if Li\u2264P\u2264RiL_i \\leq P \\leq R_iLi\u200b\u2264P\u2264Ri\u200b for each valid iii.",
     "constraints": [
       "1 <= T <= 500",
       "1 <= N <= 500",
-      "All times are valid 12‑hour clock strings.",
+      "All times are valid 12\u2011hour clock strings.",
       "For each i, R_i is not earlier than L_i."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line is the meeting time P in the format \"HH:MM AM\" or \"HH:MM PM\". The second line contains an integer N, the number of friends. Then N lines follow, each containing two times L_i and R_i (same format) separated by a space, denoting the inclusive availability interval of the i‑th friend.",
-    "outputFormat": "For each test case output a single line consisting of N characters. The i‑th character is '1' if the meeting time P lies within the i‑th friend's interval [L_i,R_i] (inclusive), otherwise '0'.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: first line is the meeting time P in the format \"HH:MM AM\" or \"HH:MM PM\". The second line contains an integer N, the number of friends. Then N lines follow, each containing two times L_i and R_i (same format) separated by a space, denoting the inclusive availability interval of the i\u2011th friend.",
+    "outputFormat": "For each test case output a single line consisting of N characters. The i\u2011th character is '1' if the meeting time P lies within the i\u2011th friend's interval [L_i,R_i] (inclusive), otherwise '0'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n12:01 AM\n4\n12:00 AM 11:42 PM\n12:01 AM 11:59 AM\n12:30 AM 12:00 PM\n11:59 AM 11:59 PM\n04:12 PM\n5\n12:00 AM 11:59 PM\n01:00 PM 04:12 PM\n04:12 PM 04:12 PM\n04:12 AM 04:12 AM\n12:00 PM 11:59 PM",
         "output": "1100\n11101",
-        "explanation": "First test case: meeting at 12:01 AM. Friends 1 and 2 can attend, friends 3 and 4 cannot → \"1100\". Second test case: meeting at 04:12 PM. Friends 1,2,3 and 5 can attend, friend 4 cannot → \"11101\"."
+        "explanation": "First test case: meeting at 12:01 AM. Friends 1 and 2 can attend, friends 3 and 4 cannot \u2192 \"1100\". Second test case: meeting at 04:12 PM. Friends 1,2,3 and 5 can attend, friend 4 cannot \u2192 \"11101\"."
       },
       {
         "id": "sample_2",
@@ -108,8 +109,8 @@
     ]
   },
   "solution": {
-    "approach": "Convert every time string to the number of minutes elapsed since 12:00 AM (0 … 1439). The conversion rules are: • 12:00 AM → 0, 12:01 AM → 1, …, 11:59 AM → 719; • 12:00 PM → 720, 01:00 PM → 780, …, 11:59 PM → 1439. For each test case, convert P once, then for each friend convert L_i and R_i and check L_i <= P <= R_i. Append '1' or '0' accordingly. This is O(N) per test case.",
-    "timeComplexity": "O(T * N) – each friend is processed once.",
+    "approach": "Convert every time string to the number of minutes elapsed since 12:00 AM (0 \u2026 1439). The conversion rules are: \u2022 12:00 AM \u2192 0, 12:01 AM \u2192 1, \u2026, 11:59 AM \u2192 719; \u2022 12:00 PM \u2192 720, 01:00 PM \u2192 780, \u2026, 11:59 PM \u2192 1439. For each test case, convert P once, then for each friend convert L_i and R_i and check L_i <= P <= R_i. Append '1' or '0' accordingly. This is O(N) per test case.",
+    "timeComplexity": "O(T * N) \u2013 each friend is processed once.",
     "spaceComplexity": "O(1) besides input storage.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint toMinutes(const char *s){\n    int hh, mm; char ampm[3];\n    sscanf(s, \"%d:%d %2s\", &hh, &mm, ampm);\n    if (hh == 12) hh = 0;\n    if (strcmp(ampm, \"PM\") == 0) hh += 12;\n    return hh*60 + mm;\n}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    char line[30];\n    while(T--){\n        // read meeting time (may contain space)\n        scanf(\" %[^\\n]\", line);\n        int P = toMinutes(line);\n        int N; scanf(\"%d\", &N);\n        char ans[505];\n        for(int i=0;i<N;i++){\n            char L[30], R[30];\n            scanf(\" %[^ ] %[^\\n]\", L, R);\n            int l = toMinutes(L);\n            int r = toMinutes(R);\n            ans[i] = (l <= P && P <= r) ? '1' : '0';\n        }\n        ans[N] = '\\0';\n        printf(\"%s\\n\", ans);\n    }\n    return 0;\n}",

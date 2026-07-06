@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-03",
   "metadata": {
-    "category": "Arrays | Sorting",
+    "category": "Arrays",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Heap",
       "Sorting",
-      "Kth Largest Element"
+      "Kth Largest Element",
+      "Heap",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "To find the Kth largest element in the array, we can use a max heap. We first build a max heap from the given array. Then, we extract the maximum element from the heap K-1 times. The element left at the root of the heap after K-1 extractions is the Kth largest element.",
-    "timeComplexity": "O(N log N) — building the heap takes O(N log N) time, and extracting the maximum element K-1 times takes O(K log N) time. Since K <= N, the overall time complexity is O(N log N).",
-    "spaceComplexity": "O(N) — we need to store the array elements in the heap.",
+    "timeComplexity": "O(N log N) \u2014 building the heap takes O(N log N) time, and extracting the maximum element K-1 times takes O(K log N) time. Since K <= N, the overall time complexity is O(N log N).",
+    "spaceComplexity": "O(N) \u2014 we need to store the array elements in the heap.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Structure for a heap node\ntypedef struct Node {\n    int value;\n} Node;\n\n// Function to swap two nodes\nvoid swap(Node *a, Node *b) {\n    Node temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\n// Function to heapify the array\nvoid heapify(Node *arr, int n, int i) {\n    int largest = i;\n    int left = 2 * i + 1;\n    int right = 2 * i + 2;\n\n    if (left < n && arr[left].value > arr[largest].value)\n        largest = left;\n\n    if (right < n && arr[right].value > arr[largest].value)\n        largest = right;\n\n    if (largest != i) {\n        swap(&arr[i], &arr[largest]);\n        heapify(arr, n, largest);\n    }\n}\n\n// Function to build a max heap\nvoid buildHeap(Node *arr, int n) {\n    for (int i = n / 2 - 1; i >= 0; i--)\n        heapify(arr, n, i);\n}\n\n// Function to extract the maximum element from the heap\nint extractMax(Node *arr, int *n) {\n    int max = arr[0].value;\n    arr[0] = arr[*n - 1];\n    (*n)--;\n    heapify(arr, *n, 0);\n    return max;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n\n    Node *arr = (Node *)malloc(n * sizeof(Node));\n\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i].value);\n    }\n\n    buildHeap(arr, n);\n\n    for (int i = 0; i < k - 1; i++) {\n        extractMax(arr, &n);\n    }\n\n    printf(\"%d\\n\", arr[0].value);\n\n    free(arr);\n\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Heap {\n    public:\n    vector<int> v;\n    void insert(int value){\n        v.push_back(value);\n        int cur_index = v.size()-1;\n        while(cur_index!=0){\n            int parent_index = (cur_index-1)/2;\n            if(v[parent_index]<v[cur_index]){\n                swap(v[parent_index], v[cur_index]);\n            }\n            cur_index = parent_index;\n        }\n    }\n    \n    void Heapify(int index) {\n        int left_child = 2*index+1;\n        int right_child = 2*index+2;\n        if(left_child<v.size() && v[left_child]>v[index]){\n            swap(v[index], v[left_child]);\n            Heapify(left_child);\n        }\n        if(right_child<v.size() && v[right_child]>v[index]){\n            swap(v[index], v[right_child]);\n            Heapify(right_child);\n        }\n    }\n    \n    void delete_from_heap(){\n        int index = 0;\n        swap(v[index], v[v.size()-1]);\n        v.pop_back();\n        Heapify(index);\n    }\n    \n};\n\n\nint main() {\n    Heap* h1 = new Heap();\n    int n, k;\n    cin>>n>>k;\n    for(int i=0; i<n; i++)\n    {\n        int value;\n        cin>>value;\n        h1->insert(value);\n    }\n    for(int i=0; i<k-1; i++)\n    {\n        h1->delete_from_heap();\n    }\n    cout<<h1->v[0]<<endl;\n\n}\n",

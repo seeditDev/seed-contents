@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Recursion",
+    "category": "Recursion & Backtracking",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "Binary Tree",
       "Depth First Search",
+      "Recursion & Backtracking",
       "Height Balanced",
       "Tree Traversal"
     ],
@@ -21,16 +22,16 @@
     ]
   },
   "content": {
-    "problemStatement": "Given a connected binary tree with **N** nodes, determine if it is height-balanced. (**Note:** A binary tree is height-balanced if the depth of the two subtrees of every node never differs by more than one.)\n\nFor example, the following binary tree is height balanced:\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN — the number of nodes in the binary tree.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on the single line, `YES` if the tree is height balanced, else `NO`.",
+    "problemStatement": "Given a connected binary tree with **N** nodes, determine if it is height-balanced. (**Note:** A binary tree is height-balanced if the depth of the two subtrees of every node never differs by more than one.)\n\nFor example, the following binary tree is height balanced:\n\n\n\n\nInput Format\n\nThe first line of the input contains a single integer NNN \u2014 the number of nodes in the binary tree.\nNext N\u22121N - 1N\u22121 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi\u200b,ci\u200b,Ri\u200b, describing the tree with edge informations - pip_ipi\u200b is an integer denoting the parent node of the iiith edge, cic_ici\u200b is child node, and the letter RiR_iRi\u200b denotes whether the child is left child or right child, it's value is `L` if cic_ici\u200b is left child of pip_ipi\u200b, else `R`.\n\n\nOutput Format\nOutput on the single line, `YES` if the tree is height balanced, else `NO`.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10000",
       "1 <= pi, ci <= N",
-      "Ri ∈ {'L','R'}",
+      "Ri \u2208 {'L','R'}",
       "All (pi,ci) pairs are distinct and form a valid binary tree"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N — the number of nodes in the binary tree. The next N‑1 lines each contain three space‑separated values: pi ci Ri, where pi is the parent node, ci is the child node and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi).",
-    "outputFormat": "For each test case print a single line containing \"YES\" if the given binary tree is height‑balanced, otherwise print \"NO\".",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains an integer N \u2014 the number of nodes in the binary tree. The next N\u20111 lines each contain three space\u2011separated values: pi ci Ri, where pi is the parent node, ci is the child node and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi).",
+    "outputFormat": "For each test case print a single line containing \"YES\" if the given binary tree is height\u2011balanced, otherwise print \"NO\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -42,13 +43,13 @@
         "id": "sample_2",
         "input": "1\n4\n1 2 L\n2 3 L\n3 4 L\n",
         "output": "NO",
-        "explanation": "The tree is a left‑skewed chain; the height difference exceeds one at several nodes, so it is not height‑balanced."
+        "explanation": "The tree is a left\u2011skewed chain; the height difference exceeds one at several nodes, so it is not height\u2011balanced."
       },
       {
         "id": "sample_3",
         "input": "1\n1\n",
         "output": "YES",
-        "explanation": "A single node tree is trivially height‑balanced."
+        "explanation": "A single node tree is trivially height\u2011balanced."
       }
     ]
   },
@@ -116,8 +117,8 @@
     ]
   },
   "solution": {
-    "approach": "A tree is height‑balanced iff for every node the heights of its left and right subtrees differ by at most one. Perform a post‑order DFS that returns the height of the subtree rooted at the current node. If a subtree is already unbalanced, propagate a sentinel value (e.g., -1). The first occurrence of -1 means the whole tree is not balanced. This visits each node once, giving O(N) time and O(H) recursion stack, where H is the tree height (≤ N).",
-    "timeComplexity": "O(N) per test case, O(total N) for all test cases combined",
+    "approach": "A tree is height\u2011balanced iff for every node the heights of its left and right subtrees differ by at most one. Perform a post\u2011order DFS that returns the height of the subtree rooted at the current node. If a subtree is already unbalanced, propagate a sentinel value (e.g., -1). The first occurrence of -1 means the whole tree is not balanced. This visits each node once, giving O(N) time and O(H) recursion stack, where H is the tree height (\u2264 N).",
+    "timeComplexity": "O(N) per test case, O(total\u202fN) for all test cases combined",
     "spaceComplexity": "O(N) for the child arrays plus O(H) recursion stack",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint *leftChild, *rightChild;\nint *isChild;\n\nint dfs(int node){\n    if(node==0) return 0;\n    int lh = dfs(leftChild[node]);\n    if(lh==-1) return -1;\n    int rh = dfs(rightChild[node]);\n    if(rh==-1) return -1;\n    if(abs(lh-rh)>1) return -1;\n    return 1 + (lh>rh?lh:rh);\n}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        leftChild = (int*)calloc(N+1,sizeof(int));\n        rightChild = (int*)calloc(N+1,sizeof(int));\n        isChild = (int*)calloc(N+1,sizeof(int));\n        for(int i=0;i<N-1;++i){\n            int p,c; char dir; scanf(\"%d %d %c\",&p,&c,&dir);\n            if(dir=='L') leftChild[p]=c; else rightChild[p]=c;\n            isChild[c]=1;\n        }\n        int root=1; for(int i=1;i<=N;++i) if(!isChild[i]){root=i;break;}\n        int res = dfs(root);\n        printf(\"%s\\n\", res==-1?\"NO\":\"YES\");\n        free(leftChild); free(rightChild); free(isChild);\n    }\n    return 0;\n}",

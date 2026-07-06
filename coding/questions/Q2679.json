@@ -10,6 +10,7 @@
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
+      "Arrays",
       "Prefix Sum",
       "Modular Arithmetic"
     ],
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Sereja has an array **A** consisting of **n** integers. Initially, all the elements of array are zero.\n\nSereja writes down **m** commands on a piece of a paper. The commands are enumerated from **1** to **m**. These commands can be of the following two types of commands: \n\n\n **l r (1 ≤ l ≤ r ≤ n)** — Increase all elements of the array by one, whose indices belongs to the range **[l, r]** \n **l r (1 ≤ l ≤ r ≤ m)** — Execute all the commands whose indices are in the range **[l, r]**. It's guaranteed that **r** is strictly less than the enumeration/number of the current command. \nCan you please help Sereja in executing all the commands written on this piece of paper.",
+    "problemStatement": "Sereja has an array **A** consisting of **n** integers. Initially, all the elements of array are zero.\n\nSereja writes down **m** commands on a piece of a paper. The commands are enumerated from **1** to **m**. These commands can be of the following two types of commands: \n\n\n **l r (1\u2009\u2264\u2009l\u2009\u2264\u2009r\u2009\u2264\u2009n)** \u2014 Increase all elements of the array by one, whose indices belongs to the range **[l,\u2009r]** \n **l r (1\u2009\u2264\u2009l\u2009\u2264\u2009r\u2009\u2264\u2009m)** \u2014 Execute all the commands whose indices are in the range **[l,\u2009r]**. It's guaranteed that **r** is strictly less than the enumeration/number of the current command. \nCan you please help Sereja in executing all the commands written on this piece of paper.",
     "constraints": [
       "1 <= T <= 3",
       "1 <= n, m <= 10^5",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved by maintaining a prefix sum array to keep track of the cumulative sum of increments at each position. For type 1 commands, we increment the corresponding range in the prefix sum array. For type 2 commands, we execute the commands in the specified range by adding their increments to the prefix sum array. Finally, we calculate the final state of the array by taking the prefix sum modulo 10^9 + 7 at each position.",
     "timeComplexity": "O(T * (n + m)) per test case, O(T * (n + m)) total.",
-    "spaceComplexity": "O(n + m) — for the prefix sum array and the commands array.",
+    "spaceComplexity": "O(n + m) \u2014 for the prefix sum array and the commands array.",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int arr[n];\n        for (int i = 0; i < n; i++) arr[i] = 0;\n        int commands[m][3];\n        for (int i = 0; i < m; i++) {\n            scanf(\"%d %d %d\", &commands[i][0], &commands[i][1], &commands[i][2]);\n        }\n        for (int i = 0; i < m; i++) {\n            if (commands[i][0] == 1) {\n                for (int j = commands[i][1] - 1; j < commands[i][2]; j++) {\n                    arr[j] = (arr[j] + 1) % MOD;\n                }\n            } else {\n                for (int j = commands[i][1] - 1; j < commands[i][2]; j++) {\n                    if (commands[j][0] == 1) {\n                        for (int k = commands[j][1] - 1; k < commands[j][2]; k++) {\n                            arr[k] = (arr[k] + 1) % MOD;\n                        }\n                    }\n                }\n            }\n        }\n        for (int i = 0; i < n; i++) printf(\"%d \", arr[i]);\n        printf(\"\\n\");\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define MOD 1000000007\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int n, m;\n        cin >> n >> m;\n        int arr[n];\n        for (int i = 0; i < n; i++) arr[i] = 0;\n        int commands[m][3];\n        for (int i = 0; i < m; i++) {\n            cin >> commands[i][0] >> commands[i][1] >> commands[i][2];\n        }\n        for (int i = 0; i < m; i++) {\n            if (commands[i][0] == 1) {\n                for (int j = commands[i][1] - 1; j < commands[i][2]; j++) {\n                    arr[j] = (arr[j] + 1) % MOD;\n                }\n            } else {\n                for (int j = commands[i][1] - 1; j < commands[i][2]; j++) {\n                    if (commands[j][0] == 1) {\n                        for (int k = commands[j][1] - 1; k < commands[j][2]; k++) {\n                            arr[k] = (arr[k] + 1) % MOD;\n                        }\n                    }\n                }\n            }\n        }\n        for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n        cout << endl;\n    }\n    return 0;\n}",

@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Distance Calculation",
-      "Optimization"
+      "Optimization",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The key insight is to calculate the distance from each village to the closest point on the two roads and then find the average of these distances squared. We use the concept of distance between a point and a line to find the closest point on the road to each village. We then optimize the position of the roads to minimize the average sadness.",
     "timeComplexity": "O(N^4) per test case, O(T*N^4) total.",
-    "spaceComplexity": "O(N) — the dominant structure is the arrays to store the village coordinates.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the arrays to store the village coordinates.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#define N 100\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    double x[N], y[N];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%lf %lf\", &x[i], &y[i]);\n    }\n    double min_sadness = 1e18;\n    for (int i = 0; i < n; i++) {\n        for (int j = i + 1; j < n; j++) {\n            for (int k = 0; k < n; k++) {\n                for (int l = k + 1; l < n; l++) {\n                    double sadness = 0;\n                    for (int p = 0; p < n; p++) {\n                        double d1 = sqrt(pow(x[p] - x[i], 2) + pow(y[p] - y[i], 2));\n                        double d2 = sqrt(pow(x[p] - x[j], 2) + pow(y[p] - y[j], 2));\n                        double d3 = sqrt(pow(x[p] - x[k], 2) + pow(y[p] - y[k], 2));\n                        double d4 = sqrt(pow(x[p] - x[l], 2) + pow(y[p] - y[l], 2));\n                        double d = (d1 < d2) ? d1 : d2;\n                        d = (d < d3) ? d : d3;\n                        d = (d < d4) ? d : d4;\n                        sadness += d * d;\n                    }\n                    sadness /= n;\n                    min_sadness = (min_sadness < sadness) ? min_sadness : sadness;\n                }\n            }\n        }\n    }\n    printf(\"%.6f\\n\", min_sadness);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n#define N 100\nint main() {\n    int n;\n    cin >> n;\n    double x[N], y[N];\n    for (int i = 0; i < n; i++) {\n        cin >> x[i] >> y[i];\n    }\n    double min_sadness = 1e18;\n    for (int i = 0; i < n; i++) {\n        for (int j = i + 1; j < n; j++) {\n            for (int k = 0; k < n; k++) {\n                for (int l = k + 1; l < n; l++) {\n                    double sadness = 0;\n                    for (int p = 0; p < n; p++) {\n                        double d1 = sqrt(pow(x[p] - x[i], 2) + pow(y[p] - y[i], 2));\n                        double d2 = sqrt(pow(x[p] - x[j], 2) + pow(y[p] - y[j], 2));\n                        double d3 = sqrt(pow(x[p] - x[k], 2) + pow(y[p] - y[k], 2));\n                        double d4 = sqrt(pow(x[p] - x[l], 2) + pow(y[p] - y[l], 2));\n                        double d = min(min(d1, d2), min(d3, d4));\n                        sadness += d * d;\n                    }\n                    sadness /= n;\n                    min_sadness = min(min_sadness, sadness);\n                }\n            }\n        }\n    }\n    cout << fixed << setprecision(6) << min_sadness << endl;\n    return 0;\n}",

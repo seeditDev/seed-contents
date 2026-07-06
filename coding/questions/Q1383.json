@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Hash Set",
-      "Two Arrays"
+      "Arrays",
+      "Two Arrays",
+      "Hash Set"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given two arrays of positive integers, arr1arr1arr1 and arr2arr2arr2, of sizes nnn and mmm respectively. Your task is to find the largest common element that appears in both arrays. If no common element exists, return −1-1−1.",
+    "problemStatement": "You are given two arrays of positive integers, arr1arr1arr1 and arr2arr2arr2, of sizes nnn and mmm respectively. Your task is to find the largest common element that appears in both arrays. If no common element exists, return \u22121-1\u22121.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= n, m <= 10^5",
@@ -33,7 +34,7 @@
         "id": "sample_1",
         "input": "3\n5 6\n1 3 4 6 7\n2 3 5 6 7 8\n4 3\n1 2 3 4\n5 6 7\n4 4\n9 2 1 10\n3 11 9 2",
         "output": "7\n-1\n9",
-        "explanation": "Test case 1: common elements are 3,6,7 → largest is 7.\nTest case 2: arrays share no element → -1.\nTest case 3: common elements are 2 and 9 → largest is 9."
+        "explanation": "Test case 1: common elements are 3,6,7 \u2192 largest is 7.\nTest case 2: arrays share no element \u2192 -1.\nTest case 3: common elements are 2 and 9 \u2192 largest is 9."
       },
       {
         "id": "sample_2",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "We use a hash set to store the elements of the smaller array. Then we iterate over the larger array and check if each element is in the hash set. If it is, we update our answer if the current element is larger than the current answer.",
     "timeComplexity": "O(T * (n + m)) per test case, O(T * (n + m)) total. We iterate over each element in both arrays once.",
-    "spaceComplexity": "O(min(n, m)) — we store the elements of the smaller array in a hash set.",
+    "spaceComplexity": "O(min(n, m)) \u2014 we store the elements of the smaller array in a hash set.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\n// Simple hash set for integers (open addressing, linear probing)\ntypedef struct {\n    int *keys;\n    char *used;\n    size_t size;\n} IntHashSet;\n\nstatic size_t nextPowerOfTwo(size_t n) {\n    size_t p = 1;\n    while (p < n) p <<= 1;\n    return p;\n}\n\nstatic IntHashSet* createSet(size_t capacity) {\n    IntHashSet *set = (IntHashSet*)malloc(sizeof(IntHashSet));\n    set->size = nextPowerOfTwo(capacity * 2);\n    set->keys = (int*)malloc(set->size * sizeof(int));\n    set->used = (char*)calloc(set->size, sizeof(char));\n    return set;\n}\n\nstatic void freeSet(IntHashSet *set) {\n    free(set->keys);\n    free(set->used);\n    free(set);\n}\n\nstatic size_t hashInt(int x, size_t mask) {\n    // simple mix\n    return ((unsigned int)x * 2654435761u) & mask;\n}\n\nstatic void insertSet(IntHashSet *set, int x) {\n    size_t mask = set->size - 1;\n    size_t idx = hashInt(x, mask);\n    while (set->used[idx]) {\n        if (set->keys[idx] == x) return; // already present\n        idx = (idx + 1) & mask;\n    }\n    set->used[idx] = 1;\n    set->keys[idx] = x;\n}\n\nstatic bool containsSet(IntHashSet *set, int x) {\n    size_t mask = set->size - 1;\n    size_t idx = hashInt(x, mask);\n    while (set->used[idx]) {\n        if (set->keys[idx] == x) return true;\n        idx = (idx + 1) & mask;\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n, m;\n        scanf(\"%d %d\", &n, &m);\n        int *arr1 = (int*)malloc(n * sizeof(int));\n        int *arr2 = (int*)malloc(m * sizeof(int));\n        for (int i = 0; i < n; ++i) scanf(\"%d\", &arr1[i]);\n        for (int i = 0; i < m; ++i) scanf(\"%d\", &arr2[i]);\n        // Build set from smaller array\n        IntHashSet *set;\n        if (n <= m) {\n            set = createSet(n);\n            for (int i = 0; i < n; ++i) insertSet(set, arr1[i]);\n            int ans = -1;\n            for (int i = 0; i < m; ++i) if (containsSet(set, arr2[i]) && arr2[i] > ans) ans = arr2[i];\n            printf(\"%d\\n\", ans);\n        } else {\n            set = createSet(m);\n            for (int i = 0; i < m; ++i) insertSet(set, arr2[i]);\n            int ans = -1;\n            for (int i = 0; i < n; ++i) if (containsSet(set, arr1[i]) && arr1[i] > ans) ans = arr1[i];\n            printf(\"%d\\n\", ans);\n        }\n        freeSet(set);\n        free(arr1);\n        free(arr2);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int n,m; cin>>n>>m;\n        vector<int> a(n), b(m);\n        for(int &x: a) cin>>x;\n        for(int &x: b) cin>>x;\n        // put smaller array into unordered_set\n        if(n>m) swap(a,b), swap(n,m);\n        unordered_set<int> s;\n        s.reserve(n*2);\n        for(int x: a) s.insert(x);\n        int ans = -1;\n        for(int x: b) if(s.count(x) && x>ans) ans = x;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

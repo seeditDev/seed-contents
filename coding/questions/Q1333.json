@@ -6,10 +6,11 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graphs",
       "Topological Sorting",
       "Kahn's Algorithm"
     ],
@@ -21,10 +22,10 @@
   "content": {
     "problemStatement": "You have to complete N courses. There are M requirements of the form \"course a has to be completed before course b\". Find an order in which you can complete the courses.\n\n\nInput Format\n\nThe first line consists of two space separated integers, `N` and `M`, representing the number of courses and number of requirements.\nCourses are numbered from `1` to `N`.\nThe subsequent `M` lines describe the requirements, each containing two integers, `a` and `b`, describing the requirements of the form course `a` has to be completed before course `b`.\n\n\nOutput Format\n\nOutput `N` space separated integers, describing the order of `N` courses which should be taken in order to complete all of them.\nIf it's not possible to complete all the courses, output -1.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "0 ≤ M ≤ 2*10^5",
-      "1 ≤ u_i, v_i ≤ N",
-      "u_i ≠ v_i"
+      "1 \u2264 N \u2264 10^5",
+      "0 \u2264 M \u2264 2*10^5",
+      "1 \u2264 u_i, v_i \u2264 N",
+      "u_i \u2260 v_i"
     ],
     "inputFormat": "First line contains two space-separated integers, N and M, representing the number of courses and number of requirements. Courses are numbered from 1 to N. The subsequent M lines describe the requirements, each containing two integers, a and b, describing the requirements of the form course a has to be completed before course b.",
     "outputFormat": "Output N space-separated integers, describing the order of N courses which should be taken in order to complete all of them. If it's not possible to complete all the courses, output -1.",
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using topological sorting. We create a directed graph where each course is a node, and there is a directed edge from course a to course b if course a has to be completed before course b. Then, we use Kahn's algorithm to find a topological order of the graph. If a topological order exists, it represents a valid order in which the courses can be completed. If no topological order exists, it means that there is a cycle in the graph, and it is not possible to complete all the courses.",
     "timeComplexity": "O(N + M) per test case, O(T * (N + M)) total. The precomputation is done once for each test case.",
-    "spaceComplexity": "O(N + M) — the dominant structure is the adjacency list representation of the graph.",
+    "spaceComplexity": "O(N + M) \u2014 the dominant structure is the adjacency list representation of the graph.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX 200005\n\ntypedef struct Node {\n    int vertex;\n    struct Node* next;\n} Node;\n\nNode* adj[MAX]; // Adjacency list\nint indegree[MAX]; // Array to store the indegree of nodes\nint queue[MAX]; // Queue for BFS\nint front = 0, rear = 0; // Queue pointers\nint courseOrder[MAX]; // Array to store topological order\n\n// Function to create a new node in adjacency list\nNode* createNode(int v) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->vertex = v;\n    newNode->next = NULL;\n    return newNode;\n}\n\nvoid enqueue(int node) {\n    queue[rear++] = node;\n}\n\nint dequeue() {\n    return queue[front++];\n}\n\nint isEmpty() {\n    return front == rear;\n}\n\nvoid findOrder(int n) {\n    int i, node;\n    \n    // Enqueue all nodes with indegree 0\n    for (i = 1; i <= n; i++) {\n        if (indegree[i] == 0) {\n            enqueue(i);\n        }\n    }\n\n    int courseIndex = 0;\n    \n    // Perform BFS\n    while (!isEmpty()) {\n        node = dequeue(); // Get the node from the front of the queue\n        courseOrder[courseIndex++] = node;\n\n        // Visit all neighbors of the dequeued node\n        Node* temp = adj[node];\n        while (temp != NULL) {\n            int v = temp->vertex;\n            indegree[v]--;\n            if (indegree[v] == 0) {\n                enqueue(v);\n            }\n            temp = temp->next;\n        }\n    }\n\n    // Check if topological sort is possible\n    if (courseIndex == n) {\n        for (i = 0; i < courseIndex; i++) {\n            printf(\"%d \", courseOrder[i]);\n        }\n        printf(\"\\n\");\n    } else {\n        printf(\"-1\\n\"); // Cycle detected or incomplete order\n    }\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n    while(t--){\n        int n, m, a, b;\n        scanf(\"%d %d\", &n, &m);\n\n        // Initialize adjacency list and indegree array\n        for (int i = 1; i <= n; i++) {\n            adj[i] = NULL;\n            indegree[i] = 0;\n        }\n\n        // Read the edges\n        for (int i = 0; i < m; i++) {\n            scanf(\"%d %d\", &a, &b);\n            \n            // Add edge a -> b in the adjacency list\n            Node* newNode = createNode(b);\n            newNode->next = adj[a];\n            adj[a] = newNode;\n\n            // Increment indegree of node b\n            indegree[b]++;\n        }\n\n        // Perform topological sort\n        findOrder(n);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nvector<int> adj[200005];\nint indegree[200005];\nvoid findOrder(int n) {\n    queue<int> q;\n    for (int i = 1; i <= n; i++) {\n        if (indegree[i] == 0) {\n            q.push(i);\n        }\n    }\n    vector<int> courseOrder;\n    while (!q.empty()) {\n        int node = q.front();\n        q.pop();\n        courseOrder.push_back(node);\n        for (auto v : adj[node]) {\n            indegree[v]--;\n            if (indegree[v] == 0) \n                q.push(v);\n        }\n    }\n\n    if (courseOrder.size() == n) {\n        for(int course: courseOrder)\n            cout << course << ' ';\n        return;\n    }\n    cout << -1;\n}\n\n\nint main() {\n   ios_base::sync_with_stdio(false);\n   cin.tie(0);\n \n   int t;\n   cin >> t;\n   while(t--){\n       int n, m;\n       cin >> n >> m;\n       for(int i = 1; i <= n; i++){\n          indegree[i] = 0;\n          adj[i].clear();\n       }\n       for(int i = 0; i < m; i++) {\n          int a, b;\n          cin >> a >> b;\n          adj[a].push_back(b);\n          indegree[b]++;\n       }\n\n       findOrder(n);\n       cout << endl;\n   }\n\n return 0;\n}",

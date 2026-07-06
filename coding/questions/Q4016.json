@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Probability",
-      "Modular Arithmetic"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,19 +20,19 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is an intern at Zoozle. He has a co-intern named Ajar who's good at maths. Chef wants to impress Ajar with his zoozliness, so he decided to play the following game with A\n\n\nConsider nnn force vectors in a 2D plane.\nFirst, Ajar uniformly randomly chooses a non-negative real magnitude for each vector such that the sum of all magnitudes is equal to kkk. (More formally, each valid nnn-tuple of magnitudes can be chosen with the same probability.)\nThen, Chef must choose a direction for each force vector in such a way that the net force (vector sum of all forces) is equal to zero. Chef wins the game if he is able to do that; otherwise, Ajar wins the game.\nSince Chef knows that it may not always be possible to choose the directions such that he wins the game, he would like to know the probability that he'll be able to win if he plays optimally. Can you help him?\n\nIt can be proven that this probability can be written as a fraction P/QP/QP/Q, where P≥0P \\ge 0P≥0 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers. Since we are in the 21st century, nobody is interested in fractions. Therefore, you should compute P⋅Q−1P\\cdot Q^{-1}P⋅Q−1 modulo 109+710^9+7109+7, where Q−1Q^{-1}Q−1 denotes the modular inverse of QQQ modulo 109+710^9+7109+7. (It is guaranteed that this inverse exists and is unique.)",
+    "problemStatement": "Chef is an intern at Zoozle. He has a co-intern named Ajar who's good at maths. Chef wants to impress Ajar with his zoozliness, so he decided to play the following game with A\n\n\nConsider nnn force vectors in a 2D plane.\nFirst, Ajar uniformly randomly chooses a non-negative real magnitude for each vector such that the sum of all magnitudes is equal to kkk. (More formally, each valid nnn-tuple of magnitudes can be chosen with the same probability.)\nThen, Chef must choose a direction for each force vector in such a way that the net force (vector sum of all forces) is equal to zero. Chef wins the game if he is able to do that; otherwise, Ajar wins the game.\nSince Chef knows that it may not always be possible to choose the directions such that he wins the game, he would like to know the probability that he'll be able to win if he plays optimally. Can you help him?\n\nIt can be proven that this probability can be written as a fraction P/QP/QP/Q, where P\u22650P \\ge 0P\u22650 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers. Since we are in the 21st century, nobody is interested in fractions. Therefore, you should compute P\u22c5Q\u22121P\\cdot Q^{-1}P\u22c5Q\u22121 modulo 109+710^9+7109+7, where Q\u22121Q^{-1}Q\u22121 denotes the modular inverse of QQQ modulo 109+710^9+7109+7. (It is guaranteed that this inverse exists and is unique.)",
     "constraints": [
-      "1 ≤ k ≤ 100",
-      "2 ≤ n ≤ 3⋅105"
+      "1 \u2264 k \u2264 100",
+      "2 \u2264 n \u2264 3\u22c5105"
     ],
     "inputFormat": "The first line of the input contains a single integer n denoting the number of force vectors. The second line contains a single integer k denoting the sum of magnitudes of all force vectors.",
-    "outputFormat": "Print a single line containing one integer — the value of P⋅Q−1 modulo 109+7.",
+    "outputFormat": "Print a single line containing one integer \u2014 the value of P\u22c5Q\u22121 modulo 109+7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "5\n5",
         "output": "187500002",
-        "explanation": "Answer = 11/16 = 11⋅16−1 = 187500002"
+        "explanation": "Answer = 11/16 = 11\u22c516\u22121 = 187500002"
       }
     ]
   },
@@ -100,8 +101,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the probability that Chef can choose directions for the force vectors such that the net force is zero. This can be done by considering the possible magnitudes of the force vectors and the corresponding directions. We can use the concept of probability and modular arithmetic to calculate the final answer.",
-    "timeComplexity": "O(1) — the time complexity is constant because we are only performing a fixed number of operations to calculate the final answer.",
-    "spaceComplexity": "O(1) — the space complexity is constant because we are only using a fixed amount of space to store the input and output values.",
+    "timeComplexity": "O(1) \u2014 the time complexity is constant because we are only performing a fixed number of operations to calculate the final answer.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant because we are only using a fixed amount of space to store the input and output values.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    if (n % 2 == 1) {\n        printf(\"0\\n\");\n    } else {\n        long long p = 1;\n        long long q = 1;\n        for (int i = 1; i <= n / 2; i++) {\n            p = (p * (k - i + 1)) % MOD;\n            q = (q * i) % MOD;\n        }\n        long long q_inv = powmod(q, MOD - 2);\n        printf(\"%lld\\n\", (p * q_inv) % MOD);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#define MOD 1000000007\nusing namespace std;\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    if (n % 2 == 1) {\n        cout << 0 << endl;\n    } else {\n        long long p = 1;\n        long long q = 1;\n        for (int i = 1; i <= n / 2; i++) {\n            p = (p * (k - i + 1)) % MOD;\n            q = (q * i) % MOD;\n        }\n        long long q_inv = powmod(q, MOD - 2);\n        cout << (p * q_inv) % MOD << endl;\n    }\n    return 0;\n}",

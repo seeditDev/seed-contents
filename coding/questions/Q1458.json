@@ -10,8 +10,9 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Binary Search Tree",
-      "Reverse Inorder Traversal"
+      "Trees",
+      "Reverse Inorder Traversal",
+      "Binary Search Tree"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Given a binary search tree and an integer KKK, find the KKKth largest node in it.\n\nFor eg., if K = 3, the answer would be 5 for the following BST:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and KKK — the number of nodes in the binary search tree, and the value of KKK.\nNext N−1N - 1N−1 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi​,ci​,Ri​, describing the tree with edge informations - pip_ipi​ is an integer denoting the parent node of the iiith edge, cic_ici​ is child node, and the letter RiR_iRi​ denotes whether the child is left child or right child, it's value is `L` if cic_ici​ is left child of pip_ipi​, else `R`.\n\n\nOutput Format\nOutput on a single line - the KKKth largest node in the given BST.",
+    "problemStatement": "Given a binary search tree and an integer KKK, find the KKKth largest node in it.\n\nFor eg., if K = 3, the answer would be 5 for the following BST:\n\n\n\n\nInput Format\n\nThe first line of the input contains two space separated integers NNN and KKK \u2014 the number of nodes in the binary search tree, and the value of KKK.\nNext N\u22121N - 1N\u22121 lines contain three space separated characters pi,ci,Rip_i, c_i, R_ipi\u200b,ci\u200b,Ri\u200b, describing the tree with edge informations - pip_ipi\u200b is an integer denoting the parent node of the iiith edge, cic_ici\u200b is child node, and the letter RiR_iRi\u200b denotes whether the child is left child or right child, it's value is `L` if cic_ici\u200b is left child of pip_ipi\u200b, else `R`.\n\n\nOutput Format\nOutput on a single line - the KKKth largest node in the given BST.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10000",
@@ -28,7 +29,7 @@
       "Ri is either 'L' or 'R'",
       "All node values are distinct and form a valid BST"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains two space-separated integers N and K — the number of nodes in the BST and the required Kth largest value. The next N-1 lines each contain three space-separated entries: pi ci Ri, where pi is the parent node value, ci is the child node value, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains two space-separated integers N and K \u2014 the number of nodes in the BST and the required Kth largest value. The next N-1 lines each contain three space-separated entries: pi ci Ri, where pi is the parent node value, ci is the child node value, and Ri is either 'L' (ci is the left child of pi) or 'R' (ci is the right child of pi).",
     "outputFormat": "For each test case, output a single line containing the Kth largest node value in the given BST.",
     "sampleTestCases": [
       {
@@ -117,7 +118,7 @@
   "solution": {
     "approach": "To find the Kth largest node in a BST, we can use reverse inorder traversal. In a BST, the reverse inorder traversal visits nodes in descending order. We can use a stack to perform the reverse inorder traversal iteratively. We start by pushing the root node onto the stack and then enter a loop where we keep popping nodes from the stack, incrementing a counter, and checking if the counter is equal to K. If it is, we return the value of the current node. If not, we push the left child of the current node onto the stack and repeat the process.",
     "timeComplexity": "O(N) per test case, O(T*N) total, where N is the number of nodes in the BST and T is the number of test cases.",
-    "spaceComplexity": "O(N) — for the stack used in the reverse inorder traversal.",
+    "spaceComplexity": "O(N) \u2014 for the stack used in the reverse inorder traversal.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct Node {\n    int val;\n    struct Node* left;\n    struct Node* right;\n} Node;\n\n#define MAXV 100000\nstatic Node* nodeMap[MAXV + 1];\nstatic int isChild[MAXV + 1];\n\nNode* getNode(int v) {\n    if (nodeMap[v] == NULL) {\n        nodeMap[v] = (Node*)malloc(sizeof(Node));\n        nodeMap[v]->val = v;\n        nodeMap[v]->left = nodeMap[v]->right = NULL;\n    }\n    return nodeMap[v];\n}\n\nint kthLargest(Node* root, int k) {\n    Node* stack[10000];\n    int top = -1;\n    Node* cur = root;\n    int cnt = 0;\n    while (top != -1 || cur != NULL) {\n        while (cur != NULL) {\n            stack[++top] = cur;\n            cur = cur->right;\n        }\n        cur = stack[top--];\n        cnt++;\n        if (cnt == k) return cur->val;\n        cur = cur->left;\n    }\n    return -1; // should never happen for valid k\n}\n\nint main() {\n    int T; \n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        // reset maps for this test case\n        memset(nodeMap, 0, sizeof(nodeMap));\n        memset(isChild, 0, sizeof(isChild));\n        for (int i = 0; i < N - 1; ++i) {\n            int p, c; char dir;\n            scanf(\"%d %d %c\", &p, &c, &dir);\n            Node* parent = getNode(p);\n            Node* child  = getNode(c);\n            if (dir == 'L') parent->left = child; else parent->right = child;\n            isChild[c] = 1;\n        }\n        Node* root = NULL;\n        for (int v = 1; v <= MAXV; ++v) {\n            if (nodeMap[v] && !isChild[v]) { root = nodeMap[v]; break; }\n        }\n        int ans = kthLargest(root, K);\n        printf(\"%d\\n\", ans);\n        // free allocated nodes (optional for contest environment)\n        for (int v = 1; v <= MAXV; ++v) {\n            if (nodeMap[v]) free(nodeMap[v]);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node* left = nullptr;\n    Node* right = nullptr;\n    Node(int v) : val(v) {}\n};\n\nint kthLargest(Node* root, int k) {\n    stack<Node*> st;\n    Node* cur = root;\n    int cnt = 0;\n    while (!st.empty() || cur) {\n        while (cur) { st.push(cur); cur = cur->right; }\n        cur = st.top(); st.pop();\n        ++cnt;\n        if (cnt == k) return cur->val;\n        cur = cur->left;\n    }\n    return -1; // unreachable for valid k\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while (T--) {\n        int N, K; cin >> N >> K;\n        unordered_map<int, Node*> mp;\n        unordered_set<int> childSet;\n        for (int i = 0; i < N-1; ++i) {\n            int p, c; char dir; cin >> p >> c >> dir;\n            if (!mp.count(p)) mp[p] = new Node(p);\n            if (!mp.count(c)) mp[c] = new Node(c);\n            if (dir == 'L') mp[p]->left = mp[c]; else mp[p]->right = mp[c];\n            childSet.insert(c);\n        }\n        Node* root = nullptr;\n        for (auto &kv : mp) if (!childSet.count(kv.first)) { root = kv.second; break; }\n        int ans = kthLargest(root, K);\n        cout << ans << '\\n';\n        // optional cleanup\n        for (auto &kv : mp) delete kv.second;\n    }\n    return 0;\n}",

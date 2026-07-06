@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Union-Find",
       "Graph",
-      "Queries"
+      "Graphs",
+      "Queries",
+      "Union-Find"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "In Ancient Berland, there were **N** towns, along with **M** bidirectional roads connecting them. With time, some roads became unusable, and nobody repaired them.\n\nAs a person who is fond of Ancient Berland history, you now want to undertake a small research study. For this purpose, you want to write a program capable of processing the following kinds of queries:\n\n\n\n\nD** K** : meaning that the road numbered **K** in the input became unusable. The road numbers are 1-indexed.\nP** A x** : meaning that the population of the **A**th town became **x**.\n\n\nLet's call a subset of towns a **region** if it is possible to get from each town in the subset to every other town in the subset by the usable (those, which haven't already been destroyed) roads, possibly, via some intermediary cities of this subset. The **population** of the region is, then, the sum of populations of all the towns in the region.\n\nYou are given the initial road system, the initial population in each town and **Q** queries, each being one of two types above. Your task is to maintain the size of the most populated region after each query.",
     "constraints": [
-      "1 ≤ N ≤ 5 × 10^5",
-      "1 ≤ M ≤ 5 × 10^5",
-      "1 ≤ Q ≤ 5 × 10^5",
-      "1 ≤ Pi ≤ 10^5"
+      "1 \u2264 N \u2264 5 \u00d7 10^5",
+      "1 \u2264 M \u2264 5 \u00d7 10^5",
+      "1 \u2264 Q \u2264 5 \u00d7 10^5",
+      "1 \u2264 Pi \u2264 10^5"
     ],
-    "inputFormat": "The first line contains three space-separated integers — N, M, and Q — denoting the number of cities, the number of roads, and the number of queries, respectively. The following line contains N space-separated integers, the i-th of which denotes the initial population of the i-th city. The j-th of the following M lines contains a pair of space-separated integers — Xj, Yj — denoting that there is a bidirectional road connecting the cities numbered Xj and Yj. Each of the following Q lines describes a query in one of the forms described earlier.",
+    "inputFormat": "The first line contains three space-separated integers \u2014 N, M, and Q \u2014 denoting the number of cities, the number of roads, and the number of queries, respectively. The following line contains N space-separated integers, the i-th of which denotes the initial population of the i-th city. The j-th of the following M lines contains a pair of space-separated integers \u2014 Xj, Yj \u2014 denoting that there is a bidirectional road connecting the cities numbered Xj and Yj. Each of the following Q lines describes a query in one of the forms described earlier.",
     "outputFormat": "Output Q lines. On the i-th line, output the size of the most populated region after performing i queries.",
     "sampleTestCases": [
       {
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Union-Find data structure to keep track of the connected components in the graph. We start by initializing the parent array and the rank array for the Union-Find data structure. Then, we process each query. If the query is of type 'D', we remove the corresponding edge from the graph. If the query is of type 'P', we update the population of the corresponding city. After each query, we find the most populated region by iterating over all cities and using the Union-Find data structure to find the connected component of each city.",
-    "timeComplexity": "O(Q * alpha(N)) — where alpha(N) is the inverse Ackermann function, which grows very slowly. The Union-Find operations (find and union) take almost constant time.",
-    "spaceComplexity": "O(N + M) — for storing the graph and the Union-Find data structure.",
+    "timeComplexity": "O(Q * alpha(N)) \u2014 where alpha(N) is the inverse Ackermann function, which grows very slowly. The Union-Find operations (find and union) take almost constant time.",
+    "spaceComplexity": "O(N + M) \u2014 for storing the graph and the Union-Find data structure.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 500005\nint parent[MAXN], rank[MAXN], population[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootX = find(x), rootY = find(y); if (rootX != rootY) { if (rank[rootX] > rank[rootY]) { parent[rootY] = rootX; } else if (rank[rootX] < rank[rootY]) { parent[rootX] = rootY; } else { parent[rootY] = rootX; rank[rootX]++; } }}\nint main() {\n    int N, M, Q;\n    scanf(\"%d %d %d\", &N, &M, &Q);\n    for (int i = 1; i <= N; i++) {\n        scanf(\"%d\", &population[i]);\n        parent[i] = i;\n        rank[i] = 0;\n    }\n    for (int i = 1; i <= M; i++) {\n        int x, y;\n        scanf(\"%d %d\", &x, &y);\n        unionSet(x, y);\n    }\n    for (int i = 1; i <= Q; i++) {\n        char query[10];\n        scanf(\" %s\", query);\n        if (query[0] == 'D') {\n            int k;\n            scanf(\"%d\", &k);\n            // remove the k-th edge\n        } else if (query[0] == 'P') {\n            int a, x;\n            scanf(\"%d %d\", &a, &x);\n            population[a] = x;\n        }\n        int maxPopulation = 0;\n        for (int j = 1; j <= N; j++) {\n            int root = find(j);\n            int populationSum = 0;\n            for (int k = 1; k <= N; k++) {\n                if (find(k) == root) {\n                    populationSum += population[k];\n                }\n            }\n            maxPopulation = (populationSum > maxPopulation) ? populationSum : maxPopulation;\n        }\n        printf(\"%d\\n\", maxPopulation);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 500005;\nint parent[MAXN], rank[MAXN], population[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootX = find(x), rootY = find(y); if (rootX != rootY) { if (rank[rootX] > rank[rootY]) { parent[rootY] = rootX; } else if (rank[rootX] < rank[rootY]) { parent[rootX] = rootY; } else { parent[rootY] = rootX; rank[rootX]++; } }}\nint main() {\n    int N, M, Q;\n    cin >> N >> M >> Q;\n    for (int i = 1; i <= N; i++) {\n        cin >> population[i];\n        parent[i] = i;\n        rank[i] = 0;\n    }\n    for (int i = 1; i <= M; i++) {\n        int x, y;\n        cin >> x >> y;\n        unionSet(x, y);\n    }\n    for (int i = 1; i <= Q; i++) {\n        char query[10];\n        cin >> query;\n        if (query[0] == 'D') {\n            int k;\n            cin >> k;\n            // remove the k-th edge\n        } else if (query[0] == 'P') {\n            int a, x;\n            cin >> a >> x;\n            population[a] = x;\n        }\n        int maxPopulation = 0;\n        for (int j = 1; j <= N; j++) {\n            int root = find(j);\n            int populationSum = 0;\n            for (int k = 1; k <= N; k++) {\n                if (find(k) == root) {\n                    populationSum += population[k];\n                }\n            }\n            maxPopulation = (populationSum > maxPopulation) ? populationSum : maxPopulation;\n        }\n        cout << maxPopulation << endl;\n    }\n    return 0;\n}",

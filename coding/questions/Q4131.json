@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Sorting | Searching",
+    "category": "Sorting",
     "difficulty": "Medium",
     "isPremium": true,
     "tags": [
-      "Time Intervals",
+      "Sorting",
       "Waiting Time",
+      "Time Intervals",
       "Pairwise Disjoint Intervals"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef is a cook and he has recently opened a restaurant.\n\nThe restaurant is open during NNN time intervals [L1,R1),[L2,R2),…,[LN,RN)[L_1, R_1), [L_2, R_2), \\dots, [L_N, R_N)[L1​,R1​),[L2​,R2​),…,[LN​,RN​). No two of these intervals overlap — formally, for each valid iii, jjj such that i≠ji \\neq ji=j, either Ri&lt;LjR_i \\lt L_jRi​&lt;Lj​ or Rj&lt;LiR_j \\lt L_iRj​&lt;Li​.\n\nMMM people (numbered 111 through MMM) are planning to eat at the restaurant; let's denote the time when the iii-th person arrives by PiP_iPi​. If the restaurant is open at that time, this person does not have to wait, but if it is closed, this person will wait until it is open. Note that if this person arrives at an exact time when the restaurant is closing, they have to wait for the next opening time.\n\nFor each person, calculate how long they have to wait (possibly 000 time), or determine that they will wait forever for the restaurant to open.",
+    "problemStatement": "Chef is a cook and he has recently opened a restaurant.\n\nThe restaurant is open during NNN time intervals [L1,R1),[L2,R2),\u2026,[LN,RN)[L_1, R_1), [L_2, R_2), \\dots, [L_N, R_N)[L1\u200b,R1\u200b),[L2\u200b,R2\u200b),\u2026,[LN\u200b,RN\u200b). No two of these intervals overlap \u2014 formally, for each valid iii, jjj such that i\u2260ji \\neq ji\ue020=j, either Ri&lt;LjR_i \\lt L_jRi\u200b&lt;Lj\u200b or Rj&lt;LiR_j \\lt L_iRj\u200b&lt;Li\u200b.\n\nMMM people (numbered 111 through MMM) are planning to eat at the restaurant; let's denote the time when the iii-th person arrives by PiP_iPi\u200b. If the restaurant is open at that time, this person does not have to wait, but if it is closed, this person will wait until it is open. Note that if this person arrives at an exact time when the restaurant is closing, they have to wait for the next opening time.\n\nFor each person, calculate how long they have to wait (possibly 000 time), or determine that they will wait forever for the restaurant to open.",
     "constraints": [
       "1 <= T <= 100",
       "1 <= N, M <= 10^5",
@@ -31,7 +32,7 @@
       "The sum of M for all test cases does not exceed 3*10^5"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers N and M. N lines follow. For each valid i, the i-th of these lines contains two space-separated integers Li and Ri. M lines follow. For each valid i, the i-th of these lines contains a single integer Pi.",
-    "outputFormat": "For each test case, print M lines. For each valid i, the i-th of these lines should contain a single integer — the time person i has to wait, or -1 if person i has to wait forever.",
+    "outputFormat": "For each test case, print M lines. For each valid i, the i-th of these lines should contain a single integer \u2014 the time person i has to wait, or -1 if person i has to wait forever.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -106,8 +107,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we first sort the given time intervals by their start time. Then, for each person's arrival time, we use binary search to find the first interval that starts after the person's arrival time. If such an interval exists, we calculate the waiting time as the difference between the start time of this interval and the person's arrival time. If no such interval exists, we check if the person's arrival time is within any of the given intervals. If it is, the waiting time is 0. Otherwise, the waiting time is -1, indicating that the person has to wait forever.",
-    "timeComplexity": "O(T*(N log N + M log N)) — the time complexity is dominated by the sorting of the intervals and the binary search for each person's arrival time.",
-    "spaceComplexity": "O(N + M) — the space complexity is dominated by the storage of the intervals and the arrival times.",
+    "timeComplexity": "O(T*(N log N + M log N)) \u2014 the time complexity is dominated by the sorting of the intervals and the binary search for each person's arrival time.",
+    "spaceComplexity": "O(N + M) \u2014 the space complexity is dominated by the storage of the intervals and the arrival times.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\n#define MAXM 100005\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    return x[0] - y[0];\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        int intervals[MAXN][2];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &intervals[i][0], &intervals[i][1]);\n        }\n        qsort(intervals, N, sizeof(intervals[0]), compare);\n        for (int i = 0; i < M; i++) {\n            int Pi;\n            scanf(\"%d\", &Pi);\n            int waitingTime = -1;\n            for (int j = 0; j < N; j++) {\n                if (Pi >= intervals[j][0] && Pi < intervals[j][1]) {\n                    waitingTime = 0;\n                    break;\n                } else if (Pi < intervals[j][0]) {\n                    waitingTime = intervals[j][0] - Pi;\n                    break;\n                }\n            }\n            printf(\"%d\\n\", waitingTime);\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAXN 100005\n#define MAXM 100005\nstruct Interval {\n    int start, end;\n};\nbool compare(Interval a, Interval b) {\n    return a.start < b.start;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        Interval intervals[MAXN];\n        for (int i = 0; i < N; i++) {\n            cin >> intervals[i].start >> intervals[i].end;\n        }\n        sort(intervals, intervals + N, compare);\n        for (int i = 0; i < M; i++) {\n            int Pi;\n            cin >> Pi;\n            int waitingTime = -1;\n            for (int j = 0; j < N; j++) {\n                if (Pi >= intervals[j].start && Pi < intervals[j].end) {\n                    waitingTime = 0;\n                    break;\n                } else if (Pi < intervals[j].start) {\n                    waitingTime = intervals[j].start - Pi;\n                    break;\n                }\n            }\n            cout << waitingTime << endl;\n        }\n    }\n    return 0;\n}",

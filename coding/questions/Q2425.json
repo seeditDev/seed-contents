@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Euler's Totient Function",
-      "Prime Factorization"
+      "Prime Factorization",
+      "Math",
+      "Euler's Totient Function"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,11 +20,11 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a single integer **N**. It's very large, so it's given as a product of several prime powers: **N&nbsp;=&nbsp;p1k1&nbsp;p2k2&nbsp;...&nbsp;pmkm**.\n\n\nLet's define **φ**(**N**) as Euler's totient function -- the number of positive integers less than or equal to **N** that are relatively prime to **N**.\n\n\nLet **N1** = **φ**(**N**). Let **N2** = **φ**(**N1**). Further, let **NX** = **φ**(**NX-1**) for **X** &gt; 2.\n\n\nYour task is to find the smallest positive integer **X** such that **NX** = 1. Only careful calculation might help... or will it be enough?",
+    "problemStatement": "You are given a single integer **N**. It's very large, so it's given as a product of several prime powers: **N&nbsp;=&nbsp;p1k1&nbsp;p2k2&nbsp;...&nbsp;pmkm**.\n\n\nLet's define **\u03c6**(**N**) as Euler's totient function -- the number of positive integers less than or equal to **N** that are relatively prime to **N**.\n\n\nLet **N1** = **\u03c6**(**N**). Let **N2** = **\u03c6**(**N1**). Further, let **NX** = **\u03c6**(**NX-1**) for **X** &gt; 2.\n\n\nYour task is to find the smallest positive integer **X** such that **NX** = 1. Only careful calculation might help... or will it be enough?",
     "constraints": [
       "1 <= T <= 10",
       "1 < pi < 100000",
-      "1 ≤ ki ≤ 10^9",
+      "1 \u2264 ki \u2264 10^9",
       "All pi are pairwise distinct prime numbers in each test case"
     ],
     "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer m followed by m lines, each containing two integers pi and ki separated by a single space.",
@@ -33,19 +34,19 @@
         "id": "sample_1",
         "input": "1\n2\n2 2\n3 1",
         "output": "3",
-        "explanation": "N = 2^2 * 3^1 = 12, N1 = φ(12) = 4, N2 = φ(4) = 2, N3 = φ(2) = 1, so X = 3"
+        "explanation": "N = 2^2 * 3^1 = 12, N1 = \u03c6(12) = 4, N2 = \u03c6(4) = 2, N3 = \u03c6(2) = 1, so X = 3"
       },
       {
         "id": "sample_2",
         "input": "1\n1\n5 1",
         "output": "2",
-        "explanation": "N = 5^1 = 5, N1 = φ(5) = 4, N2 = φ(4) = 2, N3 = φ(2) = 1, so X = 2"
+        "explanation": "N = 5^1 = 5, N1 = \u03c6(5) = 4, N2 = \u03c6(4) = 2, N3 = \u03c6(2) = 1, so X = 2"
       },
       {
         "id": "sample_3",
         "input": "1\n3\n2 3\n3 2\n5 1",
         "output": "7",
-        "explanation": "N = 2^3 * 3^2 * 5^1 = 360, N1 = φ(360) = 96, N2 = φ(96) = 32, N3 = φ(32) = 16, N4 = φ(16) = 8, N5 = φ(8) = 4, N6 = φ(4) = 2, N7 = φ(2) = 1, so X = 7"
+        "explanation": "N = 2^3 * 3^2 * 5^1 = 360, N1 = \u03c6(360) = 96, N2 = \u03c6(96) = 32, N3 = \u03c6(32) = 16, N4 = \u03c6(16) = 8, N5 = \u03c6(8) = 4, N6 = \u03c6(4) = 2, N7 = \u03c6(2) = 1, so X = 7"
       }
     ]
   },
@@ -113,9 +114,9 @@
     ]
   },
   "solution": {
-    "approach": "The problem requires calculating Euler's totient function φ(N) repeatedly until φ(NX) = 1. We start by calculating N as the product of prime powers given in the input. Then, we calculate φ(N) using the formula for Euler's totient function. We repeat this process until φ(NX) = 1, keeping track of the number of iterations X.",
-    "timeComplexity": "O(T * m * log(N)) per test case, O(T * m * log(N)) total. The time complexity is dominated by the calculation of φ(N) which involves iterating up to log(N).",
-    "spaceComplexity": "O(1) — the space complexity is constant as we only use a fixed amount of space to store the input and the intermediate results.",
+    "approach": "The problem requires calculating Euler's totient function \u03c6(N) repeatedly until \u03c6(NX) = 1. We start by calculating N as the product of prime powers given in the input. Then, we calculate \u03c6(N) using the formula for Euler's totient function. We repeat this process until \u03c6(NX) = 1, keeping track of the number of iterations X.",
+    "timeComplexity": "O(T * m * log(N)) per test case, O(T * m * log(N)) total. The time complexity is dominated by the calculation of \u03c6(N) which involves iterating up to log(N).",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant as we only use a fixed amount of space to store the input and the intermediate results.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n\nlong long gcd(long long a, long long b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\n\nlong long phi(long long n) {\n    long long result = n;\n    for (long long i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            while (n % i == 0)\n                n /= i;\n            result -= result / i;\n        }\n    }\n    if (n > 1)\n        result -= result / n;\n    return result;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int m;\n        scanf(\"%d\", &m);\n        long long N = 1;\n        for (int i = 0; i < m; i++) {\n            long long p, k;\n            scanf(\"%lld %lld\", &p, &k);\n            N *= pow(p, k);\n        }\n        int X = 0;\n        while (N > 1) {\n            N = phi(N);\n            X++;\n        }\n        printf(\"%d\\n\", X);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nlong long gcd(long long a, long long b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\n\nlong long phi(long long n) {\n    long long result = n;\n    for (long long i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            while (n % i == 0)\n                n /= i;\n            result -= result / i;\n        }\n    }\n    if (n > 1)\n        result -= result / n;\n    return result;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        int m;\n        cin >> m;\n        long long N = 1;\n        for (int i = 0; i < m; i++) {\n            long long p, k;\n            cin >> p >> k;\n            N *= pow(p, k);\n        }\n        int X = 0;\n        while (N > 1) {\n            N = phi(N);\n            X++;\n        }\n        cout << X << endl;\n    }\n    return 0;\n}",

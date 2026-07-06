@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Merge Sort",
-      "Inversion Count"
+      "Inversion Count",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You have an array AAA of length NNN. \n\nCount the number of pair of indexes (i,j)(i, j)(i,j) such that i&lt;ji &lt; ji&lt;j and Ai&gt;AjA_i &gt; A_jAi​&gt;Aj​. \n\nOutput the number of pairs, modulo 109+710^9 + 7109+7.\n\n**Hint** - Try to use the Merge Sort algorithm to solve this problem.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. The description of the test cases follows.\nThe first line of each test case contains a single integer NNN, denoting the length of array AAA.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​ — denoting the array AAA.\n\n\nOutput Format\nFor each test case, output on a new line the number of pair of indexes such that the inequality is satisfied. \n\nOutput the number of pairs, modulo 109+710^9 + 7109+7.",
+    "problemStatement": "You have an array AAA of length NNN. \n\nCount the number of pair of indexes (i,j)(i, j)(i,j) such that i&lt;ji &lt; ji&lt;j and Ai&gt;AjA_i &gt; A_jAi\u200b&gt;Aj\u200b. \n\nOutput the number of pairs, modulo 109+710^9 + 7109+7.\n\n**Hint** - Try to use the Merge Sort algorithm to solve this problem.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases. The description of the test cases follows.\nThe first line of each test case contains a single integer NNN, denoting the length of array AAA.\nThe second line of each test case contains NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b \u2014 denoting the array AAA.\n\n\nOutput Format\nFor each test case, output on a new line the number of pair of indexes such that the inequality is satisfied. \n\nOutput the number of pairs, modulo 109+710^9 + 7109+7.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "2 ≤ N ≤ 10^5",
-      "1 ≤ Ai ≤ 10^9",
+      "1 \u2264 T \u2264 1000",
+      "2 \u2264 N \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^9",
       "The sum of N across all test cases does not exceed 10^5"
     ],
-    "inputFormat": "The first line contains T, the number of test cases. Each test case contains two lines. The first line contains a single integer N, the length of the array. The second line contains N space-separated integers A1, A2, …, AN — denoting the array A.",
+    "inputFormat": "The first line contains T, the number of test cases. Each test case contains two lines. The first line contains a single integer N, the length of the array. The second line contains N space-separated integers A1, A2, \u2026, AN \u2014 denoting the array A.",
     "outputFormat": "For each test case, print the number of pairs of indexes (i, j) such that i < j and Ai > Aj, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved using the Merge Sort algorithm. The idea is to count the number of inversions while sorting the array. An inversion is a pair of elements in the wrong order, i.e., a larger element appears before a smaller element. The Merge Sort algorithm is a divide-and-conquer algorithm that divides the array into two halves, sorts them recursively, and then merges them. While merging, we count the number of inversions.",
     "timeComplexity": "O(N log N) per test case, O(T * N log N) total.",
-    "spaceComplexity": "O(N) — the dominant structure is the temporary array used for merging.",
+    "spaceComplexity": "O(N) \u2014 the dominant structure is the temporary array used for merging.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nconst int mod = 1000000007;\n\nvoid merge(int a[], int size_a, int b[], int size_b, int c[]) {\n    int idx1 = 0, idx2 = 0, idx = 0;\n    while (idx1 < size_a && idx2 < size_b) {\n        if (a[idx1] <= b[idx2]) {\n            c[idx++] = a[idx1++];\n        } else {\n            c[idx++] = b[idx2++];\n        }\n    }\n    while (idx1 < size_a) c[idx++] = a[idx1++];\n    while (idx2 < size_b) c[idx++] = b[idx2++];\n}\n\n// Counts pairs (i, j) such that a[i] > b[j]\n// Both a[] and b[] are sorted ascending\nint countInversions(int a[], int size_a, int b[], int size_b) {\n    int ptr = 0;\n    int ans = 0;\n    for (int i = 0; i < size_a; i++) {\n        // Move ptr right while b[ptr] < a[i]\n        while (ptr < size_b && b[ptr] < a[i]) {\n            ptr++;\n        }\n        // Elements 0..ptr-1 are all < a[i], count = ptr\n        ans = (ans + ptr) % mod;\n    }\n    return ans;\n}\n\nint sortAndCount(int a[], int size_a) {\n    if (size_a == 1) return 0;\n\n    int mid = size_a / 2;\n\n    int sz1 = mid;\n    int sz2 = size_a - sz1;\n\n    int *a1 = (int *)malloc(sz1 * sizeof(int));\n    int *a2 = (int *)malloc(sz2 * sizeof(int));\n\n    for (int i = 0; i < sz1; i++) a1[i] = a[i];\n    for (int i = 0; i < sz2; i++) a2[i] = a[mid + i];\n\n    int left  = sortAndCount(a1, sz1);\n    int right = sortAndCount(a2, sz2);\n    int num   = countInversions(a1, sz1, a2, sz2);\n\n    merge(a1, sz1, a2, sz2, a);\n\n    free(a1);\n    free(a2);\n\n    return (((left + right) % mod) + num) % mod;\n}\n\nint main() {\n    int t;\n    scanf(\"%d\", &t);\n\n    while (t--) {\n        int n;\n        scanf(\"%d\", &n);\n\n        int *a = (int *)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) scanf(\"%d\", &a[i]);\n\n        printf(\"%d\\n\", sortAndCount(a, n));\n\n        free(a);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nlong long in_c;\nconst long long MOD=1000000007;\nvoid merge(vector<long long>& a1,  vector<long long> &a2, vector<long long> &arr){\n    int s1=a1.size(),s2=a2.size();\n    int id1=0,id2=0,i=0;\n    while(id1<s1 && id2<s2){\n        if(a1[id1]<=a2[id2]){\n            arr[i++]=a1[id1++];\n        }\n        else{\n            arr[i++]=a2[id2++];\n            in_c+= (s1-id1);\n            if(in_c>=MOD)in_c%=MOD;\n        }\n    }\n    while(id1<s1)\n        arr[i++]=a1[id1++];\n    while(id2<s2)\n        arr[i++]=a2[id2++];\n}\nvoid msort(vector<long long> &arr){\n    int n=arr.size();\n    if(n<=1){\n        return;\n    }\n    int mid=n/2;\n\n    int s1=mid;\n    int s2=n-mid;\n    vector<long long> ar1(arr.begin(),arr.begin()+mid);\n    vector<long long> ar2(arr.begin()+mid,arr.end());\n    msort(ar1);\n    msort(ar2);\n    \n    merge(ar1,ar2,arr);\n}\nint main() {\n    int t;\n    cin>>t;\n    while(t--){\n        in_c=0;\n        int n;\n        cin>>n;\n        vector<long long> arr(n);\n        for(int i=0;i<n;i++){\n            cin>>arr[i];\n        }\n        \n    msort(arr);\n    cout<<in_c % MOD<<endl;\n    }\n}",

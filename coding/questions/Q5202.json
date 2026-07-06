@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Game Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Sliding Window",
-      "2D Prefix Sum",
       "Deque",
+      "2D Prefix Sum",
+      "Math",
       "Matrix"
     ],
     "companyTags": [],
@@ -21,16 +22,16 @@
     ]
   },
   "content": {
-    "problemStatement": "Two drunken players Alice and Bob are playing a modified version of Tic-Tac-Toe.\n\nInitially, there is a N×MN \\times MN×M empty grid.\n\nAlice and Bob take alternate turns **starting with Alice**. In her turn, Alice chooses an empty cell on the board and puts a `\"A\"` on the chosen cell. In Bob's turn, he chooses an empty cell and puts a `\"B\"` on the chosen cell.\n\nThe player who first gets any K×KK\\times KK×K subgrid completely filled with his/her initial wins the game. By a K×KK\\times KK×K subgrid, we mean the intersection of KKK consecutive rows and KKK consecutive columns. The players do not stop making turns after one of them wins and they play all N⋅MN \\cdot MN⋅M turns until the grid is filled.\n\nYou are given the sequence of moves played by each player (The cell selected by the player in his/her turn). You have to output the winner of the game or report that there is no winner.",
+    "problemStatement": "Two drunken players Alice and Bob are playing a modified version of Tic-Tac-Toe.\n\nInitially, there is a N\u00d7MN \\times MN\u00d7M empty grid.\n\nAlice and Bob take alternate turns **starting with Alice**. In her turn, Alice chooses an empty cell on the board and puts a `\"A\"` on the chosen cell. In Bob's turn, he chooses an empty cell and puts a `\"B\"` on the chosen cell.\n\nThe player who first gets any K\u00d7KK\\times KK\u00d7K subgrid completely filled with his/her initial wins the game. By a K\u00d7KK\\times KK\u00d7K subgrid, we mean the intersection of KKK consecutive rows and KKK consecutive columns. The players do not stop making turns after one of them wins and they play all N\u22c5MN \\cdot MN\u22c5M turns until the grid is filled.\n\nYou are given the sequence of moves played by each player (The cell selected by the player in his/her turn). You have to output the winner of the game or report that there is no winner.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ N, M ≤ 1000",
-      "1 ≤ K ≤ min(N, M)",
-      "1 ≤ X ≤ N, 1 ≤ Y ≤ M",
-      "The sum of N·M over all test cases ≤ 10^6"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 N, M \u2264 1000",
+      "1 \u2264 K \u2264 min(N, M)",
+      "1 \u2264 X \u2264 N, 1 \u2264 Y \u2264 M",
+      "The sum of N\u00b7M over all test cases \u2264 10^6"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with three integers N M K.\n- N·M lines follow, each containing two integers X Y (1‑based row and column) describing the cell chosen on that turn. Alice moves on odd‑numbered turns, Bob on even‑numbered turns.",
-    "outputFormat": "For each test case output a single line containing \"Alice\" if Alice wins, \"Bob\" if Bob wins, or \"Draw\" if neither player ever obtains a completely filled K×K subgrid.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- A line with three integers N M K.\n- N\u00b7M lines follow, each containing two integers X Y (1\u2011based row and column) describing the cell chosen on that turn. Alice moves on odd\u2011numbered turns, Bob on even\u2011numbered turns.",
+    "outputFormat": "For each test case output a single line containing \"Alice\" if Alice wins, \"Bob\" if Bob wins, or \"Draw\" if neither player ever obtains a completely filled K\u00d7K subgrid.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -116,9 +117,9 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we store for every cell the turn number when it was filled and which player filled it (Alice on odd turns, Bob on even turns). A K×K subgrid can be won only when all its cells belong to the same player; the winning turn of that subgrid is the maximum turn number among its cells (the last placed cell). Therefore the overall winner is the player whose winning subgrid has the smallest winning turn.\n\n1. Read all moves, fill two matrices:\n   - turn[i][j] = turn index (1‑based).\n   - isAlice[i][j] = 1 if the turn is odd, else 0.\n2. Build a 2D prefix sum of isAlice to obtain, for any K×K window, the number of Alice cells in O(1).\n   - If sum == K*K the window is all Alice.\n   - If sum == 0 the window is all Bob.\n3. Compute the maximum turn inside every K×K window using a 2‑dimensional sliding‑window maximum (first horizontally, then vertically) with deques. This runs in O(N·M).\n4. Scan all possible windows, for each uniform window retrieve its max turn and keep the smallest such turn together with the owner (Alice if sum==K*K else Bob).\n5. After scanning, output the owner of the earliest winning window, or \"Draw\" if none exists.\n\nBoth the prefix‑sum queries and the sliding‑window maximum are linear, so the total complexity per test case is O(N·M) time and O(N·M) memory, well within the limits.",
-    "timeComplexity": "O(N·M) per test case",
-    "spaceComplexity": "O(N·M) for the turn matrix, prefix sums and auxiliary arrays",
+    "approach": "For each test case we store for every cell the turn number when it was filled and which player filled it (Alice on odd turns, Bob on even turns). A K\u00d7K subgrid can be won only when all its cells belong to the same player; the winning turn of that subgrid is the maximum turn number among its cells (the last placed cell). Therefore the overall winner is the player whose winning subgrid has the smallest winning turn.\n\n1. Read all moves, fill two matrices:\n   - turn[i][j] = turn index (1\u2011based).\n   - isAlice[i][j] = 1 if the turn is odd, else 0.\n2. Build a 2D prefix sum of isAlice to obtain, for any K\u00d7K window, the number of Alice cells in O(1).\n   - If sum == K*K the window is all Alice.\n   - If sum == 0 the window is all Bob.\n3. Compute the maximum turn inside every K\u00d7K window using a 2\u2011dimensional sliding\u2011window maximum (first horizontally, then vertically) with deques. This runs in O(N\u00b7M).\n4. Scan all possible windows, for each uniform window retrieve its max turn and keep the smallest such turn together with the owner (Alice if sum==K*K else Bob).\n5. After scanning, output the owner of the earliest winning window, or \"Draw\" if none exists.\n\nBoth the prefix\u2011sum queries and the sliding\u2011window maximum are linear, so the total complexity per test case is O(N\u00b7M) time and O(N\u00b7M) memory, well within the limits.",
+    "timeComplexity": "O(N\u00b7M) per test case",
+    "spaceComplexity": "O(N\u00b7M) for the turn matrix, prefix sums and auxiliary arrays",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <deque.h>"
     }

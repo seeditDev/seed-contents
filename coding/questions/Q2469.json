@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Combinatorics",
+    "category": "Math",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
+      "Combinations",
       "Bit Manipulation",
-      "Combinations"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -102,7 +103,7 @@
   "solution": {
     "approach": "The problem can be solved by first sorting the batting scores in descending order. Then, we calculate the maximum possible sum of scores by selecting the top K players. We use bit manipulation to generate all possible combinations of players and count the number of combinations that result in the maximum possible sum.",
     "timeComplexity": "O(T * 2^11 * 11) per test case, O(T * 2^11 * 11) total.",
-    "spaceComplexity": "O(1) — the dominant structure is the input array.",
+    "spaceComplexity": "O(1) \u2014 the dominant structure is the input array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint compare(const void *a, const void *b) {\n    return (*(int*)b - *(int*)a);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int scores[11];\n        for (int i = 0; i < 11; i++) {\n            scanf(\"%d\", &scores[i]);\n        }\n        int K;\n        scanf(\"%d\", &K);\n        qsort(scores, 11, sizeof(int), compare);\n        int max_sum = 0;\n        for (int i = 0; i < K; i++) {\n            max_sum += scores[i];\n        }\n        int count = 0;\n        for (int mask = 0; mask < (1 << 11); mask++) {\n            int sum = 0;\n            int bits = 0;\n            for (int i = 0; i < 11; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    sum += scores[i];\n                    bits++;\n                }\n            }\n            if (bits == K && sum == max_sum) {\n                count++;\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int scores[11];\n        for (int i = 0; i < 11; i++) {\n            cin >> scores[i];\n        }\n        int K;\n        cin >> K;\n        sort(scores, scores + 11, greater<int>());\n        int max_sum = 0;\n        for (int i = 0; i < K; i++) {\n            max_sum += scores[i];\n        }\n        int count = 0;\n        for (int mask = 0; mask < (1 << 11); mask++) {\n            int sum = 0;\n            int bits = 0;\n            for (int i = 0; i < 11; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    sum += scores[i];\n                    bits++;\n                }\n            }\n            if (bits == K && sum == max_sum) {\n                count++;\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

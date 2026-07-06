@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Polynomial Interpolation",
-      "Modular Arithmetic"
+      "Math",
+      "Modular Arithmetic",
+      "Polynomial Interpolation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,20 +20,20 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a polynomial **P(X) = CD * XD + ... + C1 * X + C0** with integer coefficients **C0, C1, ..., CD**. You are also given a non-negative integer **Q** and positive integers **M** and **N**. Your task is to find the following sum\n\n\n\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; **(P(0) * Q0 + P(1) * Q1 + ... + P(N − 1) * QN − 1) mod M**.\n\n\n\nHere **A mod B** means the remainder of the division of **A** by **B**.\n\n\n\nUsually polynomials are given by the sequence of their coefficients. However, in this problem you will be given the sequence **A0, A1, ..., AD**, where **Ai = P(i) mod M**, as an input. One can prove that these values are enough to restore the value of **P(K) mod M** for any integer **K**. Therefore, the value of the above sum is uniquely determined by the values **M, Q, N, D, A0, A1, ..., AD**.\n\n\n\nThe function of the form **P(X) * QX** sometimes is called quasi-polynomial, hence the title of the problem.",
+    "problemStatement": "You are given a polynomial **P(X) = CD * XD + ... + C1 * X + C0** with integer coefficients **C0, C1, ..., CD**. You are also given a non-negative integer **Q** and positive integers **M** and **N**. Your task is to find the following sum\n\n\n\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; **(P(0) * Q0 + P(1) * Q1 + ... + P(N \u2212 1) * QN \u2212 1) mod M**.\n\n\n\nHere **A mod B** means the remainder of the division of **A** by **B**.\n\n\n\nUsually polynomials are given by the sequence of their coefficients. However, in this problem you will be given the sequence **A0, A1, ..., AD**, where **Ai = P(i) mod M**, as an input. One can prove that these values are enough to restore the value of **P(K) mod M** for any integer **K**. Therefore, the value of the above sum is uniquely determined by the values **M, Q, N, D, A0, A1, ..., AD**.\n\n\n\nThe function of the form **P(X) * QX** sometimes is called quasi-polynomial, hence the title of the problem.",
     "constraints": [
-      "1 ≤ T ≤ 5000",
+      "1 \u2264 T \u2264 5000",
       "1 < M < 10^18",
-      "0 ≤ Q < M",
-      "1 ≤ N < 10^7",
-      "0 ≤ D < 20000",
-      "0 ≤ Ai < M for i = 0, 1, ..., D",
+      "0 \u2264 Q < M",
+      "1 \u2264 N < 10^7",
+      "0 \u2264 D < 20000",
+      "0 \u2264 Ai < M for i = 0, 1, ..., D",
       "The sum of D + 1 over each input file does not exceed 20000",
       "The overall number of digits in all numbers N in each input file does not exceed 10^5",
       "M is not divisible by any number from 2 to D + 14, inclusive"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains four space-separated integers M, Q, N, and D. The second line contains D + 1 space-separated integers A0, A1, ..., AD.",
-    "outputFormat": "For each test case, print the value of the sum (P(0) * Q0 + P(1) * Q1 + ... + P(N − 1) * QN − 1) mod M.",
+    "outputFormat": "For each test case, print the value of the sum (P(0) * Q0 + P(1) * Q1 + ... + P(N \u2212 1) * QN \u2212 1) mod M.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -120,7 +121,7 @@
   "solution": {
     "approach": "The problem can be solved using polynomial interpolation and modular arithmetic. We can use Lagrange's interpolation formula to find the value of P(i) mod M for each i. Then, we can calculate the sum of P(i) * Q^i mod M for each i.",
     "timeComplexity": "O(T * N * D^2) per test case, O(T * N * D^2) total.",
-    "spaceComplexity": "O(D) — for storing the coefficients of the polynomial.",
+    "spaceComplexity": "O(D) \u2014 for storing the coefficients of the polynomial.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long M, Q, N, D;\n        scanf(\"%lld %lld %lld %lld\", &M, &Q, &N, &D);\n        long long A[D + 1];\n        for (int i = 0; i <= D; i++) {\n            scanf(\"%lld\", &A[i]);\n        }\n        long long sum = 0;\n        for (int i = 0; i < N; i++) {\n            long long P = 0;\n            for (int j = 0; j <= D; j++) {\n                long long C = 1;\n                for (int k = 0; k <= D; k++) {\n                    if (k != j) {\n                        C = (C * (i - k)) % M;\n                        C = (C * modInverse(j - k, M)) % M;\n                    }\n                }\n                P = (P + C * A[j]) % M;\n            }\n            sum = (sum + P * power(Q, i, M)) % M;\n        }\n        printf(\"%lld\\n\", sum);\n    }\n    return 0;\n}\nlong long power(long long a, long long b, long long M) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % M;\n        a = (a * a) % M;\n        b >>= 1;\n    }\n    return res;\n}\nlong long modInverse(long long a, long long M) {\n    long long m0 = M;\n    long long y = 0, x = 1;\n    if (M == 1) return 0;\n    while (a > 1) {\n        long long q = a / M;\n        long long t = M;\n        M = a % M; a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0) x += m0;\n    return x;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nlong long power(long long a, long long b, long long M) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % M;\n        a = (a * a) % M;\n        b >>= 1;\n    }\n    return res;\n}\nlong long modInverse(long long a, long long M) {\n    long long m0 = M;\n    long long y = 0, x = 1;\n    if (M == 1) return 0;\n    while (a > 1) {\n        long long q = a / M;\n        long long t = M;\n        M = a % M; a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0) x += m0;\n    return x;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long M, Q, N, D;\n        cin >> M >> Q >> N >> D;\n        long long A[D + 1];\n        for (int i = 0; i <= D; i++) {\n            cin >> A[i];\n        }\n        long long sum = 0;\n        for (int i = 0; i < N; i++) {\n            long long P = 0;\n            for (int j = 0; j <= D; j++) {\n                long long C = 1;\n                for (int k = 0; k <= D; k++) {\n                    if (k != j) {\n                        C = (C * (i - k)) % M;\n                        C = (C * modInverse(j - k, M)) % M;\n                    }\n                }\n                P = (P + C * A[j]) % M;\n            }\n            sum = (sum + P * power(Q, i, M)) % M;\n        }\n        cout << sum << endl;\n    }\n    return 0;\n}",

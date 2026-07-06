@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Wormholes",
       "Contests",
-      "Time Optimization"
+      "Time Optimization",
+      "Greedy",
+      "Wormholes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,12 +21,12 @@
     ]
   },
   "content": {
-    "problemStatement": "Zonal Computing Olympiad 2012, 26 Nov 2011\n The year is 2012 and today is the day of ZCO. This year there are N contests and the starting and ending times of each contest is known to you. You have to participate in exactly one of these contests. Different contests may overlap. The duration of different contests might be different. \n\n\nThere is only one examination centre. There is a wormhole V that transports you from your house to the examination centre and another wormhole W that transports you from the examination centre back to your house. Obviously, transportation through a wormhole does not take any time; it is instantaneous. But the wormholes can be used at only certain fixed times, and these are known to you.\n\n\nSo, you use a V wormhole to reach the exam centre, possibly wait for some time before the next contest begins, take part in the contest, possibly wait for some more time and then use a W wormhole to return back home. If you leave through a V wormhole at time t1 and come back through a W wormhole at time t2, then the total time you have spent is (t2&nbsp;-&nbsp;t1&nbsp;+&nbsp;1). Your aim is to spend as little time as possible overall while ensuring\nthat you take part in one of the contests.\n\n\nYou can reach the centre exactly at the starting time of the contest, if possible. And you can leave the examination centre the very second the contest ends, if possible. You can assume that you will always be able to attend at least one contest–that is, there will always be a contest such that there is a V wormhole before it and a W wormhole after it.\n\n\n For instance, suppose there are 3 contests with (start,end) times (15,21), (5,10), and (7,25), respectively.  Suppose the V wormhole is available at times 4, 14, 25, 2 and the W wormhole is available at times 13 and 21.  In this case, you can leave by the V wormhole at time 14, take part in the contest from time 15 to 21, and then use the W wormhole at time 21 to get back home.  Therefore the time you have spent is (21&nbsp;-&nbsp;14&nbsp;+&nbsp;1) = 8. You can check that you cannot do better than this.",
+    "problemStatement": "Zonal Computing Olympiad 2012, 26 Nov 2011\n The year is 2012 and today is the day of ZCO. This year there are N contests and the starting and ending times of each contest is known to you. You have to participate in exactly one of these contests. Different contests may overlap. The duration of different contests might be different. \n\n\nThere is only one examination centre. There is a wormhole V that transports you from your house to the examination centre and another wormhole W that transports you from the examination centre back to your house. Obviously, transportation through a wormhole does not take any time; it is instantaneous. But the wormholes can be used at only certain fixed times, and these are known to you.\n\n\nSo, you use a V wormhole to reach the exam centre, possibly wait for some time before the next contest begins, take part in the contest, possibly wait for some more time and then use a W wormhole to return back home. If you leave through a V wormhole at time t1 and come back through a W wormhole at time t2, then the total time you have spent is (t2&nbsp;-&nbsp;t1&nbsp;+&nbsp;1). Your aim is to spend as little time as possible overall while ensuring\nthat you take part in one of the contests.\n\n\nYou can reach the centre exactly at the starting time of the contest, if possible. And you can leave the examination centre the very second the contest ends, if possible. You can assume that you will always be able to attend at least one contest\u2013that is, there will always be a contest such that there is a V wormhole before it and a W wormhole after it.\n\n\n For instance, suppose there are 3 contests with (start,end) times (15,21), (5,10), and (7,25), respectively.  Suppose the V wormhole is available at times 4, 14, 25, 2 and the W wormhole is available at times 13 and 21.  In this case, you can leave by the V wormhole at time 14, take part in the contest from time 15 to 21, and then use the W wormhole at time 21 to get back home.  Therefore the time you have spent is (21&nbsp;-&nbsp;14&nbsp;+&nbsp;1) = 8. You can check that you cannot do better than this.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ X ≤ 10^5",
-      "1 ≤ Y ≤ 10^5",
-      "1 ≤ S, E ≤ 10^6",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 X \u2264 10^5",
+      "1 \u2264 Y \u2264 10^5",
+      "1 \u2264 S, E \u2264 10^6",
       "All the time instances (the contest timings and the wormhole timings) will be integers between 1 and 1000000 (inclusive)."
     ],
     "inputFormat": "The first line contains 3 space separated integers N, X, and Y, where N is the number of contests, X is the number of time instances when wormhole V can be used and Y is the number of time instances when wormhole W can be used. The next N lines describe each contest. Each of these N lines contains two space separated integers S and E, where S is the starting time of the particular contest and E is the ending time of that contest, with S < E. The next line contains X space separated integers which are the time instances when the wormhole V can be used. The next line contains Y space separated integers which are the time instances when the wormhole W can be used.",
@@ -104,8 +105,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to find the minimum time spent to take part in a contest. We can achieve this by iterating over all contests and for each contest, we find the earliest wormhole V that can be used to reach the contest and the latest wormhole W that can be used to return after the contest. We then calculate the total time spent for each contest and return the minimum time spent among all contests.",
-    "timeComplexity": "O(N * X * Y) — explain: per contest is O(X * Y), total is O(N * X * Y)",
-    "spaceComplexity": "O(1) — explain what dominates",
+    "timeComplexity": "O(N * X * Y) \u2014 explain: per contest is O(X * Y), total is O(N * X * Y)",
+    "spaceComplexity": "O(1) \u2014 explain what dominates",
     "code": {
       "C": "#include <stdio.h>\n#include <limits.h>\nint main() {\n    int N, X, Y;\n    scanf(\"%d %d %d\", &N, &X, &Y);\n    int contests[N][2];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d %d\", &contests[i][0], &contests[i][1]);\n    }\n    int V[X], W[Y];\n    for (int i = 0; i < X; i++) {\n        scanf(\"%d\", &V[i]);\n    }\n    for (int i = 0; i < Y; i++) {\n        scanf(\"%d\", &W[i]);\n    }\n    int minTime = INT_MAX;\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < X; j++) {\n            for (int k = 0; k < Y; k++) {\n                if (V[j] <= contests[i][0] && contests[i][1] <= W[k]) {\n                    int time = W[k] - V[j] + 1;\n                    minTime = (time < minTime) ? time : minTime;\n                }\n            }\n        }\n    }\n    printf(\"%d\\n\", minTime);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <limits.h>\nusing namespace std;\nint main() {\n    int N, X, Y;\n    cin >> N >> X >> Y;\n    int contests[N][2];\n    for (int i = 0; i < N; i++) {\n        cin >> contests[i][0] >> contests[i][1];\n    }\n    int V[X], W[Y];\n    for (int i = 0; i < X; i++) {\n        cin >> V[i];\n    }\n    for (int i = 0; i < Y; i++) {\n        cin >> W[i];\n    }\n    int minTime = INT_MAX;\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < X; j++) {\n            for (int k = 0; k < Y; k++) {\n                if (V[j] <= contests[i][0] && contests[i][1] <= W[k]) {\n                    int time = W[k] - V[j] + 1;\n                    minTime = (time < minTime) ? time : minTime;\n                }\n            }\n        }\n    }\n    cout << minTime << endl;\n    return 0;\n}",

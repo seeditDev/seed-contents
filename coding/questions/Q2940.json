@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "BFS",
-      "Tree"
+      "Tree",
+      "Graphs",
+      "BFS"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "There is a country whose road system is a tree, the nodes in the tree represent cities and the edge is the road between them, and each edge is of unit length. For safety, the government should put guards to protect all cities. But the government is in shortage of money. So they might not be able to protect all cites.\n\nYou're concerned about the country's safety, so you get the information of the guards. And you know that on the i-th day, there are k[i] guards&nbsp;on the road system, and j-th guard is on node a[j] and can protect every node whose distance to a[j] is not larger than r[j]. And you want to know how many nodes in the road system is protected by at least one guard.",
     "constraints": [
-      "1 ≤ N ≤ 50000",
-      "1 ≤ Q ≤ 50000",
-      "The total number of guards in the queries ≤ 500000"
+      "1 \u2264 N \u2264 50000",
+      "1 \u2264 Q \u2264 50000",
+      "The total number of guards in the queries \u2264 500000"
     ],
     "inputFormat": "First line contains N, the number of cities. Then N-1 lines follow, each line contains 2 integers a and b, denoting there is an edge between city a and b (1-based index). The next line contains an integer Q, denoting the number of the days. Then Q lines follow, each contains an integer k, denoting the number of guards in that day, and k integer pairs a[i],r[i] denoting the guards's information.",
     "outputFormat": "For each day, output the answer in one line, which is the number of nodes in the road system that is protected by at least one guard.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The key insight is to use BFS to traverse the tree from each guard's position and mark all nodes within the guard's radius as protected. We then count the number of protected nodes for each day.",
     "timeComplexity": "O(Q * (N + M)) per test case, where M is the total number of guards. This is because we perform BFS for each guard.",
-    "spaceComplexity": "O(N + M) — the dominant structure is the adjacency list representation of the tree and the distance array.",
+    "spaceComplexity": "O(N + M) \u2014 the dominant structure is the adjacency list representation of the tree and the distance array.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAXN 50005\n#define MAXM 500005\n\nint n, Q;\nint a[MAXN], b[MAXN];\nint k[MAXM], r[MAXM];\nint dist[MAXN];\nint visited[MAXN];\n\nvoid bfs(int start, int radius) {\n    memset(visited, 0, sizeof(visited));\n    visited[start] = 1;\n    dist[start] = 0;\n    int queue[MAXN], front = 0, rear = 0;\n    queue[rear++] = start;\n    while (front < rear) {\n        int u = queue[front++];\n        for (int i = 0; i < n - 1; i++) {\n            if (a[i] == u && !visited[b[i]]) {\n                visited[b[i]] = 1;\n                dist[b[i]] = dist[u] + 1;\n                if (dist[b[i]] <= radius) {\n                    queue[rear++] = b[i];\n                }\n            } else if (b[i] == u && !visited[a[i]]) {\n                visited[a[i]] = 1;\n                dist[a[i]] = dist[u] + 1;\n                if (dist[a[i]] <= radius) {\n                    queue[rear++] = a[i];\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    scanf(\"%d\", &n);\n    for (int i = 0; i < n - 1; i++) {\n        scanf(\"%d %d\", &a[i], &b[i]);\n    }\n    scanf(\"%d\", &Q);\n    for (int i = 0; i < Q; i++) {\n        scanf(\"%d\", &k[i]);\n        for (int j = 0; j < k[i]; j++) {\n            scanf(\"%d %d\", &a[j], &r[j]);\n        }\n    }\n    for (int i = 0; i < Q; i++) {\n        int count = 0;\n        memset(dist, -1, sizeof(dist));\n        for (int j = 0; j < k[i]; j++) {\n            bfs(a[j], r[j]);\n        }\n        for (int j = 1; j <= n; j++) {\n            if (dist[j] != -1) {\n                count++;\n            }\n        }\n        printf(\"%d\\n\", count);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n#define MAXN 50005\n#define MAXM 500005\n\nint n, Q;\nint a[MAXN], b[MAXN];\nint k[MAXM], r[MAXM];\nint dist[MAXN];\nint visited[MAXN];\nvector<int> adj[MAXN];\n\nvoid bfs(int start, int radius) {\n    memset(visited, 0, sizeof(visited));\n    visited[start] = 1;\n    dist[start] = 0;\n    queue<int> q;\n    q.push(start);\n    while (!q.empty()) {\n        int u = q.front();\n        q.pop();\n        for (int v : adj[u]) {\n            if (!visited[v]) {\n                visited[v] = 1;\n                dist[v] = dist[u] + 1;\n                if (dist[v] <= radius) {\n                    q.push(v);\n                }\n            }\n        }\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    cin >> n;\n    for (int i = 0; i < n - 1; i++) {\n        cin >> a[i] >> b[i];\n        adj[a[i]].push_back(b[i]);\n        adj[b[i]].push_back(a[i]);\n    }\n    cin >> Q;\n    for (int i = 0; i < Q; i++) {\n        cin >> k[i];\n        for (int j = 0; j < k[i]; j++) {\n            cin >> a[j] >> r[j];\n        }\n    }\n    for (int i = 0; i < Q; i++) {\n        int count = 0;\n        memset(dist, -1, sizeof(dist));\n        for (int j = 0; j < k[i]; j++) {\n            bfs(a[j], r[j]);\n        }\n        for (int j = 1; j <= n; j++) {\n            if (dist[j] != -1) {\n                count++;\n            }\n        }\n        cout << count << endl;\n    }\n    return 0;\n}",

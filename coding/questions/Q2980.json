@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Geometry",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Manhattan Distance",
+      "Math",
       "Point Set Operations"
     ],
     "companyTags": [],
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "Let's consider a set of points **S**. Initially, **S** is an empty set. Your task is to implement a data structure that can process the following queries efficiently:\n\n\n\n\n\n\n\t\t\t\"+ **X** **Y**\" - add a new point **P** with coordinates (**X**, **Y**) to **S**. It's guaranteed that this point will not be in **S**.\n\t\t\n\n\t\t\t\"- **N**\" - remove a point that was added during the **N**'th adding query from **S**. All of the adding queries are numbered in the order of their appearance starting from 1 (queries of other types are not included). It's guaranteed that this point is in **S**.\n\t\t\n\n\t\t\t\"? **X** **Y**\" - calculate the maximal Manhattan distance between a point **P** with coordinates (**X**, **Y**) and any point from **S**. It's guaranteed that **S** will not be empty.\n\t\t\n\n\n\n\tIn addition, you won't be given the exact query data, but instead should decode it in the following way:\n\n\n\n\tLet's store the result of the last processed query of the third type in a variable called **ANSWER**. Initially, **ANSWER** is equal to 0. You will be given **X'**, **Y'** and **N'** instead of the real values of **X**, **Y** and **N**. To get the real data you should perform the following computations:\n\n\n\n\n\n\n\t\t\t**X** = **X'** xor **ANSWER**;\n\t\t\n\n\t\t\t**Y** = **Y'** xor **ANSWER**;\n\t\t\n\n\t\t\t**N** = **N'** xor **ANSWER**.\n\t\t\n\n\n\n\tDon't forget to update the value of **ANSWER** after processing each query of the third type.\n\n\nNote\n\tMaybe some of you aren't familiar with some terms in the statement. Here are some articles that could help you understand the problem correctly:\n\n\nXOR operation: http://en.wikipedia.org/wiki/Exclusive_or\nManhattan distance: http://en.wikipedia.org/wiki/Taxicab_geometry",
     "constraints": [
-      "1 ≤ Q ≤ 500,000",
-      "0 ≤ X', Y', N' < 2^31 for each query",
-      "0 ≤ X, Y ≤ 10^9 for each query"
+      "1 \u2264 Q \u2264 500,000",
+      "0 \u2264 X', Y', N' < 2^31 for each query",
+      "0 \u2264 X, Y \u2264 10^9 for each query"
     ],
     "inputFormat": "The first line contains an integer Q, the number of queries. Each of the next Q lines contains a query in one of the following formats: + X Y - add a new point (X, Y) to the set S, - N - remove the point that was added during the Nth adding query from S, ? X Y - calculate the maximal Manhattan distance between a point P with coordinates (X, Y) and any point from S.",
     "outputFormat": "For each query of the third type, output the maximal Manhattan distance on a new line.",
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "To solve this problem, we can use a simple data structure to store the points and calculate the Manhattan distance. We will iterate over all points to find the maximum Manhattan distance for each query of the third type.",
     "timeComplexity": "O(Q^2) per test case, O(Q^2) total. The time complexity is quadratic because for each query of the third type, we are iterating over all points.",
-    "spaceComplexity": "O(Q) — the dominant structure is the array of points.",
+    "spaceComplexity": "O(Q) \u2014 the dominant structure is the array of points.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\ntypedef struct Point {\n    int x, y;\n} Point;\n\nint manhattan_distance(Point p1, Point p2) {\n    return abs(p1.x - p2.x) + abs(p1.y - p2.y);\n}\n\nint main() {\n    int Q;\n    scanf(\"%d\", &Q);\n    Point* points = (Point*) malloc(Q * sizeof(Point));\n    int* indices = (int*) malloc(Q * sizeof(int));\n    int answer = 0;\n    for (int i = 0; i < Q; i++) {\n        char query;\n        scanf(\" %c\", &query);\n        if (query == '+') {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n            x ^= answer;\n            y ^= answer;\n            points[i].x = x;\n            points[i].y = y;\n            indices[i] = i;\n        } else if (query == '-') {\n            int n;\n            scanf(\"%d\", &n);\n            n ^= answer;\n            points[n].x = -1;\n            points[n].y = -1;\n        } else if (query == '?') {\n            int x, y;\n            scanf(\"%d %d\", &x, &y);\n            x ^= answer;\n            y ^= answer;\n            int max_distance = 0;\n            for (int j = 0; j < Q; j++) {\n                if (points[j].x != -1 && points[j].y != -1) {\n                    int distance = manhattan_distance((Point) {x, y}, points[j]);\n                    max_distance = (distance > max_distance) ? distance : max_distance;\n                }\n            }\n            printf(\"%d\\n\", max_distance);\n            answer = max_distance;\n        }\n    }\n    free(points);\n    free(indices);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Point {\n    int x, y;\n};\n\nint manhattan_distance(Point p1, Point p2) {\n    return abs(p1.x - p2.x) + abs(p1.y - p2.y);\n}\n\nint main() {\n    int Q;\n    cin >> Q;\n    vector<Point> points;\n    vector<int> indices;\n    int answer = 0;\n    for (int i = 0; i < Q; i++) {\n        char query;\n        cin >> query;\n        if (query == '+') {\n            int x, y;\n            cin >> x >> y;\n            x ^= answer;\n            y ^= answer;\n            points.push_back({x, y});\n            indices.push_back(i);\n        } else if (query == '-') {\n            int n;\n            cin >> n;\n            n ^= answer;\n            points[n].x = -1;\n            points[n].y = -1;\n        } else if (query == '?') {\n            int x, y;\n            cin >> x >> y;\n            x ^= answer;\n            y ^= answer;\n            int max_distance = 0;\n            for (int j = 0; j < points.size(); j++) {\n                if (points[j].x != -1 && points[j].y != -1) {\n                    int distance = manhattan_distance({x, y}, points[j]);\n                    max_distance = (distance > max_distance) ? distance : max_distance;\n                }\n            }\n            cout << max_distance << endl;\n            answer = max_distance;\n        }\n    }\n    return 0;\n}",

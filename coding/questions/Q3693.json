@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Graph Theory",
       "Induced Subgraph",
+      "Graphs",
       "Modular Arithmetic"
     ],
     "companyTags": [],
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an undirected graph **G** = (**V**, **E**). We define a function **f**(**s**) for **s** ⊆ **V** to be the number of edges in the induced subgraph of **s**.\n\nThe problem asks you to calculate the sum of **f**(**s**)**k** over all **s** in **2|V|** subsets of **V**.\n\nAs the answer could be very large, output it modulo (**109+7**).",
+    "problemStatement": "You are given an undirected graph **G** = (**V**, **E**). We define a function **f**(**s**) for **s** \u2286 **V** to be the number of edges in the induced subgraph of **s**.\n\nThe problem asks you to calculate the sum of **f**(**s**)**k** over all **s** in **2|V|** subsets of **V**.\n\nAs the answer could be very large, output it modulo (**109+7**).",
     "constraints": [
       "1 <= T <= 100",
       "2 <= n <= 10^5",
@@ -105,8 +106,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by generating all possible subsets of the vertices and calculating the number of edges in the induced subgraph for each subset. We can then calculate the sum of f(s)^k over all subsets. To optimize the solution, we can use bit manipulation to generate all subsets and calculate the number of edges in the induced subgraph. We also need to use modular arithmetic to avoid overflow.",
-    "timeComplexity": "O(T * 2^n * m) — where n is the number of vertices and m is the number of edges. The time complexity is dominated by the generation of all subsets and the calculation of the number of edges in the induced subgraph for each subset.",
-    "spaceComplexity": "O(n + m) — where n is the number of vertices and m is the number of edges. The space complexity is dominated by the storage of the graph and the subsets.",
+    "timeComplexity": "O(T * 2^n * m) \u2014 where n is the number of vertices and m is the number of edges. The time complexity is dominated by the generation of all subsets and the calculation of the number of edges in the induced subgraph for each subset.",
+    "spaceComplexity": "O(n + m) \u2014 where n is the number of vertices and m is the number of edges. The space complexity is dominated by the storage of the graph and the subsets.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n, m, k;\n        scanf(\"%d %d %d\", &n, &m, &k);\n        int **graph = (int **)malloc(n * sizeof(int *));\n        for (int i = 0; i < n; i++) {\n            graph[i] = (int *)malloc(n * sizeof(int));\n            for (int j = 0; j < n; j++) {\n                graph[i][j] = 0;\n            }\n        }\n        for (int i = 0; i < m; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            u--; v--;\n            graph[u][v] = 1;\n            graph[v][u] = 1;\n        }\n        long long ans = 0;\n        for (int mask = 0; mask < (1 << n); mask++) {\n            int count = 0;\n            for (int i = 0; i < n; i++) {\n                for (int j = i + 1; j < n; j++) {\n                    if ((mask & (1 << i)) && (mask & (1 << j)) && graph[i][j]) {\n                        count++;\n                    }\n                }\n            }\n            ans = (ans + (long long)count * count * count) % MOD;\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n, m, k;\n        cin >> n >> m >> k;\n        vector<vector<int>> graph(n, vector<int>(n, 0));\n        for (int i = 0; i < m; i++) {\n            int u, v;\n            cin >> u >> v;\n            u--; v--;\n            graph[u][v] = 1;\n            graph[v][u] = 1;\n        }\n        long long ans = 0;\n        for (int mask = 0; mask < (1 << n); mask++) {\n            int count = 0;\n            for (int i = 0; i < n; i++) {\n                for (int j = i + 1; j < n; j++) {\n                    if ((mask & (1 << i)) && (mask & (1 << j)) && graph[i][j]) {\n                        count++;\n                    }\n                }\n            }\n            ans = (ans + (long long)count * count * count) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

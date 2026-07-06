@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Two Sum",
       "Frequency Array",
-      "Counting Triplets"
+      "Arrays",
+      "Counting Triplets",
+      "Two Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,8 +27,8 @@
       "1 <= N <= 1000",
       "1 <= ai <= 100000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers a1, a2, …, aN.",
-    "outputFormat": "For each test case output a single line containing the number of unordered triplets (i, j, k) with distinct indices such that the sum of any two of the three elements equals the third element.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space\u2011separated integers a1, a2, \u2026, aN.",
+    "outputFormat": "For each test case output a single line containing the number of unordered triplets (i,\u202fj,\u202fk) with distinct indices such that the sum of any two of the three elements equals the third element.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "For each test case we store the frequency of every value (the maximum value is 100000, so a simple array works). Then we iterate over all unordered pairs of indices (i < j). Let s = a[i] + a[j]. If s is within the allowed range we add freq[s] to the answer. Because all ai are positive, s is strictly larger than a[i] and a[j]; therefore any index counted in freq[s] is automatically different from i and j, guaranteeing distinct indices. Each valid unordered triplet has exactly one ordered pair (the two smaller numbers) that sums to the largest one, so it is counted exactly once. The algorithm runs in O(N^2) time per test case and uses O(MAXV) extra memory for the frequency array.",
-    "timeComplexity": "O(N^2) per test case (N ≤ 1000, so at most 10^6 operations).",
+    "timeComplexity": "O(N^2) per test case (N \u2264 1000, so at most 10^6 operations).",
     "spaceComplexity": "O(MAXV) = O(100000) for the frequency array.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\n#define MAXV 100000\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        int a[1000];\n        static int freq[MAXV + 1];\n        memset(freq, 0, sizeof(freq));\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%d\", &a[i]);\n            ++freq[a[i]];\n        }\n        long long ans = 0;\n        for (int i = 0; i < N; ++i) {\n            for (int j = i + 1; j < N; ++j) {\n                int sum = a[i] + a[j];\n                if (sum <= MAXV) ans += freq[sum];\n            }\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",

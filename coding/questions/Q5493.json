@@ -10,9 +10,9 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Greedy",
       "Array",
-      "Simulation"
+      "Simulation",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has a sequence of NNN integers A=[A1,A2,…,AN]A = [A_1, A_2,\\dots,A_N]A=[A1​,A2​,…,AN​]. He can perform the following operation any number of times (possibly, zero):\n\n\nChoose **any** positive integer KKK and insert it at any position of the sequence (possibly the beginning or end of the sequence, or in between any two elements).\nFor example, if A=[5,3,4]A=[5,3,4]A=[5,3,4] and Chef selects K=2K=2K=2, then after the operation he can obtain one of the sequences [2‾,5,3,4],[5,2‾,3,4],[5,3,2‾,4][\\underline{2},5,3,4], [5,\\underline{2},3,4], [5,3,\\underline{2},4][2​,5,3,4],[5,2​,3,4],[5,3,2​,4], or [5,3,4,2‾][5,3,4,\\underline{2}][5,3,4,2​].\n\nChef wants this sequence to satisfy the following condition: for each 1≤i≤∣A∣1\\le i \\le \\mid A \\mid 1≤i≤∣A∣, Ai≠iA_i \\neq iAi​=i. Here, ∣A∣\\mid A\\mid∣A∣ denotes the length of AAA.",
+    "problemStatement": "Chef has a sequence of NNN integers A=[A1,A2,\u2026,AN]A = [A_1, A_2,\\dots,A_N]A=[A1\u200b,A2\u200b,\u2026,AN\u200b]. He can perform the following operation any number of times (possibly, zero):\n\n\nChoose **any** positive integer KKK and insert it at any position of the sequence (possibly the beginning or end of the sequence, or in between any two elements).\nFor example, if A=[5,3,4]A=[5,3,4]A=[5,3,4] and Chef selects K=2K=2K=2, then after the operation he can obtain one of the sequences [2\u203e,5,3,4],[5,2\u203e,3,4],[5,3,2\u203e,4][\\underline{2},5,3,4], [5,\\underline{2},3,4], [5,3,\\underline{2},4][2\u200b,5,3,4],[5,2\u200b,3,4],[5,3,2\u200b,4], or [5,3,4,2\u203e][5,3,4,\\underline{2}][5,3,4,2\u200b].\n\nChef wants this sequence to satisfy the following condition: for each 1\u2264i\u2264\u2223A\u22231\\le i \\le \\mid A \\mid 1\u2264i\u2264\u2223A\u2223, Ai\u2260iA_i \\neq iAi\u200b\ue020=i. Here, \u2223A\u2223\\mid A\\mid\u2223A\u2223 denotes the length of AAA.",
     "constraints": [
-      "1 ≤ T ≤ 10^4",
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ Ai ≤ 10^9",
-      "Sum of N over all test cases ≤ 2·10^5"
+      "1 \u2264 T \u2264 10^4",
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 Ai \u2264 10^9",
+      "Sum of N over all test cases \u2264 2\u00b710^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then for each test case:\n- A line with an integer N, the length of the sequence.\n- A line with N space‑separated integers A1, A2, …, AN.",
-    "outputFormat": "For each test case output a single line containing the minimum number of insert operations required so that in the final sequence no element equals its 1‑based index.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Then for each test case:\n- A line with an integer N, the length of the sequence.\n- A line with N space\u2011separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case output a single line containing the minimum number of insert operations required so that in the final sequence no element equals its 1\u2011based index.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "We scan the original array from left to right while keeping cnt = number of insertions already performed before the current position. After cnt insertions, the original element Ai will finally appear at index i+cnt. If Ai equals i+cnt, the element would become a fixed point, so we must insert one more element somewhere before (or at) this position. Inserting one element increases cnt by 1 and shifts this element to index i+cnt+1, guaranteeing Ai ≠ i+cnt+1. The greedy choice of inserting exactly when a conflict appears is optimal because each insertion resolves the current conflict and cannot be avoided later. The algorithm therefore counts how many times the condition Ai == i+cnt occurs while updating cnt.\n\nPseudo‑code:\n```\nread T\nrepeat T times:\n    read N\n    read array A[1..N]\n    cnt = 0\n    for i from 1 to N:\n        if A[i] == i + cnt:\n            cnt += 1\n    print cnt\n```\nThe inserted numbers themselves can always be chosen not to be fixed (pick any K ≠ its final position), so they never create additional problems.\n\n**Correctness proof sketch**:\n- Let cnt be the number of insertions performed before processing position i. The final index of Ai is i+cnt.\n- If Ai ≠ i+cnt, Ai is already safe and no insertion is needed for it.\n- If Ai = i+cnt, any solution must shift Ai to a larger index, otherwise it remains a fixed point. The only way to shift it is to insert at least one element before (or at) its current position, which increases cnt by at least 1. Our algorithm inserts exactly one element, the minimum possible, and updates cnt accordingly.\n- Inserting earlier cannot help later elements more than this greedy step, because cnt is monotone and each insertion only adds 1 to all subsequent indices. Therefore the greedy algorithm yields the minimal total number of insertions.\n\n**Complexity analysis**: Each test case is processed in O(N) time and O(1) additional memory. Over all test cases the total time is O(ΣN) ≤ O(2·10^5).",
-    "timeComplexity": "O(N) per test case, O(ΣN) overall",
+    "approach": "We scan the original array from left to right while keeping cnt = number of insertions already performed before the current position. After cnt insertions, the original element Ai will finally appear at index i+cnt. If Ai equals i+cnt, the element would become a fixed point, so we must insert one more element somewhere before (or at) this position. Inserting one element increases cnt by 1 and shifts this element to index i+cnt+1, guaranteeing Ai \u2260 i+cnt+1. The greedy choice of inserting exactly when a conflict appears is optimal because each insertion resolves the current conflict and cannot be avoided later. The algorithm therefore counts how many times the condition Ai == i+cnt occurs while updating cnt.\n\nPseudo\u2011code:\n```\nread T\nrepeat T times:\n    read N\n    read array A[1..N]\n    cnt = 0\n    for i from 1 to N:\n        if A[i] == i + cnt:\n            cnt += 1\n    print cnt\n```\nThe inserted numbers themselves can always be chosen not to be fixed (pick any K \u2260 its final position), so they never create additional problems.\n\n**Correctness proof sketch**:\n- Let cnt be the number of insertions performed before processing position i. The final index of Ai is i+cnt.\n- If Ai \u2260 i+cnt, Ai is already safe and no insertion is needed for it.\n- If Ai = i+cnt, any solution must shift Ai to a larger index, otherwise it remains a fixed point. The only way to shift it is to insert at least one element before (or at) its current position, which increases cnt by at least 1. Our algorithm inserts exactly one element, the minimum possible, and updates cnt accordingly.\n- Inserting earlier cannot help later elements more than this greedy step, because cnt is monotone and each insertion only adds 1 to all subsequent indices. Therefore the greedy algorithm yields the minimal total number of insertions.\n\n**Complexity analysis**: Each test case is processed in O(N) time and O(1) additional memory. Over all test cases the total time is O(\u03a3N) \u2264 O(2\u00b710^5).",
+    "timeComplexity": "O(N) per test case, O(\u03a3N) overall",
     "spaceComplexity": "O(1) extra space",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    ios:\n    int T; if (scanf(\"%d\", &T)!=1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long cnt = 0; // number of insertions so far\n        for (int i = 1; i <= N; ++i) {\n            long long a; scanf(\"%lld\", &a);\n            if (a == i + cnt) cnt++;\n        }\n        printf(\"%lld\\n\", cnt);\n    }\n    return 0;\n}\n",

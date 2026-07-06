@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "String Manipulation",
-      "Greedy Algorithm"
+      "Greedy Algorithm",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,14 +20,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a string SSS of lowercase English letters with length NNN. You are allowed to (but don't have to) choose one index in this string and change the letter at this index to any other lowercase English letter. The cost of this operation is the absolute value of the difference of ASCII values of the new letter and the original letter; let's denote it by XXX.\n\nNext, consider the number of pairs of indices (i,j)(i, j)(i,j) in the resulting string (the string after changing one letter, or the original string if no letter was changed) such that 1≤i&lt;j≤N1 \\le i \\lt j \\le N1≤i&lt;j≤N and Si&lt;SjS_i \\lt S_jSi​&lt;Sj​. Let's denote it by YYY.\n\nFind the minimum possible value of X+YX+YX+Y.",
+    "problemStatement": "You are given a string SSS of lowercase English letters with length NNN. You are allowed to (but don't have to) choose one index in this string and change the letter at this index to any other lowercase English letter. The cost of this operation is the absolute value of the difference of ASCII values of the new letter and the original letter; let's denote it by XXX.\n\nNext, consider the number of pairs of indices (i,j)(i, j)(i,j) in the resulting string (the string after changing one letter, or the original string if no letter was changed) such that 1\u2264i&lt;j\u2264N1 \\le i \\lt j \\le N1\u2264i&lt;j\u2264N and Si&lt;SjS_i \\lt S_jSi\u200b&lt;Sj\u200b. Let's denote it by YYY.\n\nFind the minimum possible value of X+YX+YX+Y.",
     "constraints": [
-      "1 ≤ T ≤ 20",
-      "1 ≤ N ≤ 10^5",
+      "1 \u2264 T \u2264 20",
+      "1 \u2264 N \u2264 10^5",
       "S contains only lowercase English letters"
     ],
     "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first and only line of each test case contains a single string S.",
-    "outputFormat": "For each test case, print a single line containing one integer — the minimum value of X+Y.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the minimum value of X+Y.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -100,9 +101,9 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we can iterate over all possible strings that can be obtained by changing one character in the original string. For each string, we calculate the number of pairs of indices (i, j) such that 1 ≤ i < j ≤ N and Si < Sj. We keep track of the minimum value of X+Y, where X is the cost of changing the character and Y is the number of pairs of indices. The time complexity of this approach is O(T*N^2), where T is the number of test cases and N is the length of the string.",
-    "timeComplexity": "O(T*N^2) — per test case is O(N^2), total is O(T*N^2)",
-    "spaceComplexity": "O(N) — for storing the string",
+    "approach": "To solve this problem, we can iterate over all possible strings that can be obtained by changing one character in the original string. For each string, we calculate the number of pairs of indices (i, j) such that 1 \u2264 i < j \u2264 N and Si < Sj. We keep track of the minimum value of X+Y, where X is the cost of changing the character and Y is the number of pairs of indices. The time complexity of this approach is O(T*N^2), where T is the number of test cases and N is the length of the string.",
+    "timeComplexity": "O(T*N^2) \u2014 per test case is O(N^2), total is O(T*N^2)",
+    "spaceComplexity": "O(N) \u2014 for storing the string",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char S[100005];\n        scanf(\"%s\", S);\n        int N = strlen(S);\n        int min = N*(N-1)/2;\n        for (int i = 0; i < N; i++) {\n            for (char c = 'a'; c <= 'z'; c++) {\n                char temp = S[i];\n                S[i] = c;\n                int Y = 0;\n                for (int j = 0; j < N; j++) {\n                    for (int k = j+1; k < N; k++) {\n                        if (S[j] < S[k]) Y++;\n                    }\n                }\n                int X = (c != temp) ? abs(c - temp) : 0;\n                min = (X + Y < min) ? X + Y : min;\n                S[i] = temp;\n            }\n        }\n        printf(\"%d\\n\", min);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string S;\n        cin >> S;\n        int N = S.length();\n        int min = N*(N-1)/2;\n        for (int i = 0; i < N; i++) {\n            for (char c = 'a'; c <= 'z'; c++) {\n                char temp = S[i];\n                S[i] = c;\n                int Y = 0;\n                for (int j = 0; j < N; j++) {\n                    for (int k = j+1; k < N; k++) {\n                        if (S[j] < S[k]) Y++;\n                    }\n                }\n                int X = (c != temp) ? abs(c - temp) : 0;\n                min = (X + Y < min) ? X + Y : min;\n                S[i] = temp;\n            }\n        }\n        cout << min << endl;\n    }\n    return 0;\n}",

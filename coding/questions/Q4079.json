@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Lagrange Interpolation",
-      "Modular Arithmetic"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a sequence of positive integers A0,A1,…,AN−1A_0, A_1, \\ldots, A_{N-1}A0​,A1​,…,AN−1​ and a sequence of non-negative integers C0,C1,…,CN−1C_0, C_1, \\ldots, C_{N-1}C0​,C1​,…,CN−1​. Let's denote M=998244353M = 998244353M=998244353. You know that for\nCi=∑j=0N−1BjAjimod  MC_i = \\sum_{j = 0}^{N-1} B_j A_j^i \\mod MCi​=∑j=0N−1​Bj​Aji​modM\nholds for each valid iii, with some coefficients B0,B1,…,BN−1B_0, B_1, \\dots, B_{N-1}B0​,B1​,…,BN−1​ (such that 0≤Bi&lt;M0 \\le B_i \\lt M0≤Bi​&lt;M for each iii). Your task is to find these coefficients.\n\nIt is possible to prove that under the given constraints, the solution is unique.",
+    "problemStatement": "You are given a sequence of positive integers A0,A1,\u2026,AN\u22121A_0, A_1, \\ldots, A_{N-1}A0\u200b,A1\u200b,\u2026,AN\u22121\u200b and a sequence of non-negative integers C0,C1,\u2026,CN\u22121C_0, C_1, \\ldots, C_{N-1}C0\u200b,C1\u200b,\u2026,CN\u22121\u200b. Let's denote M=998244353M = 998244353M=998244353. You know that for\nCi=\u2211j=0N\u22121BjAjimod\u2009\u2009MC_i = \\sum_{j = 0}^{N-1} B_j A_j^i \\mod MCi\u200b=\u2211j=0N\u22121\u200bBj\u200bAji\u200bmodM\nholds for each valid iii, with some coefficients B0,B1,\u2026,BN\u22121B_0, B_1, \\dots, B_{N-1}B0\u200b,B1\u200b,\u2026,BN\u22121\u200b (such that 0\u2264Bi&lt;M0 \\le B_i \\lt M0\u2264Bi\u200b&lt;M for each iii). Your task is to find these coefficients.\n\nIt is possible to prove that under the given constraints, the solution is unique.",
     "constraints": [
-      "1 ≤ N ≤ 60,000",
-      "1 ≤ Ai < M for each valid i",
-      "0 ≤ Ci < M for each valid i",
-      "Ai ≠ Aj for each valid i, j (i ≠ j)"
+      "1 \u2264 N \u2264 60,000",
+      "1 \u2264 Ai < M for each valid i",
+      "0 \u2264 Ci < M for each valid i",
+      "Ai \u2260 Aj for each valid i, j (i \u2260 j)"
     ],
-    "inputFormat": "The first line contains a single integer N. The second line contains N space-separated integers A0, A1, …, AN-1. The third line contains N space-separated integers C0, C1, …, CN-1.",
-    "outputFormat": "A single line containing N space-separated integers B0, B1, …, BN-1.",
+    "inputFormat": "The first line contains a single integer N. The second line contains N space-separated integers A0, A1, \u2026, AN-1. The third line contains N space-separated integers C0, C1, \u2026, CN-1.",
+    "outputFormat": "A single line containing N space-separated integers B0, B1, \u2026, BN-1.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,9 +102,9 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we can use Lagrange interpolation to find the coefficients B0, B1, …, BN-1. We can calculate the value of each Bi using the formula for Lagrange interpolation, which involves calculating the product of (x - Aj) / (Ai - Aj) for all j ≠ i, and then multiplying this product by Ci. We need to perform these calculations modulo M to avoid overflow.",
-    "timeComplexity": "O(N^2) — because for each Bi, we need to calculate the product of (x - Aj) / (Ai - Aj) for all j ≠ i, which takes O(N) time, and we need to do this for all N coefficients Bi.",
-    "spaceComplexity": "O(N) — because we need to store the coefficients Bi and the values Ai and Ci.",
+    "approach": "To solve this problem, we can use Lagrange interpolation to find the coefficients B0, B1, \u2026, BN-1. We can calculate the value of each Bi using the formula for Lagrange interpolation, which involves calculating the product of (x - Aj) / (Ai - Aj) for all j \u2260 i, and then multiplying this product by Ci. We need to perform these calculations modulo M to avoid overflow.",
+    "timeComplexity": "O(N^2) \u2014 because for each Bi, we need to calculate the product of (x - Aj) / (Ai - Aj) for all j \u2260 i, which takes O(N) time, and we need to do this for all N coefficients Bi.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the coefficients Bi and the values Ai and Ci.",
     "code": {
       "C": "#include <stdio.h>\n#define M 998244353\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int A[N], C[N], B[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &C[i]);\n    }\n    for (int i = 0; i < N; i++) {\n        long long numerator = C[i];\n        long long denominator = 1;\n        for (int j = 0; j < N; j++) {\n            if (i != j) {\n                numerator = (numerator * (A[i] - A[j])) % M;\n                denominator = (denominator * (A[i] - A[j])) % M;\n            }\n        }\n        B[i] = (numerator * pow(denominator, M - 2, M)) % M;\n    }\n    for (int i = 0; i < N; i++) {\n        printf(\"%d \", B[i]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#define M 998244353\nusing namespace std;\nint main() {\n    int N;\n    cin >> N;\n    int A[N], C[N], B[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    for (int i = 0; i < N; i++) {\n        cin >> C[i];\n    }\n    for (int i = 0; i < N; i++) {\n        long long numerator = C[i];\n        long long denominator = 1;\n        for (int j = 0; j < N; j++) {\n            if (i != j) {\n                numerator = (numerator * (A[i] - A[j])) % M;\n                denominator = (denominator * (A[i] - A[j])) % M;\n            }\n        }\n        B[i] = (numerator * pow(denominator, M - 2, M)) % M;\n    }\n    for (int i = 0; i < N; i++) {\n        cout << B[i] << \" \";\n    }\n    return 0;\n}",

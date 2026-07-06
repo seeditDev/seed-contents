@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "BFS",
-      "Graph Traversal"
+      "Graph Traversal",
+      "Graphs",
+      "BFS"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,11 +22,11 @@
   "content": {
     "problemStatement": "Kekocity's population consist of **N** gnomes numbered with unique ids from **1** to **N**. As they are very joyful gnomes, they usually send jokes to their friends right after they get any (even if they knew it before) via their social network named as Mybeard. Mybeard became popular in the city because of message auto-deletion. It takes exactly one minute to read and resend joke to mates.\n\n\nMayor of Kekocity, Mr. Shaikhinidin, is interested in understanding how the jokes are spread. He gives you database of Mybeard social network, and wants you to answer some queries on it.\n\n\nYou will be given a list of friends for every gnome and **M** queries of the following type: Who will receive a message with joke after exactly **K** minutes, if the creator of joke was gnome with id **x**?",
     "constraints": [
-      "1 ≤ N ≤ 500",
-      "1 ≤ M ≤ 500",
-      "0 ≤ k ≤ 10^9",
-      "1 ≤ x ≤ N",
-      "0 ≤ g[i][j] ≤ 1"
+      "1 \u2264 N \u2264 500",
+      "1 \u2264 M \u2264 500",
+      "0 \u2264 k \u2264 10^9",
+      "1 \u2264 x \u2264 N",
+      "0 \u2264 g[i][j] \u2264 1"
     ],
     "inputFormat": "The first line contains a single integer N denoting the number of gnomes. The next N lines contain the matrix g[N][N]. Each of the i-th line, will contain N space separated integers - j-th of those will denote g[i][j]. If gnome j is friend of gnome i, then g[i][j] is 1. Otherwise it will be zero. The next line contains a single integer M denoting the number of queries. The next M lines contain two integers k and x described above.",
     "outputFormat": "For each query, output two lines. In the first line, output how many gnomes will know the joke after k minutes. In the second line, print these ids (numbering) of these gnomes in increasing order. If no one will know the joke after K minutes, then print -1 in this line.",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Breadth-First Search (BFS) algorithm. We start by initializing a queue with the source gnome and a set to keep track of visited gnomes. Then, we perform BFS for k minutes, adding all unvisited friends of the current gnome to the queue and marking them as visited. Finally, we return the number of gnomes that will know the joke after k minutes and their ids.",
-    "timeComplexity": "O(N + M * (N + k)) — The time complexity is dominated by the BFS traversal for each query.",
-    "spaceComplexity": "O(N) — The space complexity is dominated by the queue and the set of visited gnomes.",
+    "timeComplexity": "O(N + M * (N + k)) \u2014 The time complexity is dominated by the BFS traversal for each query.",
+    "spaceComplexity": "O(N) \u2014 The space complexity is dominated by the queue and the set of visited gnomes.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n#define MAX_N 500\n#define MAX_M 500\n#define MAX_K 1000000000\n\n// Structure to represent a gnome\ntypedef struct {\n    int id;\n    int* friends;\n    int num_friends;\n} Gnome;\n\n// Function to perform BFS\nvoid bfs(Gnome* gnomes, int num_gnomes, int source, int k, int* result) {\n    bool* visited = (bool*) calloc(num_gnomes, sizeof(bool));\n    int* queue = (int*) malloc(num_gnomes * sizeof(int));\n    int front = 0, rear = 0;\n    queue[rear++] = source;\n    visited[source] = true;\n    for (int i = 0; i < k; i++) {\n        int temp_rear = rear;\n        for (int j = front; j < temp_rear; j++) {\n            for (int l = 0; l < gnomes[queue[j]].num_friends; l++) {\n                if (!visited[gnomes[queue[j]].friends[l]]) {\n                    queue[rear++] = gnomes[queue[j]].friends[l];\n                    visited[queue[rear - 1]] = true;\n                }\n            }\n        }\n        front = temp_rear;\n    }\n    *result = rear - front;\n    for (int i = front; i < rear; i++) {\n        printf(\"%d \", queue[i] + 1);\n    }\n    printf(\"\\n\");\n    free(queue);\n    free(visited);\n}\n\nint main() {\n    int num_gnomes;\n    scanf(\"%d\", &num_gnomes);\n    Gnome* gnomes = (Gnome*) malloc(num_gnomes * sizeof(Gnome));\n    for (int i = 0; i < num_gnomes; i++) {\n        gnomes[i].id = i;\n        gnomes[i].friends = (int*) malloc(num_gnomes * sizeof(int));\n        gnomes[i].num_friends = 0;\n        for (int j = 0; j < num_gnomes; j++) {\n            int temp;\n            scanf(\"%d\", &temp);\n            if (temp == 1) {\n                gnomes[i].friends[gnomes[i].num_friends++] = j;\n            }\n        }\n    }\n    int num_queries;\n    scanf(\"%d\", &num_queries);\n    for (int i = 0; i < num_queries; i++) {\n        int k, source;\n        scanf(\"%d %d\", &k, &source);\n        source--;\n        int result;\n        bfs(gnomes, num_gnomes, source, k, &result);\n        printf(\"%d\\n\", result);\n    }\n    for (int i = 0; i < num_gnomes; i++) {\n        free(gnomes[i].friends);\n    }\n    free(gnomes);\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\n#include <queue>\n#include <unordered_set>\nusing namespace std;\n\n// Structure to represent a gnome\nstruct Gnome {\n    int id;\n    vector<int> friends;\n};\n\n// Function to perform BFS\nvoid bfs(vector<Gnome>& gnomes, int source, int k, vector<int>& result) {\n    unordered_set<int> visited;\n    queue<int> q;\n    q.push(source);\n    visited.insert(source);\n    for (int i = 0; i < k; i++) {\n        int size = q.size();\n        for (int j = 0; j < size; j++) {\n            int current = q.front();\n            q.pop();\n            for (int l = 0; l < gnomes[current].friends.size(); l++) {\n                if (visited.find(gnomes[current].friends[l]) == visited.end()) {\n                    q.push(gnomes[current].friends[l]);\n                    visited.insert(gnomes[current].friends[l]);\n                }\n            }\n        }\n    }\n    result.clear();\n    for (auto& gnome : visited) {\n        result.push_back(gnome);\n    }\n}\n\nint main() {\n    int num_gnomes;\n    cin >> num_gnomes;\n    vector<Gnome> gnomes(num_gnomes);\n    for (int i = 0; i < num_gnomes; i++) {\n        gnomes[i].id = i;\n        for (int j = 0; j < num_gnomes; j++) {\n            int temp;\n            cin >> temp;\n            if (temp == 1) {\n                gnomes[i].friends.push_back(j);\n            }\n        }\n    }\n    int num_queries;\n    cin >> num_queries;\n    for (int i = 0; i < num_queries; i++) {\n        int k, source;\n        cin >> k >> source;\n        source--;\n        vector<int> result;\n        bfs(gnomes, source, k, result);\n        cout << result.size() << endl;\n        for (auto& gnome : result) {\n            cout << gnome + 1 << \" \";\n        }\n        cout << endl;\n    }\n    return 0;\n}",

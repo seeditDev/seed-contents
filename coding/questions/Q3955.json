@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "DFS",
       "Graph",
+      "Graphs",
       "Connected Components"
     ],
     "companyTags": [],
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we will use Depth-First Search (DFS) to traverse the tree and construct the graph G' for each node. We will then use DFS again to count the number of connected components in G'. The time complexity of this approach is O(N^2) in the worst case, where N is the number of nodes in the tree.",
-    "timeComplexity": "O(N^2) — per query is O(N), total is O(N^2)",
-    "spaceComplexity": "O(N) — we need to store the adjacency list of the tree and the graph G'",
+    "timeComplexity": "O(N^2) \u2014 per query is O(N), total is O(N^2)",
+    "spaceComplexity": "O(N) \u2014 we need to store the adjacency list of the tree and the graph G'",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\nint n;\nint tree[MAXN][2];\nint graph[MAXN][2];\nint visited[MAXN];\nint count;\nvoid dfs(int node) {\n    visited[node] = 1;\n    count++;\n    if (tree[node][0] != -1 && !visited[tree[node][0]]) {\n        dfs(tree[node][0]);\n    }\n    if (tree[node][1] != -1 && !visited[tree[node][1]]) {\n        dfs(tree[node][1]);\n    }\n}\nint main() {\n    scanf(\"%d\", &n);\n    for (int i = 0; i < n - 1; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        if (tree[u][0] == -1) {\n            tree[u][0] = v;\n        } else {\n            tree[u][1] = v;\n        }\n        if (tree[v][0] == -1) {\n            tree[v][0] = u;\n        } else {\n            tree[v][1] = u;\n        }\n    }\n    for (int i = 1; i <= n; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        graph[u][0] = v;\n    }\n    for (int i = 1; i <= n; i++) {\n        count = 0;\n        for (int j = 1; j <= n; j++) {\n            visited[j] = 0;\n        }\n        dfs(1);\n        int components = 0;\n        for (int j = 1; j <= n; j++) {\n            if (!visited[j]) {\n                components++;\n                dfs(j);\n            }\n        }\n        printf(\"%d\\n\", components);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 100005;\nint n;\nvector<int> tree[MAXN];\nvector<int> graph[MAXN];\nbool visited[MAXN];\nint count;\nvoid dfs(int node) {\n    visited[node] = true;\n    count++;\n    for (int i = 0; i < tree[node].size(); i++) {\n        if (!visited[tree[node][i]]) {\n            dfs(tree[node][i]);\n        }\n    }\n}\nint main() {\n    cin >> n;\n    for (int i = 0; i < n - 1; i++) {\n        int u, v;\n        cin >> u >> v;\n        tree[u].push_back(v);\n        tree[v].push_back(u);\n    }\n    for (int i = 1; i <= n; i++) {\n        int u, v;\n        cin >> u >> v;\n        graph[u].push_back(v);\n    }\n    for (int i = 1; i <= n; i++) {\n        count = 0;\n        for (int j = 1; j <= n; j++) {\n            visited[j] = false;\n        }\n        dfs(1);\n        int components = 0;\n        for (int j = 1; j <= n; j++) {\n            if (!visited[j]) {\n                components++;\n                dfs(j);\n            }\n        }\n        cout << components << endl;\n    }\n    return 0;\n}",

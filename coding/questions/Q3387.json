@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Palindrome",
-      "String Concatenation",
-      "Minimum Deletions"
+      "Minimum Deletions",
+      "Strings",
+      "String Concatenation"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,11 +21,11 @@
     ]
   },
   "content": {
-    "problemStatement": "Akhil is a professor at University of Alexia. This semester, he is taking a course on Algorithms. One day after teaching about palindrome and related algorithms, he gave the following task to his students. Students found it very easy and solved it quickly. Can you solve it too?\n \n\nYou are given **N** strings. Each of them will have size equal to one or two, with their characters belonging to the character set **{‘a’,’b’}**. You have to delete minimum number of strings from the above given strings such that the string obtained after concatenating the remaining strings (in the original order of appearance in the **N** strings) is a palindrome. Find out the minimum number of deletions required.",
+    "problemStatement": "Akhil is a professor at University of Alexia. This semester, he is taking a course on Algorithms. One day after teaching about palindrome and related algorithms, he gave the following task to his students. Students found it very easy and solved it quickly. Can you solve it too?\n \n\nYou are given **N** strings. Each of them will have size equal to one or two, with their characters belonging to the character set **{\u2018a\u2019,\u2019b\u2019}**. You have to delete minimum number of strings from the above given strings such that the string obtained after concatenating the remaining strings (in the original order of appearance in the **N** strings) is a palindrome. Find out the minimum number of deletions required.",
     "constraints": [
-      "1 ≤ T ≤ 5",
-      "1 ≤ N ≤ 103",
-      "Each string will have size equal to one or two, with their characters belonging to the character set {‘a’,’b’}"
+      "1 \u2264 T \u2264 5",
+      "1 \u2264 N \u2264 103",
+      "Each string will have size equal to one or two, with their characters belonging to the character set {\u2018a\u2019,\u2019b\u2019}"
     ],
     "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows: First line of each test case will contain a single integer number N denoting number of strings. Next line of each test case will contain N space separated strings.",
     "outputFormat": "For each test case, output a single integer corresponding to the minimum number of strings to be deleted.",
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We will maintain two pointers, one at the start and one at the end of the concatenated string. We will then try to match the characters at these two pointers. If they match, we can move both pointers. If they do not match, we will try to delete the string at the start or the end of the concatenated string and see which one results in a palindrome with the minimum number of deletions.",
-    "timeComplexity": "O(T * N^2) — where T is the number of test cases and N is the number of strings in each test case. The reason for this time complexity is that we are using two nested loops to generate all possible combinations of strings and checking if the resulting string is a palindrome.",
-    "spaceComplexity": "O(N) — where N is the number of strings in each test case. The reason for this space complexity is that we are storing the strings in an array.",
+    "timeComplexity": "O(T * N^2) \u2014 where T is the number of test cases and N is the number of strings in each test case. The reason for this time complexity is that we are using two nested loops to generate all possible combinations of strings and checking if the resulting string is a palindrome.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of strings in each test case. The reason for this space complexity is that we are storing the strings in an array.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n\nint isPalindrome(char *str) {\n    int start = 0;\n    int end = strlen(str) - 1;\n    while (start < end) {\n        if (str[start] != str[end]) {\n            return 0;\n        }\n        start++;\n        end--;\n    }\n    return 1;\n}\n\nint minDeletions(char **strs, int N) {\n    int minDeletions = N;\n    for (int i = 0; i < (1 << N); i++) {\n        char concatenatedStr[1000] = \"\";\n        int numDeletions = 0;\n        for (int j = 0; j < N; j++) {\n            if ((i & (1 << j)) == 0) {\n                strcat(concatenatedStr, strs[j]);\n            } else {\n                numDeletions++;\n            }\n        }\n        if (isPalindrome(concatenatedStr)) {\n            minDeletions = (minDeletions < numDeletions) ? minDeletions : numDeletions;\n        }\n    }\n    return minDeletions;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        char **strs = (char **)malloc(N * sizeof(char *));\n        for (int i = 0; i < N; i++) {\n            strs[i] = (char *)malloc(3 * sizeof(char));\n            scanf(\"%s\", strs[i]);\n        }\n        printf(\"%d\\n\", minDeletions(strs, N));\n        for (int i = 0; i < N; i++) {\n            free(strs[i]);\n        }\n        free(strs);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint isPalindrome(string str) {\n    int start = 0;\n    int end = str.length() - 1;\n    while (start < end) {\n        if (str[start] != str[end]) {\n            return 0;\n        }\n        start++;\n        end--;\n    }\n    return 1;\n}\n\nint minDeletions(string strs[], int N) {\n    int minDeletions = N;\n    for (int i = 0; i < (1 << N); i++) {\n        string concatenatedStr = \"\";\n        int numDeletions = 0;\n        for (int j = 0; j < N; j++) {\n            if ((i & (1 << j)) == 0) {\n                concatenatedStr += strs[j];\n            } else {\n                numDeletions++;\n            }\n        }\n        if (isPalindrome(concatenatedStr)) {\n            minDeletions = (minDeletions < numDeletions) ? minDeletions : numDeletions;\n        }\n    }\n    return minDeletions;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        string *strs = new string[N];\n        for (int i = 0; i < N; i++) {\n            cin >> strs[i];\n        }\n        cout << minDeletions(strs, N) << endl;\n        delete[] strs;\n    }\n    return 0;\n}",

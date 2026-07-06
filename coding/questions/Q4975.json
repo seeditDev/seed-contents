@@ -6,15 +6,16 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation | Combinatorics | Number Theory",
+    "category": "Bit Manipulation",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "XOR",
+      "Prefix Sums",
+      "Bit Manipulation",
       "Subsets",
-      "Binomial Coefficients",
+      "XOR",
       "NTT",
-      "Prefix Sums"
+      "Binomial Coefficients"
     ],
     "companyTags": [],
     "topicTags": [
@@ -22,20 +23,20 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a sequence of positive integers A1,A2,…,ANA_1, A_2, \\ldots, A_NA1​,A2​,…,AN​. You should answer QQQ queries. In each query:\n\n\nYou are given a positive integer MMM.\nConsider all non-empty subsequences of AAA with length ≤M\\le M≤M. Recall that a subsequence is any sequence that can be created by deleting zero or more elements without changing the order of the remaining elements.\nFor each of these subsequences, compute the bitwise XOR of its elements. Your task is to determine the sum of these values. Since this sum can be very large, compute it modulo 998,244,353998,244,353998,244,353.",
+    "problemStatement": "You are given a sequence of positive integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. You should answer QQQ queries. In each query:\n\n\nYou are given a positive integer MMM.\nConsider all non-empty subsequences of AAA with length \u2264M\\le M\u2264M. Recall that a subsequence is any sequence that can be created by deleting zero or more elements without changing the order of the remaining elements.\nFor each of these subsequences, compute the bitwise XOR of its elements. Your task is to determine the sum of these values. Since this sum can be very large, compute it modulo 998,244,353998,244,353998,244,353.",
     "constraints": [
-      "1 ≤ N, Q ≤ 2·10^5",
-      "1 ≤ Ai < 2^30",
-      "1 ≤ M ≤ N"
+      "1 \u2264 N, Q \u2264 2\u00b710^5",
+      "1 \u2264 Ai < 2^30",
+      "1 \u2264 M \u2264 N"
     ],
-    "inputFormat": "The first line contains an integer N – the length of the sequence. The second line contains N space‑separated positive integers A1 … AN. The third line contains an integer Q – the number of queries. Each of the next Q lines contains a single integer M (1 ≤ M ≤ N).",
-    "outputFormat": "For each query output one line – the sum of XOR values of all non‑empty subsequences whose length does not exceed M, taken modulo 998244353.",
+    "inputFormat": "The first line contains an integer N \u2013 the length of the sequence. The second line contains N space\u2011separated positive integers A1 \u2026 AN. The third line contains an integer Q \u2013 the number of queries. Each of the next Q lines contains a single integer M (1 \u2264 M \u2264 N).",
+    "outputFormat": "For each query output one line \u2013 the sum of XOR values of all non\u2011empty subsequences whose length does not exceed M, taken modulo 998244353.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "4\n1 3 5 2\n2\n1\n2",
         "output": "11\n34",
-        "explanation": "Explanation:\nIn the first query, the answer is just the sum of elements of AAA (modulo 998,244,353998,244,353998,244,353), which is 1+3+5+2=111+3+5+2 = 111+3+5+2=11.\nIn the second query, the answer is the sum of bitwise XORs for all subsequences with length 111 or 222, which is 1+3+5+2+(1⊕3)+(1⊕5)+(1⊕2)+(3⊕5)+(3⊕2)+(5⊕2)=341+3+5+2 + (1 \\oplus 3) + (1 \\oplus 5) + (1 \\oplus 2) + (3 \\oplus 5) + (3 \\oplus 2) + (5 \\oplus 2) = 341+3+5+2+(1⊕3)+(1⊕5)+(1⊕2)+(3⊕5)+(3⊕2)+(5⊕2)=34."
+        "explanation": "Explanation:\nIn the first query, the answer is just the sum of elements of AAA (modulo 998,244,353998,244,353998,244,353), which is 1+3+5+2=111+3+5+2 = 111+3+5+2=11.\nIn the second query, the answer is the sum of bitwise XORs for all subsequences with length 111 or 222, which is 1+3+5+2+(1\u22953)+(1\u22955)+(1\u22952)+(3\u22955)+(3\u22952)+(5\u22952)=341+3+5+2 + (1 \\oplus 3) + (1 \\oplus 5) + (1 \\oplus 2) + (3 \\oplus 5) + (3 \\oplus 2) + (5 \\oplus 2) = 341+3+5+2+(1\u22953)+(1\u22955)+(1\u22952)+(3\u22955)+(3\u22952)+(5\u22952)=34."
       }
     ]
   },
@@ -103,8 +104,8 @@
     ]
   },
   "solution": {
-    "approach": "For each bit b (0 … 29) let cnt1 be the number of array elements whose b‑th bit equals 1 and cnt0 = N - cnt1. For a fixed subset size k the number of subsets of size k whose XOR has bit b equal to 1 is the number of ways to choose an odd amount of the cnt1 elements and any amount of the cnt0 elements:\n    odd_b(k) = Σ_{i odd} C(cnt1, i)·C(cnt0, k-i).\nUsing the identity Σ_{i} (-1)^i C(cnt1,i)C(cnt0,k-i) = coeff_b[k] (the coefficient of x^k in (1‑x)^{cnt1}(1+x)^{cnt0}) we obtain\n    odd_b(k) = (C(N,k) - coeff_b[k]) / 2.\nAll calculations are performed modulo MOD = 998244353, and division by 2 is multiplication by inv2 = (MOD+1)/2.\nThe polynomial coeff_b is the convolution of two sequences:\n    A[i] = (-1)^i·C(cnt1,i)   (0 ≤ i ≤ cnt1)\n    B[j] = C(cnt0,j)          (0 ≤ j ≤ cnt0)\nThus coeff_b = A * B, which can be computed in O(N log N) with a Number Theoretic Transform (NTT) because MOD is a suitable prime. We repeat the NTT for each of the 30 bits (30·N·log N ≈ 1.1·10^8 operations, fast enough).\nAfter obtaining coeff_b for all k (0 … N) we compute odd_b(k) for every k, then the contribution of bit b to the answer for size k is (1<<b)·odd_b(k). Summing over all bits gives X[k] – the total XOR sum of all subsets of exact size k. A prefix array pref[M] = Σ_{k=1..M} X[k] answers each query in O(1).\nPre‑computations:\n  • factorials and inverse factorials up to N for fast binomial coefficients.\n  • inv2 = (MOD+1)/2.\nOverall complexity: O(30·N·log N + Q) time, O(N) additional memory per bit (reused), total O(N) memory besides input.\nThe same algorithm is implemented in all five languages; the C++ version uses the atcoder::convolution helper, the other languages contain a hand‑written iterative NTT.",
-    "timeComplexity": "O(30·N·log N + Q) ≈ 1.1·10^8 operations for N = 2·10^5, plus O(Q) for answering queries.",
+    "approach": "For each bit b (0 \u2026 29) let cnt1 be the number of array elements whose b\u2011th bit equals 1 and cnt0 = N - cnt1. For a fixed subset size k the number of subsets of size k whose XOR has bit b equal to 1 is the number of ways to choose an odd amount of the cnt1 elements and any amount of the cnt0 elements:\n    odd_b(k) = \u03a3_{i odd} C(cnt1, i)\u00b7C(cnt0, k-i).\nUsing the identity \u03a3_{i} (-1)^i C(cnt1,i)C(cnt0,k-i) = coeff_b[k] (the coefficient of x^k in (1\u2011x)^{cnt1}(1+x)^{cnt0}) we obtain\n    odd_b(k) = (C(N,k) - coeff_b[k]) / 2.\nAll calculations are performed modulo MOD = 998244353, and division by 2 is multiplication by inv2 = (MOD+1)/2.\nThe polynomial coeff_b is the convolution of two sequences:\n    A[i] = (-1)^i\u00b7C(cnt1,i)   (0 \u2264 i \u2264 cnt1)\n    B[j] = C(cnt0,j)          (0 \u2264 j \u2264 cnt0)\nThus coeff_b = A * B, which can be computed in O(N log N) with a Number Theoretic Transform (NTT) because MOD is a suitable prime. We repeat the NTT for each of the 30 bits (30\u00b7N\u00b7log N \u2248 1.1\u00b710^8 operations, fast enough).\nAfter obtaining coeff_b for all k (0 \u2026 N) we compute odd_b(k) for every k, then the contribution of bit b to the answer for size k is (1<<b)\u00b7odd_b(k). Summing over all bits gives X[k] \u2013 the total XOR sum of all subsets of exact size k. A prefix array pref[M] = \u03a3_{k=1..M} X[k] answers each query in O(1).\nPre\u2011computations:\n  \u2022 factorials and inverse factorials up to N for fast binomial coefficients.\n  \u2022 inv2 = (MOD+1)/2.\nOverall complexity: O(30\u00b7N\u00b7log N + Q) time, O(N) additional memory per bit (reused), total O(N) memory besides input.\nThe same algorithm is implemented in all five languages; the C++ version uses the atcoder::convolution helper, the other languages contain a hand\u2011written iterative NTT.",
+    "timeComplexity": "O(30\u00b7N\u00b7log N + Q) \u2248 1.1\u00b710^8 operations for N = 2\u00b710^5, plus O(Q) for answering queries.",
     "spaceComplexity": "O(N) for factorials, inverse factorials and temporary NTT buffers (reused for each bit).",
     "code": {
       "C": ""

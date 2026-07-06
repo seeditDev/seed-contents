@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Parity",
-      "Divisibility",
       "Exponentiation",
+      "Divisibility",
+      "Parity",
+      "Math",
       "Greedy"
     ],
     "companyTags": [],
@@ -21,25 +22,25 @@
     ]
   },
   "content": {
-    "problemStatement": "Arun has an integer NNN. His friend likes the number 111, so Arun wants to reduce NNN to 111.\n\nTo do so, he can perform the following move several times (possibly, zero):\n\n\nPick two integers XXX and YYY such that X+YX+YX+Y is even and XYX^YXY is a divisor of NNN. Then, replace NNN by NXY\\dfrac{N}{X^Y}XYN​\nNote that at each step, XYX^YXY only needs to be a divisor of the current value of NNN, and not necessarily a divisor of the integer Arun initially started with.\n\nFind the **minimum** number of moves Arun needs to reduce NNN to 111. If it is not possible to reduce NNN to 111 using the given operation, print −1-1−1 instead.\n\n\nInput Format\n\nThe first line of input will contain an integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nEach test case consists of a single line of input containing one integer NNN.\n\n\nOutput Format\nFor each test case, output on a new line the answer — the **minimum** number of moves needed to reduce NNN to 111, or −1-1−1 if it is not possible to do so.",
+    "problemStatement": "Arun has an integer NNN. His friend likes the number 111, so Arun wants to reduce NNN to 111.\n\nTo do so, he can perform the following move several times (possibly, zero):\n\n\nPick two integers XXX and YYY such that X+YX+YX+Y is even and XYX^YXY is a divisor of NNN. Then, replace NNN by NXY\\dfrac{N}{X^Y}XYN\u200b\nNote that at each step, XYX^YXY only needs to be a divisor of the current value of NNN, and not necessarily a divisor of the integer Arun initially started with.\n\nFind the **minimum** number of moves Arun needs to reduce NNN to 111. If it is not possible to reduce NNN to 111 using the given operation, print \u22121-1\u22121 instead.\n\n\nInput Format\n\nThe first line of input will contain an integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nEach test case consists of a single line of input containing one integer NNN.\n\n\nOutput Format\nFor each test case, output on a new line the answer \u2014 the **minimum** number of moves needed to reduce NNN to 111, or \u22121-1\u22121 if it is not possible to do so.",
     "constraints": [
-      "1 ≤ T ≤ 10^5",
-      "1 ≤ N ≤ 10^18"
+      "1 \u2264 T \u2264 10^5",
+      "1 \u2264 N \u2264 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 10^18).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 10^18).",
     "outputFormat": "For each test case output a single line containing the minimum number of moves required to reduce N to 1 using the described operation, or -1 if it is impossible.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n25\n24",
         "output": "1\n-1",
-        "explanation": "For N=25 (odd) we can choose X=25, Y=1 (25+1 even) and divide by 25 in one move. For N=24 = 2^3·3, the exponent of 2 is 3 (odd), so it is impossible to eliminate all factors of 2 using only even‑exponent powers of 2."
+        "explanation": "For N=25 (odd) we can choose X=25, Y=1 (25+1 even) and divide by 25 in one move. For N=24 = 2^3\u00b73, the exponent of 2 is 3 (odd), so it is impossible to eliminate all factors of 2 using only even\u2011exponent powers of 2."
       },
       {
         "id": "sample_2",
         "input": "3\n1\n4\n12",
         "output": "0\n1\n2",
-        "explanation": "N=1 needs no moves. N=4 = 2^2, v2=2 (even) and no odd part, so one move with X=2, Y=2 removes the whole number. N=12 = 2^2·3, v2 even, odd part 3>1, so two moves: first divide by 4 (X=2,Y=2) obtaining 3, then divide by 3 (X=3,Y=1)."
+        "explanation": "N=1 needs no moves. N=4 = 2^2, v2=2 (even) and no odd part, so one move with X=2, Y=2 removes the whole number. N=12 = 2^2\u00b73, v2 even, odd part 3>1, so two moves: first divide by 4 (X=2,Y=2) obtaining 3, then divide by 3 (X=3,Y=1)."
       }
     ]
   },
@@ -107,9 +108,9 @@
     ]
   },
   "solution": {
-    "approach": "For a move we choose integers X and Y such that X+Y is even and X^Y divides the current N, then replace N by N / X^Y. Observe:\n- If N is odd, we can take X = N, Y = 1 (odd + 1 is even) and divide by N in one move.\n- If N is even, X must be even and Y must be even (otherwise X+Y would be odd). Hence X^Y is a power of 2 with an even exponent, i.e. 4^k.\n  Therefore only factors of the form 4^k can be removed from the even part of N.\n- Let v2 be the exponent of 2 in the prime factorisation of N (the number of trailing zero bits). The operation can only eliminate an even number of 2's at a time, so v2 must be even; otherwise reduction is impossible.\n- When v2 is even we can remove all 2's in a single move by choosing X = 2 and Y = v2 (2+v2 is even because v2 is even). After this step the remaining number is odd.\n- The odd part (if greater than 1) can be removed in one additional move using X = oddPart, Y = 1.\nThus:\n  * If N = 1 → answer 0.\n  * Else if N is odd → answer 1.\n  * Else (N even): compute v2 = exponent of 2 in N.\n    - If v2 is odd → answer -1.\n    - If v2 is even:\n        • If N / 2^{v2} == 1 → answer 1 (only the power of 4 was present).\n        • Otherwise → answer 2 (one move for the power of 4, one move for the odd remainder).",
-    "timeComplexity": "O(T) – each test case needs only a few arithmetic operations and a count of trailing zeros.",
-    "spaceComplexity": "O(1) – only a few variables are used per test case.",
+    "approach": "For a move we choose integers X and Y such that X+Y is even and X^Y divides the current N, then replace N by N / X^Y. Observe:\n- If N is odd, we can take X = N, Y = 1 (odd + 1 is even) and divide by N in one move.\n- If N is even, X must be even and Y must be even (otherwise X+Y would be odd). Hence X^Y is a power of 2 with an even exponent, i.e. 4^k.\n  Therefore only factors of the form 4^k can be removed from the even part of N.\n- Let v2 be the exponent of 2 in the prime factorisation of N (the number of trailing zero bits). The operation can only eliminate an even number of 2's at a time, so v2 must be even; otherwise reduction is impossible.\n- When v2 is even we can remove all 2's in a single move by choosing X = 2 and Y = v2 (2+v2 is even because v2 is even). After this step the remaining number is odd.\n- The odd part (if greater than 1) can be removed in one additional move using X = oddPart, Y = 1.\nThus:\n  * If N = 1 \u2192 answer 0.\n  * Else if N is odd \u2192 answer 1.\n  * Else (N even): compute v2 = exponent of 2 in N.\n    - If v2 is odd \u2192 answer -1.\n    - If v2 is even:\n        \u2022 If N / 2^{v2} == 1 \u2192 answer 1 (only the power of 4 was present).\n        \u2022 Otherwise \u2192 answer 2 (one move for the power of 4, one move for the odd remainder).",
+    "timeComplexity": "O(T) \u2013 each test case needs only a few arithmetic operations and a count of trailing zeros.",
+    "spaceComplexity": "O(1) \u2013 only a few variables are used per test case.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic inline int countTrailingZeros(uint64_t n) {\n    int cnt = 0;\n    while ((n & 1ULL) == 0ULL) {\n        n >>= 1;\n        ++cnt;\n    }\n    return cnt;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t N;\n        scanf(\"%llu\", &N);\n        if (N == 1) {\n            printf(\"0\\n\");\n            continue;\n        }\n        if (N & 1ULL) {\n            printf(\"1\\n\");\n            continue;\n        }\n        int v2 = countTrailingZeros(N);\n        if (v2 % 2 == 1) {\n            printf(\"-1\\n\");\n            continue;\n        }\n        uint64_t oddPart = N >> v2;\n        if (oddPart == 1ULL) {\n            printf(\"1\\n\");\n        } else {\n            printf(\"2\\n\");\n        }\n    }\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        unsigned long long N; cin>>N;\n        if(N==1){ cout<<0<<\"\\n\"; continue; }\n        if(N&1ULL){ cout<<1<<\"\\n\"; continue; }\n        int v2 = __builtin_ctzll(N);\n        if(v2%2==1){ cout<<-1<<\"\\n\"; continue; }\n        unsigned long long odd = N>>v2;\n        if(odd==1ULL) cout<<1<<\"\\n\"; else cout<<2<<\"\\n\";\n    }\n    return 0;\n}\n",

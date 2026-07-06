@@ -20,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Let's now implement dynamic programming to solve this problem.\n\nYou have a knapsack that can take upto WmaxW_{max}Wmax​ weight. \n\nGiven NNN items, ithi^{th}ith of them having the weight WiW_iWi​ and value ViV_iVi​. You can pick some or all the items completely so that their weight does not exceed WmaxW_{max}Wmax​. \n\nYour task is to maximise the total value of the items you will carry in your bag.\n\nNote that you cannot take any item in fractions; that is, you either pick it or don't.\n\n\nInput Format\n\nThe first line contains a two integer NNN and WmaxW_{max}Wmax​, denoting the length of array AAA and the maximum weight you can carry.\nNext NNN lines contains the description of the items.\n\nithi^{th}ith line contains two integers WiW_iWi​ and ViV_iVi​, denoting the Weight and Value of the ithi^{th}ith item\n\n\n\n\nOutput Format\nOutput the maximum value you can carry while not exceeding the weight limit of the knapsack.",
+    "problemStatement": "Let's now implement dynamic programming to solve this problem.\n\nYou have a knapsack that can take upto WmaxW_{max}Wmax\u200b weight. \n\nGiven NNN items, ithi^{th}ith of them having the weight WiW_iWi\u200b and value ViV_iVi\u200b. You can pick some or all the items completely so that their weight does not exceed WmaxW_{max}Wmax\u200b. \n\nYour task is to maximise the total value of the items you will carry in your bag.\n\nNote that you cannot take any item in fractions; that is, you either pick it or don't.\n\n\nInput Format\n\nThe first line contains a two integer NNN and WmaxW_{max}Wmax\u200b, denoting the length of array AAA and the maximum weight you can carry.\nNext NNN lines contains the description of the items.\n\nithi^{th}ith line contains two integers WiW_iWi\u200b and ViV_iVi\u200b, denoting the Weight and Value of the ithi^{th}ith item\n\n\n\n\nOutput Format\nOutput the maximum value you can carry while not exceeding the weight limit of the knapsack.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 1000",
@@ -34,7 +34,7 @@
         "id": "sample_1",
         "input": "1\n6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2",
         "output": "17",
-        "explanation": "Choosing items with (weight, value) (5,6), (6,6) and (3,5) gives total weight 14 ≤ 15 and total value 17, which is optimal."
+        "explanation": "Choosing items with (weight, value) (5,6), (6,6) and (3,5) gives total weight 14 \u2264 15 and total value 17, which is optimal."
       },
       {
         "id": "sample_2",
@@ -116,7 +116,7 @@
   "solution": {
     "approach": "The problem is a classic example of the 0/1 Knapsack Problem, which can be solved using dynamic programming. The idea is to build a 2D table where each cell [i][w] represents the maximum value that can be obtained with i items and a maximum weight of w. The final answer will be stored in the last cell of the table.",
     "timeComplexity": "O(T * N * Wmax) per test case, O(T * N * Wmax) total.",
-    "spaceComplexity": "O(Wmax) — the dominant structure is the dp array of size Wmax + 1.",
+    "spaceComplexity": "O(Wmax) \u2014 the dominant structure is the dp array of size Wmax + 1.",
     "code": {
       "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N, Wmax;\n        scanf(\"%d %d\", &N, &Wmax);\n        int W[1001];\n        int V[1001];\n        for (int i = 0; i < N; ++i) {\n            scanf(\"%d %d\", &W[i], &V[i]);\n        }\n        int dp[1001] = {0};\n        for (int i = 0; i < N; ++i) {\n            int wi = W[i];\n            int vi = V[i];\n            for (int w = Wmax; w >= wi; --w) {\n                int cand = dp[w - wi] + vi;\n                if (cand > dp[w]) dp[w] = cand;\n            }\n        }\n        printf(\"%d\\n\", dp[Wmax]);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        int N, Wmax;\n        cin >> N >> Wmax;\n        vector<int> W(N), V(N);\n        for (int i = 0; i < N; ++i) cin >> W[i] >> V[i];\n        vector<int> dp(Wmax + 1, 0);\n        for (int i = 0; i < N; ++i) {\n            int wi = W[i], vi = V[i];\n            for (int w = Wmax; w >= wi; --w) {\n                dp[w] = max(dp[w], dp[w - wi] + vi);\n            }\n        }\n        cout << dp[Wmax] << '\\n';\n    }\n    return 0;\n}",

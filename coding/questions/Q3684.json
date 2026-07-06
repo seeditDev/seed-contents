@@ -6,11 +6,12 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Tree Traversal",
+      "Graphs",
       "Bit Manipulation"
     ],
     "companyTags": [],
@@ -21,9 +22,9 @@
   "content": {
     "problemStatement": "You have a perfect binary tree of height **N**. That is, it contains 2**N**+1 - 1 nodes.\n\nA path from the root to a leaf can be represented by an integer **X** which lies between 0 and 2**N** - 1 (both inclusive) as follows:\n\nConsider the **N** length binary representation of **X**. Start reading from the left, and at each bit, 0 denotes going to the left child, and 1 denotes going to the right child. For eg. if **N** = 2, and **X** = 0 = (00)2, it would correspond to the path which goes to the leftmost leaf. **X** = 3 = (11)2 would correspond to the path from root to the rightmost leaf.\n\nAt the beginning, **X** = 0, and you have visited only the root till now. Then, you get **Q** queries. A query can be of two types:\n\n\nType 1: \"! **C**\": This means that **X** has to be changed to **X** = ( **X** + 2**C** ) mod 2**N**, and then you start from the root, and walk down the route represented by the new **X**.\nType 2: \"?\": This means that you should print the number of nodes that you have visited at least once.",
     "constraints": [
-      "1 ≤ T ≤ 10",
-      "1 ≤ N, Q ≤ 10^5",
-      "0 ≤ C < N",
+      "1 \u2264 T \u2264 10",
+      "1 \u2264 N, Q \u2264 10^5",
+      "0 \u2264 C < N",
       "The sum of N over all testcases does not exceed 10^5",
       "The sum of Q over all testcases does not exceed 10^5"
     ],
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a set to keep track of the visited nodes. For each query of Type 1, we update the current path by adding 2^C to the current path and taking the modulus with 2^N. Then, we traverse the tree according to the new path and add the visited nodes to the set. For each query of Type 2, we simply print the size of the set.",
-    "timeComplexity": "O(Q * N) — because for each query, we may need to traverse the tree of height N",
-    "spaceComplexity": "O(Q * N) — because in the worst case, we may need to store all the nodes in the set",
+    "timeComplexity": "O(Q * N) \u2014 because for each query, we may need to traverse the tree of height N",
+    "spaceComplexity": "O(Q * N) \u2014 because in the worst case, we may need to store all the nodes in the set",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, Q;\n        scanf(\"%d %d\", &N, &Q);\n        int X = 0;\n        int visited = 1;\n        while (Q--) {\n            char query[10];\n            scanf(\"%s\", query);\n            if (query[0] == '!') {\n                int C;\n                scanf(\"%d\", &C);\n                X = (X + (1 << C)) % (1 << N);\n                visited++;\n                for (int i = 0; i < N - 1; i++) {\n                    if (X & (1 << (N - i - 1))) {\n                        visited++;\n                    }\n                }\n            } else {\n                printf(\"%d\\n\", visited);\n            }\n        }\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <set>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, Q;\n        cin >> N >> Q;\n        int X = 0;\n        set<int> visited;\n        visited.insert(0);\n        while (Q--) {\n            string query;\n            cin >> query;\n            if (query[0] == '!') {\n                int C;\n                cin >> C;\n                X = (X + (1 << C)) % (1 << N);\n                int node = 0;\n                for (int i = 0; i < N; i++) {\n                    visited.insert(node);\n                    if (X & (1 << (N - i - 1))) {\n                        node = node * 2 + 2;\n                    } else {\n                        node = node * 2 + 1;\n                    }\n                }\n            } else {\n                cout << visited.size() << endl;\n            }\n        }\n    }\n    return 0;\n}",

@@ -6,13 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-05",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Sieve of Eratosthenes",
+      "Prime Numbers",
       "Two Pointers",
-      "Prime Numbers"
+      "Math",
+      "Sieve of Eratosthenes"
     ],
     "companyTags": [],
     "topicTags": [
@@ -33,7 +34,7 @@
         "id": "sample_1",
         "input": "3\n7\n19\n11",
         "output": "YES\nYES\nNO",
-        "explanation": "7 = 2 + 5 (both prime) → YES. 19 = 2 + 17 → YES. 11 cannot be written as sum of two primes → NO."
+        "explanation": "7 = 2 + 5 (both prime) \u2192 YES. 19 = 2 + 17 \u2192 YES. 11 cannot be written as sum of two primes \u2192 NO."
       },
       {
         "id": "sample_2",
@@ -113,8 +114,8 @@
     ]
   },
   "solution": {
-    "approach": "Pre‑compute primality of all numbers up to the maximum N among the test cases using the Sieve of Eratosthenes (O(M log log M) time, O(M) memory, where M = max N). For each query N, iterate p from 2 to N/2 and check if both p and N‑p are prime using the pre‑computed table. If such a pair exists, answer YES, otherwise NO. The loop stops early when a valid pair is found, giving an average case much faster than the worst‑case O(N) per query.",
-    "timeComplexity": "Sieve: O(M log log M) once. For each test case: O(N) in the worst case (checking up to N/2). Total: O(M log log M + Σ N_i).",
+    "approach": "Pre\u2011compute primality of all numbers up to the maximum N among the test cases using the Sieve of Eratosthenes (O(M log log M) time, O(M) memory, where M = max N). For each query N, iterate p from 2 to N/2 and check if both p and N\u2011p are prime using the pre\u2011computed table. If such a pair exists, answer YES, otherwise NO. The loop stops early when a valid pair is found, giving an average case much faster than the worst\u2011case O(N) per query.",
+    "timeComplexity": "Sieve: O(M log log M) once. For each test case: O(N) in the worst case (checking up to N/2). Total: O(M log log M + \u03a3 N_i).",
     "spaceComplexity": "O(M) for the boolean prime table.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdbool.h>\n#include <stdlib.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    int Ns[100]; // T <= 100 as per constraints\n    int maxN = 0;\n    for (int i = 0; i < T; ++i) {\n        scanf(\"%d\", &Ns[i]);\n        if (Ns[i] > maxN) maxN = Ns[i];\n    }\n    if (maxN < 2) maxN = 2;\n    bool *isPrime = (bool *)malloc((maxN + 1) * sizeof(bool));\n    for (int i = 0; i <= maxN; ++i) isPrime[i] = true;\n    isPrime[0] = isPrime[1] = false;\n    for (int i = 2; i * i <= maxN; ++i) {\n        if (isPrime[i]) {\n            for (int j = i * i; j <= maxN; j += i) isPrime[j] = false;\n        }\n    }\n    for (int i = 0; i < T; ++i) {\n        int N = Ns[i];\n        int ok = 0;\n        for (int p = 2; p <= N / 2; ++p) {\n            if (isPrime[p] && isPrime[N - p]) { ok = 1; break; }\n        }\n        printf(\"%s\\n\", ok ? \"YES\" : \"NO\");\n    }\n    free(isPrime);\n    return 0;\n}",

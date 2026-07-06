@@ -10,10 +10,11 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Number Theory",
-      "Modular Exponentiation",
       "Floating Point",
-      "Logarithms"
+      "Math",
+      "Logarithms",
+      "Modular Exponentiation",
+      "Number Theory"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,19 +24,19 @@
   "content": {
     "problemStatement": "Johnny was asked by his math teacher to compute nn (n to the power of n, where n is an integer), and has to read his answer out loud. This is a bit of a tiring task, since the result is probably an extremely large number, and would certainly keep Johnny occupied for a while if he were to do it honestly. But Johnny knows that the teacher will certainly get bored when listening to his answer, and will sleep through most of it! So, Johnny feels he will get away with reading only the first k digits of the result before the teacher falls asleep, and then the last k digits when the teacher wakes up.\n\n\nWrite a program to help Johnny to compute the digits he will need to read out.",
     "constraints": [
-      "1 ≤ t ≤ 30000",
-      "1 ≤ n ≤ 10^9",
-      "1 ≤ k ≤ 9",
-      "k ≤ number of digits of n^n"
+      "1 \u2264 t \u2264 30000",
+      "1 \u2264 n \u2264 10^9",
+      "1 \u2264 k \u2264 9",
+      "k \u2264 number of digits of n^n"
     ],
-    "inputFormat": "The first line contains an integer t (1 ≤ t ≤ 30000), the number of test cases. Each of the next t lines contains two integers n and k (1 ≤ n ≤ 10^9, 1 ≤ k ≤ 9). It is guaranteed that k does not exceed the number of decimal digits of n^n.",
+    "inputFormat": "The first line contains an integer t (1 \u2264 t \u2264 30000), the number of test cases. Each of the next t lines contains two integers n and k (1 \u2264 n \u2264 10^9, 1 \u2264 k \u2264 9). It is guaranteed that k does not exceed the number of decimal digits of n^n.",
     "outputFormat": "For each test case output a line with two numbers separated by a single space: the first k digits of n^n and the last k digits of n^n. The last k digits must be printed with leading zeros if necessary.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "2\n4 2\n9 3",
         "output": "25 56\n387 489",
-        "explanation": "4^4 = 256 → first 2 digits 25, last 2 digits 56. 9^9 = 387420489 → first 3 digits 387, last 3 digits 489."
+        "explanation": "4^4 = 256 \u2192 first 2 digits 25, last 2 digits 56. 9^9 = 387420489 \u2192 first 3 digits 387, last 3 digits 489."
       },
       {
         "id": "sample_2",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we need the first k decimal digits and the last k decimal digits of n^n. The last k digits are obtained by modular exponentiation: compute n^n mod 10^k using binary exponentiation with 128‑bit intermediate values (or BigInteger in Java). The first k digits are derived from the fractional part of log10(n^n) = n·log10(n). Let x = n·log10(n). Write x = ⌊x⌋ + f where 0 ≤ f < 1. Then n^n = 10^{⌊x⌋}·10^{f}. The leading k digits are floor(10^{f + k - 1}). Because k ≤ 9, double/long double precision is sufficient. Edge cases such as n = 1 are handled naturally (log10(1)=0). The algorithm runs in O(log n) per test case for the modular exponentiation and O(1) for the leading part.",
-    "timeComplexity": "O(t·log n) – binary exponentiation dominates, the logarithm computation is O(1).",
+    "approach": "For each test case we need the first k decimal digits and the last k decimal digits of n^n. The last k digits are obtained by modular exponentiation: compute n^n mod 10^k using binary exponentiation with 128\u2011bit intermediate values (or BigInteger in Java). The first k digits are derived from the fractional part of log10(n^n) = n\u00b7log10(n). Let x = n\u00b7log10(n). Write x = \u230ax\u230b + f where 0 \u2264 f < 1. Then n^n = 10^{\u230ax\u230b}\u00b710^{f}. The leading k digits are floor(10^{f + k - 1}). Because k \u2264 9, double/long double precision is sufficient. Edge cases such as n = 1 are handled naturally (log10(1)=0). The algorithm runs in O(log n) per test case for the modular exponentiation and O(1) for the leading part.",
+    "timeComplexity": "O(t\u00b7log n) \u2013 binary exponentiation dominates, the logarithm computation is O(1).",
     "spaceComplexity": "O(1) additional space per test case.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\n#include <stdint.h>\n\nstatic uint64_t modPow(uint64_t base, uint64_t exp, uint64_t mod) {\n    __uint128_t result = 1;\n    __uint128_t b = base % mod;\n    while (exp) {\n        if (exp & 1) result = (result * b) % mod;\n        b = (b * b) % mod;\n        exp >>= 1;\n    }\n    return (uint64_t)result;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t n; int k;\n        scanf(\"%llu %d\", &n, &k);\n        // leading digits\n        long double x = (long double)n * log10l((long double)n);\n        long double intpart;\n        long double frac = modfl(x, &intpart);\n        long double leading_f = powl(10.0L, frac + k - 1);\n        uint64_t leading = (uint64_t)floorl(leading_f + 1e-12L);\n        // trailing digits\n        uint64_t mod = 1;\n        for (int i = 0; i < k; ++i) mod *= 10ULL;\n        uint64_t trailing = modPow(n, n, mod);\n        // print with leading zeros for trailing part\n        char fmt[32];\n        sprintf(fmt, \"%%llu %%0%dlu\\n\", k);\n        printf(fmt, leading, trailing);\n    }\n    return 0;\n}",

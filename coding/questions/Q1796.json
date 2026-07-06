@@ -10,9 +10,10 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Subset Sum",
       "DP",
-      "Combinatorics"
+      "Combinatorics",
+      "Dynamic Programming",
+      "Subset Sum"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given an array of integers and a target value KKK.\nYour task is to determine how many **distinct subsets** of the array have a total sum exactly equal to KKK.\n\nA subset can include or exclude any element of the array, but each element can be used **at most once**.\nIf the array contains duplicate values, subsets formed using different positions are considered **different**.\n\nSince the answer can be large, return the count modulo 109+710^9 + 7109+7.\n\nFunction DeclarationFunction NamecountSubsetsWithSumKcountSubsetsWithSumKcountSubsetsWithSumK – This function counts the number of subsets whose sum is exactly equal to a given target value.\n\nParameters\nnnn : The number of elements in the array.\nKKK : The target sum.\narrarrarr : An array of integers of size nnn.\nReturn Value\nReturns an integer representing the number of subsets whose sum equals KKK, taken modulo 109+710^9 + 7109+7.\nConstraints\n1≤T≤101 \\leq T \\leq 101≤T≤10\n1≤n≤1001 \\leq n \\leq 1001≤n≤100\n1≤arr[i]≤1031 \\leq arr[i] \\leq 10^31≤arr[i]≤103\n1≤K≤1031 \\leq K \\leq 10^31≤K≤103\n\nInput Format\n\n\nThe first line contains a single integer `T` — the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains two integers `n` and `K` — the size of the array and the target sum.\nThe second line contains `n` space-separated integers representing the array `arr`.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer — the number of subsets whose sum is exactly `K`.",
+    "problemStatement": "You are given an array of integers and a target value KKK.\nYour task is to determine how many **distinct subsets** of the array have a total sum exactly equal to KKK.\n\nA subset can include or exclude any element of the array, but each element can be used **at most once**.\nIf the array contains duplicate values, subsets formed using different positions are considered **different**.\n\nSince the answer can be large, return the count modulo 109+710^9 + 7109+7.\n\nFunction DeclarationFunction NamecountSubsetsWithSumKcountSubsetsWithSumKcountSubsetsWithSumK \u2013 This function counts the number of subsets whose sum is exactly equal to a given target value.\n\nParameters\nnnn : The number of elements in the array.\nKKK : The target sum.\narrarrarr : An array of integers of size nnn.\nReturn Value\nReturns an integer representing the number of subsets whose sum equals KKK, taken modulo 109+710^9 + 7109+7.\nConstraints\n1\u2264T\u2264101 \\leq T \\leq 101\u2264T\u226410\n1\u2264n\u22641001 \\leq n \\leq 1001\u2264n\u2264100\n1\u2264arr[i]\u22641031 \\leq arr[i] \\leq 10^31\u2264arr[i]\u2264103\n1\u2264K\u22641031 \\leq K \\leq 10^31\u2264K\u2264103\n\nInput Format\n\n\nThe first line contains a single integer `T` \u2014 the number of test cases.\n\n\n\n\nFor each test case:\n\n\n\nThe first line contains two integers `n` and `K` \u2014 the size of the array and the target sum.\nThe second line contains `n` space-separated integers representing the array `arr`.\n\n\n\n\nOutput Format\n\nFor each test case, print a single integer \u2014 the number of subsets whose sum is exactly `K`.",
     "constraints": [
       "1 <= T <= 10",
       "1 <= n <= 100",
       "1 <= ai <= 1000",
       "0 <= K <= 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers n and K – the size of the array and the target sum. The second line contains n space‑separated integers a1,a2,…,an.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains two integers n and K \u2013 the size of the array and the target sum. The second line contains n space\u2011separated integers a1,a2,\u2026,an.",
     "outputFormat": "For each test case output a single line containing the number of distinct subsets whose sum equals K, modulo 1000000007.",
     "sampleTestCases": [
       {
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "We use a classic 0/1 knapsack DP. dp[s] stores the number of ways to obtain sum s using the already processed elements. Initialise dp[0]=1 (empty subset). For each element x, iterate s from K down to x and update dp[s]=(dp[s]+dp[s‑x]) mod MOD. The descending loop guarantees each element is used at most once. After processing all elements, dp[K] is the answer. Time O(n·K) per test case, space O(K).",
-    "timeComplexity": "O(n·K) per test case",
+    "approach": "We use a classic 0/1 knapsack DP. dp[s] stores the number of ways to obtain sum s using the already processed elements. Initialise dp[0]=1 (empty subset). For each element x, iterate s from K down to x and update dp[s]=(dp[s]+dp[s\u2011x]) mod MOD. The descending loop guarantees each element is used at most once. After processing all elements, dp[K] is the answer. Time O(n\u00b7K) per test case, space O(K).",
+    "timeComplexity": "O(n\u00b7K) per test case",
     "spaceComplexity": "O(K)",
     "code": {
       "C": "#include <stdio.h>\n#define MOD 1000000007\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int n,K; scanf(\"%d %d\",&n,&K);\n        int a[105];\n        for(int i=0;i<n;++i) scanf(\"%d\",&a[i]);\n        long long dp[1005]={0};\n        dp[0]=1;\n        for(int i=0;i<n;++i){\n            int x=a[i];\n            for(int s=K;s>=x;--s){\n                dp[s]=(dp[s]+dp[s-x])%MOD;\n            }\n        }\n        printf(\"%lld\\n\",dp[K]);\n    }\n    return 0;\n}",

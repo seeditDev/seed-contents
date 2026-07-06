@@ -6,12 +6,13 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Minimum Cut",
       "Graph Theory",
+      "Minimum Cut",
+      "Graphs",
       "Bit Manipulation"
     ],
     "companyTags": [],
@@ -22,12 +23,12 @@
   "content": {
     "problemStatement": "Chef likes Graphs Theory a lot. Recently he learned about minimum cut. During his assignments, he found a problem which he couldn't solve. Can you please help him in solving the problem?\n\n\n\nYou are given an oriented weighted graph **G** with two chosen nodes **s** and **t**. Let's order all distinct cuts between **s** and **t** cuts between **s** and **t** by weight. You have to find the weight of **k**-th minimum cut. Two cuts (U1, V1) and (U2, V2) are said to be distinct if the U1 != U2 or V1 != V2. In total, there will be total 2^(n-2) such cuts.",
     "constraints": [
-      "2 ≤ N ≤ 77",
-      "2 ≤ M ≤ 777",
-      "2 ≤ k ≤ 777",
-      "1 ≤ s, t ≤ N",
-      "1 ≤ c ≤ 10^6",
-      "1 ≤ K ≤ 2^(n-2)"
+      "2 \u2264 N \u2264 77",
+      "2 \u2264 M \u2264 777",
+      "2 \u2264 k \u2264 777",
+      "1 \u2264 s, t \u2264 N",
+      "1 \u2264 c \u2264 10^6",
+      "1 \u2264 K \u2264 2^(n-2)"
     ],
     "inputFormat": "The first line contains three positive integers - N (number of nodes), M (number of edges), and k. The second line contains two integers - s and t. The next M lines contain information about edges: the first two integers denote nodes connected by an edge, and the third integer denotes the weight of this edge.",
     "outputFormat": "Output a single integer - the weight of the k-th minimum cut of graph G.",
@@ -111,8 +112,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a brute force approach by generating all possible cuts between nodes s and t, calculating their weights, and then sorting them to find the k-th minimum cut. We can use bit manipulation to generate all possible subsets of nodes (cuts).",
-    "timeComplexity": "O(2^(n-2) * (n + m)) — generating all possible cuts and calculating their weights",
-    "spaceComplexity": "O(2^(n-2)) — storing all possible cuts",
+    "timeComplexity": "O(2^(n-2) * (n + m)) \u2014 generating all possible cuts and calculating their weights",
+    "spaceComplexity": "O(2^(n-2)) \u2014 storing all possible cuts",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n#define MAX_N 77\n#define MAX_M 777\n#define MAX_K 777\n#define MAX_C 1000000\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int N, M, k, s, t;\n    scanf(\"%d %d %d\", &N, &M, &k);\n    scanf(\"%d %d\", &s, &t);\n    int edges[M][3];\n    for (int i = 0; i < M; i++) {\n        scanf(\"%d %d %d\", &edges[i][0], &edges[i][1], &edges[i][2]);\n    }\n    int *cuts = (int*)malloc(1 << (N - 2) * sizeof(int));\n    int cut_index = 0;\n    for (int mask = 0; mask < (1 << (N - 2)); mask++) {\n        int cut_weight = 0;\n        for (int i = 0; i < M; i++) {\n            int u = edges[i][0];\n            int v = edges[i][1];\n            int c = edges[i][2];\n            if ((u == s || (mask & (1 << (u - 2)))) && (v == t || !(mask & (1 << (v - 2))))) {\n                cut_weight += c;\n            }\n        }\n        cuts[cut_index++] = cut_weight;\n    }\n    qsort(cuts, 1 << (N - 2), sizeof(int), compare);\n    printf(\"%d\\n\", cuts[k - 1]);\n    free(cuts);\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MAX_N 77\n#define MAX_M 777\n#define MAX_K 777\n#define MAX_C 1000000\n\nint main() {\n    int N, M, k, s, t;\n    cin >> N >> M >> k;\n    cin >> s >> t;\n    int edges[M][3];\n    for (int i = 0; i < M; i++) {\n        cin >> edges[i][0] >> edges[i][1] >> edges[i][2];\n    }\n    int *cuts = new int[1 << (N - 2)];\n    int cut_index = 0;\n    for (int mask = 0; mask < (1 << (N - 2)); mask++) {\n        int cut_weight = 0;\n        for (int i = 0; i < M; i++) {\n            int u = edges[i][0];\n            int v = edges[i][1];\n            int c = edges[i][2];\n            if ((u == s || (mask & (1 << (u - 2)))) && (v == t || !(mask & (1 << (v - 2))))) {\n                cut_weight += c;\n            }\n        }\n        cuts[cut_index++] = cut_weight;\n    }\n    sort(cuts, cuts + (1 << (N - 2)));\n    cout << cuts[k - 1] << endl;\n    delete[] cuts;\n    return 0;\n}",

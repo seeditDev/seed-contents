@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Graph Theory",
+      "Graphs",
       "Biconnected Components",
-      "Probability",
-      "Graph Theory"
+      "Probability"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given a tree with NNN nodes. For each unordered pair of distinct nodes (i,j)(i, j)(i,j) such that there is no edge between nodes iii and jjj, we add an edge between these nodes with probability 1/21/21/2.\n\nFor each iii (1≤i≤N1 \\le i \\le N1≤i≤N), let pip_ipi​ be the probability that the resulting graph has exactly iii 2-edge-connected components and let Ri=pi⋅2(N−1)(N−2)/2R_i = p_i \\cdot 2^{(N-1)(N-2)/2}Ri​=pi​⋅2(N−1)(N−2)/2. You should compute RiR_iRi​ modulo 109+710^9+7109+7 for each iii from 111 to NNN.",
+    "problemStatement": "You are given a tree with NNN nodes. For each unordered pair of distinct nodes (i,j)(i, j)(i,j) such that there is no edge between nodes iii and jjj, we add an edge between these nodes with probability 1/21/21/2.\n\nFor each iii (1\u2264i\u2264N1 \\le i \\le N1\u2264i\u2264N), let pip_ipi\u200b be the probability that the resulting graph has exactly iii 2-edge-connected components and let Ri=pi\u22c52(N\u22121)(N\u22122)/2R_i = p_i \\cdot 2^{(N-1)(N-2)/2}Ri\u200b=pi\u200b\u22c52(N\u22121)(N\u22122)/2. You should compute RiR_iRi\u200b modulo 109+710^9+7109+7 for each iii from 111 to NNN.",
     "constraints": [
       "1 <= N <= 200",
       "1 <= u, v <= N",
       "u != v"
     ],
     "inputFormat": "The first line contains a single integer N. Each of the next N-1 lines contains two space-separated integers u and v denoting an edge between vertices u and v.",
-    "outputFormat": "Print a single line containing N space-separated integers R1, R2, …, RN.",
+    "outputFormat": "Print a single line containing N space-separated integers R1, R2, \u2026, RN.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -114,8 +115,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use the concept of biconnected components in a graph. We will first find all the biconnected components in the given tree. Then, for each possible number of biconnected components (from 1 to N), we will calculate the probability that the resulting graph has exactly that many biconnected components after adding edges with probability 1/2. We will use the formula for probability and the concept of independent events to calculate these probabilities.",
-    "timeComplexity": "O(N^2) — because we are iterating over all pairs of nodes to calculate the probabilities.",
-    "spaceComplexity": "O(N) — because we need to store the probabilities for each node.",
+    "timeComplexity": "O(N^2) \u2014 because we are iterating over all pairs of nodes to calculate the probabilities.",
+    "spaceComplexity": "O(N) \u2014 because we need to store the probabilities for each node.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n#define MAXN 205\n\nint N;\nint graph[MAXN][MAXN];\nint visited[MAXN];\nint low[MAXN];\nint disc[MAXN];\nint parent[MAXN];\nint time = 0;\nint bcc_count = 0;\nint bcc_id[MAXN];\n\nvoid dfs(int u) {\n    visited[u] = 1;\n    disc[u] = low[u] = time++;\n    int children = 0;\n    for (int v = 1; v <= N; v++) {\n        if (graph[u][v]) {\n            if (!visited[v]) {\n                parent[v] = u;\n                children++;\n                dfs(v);\n                low[u] = (low[u] < low[v]) ? low[u] : low[v];\n                if (low[v] >= disc[u] && parent[u] != -1) {\n                    bcc_count++;\n                    bcc_id[u] = bcc_count;\n                }\n            } else if (v != parent[u]) {\n                low[u] = (low[u] < disc[v]) ? low[u] : disc[v];\n            }\n        }\n    }\n}\n\nint main() {\n    scanf(\"%d\", &N);\n    for (int i = 1; i < N; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        graph[u][v] = graph[v][u] = 1;\n    }\n    for (int i = 1; i <= N; i++) {\n        if (!visited[i]) {\n            dfs(i);\n        }\n    }\n    long long result[N + 1];\n    for (int i = 1; i <= N; i++) {\n        result[i] = 0;\n    }\n    for (int i = 1; i <= N; i++) {\n        long long prob = 1;\n        for (int j = 1; j <= N; j++) {\n            if (i != j) {\n                prob = (prob * (1 + (graph[i][j] ? 1 : 0))) % MOD;\n            }\n        }\n        result[bcc_id[i]] = (result[bcc_id[i]] + prob) % MOD;\n    }\n    for (int i = 1; i <= N; i++) {\n        printf(\"%lld \", result[i]);\n    }\n    printf(\"\\n\");\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n#define MAXN 205\n\nint N;\nvector<int> graph[MAXN];\nint visited[MAXN];\nint low[MAXN];\nint disc[MAXN];\nint parent[MAXN];\nint time = 0;\nint bcc_count = 0;\nint bcc_id[MAXN];\n\nvoid dfs(int u) {\n    visited[u] = 1;\n    disc[u] = low[u] = time++;\n    int children = 0;\n    for (int v : graph[u]) {\n        if (!visited[v]) {\n            parent[v] = u;\n            children++;\n            dfs(v);\n            low[u] = (low[u] < low[v]) ? low[u] : low[v];\n            if (low[v] >= disc[u] && parent[u] != -1) {\n                bcc_count++;\n                bcc_id[u] = bcc_count;\n            }\n        } else if (v != parent[u]) {\n            low[u] = (low[u] < disc[v]) ? low[u] : disc[v];\n        }\n    }\n}\n\nint main() {\n    cin >> N;\n    for (int i = 1; i < N; i++) {\n        int u, v;\n        cin >> u >> v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    for (int i = 1; i <= N; i++) {\n        if (!visited[i]) {\n            dfs(i);\n        }\n    }\n    long long result[N + 1];\n    for (int i = 1; i <= N; i++) {\n        result[i] = 0;\n    }\n    for (int i = 1; i <= N; i++) {\n        long long prob = 1;\n        for (int j = 1; j <= N; j++) {\n            if (i != j) {\n                prob = (prob * (1 + (find(graph[i].begin(), graph[i].end(), j) != graph[i].end() ? 1 : 0))) % MOD;\n            }\n        }\n        result[bcc_id[i]] = (result[bcc_id[i]] + prob) % MOD;\n    }\n    for (int i = 1; i <= N; i++) {\n        cout << result[i] << \" \";\n    }\n    cout << endl;\n    return 0;\n}",

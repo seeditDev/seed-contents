@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Subsequences",
       "Median",
-      "Modular Arithmetic"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,14 +21,14 @@
     ]
   },
   "content": {
-    "problemStatement": "Raja only participates in contests and does not upsolve, but he claims that he has been upsolving. Chef wants to test if he is really improving, so he asks Raja to solve the following problem.\n\nThe median of a sequence of numbers is computed in the following way:\n\n\nsort the sequence in non-decreasing order\nif the number of elements of this sequence is odd, the median is its middle element\nif the number of elements is even, the median is the average (arithmetic mean) of its two middle elements\nFor example, the median of [1,3,2][1, 3, 2][1,3,2] is 222 and the median of [2,3,3,2][2, 3, 3, 2][2,3,3,2] is (2+3)/2=5/2(2+3)/2 = 5/2(2+3)/2=5/2.\n\nYou are given a sequence A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​. Let's call a subsequence Ai1,Ai2,…,AikA_{i_1}, A_{i_2}, \\dots, A_{i_k}Ai1​​,Ai2​​,…,Aik​​ (for any k&gt;0k \\gt 0k&gt;0, 1≤i1&lt;i2&lt;…&lt;ik≤N1 \\le i_1 \\lt i_2 \\lt \\ldots \\lt i_k \\le N1≤i1​&lt;i2​&lt;…&lt;ik​≤N) good if the median of this subsequence is an element of this subsequence. Find the number of good subsequences. Since this number may be large, compute it modulo 100000000710000000071000000007 (109+710^9+7109+7).",
+    "problemStatement": "Raja only participates in contests and does not upsolve, but he claims that he has been upsolving. Chef wants to test if he is really improving, so he asks Raja to solve the following problem.\n\nThe median of a sequence of numbers is computed in the following way:\n\n\nsort the sequence in non-decreasing order\nif the number of elements of this sequence is odd, the median is its middle element\nif the number of elements is even, the median is the average (arithmetic mean) of its two middle elements\nFor example, the median of [1,3,2][1, 3, 2][1,3,2] is 222 and the median of [2,3,3,2][2, 3, 3, 2][2,3,3,2] is (2+3)/2=5/2(2+3)/2 = 5/2(2+3)/2=5/2.\n\nYou are given a sequence A1,A2,\u2026,ANA_1, A_2, \\dots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. Let's call a subsequence Ai1,Ai2,\u2026,AikA_{i_1}, A_{i_2}, \\dots, A_{i_k}Ai1\u200b\u200b,Ai2\u200b\u200b,\u2026,Aik\u200b\u200b (for any k&gt;0k \\gt 0k&gt;0, 1\u2264i1&lt;i2&lt;\u2026&lt;ik\u2264N1 \\le i_1 \\lt i_2 \\lt \\ldots \\lt i_k \\le N1\u2264i1\u200b&lt;i2\u200b&lt;\u2026&lt;ik\u200b\u2264N) good if the median of this subsequence is an element of this subsequence. Find the number of good subsequences. Since this number may be large, compute it modulo 100000000710000000071000000007 (109+710^9+7109+7).",
     "constraints": [
-      "1 ≤ T ≤ 30",
-      "1 ≤ N ≤ 1000",
-      "1 ≤ Ai ≤ 2N for each valid i"
+      "1 \u2264 T \u2264 30",
+      "1 \u2264 N \u2264 1000",
+      "1 \u2264 Ai \u2264 2N for each valid i"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, …, AN.",
-    "outputFormat": "For each test case, print a single line containing one integer — the number of good subsequences modulo 10^9 + 7.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains a single integer N. The second line contains N space-separated integers A1, A2, \u2026, AN.",
+    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of good subsequences modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -108,8 +109,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We will generate all possible subsequences of the given sequence and check if the median of each subsequence is an element of the subsequence. We will use a modular arithmetic approach to handle large numbers.",
-    "timeComplexity": "O(2^N * N) — because we are generating all possible subsequences and calculating the median for each subsequence",
-    "spaceComplexity": "O(2^N) — because we need to store all possible subsequences",
+    "timeComplexity": "O(2^N * N) \u2014 because we are generating all possible subsequences and calculating the median for each subsequence",
+    "spaceComplexity": "O(2^N) \u2014 because we need to store all possible subsequences",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        qsort(A, N, sizeof(int), compare);\n        long long count = 0;\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int sub[N];\n            int size = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    sub[size++] = A[i];\n                }\n            }\n            int median;\n            if (size % 2 == 1) {\n                median = sub[size / 2];\n            } else {\n                median = (sub[size / 2 - 1] + sub[size / 2]) / 2;\n            }\n            int found = 0;\n            for (int i = 0; i < size; i++) {\n                if (sub[i] == median) {\n                    found = 1;\n                    break;\n                }\n            }\n            if (found) {\n                count++;\n            }\n        }\n        printf(\"%lld\\n\", count % MOD);\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int A[N];\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        sort(A, A + N);\n        long long count = 0;\n        for (int mask = 1; mask < (1 << N); mask++) {\n            int sub[N];\n            int size = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) {\n                    sub[size++] = A[i];\n                }\n            }\n            int median;\n            if (size % 2 == 1) {\n                median = sub[size / 2];\n            } else {\n                median = (sub[size / 2 - 1] + sub[size / 2]) / 2;\n            }\n            int found = 0;\n            for (int i = 0; i < size; i++) {\n                if (sub[i] == median) {\n                    found = 1;\n                    break;\n                }\n            }\n            if (found) {\n                count++;\n            }\n        }\n        cout << (count % MOD) << endl;\n    }\n    return 0;\n}",

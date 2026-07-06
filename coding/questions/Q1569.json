@@ -10,10 +10,11 @@
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "KMP",
       "Prefix Function",
-      "Border",
-      "String Matching"
+      "KMP",
+      "Strings",
+      "String Matching",
+      "Border"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,20 +22,20 @@
     ]
   },
   "content": {
-    "problemStatement": "A string is called a **happy prefix** if it is a non-empty prefix which is also a suffix of the string (excluding the string itself).\n\nGiven a string s, your task is to find the **longest happy prefix** of sss. If no such prefix exists, print an empty string.\n\nFunction DeclarationFunction NamelongestHappyPrefixlongestHappyPrefixlongestHappyPrefix – This function finds the longest prefix of a string that is also its suffix.\n\nParameters\nsss : A string consisting of lowercase English letters.\nReturn Value\nReturns a string — the **longest happy prefix**.\nReturns an **empty string** if no happy prefix exists.\nConstraints\n1≤T≤1001 \\leq T \\leq 1001≤T≤100\n1≤∣s∣≤1051 \\leq |s| \\leq 10^51≤∣s∣≤105\nsss contains only lowercase English letters\n\nInput Format\nThe first line contains an integer TTT — the number of test cases.\n\n\nEach of the next TTT lines contains a string sss consisting of lowercase English letters.\n\n\n\nOutput Format\n\nFor each test case, print a single line containing the **longest happy prefix**.\nIf no such prefix exists, print an **empty line**.",
+    "problemStatement": "A string is called a **happy prefix** if it is a non-empty prefix which is also a suffix of the string (excluding the string itself).\n\nGiven a string s, your task is to find the **longest happy prefix** of sss. If no such prefix exists, print an empty string.\n\nFunction DeclarationFunction NamelongestHappyPrefixlongestHappyPrefixlongestHappyPrefix \u2013 This function finds the longest prefix of a string that is also its suffix.\n\nParameters\nsss : A string consisting of lowercase English letters.\nReturn Value\nReturns a string \u2014 the **longest happy prefix**.\nReturns an **empty string** if no happy prefix exists.\nConstraints\n1\u2264T\u22641001 \\leq T \\leq 1001\u2264T\u2264100\n1\u2264\u2223s\u2223\u22641051 \\leq |s| \\leq 10^51\u2264\u2223s\u2223\u2264105\nsss contains only lowercase English letters\n\nInput Format\nThe first line contains an integer TTT \u2014 the number of test cases.\n\n\nEach of the next TTT lines contains a string sss consisting of lowercase English letters.\n\n\n\nOutput Format\n\nFor each test case, print a single line containing the **longest happy prefix**.\nIf no such prefix exists, print an **empty line**.",
     "constraints": [
-      "1 ≤ T ≤ 100",
-      "1 ≤ |s| ≤ 10^5",
+      "1 \u2264 T \u2264 100",
+      "1 \u2264 |s| \u2264 10^5",
       "s contains only lowercase English letters"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100) – the number of test cases. Each of the next T lines contains a non‑empty string s consisting only of lowercase English letters (1 ≤ |s| ≤ 10^5).",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 100) \u2013 the number of test cases. Each of the next T lines contains a non\u2011empty string s consisting only of lowercase English letters (1 \u2264 |s| \u2264 10^5).",
     "outputFormat": "For each test case output a single line containing the longest happy prefix of s. If no such prefix exists, output an empty line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\nababab\naaaa\nabcd",
         "output": "abab\naaa\n",
-        "explanation": "Test case 1: \"ababab\" has \"abab\" as the longest prefix that is also a suffix.\\nTest case 2: \"aaaa\" has \"aaa\" as the longest happy prefix.\\nTest case 3: \"abcd\" has no non‑empty border, so an empty line is printed."
+        "explanation": "Test case 1: \"ababab\" has \"abab\" as the longest prefix that is also a suffix.\\nTest case 2: \"aaaa\" has \"aaa\" as the longest happy prefix.\\nTest case 3: \"abcd\" has no non\u2011empty border, so an empty line is printed."
       },
       {
         "id": "sample_2",
@@ -114,8 +115,8 @@
     ]
   },
   "solution": {
-    "approach": "For each string we compute the prefix function (also called the failure function) used in the KMP algorithm. The value of the prefix function at the last position gives the length of the longest proper prefix which is also a suffix – exactly the longest happy prefix. The algorithm scans the string once, updating the current matched length using previously computed values, achieving O(|s|) time and O(|s|) auxiliary space.",
-    "timeComplexity": "O(|s|) per test case, total O(∑|s|) over all test cases.",
+    "approach": "For each string we compute the prefix function (also called the failure function) used in the KMP algorithm. The value of the prefix function at the last position gives the length of the longest proper prefix which is also a suffix \u2013 exactly the longest happy prefix. The algorithm scans the string once, updating the current matched length using previously computed values, achieving O(|s|) time and O(|s|) auxiliary space.",
+    "timeComplexity": "O(|s|) per test case, total O(\u2211|s|) over all test cases.",
     "spaceComplexity": "O(|s|) auxiliary array for the prefix function.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nint main(){\n    int T;\n    if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        char s[100005];\n        scanf(\"%s\", s);\n        int n = strlen(s);\n        int *lps = (int*)calloc(n, sizeof(int));\n        int len = 0;\n        for(int i=1;i<n;){\n            if(s[i]==s[len]){ len++; lps[i]=len; i++; }\n            else if(len!=0){ len = lps[len-1]; }\n            else{ lps[i]=0; i++; }\n        }\n        int happy = lps[n-1];\n        for(int i=0;i<happy;i++) putchar(s[i]);\n        putchar('\\n');\n        free(lps);\n    }\n    return 0;\n}",

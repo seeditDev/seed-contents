@@ -6,11 +6,12 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Vertex Cover",
+      "Graphs",
       "Bit Manipulation"
     ],
     "companyTags": [],
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "The problem can be solved by constructing a graph where each gangster is a node, and two nodes are connected if the corresponding gangsters are friends. Then, we need to find the minimum vertex cover of the graph, which is the minimum number of nodes that need to be selected such that every edge in the graph is incident to at least one of the selected nodes. This can be done using bit manipulation to generate all possible subsets of nodes and checking if each subset is a vertex cover.",
     "timeComplexity": "O(2^N * N^2) per test case, O(T * 2^N * N^2) total.",
-    "spaceComplexity": "O(N^2) — for the graph adjacency matrix.",
+    "spaceComplexity": "O(N^2) \u2014 for the graph adjacency matrix.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define MAX_N 200\n#define MAX_T 100\n\nint compare(const void *a, const void *b) {\n    int *x = (int *)a;\n    int *y = (int *)b;\n    if (x[0] < y[0]) return -1;\n    if (x[0] > y[0]) return 1;\n    return 0;\n}\n\nint main() {\n    int T, N, X;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &X);\n        int Si[N], Ei[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d %d\", &Si[i], &Ei[i]);\n        }\n        int graph[N][N] = {{0}};\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j < N; j++) {\n                if (Si[i] <= Ei[j] && Si[j] <= Ei[i]) {\n                    graph[i][j] = graph[j][i] = 1;\n                }\n            }\n        }\n        int min_vertex_cover = N;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int cover = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) cover++;\n            }\n            int is_valid = 1;\n            for (int i = 0; i < N; i++) {\n                for (int j = i + 1; j < N; j++) {\n                    if (graph[i][j] == 1 && (mask & (1 << i)) == 0 && (mask & (1 << j)) == 0) {\n                        is_valid = 0;\n                        break;\n                    }\n                }\n                if (is_valid == 0) break;\n            }\n            if (is_valid == 1 && cover < min_vertex_cover) {\n                min_vertex_cover = cover;\n            }\n        }\n        printf(\"%d\\n\", min_vertex_cover);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, X;\n        cin >> N >> X;\n        vector<pair<int, int>> times(N);\n        for (int i = 0; i < N; i++) {\n            cin >> times[i].first >> times[i].second;\n        }\n        vector<vector<int>> graph(N, vector<int>(N, 0));\n        for (int i = 0; i < N; i++) {\n            for (int j = i + 1; j < N; j++) {\n                if (times[i].first <= times[j].second && times[j].first <= times[i].second) {\n                    graph[i][j] = graph[j][i] = 1;\n                }\n            }\n        }\n        int min_vertex_cover = N;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int cover = 0;\n            for (int i = 0; i < N; i++) {\n                if ((mask & (1 << i)) != 0) cover++;\n            }\n            int is_valid = 1;\n            for (int i = 0; i < N; i++) {\n                for (int j = i + 1; j < N; j++) {\n                    if (graph[i][j] == 1 && (mask & (1 << i)) == 0 && (mask & (1 << j)) == 0) {\n                        is_valid = 0;\n                        break;\n                    }\n                }\n                if (is_valid == 0) break;\n            }\n            if (is_valid == 1 && cover < min_vertex_cover) {\n                min_vertex_cover = cover;\n            }\n        }\n        cout << min_vertex_cover << endl;\n    }\n    return 0;\n}",

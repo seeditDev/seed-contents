@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Bit Manipulation",
-      "Subset Generation"
+      "Subset Generation",
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -114,7 +115,7 @@
   "solution": {
     "approach": "The problem can be solved by generating all possible subsets of the given cards and then calculating the score for each subset. The score is calculated by comparing the number of cards of each color in the subset with the number of cards of the same color not in the subset. If the number of cards in the subset is greater, Little Elephant scores the difference; otherwise, Big Hippo scores the difference. The total score for each subset is then calculated, and the number of subsets with a positive score is counted.",
     "timeComplexity": "O(T * 2^N * 1000) per test case, O(T * 2^N * 1000) total.",
-    "spaceComplexity": "O(N + 1000) — for storing the input and the frequency of each color.",
+    "spaceComplexity": "O(N + 1000) \u2014 for storing the input and the frequency of each color.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int C[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &C[i]);\n        }\n        int freq[1001] = {0};\n        for (int i = 0; i < N; i++) {\n            freq[C[i]]++;\n        }\n        long long ans = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int score = 0;\n            for (int i = 1; i <= 1000; i++) {\n                int a = 0, b = freq[i];\n                for (int j = 0; j < N; j++) {\n                    if ((mask & (1 << j)) && C[j] == i) {\n                        a++;\n                        b--;\n                    }\n                }\n                if (a > b) {\n                    score += a - b;\n                } else {\n                    score -= abs(a - b);\n                }\n            }\n            if (score > 0) {\n                ans++;\n            }\n        }\n        printf(\"%lld\\n\", ans % MOD);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        vector<int> C(N);\n        for (int i = 0; i < N; i++) {\n            cin >> C[i];\n        }\n        vector<int> freq(1001, 0);\n        for (int i = 0; i < N; i++) {\n            freq[C[i]]++;\n        }\n        long long ans = 0;\n        for (int mask = 0; mask < (1 << N); mask++) {\n            int score = 0;\n            for (int i = 1; i <= 1000; i++) {\n                int a = 0, b = freq[i];\n                for (int j = 0; j < N; j++) {\n                    if ((mask & (1 << j)) && C[j] == i) {\n                        a++;\n                        b--;\n                    }\n                }\n                if (a > b) {\n                    score += a - b;\n                } else {\n                    score -= abs(a - b);\n                }\n            }\n            if (score > 0) {\n                ans++;\n            }\n        }\n        cout << ans % MOD << endl;\n    }\n    return 0;\n}",

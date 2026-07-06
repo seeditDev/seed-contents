@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Combinatorics | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Binomial Coefficients",
-      "Modular Arithmetic",
       "Exponentiation",
-      "Paths in Grid"
+      "Modular Arithmetic",
+      "Paths in Grid",
+      "Dynamic Programming",
+      "Binomial Coefficients"
     ],
     "companyTags": [],
     "topicTags": [
@@ -27,13 +28,13 @@
       "1 <= N, M <= 1000"
     ],
     "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers N and M denoting the number of rows and columns of the grid.",
-    "outputFormat": "For each test case output a single line containing the sum of scores of all possible colourings of an N×M grid, modulo 998244353.",
+    "outputFormat": "For each test case output a single line containing the sum of scores of all possible colourings of an N\u00d7M grid, modulo 998244353.",
     "sampleTestCases": [
       {
         "id": "sample_1",
         "input": "3\n1 1\n1 2\n2 3",
         "output": "0\n2\n72",
-        "explanation": "Explanation:\nTest case 111: There are 222 possible coloured grids of size 1×11 \\times 11×1. In the first grid, the one and only cell is colored RED. In the second grid, the one and only cell is colored GREEN. Neither of the grids have a valid path with equal number of red and green cells. Thus, score of each grid is 000.\nTest case 222: There are 444 possible coloured grids of the given dimension:\n\nFor grids 111 and 444, the scores are 000 as there are no valid paths with equal red and green cells. Grids 222 and 333 have score 111 each. The valid path with equal red and green cells is (1,1)→(1,2)(1,1) \\rightarrow (1,2)(1,1)→(1,2) in both the grids.\nThus, the sum of scores of all possible coloured grids is 222."
+        "explanation": "Explanation:\nTest case 111: There are 222 possible coloured grids of size 1\u00d711 \\times 11\u00d71. In the first grid, the one and only cell is colored RED. In the second grid, the one and only cell is colored GREEN. Neither of the grids have a valid path with equal number of red and green cells. Thus, score of each grid is 000.\nTest case 222: There are 444 possible coloured grids of the given dimension:\n\nFor grids 111 and 444, the scores are 000 as there are no valid paths with equal red and green cells. Grids 222 and 333 have score 111 each. The valid path with equal red and green cells is (1,1)\u2192(1,2)(1,1) \\rightarrow (1,2)(1,1)\u2192(1,2) in both the grids.\nThus, the sum of scores of all possible coloured grids is 222."
       }
     ]
   },
@@ -101,9 +102,9 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed path of length L = N+M-1 cells, the number of colourings that give equal numbers of RED and GREEN on that path is zero if L is odd, otherwise C(L, L/2). The remaining cells (N*M-L of them) can be coloured arbitrarily, giving a factor 2^{N*M-L}. All paths have the same length, and the number of paths from (1,1) to (N,M) moving only right or down is C(N+M-2, N-1). Hence the required sum is:\n\nIf (N+M-1) is odd: answer = 0.\nOtherwise: answer = C(N+M-2, N-1) * C(N+M-1, (N+M-1)/2) * 2^{N*M-(N+M-1)} (mod MOD).\n\nWe pre‑compute factorials and inverse factorials up to 2000 (the maximum possible N+M) to obtain binomial coefficients in O(1). Power of two is computed with fast exponentiation. The overall complexity per test case is O(log MOD).",
-    "timeComplexity": "O(T * log MOD) – each test case needs a modular exponentiation.",
-    "spaceComplexity": "O(MAX) where MAX ≈ 2000 for factorial tables.",
+    "approach": "For a fixed path of length L = N+M-1 cells, the number of colourings that give equal numbers of RED and GREEN on that path is zero if L is odd, otherwise C(L, L/2). The remaining cells (N*M-L of them) can be coloured arbitrarily, giving a factor 2^{N*M-L}. All paths have the same length, and the number of paths from (1,1) to (N,M) moving only right or down is C(N+M-2, N-1). Hence the required sum is:\n\nIf (N+M-1) is odd: answer = 0.\nOtherwise: answer = C(N+M-2, N-1) * C(N+M-1, (N+M-1)/2) * 2^{N*M-(N+M-1)} (mod MOD).\n\nWe pre\u2011compute factorials and inverse factorials up to 2000 (the maximum possible N+M) to obtain binomial coefficients in O(1). Power of two is computed with fast exponentiation. The overall complexity per test case is O(log MOD).",
+    "timeComplexity": "O(T * log MOD) \u2013 each test case needs a modular exponentiation.",
+    "spaceComplexity": "O(MAX) where MAX \u2248 2000 for factorial tables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\nconst int MOD = 998244353;\nlong long modpow(long long a, long long e){\n    long long r=1;\n    while(e){\n        if(e&1) r=r*a%MOD;\n        a=a*a%MOD;\n        e>>=1;\n    }\n    return r;\n}\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    const int MAX = 2005;\n    static long long fact[MAX], invfact[MAX];\n    fact[0]=1;\n    for(int i=1;i<MAX;i++) fact[i]=fact[i-1]*i%MOD;\n    invfact[MAX-1]=modpow(fact[MAX-1], MOD-2);\n    for(int i=MAX-2;i>=0;i--) invfact[i]=invfact[i+1]*(i+1)%MOD;\n    while(T--){\n        long long N,M; scanf(\"%lld %lld\",&N,&M);\n        long long L = N+M-1;\n        if(L%2){\n            printf(\"0\\n\");\n            continue;\n        }\n        long long paths = fact[N+M-2]*invfact[N-1]%MOD*invfact[M-1]%MOD;\n        long long waysOnPath = fact[L]*invfact[L/2]%MOD*invfact[L/2]%MOD;\n        long long rest = modpow(2, N*M - L);\n        long long ans = paths * waysOnPath % MOD * rest % MOD;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 998244353LL;\nlong long modpow(long long a, long long e){\n    long long r=1;\n    while(e){\n        if(e&1) r=r*a%MOD;\n        a=a*a%MOD;\n        e>>=1;\n    }\n    return r;\n}\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    const int MAX = 2005;\n    vector<long long> fact(MAX), invfact(MAX);\n    fact[0]=1;\n    for(int i=1;i<MAX;i++) fact[i]=fact[i-1]*i%MOD;\n    invfact[MAX-1]=modpow(fact[MAX-1], MOD-2);\n    for(int i=MAX-2;i>=0;i--) invfact[i]=invfact[i+1]*(i+1)%MOD;\n    while(T--){\n        long long N,M; cin>>N>>M;\n        long long L = N+M-1;\n        if(L%2){\n            cout<<0<<\"\\n\";\n            continue;\n        }\n        long long paths = fact[N+M-2]*invfact[N-1]%MOD*invfact[M-1]%MOD;\n        long long waysOnPath = fact[L]*invfact[L/2]%MOD*invfact[L/2]%MOD;\n        long long rest = modpow(2, N*M - L);\n        long long ans = paths * waysOnPath % MOD * rest % MOD;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

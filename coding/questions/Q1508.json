@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Merge Sort",
-      "Inversion Count"
+      "Inversion Count",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,13 +20,13 @@
     ]
   },
   "content": {
-    "problemStatement": "Chef has an array arrarrarr consisting of integers and wants to know **how far the array is from being sorted**. NNN is the size of the array.\n\nTwo elements arr[i]arr[i]arr[i] and arr[j]arr[j]arr[j] form **an inversion** if:\n\n\narr[i]&gt;arr[j]arr[i] &gt; arr[j]arr[i]&gt;arr[j]\ni&lt;ji &lt; ji&lt;j\nAn inversion indicates that the array is not sorted.\n\nYour task is to count **the total number of inversions** in the array.\n\nFunction DeclarationFunction NamecountInversioncountInversioncountInversion – This function counts the total number of inversions in an array.\n\nParameters\narrarrarr : An array of integers.\nnnn : An integer representing the size of the array.\nReturn Value\nReturns a single integer — the **total number of inversions** in the array.\nConstraints\n1≤N≤1051 \\leq N \\leq 10^51≤N≤105\n−104≤arr[i]≤104−10^4 \\leq arr[i] \\leq 10^4−104≤arr[i]≤104\nThe answer can be large, so use a data type capable of storing large values.\n\nInput Format\n\nThe first line of input contains a single integer NNN — the size of the array.\nThe second line contains NNN space-separated integers representing the array arrarrarr.\n\n\nOutput Format\nOutput a single integer — the **total number of inversions** in the array.",
+    "problemStatement": "Chef has an array arrarrarr consisting of integers and wants to know **how far the array is from being sorted**. NNN is the size of the array.\n\nTwo elements arr[i]arr[i]arr[i] and arr[j]arr[j]arr[j] form **an inversion** if:\n\n\narr[i]&gt;arr[j]arr[i] &gt; arr[j]arr[i]&gt;arr[j]\ni&lt;ji &lt; ji&lt;j\nAn inversion indicates that the array is not sorted.\n\nYour task is to count **the total number of inversions** in the array.\n\nFunction DeclarationFunction NamecountInversioncountInversioncountInversion \u2013 This function counts the total number of inversions in an array.\n\nParameters\narrarrarr : An array of integers.\nnnn : An integer representing the size of the array.\nReturn Value\nReturns a single integer \u2014 the **total number of inversions** in the array.\nConstraints\n1\u2264N\u22641051 \\leq N \\leq 10^51\u2264N\u2264105\n\u2212104\u2264arr[i]\u2264104\u221210^4 \\leq arr[i] \\leq 10^4\u2212104\u2264arr[i]\u2264104\nThe answer can be large, so use a data type capable of storing large values.\n\nInput Format\n\nThe first line of input contains a single integer NNN \u2014 the size of the array.\nThe second line contains NNN space-separated integers representing the array arrarrarr.\n\n\nOutput Format\nOutput a single integer \u2014 the **total number of inversions** in the array.",
     "constraints": [
       "1 <= N <= 10^5",
       "-10^4 <= arr[i] <= 10^4"
     ],
     "inputFormat": "The first line contains an integer N, the size of the array. The second line contains N space-separated integers representing the array elements.",
-    "outputFormat": "Output a single integer — the total number of inversions in the given array.",
+    "outputFormat": "Output a single integer \u2014 the total number of inversions in the given array.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -113,7 +114,7 @@
   "solution": {
     "approach": "The problem can be solved using the merge sort algorithm. The idea is to count the number of inversions while merging two sorted subarrays. The total number of inversions is the sum of inversions in the left subarray, the right subarray, and the inversions that occur while merging the two subarrays.",
     "timeComplexity": "O(N log N) per test case",
-    "spaceComplexity": "O(N) — for the temporary array used in merge sort.",
+    "spaceComplexity": "O(N) \u2014 for the temporary array used in merge sort.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nlong long mergeAndCount(int arr[], int temp[], int left, int mid, int right) {\n    int i = left, j = mid + 1, k = left;\n    long long invCount = 0;\n    while (i <= mid && j <= right) {\n        if (arr[i] <= arr[j]) {\n            temp[k++] = arr[i++];\n        } else {\n            temp[k++] = arr[j++];\n            invCount += (mid - i + 1);\n        }\n    }\n    while (i <= mid) temp[k++] = arr[i++];\n    while (j <= right) temp[k++] = arr[j++];\n    for (i = left; i <= right; ++i) arr[i] = temp[i];\n    return invCount;\n}\n\nlong long mergeSortAndCount(int arr[], int temp[], int left, int right) {\n    long long invCount = 0;\n    if (left < right) {\n        int mid = left + (right - left) / 2;\n        invCount += mergeSortAndCount(arr, temp, left, mid);\n        invCount += mergeSortAndCount(arr, temp, mid + 1, right);\n        invCount += mergeAndCount(arr, temp, left, mid, right);\n    }\n    return invCount;\n}\n\nint main() {\n    int N; scanf(\"%d\", &N);\n    int *arr = (int *)malloc(N * sizeof(int));\n    int *temp = (int *)malloc(N * sizeof(int));\n    for (int i = 0; i < N; ++i) scanf(\"%d\", &arr[i]);\n    long long ans = mergeSortAndCount(arr, temp, 0, N - 1);\n    printf(\"%lld\\n\", ans);\n    free(arr);\n    free(temp);\n    return 0;\n}\n",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long mergeAndCount(vector<int>& a, vector<int>& temp, int left, int mid, int right) {\n    int i = left, j = mid + 1, k = left;\n    long long inv = 0;\n    while (i <= mid && j <= right) {\n        if (a[i] <= a[j]) temp[k++] = a[i++];\n        else {\n            temp[k++] = a[j++];\n            inv += (mid - i + 1);\n        }\n    }\n    while (i <= mid) temp[k++] = a[i++];\n    while (j <= right) temp[k++] = a[j++];\n    for (i = left; i <= right; ++i) a[i] = temp[i];\n    return inv;\n}\n\nlong long mergeSortAndCount(vector<int>& a, vector<int>& temp, int left, int right) {\n    long long inv = 0;\n    if (left < right) {\n        int mid = left + (right - left) / 2;\n        inv += mergeSortAndCount(a, temp, left, mid);\n        inv += mergeSortAndCount(a, temp, mid + 1, right);\n        inv += mergeAndCount(a, temp, left, mid, right);\n    }\n    return inv;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int N; cin >> N;\n    vector<int> a(N), temp(N);\n    for (int i = 0; i < N; ++i) cin >> a[i];\n    long long ans = mergeSortAndCount(a, temp, 0, N - 1);\n    cout << ans << '\\n';\n    return 0;\n}\n",

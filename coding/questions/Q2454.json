@@ -6,14 +6,14 @@
   "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Number Theory",
+    "category": "Math",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
       "GCD",
-      "LCM",
       "Math",
-      "Number Theory"
+      "Number Theory",
+      "LCM"
     ],
     "companyTags": [],
     "topicTags": [
@@ -33,7 +33,7 @@
         "id": "sample_1",
         "input": "3\n2 4 3 6 7\n1 2 4 5 1\n10 12 3 9 16",
         "output": "3\n3\n5",
-        "explanation": "For each test case compute g1 = gcd(A,B), g2 = gcd(C,D), L = lcm(g1,g2). The answer is 2*⌊K/L⌋+1. The three cases give L=6,1,6 respectively, leading to answers 3,3,5."
+        "explanation": "For each test case compute g1 = gcd(A,B), g2 = gcd(C,D), L = lcm(g1,g2). The answer is 2*\u230aK/L\u230b+1. The three cases give L=6,1,6 respectively, leading to answers 3,3,5."
       },
       {
         "id": "sample_2",
@@ -113,9 +113,9 @@
     ]
   },
   "solution": {
-    "approach": "For Chef Shifu every reachable position is a multiple of g1 = gcd(A, B). For Chef Po every reachable position is a multiple of g2 = gcd(C, D). A position reachable by both must be a multiple of lcm(g1, g2). Let L = lcm(g1, g2). All such positions are ..., -2L, -L, 0, L, 2L, ... . The dumpling may be placed at any of these positions whose absolute value does not exceed K. The number of such positions is 2 * floor(K / L) + 1 (the centre is always counted). The algorithm for each test case: compute g1, g2, then L = lcm(g1, g2) using 128‑bit arithmetic to avoid overflow, compare L with K, and compute the answer.",
-    "timeComplexity": "O(T * log(max(A, B, C, D))) – each gcd is logarithmic, everything else is O(1).",
-    "spaceComplexity": "O(1) – only a few integer variables are stored.",
+    "approach": "For Chef Shifu every reachable position is a multiple of g1 = gcd(A, B). For Chef Po every reachable position is a multiple of g2 = gcd(C, D). A position reachable by both must be a multiple of lcm(g1, g2). Let L = lcm(g1, g2). All such positions are ..., -2L, -L, 0, L, 2L, ... . The dumpling may be placed at any of these positions whose absolute value does not exceed K. The number of such positions is 2 * floor(K / L) + 1 (the centre is always counted). The algorithm for each test case: compute g1, g2, then L = lcm(g1, g2) using 128\u2011bit arithmetic to avoid overflow, compare L with K, and compute the answer.",
+    "timeComplexity": "O(T * log(max(A, B, C, D))) \u2013 each gcd is logarithmic, everything else is O(1).",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables are stored.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic unsigned long long gcd_ull(unsigned long long a, unsigned long long b) {\n    while (b) {\n        unsigned long long t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        unsigned long long A,B,C,D,K;\n        scanf(\"%llu %llu %llu %llu %llu\", &A, &B, &C, &D, &K);\n        unsigned long long g1 = gcd_ull(A, B);\n        unsigned long long g2 = gcd_ull(C, D);\n        unsigned long long g = gcd_ull(g1, g2);\n        __int128 L128 = (__int128)(g1 / g) * (__int128)g2; // lcm\n        unsigned long long ans;\n        if (L128 > ( __int128)K) {\n            ans = 1ULL;\n        } else {\n            unsigned long long L = (unsigned long long)L128;\n            unsigned long long cnt = K / L;\n            ans = 2ULL * cnt + 1ULL;\n        }\n        printf(\"%llu\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\nusing int64 = long long;\nusing i128 = __int128_t;\n\nint64 gcd_int64(int64 a, int64 b) {\n    while (b) {\n        int64 t = a % b;\n        a = b;\n        b = t;\n    }\n    return a;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        int64 A,B,C,D,K; cin >> A >> B >> C >> D >> K;\n        int64 g1 = gcd_int64(A, B);\n        int64 g2 = gcd_int64(C, D);\n        int64 g = gcd_int64(g1, g2);\n        i128 L128 = (i128)(g1 / g) * (i128)g2; // lcm\n        int64 ans;\n        if (L128 > (i128)K) {\n            ans = 1;\n        } else {\n            int64 L = (int64)L128;\n            int64 cnt = K / L;\n            ans = 2 * cnt + 1;\n        }\n        cout << ans << '\\n';\n    }\n    return 0;\n}",

@@ -10,10 +10,11 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "XOR",
-      "Bitwise Comparison",
       "Counting",
-      "Prefix"
+      "Bit Manipulation",
+      "Prefix",
+      "XOR",
+      "Bitwise Comparison"
     ],
     "companyTags": [],
     "topicTags": [
@@ -21,13 +22,13 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given three non-negative integers XXX, YYY and NNN. Find the number of integers ZZZ such that 0≤Z≤N0 \\le Z \\le N0≤Z≤N and (X⊕Z)&lt;(Y⊕Z)(X \\oplus Z) \\lt (Y \\oplus Z)(X⊕Z)&lt;(Y⊕Z), where ⊕\\oplus⊕ denotes the bitwise XOR operation.",
+    "problemStatement": "You are given three non-negative integers XXX, YYY and NNN. Find the number of integers ZZZ such that 0\u2264Z\u2264N0 \\le Z \\le N0\u2264Z\u2264N and (X\u2295Z)&lt;(Y\u2295Z)(X \\oplus Z) \\lt (Y \\oplus Z)(X\u2295Z)&lt;(Y\u2295Z), where \u2295\\oplus\u2295 denotes the bitwise XOR operation.",
     "constraints": [
-      "1 ≤ T ≤ 1000",
-      "0 ≤ X, Y, N ≤ 2^30‑1"
+      "1 \u2264 T \u2264 1000",
+      "0 \u2264 X, Y, N \u2264 2^30\u20111"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space‑separated non‑negative integers X, Y and N.",
-    "outputFormat": "For each test case output a single line with the number of integers Z (0 ≤ Z ≤ N) such that (X ⊕ Z) < (Y ⊕ Z).",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated non\u2011negative integers X, Y and N.",
+    "outputFormat": "For each test case output a single line with the number of integers Z (0 \u2264 Z \u2264 N) such that (X \u2295 Z) < (Y \u2295 Z).",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -101,9 +102,9 @@
     ]
   },
   "solution": {
-    "approach": "If X equals Y, the two XOR values are always equal, so the answer is 0. Otherwise let k be the most significant bit where X and Y differ (k = floor(log2(X xor Y))). At this bit the comparison of (X⊕Z) and (Y⊕Z) is decided solely by Z_k: • If X_k = 0 and Y_k = 1 we need Z_k = 0. • If X_k = 1 and Y_k = 0 we need Z_k = 1. All lower bits are free. Hence the problem reduces to counting numbers Z in [0, N] whose k‑th bit equals a required value v. The count of numbers ≤ N with bit k = 1 can be computed by the standard periodic‑pattern formula: let total = N + 1, cycle = 1 << (k + 1), full = total / cycle, rem = total % cycle, ones = full * (1 << k) + max(0, rem - (1 << k)). Then zeros = total - ones. The answer is ones if v = 1 else zeros. This runs in O(1) per test case.",
-    "timeComplexity": "O(T) – constant work per test case.",
-    "spaceComplexity": "O(1) – only a few integer variables.",
+    "approach": "If X equals Y, the two XOR values are always equal, so the answer is 0. Otherwise let k be the most significant bit where X and Y differ (k = floor(log2(X xor Y))). At this bit the comparison of (X\u2295Z) and (Y\u2295Z) is decided solely by Z_k: \u2022 If X_k = 0 and Y_k = 1 we need Z_k = 0. \u2022 If X_k = 1 and Y_k = 0 we need Z_k = 1. All lower bits are free. Hence the problem reduces to counting numbers Z in [0, N] whose k\u2011th bit equals a required value v. The count of numbers \u2264 N with bit k = 1 can be computed by the standard periodic\u2011pattern formula: let total = N + 1, cycle = 1 << (k + 1), full = total / cycle, rem = total % cycle, ones = full * (1 << k) + max(0, rem - (1 << k)). Then zeros = total - ones. The answer is ones if v = 1 else zeros. This runs in O(1) per test case.",
+    "timeComplexity": "O(T) \u2013 constant work per test case.",
+    "spaceComplexity": "O(1) \u2013 only a few integer variables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic inline int64_t countOnes(int64_t N, int k){\n    int64_t total = N + 1;\n    int64_t cycle = 1LL << (k + 1);\n    int64_t full = total / cycle;\n    int64_t rem = total % cycle;\n    int64_t ones = full * (1LL << k) + (rem > (1LL << k) ? rem - (1LL << k) : 0);\n    return ones;\n}\n\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        uint32_t X, Y, N; scanf(\"%u %u %u\", &X, &Y, &N);\n        if (X == Y){\n            printf(\"0\\n\");\n            continue;\n        }\n        uint32_t diff = X ^ Y;\n        int k = 31 - __builtin_clz(diff); // highest differing bit\n        int needOne = ((X >> k) & 1) ? 0 : 1; // need Z_k = 1 when X_k=0,Y_k=1 else 0\n        int64_t ones = countOnes(N, k);\n        int64_t total = (int64_t)N + 1;\n        int64_t ans = needOne ? ones : (total - ones);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nlong long countOnes(long long N, int k){\n    long long total = N + 1;\n    long long cycle = 1LL << (k + 1);\n    long long full = total / cycle;\n    long long rem = total % cycle;\n    long long ones = full * (1LL << k) + max(0LL, rem - (1LL << k));\n    return ones;\n}\n\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        unsigned int X,Y,N; cin>>X>>Y>>N;\n        if(X==Y){ cout<<0<<\"\\n\"; continue; }\n        unsigned int diff = X ^ Y;\n        int k = 31 - __builtin_clz(diff);\n        int needOne = ((X>>k)&1) ? 0 : 1; // need Z_k = 1 when X_k=0\n        long long ones = countOnes(N, k);\n        long long total = (long long)N + 1;\n        long long ans = needOne ? ones : (total - ones);\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",

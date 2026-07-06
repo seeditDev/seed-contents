@@ -6,14 +6,15 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph | Dynamic Programming",
+    "category": "Dynamic Programming",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
+      "GCD",
       "Tree",
       "Coin Assignment",
-      "GCD",
-      "Modular Arithmetic"
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -26,8 +27,8 @@
       "1 <= N <= 70",
       "1 <= pi < i for each valid i"
     ],
-    "inputFormat": "The first line contains a single integer N denoting the number of nodes in the tree. The second line contains N-1 space-separated integers p2, p3, …, pN, where pi denotes the parent of node i.",
-    "outputFormat": "Print a single line containing one integer — the number of assignments of coins to nodes which form a proper tree, modulo 10^9 + 7.",
+    "inputFormat": "The first line contains a single integer N denoting the number of nodes in the tree. The second line contains N-1 space-separated integers p2, p3, \u2026, pN, where pi denotes the parent of node i.",
+    "outputFormat": "Print a single line containing one integer \u2014 the number of assignments of coins to nodes which form a proper tree, modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a dynamic programming approach. We will calculate the number of ways to assign coins to each subtree such that the resulting tree is proper. We will use a recursive function to calculate this for each node in the tree. The base case will be when the node is a leaf node, in which case there are two possibilities: either the node has a coin or it does not. For each internal node, we will calculate the number of ways to assign coins to its subtrees and then combine these results to get the total number of ways to assign coins to the subtree rooted at the current node.",
-    "timeComplexity": "O(N) — where N is the number of nodes in the tree. This is because we are visiting each node once and performing a constant amount of work for each node.",
-    "spaceComplexity": "O(N) — where N is the number of nodes in the tree. This is because we are storing the results of the recursive function calls in a table to avoid redundant calculations.",
+    "timeComplexity": "O(N) \u2014 where N is the number of nodes in the tree. This is because we are visiting each node once and performing a constant amount of work for each node.",
+    "spaceComplexity": "O(N) \u2014 where N is the number of nodes in the tree. This is because we are storing the results of the recursive function calls in a table to avoid redundant calculations.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint* calculateAssignments(int** tree, int* subtreeSizes, int node, int N) {\n    int* assignments = (int*) malloc(2 * sizeof(int));\n    if (subtreeSizes[node] == 1) {\n        assignments[0] = 1;\n        assignments[1] = 1;\n        return assignments;\n    }\n    int totalAssignments = 1;\n    for (int i = 0; i < tree[node][0]; i++) {\n        int child = tree[node][i + 1];\n        int* childAssignments = calculateAssignments(tree, subtreeSizes, child, N);\n        totalAssignments = (totalAssignments * (childAssignments[0] + childAssignments[1])) % MOD;\n    }\n    assignments[0] = totalAssignments;\n    totalAssignments = 1;\n    for (int i = 0; i < tree[node][0]; i++) {\n        int child = tree[node][i + 1];\n        int* childAssignments = calculateAssignments(tree, subtreeSizes, child, N);\n        totalAssignments = (totalAssignments * childAssignments[1]) % MOD;\n    }\n    assignments[1] = totalAssignments;\n    return assignments;\n}\n\nint main() {\n    int N;\n    scanf(\"%d\", &N);\n    int** tree = (int**) malloc(N * sizeof(int*));\n    for (int i = 0; i < N; i++) {\n        tree[i] = (int*) malloc(2 * sizeof(int));\n        tree[i][0] = 0;\n    }\n    for (int i = 1; i < N; i++) {\n        int parent;\n        scanf(\"%d\", &parent);\n        parent--;\n        tree[parent][0]++;\n        tree[parent] = (int*) realloc(tree[parent], (tree[parent][0] + 1) * sizeof(int));\n        tree[parent][tree[parent][0]] = i;\n    }\n    int* subtreeSizes = (int*) malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        subtreeSizes[i] = 1;\n    }\n    for (int i = N - 1; i >= 0; i--) {\n        for (int j = 0; j < tree[i][0]; j++) {\n            int child = tree[i][j + 1];\n            subtreeSizes[i] += subtreeSizes[child];\n        }\n    }\n    int* assignments = calculateAssignments(tree, subtreeSizes, 0, N);\n    printf(\"%d\\n\", (assignments[0] + assignments[1]) % MOD);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\n\ntypedef long long ll;\n\nll calculateAssignments(vector<vector<int>>& tree, vector<int>& subtreeSizes, int node) {\n    if (subtreeSizes[node] == 1) {\n        return 2;\n    }\n    ll totalAssignments = 1;\n    for (int child : tree[node]) {\n        totalAssignments = (totalAssignments * calculateAssignments(tree, subtreeSizes, child)) % MOD;\n    }\n    return totalAssignments;\n}\n\nint main() {\n    int N;\n    cin >> N;\n    vector<vector<int>> tree(N);\n    for (int i = 1; i < N; i++) {\n        int parent;\n        cin >> parent;\n        parent--;\n        tree[parent].push_back(i);\n    }\n    vector<int> subtreeSizes(N, 1);\n    for (int i = N - 1; i >= 0; i--) {\n        for (int child : tree[i]) {\n            subtreeSizes[i] += subtreeSizes[child];\n        }\n    }\n    ll assignments = calculateAssignments(tree, subtreeSizes, 0);\n    cout << assignments % MOD << endl;\n    return 0;\n}",

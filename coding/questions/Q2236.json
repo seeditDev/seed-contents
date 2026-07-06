@@ -10,9 +10,10 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Greedy Reduction",
+      "Strings",
       "Dynamic Programming",
-      "Substring Matching",
-      "Greedy Reduction"
+      "Substring Matching"
     ],
     "companyTags": [],
     "topicTags": [
@@ -28,8 +29,8 @@
       "1 <= |Si| <= 20",
       "All strings consist of printable ASCII characters without spaces"
     ],
-    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: a line with the string s (lowercase letters, length ≤ 1000), a line with integer n (1 ≤ n ≤ 100), followed by n lines each containing a sample string Si (1 ≤ |Si| ≤ 20).",
-    "outputFormat": "For each test case output a single line containing one integer – the minimum possible length of the string after performing any number of deletions of substrings that belong to the given set.",
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case: a line with the string s (lowercase letters, length \u2264 1000), a line with integer n (1 \u2264 n \u2264 100), followed by n lines each containing a sample string Si (1 \u2264 |Si| \u2264 20).",
+    "outputFormat": "For each test case output a single line containing one integer \u2013 the minimum possible length of the string after performing any number of deletions of substrings that belong to the given set.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -115,8 +116,8 @@
     ]
   },
   "solution": {
-    "approach": "Let dp[i] be the minimum possible length of the prefix s[0..i-1] after reductions. Initialise dp[0]=0. For each position i (1‑based) we can always keep the i‑th character, giving dp[i]=dp[i-1]+1. Additionally, for every pattern p of length L, if L ≤ i and s[i-L..i-1] equals p, we may delete this occurrence, so dp[i]=min(dp[i], dp[i-L]). The transition works because after reducing the prefix up to i-L we already achieved the optimal length for that part, and deleting p does not affect earlier reductions. Scanning the string once and checking all patterns at each position yields the answer dp[|s|]. The algorithm runs in O(|s|·(n·max|Si|)) ≤ 2·10^6 operations per test case, easily within limits. Memory usage is O(|s|).",
-    "timeComplexity": "O(|s| * n * Lmax) per test case, where Lmax ≤ 20 (≈2·10^6 operations for worst case).",
+    "approach": "Let dp[i] be the minimum possible length of the prefix s[0..i-1] after reductions. Initialise dp[0]=0. For each position i (1\u2011based) we can always keep the i\u2011th character, giving dp[i]=dp[i-1]+1. Additionally, for every pattern p of length L, if L \u2264 i and s[i-L..i-1] equals p, we may delete this occurrence, so dp[i]=min(dp[i], dp[i-L]). The transition works because after reducing the prefix up to i-L we already achieved the optimal length for that part, and deleting p does not affect earlier reductions. Scanning the string once and checking all patterns at each position yields the answer dp[|s|]. The algorithm runs in O(|s|\u00b7(n\u00b7max|Si|)) \u2264 2\u00b710^6 operations per test case, easily within limits. Memory usage is O(|s|).",
+    "timeComplexity": "O(|s| * n * Lmax) per test case, where Lmax \u2264 20 (\u22482\u00b710^6 operations for worst case).",
     "spaceComplexity": "O(|s|) for the dp array.",
     "code": {
       "C": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        char buf[1005]; scanf(\"%s\",buf);\n        string s(buf);\n        int n; scanf(\"%d\",&n);\n        vector<string> pat(n);\n        for(int i=0;i<n;i++){\n            scanf(\"%s\",buf);\n            pat[i]=buf;\n        }\n        int m=s.size();\n        const int INF=1e9;\n        vector<int> dp(m+1,INF);\n        dp[0]=0;\n        for(int i=1;i<=m;i++){\n            dp[i]=dp[i-1]+1; // keep current char\n            for(const string &p:pat){\n                int L=p.size();\n                if(L<=i && s.compare(i-L,L,p)==0){\n                    dp[i]=min(dp[i],dp[i-L]);\n                }\n            }\n        }\n        printf(\"%d\\n\",dp[m]);\n    }\n    return 0;\n}\n",

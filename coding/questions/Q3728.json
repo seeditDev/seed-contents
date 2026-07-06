@@ -6,13 +6,14 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings | Dynamic Programming",
+    "category": "Strings",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
       "Palindrome",
-      "Dynamic Programming",
-      "String Manipulation"
+      "String Manipulation",
+      "Strings",
+      "Dynamic Programming"
     ],
     "companyTags": [],
     "topicTags": [
@@ -20,7 +21,7 @@
     ]
   },
   "content": {
-    "problemStatement": "Fehc is Chef's best friend. They grew up with each other, and often help each other with competitive programming.\n\n\n\tChef is participating in a programming contest prepared by Fehc and finds the following problem in Fehc's problem set: given a string **s**[**1**..**N**], count the number of pairs of indices **1** ≤ **i** ≤ **j** ≤ **N** such that **s**[**i..j**] is palindrome and **j-i** is even. The characters that may appear in **s** are 0, 1, 2, ..., 109.\n\n\n\tChef doesn't know the solution, but he knows Fehc's habits of creating test data. When preparing data for a string problem, Fehc always generates a string of **N** 0's, and replaces some of the 0's by other characters. Thus, Chef assumes that there are only **K** nonzero characters in **s**, and **K** is usually much smaller than **N**.\n\n\n\tGiven this useful information, can you help Chef solve this problem?",
+    "problemStatement": "Fehc is Chef's best friend. They grew up with each other, and often help each other with competitive programming.\n\n\n\tChef is participating in a programming contest prepared by Fehc and finds the following problem in Fehc's problem set: given a string **s**[**1**..**N**], count the number of pairs of indices **1** \u2264 **i** \u2264 **j** \u2264 **N** such that **s**[**i..j**] is palindrome and **j-i** is even. The characters that may appear in **s** are 0, 1, 2, ..., 109.\n\n\n\tChef doesn't know the solution, but he knows Fehc's habits of creating test data. When preparing data for a string problem, Fehc always generates a string of **N** 0's, and replaces some of the 0's by other characters. Thus, Chef assumes that there are only **K** nonzero characters in **s**, and **K** is usually much smaller than **N**.\n\n\n\tGiven this useful information, can you help Chef solve this problem?",
     "constraints": [
       "1 <= T <= 10",
       "1 <= N <= 10^9",
@@ -116,8 +117,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to store the results of subproblems. We will create a 2D array dp where dp[i][j] will store whether the substring s[i..j] is a palindrome or not. We will then use this dp array to count the number of pairs of indices (i, j) such that s[i..j] is a palindrome and j-i is even.",
-    "timeComplexity": "O(T * (N + K^2)) — The time complexity is dominated by the two nested loops over the string and the K nonzero characters.",
-    "spaceComplexity": "O(N) — The space complexity is dominated by the dp array.",
+    "timeComplexity": "O(T * (N + K^2)) \u2014 The time complexity is dominated by the two nested loops over the string and the K nonzero characters.",
+    "spaceComplexity": "O(N) \u2014 The space complexity is dominated by the dp array.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#define MAXN 100005\nint T, N, K, pi[MAXN], qi[MAXN];\nchar s[MAXN];\nint dp[MAXN][MAXN];\nint main() {\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d %d\", &N, &K);\n        for (int i = 0; i < N; i++) s[i] = '0';\n        for (int i = 0; i < K; i++) {\n            scanf(\"%d %d\", &pi[i], &qi[i]);\n            s[pi[i] - 1] = qi[i] + '0';\n        }\n        long long ans = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i; j < N; j++) {\n                int flag = 1;\n                for (int k = 0; k <= (j - i) / 2; k++) {\n                    if (s[i + k] != s[j - k]) {\n                        flag = 0;\n                        break;\n                    }\n                }\n                if (flag && (j - i) % 2 == 0) ans++;\n            }\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <string>\nusing namespace std;\n#define MAXN 100005\nint T, N, K, pi[MAXN], qi[MAXN];\nstring s;\nint dp[MAXN][MAXN];\nint main() {\n    cin >> T;\n    while (T--) {\n        cin >> N >> K;\n        s = string(N, '0');\n        for (int i = 0; i < K; i++) {\n            cin >> pi[i] >> qi[i];\n            s[pi[i] - 1] = qi[i] + '0';\n        }\n        long long ans = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i; j < N; j++) {\n                int flag = 1;\n                for (int k = 0; k <= (j - i) / 2; k++) {\n                    if (s[i + k] != s[j - k]) {\n                        flag = 0;\n                        break;\n                    }\n                }\n                if (flag && (j - i) % 2 == 0) ans++;\n            }\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",

@@ -10,9 +10,10 @@
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "String manipulation",
+      "Substring replacement",
       "Trim spaces",
-      "Substring replacement"
+      "String manipulation",
+      "Strings"
     ],
     "companyTags": [],
     "topicTags": [
@@ -23,10 +24,10 @@
     "problemStatement": "In this task, we will create a program that automatically cleans and corrects a sentence by removing extra spaces and replacing \"cats\" with \"cars\" for proper formatting.",
     "constraints": [
       "1 <= T <= 100",
-      "Each sentence length after trimming ≤ 100 characters",
+      "Each sentence length after trimming \u2264 100 characters",
       "Only ASCII characters are used"
     ],
-    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 100), the number of sentences. Each of the next T lines contains a sentence that may have leading or trailing spaces. Length of each line ≤ 100 characters (after trimming).",
+    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 100), the number of sentences. Each of the next T lines contains a sentence that may have leading or trailing spaces. Length of each line \u2264 100 characters (after trimming).",
     "outputFormat": "For each sentence output two lines:\nOriginal sentence: <sentence after removing leading and trailing spaces>\nAuto-Corrected sentence: <sentence after trimming and replacing every occurrence of \"cats\" with \"cars\">",
     "sampleTestCases": [
       {
@@ -114,7 +115,7 @@
   },
   "solution": {
     "approach": "For each test case read the whole line, trim leading and trailing whitespace, then scan the trimmed string from left to right. Whenever the next four characters equal \"cats\", append \"cars\" to the result and skip four positions; otherwise copy the current character. This works in O(L) time where L is the length of the sentence. The algorithm handles substrings inside larger words and overlapping occurrences correctly because we always move forward after a replacement.",
-    "timeComplexity": "O(total number of characters in all sentences) – each character is examined at most once.",
+    "timeComplexity": "O(total number of characters in all sentences) \u2013 each character is examined at most once.",
     "spaceComplexity": "O(max length of a single sentence) for the output buffer.",
     "code": {
       "C": "#include <stdio.h>\n#include <string.h>\n#include <ctype.h>\n\nvoid trim(char *s) {\n    int start = 0, end = strlen(s) - 1;\n    while (start <= end && isspace((unsigned char)s[start])) start++;\n    while (end >= start && isspace((unsigned char)s[end])) end--;\n    int i, j = 0;\n    for (i = start; i <= end; ++i) s[j++] = s[i];\n    s[j] = '\\0';\n}\n\nvoid replaceCats(const char *src, char *dst) {\n    while (*src) {\n        if (strncmp(src, \"cats\", 4) == 0) {\n            strcpy(dst, \"cars\");\n            dst += 4;\n            src += 4;\n        } else {\n            *dst++ = *src++;\n        }\n    }\n    *dst = '\\0';\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    getchar(); // consume newline after T\n    char line[256];\n    for (int tc = 0; tc < T; ++tc) {\n        if (!fgets(line, sizeof(line), stdin)) break;\n        line[strcspn(line, \"\\n\")] = '\\0'; // remove newline\n        trim(line);\n        char corrected[256];\n        replaceCats(line, corrected);\n        printf(\"Original sentence: %s\\n\", line);\n        printf(\"Auto-Corrected sentence: %s\\n\", corrected);\n    }\n    return 0;\n}",

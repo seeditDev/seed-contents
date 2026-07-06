@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
+      "Modular Arithmetic",
       "Expected Value",
-      "Modular Arithmetic"
+      "Math"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,15 +20,15 @@
     ]
   },
   "content": {
-    "problemStatement": "The chefs are making fruit salads today! There are kkk chefs in total, each making a different type of salad. However, the chefs have run out of fruit, so they sent mmm workers to pick fruit for them.\n\nSome workers are fast, but some are really slow. Specifically, for each worker, we know two integers aaa and bbb, which mean that this worker can pick between aaa and bbb units of fruit today (inclusive). There are nnn groups of workers; all workers in each group have the same a,ba, ba,b.\n\nThe workers don't care about the number of units of fruit they pick, so they choose these numbers randomly. A worker with parameters aaa, bbb will choose an integer between aaa and bbb uniformly randomly and pick this number of units of fruit today.\n\nIf the number of units of fruit picked by all workers together at the end of the day is SSS, the chefs define the goodness of the day as F(S)=SkF(S)=S^kF(S)=Sk for some reason. They would like you to find the expected value of FFF. It can be proven that this expected value can be written as a fraction P/QP/QP/Q, where P≥0P \\ge 0P≥0 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers. You should calculate P⋅Q−1P\\cdot Q^{-1}P⋅Q−1 modulo 998244353998244353998244353, where Q−1Q^{-1}Q−1 denotes the modular inverse of QQQ modulo 998244353998244353998244353. (It is guaranteed that this inverse exists and is unique.)",
+    "problemStatement": "The chefs are making fruit salads today! There are kkk chefs in total, each making a different type of salad. However, the chefs have run out of fruit, so they sent mmm workers to pick fruit for them.\n\nSome workers are fast, but some are really slow. Specifically, for each worker, we know two integers aaa and bbb, which mean that this worker can pick between aaa and bbb units of fruit today (inclusive). There are nnn groups of workers; all workers in each group have the same a,ba, ba,b.\n\nThe workers don't care about the number of units of fruit they pick, so they choose these numbers randomly. A worker with parameters aaa, bbb will choose an integer between aaa and bbb uniformly randomly and pick this number of units of fruit today.\n\nIf the number of units of fruit picked by all workers together at the end of the day is SSS, the chefs define the goodness of the day as F(S)=SkF(S)=S^kF(S)=Sk for some reason. They would like you to find the expected value of FFF. It can be proven that this expected value can be written as a fraction P/QP/QP/Q, where P\u22650P \\ge 0P\u22650 and Q&gt;0Q \\gt 0Q&gt;0 are coprime integers. You should calculate P\u22c5Q\u22121P\\cdot Q^{-1}P\u22c5Q\u22121 modulo 998244353998244353998244353, where Q\u22121Q^{-1}Q\u22121 denotes the modular inverse of QQQ modulo 998244353998244353998244353. (It is guaranteed that this inverse exists and is unique.)",
     "constraints": [
-      "1 ≤ n * k ≤ 10^5",
-      "1 ≤ A ≤ B ≤ 10^9",
-      "1 ≤ C < 998244353",
+      "1 \u2264 n * k \u2264 10^5",
+      "1 \u2264 A \u2264 B \u2264 10^9",
+      "1 \u2264 C < 998244353",
       "The sum of all C is equal to m"
     ],
     "inputFormat": "The first line of the input contains two space-separated integers k and m. The second line contains a single integer n. Each of the following n lines contains three space-separated integers A, B, and C denoting a group of workers; there are C workers in this group, with a = A and b = B for each of them.",
-    "outputFormat": "The expected value of F(S) = S^k, which can be written as a fraction P/Q, where P ≥ 0 and Q > 0 are coprime integers. The output should be P * Q^-1 modulo 998244353.",
+    "outputFormat": "The expected value of F(S) = S^k, which can be written as a fraction P/Q, where P \u2265 0 and Q > 0 are coprime integers. The output should be P * Q^-1 modulo 998244353.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -102,8 +103,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to calculate the expected value of F(S) = S^k. We can do this by iterating over all possible values of S and calculating the probability of each value. The probability of each value can be calculated by iterating over all possible combinations of workers and calculating the probability of each combination. The expected value can then be calculated by summing up the product of each value and its probability.",
-    "timeComplexity": "O(n * k * m) — the time complexity is dominated by the iteration over all possible combinations of workers.",
-    "spaceComplexity": "O(1) — the space complexity is constant, as we only need to store a few variables.",
+    "timeComplexity": "O(n * k * m) \u2014 the time complexity is dominated by the iteration over all possible combinations of workers.",
+    "spaceComplexity": "O(1) \u2014 the space complexity is constant, as we only need to store a few variables.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 998244353\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int k, m, n;\n    scanf(\"%d %d\", &k, &m);\n    scanf(\"%d\", &n);\n    long long p = 0;\n    long long q = 1;\n    for (int i = 0; i < n; i++) {\n        int a, b, c;\n        scanf(\"%d %d %d\", &a, &b, &c);\n        long long sum = 0;\n        for (int j = a; j <= b; j++) {\n            sum = (sum + powmod(j, k)) % MOD;\n        }\n        sum = (sum * c) % MOD;\n        sum = (sum * powmod(b - a + 1, MOD - 2)) % MOD;\n        p = (p + sum) % MOD;\n        q = (q * powmod(b - a + 1, c)) % MOD;\n    }\n    long long q_inv = powmod(q, MOD - 2);\n    printf(\"%lld\\n\", (p * q_inv) % MOD);\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\n#define MOD 998244353\n\nlong long powmod(long long a, long long b) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % MOD;\n        a = (a * a) % MOD;\n        b >>= 1;\n    }\n    return res;\n}\n\nint main() {\n    int k, m, n;\n    std::cin >> k >> m;\n    std::cin >> n;\n    long long p = 0;\n    long long q = 1;\n    for (int i = 0; i < n; i++) {\n        int a, b, c;\n        std::cin >> a >> b >> c;\n        long long sum = 0;\n        for (int j = a; j <= b; j++) {\n            sum = (sum + powmod(j, k)) % MOD;\n        }\n        sum = (sum * c) % MOD;\n        sum = (sum * powmod(b - a + 1, MOD - 2)) % MOD;\n        p = (p + sum) % MOD;\n        q = (q * powmod(b - a + 1, c)) % MOD;\n    }\n    long long q_inv = powmod(q, MOD - 2);\n    std::cout << (p * q_inv) % MOD << std::endl;\n    return 0;\n}",

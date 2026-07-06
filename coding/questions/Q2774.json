@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Priority Queue",
-      "K-way merging"
+      "K-way merging",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
@@ -103,7 +104,7 @@
   "solution": {
     "approach": "The problem can be solved using a priority queue to store the lengths of the files. In each iteration, we remove the K smallest files from the queue, merge them, and add the merged file back to the queue. The total number of comparisons is the sum of the lengths of the files removed in each iteration.",
     "timeComplexity": "O(T * N * logN) per test case, O(T * N * logN) total. The priority queue operations (insertion and removal) take O(logN) time.",
-    "spaceComplexity": "O(N) — the space required to store the priority queue.",
+    "spaceComplexity": "O(N) \u2014 the space required to store the priority queue.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX 1000\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T, N, K, i, j, sum, comparisons;\n    int files[MAX];\n    scanf(\"%d\", &T);\n    for (i = 0; i < T; i++) {\n        scanf(\"%d %d\", &N, &K);\n        for (j = 0; j < N; j++) {\n            scanf(\"%d\", &files[j]);\n        }\n        qsort(files, N, sizeof(int), compare);\n        comparisons = 0;\n        while (N > 1) {\n            sum = 0;\n            for (j = 0; j < K && j < N; j++) {\n                sum += files[j];\n            }\n            comparisons += sum;\n            for (j = K; j < N; j++) {\n                files[j - K] = files[j];\n            }\n            N -= K - 1;\n            qsort(files, N, sizeof(int), compare);\n        }\n        printf(\"Case %d: %d\\n\", i + 1, comparisons);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int T, N, K, i, j, sum, comparisons;\n    cin >> T;\n    for (i = 0; i < T; i++) {\n        cin >> N >> K;\n        priority_queue<int, vector<int>, greater<int>> pq;\n        for (j = 0; j < N; j++) {\n            int x;\n            cin >> x;\n            pq.push(x);\n        }\n        comparisons = 0;\n        while (pq.size() > 1) {\n            sum = 0;\n            for (j = 0; j < K && j < pq.size(); j++) {\n                sum += pq.top();\n                pq.pop();\n            }\n            comparisons += sum;\n            pq.push(sum);\n        }\n        cout << \"Case \" << i + 1 << \": \" << comparisons << endl;\n    }\n    return 0;\n}",

@@ -11,7 +11,8 @@
     "isPremium": false,
     "tags": [
       "Submatrix",
-      "Identical Submatrices"
+      "Identical Submatrices",
+      "Arrays"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,11 +20,11 @@
     ]
   },
   "content": {
-    "problemStatement": "**“Tom Riddle: [in Parseltongue] Kill him! [to Harry] Parseltongue won't save you now, Potter! It only obeys me!”**\n\n\n\nHarry was in the Chamber of Secrets. Fawkes blinded the Basilisk and the Sorting Hat eventually produced a sword with which Harry can finally kill the Basilisk. But for Harry to use the Godric Gryffindor's sword he has to prove that he is worth it. The hat poses following problem for Harry to solve.\n\n\n\nLet **A** and **B** be **2** matrices of size **U** * **V** and **W** * **X** respectively.\n\n\nLet **P** be a submatrix of matrix **A** and **Q** be a submatrix of matrix **B**, each of size **K** * **K**.\n\nIn how many ways can you select a pair of **P** and **Q** such that they are identical? As Harry doesn't have much time. Help him save Hogwarts.",
+    "problemStatement": "**\u201cTom Riddle: [in Parseltongue] Kill him! [to Harry] Parseltongue won't save you now, Potter! It only obeys me!\u201d**\n\n\n\nHarry was in the Chamber of Secrets. Fawkes blinded the Basilisk and the Sorting Hat eventually produced a sword with which Harry can finally kill the Basilisk. But for Harry to use the Godric Gryffindor's sword he has to prove that he is worth it. The hat poses following problem for Harry to solve.\n\n\n\nLet **A** and **B** be **2** matrices of size **U** * **V** and **W** * **X** respectively.\n\n\nLet **P** be a submatrix of matrix **A** and **Q** be a submatrix of matrix **B**, each of size **K** * **K**.\n\nIn how many ways can you select a pair of **P** and **Q** such that they are identical? As Harry doesn't have much time. Help him save Hogwarts.",
     "constraints": [
-      "1 ≤ U, V, W, X ≤ 2000",
-      "1 ≤ K ≤ min(U, V, W, X)",
-      "1 ≤ Ai,j, Bi,j ≤ 500"
+      "1 \u2264 U, V, W, X \u2264 2000",
+      "1 \u2264 K \u2264 min(U, V, W, X)",
+      "1 \u2264 Ai,j, Bi,j \u2264 500"
     ],
     "inputFormat": "The first line contains 5 integers U, V, W, X, and K, where U and V are the dimensions of matrix A, W and X are the dimensions of matrix B, and K is the size of the submatrix. The next U lines contain V integers each, denoting matrix A. The next W lines contain X integers each, denoting matrix B.",
     "outputFormat": "The output is a single line containing the count of pairs of identical submatrices of size K * K.",
@@ -107,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we need to generate all possible submatrices of size K * K from both matrices A and B, and then compare each pair of submatrices to check if they are identical. We can use nested loops to generate the submatrices and compare them.",
-    "timeComplexity": "O(U * V * W * X * K^2) — because we are generating all possible submatrices of size K * K from both matrices and comparing them.",
-    "spaceComplexity": "O(K^2) — because we need to store the current submatrix being compared.",
+    "timeComplexity": "O(U * V * W * X * K^2) \u2014 because we are generating all possible submatrices of size K * K from both matrices and comparing them.",
+    "spaceComplexity": "O(K^2) \u2014 because we need to store the current submatrix being compared.",
     "code": {
       "C": "#include <stdio.h>\nint main() {\n    int U, V, W, X, K;\n    scanf(\"%d %d %d %d %d\", &U, &V, &W, &X, &K);\n    int A[U][V], B[W][X];\n    for (int i = 0; i < U; i++) {\n        for (int j = 0; j < V; j++) {\n            scanf(\"%d\", &A[i][j]);\n        }\n    }\n    for (int i = 0; i < W; i++) {\n        for (int j = 0; j < X; j++) {\n            scanf(\"%d\", &B[i][j]);\n        }\n    }\n    int count = 0;\n    for (int i = 0; i <= U - K; i++) {\n        for (int j = 0; j <= V - K; j++) {\n            for (int x = 0; x <= W - K; x++) {\n                for (int y = 0; y <= X - K; y++) {\n                    int identical = 1;\n                    for (int k = 0; k < K; k++) {\n                        for (int l = 0; l < K; l++) {\n                            if (A[i + k][j + l] != B[x + k][y + l]) {\n                                identical = 0;\n                                break;\n                            }\n                        }\n                        if (!identical) break;\n                    }\n                    if (identical) count++;\n                }\n            }\n        }\n    }\n    printf(\"%d\\n\", count);\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int U, V, W, X, K;\n    cin >> U >> V >> W >> X >> K;\n    int A[U][V], B[W][X];\n    for (int i = 0; i < U; i++) {\n        for (int j = 0; j < V; j++) {\n            cin >> A[i][j];\n        }\n    }\n    for (int i = 0; i < W; i++) {\n        for (int j = 0; j < X; j++) {\n            cin >> B[i][j];\n        }\n    }\n    int count = 0;\n    for (int i = 0; i <= U - K; i++) {\n        for (int j = 0; j <= V - K; j++) {\n            for (int x = 0; x <= W - K; x++) {\n                for (int y = 0; y <= X - K; y++) {\n                    int identical = 1;\n                    for (int k = 0; k < K; k++) {\n                        for (int l = 0; l < K; l++) {\n                            if (A[i + k][j + l] != B[x + k][y + l]) {\n                                identical = 0;\n                                break;\n                            }\n                        }\n                        if (!identical) break;\n                    }\n                    if (identical) count++;\n                }\n            }\n        }\n    }\n    cout << count << endl;\n    return 0;\n}",

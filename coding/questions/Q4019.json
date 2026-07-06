@@ -6,12 +6,13 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graph",
+    "category": "Graphs",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Union-Find",
-      "Graph Traversal"
+      "Graph Traversal",
+      "Graphs",
+      "Union-Find"
     ],
     "companyTags": [],
     "topicTags": [
@@ -19,16 +20,16 @@
     ]
   },
   "content": {
-    "problemStatement": "You are given NNN gears numbered 111 through NNN. For each valid iii, gear iii has AiA_iAi​ teeth. In the beginning, no gear is connected to any other. Your task is to process MMM queries and simulate the gears' mechanism. There are three types of queries:\n\n\nType 1: Change the number of teeth of gear XXX to CCC.\nType 2: Connect two gears XXX and YYY.\nType 3: Find the speed of rotation of gear YYY if gear XXX rotates with speed VVV.\nIt is known that if gear iii is directly connected to gear jjj and gear iii rotates with speed VVV, then gear jjj will rotate with speed −VAi/Aj-V A_i / A_j−VAi​/Aj​, where the sign of rotation speed denotes the direction of rotation (so minus here denotes rotation in the opposite direction). You may also notice that gears can be blocked in some cases. This happens when some gear would have to rotate in different directions. If a gear is connected to any blocked gear, it is also blocked. For example, if three gears are connected to each other, this configuration can not rotate at all, and if we connect a fourth gear to these three, it will also be blocked and not rotate.",
+    "problemStatement": "You are given NNN gears numbered 111 through NNN. For each valid iii, gear iii has AiA_iAi\u200b teeth. In the beginning, no gear is connected to any other. Your task is to process MMM queries and simulate the gears' mechanism. There are three types of queries:\n\n\nType 1: Change the number of teeth of gear XXX to CCC.\nType 2: Connect two gears XXX and YYY.\nType 3: Find the speed of rotation of gear YYY if gear XXX rotates with speed VVV.\nIt is known that if gear iii is directly connected to gear jjj and gear iii rotates with speed VVV, then gear jjj will rotate with speed \u2212VAi/Aj-V A_i / A_j\u2212VAi\u200b/Aj\u200b, where the sign of rotation speed denotes the direction of rotation (so minus here denotes rotation in the opposite direction). You may also notice that gears can be blocked in some cases. This happens when some gear would have to rotate in different directions. If a gear is connected to any blocked gear, it is also blocked. For example, if three gears are connected to each other, this configuration can not rotate at all, and if we connect a fourth gear to these three, it will also be blocked and not rotate.",
     "constraints": [
-      "1 ≤ N ≤ 10^5",
-      "1 ≤ M ≤ 2*10^5",
-      "6 ≤ Ai ≤ 10^6 for each valid i",
-      "1 ≤ X, Y ≤ N",
-      "1 ≤ C, V ≤ 10^6"
+      "1 \u2264 N \u2264 10^5",
+      "1 \u2264 M \u2264 2*10^5",
+      "6 \u2264 Ai \u2264 10^6 for each valid i",
+      "1 \u2264 X, Y \u2264 N",
+      "1 \u2264 C, V \u2264 10^6"
     ],
-    "inputFormat": "The first line contains two space-separated integers N and M. The second line contains N space-separated integers A1, A2, …, AN. The following M lines describe queries. Each query line begins with an integer T denoting the type of the current query. If T = 1, it is followed by two space-separated integers X and C. If T = 2, it is followed by two space-separated integers X and Y. If T = 3, it is followed by three space-separated integers X, Y, and V.",
-    "outputFormat": "For each query of type 3, print a single line containing two integers separated by a slash '/' — the numerator and denominator of the rotation speed of the given gear expressed as an irreducible fraction (even if this speed is an integer), or 0 if the gear does not rotate at all.",
+    "inputFormat": "The first line contains two space-separated integers N and M. The second line contains N space-separated integers A1, A2, \u2026, AN. The following M lines describe queries. Each query line begins with an integer T denoting the type of the current query. If T = 1, it is followed by two space-separated integers X and C. If T = 2, it is followed by two space-separated integers X and Y. If T = 3, it is followed by three space-separated integers X, Y, and V.",
+    "outputFormat": "For each query of type 3, print a single line containing two integers separated by a slash '/' \u2014 the numerator and denominator of the rotation speed of the given gear expressed as an irreducible fraction (even if this speed is an integer), or 0 if the gear does not rotate at all.",
     "sampleTestCases": [
       {
         "id": "sample_1",
@@ -103,8 +104,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use a Union-Find data structure to keep track of the connected components of gears. For each query of type 2, we union the two gears. For each query of type 3, we find the connected component of the two gears and calculate the rotation speed. If the two gears are not in the same connected component, the rotation speed is 0. If they are in the same connected component, we can calculate the rotation speed by multiplying the ratio of the number of teeth of the gears in the path from the first gear to the second gear.",
-    "timeComplexity": "O(M * alpha(N)) — where alpha(N) is the inverse Ackermann function, which grows very slowly. The Union-Find operations (find and union) take almost constant time.",
-    "spaceComplexity": "O(N) — we need to store the parent and rank of each gear, as well as the number of teeth of each gear.",
+    "timeComplexity": "O(M * alpha(N)) \u2014 where alpha(N) is the inverse Ackermann function, which grows very slowly. The Union-Find operations (find and union) take almost constant time.",
+    "spaceComplexity": "O(N) \u2014 we need to store the parent and rank of each gear, as well as the number of teeth of each gear.",
     "code": {
       "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#define MAXN 100005\nint parent[MAXN], rank[MAXN], teeth[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y); if (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; } }}\nint main() {\n    int N, M;\n    scanf(\"%d %d\", &N, &M);\n    for (int i = 1; i <= N; i++) {\n        scanf(\"%d\", &teeth[i]);\n        parent[i] = i;\n        rank[i] = 0;\n    }\n    for (int i = 0; i < M; i++) {\n        int type;\n        scanf(\"%d\", &type);\n        if (type == 1) {\n            int X, C;\n            scanf(\"%d %d\", &X, &C);\n            teeth[X] = C;\n        } else if (type == 2) {\n            int X, Y;\n            scanf(\"%d %d\", &X, &Y);\n            unionSet(X, Y);\n        } else {\n            int X, Y, V;\n            scanf(\"%d %d %d\", &X, &Y, &V);\n            if (find(X) != find(Y)) {\n                printf(\"0\\n\");\n            } else {\n                // calculate rotation speed\n                int speed = V;\n                int current = X;\n                while (current != Y) {\n                    // find the next gear in the path\n                    for (int j = 1; j <= N; j++) {\n                        if (find(j) == find(current) && j != current) {\n                            current = j;\n                            break;\n                        }\n                    }\n                    // update the rotation speed\n                    speed = -speed * teeth[X] / teeth[current];\n                    X = current;\n                }\n                printf(\"%d/%d\\n\", speed, 1);\n            }\n        }\n    }\n    return 0;\n}",
       "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <vector>\nusing namespace std;\nconst int MAXN = 100005;\nint parent[MAXN], rank[MAXN], teeth[MAXN];\nint find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }\nvoid unionSet(int x, int y) { int rootx = find(x), rooty = find(y); if (rootx != rooty) { if (rank[rootx] > rank[rooty]) { parent[rooty] = rootx; } else if (rank[rootx] < rank[rooty]) { parent[rootx] = rooty; } else { parent[rooty] = rootx; rank[rootx]++; } }}\nint main() {\n    int N, M;\n    cin >> N >> M;\n    for (int i = 1; i <= N; i++) {\n        cin >> teeth[i];\n        parent[i] = i;\n        rank[i] = 0;\n    }\n    for (int i = 0; i < M; i++) {\n        int type;\n        cin >> type;\n        if (type == 1) {\n            int X, C;\n            cin >> X >> C;\n            teeth[X] = C;\n        } else if (type == 2) {\n            int X, Y;\n            cin >> X >> Y;\n            unionSet(X, Y);\n        } else {\n            int X, Y, V;\n            cin >> X >> Y >> V;\n            if (find(X) != find(Y)) {\n                cout << \"0\" << endl;\n            } else {\n                // calculate rotation speed\n                int speed = V;\n                int current = X;\n                while (current != Y) {\n                    // find the next gear in the path\n                    for (int j = 1; j <= N; j++) {\n                        if (find(j) == find(current) && j != current) {\n                            current = j;\n                            break;\n                        }\n                    }\n                    // update the rotation speed\n                    speed = -speed * teeth[X] / teeth[current];\n                    X = current;\n                }\n                cout << speed << \"/1\" << endl;\n            }\n        }\n    }\n    return 0;\n}",

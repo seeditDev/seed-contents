@@ -6,7 +6,7 @@
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math | Dynamic Programming | Probability",
+    "category": "Dynamic Programming",
     "difficulty": "Medium",
     "isPremium": false,
     "tags": [
@@ -20,7 +20,7 @@
     ]
   },
   "content": {
-    "problemStatement": "There are NNN buckets numbered 111 through NNN. The buckets contain balls; each ball has a color between 111 and KKK. Let's denote the number of balls with color jjj that are initially in bucket iii by ai,ja_{i, j}ai,j​.\n\nFor each iii from 111 to N−1N-1N−1 (in this order), someone draws a ball uniformly at random from bucket iii and puts it into bucket i+1i+1i+1, then continues to draw the next ball. After putting a ball in bucket NNN, this person draws a ball, again uniformly at random, from bucket NNN.\n\nFor each color from 111 to KKK, find the probability that the ball drawn from bucket NNN has this color.",
+    "problemStatement": "There are NNN buckets numbered 111 through NNN. The buckets contain balls; each ball has a color between 111 and KKK. Let's denote the number of balls with color jjj that are initially in bucket iii by ai,ja_{i, j}ai,j\u200b.\n\nFor each iii from 111 to N\u22121N-1N\u22121 (in this order), someone draws a ball uniformly at random from bucket iii and puts it into bucket i+1i+1i+1, then continues to draw the next ball. After putting a ball in bucket NNN, this person draws a ball, again uniformly at random, from bucket NNN.\n\nFor each color from 111 to KKK, find the probability that the ball drawn from bucket NNN has this color.",
     "constraints": [
       "1 <= N, K <= 1000",
       "0 <= a[i][j] <= 100 for each valid i, j",
@@ -108,8 +108,8 @@
   },
   "solution": {
     "approach": "To solve this problem, we can use dynamic programming to calculate the probability of drawing each color from the last bucket. We start by initializing the probabilities for the first bucket. Then, for each subsequent bucket, we calculate the probability of drawing each color based on the probabilities of the previous bucket. We repeat this process until we reach the last bucket.",
-    "timeComplexity": "O(N * K) — we iterate over each bucket and each color once.",
-    "spaceComplexity": "O(N * K) — we need to store the probabilities for each bucket and each color.",
+    "timeComplexity": "O(N * K) \u2014 we iterate over each bucket and each color once.",
+    "spaceComplexity": "O(N * K) \u2014 we need to store the probabilities for each bucket and each color.",
     "code": {
       "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int N, K;\n    scanf(\"%d %d\", &N, &K);\n    double **prob = (double **)malloc(N * sizeof(double *));\n    for (int i = 0; i < N; i++) {\n        prob[i] = (double *)malloc(K * sizeof(double));\n    }\n    for (int i = 0; i < N; i++) {\n        int sum = 0;\n        for (int j = 0; j < K; j++) {\n            int x;\n            scanf(\"%d\", &x);\n            sum += x;\n            prob[i][j] = (double)x / sum;\n        }\n    }\n    for (int i = 1; i < N; i++) {\n        for (int j = 0; j < K; j++) {\n            double sum = 0;\n            for (int k = 0; k < K; k++) {\n                sum += prob[i - 1][k] * prob[i][j];\n            }\n            prob[i][j] = sum;\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        printf(\"%f \", prob[N - 1][i]);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    double **prob = new double *[N];\n    for (int i = 0; i < N; i++) {\n        prob[i] = new double[K];\n    }\n    for (int i = 0; i < N; i++) {\n        int sum = 0;\n        for (int j = 0; j < K; j++) {\n            int x;\n            cin >> x;\n            sum += x;\n            prob[i][j] = (double)x / sum;\n        }\n    }\n    for (int i = 1; i < N; i++) {\n        for (int j = 0; j < K; j++) {\n            double sum = 0;\n            for (int k = 0; k < K; k++) {\n                sum += prob[i - 1][k] * prob[i][j];\n            }\n            prob[i][j] = sum;\n        }\n    }\n    for (int i = 0; i < K; i++) {\n        cout << prob[N - 1][i] << \" \";\n    }\n    return 0;\n}",

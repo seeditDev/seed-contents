@@ -10,8 +10,9 @@
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "Geometry",
-      "Minimax"
+      "Minimax",
+      "Math",
+      "Geometry"
     ],
     "companyTags": [],
     "topicTags": [
@@ -115,7 +116,7 @@
   "solution": {
     "approach": "To find the point (X, Y) such that the maximum time taken by any of the Ents to reach (X, Y) is minimized, we can use a minimax approach. We need to find the point that minimizes the maximum distance divided by the speed for all Ents.",
     "timeComplexity": "O(T * N^2) per test case, O(T * N^2) total, where N is the number of Ents.",
-    "spaceComplexity": "O(N) — for storing the coordinates and speeds of the Ents.",
+    "spaceComplexity": "O(N) \u2014 for storing the coordinates and speeds of the Ents.",
     "code": {
       "C": "#include <stdio.h>\n#include <math.h>\nint main() {\n    int T, N;\n    scanf(\"%d\", &T);\n    while (T--) {\n        scanf(\"%d\", &N);\n        double x[N], y[N], s[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%lf %lf %lf\", &x[i], &y[i], &s[i]);\n        }\n        double minX = x[0], maxX = x[0], minY = y[0], maxY = y[0];\n        for (int i = 1; i < N; i++) {\n            minX = fmin(minX, x[i]);\n            maxX = fmax(maxX, x[i]);\n            minY = fmin(minY, y[i]);\n            maxY = fmax(maxY, y[i]);\n        }\n        double ans = 1e18;\n        for (double X = minX; X <= maxX; X += 1) {\n            for (double Y = minY; Y <= maxY; Y += 1) {\n                double maxTime = 0;\n                for (int i = 0; i < N; i++) {\n                    double time = sqrt((X - x[i]) * (X - x[i]) + (Y - y[i]) * (Y - y[i])) / s[i];\n                    maxTime = fmax(maxTime, time);\n                }\n                ans = fmin(ans, maxTime);\n            }\n        }\n        printf(\"%.6f\\n\", ans);\n    }\n    return 0;\n}",
       "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    int T, N;\n    cin >> T;\n    while (T--) {\n        cin >> N;\n        double x[N], y[N], s[N];\n        for (int i = 0; i < N; i++) {\n            cin >> x[i] >> y[i] >> s[i];\n        }\n        double minX = x[0], maxX = x[0], minY = y[0], maxY = y[0];\n        for (int i = 1; i < N; i++) {\n            minX = min(minX, x[i]);\n            maxX = max(maxX, x[i]);\n            minY = min(minY, y[i]);\n            maxY = max(maxY, y[i]);\n        }\n        double ans = 1e18;\n        for (double X = minX; X <= maxX; X += 1) {\n            for (double Y = minY; Y <= maxY; Y += 1) {\n                double maxTime = 0;\n                for (int i = 0; i < N; i++) {\n                    double time = sqrt((X - x[i]) * (X - x[i]) + (Y - y[i]) * (Y - y[i])) / s[i];\n                    maxTime = max(maxTime, time);\n                }\n                ans = min(ans, maxTime);\n            }\n        }\n        cout << fixed << setprecision(6) << ans << endl;\n    }\n    return 0;\n}",
