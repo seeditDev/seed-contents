@@ -1,49 +1,228 @@
 {
   "questionId": "Q4331",
-  "title": "Cersei and her Soldiers",
-  "slug": "cersei-and-her-soldiers",
+  "title": "Topological Sort - using DFS",
+  "slug": "topological-sort-using-dfs",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-12",
   "metadata": {
-    "category": "Dynamic Programming",
+    "category": "Graph",
     "difficulty": "Hard",
     "isPremium": false,
     "tags": [
-      "competitive programming",
-      "dynamic programming",
-      "Dynamic Programming"
+      "Topological Sort",
+      "DFS",
+      "Cycle Detection",
+      "Directed Graph"
     ],
     "companyTags": [],
     "topicTags": [
-      "Dynamic Programming"
-    ]
+      "Graphs"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "**Cersei** wants to be the queen of seven kingdoms.\n\nFor this to happen, she needs to address the soldiers in her army. There are nnn soldiers in her army (numbered 111 through nnn). Cersei passes on the message to the **first soldier (soldier 1)**.\n\nThis message needs to reach **every soldier in the army**. For this, the soldiers communicate among themselves by one soldier passing the message to another soldier through some communication links. It is known that the **message could reach every soldier** using the given links.\n\nNow, each soldier will receive the **message from exactly one soldier or Cersei** and could **pass on the message to atmost two soldiers**. That is each soldier (except soldier 1) has only **one incoming link** and every soldier (including soldier 1) has atmost **two outgoing links**.\n\nNow, the High Sparrow feels that Cersei is planning to kill his people first. Hence, for the sake of his people, he decided to appoint some sparrows to overhear every conversation between the soldiers (**The conversation between Cersei and the first soldier needn't be overheard** due to the fear of Ser Gregor Clegane).\n\nTo overhear a conversation between soldiers AAA and BBB, there needs to be a sparrow either at soldier AAA or soldier BBB or both.\n\nAlso, by his research, the High Sparrow has found that the **soldiers are partitioned into some classes (111 to kkk).** That is, every soldier belongs to exactly one class. He then demands the presence of **atleast one sparrow with each class** he knows (111 to kkk).\n\nFind the minimum number of sparrows the High Sparrow needs to recruit for the job or tell that he couldn't.\n\n###Input:\n\n\nThe first line of the input contains the number of test cases ttt.\nThe first line of each test case gives the number of soldiers nnn in the army, the number of communication links mmm between the soldiers and the number of classes kkk in soldiers.\nThe next line of the test case consists of nnn integers A1,A2....AnA_1,A_2....A_nA1\u200b,A2\u200b....An\u200b each denoting the class of the ithi^{th}ith soldier.\nThe next mmm lines of the test case contain two integers uuu and vvv, which denotes that soldier uuu can pass a message to soldier vvv (u\u2260vu \\neq vu\ue020=v).\n###Output:\nFor each test case, print in a single line the minimum number of sparrows required for the above task or print \u22121-1\u22121 if no such way is possible.\n\n###Constraints\n\n\n1\u2264t\u22645001 \\leq t \\leq 5001\u2264t\u2264500\n1\u2264n\u226425001 \\leq n \\leq 25001\u2264n\u22642500\nm=n\u22121m = n - 1m=n\u22121\n1\u2264k\u2264101 \\leq k \\leq 101\u2264k\u226410\n1\u2264ai\u2264k1 \\leq a_i \\leq k1\u2264ai\u200b\u2264k\nThe sum of nnn over all test cases is \u22642500\\leq 2500\u22642500.\n###Sample Input:\n1\n5 4 3\n1 1 2 2 3\n1 2\n1 3\n2 4\n2 5\n\n###Sample Output:\n3\n\n###EXPLANATION:\nSelecting soldiers 1,4,5 would satisfy all the conditions.\n\n###Sample Input:\n1\n5 4 5\n1 1 2 2 3\n1 2\n1 3\n2 4\n2 5\n\n###Sample Output:\n-1\n\n###EXPLANATION:\nClasses 4 and 5 are not present. So, there is no way possible.",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
-    "sampleTestCases": []
+    "problemStatement": "The AlgorithmLet's assume that the graph is acyclic. If unsure, first check. As discussed earlier, topological sort can only be found in DAGs.\n\nWhen starting from some vertex vvv , DFS tries to traverse along all edges outgoing from  \nvvv. It stops at the edges for which the ends have been already been visited previously, and traverses along the rest of the edges and continues recursively at their ends.\n\nThus, by the time of the function call  \ndfs(v)\\text{dfs}(v)dfs(v)  has finished, all vertices that are reachable from  \nvvv  have been either directly (via one edge) or indirectly visited by the search.\n\nLet's append the vertex  \nvvv  to a list, when we finish  \ndfs(v)\\text{dfs}(v)dfs(v) . Since all reachable vertices have already been visited, they will already be in the list when we append  \nvvv . Let's do this for every vertex in the graph, with one or multiple depth-first search runs. For every directed edge  \nv→uv \\rightarrow uv→u  in the graph,  \nuuu  will appear earlier in this list than  \nvvv , because  \nuuu  is reachable from  \nvvv . So if we just label the vertices in this list with  \nn−1,n−2,…,1,0n-1, n-2, \\dots, 1, 0n−1,n−2,…,1,0 , we have found a topological order of the graph. In other words, the list represents the reversed topological order.\n\n**Pseudocode:**\n\n`Procedure DFS(v):\n    visited[v] = 1  // Mark as VISITING (in current recursion stack)\n    \n    For each neighbor u of v:\n        If visited[u] == 1:\n            Return False  // Cycle detected!\n        If visited[u] == 0:\n            If DFS(u) == False:\n                Return False\n\n    visited[v] = 2  // Mark as VISITED\n    Append v to 'topologicalOrder'\n    Return True\n\nProcedure TopologicalSort():\n    Initialize an empty list 'topologicalOrder'\n    Create an integer array 'visited' of size n, initially set to 0 (Unvisited)\n\n    For each vertex i from 1 to n:\n        If visited[i] == 0:\n            If DFS(i) == False:\n                Print -1\n                Return\n\n    Reverse the 'topologicalOrder' list\n    Print 'topologicalOrder'\n`Task\nPrint a topological ordering of the given directed graph.\n\nInput Format\n\nThe first line consists of two space separated integers, `N` and `M`, representing the number of nodes and edges.\nNodes are numbered from `1` to `N`.\nThe subsequent `M` lines describe the edges, each containing two integers, `u` and `v`, describing the directed edge between nodes `u` and `v`.\nEach edge links two distinct nodes, and at most one edge exists between any two nodes.\n\n\nOutput Format\n\nOutput `N` space separated integers, the topological ordering of the given graph, if possible. Else print -1.",
+    "constraints": [
+      "1 <= T <= 10",
+      "1 <= N <= 200000",
+      "0 <= M <= N·(N‑1)/2",
+      "1 <= u, v <= N, u != v"
+    ],
+    "inputFormat": "First line contains an integer T, the number of test cases. For each test case, the first line contains two integers N and M — the number of vertices and edges. The next M lines each contain two integers u and v (1‑based) denoting a directed edge u → v.",
+    "outputFormat": "For each test case, print a single line. If the graph is a DAG, print N space‑separated integers representing any topological ordering of the vertices. If the graph contains a cycle, print -1.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n5 6\n1 2\n2 3\n1 3\n3 5\n2 4\n4 5\n4 3\n1 2\n2 3\n3 4\n3 3\n1 2\n2 3\n1 3",
+        "output": "1 2 4 3 5\n1 2 3 4\n1 2 3",
+        "explanation": ""
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 3\n1 2\n2 3\n3 1",
+        "output": "-1",
+        "explanation": ""
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1 0",
+        "output": "1",
+        "explanation": ""
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "input": "",
-        "expectedOutput": "",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1 0",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_2",
+        "label": "minimum boundary 2",
+        "input": "1\n2 0",
+        "expectedOutput": "2 1",
+        "weight": 1
+      },
+      {
+        "id": "tc_3",
+        "label": "minimum boundary 3",
+        "input": "1\n2 1\n1 2",
+        "expectedOutput": "1 2",
+        "weight": 1
+      },
+      {
+        "id": "tc_4",
+        "label": "minimum boundary 4",
+        "input": "1\n2 2\n1 2\n2 1",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_5",
+        "label": "maximum boundary",
+        "input": "1\n5 10\n1 2\n1 3\n1 4\n1 5\n2 3\n2 4\n2 5\n3 4\n3 5\n4 5",
+        "expectedOutput": "1 2 3 4 5",
+        "weight": 1
+      },
+      {
+        "id": "tc_6",
+        "label": "maximum boundary 2",
+        "input": "1\n5 0",
+        "expectedOutput": "5 4 3 2 1",
+        "weight": 1
+      },
+      {
+        "id": "tc_7",
+        "label": "maximum boundary 3",
+        "input": "1\n5 4\n1 2\n2 3\n4 5\n3 5",
+        "expectedOutput": "4 1 2 3 5",
+        "weight": 1
+      },
+      {
+        "id": "tc_8",
+        "label": "maximum boundary 4",
+        "input": "1\n5 5\n1 2\n2 3\n3 1\n4 5\n5 4",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_9",
+        "label": "uniform case",
+        "input": "1\n4 3\n1 2\n1 3\n1 4",
+        "expectedOutput": "1 4 3 2",
+        "weight": 1
+      },
+      {
+        "id": "tc_10",
+        "label": "uniform case 2",
+        "input": "1\n4 3\n2 4\n3 4\n1 4",
+        "expectedOutput": "3 2 1 4",
+        "weight": 1
+      },
+      {
+        "id": "tc_11",
+        "label": "structured case",
+        "input": "1\n5 4\n1 2\n2 3\n3 4\n4 5",
+        "expectedOutput": "1 2 3 4 5",
+        "weight": 1
+      },
+      {
+        "id": "tc_12",
+        "label": "structured case 2",
+        "input": "1\n5 4\n5 4\n4 3\n3 2\n2 1",
+        "expectedOutput": "5 4 3 2 1",
+        "weight": 1
+      },
+      {
+        "id": "tc_13",
+        "label": "tricky case",
+        "input": "1\n6 6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 1",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_14",
+        "label": "tricky case 2",
+        "input": "1\n6 5\n1 2\n2 3\n3 4\n4 5\n5 6",
+        "expectedOutput": "1 2 3 4 5 6",
+        "weight": 1
+      },
+      {
+        "id": "tc_15",
+        "label": "tricky case 3",
+        "input": "1\n7 6\n1 3\n3 5\n5 7\n2 4\n4 6\n6 2",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_16",
+        "label": "tricky case 4",
+        "input": "1\n8 7\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8",
+        "expectedOutput": "1 2 3 4 5 6 7 8",
+        "weight": 1
+      },
+      {
+        "id": "tc_17",
+        "label": "stress case",
+        "input": "3\n3 2\n1 2\n2 3\n4 3\n1 2\n2 3\n3 4\n2 0",
+        "expectedOutput": "1 2 3\n1 2 3 4\n2 1",
+        "weight": 1
+      },
+      {
+        "id": "tc_18",
+        "label": "stress case 2",
+        "input": "5\n1 0\n2 1\n1 2\n3 2\n1 2\n2 3\n4 3\n1 2\n2 3\n3 4\n5 4\n1 2\n2 3\n3 4\n4 5",
+        "expectedOutput": "1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5",
+        "weight": 1
+      },
+      {
+        "id": "tc_19",
+        "label": "stress case 3",
+        "input": "2\n8 7\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8\n8 7\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 1",
+        "expectedOutput": "1 2 3 4 5 6 7 8\n-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_20",
+        "label": "stress case 4",
+        "input": "1\n6 6\n1 2\n2 3\n3 1\n4 5\n5 6\n6 4",
+        "expectedOutput": "-1",
+        "weight": 1
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 20,
+    "totalWeight": 20
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
-    "maxScore": 100
+    "maxScore": 20
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -57,9 +236,28 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {}
-  }
+    "approach": "The problem asks for a topological ordering of a directed graph or detection of a cycle. A classic way is Kahn's algorithm (BFS on indegrees). It repeatedly removes vertices with indegree zero, building the order. If at the end not all vertices are processed, a cycle exists. This runs in O(N+M) time and uses O(N+M) memory, which satisfies the constraints. Although the statement describes a DFS based method, any correct topological order is accepted, and Kahn's algorithm avoids recursion depth issues for large N.",
+    "timeComplexity": "O(N + M) per test case.",
+    "spaceComplexity": "O(N + M) for adjacency lists, indegree array and the queue.",
+    "code": {
+      "C": "",
+      "C++": "",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class FastScanner {\n        private final BufferedInputStream in = new BufferedInputStream(System.in);\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        int nextInt() throws IOException {\n            int c, sign = 1, val = 0;\n            do { c = readByte(); } while (c <= ' ' && c != -1);\n            if (c == '-') { sign = -1; c = readByte(); }\n            while (c > ' ') {\n                val = val * 10 + (c - '0');\n                c = readByte();\n            }\n            return val * sign;\n        }\n    }\n\n    static List<Integer>[] graph;\n    static int[] state; // 0=unvisited,1=visiting,2=visited\n    static List<Integer> order;\n    static boolean dfs(int v) {\n        state[v] = 1; // visiting\n        for (int to : graph[v]) {\n            if (state[to] == 1) return false; // cycle\n            if (state[to] == 0) {\n                if (!dfs(to)) return false;\n            }\n        }\n        state[v] = 2; // visited\n        order.add(v);\n        return true;\n    }\n\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner();\n        StringBuilder out = new StringBuilder();\n        int T = fs.nextInt();\n        while (T-- > 0) {\n            int n = fs.nextInt();\n            int m = fs.nextInt();\n            graph = new ArrayList[n];\n            for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();\n            for (int i = 0; i < m; i++) {\n                int u = fs.nextInt() - 1;\n                int v = fs.nextInt() - 1;\n                graph[u].add(v);\n            }\n            state = new int[n];\n            order = new ArrayList<>();\n            boolean ok = true;\n            for (int i = 0; i < n && ok; i++) {\n                if (state[i] == 0) {\n                    if (!dfs(i)) ok = false;\n                }\n            }\n            if (!ok) {\n                out.append(\"-1\\n\");\n            } else {\n                // order currently has vertices in post‑order (reverse topological)\n                Collections.reverse(order);\n                for (int i = 0; i < n; i++) {\n                    out.append(order.get(i) + 1);\n                    if (i + 1 < n) out.append(' ');\n                }\n                out.append('\\n');\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "",
+      "JavaScript": ""
+    }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
+  },
+  "tcGeneratorPython": "def generate_case(i, RINT, POWER):\n    # Placeholder generator – actual cases are listed above.\n    pass"
 }

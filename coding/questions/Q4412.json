@@ -1,40 +1,52 @@
 {
   "questionId": "Q4412",
-  "title": "Nice Subsets",
-  "slug": "nice-subsets",
+  "title": "Pyramid of Bricks",
+  "slug": "pyramid-of-bricks",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-12",
   "metadata": {
     "category": "Math",
-    "difficulty": "Hard",
+    "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "competitive programming",
-      "combinatorics & probability",
-      "Math"
+      "Binary Search",
+      "Math",
+      "Greedy"
     ],
     "companyTags": [],
     "topicTags": [
-      "Combinatorics & Probability"
-    ]
+      "Binary Search"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "A good number is a positive integer which is not divisible by the cube (third power) of any prime. For example, 222, 333, 25=5\u22c5525 = 5 \\cdot 525=5\u22c55, 63=7\u22c5963 = 7 \\cdot 963=7\u22c59 and 2057=11\u22c511\u22c5172057 = 11 \\cdot 11 \\cdot 172057=11\u22c511\u22c517 are good numbers, but 8=2\u22c52\u22c528 = 2 \\cdot 2 \\cdot 28=2\u22c52\u22c52, 9317=7\u22c511\u22c511\u22c5119317 = 7 \\cdot 11 \\cdot 11 \\cdot 119317=7\u22c511\u22c511\u22c511 and 2401=7\u22c57\u22c57\u22c572401 = 7 \\cdot 7 \\cdot 7 \\cdot 72401=7\u22c57\u22c57\u22c57 are not good numbers.\n\nA pair of positive integers (x,y)(x, y)(x,y) is special if x\u22c5yx \\cdot yx\u22c5y is a good number. A set of positive integers is nice if each pair of different integers from this set is special. In particular, the empty set is nice.\n\nYou are given a set of integers {A1,A2,\u2026,AN}\\{A_1, A_2, \\ldots, A_N\\}{A1\u200b,A2\u200b,\u2026,AN\u200b}. Find the number of nice subsets of this set.",
+    "problemStatement": "You are given NNN bricks and want to construct a **pyramid**. A pyramid is built in layers where the iii-th layer (from the top) requires **i** bricks.\n\n\nThe **1st** layer requires 111 brick.\nThe **2nd** layer requires 222 bricks.\nThe **3rd** layer requires 333 bricks.\nAnd so on.\nFor example, following is a pyramid of 444 layers:\n\nYour task is to determine the maximum number of **complete layers** you can build using the given NNN bricks.\n\n\nInput Format\n\nThe first line of the input contains the number of test cases, TTT.\nFor each test case, a single integer, NNN, represents the number of bricks available.\n\n\nOutput Format\n\nA single integer representing the maximum number of complete layers you can build.",
     "constraints": [
-      "1\u2264T\u2264101 \\le T \\le 101\u2264T\u226410",
-      "1\u2264N\u2264401 \\le N \\le 401\u2264N\u226440",
-      "1\u2264Ai\u22641081 \\le A_i \\le 10^81\u2264Ai\u200b\u2264108 for each valid iii",
-      "A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b are pairwise distinct"
+      "1 <= T <= 50",
+      "1 <= N <= 1000000000",
+      "All values are integers"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains a single integer NNN.\nThe second line contains NNN space-separated integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b.",
-    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of nice subsets.",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer N, the number of bricks available.",
+    "outputFormat": "For each test case, output a single integer – the maximum number of complete layers that can be built – on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n3\n1 2 3\n1\n8\n5\n5 1 4 2 3\n2\n81 3",
-        "output": "8\n2\n24\n3",
-        "explanation": ""
+        "input": "2\n8\n15",
+        "output": "3\n5",
+        "explanation": "For N=8 the largest k with k(k+1)/2 ≤ 8 is k=3 (3*4/2=6). For N=15 the sum of first 5 layers is exactly 15, so k=5."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n1\n2\n100",
+        "output": "1\n1\n13",
+        "explanation": "N=1 → only layer 1 fits. N=2 → still only layer 1 fits because 1+2=3 exceeds 2. N=100 → k=13 because 13*14/2=91 ≤ 100 and 14*15/2=105 > 100."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n1000000000",
+        "output": "44720",
+        "explanation": "Using the formula k = floor((sqrt(8*10^9+1)-1)/2) gives 44720. The sum of first 44720 layers is 999961560 which is ≤ 1e9, while adding the 44721‑st layer would exceed the limit."
       }
     ]
   },
@@ -42,20 +54,173 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\n3\n1 2 3\n1\n8\n5\n5 1 4 2 3\n2\n81 3",
-        "expectedOutput": "8\n2\n24\n3",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_2",
+        "label": "minimum boundary 2",
+        "input": "1\n2",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_3",
+        "label": "minimum boundary 3",
+        "input": "1\n3",
+        "expectedOutput": "2",
+        "weight": 1
+      },
+      {
+        "id": "tc_4",
+        "label": "minimum boundary 4",
+        "input": "2\n1\n1",
+        "expectedOutput": "1\n1",
+        "weight": 1
+      },
+      {
+        "id": "tc_5",
+        "label": "maximum boundary",
+        "input": "1\n1000000000",
+        "expectedOutput": "44720",
+        "weight": 1
+      },
+      {
+        "id": "tc_6",
+        "label": "maximum boundary 2",
+        "input": "1\n999999999",
+        "expectedOutput": "44720",
+        "weight": 1
+      },
+      {
+        "id": "tc_7",
+        "label": "maximum boundary 3",
+        "input": "1\n500000000",
+        "expectedOutput": "31622",
+        "weight": 1
+      },
+      {
+        "id": "tc_8",
+        "label": "maximum boundary 4",
+        "input": "1\n999999900",
+        "expectedOutput": "44720",
+        "weight": 1
+      },
+      {
+        "id": "tc_9",
+        "label": "uniform case",
+        "input": "5\n10\n10\n10\n10\n10",
+        "expectedOutput": "4\n4\n4\n4\n4",
+        "weight": 1
+      },
+      {
+        "id": "tc_10",
+        "label": "uniform case 2",
+        "input": "3\n100\n100\n100",
+        "expectedOutput": "13\n13\n13",
+        "weight": 1
+      },
+      {
+        "id": "tc_11",
+        "label": "structured case",
+        "input": "4\n1\n3\n6\n10",
+        "expectedOutput": "1\n2\n3\n4",
+        "weight": 1
+      },
+      {
+        "id": "tc_12",
+        "label": "structured case 2",
+        "input": "4\n10\n6\n3\n1",
+        "expectedOutput": "4\n3\n2\n1",
+        "weight": 1
+      },
+      {
+        "id": "tc_13",
+        "label": "tricky case",
+        "input": "1\n999983",
+        "expectedOutput": "1413",
+        "weight": 1
+      },
+      {
+        "id": "tc_14",
+        "label": "tricky case 2",
+        "input": "1\n999961559",
+        "expectedOutput": "44719",
+        "weight": 1
+      },
+      {
+        "id": "tc_15",
+        "label": "tricky case 3",
+        "input": "1\n999999999",
+        "expectedOutput": "44720",
+        "weight": 1
+      },
+      {
+        "id": "tc_16",
+        "label": "tricky case 4",
+        "input": "1\n999961560",
+        "expectedOutput": "44720",
+        "weight": 1
+      },
+      {
+        "id": "tc_17",
+        "label": "stress case",
+        "input": "10\n5\n15\n30\n55\n91\n136\n190\n255\n331\n418",
+        "expectedOutput": "2\n5\n7\n10\n13\n16\n19\n22\n25\n28",
+        "weight": 1
+      },
+      {
+        "id": "tc_18",
+        "label": "stress case 2",
+        "input": "20\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
+        "expectedOutput": "1\n1\n2\n2\n2\n3\n3\n3\n3\n4\n4\n4\n4\n4\n5\n5\n5\n5\n5\n5",
+        "weight": 1
+      },
+      {
+        "id": "tc_19",
+        "label": "stress case 3",
+        "input": "3\n1000000000\n999999999\n500000000",
+        "expectedOutput": "44720\n44720\n31622",
+        "weight": 1
+      },
+      {
+        "id": "tc_20",
+        "label": "stress case 4",
+        "input": "4\n1\n100\n1000\n1000000",
+        "expectedOutput": "1\n13\n44\n1413",
+        "weight": 1
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 20,
+    "totalWeight": 20
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
-    "maxScore": 100
+    "maxScore": 20
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -69,9 +234,28 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
-  }
+    "approach": "The total bricks needed for k complete layers is the k‑th triangular number S = k*(k+1)/2. We need the largest k such that S ≤ N. This inequality can be transformed to k² + k - 2N ≤ 0. Solving the quadratic gives k = floor((sqrt(8N+1)-1)/2). Because of possible floating‑point rounding, we adjust k by at most one step using integer checks. The algorithm runs in O(1) per test case.",
+    "timeComplexity": "O(1) per test case, O(T) overall.",
+    "spaceComplexity": "O(1) additional space.",
+    "code": {
+      "C": "",
+      "C++": "",
+      "Java": "import java.io.*;import java.util.*;public class Main{public static void main(String[] args)throws Exception{BufferedReader br=new BufferedReader(new InputStreamReader(System.in));StringBuilder sb=new StringBuilder();int T=Integer.parseInt(br.readLine().trim());for(int t=0;t<T;t++){long N=Long.parseLong(br.readLine().trim());long k=(long)((Math.sqrt(8.0*N+1)-1)/2);while((k+1)*(k+2)/2<=N)k++;while(k*(k+1)/2>N)k--;sb.append(k).append(\"\\n\");}System.out.print(sb.toString());}}",
+      "Python3": "",
+      "JavaScript": ""
+    }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
+  },
+  "tcGeneratorPython": "def generate_case(i, RINT, POWER):\n    # Placeholder generator – actual inputs are listed in hiddenTestCases.\n    pass"
 }

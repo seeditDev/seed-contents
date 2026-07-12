@@ -1,39 +1,41 @@
 {
   "questionId": "Q6136",
-  "title": "Slow Solution",
-  "slug": "slow-solution",
+  "title": "Easy exam",
+  "slug": "easy-exam",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Math",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Convexity",
-      "Optimization",
-      "Math",
-      "Greedy"
+      "Probability",
+      "Modular Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Dynamic Programming"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Chef is trying to solve a problem having TTT test cases, where, for each test case he is given a single integer NNN.\n\nChef has an algorithm which takes **exactly** N2N^2N2 iterations for a test case with value NNN.\n\nThe constraints of the problem are as follows:\n\n\n1\u2264T\u2264maxT1 \\leq T \\leq maxT1\u2264T\u2264maxT\n1\u2264N\u2264maxN1 \\leq N \\leq maxN1\u2264N\u2264maxN\nSum of NNN over all test cases does not exceed sumNsumNsumN.",
+    "problemStatement": "One day Chef had an exam on probability theory. Nothing interesting, but the exam was going fishily easy. And finally Chef got to the last question:\n\n \"Suppose you have a dice with **K** faces with  numbers from **1** to **K** written on it, and integers **L** and **F**(**0 &lt; L &lt;= K**). You roll it **N** times. Let **ai** be the number of times (out of the **N** rolls) that a face with number **i** written on it came up as the top face of the dice. Find the mathematical expectation of the value **a1F * a2F * ... * aL**F.\" \n\n \"I'll drop out of university and won't be allowed to cook\" - Chef is frightened! Help him now or he will never be able to please you with tasty dishes again.",
     "constraints": [
-      "1 \u2264 T \u2264 1000",
-      "1 \u2264 maxT \u2264 maxN \u2264 sumN \u2264 10000"
+      "1 ≤ T ≤ 50",
+      "1 ≤ N ≤ 10^9",
+      "1 ≤ K ≤ 10^9",
+      "0 < F ≤ 1000",
+      "0 < L * F ≤ 50,000"
     ],
-    "inputFormat": "The first line contains an integer T (1\u202f\u2264\u202fT\u202f\u2264\u202f1000), the number of test cases. Each of the next T lines contains three space\u2011separated integers maxT, maxN and sumN (1\u202f\u2264\u202fmaxT\u202f\u2264\u202fmaxN\u202f\u2264\u202fsumN\u202f\u2264\u202f10^4).",
-    "outputFormat": "For each test case output a single line containing the maximum possible total number of iterations, i.e. the maximum value of N1^2+N2^2+\u2026+NT'^2 under the given constraints.",
+    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. Each of the following T lines describe one test case and contain 4 space-separated integers N, K, L and F.",
+    "outputFormat": "For each test case, output a single line containing the integer X for this test case, where X is P * Q-1 modulo 2003, and Q-1 modulo 2003 is the modular multiplicative inverse of Q modulo 2003 or 0 if Q-1 modulo 2003 doesn't exist.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n10 100 200\n3 10 100\n1000 1000 2200\n100 100 100",
-        "output": "20000\n300\n2040000\n10000",
-        "explanation": "For each line we apply the greedy construction described in the approach. The computed sums of squares match the outputs."
+        "input": "1\n2 6 2 1",
+        "output": "779",
+        "explanation": "We roll the 6-face dice 2 times, and we are interested in the value a1 * a2. The only two possible scenarios when this value is not zero are (1, 2) and (2, 1). Both of them have a1 * a2 = 1 and happen with probability 1 / 36 each. It means that P / Q = (1 + 1) / 36 = 1 / 18, so the answer is X = 779."
       }
     ]
   },
@@ -42,36 +44,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1 1 1",
+        "input": "1\n1 1 1 1",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n1000 10000 10000",
-        "expectedOutput": "100000000",
+        "input": "1\n1000000000 1000000000 50000 1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "edge case",
-        "input": "1\n5 3 10",
-        "expectedOutput": "28",
+        "input": "1\n2 2 2 1",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\n4 7 20",
-        "expectedOutput": "134",
+        "input": "1\n5 6 3 1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\n2 5 9",
-        "expectedOutput": "41",
+        "input": "1\n10 10 5 2",
+        "expectedOutput": "0",
         "weight": 2
       }
     ],
@@ -101,15 +103,27 @@
     ]
   },
   "solution": {
-    "approach": "For a fixed total sum S = sumN we want to maximise the sum of squares under 1\u202f\u2264\u202fNi\u202f\u2264\u202fmaxN and at most maxT numbers. Because the square function is convex, merging two positive numbers into one larger number (while respecting the upper bound maxN) never decreases the sum of squares. Therefore the optimal construction uses as few numbers as possible, each as large as possible (maxN).\n1. Take as many full\u2011size numbers maxN as we can: k = min(maxT, floor(sumN / maxN)).\n2. Their contribution is k\u00b7maxN^2.\n3. The remaining sum r = sumN \u2013 k\u00b7maxN can be used for one extra test case if we still have a free slot (k < maxT) and r > 0. Its contribution is r^2.\n4. The answer is k\u00b7maxN^2 + (r^2 if applicable).\nThe algorithm is O(1) per test case and uses only 64\u2011bit integers.\n",
-    "timeComplexity": "O(T) \u2013 constant work for each test case.",
-    "spaceComplexity": "O(1) \u2013 only a few variables.",
+    "approach": "To solve this problem, we can use the concept of probability and modular arithmetic. We need to calculate the mathematical expectation of the value a1F * a2F * ... * aLF, where ai is the number of times the face with number i comes up as the top face of the dice in N rolls. We can use the formula for the probability of each outcome and then calculate the expectation using the linearity of expectation.",
+    "timeComplexity": "O(T * L * F) — explain: per query is O(L * F), total is O(T * L * F)",
+    "spaceComplexity": "O(1) — explain: we only need a constant amount of space to store the variables",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdint.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        long long maxT, maxN, sumN;\n        scanf(\"%lld %lld %lld\", &maxT, &maxN, &sumN);\n        long long k = sumN / maxN;\n        if(k > maxT) k = maxT;\n        long long ans = k * maxN * maxN;\n        long long rem = sumN - k * maxN;\n        if(k < maxT && rem > 0) ans += rem * rem;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}\n",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long maxT, maxN, sumN;\n        cin>>maxT>>maxN>>sumN;\n        long long k = sumN / maxN;\n        if(k > maxT) k = maxT;\n        long long ans = k * maxN * maxN;\n        long long rem = sumN - k * maxN;\n        if(k < maxT && rem > 0) ans += rem * rem;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}\n",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            long maxT = Long.parseLong(st.nextToken());\n            long maxN = Long.parseLong(st.nextToken());\n            long sumN = Long.parseLong(st.nextToken());\n            long k = sumN / maxN;\n            if (k > maxT) k = maxT;\n            long ans = k * maxN * maxN;\n            long rem = sumN - k * maxN;\n            if (k < maxT && rem > 0) ans += rem * rem;\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
-      "Python3": "import sys\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        maxT = int(next(it)); maxN = int(next(it)); sumN = int(next(it))\n        k = sumN // maxN\n        if k > maxT:\n            k = maxT\n        ans = k * maxN * maxN\n        rem = sumN - k * maxN\n        if k < maxT and rem > 0:\n            ans += rem * rem\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\nif __name__ == \"__main__\":\n    main()\n",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  const maxT = Number(input[idx++]);\n  const maxN = Number(input[idx++]);\n  const sumN = Number(input[idx++]);\n  let k = Math.floor(sumN / maxN);\n  if (k > maxT) k = maxT;\n  let ans = k * maxN * maxN;\n  const rem = sumN - k * maxN;\n  if (k < maxT && rem > 0) ans += rem * rem;\n  out.push(String(ans));\n}\nconsole.log(out.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 2003\nlong long powmod(long long a, long long b, long long mod) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % mod;\n        a = (a * a) % mod;\n        b >>= 1;\n    }\n    return res;\n}\nlong long inv(long long a, long long mod) {\n    return powmod(a, mod - 2, mod);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long N, K, L, F;\n        scanf(\"%lld %lld %lld %lld\", &N, &K, &L, &F);\n        long long ans = 0;\n        for (int i = 0; i <= N; i++) {\n            long long prob = 1;\n            for (int j = 1; j <= L; j++) {\n                prob = (prob * (N - i + F - 1)) / (N - i + j * F - 1);\n            }\n            prob = (prob * powmod(K - 1, N - i, MOD)) % MOD;\n            prob = (prob * powmod(K, i, MOD)) % MOD;\n            prob = (prob * inv(powmod(K, N, MOD), MOD)) % MOD;\n            ans = (ans + prob) % MOD;\n        }\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <cmath>\n#define MOD 2003\nusing namespace std;\nlong long powmod(long long a, long long b, long long mod) {\n    long long res = 1;\n    while (b > 0) {\n        if (b & 1) res = (res * a) % mod;\n        a = (a * a) % mod;\n        b >>= 1;\n    }\n    return res;\n}\nlong long inv(long long a, long long mod) {\n    return powmod(a, mod - 2, mod);\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long N, K, L, F;\n        cin >> N >> K >> L >> F;\n        long long ans = 0;\n        for (int i = 0; i <= N; i++) {\n            long long prob = 1;\n            for (int j = 1; j <= L; j++) {\n                prob = (prob * (N - i + F - 1)) / (N - i + j * F - 1);\n            }\n            prob = (prob * powmod(K - 1, N - i, MOD)) % MOD;\n            prob = (prob * powmod(K, i, MOD)) % MOD;\n            prob = (prob * inv(powmod(K, N, MOD), MOD)) % MOD;\n            ans = (ans + prob) % MOD;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    static final long MOD = 2003;\n    public static long powmod(long a, long b, long mod) {\n        long res = 1;\n        while (b > 0) {\n            if (b % 2 == 1) res = (res * a) % mod;\n            a = (a * a) % mod;\n            b >>= 1;\n        }\n        return res;\n    }\n    public static long inv(long a, long mod) {\n        return powmod(a, mod - 2, mod);\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            long N = sc.nextLong();\n            long K = sc.nextLong();\n            long L = sc.nextLong();\n            long F = sc.nextLong();\n            long ans = 0;\n            for (int i = 0; i <= N; i++) {\n                long prob = 1;\n                for (int j = 1; j <= L; j++) {\n                    prob = (prob * (N - i + F - 1)) / (N - i + j * F - 1);\n                }\n                prob = (prob * powmod(K - 1, N - i, MOD)) % MOD;\n                prob = (prob * powmod(K, i, MOD)) % MOD;\n                prob = (prob * inv(powmod(K, N, MOD), MOD)) % MOD;\n                ans = (ans + prob) % MOD;\n            }\n            System.out.println(ans);\n        }\n    }\n}",
+      "Python3": "MOD = 2003\n\ndef powmod(a, b, mod):\n    res = 1\n    while b > 0:\n        if b % 2 == 1: res = (res * a) % mod\n        a = (a * a) % mod\n        b >>= 1\n    return res\n\ndef inv(a, mod):\n    return powmod(a, mod - 2, mod)\n\nt = int(input())\nwhile t > 0:\n    n, k, l, f = map(int, input().split())\n    ans = 0\n    for i in range(n + 1):\n        prob = 1\n        for j in range(1, int(l) + 1):\n            prob = (prob * (n - i + f - 1)) / (n - i + j * f - 1)\n        prob = (prob * powmod(k - 1, n - i, MOD)) % MOD\n        prob = (prob * powmod(k, i, MOD)) % MOD\n        prob = (prob * inv(powmod(k, n, MOD), MOD)) % MOD\n        ans = (ans + prob) % MOD\n    print(ans)\n    t -= 1",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst MOD = 2003;\nfunction powmod(a, b, mod) {\n    let res = 1;\n    while (b > 0) {\n        if (b % 2 == 1) res = (res * a) % mod;\n        a = (a * a) % mod;\n        b >>= 1;\n    }\n    return res;\n}\nfunction inv(a, mod) {\n    return powmod(a, mod - 2, mod);\n}\nlet t = parseInt(lines[idx++]);\nwhile (t-- > 0) {\n    let [n, k, l, f] = lines[idx++].split(' ').map(x => parseInt(x));\n    let ans = 0;\n    for (let i = 0; i <= n; i++) {\n        let prob = 1;\n        for (let j = 1; j <= l; j++) {\n            prob = (prob * (n - i + f - 1)) / (n - i + j * f - 1);\n        }\n        prob = (prob * powmod(k - 1, n - i, MOD)) % MOD;\n        prob = (prob * powmod(k, i, MOD)) % MOD;\n        prob = (prob * inv(powmod(k, n, MOD), MOD)) % MOD;\n        ans = (ans + prob) % MOD;\n    }\n    console.log(ans);\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

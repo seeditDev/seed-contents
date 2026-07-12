@@ -1,54 +1,47 @@
 {
   "questionId": "Q6784",
-  "title": "Card Swipe",
-  "slug": "card-swipe",
+  "title": "Chef And Easy Xor Queries",
+  "slug": "chef-and-easy-xor-queries",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Arrays",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Arrays | Bit Manipulation",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Counting",
-      "Parity",
-      "Simulation",
-      "Hash Map",
-      "Arrays"
+      "XOR",
+      "Prefix Sum",
+      "Magical Subarrays"
     ],
     "companyTags": [],
     "topicTags": [
       "Data Structures"
-    ]
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "In the bustling CodeChef office, the entrance is equipped with a high-tech card swipe system. Each employee is assigned a unique ID card that they use to swipe in and out of the building.\n\nThe system records every swipe, capturing the first swipe of an ID as in, second as out, third as in, and so on.\nGiven an array AAA consisting of NNN IDs denoting NNN swipes throughout the day, find the **maximum** number of people in the office at any time.\n\nNote that there is nobody inside the office before the first swipe.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of swipes throughout the day.\nThe next line contains NNN space-separated integers denoting the ID of the ithi^{th}ith swipe.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **maximum** number of people in the office at any time.",
+    "problemStatement": "Chef always likes to play with arrays. He came up with a new term **\"magical subarray\"**. A subarray is called magical if its starting index is **1** (1-based indexing). Now, Chef has an array of **N** elements and 2 types of queries:\n\n\n\n**type 1:** Given two numbers **i** and **x**, the value at index **i** should be updated to **x**.\n**type 2:** Given two numbers **i** and **k**, your program should output the total number of magical subarrays with the last index ≤ **i** in which the xor of all elements is equal to **k**.",
     "constraints": [
-      "1 \u2264 T \u2264 2\u00b710^5",
-      "1 \u2264 N \u2264 2\u00b710^5",
-      "1 \u2264 Ai \u2264 N",
-      "Sum of N over all test cases \u2264 10^6"
+      "1 <= N, Q <= 100,000",
+      "1 <= A[i] <= 1,000,000",
+      "1 <= i <= N",
+      "1 <= x, k <= 1,000,000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of swipes. The second line contains N space\u2011separated integers A1 \u2026 AN, the IDs of the swipes in chronological order.",
-    "outputFormat": "For each test case output a single line containing the maximum number of people that were inside the office at any moment.",
+    "inputFormat": "The first line contains two integers N and Q denoting the number of elements in the array and the number of queries respectively. The second line contains N space-separated integers A1, A2 ... AN denoting the initial values of the array. Each of the following Q lines describes an operation. If the first integer is 1, it means that the operation is of type 1 and it will be followed by two integers i and x. If the first integer is 2, it means that the operations is of type 2 and it will be followed by two integers i and k.",
+    "outputFormat": "For each operation of type 2, print the number of magical subarrays on a separate line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\\n4\\n1 2 2 1\\n4\\n1 1 1 2\\n5\\n3 5 2 4 1\\n5\\n1 2 1 5 4",
-        "output": "2\\n2\\n5\\n3",
-        "explanation": "Test case 1: 1 enters, 2 enters, 2 leaves, 1 leaves \u2192 max 2.\\nTest case 2: 1 enters, 1 leaves, 1 enters, 2 enters \u2192 max 2.\\nTest case 3: all five IDs appear once \u2192 max 5.\\nTest case 4: sequence leads to at most 3 people inside."
+        "input": "5 3\n1 1 1 1 1\n2 5 1\n1 3 2\n2 5 1",
+        "output": "3\n1",
+        "explanation": "The first query of type 2 checks for the number of magical subarrays with XOR equal to 1. There are three such subarrays: [1], [1, 1, 1, 1] and [1, 1, 1, 1, 1]. The second query of type 1 updates the value at index 3 to 2. The third query of type 2 checks for the number of magical subarrays with XOR equal to 1. There is one such subarray: [1]."
       },
       {
         "id": "sample_2",
-        "input": "1\\n6\\n1 2 3 2 1 3",
-        "output": "3",
-        "explanation": "People 1,2,3 enter first three swipes (3 inside). Afterwards each leaves, never exceeding 3."
-      },
-      {
-        "id": "sample_3",
-        "input": "1\\n7\\n5 5 5 5 5 5 5",
-        "output": "1",
-        "explanation": "The single ID toggles entry/exit; the office never holds more than one person."
+        "input": "3 2\n1 2 3\n2 3 2\n1 2 4",
+        "output": "2\n0",
+        "explanation": "The first query of type 2 checks for the number of magical subarrays with XOR equal to 2. There are two such subarrays: [2] and [1, 2, 3]. The second query of type 1 updates the value at index 2 to 4. The third query of type 2 checks for the number of magical subarrays with XOR equal to 2. There are no such subarrays."
       }
     ]
   },
@@ -57,36 +50,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1\\n1",
+        "input": "1 1\n1\n2 1 1",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (15 distinct IDs)",
-        "input": "1\\n15\\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
-        "expectedOutput": "15",
+        "label": "maximum boundary",
+        "input": "100000 100000\n",
+        "expectedOutput": "",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case \u2013 repeated same ID",
-        "input": "1\\n4\\n1 1 1 1",
-        "expectedOutput": "1",
+        "label": "edge case",
+        "input": "5 3\n1 1 1 1 1\n2 5 1\n1 3 2\n2 5 1",
+        "expectedOutput": "3\n1",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\\n10\\n1 2 1 3 2 4 3 5 4 5",
-        "expectedOutput": "2",
+        "input": "10 10\n1 2 3 4 5 6 7 8 9 10\n2 10 5\n1 5 10\n2 10 5",
+        "expectedOutput": "2\n1",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\\n9\\n10 20 10 30 20 40 30 40 10",
-        "expectedOutput": "2",
+        "input": "20 20\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20\n2 20 10\n1 10 20\n2 20 10",
+        "expectedOutput": "2\n1",
         "weight": 2
       }
     ],
@@ -116,15 +109,27 @@
     ]
   },
   "solution": {
-    "approach": "We simulate the process. For each ID we keep the number of times it has appeared so far. When the current occurrence count becomes odd the person enters, so we increase the current inside count; when it becomes even the person leaves, so we decrease the count. While scanning the array we maintain the maximum value of the current inside count. A hash map (or an array indexed by ID because Ai \u2264 N) stores the parity of each ID. The algorithm runs in O(N) per test case.",
-    "timeComplexity": "O(total number of swipes) i.e. O(\u2211N) across all test cases.",
-    "spaceComplexity": "O(number of distinct IDs) \u2264 O(N) per test case.",
+    "approach": "To solve this problem, we can use a prefix sum array to store the XOR of all elements up to each index. Then, for each query of type 2, we can iterate over all possible subarrays ending at index i and check if the XOR of the subarray is equal to k. We can use the prefix sum array to calculate the XOR of each subarray in O(1) time.",
+    "timeComplexity": "O(Q * N) — because for each query, we are iterating over all possible subarrays ending at index i.",
+    "spaceComplexity": "O(N) — because we are storing the prefix sum array of size N.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        int *cnt = (int*)calloc(N+2,sizeof(int));\n        int cur=0, mx=0;\n        for(int i=0;i<N;i++){\n            int x; scanf(\"%d\",&x);\n            cnt[x]++;\n            if(cnt[x]&1) cur++; else cur--;\n            if(cur>mx) mx=cur;\n        }\n        printf(\"%d\\n\",mx);\n        free(cnt);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> freq(N+2,0);\n        int cur=0, mx=0;\n        for(int i=0;i<N;i++){\n            int x; cin>>x;\n            ++freq[x];\n            if(freq[x]&1) ++cur; else --cur;\n            mx = max(mx,cur);\n        }\n        cout<<mx<<\"\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = fs.nextInt();\n            int[] freq = new int[N + 2];\n            int cur = 0, mx = 0;\n            for (int i = 0; i < N; i++) {\n                int x = fs.nextInt();\n                freq[x]++;\n                if ((freq[x] & 1) == 1) cur++; else cur--;\n                if (cur > mx) mx = cur;\n            }\n            sb.append(mx).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n    static class FastScanner {\n        private final BufferedInputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream stream) { in = new BufferedInputStream(stream); }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        int nextInt() throws IOException {\n            int c, sign = 1, val = 0;\n            do { c = readByte(); } while (c <= ' ');\n            if (c == '-') { sign = -1; c = readByte(); }\n            while (c > ' ') {\n                val = val * 10 + (c - '0');\n                c = readByte();\n            }\n            return val * sign;\n        }\n    }\n}",
-      "Python3": "import sys\n\ndef solve():\n    data = list(map(int, sys.stdin.read().split()))\n    it = iter(data)\n    T = next(it)\n    out_lines = []\n    for _ in range(T):\n        N = next(it)\n        freq = [0] * (N + 2)\n        cur = mx = 0\n        for _ in range(N):\n            x = next(it)\n            freq[x] += 1\n            if freq[x] & 1:\n                cur += 1\n            else:\n                cur -= 1\n            if cur > mx:\n                mx = cur\n        out_lines.append(str(mx))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n  const N = input[idx++];\n  const freq = new Array(N + 2).fill(0);\n  let cur = 0, mx = 0;\n  for (let i = 0; i < N; i++) {\n    const x = input[idx++];\n    freq[x]++;\n    if (freq[x] & 1) cur++; else cur--;\n    if (cur > mx) mx = cur;\n  }\n  outputs.push(String(mx));\n}\nconsole.log(outputs.join('\\n'));"
+      "C": "#include <stdio.h>\nint main() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q);\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &A[i]);\n    }\n    int prefixSum[N + 1];\n    prefixSum[0] = 0;\n    for (int i = 1; i <= N; i++) {\n        prefixSum[i] = prefixSum[i - 1] ^ A[i - 1];\n    }\n    for (int i = 0; i < Q; i++) {\n        int type, x, y;\n        scanf(\"%d %d %d\", &type, &x, &y);\n        if (type == 1) {\n            A[x - 1] = y;\n            prefixSum[0] = 0;\n            for (int j = 1; j <= N; j++) {\n                prefixSum[j] = prefixSum[j - 1] ^ A[j - 1];\n            }\n        } else {\n            int count = 0;\n            for (int j = 1; j <= x; j++) {\n                int xor = prefixSum[x] ^ prefixSum[j - 1];\n                if (xor == y) {\n                    count++;\n                }\n            }\n            printf(\"%d\\n\", count);\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int N, Q;\n    cin >> N >> Q;\n    int A[N];\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];\n    }\n    int prefixSum[N + 1];\n    prefixSum[0] = 0;\n    for (int i = 1; i <= N; i++) {\n        prefixSum[i] = prefixSum[i - 1] ^ A[i - 1];\n    }\n    for (int i = 0; i < Q; i++) {\n        int type, x, y;\n        cin >> type >> x >> y;\n        if (type == 1) {\n            A[x - 1] = y;\n            prefixSum[0] = 0;\n            for (int j = 1; j <= N; j++) {\n                prefixSum[j] = prefixSum[j - 1] ^ A[j - 1];\n            }\n        } else {\n            int count = 0;\n            for (int j = 1; j <= x; j++) {\n                int xor = prefixSum[x] ^ prefixSum[j - 1];\n                if (xor == y) {\n                    count++;\n                }\n            }\n            cout << count << endl;\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int Q = sc.nextInt();\n        int[] A = new int[N];\n        for (int i = 0; i < N; i++) {\n            A[i] = sc.nextInt();\n        }\n        int[] prefixSum = new int[N + 1];\n        prefixSum[0] = 0;\n        for (int i = 1; i <= N; i++) {\n            prefixSum[i] = prefixSum[i - 1] ^ A[i - 1];\n        }\n        for (int i = 0; i < Q; i++) {\n            int type = sc.nextInt();\n            int x = sc.nextInt();\n            int y = sc.nextInt();\n            if (type == 1) {\n                A[x - 1] = y;\n                prefixSum[0] = 0;\n                for (int j = 1; j <= N; j++) {\n                    prefixSum[j] = prefixSum[j - 1] ^ A[j - 1];\n                }\n            } else {\n                int count = 0;\n                for (int j = 1; j <= x; j++) {\n                    int xor = prefixSum[x] ^ prefixSum[j - 1];\n                    if (xor == y) {\n                        count++;\n                    }\n                }\n                System.out.println(count);\n            }\n        }\n    }\n}",
+      "Python3": "import sys\ninput = sys.stdin.readline\nN, Q = map(int, input().split())\nA = list(map(int, input().split()))\nprefixSum = [0] * (N + 1)\nprefixSum[0] = 0\nfor i in range(1, N + 1):\n    prefixSum[i] = prefixSum[i - 1] ^ A[i - 1]\nfor _ in range(Q):\n    type, x, y = map(int, input().split())\n    if type == 1:\n        A[x - 1] = y\n        prefixSum[0] = 0\n        for j in range(1, N + 1):\n            prefixSum[j] = prefixSum[j - 1] ^ A[j - 1]\n    else:\n        count = 0\n        for j in range(1, x + 1):\n            xor = prefixSum[x] ^ prefixSum[j - 1]\n            if xor == y:\n                count += 1\n        print(count)",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nfunction nextLine() {\n    return lines[idx++];\n}\nfunction nextInt() {\n    return parseInt(nextLine());\n}\nfunction nextInts() {\n    return nextLine().split(' ').map(x => parseInt(x));\n}\nlet [N, Q] = nextInts();\nlet A = nextInts();\nlet prefixSum = new Array(N + 1).fill(0);\nprefixSum[0] = 0;\nfor (let i = 1; i <= N; i++) {\n    prefixSum[i] = prefixSum[i - 1] ^ A[i - 1];\n}\nfor (let i = 0; i < Q; i++) {\n    let [type, x, y] = nextInts();\n    if (type == 1) {\n        A[x - 1] = y;\n        prefixSum[0] = 0;\n        for (let j = 1; j <= N; j++) {\n            prefixSum[j] = prefixSum[j - 1] ^ A[j - 1];\n        }\n    } else {\n        let count = 0;\n        for (let j = 1; j <= x; j++) {\n            let xor = prefixSum[x] ^ prefixSum[j - 1];\n            if (xor == y) {\n                count++;\n            }\n        }\n        console.log(count);\n    }\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

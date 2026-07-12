@@ -1,52 +1,56 @@
 {
   "questionId": "Q4256",
-  "title": "Availability",
-  "slug": "availability",
+  "title": "Check Reachability",
+  "slug": "check-reachability",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-04",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-12",
   "metadata": {
-    "category": "Date and Time",
-    "difficulty": "Medium",
+    "category": "Graph",
+    "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "Date and Time",
-      "Timezone Conversion",
-      "Date and Time Manipulation"
+      "BFS",
+      "DFS",
+      "Reachability",
+      "Adjacency List"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Graphs"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are scheduling a phone call with a friend who lives in another timezone.\n\nYou are located in timezone 000, and your friend is located in timezone TTT (0\u2264T&lt;24)(0 \\leq T &lt; 24)(0\u2264T&lt;24).\n\nYour friend gives you a list of time-specifications, representing the times they are available in their timezone for each day every week. You would like to translate the times to your timezone, while maintaining the same format. In particular, you must output new time-specifications after subtracting TTT hours from each time-specification and formatting appropriately.\n\n###INPUT:\n\nThe first line of input contains a single integer TTT (0\u2264T&lt;24)(0 \\leq T &lt; 24)(0\u2264T&lt;24), the time-zone of your friend.\n\nExactly 777 blocks of lines follow (one for each day of the week, in order, starting with Sundays).\n\nEach block starts with a line containing a single integer kik_iki\u200b, the number of time-specifications for the ithi^{th}ith day (0\u2264ki\u22647200 \\leq k_i \\leq 7200\u2264ki\u200b\u2264720). Then kik_iki\u200b lines follow, each containing the start-time and end-time of a time-specification for that day, separated by a space.\n\nAll times are of the form `hh:mm` (00 &lt;= `hh` &lt;= 23, 00 &lt;= `mm` &lt;= 59).\n\nNotes:\n\n\n\nThe start-time for each time-specification is inclusive, whereas the end-time is exclusive. For example, a time-specification `09:15 09:16` starts exactly at 9:15am and is 1 minute long (ending just as 9:16am starts).\n\n\n\n\nAll time-specifications for a given day are disjoint, and sorted by start-time.\n\n\n\n\nIf two adjacent time-specification meet at a time, they are merged together i.e. if end time of first interval is equal to start time of second interval (on the same day), they will be merged together.\n\n\n\n\nAll time-specifications have strictly positive length (they contain at least one minute in them).\n\n\n\n\nWhen `00:00` is used as a start-time, it corresponds to midnight at the beginning of the day, whereas when `00:00` is used as an end-time, it corresponds to just before midnight at the end of the day. In particular, a time-specification such as `00:00 00:00` starts at midnight at the beginning of the day, and is 24 hours long.\n\n\n\n(See the sample inputs for clarifications.)\n\n###OUTPUT:\r\nDisplay the time-specifications after subtracting TTT hours from all time-specifications.\n\nYou must display exactly 7 blocks of lines (one for each day of the week, in order, starting with Sundays), using the same format as the input.\n\n###Sample Input 1\n\n`12\r\n3\r\n00:00 07:30\r\n08:30 15:30\r\n16:30 00:00\r\n0\r\n0\r\n0\r\n0\r\n0\r\n0\n`###Sample Output 1\n\n`2\r\n00:00 03:30\r\n04:30 12:00\r\n0\r\n0\r\n0\r\n0\r\n0\r\n2\r\n12:00 19:30\r\n20:30 00:00\n`###Explanation of Sample Input 1\r\nYour friend is located in timezone `12`. They are available:\n\n\n`[Sundays midnight to 7:30am]`\n`[Sundays 8:30am to 3:30pm]`, and\n`[Sundays 4:30pm to midnight]`.\nTo translate the time to your timezone, you must subtract `12` hours.\n\n\n`[Sundays midnight to 7:30am]` becomes `[Saturdays noon to 7:30pm]`.\n`[Sundays 8:30am to 3:30pm]` becomes `[Saturdays 8:30pm to Sundays 3:30am]`, and hence gets split into two separate intervals `[Saturdays 8:30pm to midnight]` and `[Sundays midnight to 3:30am]`.\n`[Sundays 4:30pm to midnight]` becomes `[Sundays 4:30am to noon]`.\n###Sample Input 2\n\n`12\r\n2\r\n00:00 03:30\r\n04:30 12:00\r\n0\r\n0\r\n0\r\n0\r\n0\r\n2\r\n12:00 19:30\r\n20:30 00:00\n`###Sample Output 2\n\n`0\r\n0\r\n0\r\n0\r\n0\r\n0\r\n3\r\n00:00 07:30\r\n08:30 15:30\r\n16:30 00:00\n`###Explanation of Sample Input 2\r\nThis is the reverse of Sample Input 1, but a day earlier.\n\n###Sample Input 3\n\n`6\r\n0\r\n0\r\n0\r\n1\r\n00:00 00:00\r\n0\r\n1\r\n08:12 08:13\r\n0\n`###Sample Output 3\n\n`0\r\n0\r\n1\r\n18:00 00:00\r\n1\r\n00:00 18:00\r\n0\r\n1\r\n02:12 02:13\r\n0\n`",
+    "problemStatement": "You are given a graph of NNN vertices - numbered from 111 to NNN and MMM edges between them. \n\nThe ithi^{th}ith edge connects the AiA_iAi​ node to BiB_iBi​. The edges are directed.\n\nYou live at the vertex 111, output all the vertices that you can visit. You can travel using the given edges.\n\n\nInput Format\n\nThe first line of input will contain a two integers NNN and MMM, denoting the number of vertices and edges.\nNext MMM lines describes the edges. i−thi-thi−th of these MMM lines contains two space-separated integers AiA_iAi​ and BiB_iBi​ denoting there exists a directed edge from AiA_iAi​ to BiB_iBi​.\n\n\nOutput Format\nOutput all the nodes you can visit from the node 1, in increasing order of their index.",
     "constraints": [
-      "0 \u2264 T < 24",
-      "0 \u2264 ki \u2264 720",
-      "00 \u2264 hh \u2264 23",
-      "00 \u2264 mm \u2264 59"
+      "1 <= T <= 10",
+      "2 <= N <= 200000",
+      "0 <= M <= 200000",
+      "1 <= A, B <= N",
+      "Sum of N over all test cases does not exceed 200000",
+      "Sum of M over all test cases does not exceed 200000"
     ],
-    "inputFormat": "The first line contains a single integer TTT (0\u2264T<24), the time-zone of your friend. Exactly 7 blocks of lines follow (one for each day of the week, in order, starting with Sundays). Each block starts with a line containing a single integer kik_iki\u200b, the number of time-specifications for the ithi^{th}ith day (0\u2264ki\u22647200 leq k_i leq 7200\u2264ki\u200b\u2264720). Then kik_iki\u200b lines follow, each containing the start-time and end-time of a time-specification for that day, separated by a space. All times are of the form `hh:mm` (00 &lt;= `hh` &lt;= 23, 00 &lt;= `mm` &lt;= 59).",
-    "outputFormat": "Display the time-specifications after subtracting TTT hours from all time-specifications. You must display exactly 7 blocks of lines (one for each day of the week, in order, starting with Sundays), using the same format as the input.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each test case starts with two integers N and M – the number of vertices and directed edges. Then M lines follow, each containing two integers A and B denoting a directed edge from A to B.",
+    "outputFormat": "For each test case, output on a single line all vertices reachable from vertex 1 (including 1 itself) in increasing order, separated by a single space.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "12\n3\n00:00 07:30\n08:30 15:30\n16:30 00:00\n0\n0\n0\n0\n0\n0",
-        "output": "2\n00:00 03:30\n04:30 12:00\n0\n0\n0\n0\n0\n2\n12:00 19:30\n20:30 00:00",
-        "explanation": "Subtracting 12 hours from each time-specification and handling cases where the resulting time-specification crosses midnight."
+        "input": "1\n5 6\n1 3\n4 3\n3 2\n2 4\n5 4\n3 1\n",
+        "output": "1 2 3 4",
+        "explanation": "Starting from vertex 1 we can reach 3, then 2, then 4. Vertices 1, 2, 3, 4 are reachable; vertex 5 is not."
       },
       {
         "id": "sample_2",
-        "input": "12\n2\n00:00 03:30\n04:30 12:00\n0\n0\n0\n0\n0\n2\n12:00 19:30\n20:30 00:00",
-        "output": "0\n0\n0\n0\n0\n0\n3\n00:00 07:30\n08:30 15:30\n16:30 00:00",
-        "explanation": "Subtracting 12 hours from each time-specification and handling cases where the resulting time-specification crosses midnight."
+        "input": "2\n3 2\n1 2\n2 3\n4 1\n2 3\n",
+        "output": "1 2 3\n1",
+        "explanation": "First test case: 1→2→3, so 1 2 3 are reachable. Second test case: there is only an edge 2→3, vertex 1 cannot leave itself, so only 1 is reachable."
       },
       {
         "id": "sample_3",
-        "input": "6\n0\n0\n0\n1\n00:00 00:00\n0\n1\n08:12 08:13\n0",
-        "output": "0\n0\n1\n18:00 00:00\n1\n00:00 18:00\n0\n1\n02:12 02:13\n0",
-        "explanation": "Subtracting 6 hours from each time-specification and handling cases where the resulting time-specification crosses midnight."
+        "input": "1\n4 0\n",
+        "output": "1",
+        "explanation": "No edges exist, therefore only the starting vertex 1 can be visited."
       }
     ]
   },
@@ -55,52 +59,172 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "0\n1\n00:00 00:00\n0\n0\n0\n0\n0\n0",
-        "expectedOutput": "1\n00:00 00:00\n0\n0\n0\n0\n0\n0",
-        "weight": 2
+        "input": "1\n1 0\n",
+        "expectedOutput": "1",
+        "weight": 1
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary",
-        "input": "23\n1\n23:59 23:59\n0\n0\n0\n0\n0\n0",
-        "expectedOutput": "1\n00:59 00:59\n0\n0\n0\n0\n0\n0",
-        "weight": 2
+        "label": "minimum boundary 2",
+        "input": "1\n2 0\n",
+        "expectedOutput": "1",
+        "weight": 1
       },
       {
         "id": "tc_3",
-        "label": "edge case",
-        "input": "12\n1\n12:00 12:00\n0\n0\n0\n0\n0\n0",
-        "expectedOutput": "1\n00:00 00:00\n0\n0\n0\n0\n0\n0",
-        "weight": 2
+        "label": "minimum boundary 3",
+        "input": "1\n2 1\n1 2\n",
+        "expectedOutput": "1 2",
+        "weight": 1
       },
       {
         "id": "tc_4",
-        "label": "general case 1",
-        "input": "6\n2\n08:00 10:00\n12:00 14:00\n0\n0\n0\n0\n0\n0",
-        "expectedOutput": "2\n02:00 04:00\n06:00 08:00\n0\n0\n0\n0\n0\n0",
-        "weight": 2
+        "label": "minimum boundary 4",
+        "input": "1\n2 1\n2 1\n",
+        "expectedOutput": "1",
+        "weight": 1
       },
       {
         "id": "tc_5",
-        "label": "general case 2",
-        "input": "12\n3\n09:00 11:00\n13:00 15:00\n17:00 19:00\n0\n0\n0\n0\n0\n0",
-        "expectedOutput": "3\n21:00 23:00\n01:00 03:00\n05:00 07:00\n0\n0\n0\n0\n0\n0",
-        "weight": 2
+        "label": "maximum boundary",
+        "input": "1\n200000 0\n",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_6",
+        "label": "maximum boundary 2",
+        "input": "1\n200000 1\n1 200000\n",
+        "expectedOutput": "1 200000",
+        "weight": 1
+      },
+      {
+        "id": "tc_7",
+        "label": "maximum boundary 3",
+        "input": "1\n200000 2\n1 2\n2 200000\n",
+        "expectedOutput": "1 2 200000",
+        "weight": 1
+      },
+      {
+        "id": "tc_8",
+        "label": "maximum boundary 4",
+        "input": "1\n200000 3\n1 2\n2 3\n3 200000\n",
+        "expectedOutput": "1 2 3 200000",
+        "weight": 1
+      },
+      {
+        "id": "tc_9",
+        "label": "uniform case",
+        "input": "1\n5 4\n1 2\n1 3\n1 4\n1 5\n",
+        "expectedOutput": "1 2 3 4 5",
+        "weight": 1
+      },
+      {
+        "id": "tc_10",
+        "label": "uniform case 2",
+        "input": "1\n6 5\n1 2\n2 3\n3 4\n4 5\n5 6\n",
+        "expectedOutput": "1 2 3 4 5 6",
+        "weight": 1
+      },
+      {
+        "id": "tc_11",
+        "label": "structured case",
+        "input": "1\n3 3\n1 2\n2 3\n3 1\n",
+        "expectedOutput": "1 2 3",
+        "weight": 1
+      },
+      {
+        "id": "tc_12",
+        "label": "structured case 2",
+        "input": "1\n4 3\n4 3\n3 2\n2 1\n",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_13",
+        "label": "tricky case",
+        "input": "1\n2 2\n1 1\n1 2\n",
+        "expectedOutput": "1 2",
+        "weight": 1
+      },
+      {
+        "id": "tc_14",
+        "label": "tricky case 2",
+        "input": "1\n3 4\n1 2\n1 2\n2 3\n2 3\n",
+        "expectedOutput": "1 2 3",
+        "weight": 1
+      },
+      {
+        "id": "tc_15",
+        "label": "tricky case 3",
+        "input": "1\n3 1\n1 1\n",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_16",
+        "label": "tricky case 4",
+        "input": "1\n5 2\n2 3\n4 5\n",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_17",
+        "label": "stress case",
+        "input": "3\n3 2\n1 2\n2 3\n4 3\n1 3\n3 4\n4 2\n2 1\n5 0\n",
+        "expectedOutput": "1 2 3\n1 2 3 4\n1",
+        "weight": 1
+      },
+      {
+        "id": "tc_18",
+        "label": "stress case 2",
+        "input": "2\n10 9\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8\n8 9\n9 10\n10 0\n",
+        "expectedOutput": "1 2 3 4 5 6 7 8 9 10\n1",
+        "weight": 1
+      },
+      {
+        "id": "tc_19",
+        "label": "stress case 3",
+        "input": "1\n10 9\n1 2\n1 3\n1 4\n1 5\n1 6\n1 7\n1 8\n1 9\n1 10\n",
+        "expectedOutput": "1 2 3 4 5 6 7 8 9 10",
+        "weight": 1
+      },
+      {
+        "id": "tc_20",
+        "label": "stress case 4",
+        "input": "1\n10 9\n2 1\n3 1\n4 1\n5 1\n6 1\n7 1\n8 1\n9 1\n10 1\n",
+        "expectedOutput": "1",
+        "weight": 1
       }
     ],
-    "totalTestCases": 5,
-    "totalWeight": 10
+    "totalTestCases": 20,
+    "totalWeight": 20
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      2,
-      2,
-      2,
-      2,
-      2
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
-    "maxScore": 10
+    "maxScore": 20
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -114,15 +238,27 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we need to subtract the given timezone offset from each time-specification. We will handle cases where the resulting time-specification crosses midnight by splitting it into two separate time-specifications for the previous and next day.",
-    "timeComplexity": "O(7 * ki) \u2014 where ki is the maximum number of time-specifications for a day. We iterate over each day and each time-specification for that day.",
-    "spaceComplexity": "O(7 * ki) \u2014 we need to store the resulting time-specifications for each day.",
+    "approach": "The graph is directed. Starting from vertex 1 we have to find all vertices that can be reached by repeatedly following outgoing edges. This is a classic reachability problem that can be solved with a simple graph traversal – either Depth‑First Search (DFS) or Breadth‑First Search (BFS). We store the adjacency list, run an iterative DFS/BFS from node 1, mark visited vertices and finally output all visited vertices in increasing order (by scanning 1…N). The traversal visits each vertex at most once and each edge at most once, giving linear time.",
+    "timeComplexity": "O(N+M) per test case, O(total N + total M) over all test cases.",
+    "spaceComplexity": "O(N+M) for the adjacency list and the visited array.",
     "code": {
-      "C": "// COMPLETE, COMPILABLE C code\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    for (int i = 0; i < 7; i++) {\n        int ki;\n        scanf(\"%d\", &ki);\n        printf(\"%d\\n\", ki);\n        for (int j = 0; j < ki; j++) {\n            int startHour, startMinute, endHour, endMinute;\n            scanf(\"%d:%d %d:%d\", &startHour, &startMinute, &endHour, &endMinute);\n            startHour -= T;\n            endHour -= T;\n            if (startHour < 0) {\n                startHour += 24;\n            }\n            if (endHour < 0) {\n                endHour += 24;\n            }\n            printf(\"%02d:%02d %02d:%02d\\n\", startHour, startMinute, endHour, endMinute);\n        }\n    }\n    return 0;\n}",
-      "C++": "// COMPLETE, COMPILABLE C++ code\n#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    for (int i = 0; i < 7; i++) {\n        int ki;\n        cin >> ki;\n        cout << ki << endl;\n        for (int j = 0; j < ki; j++) {\n            int startHour, startMinute, endHour, endMinute;\n            cin >> startHour >> startMinute >> endHour >> endMinute;\n            startHour -= T;\n            endHour -= T;\n            if (startHour < 0) {\n                startHour += 24;\n            }\n            if (endHour < 0) {\n                endHour += 24;\n            }\n            cout << setw(2) << setfill('0') << startHour << \":\" << setw(2) << setfill('0') << startMinute << \" \" << setw(2) << setfill('0') << endHour << \":\" << setw(2) << setfill('0') << endMinute << endl;\n        }\n    }\n    return 0;\n}",
-      "Java": "// COMPLETE, COMPILABLE Java code\nimport java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        for (int i = 0; i < 7; i++) {\n            int ki = scanner.nextInt();\n            System.out.println(ki);\n            for (int j = 0; j < ki; j++) {\n                String[] startTime = scanner.next().split(\":\");\n                String[] endTime = scanner.next().split(\":\");\n                int startHour = Integer.parseInt(startTime[0]) - T;\n                int endHour = Integer.parseInt(endTime[0]) - T;\n                if (startHour < 0) {\n                    startHour += 24;\n                }\n                if (endHour < 0) {\n                    endHour += 24;\n                }\n                System.out.printf(\"%02d:%02d %02d:%02d\\n\", startHour, Integer.parseInt(startTime[1]), endHour, Integer.parseInt(endTime[1]));\n            }\n        }\n    }\n}",
-      "Python3": "# COMPLETE, RUNNABLE Python3 code\nimport sys\nT = int(sys.stdin.readline().strip())\nfor i in range(7):\n    ki = int(sys.stdin.readline().strip())\n    print(ki)\n    for j in range(ki):\n        start, end = sys.stdin.readline().strip().split()\n        startHour, startMinute = map(int, start.split(':'))\n        endHour, endMinute = map(int, end.split(':'))\n        startHour -= T\n        endHour -= T\n        if startHour < 0:\n            startHour += 24\n        if endHour < 0:\n            endHour += 24\n        print(f\"{startHour:02d}:{startMinute:02d} {endHour:02d}:{endMinute:02d}\")",
-      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\nconst fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readline = () => lines[idx++];\nconst T = parseInt(readline());\nfor (let i = 0; i < 7; i++) {\n    const ki = parseInt(readline());\n    console.log(ki);\n    for (let j = 0; j < ki; j++) {\n        const [start, end] = readline().split(' ');\n        const [startHour, startMinute] = start.split(':').map(Number);\n        const [endHour, endMinute] = end.split(':').map(Number);\n        let newStartHour = startHour - T;\n        let newEndHour = endHour - T;\n        if (newStartHour < 0) {\n            newStartHour += 24;\n        }\n        if (newEndHour < 0) {\n            newEndHour += 24;\n        }\n        console.log(`${newStartHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')} ${newEndHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`);\n    }\n}"
+      "C": "",
+      "C++": "",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static class FastScanner {\n        private StringTokenizer st;\n        FastScanner() throws IOException {\n            // Read entire input as a string\n            byte[] data = System.in.readAllBytes();\n            String s = new String(data);\n            // Replace escaped newline sequences with spaces to act as delimiters\n            s = s.replace(\"\\\\n\", \" \");\n            // Also replace escaped carriage returns if any\n            s = s.replace(\"\\\\r\", \" \");\n            st = new StringTokenizer(s);\n        }\n        String next() {\n            return st.hasMoreTokens() ? st.nextToken() : null;\n        }\n        int nextInt() {\n            return Integer.parseInt(next());\n        }\n    }\n\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner();\n        String tStr = fs.next();\n        if (tStr == null) return;\n        int T = Integer.parseInt(tStr);\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; tc++) {\n            int n = fs.nextInt();\n            int m = fs.nextInt();\n            @SuppressWarnings(\"unchecked\")\n            ArrayList<Integer>[] adj = new ArrayList[n + 1];\n            for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();\n            for (int i = 0; i < m; i++) {\n                int a = fs.nextInt();\n                int b = fs.nextInt();\n                if (a >= 1 && a <= n) adj[a].add(b);\n            }\n            boolean[] vis = new boolean[n + 1];\n            ArrayDeque<Integer> dq = new ArrayDeque<>();\n            dq.add(1);\n            vis[1] = true;\n            while (!dq.isEmpty()) {\n                int v = dq.poll();\n                for (int u : adj[v]) {\n                    if (!vis[u]) {\n                        vis[u] = true;\n                        dq.add(u);\n                    }\n                }\n            }\n            boolean first = true;\n            for (int i = 1; i <= n; i++) {\n                if (vis[i]) {\n                    if (!first) out.append(' ');\n                    out.append(i);\n                    first = false;\n                }\n            }\n            out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}\n",
+      "Python3": "",
+      "JavaScript": ""
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

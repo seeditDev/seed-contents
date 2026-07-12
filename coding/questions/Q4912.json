@@ -1,41 +1,48 @@
 {
   "questionId": "Q4912",
-  "title": "String Operations",
-  "slug": "string-operations",
+  "title": "Sum of numbers",
+  "slug": "sum-of-numbers",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Union\u2011Find",
-      "Strings",
-      "Equivalence Classes",
-      "Graph Theory",
-      "String Transformation"
+      "Summation",
+      "Loops",
+      "Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Strings"
-    ]
+      "Control Flow"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Two strings AAA and BBB are equivalent (denoted by A\u223cBA \\sim BA\u223cB) if they have the same lengths and AAA can be transformed into BBB by performing the following operation zero or more times: choose a substring of AAA which contains '1' an even number of times and reverse this substring.\n\nYou are given a binary string SSS. Find the number of different equivalence classes of the substrings of this string. In other words, find the smallest possible size of a set C\\mathcal{C}C of binary strings with the following property: for each non-empty string RRR which is a substring of SSS (including SSS itself), there is a string X\u2208CX \\in \\mathcal{C}X\u2208C such that R\u223cXR \\sim XR\u223cX.",
-    "constraints": [
-      "1 <= T <= 10",
-      "1 <= |S| <= 1000",
-      "S consists only of characters '0' and '1'"
-    ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then T lines follow, each containing a binary string S (1 \u2264 |S| \u2264 1000).",
-    "outputFormat": "For each test case output a single integer \u2013 the number of equivalence classes among all non\u2011empty substrings of S.",
+    "problemStatement": "Write a program using a for loop to calculate the sum of the first 10 natural numbers.",
+    "constraints": [],
+    "inputFormat": "No input required.",
+    "outputFormat": "Print a single integer — the sum of the first 10 natural numbers.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "10\n00000\n10001\n10101\n01111\n11001\n01101\n10110\n10010\n10111\n11001",
-        "output": "5\n11\n8\n9\n12\n10\n10\n11\n11\n12",
-        "explanation": ""
+        "input": "",
+        "output": "55",
+        "explanation": "The program adds the numbers 1 through 10: 1+2+...+10 = 55, which is printed."
+      },
+      {
+        "id": "sample_2",
+        "input": "",
+        "output": "55",
+        "explanation": "Even without any input the program always computes the fixed sum 55."
+      },
+      {
+        "id": "sample_3",
+        "input": "",
+        "output": "55",
+        "explanation": "The result is independent of external data; the sum of the first ten natural numbers is always 55."
       }
     ]
   },
@@ -43,37 +50,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
+        "label": "minimum boundary",
         "input": "",
-        "expectedOutput": "",
+        "expectedOutput": "55",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
+        "label": "maximum boundary",
         "input": "",
-        "expectedOutput": "",
+        "expectedOutput": "55",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
+        "label": "edge case",
         "input": "",
-        "expectedOutput": "",
+        "expectedOutput": "55",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
+        "label": "general case 1",
         "input": "",
-        "expectedOutput": "",
+        "expectedOutput": "55",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
+        "label": "general case 2",
         "input": "",
-        "expectedOutput": "",
+        "expectedOutput": "55",
         "weight": 2
       }
     ],
@@ -103,11 +110,27 @@
     ]
   },
   "solution": {
-    "approach": "For every substring we build a node in a graph. Two nodes are connected if one can be obtained from the other by a single allowed operation (reversing a substring that contains an even number of '1's). The relation is transitive, so each connected component of this graph is an equivalence class. Because the length of S is at most 1000, the total number of substrings is at most 500\u202f500, which is small enough to build the graph explicitly.\n\nWe enumerate all substrings, store them in a vector and assign each a unique id. For each substring we try all possible intervals [l, r] inside it (O(L^2) per substring, where L is its length). If the interval contains an even number of '1's we reverse it, obtain the resulting string, look up its id with a hash\u2011map and unite the two ids in a Disjoint Set Union (DSU). After processing all substrings, the number of different DSU roots equals the number of equivalence classes.\n\nComplexities:\n- Enumerating all substrings: O(N^2).\n- For a substring of length L we examine O(L^2) intervals, so the total work is \u03a3_{L=1}^{N} (N\u2011L+1)\u00b7L^2 = O(N^4) in the worst case. With N \u2264 1000 this is too large, therefore we optimise:\n  * For each substring we pre\u2011compute the prefix sum of '1's, allowing O(1) query of the number of '1's in any interval.\n  * We only need to consider intervals whose length is at least 2, because reversing a length\u20111 interval does nothing.\n  * The crucial observation is that reversing an interval with an even number of '1's does not change the parity of the number of '1's in any prefix outside the interval, therefore the only information that matters for connectivity is the pair (length, total number of '1's). Using this observation we can prove that:\n      \u2013 If the total number of '1's in a substring is even, all substrings of the same length and the same number of '1's belong to one class.\n      \u2013 If the total number of '1's is odd, the substring cannot be changed at all; each distinct string forms its own class.\n  * Consequently we do not need the explicit graph. We only have to count, for every length L, how many different values of the number of '1's (k) appear among substrings of length L, and for each (L, k) we add 1 if k is even, otherwise we add the number of distinct strings that have exactly k ones.\n\nImplementation steps for each test case:\n1. Pre\u2011compute prefix sums of '1's.\n2. For every length L from 1 to N:\n   a. Use a map cntEven[L] to store the set of k (0 \u2264 k \u2264 L) that appear with even k.\n   b. Use a map cntOdd[L] (key = k) to store a hash\u2011set of the actual substrings that have odd k.\n   c. Iterate over all start positions i (0\u2011based). Let j = i+L\u20111. Compute k = ones in S[i..j] via prefix sums.\n      \u2013 If k is even, insert k into cntEven[L].\n      \u2013 If k is odd, insert the substring S[i..j] into cntOdd[L][k].\n3. The answer is sum over L of (size of cntEven[L]) + \u03a3_{k odd} (size of cntOdd[L][k]).\n\nThe algorithm runs in O(N^2) time (enumerating all substrings once) and uses O(N^2) memory for the hash\u2011sets of odd\u2011k substrings, which fits the limits (N \u2264 1000 \u21d2 at most 500\u202f500 substrings).",
-    "timeComplexity": "O(N^2) per test case",
-    "spaceComplexity": "O(N^2) in the worst case (stores all odd\u2011k substrings)",
+    "approach": "The task is to compute 1+2+...+10. This can be done either by a simple for‑loop that adds the numbers from 1 to 10, or by using the arithmetic series formula n*(n+1)/2 with n=10. Both approaches run in constant time because the number of iterations is fixed (10). The program loops over T test cases (T is fixed to 1 because there is no external input) and prints the result for each case.",
+    "timeComplexity": "O(1) – the loop runs a constant 10 iterations regardless of any input.",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
     "code": {
-      "C": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdbool.h>\n\n"
+      "C": "#include <stdio.h>\nint main() {\n    int T = 1;\n    for (int tc = 0; tc < T; ++tc) {\n        int sum = 0;\n        for (int i = 1; i <= 10; ++i) sum += i;\n        printf(\"%d\\n\", sum);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nint main() {\n    int T = 1;\n    for (int tc = 0; tc < T; ++tc) {\n        int sum = 0;\n        for (int i = 1; i <= 10; ++i) sum += i;\n        std::cout << sum << \"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        int T = 1;\n        for (int tc = 0; tc < T; ++tc) {\n            int sum = 0;\n            for (int i = 1; i <= 10; ++i) sum += i;\n            System.out.println(sum);\n        }\n    }\n}",
+      "Python3": "def main():\n    T = 1\n    for _ in range(T):\n        total = sum(range(1, 11))\n        print(total)\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8'); // input ignored\nconst T = 1;\nlet out = [];\nfor (let tc = 0; tc < T; ++tc) {\n    let sum = 0;\n    for (let i = 1; i <= 10; ++i) sum += i;\n    out.push(String(sum));\n}\nconsole.log(out.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

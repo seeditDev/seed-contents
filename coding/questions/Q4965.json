@@ -1,41 +1,52 @@
 {
   "questionId": "Q4965",
-  "title": "Prime Game",
-  "slug": "prime-game",
+  "title": "Multiply elements",
+  "slug": "multiply-elements",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math",
-    "difficulty": "Medium",
+    "category": "Arrays | Math",
+    "difficulty": "Easy",
     "isPremium": true,
     "tags": [
-      "Impartial Games",
-      "Prime Numbers",
-      "Math",
-      "Prefix Sum",
-      "Sprague\u2011Grundy",
-      "Sieve of Eratosthenes"
+      "Array indexing",
+      "Multiplication",
+      "Simple arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Game Theory"
-    ]
+      "Python Built-in Types"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Chef and Divyam are playing a game with the following rules:\n\n\nFirst, an integer X!X!X! is written on a board.\nChef and Divyam alternate turns; Chef plays first.\nIn each move, the current player should choose a positive integer DDD which is divisible by up to YYY distinct primes and does not exceed the integer currently written on the board. Note that 111 is not a prime.\nDDD is then subtracted from the integer on the board, i.e. if the integer written on the board before this move was AAA, it is erased and replaced by A\u2212DA-DA\u2212D.\nWhen one player writes 000 on the board, the game ends and this player wins.\nGiven XXX and YYY, determine the winner of the game.",
+    "problemStatement": "Write a program to declare and accept an list of NNN(**will always be greater than 3**) space separate integers. \n\nCalculate the **multiplication** of the 1st and 3rd elements of the list and output the same to the console.\n\nCheck the sample input / output below for further clarity.",
     "constraints": [
-      "1 \u2264 T \u2264 10^6",
-      "1 \u2264 X, Y \u2264 10^6"
+      "1 <= T <= 10",
+      "4 <= N <= 1000",
+      "-10^9 <= each integer <= 10^9"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers X and Y.",
-    "outputFormat": "For each test case output a single line containing \"Chef\" if Chef wins the game, otherwise \"Divyam\".",
+    "inputFormat": "The first line contains an integer T (1 ≤ T ≤ 10), the number of test cases. Each of the next T lines contains a list of N space‑separated integers, where 4 ≤ N ≤ 1000. The integers can be negative, zero or positive and fit in a signed 32‑bit range.",
+    "outputFormat": "For each test case output a single line containing the product of the first and third elements of the given list.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\n1 2\\n3 1\\n2021 42",
-        "output": "Chef\\nDivyam\\nDivyam",
-        "explanation": "\u03c0(1)=0 \u22642 \u2192 Chef can take 1! =1 and win.\\n\u03c0(3)=2 >1 \u2192 3! has two distinct primes, not allowed; first player loses.\\n\u03c0(2021)=306 >42 \u2192 Divyam wins."
+        "input": "1\n10 12 25 9 20",
+        "output": "250",
+        "explanation": "First element is 10, third element is 25; 10 × 25 = 250."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n-3 5 -2 7 8",
+        "output": "6",
+        "explanation": "First element is -3, third element is -2; -3 × -2 = 6."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n0 1 5 2 3",
+        "output": "0",
+        "explanation": "First element is 0, third element is 5; 0 × 5 = 0."
       }
     ]
   },
@@ -43,37 +54,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "minimum boundary",
+        "input": "1\n1 2 3 4",
+        "expectedOutput": "3",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "maximum boundary",
+        "input": "1\n1000000000 0 1000000000 -5 7",
+        "expectedOutput": "1000000000000000000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "edge case with zero",
+        "input": "1\n-5 10 0 3 4",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 1",
+        "input": "1\n-2 5 7 8 9",
+        "expectedOutput": "-14",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 2 with large numbers",
+        "input": "1\n123456789 0 -987654321 5",
+        "expectedOutput": "-121932631112635269",
         "weight": 2
       }
     ],
@@ -103,15 +114,27 @@
     ]
   },
   "solution": {
-    "approach": "The integer written on the board at the start is X!.\nThe only property of a move that matters is the number of distinct prime factors of the chosen D. Let \u03c9(D) be that number. A move is allowed iff \u03c9(D) \u2264 Y.\nObserve that \u03c9(X!) equals the number of distinct primes not larger than X, i.e. \u03c0(X). If \u03c0(X) \u2264 Y then X! itself satisfies the move condition, so Chef can subtract the whole X! in his first turn and win immediately.\nIf \u03c0(X) > Y, then X! contains at least Y+1 distinct primes. Any allowed D can contain at most Y distinct primes, therefore after subtracting D the remaining number is still positive and still has at least one of those Y+1 primes as a factor. Consequently the opponent can always mirror the situation and eventually force a win for the second player. Hence the starting position is losing for the first player.\nThus the winner is decided solely by comparing \u03c0(X) with Y.\nImplementation steps:\n1. Pre\u2011compute an array primeCnt[i] = number of primes \u2264 i for all i up to 10^6 using a linear/Eratosthenes sieve (O(N log log N)).\n2. For each test case read X, Y and output \"Chef\" if primeCnt[X] \u2264 Y else \"Divyam\".\nThe algorithm runs in O(N log log N + T) time and O(N) memory.",
-    "timeComplexity": "O(N log log N + T), where N = 10^6 (pre\u2011computation) and T is the number of test cases.",
-    "spaceComplexity": "O(N) for the sieve and prefix array.",
+    "approach": "For each test case read the whole line, split it by whitespace and convert the tokens to 64‑bit integers. The first token is the first element, the third token is the third element. Multiply them using a 64‑bit type (long long / long / Python int / BigInt) and output the result. The algorithm is O(N) per test case for reading, but only the first three numbers are actually used for the computation.",
+    "timeComplexity": "O(total number of integers) – reading dominates, multiplication is O(1).",
+    "spaceComplexity": "O(1) extra space per test case (ignoring input buffer).",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n    const int MAX = 1000000;\n    char *isPrime = (char*)calloc(MAX+1, sizeof(char));\n    int *pref = (int*)malloc((MAX+1)*sizeof(int));\n    for(int i=2;i<=MAX;i++) isPrime[i]=1;\n    for(int p=2;p*p<=MAX;p++) if(isPrime[p]) for(int q=p*p;q<=MAX;q+=p) isPrime[q]=0;\n    pref[0]=0; pref[1]=0;\n    for(int i=2;i<=MAX;i++) pref[i]=pref[i-1]+isPrime[i];\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int X,Y; scanf(\"%d %d\",&X,&Y);\n        if(pref[X]<=Y) printf(\"Chef\\n\"); else printf(\"Divyam\\n\");\n    }\n    free(isPrime); free(pref);\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    const int MAX = 1000000;\n    vector<bool> isPrime(MAX+1,true);\n    isPrime[0]=isPrime[1]=false;\n    for(int p=2;p*p<=MAX;++p) if(isPrime[p]) for(int q=p*p;q<=MAX;q+=p) isPrime[q]=false;\n    vector<int> pref(MAX+1,0);\n    for(int i=2;i<=MAX;++i) pref[i]=pref[i-1]+(isPrime[i]?1:0);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int X,Y; cin>>X>>Y;\n        cout << (pref[X]<=Y?\"Chef\":\"Divyam\") << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        final int MAX = 1_000_000;\n        boolean[] isPrime = new boolean[MAX+1];\n        Arrays.fill(isPrime, true);\n        isPrime[0]=isPrime[1]=false;\n        for(int p=2;p*p<=MAX;++p) if(isPrime[p]) for(int q=p*p;q<=MAX;q+=p) isPrime[q]=false;\n        int[] pref = new int[MAX+1];\n        for(int i=2;i<=MAX;++i) pref[i]=pref[i-1]+(isPrime[i]?1:0);\n        StringBuilder sb = new StringBuilder();\n        while(T-- > 0){\n            int X = fs.nextInt();\n            int Y = fs.nextInt();\n            sb.append(pref[X] <= Y ? \"Chef\" : \"Divyam\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n    // fast scanner\n    static class FastScanner {\n        private final InputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream in){ this.in = in; }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        int nextInt() throws IOException {\n            int c, sign = 1, val = 0;\n            do { c = readByte(); } while (c <= ' ');\n            if (c == '-') { sign = -1; c = readByte(); }\n            while (c > ' ') {\n                val = val * 10 + (c - '0');\n                c = readByte();\n            }\n            return val * sign;\n        }\n    }\n}",
-      "Python3": "import sys\nMAX = 10**6\nis_prime = bytearray(b'\\x01') * (MAX+1)\nis_prime[0] = is_prime[1] = 0\nfor p in range(2, int(MAX**0.5)+1):\n    if is_prime[p]:\n        step = p\n        start = p*p\n        is_prime[start:MAX+1:step] = b'\\x00' * ((MAX - start)//step + 1)\nprime_cnt = [0]*(MAX+1)\ncnt = 0\nfor i in range(2, MAX+1):\n    if is_prime[i]:\n        cnt += 1\n    prime_cnt[i] = cnt\n\ndata = sys.stdin.buffer.read().split()\nif not data:\n    sys.exit()\nit = iter(data)\nT = int(next(it))\nout_lines = []\nfor _ in range(T):\n    X = int(next(it)); Y = int(next(it))\n    out_lines.append('Chef' if prime_cnt[X] <= Y else 'Divyam')\nsys.stdout.write('\\n'.join(out_lines))\n",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nconst MAX = 1000000;\nconst isPrime = new Uint8Array(MAX + 1);\nfor (let i = 2; i <= MAX; i++) isPrime[i] = 1;\nfor (let p = 2; p * p <= MAX; p++) {\n  if (isPrime[p]) {\n    for (let q = p * p; q <= MAX; q += p) isPrime[q] = 0;\n  }\n}\nconst pref = new Uint32Array(MAX + 1);\nfor (let i = 2; i <= MAX; i++) pref[i] = pref[i - 1] + (isPrime[i] ? 1 : 0);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  const X = input[idx++];\n  const Y = input[idx++];\n  out.push(pref[X] <= Y ? 'Chef' : 'Divyam');\n}\nconsole.log(out.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    getchar(); // consume newline after T\n    char line[10005];\n    for (int tc = 0; tc < T; ++tc) {\n        if (!fgets(line, sizeof(line), stdin)) break;\n        line[strcspn(line, \"\\n\")] = '\\0';\n        long long first = 0, third = 0;\n        int idx = 0;\n        char *token = strtok(line, \" \");\n        while (token != NULL) {\n            long long val = atoll(token);\n            if (idx == 0) first = val;\n            if (idx == 2) third = val;\n            idx++;\n            token = strtok(NULL, \" \");\n        }\n        printf(\"%lld\\n\", first * third);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    string dummy;\n    getline(cin, dummy); // consume end‑of‑line after T\n    for (int tc = 0; tc < T; ++tc) {\n        string line;\n        getline(cin, line);\n        while(line.size() && (line.back()=='\\r' || line.back()=='\\n')) line.pop_back();\n        stringstream ss(line);\n        long long val, first = 0, third = 0;\n        int idx = 0;\n        while (ss >> val) {\n            if (idx == 0) first = val;\n            if (idx == 2) third = val;\n            ++idx;\n        }\n        cout << first * third << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        for (int tc = 0; tc < T; ++tc) {\n            String data = br.readLine();\n            while (data != null && data.trim().isEmpty()) data = br.readLine();\n            StringTokenizer st = new StringTokenizer(data);\n            long first = 0, third = 0;\n            int idx = 0;\n            while (st.hasMoreTokens()) {\n                long val = Long.parseLong(st.nextToken());\n                if (idx == 0) first = val;\n                if (idx == 2) third = val;\n                idx++;\n            }\n            System.out.println(first * third);\n        }\n    }\n}",
+      "Python3": "import sys\ndef main():\n    data = sys.stdin.read().strip().split('\\n')\n    if not data:\n        return\n    T = int(data[0].strip())\n    out = []\n    for i in range(1, T + 1):\n        nums = list(map(int, data[i].split()))\n        out.append(str(nums[0] * nums[2]))\n    sys.stdout.write('\\n'.join(out))\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nif (input.length === 0) process.exit(0);\nconst T = parseInt(input[0].trim(), 10);\nlet output = [];\nfor (let i = 1; i <= T; i++) {\n  const nums = input[i].trim().split(/\\s+/).map(BigInt);\n  const prod = nums[0] * nums[2];\n  output.push(prod.toString());\n}\nconsole.log(output.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

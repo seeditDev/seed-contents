@@ -1,39 +1,43 @@
 {
   "questionId": "Q6416",
-  "title": "Bit Manipulation - Reverse Bits",
-  "slug": "bit-manipulation-reverse-bits",
+  "title": "The New Restaurant",
+  "slug": "the-new-restaurant",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation",
-    "difficulty": "Medium",
+    "category": "Geometry",
+    "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "Bit Reversal",
-      "Unsigned Integer",
-      "Bit Manipulation",
-      "Bitwise Operations"
+      "Circle-Area Calculation",
+      "Rectangle-Query"
     ],
     "companyTags": [],
     "topicTags": [
-      "Bit Manipulation"
-    ]
+      "Geometry"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given an **unsigned** 323232-bit integer XXX. Find the integer formed after reversing the 323232-bit binary string of XXX.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nThe first and only line of each test case contains 323232-bit integer XXX.\n\n\nOutput Format\nFor each test case, output on a new line, the number formed after reversing the 323232-bit binary string of XXX.",
+    "problemStatement": "Chef decided to open a new restaurant in the town. The town already has **N** restaurants, each of which operates in an area of circular shape with its center at **xi, yi** and radius **ri**. For any point, there is at most one restaurant operating there.\n\nChef wants to build his restaurant in a strategic place. That's why he asks you some questions - find the total area covered by restaurants in the rectangle defined by the points **x1, y1, x2, y2** where **(x1, y1)** is the lower left corner and **(x2, y2)** is the upper right corner. Chef is not that good in answering these questions, so he asked you to help him in this.",
     "constraints": [
-      "1 <= T <= 100000",
-      "0 <= X < 2^32"
+      "1 ≤ N ≤ 50,000",
+      "1 ≤ Q ≤ 100,000",
+      "0 ≤ xi, yi ≤ 50,000",
+      "1 ≤ ri ≤ 50",
+      "0 ≤ xi1 < xi2 ≤ 50,000",
+      "0 ≤ yi1 < yi2 ≤ 50,000",
+      "No two circles touch or intersect each other."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single unsigned 32\u2011bit integer X.",
-    "outputFormat": "For each test case output a line with the decimal value obtained after reversing the 32\u2011bit binary representation of X.",
+    "inputFormat": "The first line contains two integers N and Q, denoting the number of restaurants and the number of questions. Each of the next N lines contains three space-separated integers x, y, and r, denoting the x and y coordinates of the center and the radius of the restaurant, respectively. Each of the next Q lines contains four space-separated integers x1, y1, x2, and y2, denoting a question as defined in the statement.",
+    "outputFormat": "Output Q lines, the i-th line contains the total area covered by restaurants in the rectangle defined by the i-th query.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\n3\\n16\\n43261596",
-        "output": "3221225472\\n134217728\\n964176192",
-        "explanation": "3 (binary 00000000000000000000000000000011) reversed becomes 11000000000000000000000000000000 = 3221225472.\\n16 (binary 00000000000000000000000000010000) reversed becomes 00001000000000000000000000000000 = 134217728.\\n43261596 reversed bits give 964176192."
+        "input": "2 4\n5 5 2\n2 2 1\n2 2 5 5\n1 1 7 7\n2 3 8 4\n1 3 2 4",
+        "output": "3.926990816987241\n15.707963267948966\n2.456739397217513\n0.000000000000000",
+        "explanation": "The first query has an intersection area of approximately 3.93, the second query has an intersection area of approximately 15.71, the third query has an intersection area of approximately 2.46, and the fourth query has no intersection."
       }
     ]
   },
@@ -42,36 +46,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n0",
-        "expectedOutput": "0",
+        "input": "1 1\n0 0 1\n0 0 1 1",
+        "expectedOutput": "3.141592653589793",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\\n4294967295",
-        "expectedOutput": "4294967295",
+        "input": "1 1\n50000 50000 1\n0 0 50000 50000",
+        "expectedOutput": "0.000000000000000",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "edge case",
-        "input": "1\\n1",
-        "expectedOutput": "2147483648",
+        "input": "1 1\n0 0 1\n-1 -1 1 1",
+        "expectedOutput": "0.000000000000000",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\\n5",
-        "expectedOutput": "2684354560",
+        "input": "2 1\n0 0 1\n1 1 1\n0 0 2 2",
+        "expectedOutput": "6.283185307179586",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\\n4042322160",
-        "expectedOutput": "252645135",
+        "input": "2 1\n0 0 1\n1 1 1\n-1 -1 1 1",
+        "expectedOutput": "3.141592653589793",
         "weight": 2
       }
     ],
@@ -101,15 +105,27 @@
     ]
   },
   "solution": {
-    "approach": "For each number we treat it as a 32\u2011bit value. Starting with result = 0, we iterate 32 times: shift result left by one, add the current least\u2011significant bit of X (X & 1), then shift X right by one. After the loop result contains the bits of X in reverse order. This runs in O(32) = O(1) per test case and uses O(1) extra space.",
-    "timeComplexity": "O(T) because each test case processes a constant 32 bits.",
-    "spaceComplexity": "O(1) additional space.",
+    "approach": "To solve this problem, we can iterate over each query and calculate the area of the intersection between the rectangle and each circle. We can use the formula for the area of a circle segment to calculate the area of the intersection.",
+    "timeComplexity": "O(Q * N) — for each query, we iterate over all circles to calculate the intersection area.",
+    "spaceComplexity": "O(1) — we only use a constant amount of space to store the input and the current query.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdint.h>\n\nuint32_t reverseBits(uint32_t x) {\n    uint32_t rev = 0;\n    for (int i = 0; i < 32; ++i) {\n        rev = (rev << 1) | (x & 1U);\n        x >>= 1;\n    }\n    return rev;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint32_t x;\n        scanf(\"%u\", &x);\n        printf(\"%u\\n\", reverseBits(x));\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nuint32_t reverseBits(uint32_t x) {\n    uint32_t rev = 0;\n    for (int i = 0; i < 32; ++i) {\n        rev = (rev << 1) | (x & 1u);\n        x >>= 1;\n    }\n    return rev;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; \n    if(!(cin >> T)) return 0;\n    while (T--) {\n        uint32_t x; \n        cin >> x;\n        cout << reverseBits(x) << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static long reverseBits(long x) {\n        long rev = 0;\n        for (int i = 0; i < 32; i++) {\n            rev = (rev << 1) | (x & 1L);\n            x >>= 1;\n        }\n        return rev;\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < T; t++) {\n            long x = Long.parseLong(br.readLine().trim());\n            sb.append(reverseBits(x)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef reverse_bits(x: int) -> int:\n    rev = 0\n    for _ in range(32):\n        rev = (rev << 1) | (x & 1)\n        x >>= 1\n    return rev\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    for i in range(1, t + 1):\n        x = int(data[i])\n        out.append(str(reverse_bits(x)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfunction reverseBits(x) {\n  let rev = 0 >>> 0; // ensure unsigned 32\u2011bit\n  for (let i = 0; i < 32; i++) {\n    rev = (rev << 1) >>> 0;\n    rev |= x & 1;\n    x >>>= 1;\n  }\n  return rev >>> 0;\n}\nfor (let t = 0; t < T; t++) {\n  const x = Number(input[idx++]);\n  results.push(String(reverseBits(x)));\n}\nconsole.log(results.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <math.h>\n\nint main() {\n    int N, Q;\n    scanf(\"%d %d\", &N, &Q);\n    int x[N], y[N], r[N];\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d %d %d\", &x[i], &y[i], &r[i]);\n    }\n    for (int i = 0; i < Q; i++) {\n        int x1, y1, x2, y2;\n        scanf(\"%d %d %d %d\", &x1, &y1, &x2, &y2);\n        double area = 0;\n        for (int j = 0; j < N; j++) {\n            double dx = x[j] - x1;\n            double dy = y[j] - y1;\n            double distance = sqrt(dx * dx + dy * dy);\n            if (distance <= r[j]) {\n                // calculate the area of the intersection\n                double angle = acos(distance / r[j]);\n                area += 0.5 * r[j] * r[j] * (2 * angle - sin(2 * angle));\n            }\n        }\n        printf(\"%.10f\\n\", area);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <cmath>\nusing namespace std;\n\nint main() {\n    int N, Q;\n    cin >> N >> Q;\n    int x[N], y[N], r[N];\n    for (int i = 0; i < N; i++) {\n        cin >> x[i] >> y[i] >> r[i];\n    }\n    for (int i = 0; i < Q; i++) {\n        int x1, y1, x2, y2;\n        cin >> x1 >> y1 >> x2 >> y2;\n        double area = 0;\n        for (int j = 0; j < N; j++) {\n            double dx = x[j] - x1;\n            double dy = y[j] - y1;\n            double distance = sqrt(dx * dx + dy * dy);\n            if (distance <= r[j]) {\n                // calculate the area of the intersection\n                double angle = acos(distance / r[j]);\n                area += 0.5 * r[j] * r[j] * (2 * angle - sin(2 * angle));\n            }\n        }\n        cout << fixed << setprecision(10) << area << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\nimport java.lang.Math;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int Q = sc.nextInt();\n        int[] x = new int[N];\n        int[] y = new int[N];\n        int[] r = new int[N];\n        for (int i = 0; i < N; i++) {\n            x[i] = sc.nextInt();\n            y[i] = sc.nextInt();\n            r[i] = sc.nextInt();\n        }\n        for (int i = 0; i < Q; i++) {\n            int x1 = sc.nextInt();\n            int y1 = sc.nextInt();\n            int x2 = sc.nextInt();\n            int y2 = sc.nextInt();\n            double area = 0;\n            for (int j = 0; j < N; j++) {\n                double dx = x[j] - x1;\n                double dy = y[j] - y1;\n                double distance = Math.sqrt(dx * dx + dy * dy);\n                if (distance <= r[j]) {\n                    // calculate the area of the intersection\n                    double angle = Math.acos(distance / r[j]);\n                    area += 0.5 * r[j] * r[j] * (2 * angle - Math.sin(2 * angle));\n                }\n            }\n            System.out.printf(\"%.10f\\n\", area);\n        }\n    }\n}",
+      "Python3": "import math\n\nN, Q = map(int, input().split())\n\nx = [0] * N\ny = [0] * N\nr = [0] * N\n\nfor i in range(N):\n    x[i], y[i], r[i] = map(int, input().split())\n\nfor i in range(Q):\n    x1, y1, x2, y2 = map(int, input().split())\n    area = 0\n    for j in range(N):\n        dx = x[j] - x1\n        dy = y[j] - y1\n        distance = math.sqrt(dx * dx + dy * dy)\n        if distance <= r[j]:\n            # calculate the area of the intersection\n            angle = math.acos(distance / r[j])\n            area += 0.5 * r[j] * r[j] * (2 * angle - math.sin(2 * angle))\n    print(\"%.10f\" % area)",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction nextLine() {\n    return lines[idx++];\n}\n\nfunction nextInt() {\n    return parseInt(nextLine());\n}\n\nfunction nextInts() {\n    return nextLine().split(' ').map(x => parseInt(x));\n}\n\nlet [N, Q] = nextInts();\nlet x = new Array(N);\nlet y = new Array(N);\nlet r = new Array(N);\n\nfor (let i = 0; i < N; i++) {\n    [x[i], y[i], r[i]] = nextInts();\n}\n\nfor (let i = 0; i < Q; i++) {\n    let [x1, y1, x2, y2] = nextInts();\n    let area = 0;\n    for (let j = 0; j < N; j++) {\n        let dx = x[j] - x1;\n        let dy = y[j] - y1;\n        let distance = Math.sqrt(dx * dx + dy * dy);\n        if (distance <= r[j]) {\n            // calculate the area of the intersection\n            let angle = Math.acos(distance / r[j]);\n            area += 0.5 * r[j] * r[j] * (2 * angle - Math.sin(2 * angle));\n        }\n    }\n    console.log(area.toFixed(10));\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

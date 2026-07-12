@@ -1,44 +1,47 @@
 {
   "questionId": "Q8732",
-  "title": "Capacity to Ship Packages Within D Days",
-  "slug": "capacity-to-ship-packages-within-d-days",
+  "title": "Reverse a Linked List",
+  "slug": "reverse-a-linked-list",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
+    "category": "Data Structures",
     "difficulty": "Medium",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "Greedy",
-      "Binary Search",
-      "Shipment"
+      "Linked List",
+      "Two Pointers",
+      "Iterative",
+      "In‑place reversal"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Linked Lists"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are the owner of a Shipment company. You use conveyor belts to ship packages from one port to another. The packages must be shipped within 'd' days.\nThe weights of the packages are given in an array 'of weights'. The packages are loaded on the conveyor belts every day in the same order as they appear in the array. The loaded weights must not exceed the maximum weight capacity of the ship.\nFind out the least-weight capacity so that you can ship all the packages within 'd' days .",
+    "problemStatement": "The Chef gives you a singly linked list AAA integers and ask you to help him reverse the list.\n\nComplete the function \"listReverse\" in the code snippet that takes a single argument: head of the linked list.\n\n\nInput Format\n\nThe first line contains an integer NNN - representing the number of elements of the linked list.\nThe second line contains NNN integers - representing the elements of the linked list.\n\n\nOutput Format\nFor each testcase, output will be in a single line containing a list returned by the function listReverse.",
     "constraints": [
-      "1 <= d <= 10^5",
-      "1 <= N <= 5*10^4",
-      "1 <= weights[i] <= 5*10^4",
-      "1 <= sum of weights <= 10^9"
+      "1 <= T <= 10",
+      "1 <= N <= 100000",
+      "-10^9 <= node value <= 10^9"
     ],
-    "inputFormat": "N = number of packages, weights = array of package weights, d = number of days",
-    "outputFormat": "minimum ship capacity needed to ship all packages within d days",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N (the number of nodes in the linked list). The second line contains N space‑separated integers representing the node values in order from head to tail.",
+    "outputFormat": "For each test case, output a single line containing the values of the reversed linked list, space‑separated.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "N = 5, weights = [5, 4, 5, 2, 3, 4, 5, 6], d = 5",
-        "output": "9",
-        "explanation": "The minimum ship capacity needed to ship all packages within 5 days is 9."
+        "input": "2\n5\n1 2 3 4 5\n5\n1 1 3 2 1",
+        "output": "5 4 3 2 1\n1 2 3 1 1",
+        "explanation": "First test case: list 1→2→3→4→5 reversed is 5→4→3→2→1. Second test case: list 1→1→3→2→1 reversed is 1→2→3→1→1."
       },
       {
         "id": "sample_2",
-        "input": "N = 3, weights = [1, 2, 3, 4, 5], d = 2",
-        "output": "9",
-        "explanation": "With a capacity of 9, the packages can be shipped in 2 days as [1,2,3,4] and [5]."
+        "input": "1\n3\n-7 0 7",
+        "output": "7 0 -7",
+        "explanation": "Reversing the three‑element list yields the values in opposite order."
       }
     ]
   },
@@ -46,37 +49,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "N = 1, weights = [1], d = 1",
-        "expectedOutput": "1",
+        "label": "minimum boundary",
+        "input": "1\n1\n42",
+        "expectedOutput": "42",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "N = 5, weights = [100000, 100000, 100000, 100000, 100000], d = 5",
-        "expectedOutput": "100000",
+        "label": "maximum boundary (compact size)",
+        "input": "1\n15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "15 14 13 12 11 10 9 8 7 6 5 4 3 2 1",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform case",
-        "input": "N = 5, weights = [5, 5, 5, 5, 5], d = 3",
-        "expectedOutput": "10",
+        "label": "edge case with negatives and zeros",
+        "input": "1\n5\n-5 0 -5 10 0",
+        "expectedOutput": "0 10 -5 0 -5",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case",
-        "input": "N = 5, weights = [1, 2, 3, 4, 5], d = 1",
-        "expectedOutput": "15",
+        "label": "general case 1",
+        "input": "1\n7\n3 1 4 1 5 9 2",
+        "expectedOutput": "2 9 5 1 4 1 3",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed case",
-        "input": "N = 8, weights = [5, 4, 5, 2, 3, 4, 5, 6], d = 5",
-        "expectedOutput": "9",
+        "label": "general case 2 (all equal)",
+        "input": "1\n6\n7 7 7 7 7 7",
+        "expectedOutput": "7 7 7 7 7 7",
         "weight": 2
       }
     ],
@@ -106,15 +109,27 @@
     ]
   },
   "solution": {
-    "approach": "Use binary search to find the minimum capacity that can ship all packages within d days",
-    "timeComplexity": "O(N log S)",
-    "spaceComplexity": "O(1)",
+    "approach": "For each test case we read the values into an array (or vector). Reversing a singly linked list can be done in O(N) time by iterating once and changing the next pointers, but since we only need to output the reversed order, we can simply output the array from the last element to the first. This avoids explicit pointer manipulation and works within the same time and space bounds. The algorithm:\n1. Read N and the N values.\n2. Store the values in a container.\n3. Iterate the container backwards and print the values separated by a space.\nThe total time per test case is O(N) and the extra space used is O(N) for storing the values.",
+    "timeComplexity": "O(N) per test case, where N is the length of the linked list.",
+    "spaceComplexity": "O(N) per test case for the array that holds the node values.",
     "code": {
-      "C": "#include <stdio.h>\nint daysNeeded(int* weights, int weightsSize, int capacity) {\n    int days = 1, currentLoad = 0;\n    for (int i = 0; i < weightsSize; i++) {\n        if (currentLoad + weights[i] > capacity) {\n            days++;\n            currentLoad = weights[i];\n        } else {\n            currentLoad += weights[i];\n        }\n    }\n    return days;\n}\n\nint shipWithinDays(int* weights, int weightsSize, int d) {\n    int left = weights[0], right = 0;\n    for (int i = 0; i < weightsSize; i++) {\n        left = (left > weights[i]) ? left : weights[i];\n        right += weights[i];\n    }\n    while (left < right) {\n        int mid = left + (right - left) / 2;\n        if (daysNeeded(weights, weightsSize, mid) <= d) {\n            right = mid;\n        } else {\n            left = mid + 1;\n        }\n    }\n    return left;\n}\n\nint main() {\n    int weights[] = {5, 4, 5, 2, 3, 4, 5, 6};\n    int d = 5;\n    printf(\"%d\\n\", shipWithinDays(weights, 8, d));\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    // Function to check how many days needed for given capacity\n    int daysNeeded(vector<int>& weights, int capacity) {\n        // Initialize day count to 1\n        int days = 1;\n        // Current load for the day\n        int currentLoad = 0;\n\n        // Iterate over all package weights\n        for (int w : weights) {\n            // If adding weight exceeds capacity\n            if (currentLoad + w > capacity) {\n                // Increase day count and reset load\n                days++;\n                currentLoad = w;\n            } else {\n                // Otherwise, add weight to current load\n                currentLoad += w;\n            }\n        }\n        // Return total days needed\n        return days;\n    }\n\n    // Function to find minimum ship capacity to ship in d days\n    int shipWithinDays(vector<int>& weights, int d) {\n        // Find maximum weight as minimum capacity\n        int left = *max_element(weights.begin(), weights.end());\n        // Find total sum as maximum capacity\n        int right = accumulate(weights.begin(), weights.end(), 0);\n\n        // Iterate from minimum to maximum capacity\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            // Calculate days needed for current capacity\n            int needed = daysNeeded(weights, mid);\n            // If days needed are less than or equal to d, return capacity\n            if (needed <= d) {\n                right = mid;\n            } else {\n                left = mid + 1;\n            }\n        }\n        // Return minimum capacity\n        return left;\n    }\n};\n\nint main() {\n    // Input weights\n    vector<int> weights = {5,4,5,2,3,4,5,6};\n    // Days to ship\n    int d = 5;\n    // Create Solution instance\n    Solution sol;\n    // Call the function and print result\n    cout << sol.shipWithinDays(weights, d) << \"\\n\";\n    return 0;\n}",
-      "Java": "import java.util.*;\n\nclass Solution {\n    // Function to check how many days needed for given capacity\n    int daysNeeded(int[] weights, int capacity) {\n        // Initialize day count to 1\n        int days = 1;\n        // Current load for the day\n        int currentLoad = 0;\n\n        // Iterate over all package weights\n        for (int w : weights) {\n            // If adding weight exceeds capacity\n            if (currentLoad + w > capacity) {\n                // Increase day count and reset load\n                days++;\n                currentLoad = w;\n            } else {\n                // Otherwise, add weight to current load\n                currentLoad += w;\n            }\n        }\n        // Return total days needed\n        return days;\n    }\n\n    // Function to find minimum ship capacity to ship in d days\n    int shipWithinDays(int[] weights, int d) {\n        // Find maximum weight as minimum capacity\n        int left = Arrays.stream(weights).max().getAsInt();\n        // Find total sum as maximum capacity\n        int right = Arrays.stream(weights).sum();\n\n        // Iterate from minimum to maximum capacity\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            // Calculate days needed for current capacity\n            int needed = daysNeeded(weights, mid);\n            // If days needed are less than or equal to d, return capacity\n            if (needed <= d) {\n                right = mid;\n            } else {\n                left = mid + 1;\n            }\n        }\n        // Return minimum capacity\n        return left;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // Input weights\n        int[] weights = {5,4,5,2,3,4,5,6};\n        // Days to ship\n        int d = 5;\n        // Create Solution instance\n        Solution sol = new Solution();\n        // Call the function and print result\n        System.out.println(sol.shipWithinDays(weights, d));\n    }\n}",
-      "Python3": "class Solution:\n    # Function to check how many days needed for given capacity\n    def daysNeeded(self, weights, capacity):\n        # Initialize day count to 1\n        days = 1\n        # Current load for the day\n        currentLoad = 0\n\n        # Iterate over all package weights\n        for w in weights:\n            # If adding weight exceeds capacity\n            if currentLoad + w > capacity:\n                # Increase day count and reset load\n                days += 1\n                currentLoad = w\n            else:\n                # Otherwise, add weight to current load\n                currentLoad += w\n        # Return total days needed\n        return days\n\n    # Function to find minimum ship capacity to ship in d days\n    def shipWithinDays(self, weights, d):\n        # Find maximum weight as minimum capacity\n        left = max(weights)\n        # Find total sum as maximum capacity\n        right = sum(weights)\n\n        # Iterate from minimum to maximum capacity\n        while left < right:\n            mid = left + (right - left) // 2\n            # Calculate days needed for current capacity\n            needed = self.daysNeeded(weights, mid)\n            # If days needed are less than or equal to d, return capacity\n            if needed <= d:\n                right = mid\n            else:\n                left = mid + 1\n        # Return minimum capacity\n        return left\n\n\nif __name__ == \"__main__\":\n    # Input weights\n    weights = [5,4,5,2,3,4,5,6]\n    # Days to ship\n    d = 5\n    # Create Solution instance\n    sol = Solution()\n    # Call the function and print result\n    print(sol.shipWithinDays(weights, d))",
-      "JavaScript": "class Solution {\n    // Function to check how many days needed for given capacity\n    daysNeeded(weights, capacity) {\n        // Initialize day count to 1\n        let days = 1;\n        // Current load for the day\n        let currentLoad = 0;\n\n        // Iterate over all package weights\n        for (let w of weights) {\n            // If adding weight exceeds capacity\n            if (currentLoad + w > capacity) {\n                // Increase day count and reset load\n                days++;\n                currentLoad = w;\n            } else {\n                // Otherwise, add weight to current load\n                currentLoad += w;\n            }\n        }\n        // Return total days needed\n        return days;\n    }\n\n    // Function to find minimum ship capacity to ship in d days\n    shipWithinDays(weights, d) {\n        // Find maximum weight as minimum capacity\n        let left = Math.max(...weights);\n        // Find total sum as maximum capacity\n        let right = weights.reduce((a, b) => a + b, 0);\n\n        // Iterate from minimum to maximum capacity\n        while (left < right) {\n            let mid = left + Math.floor((right - left) / 2);\n            // Calculate days needed for current capacity\n            let needed = this.daysNeeded(weights, mid);\n            // If days needed are less than or equal to d, return capacity\n            if (needed <= d) {\n                right = mid;\n            } else {\n                left = mid + 1;\n            }\n        }\n        // Return minimum capacity\n        return left;\n    }\n}\n\n// Driver code\nconst weights = [5,4,5,2,3,4,5,6];\nconst d = 5;\nconst sol = new Solution();\nconsole.log(sol.shipWithinDays(weights, d));"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        long long *arr = (long long*)malloc(N*sizeof(long long));\n        for(int i=0;i<N;i++) scanf(\"%lld\", &arr[i]);\n        for(int i=N-1;i>=0;i--){\n            printf(\"%lld\", arr[i]);\n            if(i) printf(\" \");\n        }\n        printf(\"\\n\");\n        free(arr);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<long long> a(N);\n        for(int i=0;i<N;i++) cin>>a[i];\n        for(int i=N-1;i>=0;i--){\n            cout<<a[i];\n            if(i) cout<<' ';\n        }\n        if(T) cout<<'\\n'; else cout<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        for(int tc=0; tc<T; tc++){\n            int N = Integer.parseInt(br.readLine().trim());\n            long[] arr = new long[N];\n            st = new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) arr[i] = Long.parseLong(st.nextToken());\n            for(int i=N-1;i>=0;i--){\n                out.append(arr[i]);\n                if(i>0) out.append(' ');\n            }\n            if(tc<T-1) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        vals = [next(it) for _ in range(N)]\n        out_lines.append(' '.join(reversed(vals)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nif (input.length === 0) process.exit(0);\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n  const N = Number(input[idx++]);\n  const arr = [];\n  for (let i = 0; i < N; i++) arr.push(input[idx++]);\n  outputs.push(arr.reverse().join(' '));\n}\nconsole.log(outputs.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

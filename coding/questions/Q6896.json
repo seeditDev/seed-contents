@@ -1,50 +1,53 @@
 {
   "questionId": "Q6896",
-  "title": "Air Quality Index",
-  "slug": "air-quality-index",
+  "title": "Correct Bracket Sequence",
+  "slug": "correct-bracket-sequence",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Math | Dynamic Programming | Combinatorics",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Math",
-      "Comparison",
-      "Conditional"
+      "Catalan Numbers",
+      "Binomial Coefficients",
+      "Probability"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Combinatorics & Probability"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "In the light of `G-20` summit, government has decided to keep the average air quality index (AQI) **strictly below** 100100100.\n\nOn some random day, Chef measures the AQI and found the value to be XXX.\n\nFind whether the government was able to keep the AQI within limits.\n\n\nInput Format\n\nThe input consists of an integer XXX \u2014 the AQI Chef measured.\n\n\nOutput Format\nOutput `YES`, if the government was able to keep the AQI within limits and `NO` otherwise.\n\n\nYou may print each character of the string in uppercase or lowercase (for example, the strings `YES`, `yEs`, `yes`, and `yeS` will all be treated as identical).",
+    "problemStatement": "A string consisting only of parentheses (**'('** and **')'**) is called a bracket sequence. Some bracket sequence are called **correct bracket sequences(CBS)**. More formally:\n\n\nEmpty string is a CBS.\nIf **S** is a CBS, then **(S)** is also a CBS.\nIf **S** and **T** are CBS, then **ST** (concatenation of **S** and **T**) is also a CBS.\n\nA **'good'** CBS is a sequence where the first (**N/2**) characters are **'('** and the next (**N/2**) characters are **')'**,where **N** is the length of sequence.\n\n\nYou are given two numbers **N** and **K**. Find the probability that a **N** length **CBS** can be converted into a 'good' CBS by at most **K 'good' swaps**. A swap is 'good' if the sequence after the swap is a CBS.\n\n\n\n\n\nIf the answer is of the form **P/Q** where **P** and **Q** are coprime, print (**P*Q-1**) modulo 1000000007.",
     "constraints": [
-      "1 \u2264 T \u2264 10",
-      "1 \u2264 X \u2264 150"
+      "1 <= T <= 20",
+      "1 <= N <= 100000",
+      "0 <= K <= 100000",
+      "N is even."
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer X \u2014 the measured AQI.",
-    "outputFormat": "For each test case, output \"YES\" if X is strictly less than 100, otherwise output \"NO\". Each answer should be on its own line.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two integers N and K on a single line, separated by a space.",
+    "outputFormat": "The output is the probability that a N length CBS can be converted into a 'good' CBS by at most K 'good' swaps, in the form (P*Q-1) modulo 1000000007, where P/Q is the probability.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n50",
-        "output": "YES",
-        "explanation": "The only test case has X = 50, which is strictly less than 100, so the answer is YES."
+        "input": "1\n6 2",
+        "output": "10",
+        "explanation": "There are 14 possible CBS of length 6, and 10 of them can be converted into a 'good' CBS by at most 2 'good' swaps."
       },
       {
         "id": "sample_2",
-        "input": "1\n100",
-        "output": "NO",
-        "explanation": "X = 100 equals the limit; the requirement is strictly below 100, therefore the answer is NO."
+        "input": "1\n4 1",
+        "output": "2",
+        "explanation": "There are 5 possible CBS of length 4, and 2 of them can be converted into a 'good' CBS by at most 1 'good' swap."
       },
       {
         "id": "sample_3",
-        "input": "1\n99",
-        "output": "YES",
-        "explanation": "X = 99 is less than 100, so the answer is YES."
+        "input": "1\n2 0",
+        "output": "1",
+        "explanation": "There is only 1 possible CBS of length 2, and it is already a 'good' CBS."
       }
     ]
   },
@@ -53,36 +56,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1",
-        "expectedOutput": "YES",
+        "input": "1\n2 0",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n150",
-        "expectedOutput": "NO",
+        "input": "1\n100000 100000",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case just below limit",
-        "input": "1\n99",
-        "expectedOutput": "YES",
+        "label": "edge case",
+        "input": "1\n4 2",
+        "expectedOutput": "5",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "edge case exactly at limit",
-        "input": "1\n100",
-        "expectedOutput": "NO",
+        "label": "general case 1",
+        "input": "1\n10 5",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "multiple test cases",
-        "input": "5\n50\n100\n99\n145\n2",
-        "expectedOutput": "YES\nNO\nYES\nNO\nYES",
+        "label": "general case 2",
+        "input": "1\n20 10",
+        "expectedOutput": "0",
         "weight": 2
       }
     ],
@@ -112,15 +115,27 @@
     ]
   },
   "solution": {
-    "approach": "For each test case read X and compare it with the threshold 100. If X < 100 print YES, else print NO. The algorithm is O(1) per test case.",
-    "timeComplexity": "O(T) \u2013 constant work for each of the T test cases.",
-    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
+    "approach": "To solve this problem, we first need to calculate the total number of correct bracket sequences (CBS) of length N. This can be done using Catalan numbers, which are given by the formula C(n) = (2n)! / (n! * (n+1)!). Then, we need to calculate the number of 'good' CBS, which is given by the binomial coefficient (N/2 choose N/2). Finally, we need to calculate the probability that a CBS can be converted into a 'good' CBS by at most K 'good' swaps. This can be done by calculating the number of ways to choose K positions to swap, and then multiplying by the probability of each swap being 'good'.",
+    "timeComplexity": "O(T * N) — the time complexity is dominated by the calculation of the Catalan numbers and the binomial coefficients.",
+    "spaceComplexity": "O(N) — the space complexity is dominated by the storage of the Catalan numbers and the binomial coefficients.",
     "code": {
-      "C": "#include <stdio.h>\nint main() {\n    int T, X;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        scanf(\"%d\", &X);\n        if (X < 100) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T, X;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        cin >> X;\n        cout << (X < 100 ? \"YES\" : \"NO\") << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            int X = Integer.parseInt(br.readLine().trim());\n            sb.append(X < 100 ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        x = int(data[idx])\n        idx += 1\n        out.append(\"YES\" if x < 100 else \"NO\")\n    sys.stdout.write(\"\\n\".join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nif (input.length === 0) process.exit(0);\nlet idx = 0;\nconst T = parseInt(input[idx++], 10);\nlet result = [];\nfor (let i = 0; i < T; i++) {\n  const X = parseInt(input[idx++], 10);\n  result.push(X < 100 ? 'YES' : 'NO');\n}\nconsole.log(result.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <math.h>\n#define MOD 1000000007\nlong long catalan(int n) {\n    long long res = 1;\n    for (int i = 1; i <= n; i++) {\n        res = (res * (4 * i - 2)) / (i + 1);\n    }\n    return res;\n}\nlong long binomial(int n, int k) {\n    long long res = 1;\n    for (int i = 1; i <= k; i++) {\n        res = (res * (n - i + 1)) / i;\n    }\n    return res;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        long long total = catalan(N / 2);\n        long long good = binomial(N / 2, N / 2);\n        long long prob = (good * total - 1) % MOD;\n        printf(\"%lld\\n\", prob);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <cmath>\n#define MOD 1000000007\nusing namespace std;\nlong long catalan(int n) {\n    long long res = 1;\n    for (int i = 1; i <= n; i++) {\n        res = (res * (4 * i - 2)) / (i + 1);\n    }\n    return res;\n}\nlong long binomial(int n, int k) {\n    long long res = 1;\n    for (int i = 1; i <= k; i++) {\n        res = (res * (n - i + 1)) / i;\n    }\n    return res;\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        long long total = catalan(N / 2);\n        long long good = binomial(N / 2, N / 2);\n        long long prob = (good * total - 1) % MOD;\n        cout << prob << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    static final int MOD = 1000000007;\n    public static long catalan(int n) {\n        long res = 1;\n        for (int i = 1; i <= n; i++) {\n            res = (res * (4 * i - 2)) / (i + 1);\n        }\n        return res;\n    }\n    public static long binomial(int n, int k) {\n        long res = 1;\n        for (int i = 1; i <= k; i++) {\n            res = (res * (n - i + 1)) / i;\n        }\n        return res;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int K = sc.nextInt();\n            long total = catalan(N / 2);\n            long good = binomial(N / 2, N / 2);\n            long prob = (good * total - 1) % MOD;\n            System.out.println(prob);\n        }\n    }\n}",
+      "Python3": "import math\nMOD = 1000000007\ndef catalan(n):\n    res = 1\n    for i in range(1, n + 1):\n        res = (res * (4 * i - 2)) // (i + 1)\n    return res\ndef binomial(n, k):\n    res = 1\n    for i in range(1, k + 1):\n        res = (res * (n - i + 1)) // i\n    return res\nT = int(input())\nfor _ in range(T):\n    N, K = map(int, input().split())\n    total = catalan(N // 2)\n    good = binomial(N // 2, N // 2)\n    prob = (good * total - 1) % MOD\n    print(prob)",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst MOD = 1000000007;\nfunction catalan(n) {\n    let res = 1;\n    for (let i = 1; i <= n; i++) {\n        res = (res * (4 * i - 2)) / (i + 1);\n    }\n    return res;\n}\nfunction binomial(n, k) {\n    let res = 1;\n    for (let i = 1; i <= k; i++) {\n        res = (res * (n - i + 1)) / i;\n    }\n    return res;\n}\nlet T = parseInt(input[idx++]);\nwhile (T-- > 0) {\n    let [N, K] = input[idx++].split(' ').map(x => parseInt(x));\n    let total = catalan(N / 2);\n    let good = binomial(N / 2, N / 2);\n    let prob = (good * total - 1) % MOD;\n    console.log(prob);\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

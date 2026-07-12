@@ -1,39 +1,52 @@
 {
   "questionId": "Q4397",
-  "title": "Chain Reaction",
-  "slug": "chain-reaction",
+  "title": "Valid Parenthesis",
+  "slug": "valid-parenthesis",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-12",
   "metadata": {
-    "category": "Arrays",
+    "category": "Strings",
     "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "competitive programming",
-      "ad-hoc & implementation",
-      "Arrays"
+      "Stack",
+      "String",
+      "Simulation"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Stacks & Queues"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given a grid with RRR rows (numbered 111 through RRR) and CCC columns (numbered 111 through CCC). A cell in row rrr and column ccc is denoted by (r,c)(r, c)(r,c). Two cells in the grid are adjacent if they have a common side. For each valid iii and jjj, there is a value ai,ja_{i, j}ai,j\u200b written in cell ai,ja_{i, j}ai,j\u200b.\n\nA cell in the grid is stable if the number of cells in the grid which are adjacent to this cell is strictly greater than the value written in this cell. The whole grid is stable if all cells in the grid are stable.\n\nCan you determine whether the grid is stable?",
+    "problemStatement": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n\nOpen brackets must be closed using the same type of brackets.\nOpen brackets must be closed in the correct order.\nEvery close bracket has a corresponding open bracket of the same type.",
     "constraints": [
-      "1\u2264T\u22643,0001 \\le T \\le 3,0001\u2264T\u22643,000",
-      "3\u2264R,C\u2264103 \\le R, C \\le 103\u2264R,C\u226410",
-      "0\u2264ai,j\u226440 \\le a_{i, j} \\le 40\u2264ai,j\u200b\u22644 for each valid i,ji, ji,j"
+      "1 <= T <= 1000",
+      "1 <= length of s <= 1000",
+      "s contains only '(' , ')' , '{' , '}' , '[' and ']'"
     ],
-    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers RRR and CCC.\nRRR lines follow. For each iii (1\u2264i\u2264R1 \\le i \\le R1\u2264i\u2264R), the iii-th of these lines contains CCC space-separated integers ai,1,ai,2,\u2026,ai,Ca_{i, 1}, a_{i, 2}, \\ldots, a_{i, C}ai,1\u200b,ai,2\u200b,\u2026,ai,C\u200b.",
-    "outputFormat": "For each test case, print a single line containing the string `\"Stable\"` if the grid is stable or `\"Unstable\"` if it is unstable (without quotes).",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string s consisting only of the characters '(' , ')' , '{' , '}' , '[' and ']'.",
+    "outputFormat": "For each test case output a single line containing \"true\" if the string is a valid parentheses sequence, otherwise output \"false\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n3 3\n1 2 1\n2 3 2\n1 2 1\n3 4\n0 0 0 0\n0 0 0 0\n0 0 4 0",
-        "output": "Stable\nUnstable",
-        "explanation": "Explanation:\nExample case 1: Each cell of the grid is stable, so the grid is stable.\nExample case 2: The cell in row 333 and column 333 is unstable since the number of cells adjacent to this cell is 333."
+        "input": "3\n((()))\n()[]{}\n(]",
+        "output": "true\ntrue\nfalse",
+        "explanation": "First string is perfectly nested, second mixes three types correctly, third has a mismatched closing bracket."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n({[]})\n([)]",
+        "output": "true\nfalse",
+        "explanation": "First string is valid across all three bracket types, second violates the required order."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n()",
+        "output": "true",
+        "explanation": "A single pair of parentheses is valid."
       }
     ]
   },
@@ -41,20 +54,173 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "2\n3 3\n1 2 1\n2 3 2\n1 2 1\n3 4\n0 0 0 0\n0 0 0 0\n0 0 4 0",
-        "expectedOutput": "Stable\nUnstable",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n()",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_2",
+        "label": "minimum boundary 2",
+        "input": "1\n(",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_3",
+        "label": "minimum boundary 3",
+        "input": "1\n)",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_4",
+        "label": "minimum boundary 4",
+        "input": "1\n[]",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_5",
+        "label": "maximum boundary",
+        "input": "1\n({[]})({[]})",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_6",
+        "label": "maximum boundary 2",
+        "input": "1\n)))))))))))))))",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_7",
+        "label": "maximum boundary 3",
+        "input": "1\n((((((((((((((",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_8",
+        "label": "maximum boundary 4",
+        "input": "1\n([]{})[]{}()",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_9",
+        "label": "uniform case",
+        "input": "1\n()()()()()()()",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_10",
+        "label": "uniform case 2",
+        "input": "1\n((((",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_11",
+        "label": "structured case",
+        "input": "1\n({[]})",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_12",
+        "label": "structured case 2",
+        "input": "1\n])}{",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_13",
+        "label": "tricky case",
+        "input": "1\n([)]",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_14",
+        "label": "tricky case 2",
+        "input": "1\n()(",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_15",
+        "label": "tricky case 3",
+        "input": "1\n([]",
+        "expectedOutput": "false",
+        "weight": 1
+      },
+      {
+        "id": "tc_16",
+        "label": "tricky case 4",
+        "input": "1\n([{}])",
+        "expectedOutput": "true",
+        "weight": 1
+      },
+      {
+        "id": "tc_17",
+        "label": "stress case",
+        "input": "3\n()\n([])\n([)]",
+        "expectedOutput": "true\ntrue\nfalse",
+        "weight": 1
+      },
+      {
+        "id": "tc_18",
+        "label": "stress case 2",
+        "input": "5\n()\n()[]\n({})\n([{}])\n((()))",
+        "expectedOutput": "true\ntrue\ntrue\ntrue\ntrue",
+        "weight": 1
+      },
+      {
+        "id": "tc_19",
+        "label": "stress case 3",
+        "input": "2\n({[]})\n({[)]})",
+        "expectedOutput": "true\nfalse",
+        "weight": 1
+      },
+      {
+        "id": "tc_20",
+        "label": "stress case 4",
+        "input": "4\n[]\n{}\n()\n([{}])",
+        "expectedOutput": "true\ntrue\ntrue\ntrue",
+        "weight": 1
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 20,
+    "totalWeight": 20
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
-    "maxScore": 100
+    "maxScore": 20
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -68,9 +234,28 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
-  }
+    "approach": "Use a stack to keep track of opening brackets. Scan the string from left to right. When an opening bracket is encountered, push it onto the stack. For a closing bracket, the stack must not be empty and its top must be the matching opening bracket; otherwise the string is invalid. After processing the whole string the stack must be empty for the sequence to be valid. This greedy linear scan works because any valid parentheses sequence can be reduced by repeatedly removing adjacent matching pairs, which is exactly what the stack simulation does.",
+    "timeComplexity": "O(L) per test case, where L is the length of the string. Overall O(total length of all strings).",
+    "spaceComplexity": "O(L) in the worst case for the stack, where L is the length of the current string.",
+    "code": {
+      "C": "",
+      "C++": "",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static boolean isValid(String s) {\n        Deque<Character> stack = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stack.push(c);\n            } else {\n                if (stack.isEmpty()) return false;\n                char top = stack.pop();\n                if ((c == ')' && top != '(') ||\n                    (c == '}' && top != '{') ||\n                    (c == ']' && top != '[')) {\n                    return false;\n                }\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            String s = br.readLine();\n            if (s == null) s = \"\";\n            s = s.trim();\n            sb.append(isValid(s) ? \"true\" : \"false\");\n            if (i + 1 < T) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+      "Python3": "",
+      "JavaScript": ""
+    }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
+  },
+  "tcGeneratorPython": "def generate_case(i, RINT, POWER):\n    # i: test case index (0 <= i <= 20)\n    # RINT(a,b): random integer in [a,b]\n    # POWER(a,b): a**b\n    if i == 0:\n        t = 1\n        print(t)\n        print('()')\n    elif i == 1:\n        t = 1\n        print(t)\n        print('(')\n    elif i == 2:\n        t = 1\n        print(t)\n        print(')')\n    elif i == 3:\n        t = 1\n        print(t)\n        print('[]')\n    elif i == 4:\n        t = 1\n        print(t)\n        print('({[]})({[]})')\n    elif i == 5:\n        t = 1\n        print(t)\n        print(')'*RINT(13,15))\n    elif i == 6:\n        t = 1\n        print(t)\n        print('(' * RINT(13,15))\n    elif i == 7:\n        t = 1\n        print(t)\n        print('([]{})[]{}()')\n    elif i == 8:\n        t = 1\n        print(t)\n        print('()'*RINT(5,7))\n    elif i == 9:\n        t = 1\n        print(t)\n        print('(' * RINT(4,6))\n    elif i == 10:\n        t = 1\n        print(t)\n        print('({[]})')\n    elif i == 11:\n        t = 1\n        print(t)\n        print('])}{')\n    elif i == 12:\n        t = 1\n        print(t)\n        print('([)]')\n    elif i == 13:\n        t = 1\n        print(t)\n        print('()(')\n    elif i == 14:\n        t = 1\n        print(t)\n        print('([]')\n    elif i == 15:\n        t = 1\n        print(t)\n        print('([{}])')\n    elif i == 16:\n        t = 3\n        print(t)\n        print('()')\n        print('([])')\n        print('([)]')\n    elif i == 17:\n        t = 5\n        print(t)\n        print('()')\n        print('()[]')\n        print('({})')\n        print('([{}])')\n        print('((()))')\n    elif i == 18:\n        t = 2\n        print(t)\n        print('({[]})')\n        print('({[)]})')\n    elif i == 19:\n        t = 4\n        print(t)\n        print('[]')\n        print('{}')\n        print('()')\n        print('([{}])')\n    else:\n        # default fallback\n        t = 1\n        print(t)\n        print('()')"
 }

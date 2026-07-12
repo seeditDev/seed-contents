@@ -1,51 +1,41 @@
 {
   "questionId": "Q6214",
-  "title": "Maximum Submissions",
-  "slug": "maximum-submissions",
+  "title": "Second LIS",
+  "slug": "second-lis",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Floor Function",
-      "Simple Formula",
-      "Greedy",
-      "Arithmetic"
+      "Increasing Subsequences",
+      "Dynamic Programming",
+      "Modular Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Dynamic Programming"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "A participant can make 111 submission every 303030 seconds. If a contest lasts for XXX minutes, what is the maximum number of submissions that the participant can make during it?\n\nIt is also given that the participant cannot make any submission in the last 555 seconds of the contest.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer XXX, denoting the number of minutes.\n\n\nOutput Format\nFor each test case, output the maximum number of submissions a participant can make in XXX minutes.",
+    "problemStatement": "Given a sequence of **n** numbers **A**[**1**..**n**], a length-**k** increasing subsequence (IS) is **A**[**i**1], **A**[**i**2], ..., **A**[**i**k] such that both the indices **i** and values are strictly increasing. Among all possible IS's, denote the maximum length as **L**. Now we are interested in finding how many length-**(L-1)** IS's are there.\n\n\n\nTwo IS's are different if and only if their indices are different.\n\n\n\nSince the answer could be very large, you are just required to output its remainder with **10^9 + 7**.",
     "constraints": [
-      "1 \u2264 T \u2264 30",
-      "1 \u2264 X \u2264 30"
+      "1 <= T <= 10",
+      "1 <= n <= 10^5",
+      "1 <= A[i] <= 10^9",
+      "1 < L"
     ],
-    "inputFormat": "The first line contains an integer T (1 \u2264 T \u2264 30), the number of test cases. Each of the next T lines contains a single integer X (1 \u2264 X \u2264 30) \u2013 the duration of the contest in minutes.",
-    "outputFormat": "For each test case output a single line with the maximum number of submissions the participant can make.",
+    "inputFormat": "The first line contains an integer T denoting the total number of test cases. For each test case, the first line contains a single integer n, and the second line contains the space-separated sequence A[1..n].",
+    "outputFormat": "For each test case, output the answer per line, which is the number of length-(L-1) increasing subsequences modulo 10^9 + 7.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n1\n2\n3\n4",
-        "output": "2\n4\n6\n8",
-        "explanation": "For each X, the maximum submissions equal 2\u00b7X. Hence 1\u21922, 2\u21924, 3\u21926, 4\u21928."
-      },
-      {
-        "id": "sample_2",
-        "input": "2\n5\n10",
-        "output": "10\n20",
-        "explanation": "X=5 minutes \u2192 2\u00b75=10 submissions; X=10 minutes \u2192 2\u00b710=20 submissions."
-      },
-      {
-        "id": "sample_3",
-        "input": "1\n30",
-        "output": "60",
-        "explanation": "Maximum allowed X is 30; answer is 2\u00b730=60 submissions."
+        "input": "3\n3\n1 1 2\n5\n6 8 1 2 3\n5\n2 3 1 6 8",
+        "output": "3\n4\n5",
+        "explanation": "Explanation: Example case 1. L = 2. There are 3 different length-1 IS's."
       }
     ]
   },
@@ -54,36 +44,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1",
-        "expectedOutput": "2",
+        "input": "1\n1\n1",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n30",
-        "expectedOutput": "60",
+        "input": "1\n100000\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "14",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "edge case",
-        "input": "3\n1\n2\n30",
-        "expectedOutput": "2\n4\n60",
+        "input": "1\n5\n1 1 1 1 1",
+        "expectedOutput": "5",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "5\n3\n4\n5\n6\n7",
-        "expectedOutput": "6\n8\n10\n12\n14",
+        "input": "1\n10\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "9",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "2\n12\n15",
-        "expectedOutput": "24\n30",
+        "input": "1\n10\n10 9 8 7 6 5 4 3 2 1",
+        "expectedOutput": "1",
         "weight": 2
       }
     ],
@@ -113,15 +103,27 @@
     ]
   },
   "solution": {
-    "approach": "A submission can be made every 30 seconds, but no submission is allowed in the last 5 seconds of the contest. For a contest lasting X minutes, total seconds = 60\u00b7X. Usable seconds = 60\u00b7X\u00a0\u2212\u00a05. The first possible submission can be at time 0, so the number of submissions is floor(usable/30)\u00a0+\u00a01. Simplifying: floor((60\u00b7X\u00a0\u2212\u00a05)/30)\u00a0+\u00a01 = floor(2\u00b7X\u00a0\u2212\u00a00.166\u2026)\u00a0+\u00a01 = (2\u00b7X\u00a0\u2212\u00a01)\u00a0+\u00a01 = 2\u00b7X. Hence the answer for each test case is simply 2\u00b7X.",
-    "timeComplexity": "O(T) \u2013 constant work per test case.",
-    "spaceComplexity": "O(1) \u2013 only a few variables are used.",
+    "approach": "To solve this problem, we will first find the length of the longest increasing subsequence (LIS) in the given sequence. Then, we will find the number of length-(L-1) increasing subsequences. We will use dynamic programming to store the lengths of the longest increasing subsequences ending at each position and the number of such subsequences.",
+    "timeComplexity": "O(T * n^2) — where T is the number of test cases and n is the length of the sequence. The outer loop runs T times, and for each test case, we have two nested loops, each running n times.",
+    "spaceComplexity": "O(n) — we need to store the lengths of the longest increasing subsequences and the number of such subsequences for each position in the sequence.",
     "code": {
-      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        long long X; scanf(\"%lld\", &X);\n        printf(\"%lld\\n\", 2LL*X);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long X; cin>>X;\n        cout<<2*X<<\"\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for(int i=0;i<T;i++){\n            long X = Long.parseLong(br.readLine().trim());\n            sb.append(2*X).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    for i in range(1, t+1):\n        x = int(data[i])\n        out.append(str(2*x))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet result = [];\nfor(let i=0;i<T;i++){\n  const X = Number(input[idx++]);\n  result.push(String(2*X));\n}\nconsole.log(result.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\n\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n;\n        scanf(\"%d\", &n);\n        int A[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        int L = 1;\n        int *lengths = (int*)malloc(n * sizeof(int));\n        int *counts = (int*)malloc(n * sizeof(int));\n        for (int i = 0; i < n; i++) {\n            lengths[i] = 1;\n            counts[i] = 1;\n        }\n        for (int i = 1; i < n; i++) {\n            for (int j = 0; j < i; j++) {\n                if (A[i] > A[j] && lengths[i] < lengths[j] + 1) {\n                    lengths[i] = lengths[j] + 1;\n                    counts[i] = counts[j];\n                } else if (A[i] > A[j] && lengths[i] == lengths[j] + 1) {\n                    counts[i] = (counts[i] + counts[j]) % MOD;\n                }\n            }\n            L = (L > lengths[i]) ? L : lengths[i];\n        }\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            if (lengths[i] == L - 1) {\n                answer = (answer + counts[i]) % MOD;\n            }\n        }\n        printf(\"%d\\n\", answer);\n        free(lengths);\n        free(counts);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n#define MOD 1000000007\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n;\n        cin >> n;\n        vector<int> A(n);\n        for (int i = 0; i < n; i++) {\n            cin >> A[i];\n        }\n        int L = 1;\n        vector<int> lengths(n, 1);\n        vector<int> counts(n, 1);\n        for (int i = 1; i < n; i++) {\n            for (int j = 0; j < i; j++) {\n                if (A[i] > A[j] && lengths[i] < lengths[j] + 1) {\n                    lengths[i] = lengths[j] + 1;\n                    counts[i] = counts[j];\n                } else if (A[i] > A[j] && lengths[i] == lengths[j] + 1) {\n                    counts[i] = (counts[i] + counts[j]) % MOD;\n                }\n            }\n            L = max(L, lengths[i]);\n        }\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            if (lengths[i] == L - 1) {\n                answer = (answer + counts[i]) % MOD;\n            }\n        }\n        cout << answer << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int n = sc.nextInt();\n            int[] A = new int[n];\n            for (int i = 0; i < n; i++) {\n                A[i] = sc.nextInt();\n            }\n            int L = 1;\n            int[] lengths = new int[n];\n            int[] counts = new int[n];\n            for (int i = 0; i < n; i++) {\n                lengths[i] = 1;\n                counts[i] = 1;\n            }\n            for (int i = 1; i < n; i++) {\n                for (int j = 0; j < i; j++) {\n                    if (A[i] > A[j] && lengths[i] < lengths[j] + 1) {\n                        lengths[i] = lengths[j] + 1;\n                        counts[i] = counts[j];\n                    } else if (A[i] > A[j] && lengths[i] == lengths[j] + 1) {\n                        counts[i] = (counts[i] + counts[j]) % 1000000007;\n                    }\n                }\n                L = Math.max(L, lengths[i]);\n            }\n            int answer = 0;\n            for (int i = 0; i < n; i++) {\n                if (lengths[i] == L - 1) {\n                    answer = (answer + counts[i]) % 1000000007;\n                }\n            }\n            System.out.println(answer);\n        }\n    }\n}",
+      "Python3": "import sys\nMOD = 1000000007\n\nfor _ in range(int(input())):\n    n = int(input())\n    A = list(map(int, input().split()))\n    L = 1\n    lengths = [1] * n\n    counts = [1] * n\n    for i in range(1, n):\n        for j in range(i):\n            if A[i] > A[j] and lengths[i] < lengths[j] + 1:\n                lengths[i] = lengths[j] + 1\n                counts[i] = counts[j]\n            elif A[i] > A[j] and lengths[i] == lengths[j] + 1:\n                counts[i] = (counts[i] + counts[j]) % MOD\n        L = max(L, lengths[i])\n    answer = 0\n    for i in range(n):\n        if lengths[i] == L - 1:\n            answer = (answer + counts[i]) % MOD\n    print(answer)",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst MOD = 1000000007;\n\nfunction nextInt() {\n    return parseInt(lines[idx++]);\n}\n\nfunction nextIntArray() {\n    return lines[idx++].split(' ').map(x => parseInt(x));\n}\n\nlet T = nextInt();\nwhile (T-- > 0) {\n    let n = nextInt();\n    let A = nextIntArray();\n    let L = 1;\n    let lengths = new Array(n).fill(1);\n    let counts = new Array(n).fill(1);\n    for (let i = 1; i < n; i++) {\n        for (let j = 0; j < i; j++) {\n            if (A[i] > A[j] && lengths[i] < lengths[j] + 1) {\n                lengths[i] = lengths[j] + 1;\n                counts[i] = counts[j];\n            } else if (A[i] > A[j] && lengths[i] == lengths[j] + 1) {\n                counts[i] = (counts[i] + counts[j]) % MOD;\n            }\n        }\n        L = Math.max(L, lengths[i]);\n    }\n    let answer = 0;\n    for (let i = 0; i < n; i++) {\n        if (lengths[i] == L - 1) {\n            answer = (answer + counts[i]) % MOD;\n        }\n    }\n    console.log(answer);\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

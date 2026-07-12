@@ -1,41 +1,53 @@
 {
   "questionId": "Q6742",
-  "title": "Transfusion Chain",
-  "slug": "transfusion-chain",
+  "title": "Minimum SubArray",
+  "slug": "minimum-subarray",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Arrays",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Simple Graph",
-      "Counting",
-      "Blood Types",
-      "Greedy"
+      "Sliding Window",
+      "Prefix Sum"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Two Pointers & Sliding Window"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "In living donation, the following blood types are compatible:\n\n\nBlood type `A` donors can donate to recipients with blood types `A` and `AB`.\nBlood type `B` donors can donate to recipients with blood types `B` and `AB`.\nBlood type `AB` donors can donate to recipients with blood type `AB` only.\nBlood type `O` donors can donate to recipients with blood types `A`, `B`, `AB` and `O`.\nThere are NNN people in a hospital where the blood type of the ithi^{th}ith person is denoted by BiB_iBi\u200b. Note that the value of BiB_iBi\u200b can be `A`, `B`, `AB`, or `O` only.\n\nA chain is formed when a donor can donate blood to a recipient, who in turn can donate blood to another recipient, and so on.\n\nFind the **maximum** number of people that can form a chain of blood transfusions.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of people.\nThe next line contains NNN space separated strings BiB_iBi\u200b \u2014 denoting the blood group of each person.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the **maximum** number of people that can form a chain of blood transfusions.",
+    "problemStatement": "You are given a sequence of **n** integers **a1**, **a2**, ..., **an** and an integer **d**.\n\nFind the length of the shortest non-empty contiguous subsequence with sum of elements at least **d**. Formally, you should find the smallest positive integer **k** with the following property: there is an integer **s** (1 ≤ **s** ≤ **N-k+1**) such that **as + as+1 + ... + as+k-1** ≥ **d**.",
     "constraints": [
-      "1 <= T <= 1000",
-      "1 <= N <= 100000",
-      "Sum of N over all test cases does not exceed 200000",
-      "Each blood type string is exactly \"A\", \"B\", \"AB\" or \"O\""
+      "1 ≤ T ≤ 10^5",
+      "1 ≤ n ≤ 10^5",
+      "1 ≤ sum of n over all test cases ≤ 2 * 10^5",
+      "-10^9 ≤ d ≤ 10^9",
+      "-10^4 ≤ ai ≤ 10^4"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of people. The second line contains N space\u2011separated strings, each being one of \"A\", \"B\", \"AB\", or \"O\", representing the blood type of each person.",
-    "outputFormat": "For each test case output a single line containing the maximum possible number of distinct people that can be arranged in a chain of blood transfusions.",
+    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains two space-separated integers n and d. The second line contains n space-separated integers a1, a2, ..., an.",
+    "outputFormat": "For each test case, print a single line containing one integer — the length of the shortest contiguous subsequence with sum of elements ≥ d. If there is no such subsequence, print -1 instead.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n3\nA B A\n2\nA B\n4\nA B O B\n5\nAB A A AB A",
-        "output": "2\n1\n3\n5",
-        "explanation": "Test case 1: counts -> A=2, B=1, O=0, AB=0 => 0+0+max(2,1)=2.\\nTest case 2: A=1, B=1 => answer 1.\\nTest case 3: O=1, A=1, B=2 => 1+0+max(1,2)=3.\\nTest case 4: AB=2, A=3 => 0+2+max(3,0)=5."
+        "input": "2\n5 5\n1 2 3 1 -5\n5 1\n1 2 3 1 -5",
+        "output": "2\n1",
+        "explanation": "For the first test case, the shortest subarray with sum greater than or equal to 5 is [2, 3]. For the second test case, the shortest subarray with sum greater than or equal to 1 is [1]."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 10\n1 2 3",
+        "output": "-1",
+        "explanation": "There is no subarray with sum greater than or equal to 10."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5 15\n5 5 5 5 5",
+        "output": "3",
+        "explanation": "The shortest subarray with sum greater than or equal to 15 is [5, 5, 5]."
       }
     ]
   },
@@ -44,36 +56,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1\nO",
+        "input": "1\n1 1\n1",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (moderate size)",
-        "input": "1\n10\nO O O A A A A B B AB",
-        "expectedOutput": "8",
+        "label": "maximum boundary",
+        "input": "1\n100000 1000000000\n1000000000",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "only AB types",
-        "input": "1\n5\nAB AB AB AB AB",
-        "expectedOutput": "5",
+        "label": "edge case",
+        "input": "1\n5 -10\n1 2 3 4 5",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "equal A and B counts",
-        "input": "1\n15\nA A A A A B B B B B AB AB AB AB AB",
-        "expectedOutput": "10",
+        "label": "general case 1",
+        "input": "1\n10 20\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "4",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed without A",
-        "input": "1\n9\nO O B B B AB AB AB AB",
-        "expectedOutput": "9",
+        "label": "general case 2",
+        "input": "1\n10 50\n10 10 10 10 10 10 10 10 10 10",
+        "expectedOutput": "5",
         "weight": 2
       }
     ],
@@ -103,15 +115,27 @@
     ]
   },
   "solution": {
-    "approach": "The compatibility rules depend only on blood types, not on individual identities. A person can always donate to another of the same type, so all people of one type can be placed consecutively. The only possible ordering that respects all donor\u2192recipient edges is: any number of O\u2011type people (they can donate to everyone but can receive only from O), followed by either all A\u2011type or all B\u2011type people (A cannot donate to B and vice\u2011versa, so we can keep at most one of these groups), and finally all AB\u2011type people (AB can receive from anyone but can donate only to AB). Therefore the longest chain uses all O\u2019s, all AB\u2019s, and the larger of the counts of A and B. The answer for each test case is:\n    answer = count(O) + count(AB) + max(count(A), count(B)).\nThe algorithm simply counts the four types in O(N) time per test case and applies the formula.",
-    "timeComplexity": "O(N) per test case, where N is the number of people in that test case. Overall O(total N) \u2264 2\u00b710^5.",
-    "spaceComplexity": "O(1) additional space (only four counters).",
+    "approach": "To solve this problem, we can use the sliding window technique along with prefix sums. We calculate the prefix sum of the array and then use two pointers to represent the sliding window. We keep expanding the window to the right until the sum of the elements within the window is greater than or equal to d. We then try to minimize the window by moving the left pointer to the right while keeping the sum greater than or equal to d. We keep track of the minimum length of the window that satisfies the condition.",
+    "timeComplexity": "O(T * n) — where T is the number of test cases and n is the maximum length of the array. This is because for each test case, we are potentially scanning the entire array.",
+    "spaceComplexity": "O(n) — for storing the prefix sum array.",
     "code": {
-      "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        long long cntA=0,cntB=0,cntAB=0,cntO=0;\n        char s[4];\n        for(int i=0;i<N;i++){\n            scanf(\"%s\", s);\n            if(strcmp(s,\"A\")==0) cntA++;\n            else if(strcmp(s,\"B\")==0) cntB++;\n            else if(strcmp(s,\"AB\")==0) cntAB++;\n            else if(strcmp(s,\"O\")==0) cntO++;\n        }\n        long long ans = cntO + cntAB + (cntA>cntB?cntA:cntB);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        long long cntA=0,cntB=0,cntAB=0,cntO=0;\n        string s;\n        for(int i=0;i<N;i++){\n            cin>>s;\n            if(s==\"A\") cntA++;\n            else if(s==\"B\") cntB++;\n            else if(s==\"AB\") cntAB++;\n            else if(s==\"O\") cntO++;\n        }\n        long long ans = cntO + cntAB + max(cntA,cntB);\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            st = new StringTokenizer(br.readLine());\n            long cntA=0,cntB=0,cntAB=0,cntO=0;\n            for (int i=0;i<N;i++) {\n                String s = st.nextToken();\n                switch (s) {\n                    case \"A\": cntA++; break;\n                    case \"B\": cntB++; break;\n                    case \"AB\": cntAB++; break;\n                    case \"O\": cntO++; break;\n                }\n            }\n            long ans = cntO + cntAB + Math.max(cntA, cntB);\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        cntA = cntB = cntAB = cntO = 0\n        for _ in range(N):\n            s = next(it)\n            if s == 'A':\n                cntA += 1\n            elif s == 'B':\n                cntB += 1\n            elif s == 'AB':\n                cntAB += 1\n            else:  # O\n                cntO += 1\n        ans = cntO + cntAB + max(cntA, cntB)\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n  const N = Number(input[idx++]);\n  let cntA = 0, cntB = 0, cntAB = 0, cntO = 0;\n  for (let i = 0; i < N; i++) {\n    const s = input[idx++];\n    if (s === 'A') cntA++;\n    else if (s === 'B') cntB++;\n    else if (s === 'AB') cntAB++;\n    else cntO++; // O\n  }\n  const ans = cntO + cntAB + Math.max(cntA, cntB);\n  outputs.push(String(ans));\n}\nconsole.log(outputs.join('\\n'));"
+      "C": "#include <stdio.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int n, d;\n        scanf(\"%d %d\", &n, &d);\n        int a[n];\n        for (int i = 0; i < n; i++) {\n            scanf(\"%d\", &a[i]);\n        }\n        int prefix[n + 1] = {0};\n        for (int i = 0; i < n; i++) {\n            prefix[i + 1] = prefix[i] + a[i];\n        }\n        int min_length = n + 1;\n        for (int i = 0; i < n; i++) {\n            for (int j = i; j < n; j++) {\n                int sum = prefix[j + 1] - prefix[i];\n                if (sum >= d) {\n                    min_length = (min_length < (j - i + 1)) ? min_length : (j - i + 1);\n                }\n            }\n        }\n        if (min_length == n + 1) {\n            printf(\"-1\\n\");\n        } else {\n            printf(\"%d\\n\", min_length);\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int n, d;\n        cin >> n >> d;\n        int a[n];\n        for (int i = 0; i < n; i++) {\n            cin >> a[i];\n        }\n        int prefix[n + 1] = {0};\n        for (int i = 0; i < n; i++) {\n            prefix[i + 1] = prefix[i] + a[i];\n        }\n        int min_length = n + 1;\n        for (int i = 0; i < n; i++) {\n            for (int j = i; j < n; j++) {\n                int sum = prefix[j + 1] - prefix[i];\n                if (sum >= d) {\n                    min_length = min(min_length, (j - i + 1));\n                }\n            }\n        }\n        if (min_length == n + 1) {\n            cout << -1 << endl;\n        } else {\n            cout << min_length << endl;\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int n = sc.nextInt();\n            int d = sc.nextInt();\n            int[] a = new int[n];\n            for (int i = 0; i < n; i++) {\n                a[i] = sc.nextInt();\n            }\n            int[] prefix = new int[n + 1];\n            for (int i = 0; i < n; i++) {\n                prefix[i + 1] = prefix[i] + a[i];\n            }\n            int min_length = n + 1;\n            for (int i = 0; i < n; i++) {\n                for (int j = i; j < n; j++) {\n                    int sum = prefix[j + 1] - prefix[i];\n                    if (sum >= d) {\n                        min_length = Math.min(min_length, (j - i + 1));\n                    }\n                }\n            }\n            if (min_length == n + 1) {\n                System.out.println(-1);\n            } else {\n                System.out.println(min_length);\n            }\n        }\n    }\n}",
+      "Python3": "import sys\ninput = sys.stdin.readline\nfor _ in range(int(input())):\n    n, d = map(int, input().split())\n    a = list(map(int, input().split()))\n    prefix = [0] * (n + 1)\n    for i in range(n):\n        prefix[i + 1] = prefix[i] + a[i]\n    min_length = n + 1\n    for i in range(n):\n        for j in range(i, n):\n            sum_ = prefix[j + 1] - prefix[i]\n            if sum_ >= d:\n                min_length = min(min_length, (j - i + 1))\n    if min_length == n + 1:\n        print(-1)\n    else:\n        print(min_length)",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readLine = () => input[idx++];\nconst readInt = () => parseInt(readLine());\nconst readInts = () => readLine().split(' ').map(x => parseInt(x));\nlet T = readInt();\nwhile (T-- > 0) {\n    let [n, d] = readInts();\n    let a = readInts();\n    let prefix = new Array(n + 1).fill(0);\n    for (let i = 0; i < n; i++) {\n        prefix[i + 1] = prefix[i] + a[i];\n    }\n    let min_length = n + 1;\n    for (let i = 0; i < n; i++) {\n        for (let j = i; j < n; j++) {\n            let sum = prefix[j + 1] - prefix[i];\n            if (sum >= d) {\n                min_length = Math.min(min_length, (j - i + 1));\n            }\n        }\n    }\n    if (min_length == n + 1) {\n        console.log(-1);\n    } else {\n        console.log(min_length);\n    }\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

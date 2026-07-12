@@ -1,41 +1,51 @@
 {
   "questionId": "Q4205",
-  "title": "Count Subsequences",
-  "slug": "count-subsequences",
+  "title": "Self-Destructing Strings",
+  "slug": "self-destructing-strings",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-04",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-12",
   "metadata": {
-    "category": "Dynamic Programming",
-    "difficulty": "Hard",
+    "category": "Strings",
+    "difficulty": "Medium",
     "isPremium": false,
     "tags": [
-      "Modular Arithmetic",
-      "Dynamic Programming"
+      "Greedy",
+      "Counting"
     ],
     "companyTags": [],
     "topicTags": [
-      "Dynamic Programming"
-    ]
+      "Hashing"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Let's call an integer sequence nice if the sum of its elements is divisible by a given integer KKK. You are given an integer sequence A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b. Hasan wanted to find the number of nice subsequences of this sequence. However, this problem is too easy, so Hasan decided to add an extra constraint.\n\nFor an arbitrary non-empty sequence of indices i1&lt;i2&lt;\u2026&lt;iLi_1 \\lt i_2 \\lt \\ldots \\lt i_Li1\u200b&lt;i2\u200b&lt;\u2026&lt;iL\u200b, let's call a subsequence Ai1,Ai2,\u2026,AiLA_{i_1}, A_{i_2}, \\ldots, A_{i_L}Ai1\u200b\u200b,Ai2\u200b\u200b,\u2026,AiL\u200b\u200b very nice if it is nice and iL\u2212i1\u2265Wi_L-i_1 \\ge WiL\u200b\u2212i1\u200b\u2265W. Help Hasan and find the number of very nice subsequences. Since this number may be very large, compute it modulo 109+710^9+7109+7.",
+    "problemStatement": "A binary string is called a self-destructing string if it can reduced to an empty string by performing the following operation some number of times (possibly zero): Choose a valid integer iii such that the iii-th character of the current string is different from the i+1i+1i+1-th character, and remove these two characters from the string.\n\nYou are given a binary string sss. Your task is to convert sss to a self-destructing string. To do that, you may perform the following operation any number of times (possibly zero): Choose an integer iii (1≤i≤∣s∣−11 \\le i \\le |s|-11≤i≤∣s∣−1) such that the iii-th character of sss is different from the i+1i+1i+1-th character, and invert one of these characters (inverting a character means changing '0' to '1' or '1' to '0', e.g. the string \"01\" can be changed to \"00\").\n\nFind the smallest number of operations required to convert sss to a self-destructing string or determine that it is impossible.",
     "constraints": [
-      "1 \u2264 T \u2264 1000",
-      "1 \u2264 N \u2264 10^5",
-      "2 \u2264 K \u2264 50",
-      "0 \u2264 W \u2264 N - 1",
-      "0 \u2264 Ai \u2264 K - 1 for each valid i",
-      "the sum of N over all test cases does not exceed 3 * 10^5"
+      "1 <= T <= 1000",
+      "1 <= |s| <= 10^6",
+      "s contains only '0' and '1'"
     ],
-    "inputFormat": "The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows. The first line of each test case contains three space-separated integers N, K and W. The second line contains N space-separated integers A1, A2, \u2026, AN.",
-    "outputFormat": "For each test case, print a single line containing one integer \u2014 the number of very nice subsequences modulo 10^9 + 7.",
+    "inputFormat": "First line contains an integer T, the number of test cases. Each of the next T lines contains a binary string s consisting only of characters '0' and '1'.",
+    "outputFormat": "For each test case output a single integer on its own line – the minimum number of operations required to make s a self‑destructing string, or -1 if it is impossible.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "1\n6 3 3\n1 1 1 1 1 1",
-        "output": "17",
-        "explanation": "There are 17 very nice subsequences in the given sequence."
+        "input": "3\n001101\n1101\n110",
+        "output": "0\n1\n-1",
+        "explanation": "First string length 6, zeros=3, ones=3 → already balanced → 0. Second string length 4, zeros=1, target=2 → need one flip → 1. Third string length 3 odd → impossible."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n01",
+        "output": "0",
+        "explanation": "Length is even and zeros=ones=1, so no operations are needed."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n00",
+        "output": "-1",
+        "explanation": "Length is even but the string contains only '0's, making it impossible to reach a balanced configuration."
       }
     ]
   },
@@ -44,52 +54,172 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1 2 0\n1",
-        "expectedOutput": "1",
-        "weight": 2
+        "input": "1\n0",
+        "expectedOutput": "-1",
+        "weight": 1
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary",
-        "input": "1\n100000 50 99999\n0",
-        "expectedOutput": "1",
-        "weight": 2
+        "label": "minimum boundary 2",
+        "input": "1\n1",
+        "expectedOutput": "-1",
+        "weight": 1
       },
       {
         "id": "tc_3",
-        "label": "edge case",
-        "input": "1\n5 3 2\n1 2 3 4 5",
-        "expectedOutput": "7",
-        "weight": 2
+        "label": "minimum boundary 3",
+        "input": "1\n01",
+        "expectedOutput": "0",
+        "weight": 1
       },
       {
         "id": "tc_4",
-        "label": "general case 1",
-        "input": "1\n10 5 3\n1 2 3 4 5 6 7 8 9 10",
-        "expectedOutput": "24",
-        "weight": 2
+        "label": "minimum boundary 4",
+        "input": "1\n10",
+        "expectedOutput": "0",
+        "weight": 1
       },
       {
         "id": "tc_5",
-        "label": "general case 2",
-        "input": "1\n15 10 5\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
-        "expectedOutput": "64",
-        "weight": 2
+        "label": "maximum boundary",
+        "input": "1\n01010101010101",
+        "expectedOutput": "0",
+        "weight": 1
+      },
+      {
+        "id": "tc_6",
+        "label": "maximum boundary 2",
+        "input": "1\n00000000000000",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_7",
+        "label": "maximum boundary 3",
+        "input": "1\n11111111111111",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_8",
+        "label": "maximum boundary 4",
+        "input": "1\n00000000111111",
+        "expectedOutput": "1",
+        "weight": 1
+      },
+      {
+        "id": "tc_9",
+        "label": "uniform case",
+        "input": "1\n00",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_10",
+        "label": "uniform case 2",
+        "input": "1\n11",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_11",
+        "label": "structured case",
+        "input": "1\n010101",
+        "expectedOutput": "0",
+        "weight": 1
+      },
+      {
+        "id": "tc_12",
+        "label": "structured case 2",
+        "input": "1\n10101010",
+        "expectedOutput": "0",
+        "weight": 1
+      },
+      {
+        "id": "tc_13",
+        "label": "tricky case",
+        "input": "1\n000011110000",
+        "expectedOutput": "2",
+        "weight": 1
+      },
+      {
+        "id": "tc_14",
+        "label": "tricky case 2",
+        "input": "1\n001111111111",
+        "expectedOutput": "4",
+        "weight": 1
+      },
+      {
+        "id": "tc_15",
+        "label": "tricky case 3",
+        "input": "1\n1111111111",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_16",
+        "label": "tricky case 4",
+        "input": "1\n0000000000",
+        "expectedOutput": "-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_17",
+        "label": "stress case",
+        "input": "3\n0011\n0101\n111000",
+        "expectedOutput": "0\n0\n0",
+        "weight": 1
+      },
+      {
+        "id": "tc_18",
+        "label": "stress case 2",
+        "input": "2\n1100\n101",
+        "expectedOutput": "0\n-1",
+        "weight": 1
+      },
+      {
+        "id": "tc_19",
+        "label": "stress case 3",
+        "input": "4\n00\n11\n01\n10",
+        "expectedOutput": "-1\n-1\n0\n0",
+        "weight": 1
+      },
+      {
+        "id": "tc_20",
+        "label": "stress case 4",
+        "input": "5\n11110000\n000111\n1111\n001\n0101010",
+        "expectedOutput": "0\n0\n-1\n-1\n-1",
+        "weight": 1
       }
     ],
-    "totalTestCases": 5,
-    "totalWeight": 10
+    "totalTestCases": 20,
+    "totalWeight": 20
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      2,
-      2,
-      2,
-      2,
-      2
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
-    "maxScore": 10
+    "maxScore": 20
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -103,15 +233,28 @@
     ]
   },
   "solution": {
-    "approach": "To solve this problem, we can use dynamic programming to calculate the number of very nice subsequences. We will maintain a 2D array dp where dp[i][j] represents the number of very nice subsequences ending at index i with sum j modulo K. We will iterate over the array and for each element, we will update the dp array accordingly. We will also keep track of the number of very nice subsequences ending at each index and having a sum divisible by K.",
-    "timeComplexity": "O(T * N * K) \u2014 where T is the number of test cases, N is the maximum length of the array, and K is the maximum possible sum modulo K.",
-    "spaceComplexity": "O(N * K) \u2014 where N is the maximum length of the array and K is the maximum possible sum modulo K.",
+    "approach": "A binary string can be reduced to empty by repeatedly deleting adjacent different characters. This is possible iff the string length is even and the number of zeros equals the number of ones. To make a given string self‑destructing we may flip any character, each flip changes the balance between zeros and ones by exactly one. Therefore:\n1. If |s| is odd → impossible.\n2. Let zeros be the count of '0' in s and n = |s|. The target number of zeros is n/2.\n3. If zeros == n/2 → already balanced → answer 0.\n4. If the string contains both '0' and '1' then we can flip the required number of characters to reach the target. The minimum flips needed is |zeros - n/2|.\n5. If the string consists of only one kind of character (all '0' or all '1') and zeros != n/2, we cannot create the missing opposite character without having at least one of each initially, so answer is -1.\nThe algorithm scans the string once to count zeros and detect presence of both characters, then applies the above rules.",
+    "timeComplexity": "O(|s|) per test case, O(total length of all strings) overall.",
+    "spaceComplexity": "O(1) extra space besides the input string.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 1000000007\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K, W;\n        scanf(\"%d %d %d\", &N, &K, &W);\n        int* A = (int*)malloc(N * sizeof(int));\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &A[i]);\n        }\n        long long** dp = (long long**)malloc((N + 1) * sizeof(long long*));\n        for (int i = 0; i <= N; i++) {\n            dp[i] = (long long*)malloc((K) * sizeof(long long));\n        }\n        for (int i = 0; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = 0;\n            }\n        }\n        dp[0][0] = 1;\n        long long ans = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = dp[i - 1][j];\n                int sum = (j + A[i - 1]) % K;\n                dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n                if (i >= W + 1 && sum == 0) {\n                    ans = (ans + dp[i - 1][j]) % MOD;\n                }\n            }\n        }\n        printf(\"%lld\\n\", ans);\n        free(A);\n        for (int i = 0; i <= N; i++) {\n            free(dp[i]);\n        }\n        free(dp);\n    }\n    return 0;\n}",
-      "C++": "#include <iostream>\n#include <vector>\nusing namespace std;\n#define MOD 1000000007\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K, W;\n        cin >> N >> K >> W;\n        vector<int> A(N);\n        for (int i = 0; i < N; i++) {\n            cin >> A[i];\n        }\n        vector<vector<long long>> dp(N + 1, vector<long long>(K, 0));\n        dp[0][0] = 1;\n        long long ans = 0;\n        for (int i = 1; i <= N; i++) {\n            for (int j = 0; j < K; j++) {\n                dp[i][j] = dp[i - 1][j];\n                int sum = (j + A[i - 1]) % K;\n                dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n                if (i >= W + 1 && sum == 0) {\n                    ans = (ans + dp[i - 1][j]) % MOD;\n                }\n            }\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",
-      "Java": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\nimport java.util.StringTokenizer;\npublic class Main {\n    static final int MOD = 1000000007;\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine());\n        while (T-- > 0) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int N = Integer.parseInt(st.nextToken());\n            int K = Integer.parseInt(st.nextToken());\n            int W = Integer.parseInt(st.nextToken());\n            int[] A = new int[N];\n            st = new StringTokenizer(br.readLine());\n            for (int i = 0; i < N; i++) {\n                A[i] = Integer.parseInt(st.nextToken());\n            }\n            long[][] dp = new long[N + 1][K];\n            dp[0][0] = 1;\n            long ans = 0;\n            for (int i = 1; i <= N; i++) {\n                for (int j = 0; j < K; j++) {\n                    dp[i][j] = dp[i - 1][j];\n                    int sum = (j + A[i - 1]) % K;\n                    dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n                    if (i >= W + 1 && sum == 0) {\n                        ans = (ans + dp[i - 1][j]) % MOD;\n                    }\n                }\n            }\n            System.out.println(ans);\n        }\n    }\n}",
-      "Python3": "MOD = 1000000007\nfor _ in range(int(input())):\n    N, K, W = map(int, input().split())\n    A = list(map(int, input().split()))\n    dp = [[0] * K for _ in range(N + 1)]\n    dp[0][0] = 1\n    ans = 0\n    for i in range(1, N + 1):\n        for j in range(K):\n            dp[i][j] = dp[i - 1][j]\n            sum = (j + A[i - 1]) % K\n            dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD\n            if i >= W + 1 and sum == 0:\n                ans = (ans + dp[i - 1][j]) % MOD\n    print(ans)",
-      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst MOD = 1000000007;\nconst nextLine = () => lines[idx++];\nconst nextInt = () => parseInt(nextLine());\nconst nextInts = () => nextLine().split(' ').map(x => parseInt(x));\nlet T = nextInt();\nwhile (T--) {\n    let [N, K, W] = nextInts();\n    let A = nextInts();\n    let dp = Array(N + 1).fill(0).map(() => Array(K).fill(0));\n    dp[0][0] = 1;\n    let ans = 0;\n    for (let i = 1; i <= N; i++) {\n        for (let j = 0; j < K; j++) {\n            dp[i][j] = dp[i - 1][j];\n            let sum = (j + A[i - 1]) % K;\n            dp[i][sum] = (dp[i][sum] + dp[i - 1][j]) % MOD;\n            if (i >= W + 1 && sum == 0) {\n                ans = (ans + dp[i - 1][j]) % MOD;\n            }\n        }\n    }\n    console.log(ans);\n}"
+      "C": "",
+      "C++": "",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int tc = 0; tc < T; tc++) {\n            String s = br.readLine().trim();\n            int n = s.length();\n            if ((n & 1) == 1) {\n                out.append(-1).append('\\n');\n                continue;\n            }\n            int zeros = 0;\n            boolean hasZero = false, hasOne = false;\n            for (int i = 0; i < n; i++) {\n                char c = s.charAt(i);\n                if (c == '0') { zeros++; hasZero = true; }\n                else { hasOne = true; }\n            }\n            int target = n / 2;\n            if (zeros == target) {\n                out.append(0).append('\\n');\n            } else if (hasZero && hasOne) {\n                out.append(Math.abs(zeros - target)).append('\\n');\n            } else {\n                out.append(-1).append('\\n');\n            }\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "",
+      "JavaScript": ""
     }
-  }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
+  },
+  "tcGeneratorPython": "def generate_case(i, RINT, POWER):\n    # Placeholder generator – actual inputs are listed in hiddenTestCases.\n    pass"
 }

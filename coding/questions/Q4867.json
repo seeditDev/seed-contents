@@ -1,38 +1,52 @@
 {
   "questionId": "Q4867",
-  "title": "The In-XOR-able Task",
-  "slug": "the-in-xor-able-task",
+  "title": "Unique Subset",
+  "slug": "unique-subset",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Backtracking",
+    "difficulty": "Medium",
+    "isPremium": true,
     "tags": [
-      "Bit Manipulation",
-      "XOR",
-      "Combinatorial Construction"
+      "Subsets",
+      "Backtracking",
+      "Recursion"
     ],
     "companyTags": [],
     "topicTags": [
-      "Dynamic Programming"
-    ]
+      "Recursion & Backtracking"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given three integers NNN, KKK and XXX. Is it possible to find a sequence of non-negative integers A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b such that the number of pairs of indices (i,j)(i, j)(i,j) (1\u2264i\u2264j\u2264N1 \\le i \\le j \\le N1\u2264i\u2264j\u2264N) satisfying Ai\u2295Aj=XA_i \\oplus A_j = XAi\u200b\u2295Aj\u200b=X is equal to KKK? Here, \u2295\\oplus\u2295 is the bitwise XOR operator.",
+    "problemStatement": "You are given a set of integers represented by an array arrarrarr , which may contain duplicate elements. Your task is to write a recursive function to generate all unique subsets of this array. Each subset should be unique, even if the array contains duplicate elements. The solution should not generate any duplicate subsets.\n\nA subset of a set is a collection of elements that are all derived from the original set. Subsets can range from the empty set (containing no elements) to the set itself (containing all elements).\n\nFunction DeclarationFunction NameuniqueSubsetsuniqueSubsetsuniqueSubsets – This function generates all **unique subsets** of a given integer array that may contain duplicate values.\n\nParameters\nmultisetmultisetmultiset : A reference to an integer array representing the elements of the set.\nReturn Value\nReturns a **2D array (list of lists)** containing all unique subsets of the given array.\nEach subset should appear exactly once, even if the input array contains duplicate elements.\nConstraints:\n1≤n≤10 1 \\leq n \\leq 101≤n≤10\n1≤arr[i]≤25 1 \\leq arr[i] \\leq 251≤arr[i]≤25\n\nInput Format\n\nThe first line contains one integer nnn, the size of the array.                                                                                                               - Next line contains nnn integers arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n]arr[0],arr[1]...arr[n], representing the elements of the array.\n\n\nOutput Format\n\nComplete the uniqueSubsets function to generate all the subsets.\nReturn a 2D array of unique Subsets.",
     "constraints": [
-      "1 \u2264 T \u2264 4\u00b710^5",
-      "1 \u2264 N, K, X \u2264 3\u00b710^5"
+      "1 <= T <= 10",
+      "1 <= N <= 10",
+      "1 <= arr[i] <= 25"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated integers N, K and X.",
-    "outputFormat": "For each test case output a single line containing \"YES\" if a sequence of N non\u2011negative integers can be constructed with exactly K pairs (i, j) (1 \u2264 i \u2264 j \u2264 N) such that Ai \u2295 Aj = X, otherwise output \"NO\".",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains two lines: the first line contains an integer N, the size of the array, and the second line contains N integers representing the elements of the array.",
+    "outputFormat": "For each test case, print all unique subsets of the given array as a JSON-like array of arrays.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5\n4 3 3\n5 8 1\n10 8 2\n19 100 34\n69 100 45",
-        "output": "YES\nNO\nYES\nNO\nYES",
-        "explanation": "Case 1: X\u22600 and floor(4\u00b2/4)=4 \u22653 \u2192 YES.\\nCase 2: floor(5\u00b2/4)=6 <8 \u2192 NO.\\nCase 3: floor(10\u00b2/4)=25 \u22658 \u2192 YES.\\nCase 4: floor(19\u00b2/4)=90 <100 \u2192 NO.\\nCase 5: floor(69\u00b2/4)=1190 \u2265100 \u2192 YES."
+        "input": "2\n2\n1 2\n3\n1 2 2",
+        "output": "[[], [1], [1, 2], [2]]\n[[], [1], [1, 2], [1, 2, 2], [2], [2, 2]]",
+        "explanation": "First test case: array [1,2] yields 4 unique subsets. Second test case: array [1,2,2] yields 6 unique subsets; duplicate 2's are handled by skipping identical elements at the same recursion depth."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n1\n5",
+        "output": "[[], [5]]",
+        "explanation": "A single element array produces the empty subset and the subset containing that element."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n4\n2 2 2 2",
+        "output": "[[], [2], [2, 2], [2, 2, 2], [2, 2, 2, 2]]",
+        "explanation": "All elements are identical; the algorithm generates subsets of size 0..4 without duplication."
       }
     ]
   },
@@ -41,36 +55,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1 1 0",
-        "expectedOutput": "YES",
+        "input": "1\n1\n1",
+        "expectedOutput": "[[], [1]]",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "1\n1 1 0",
-        "expectedOutput": "YES",
+        "label": "maximum boundary",
+        "input": "1\n10\n1 2 3 4 5 6 7 8 9 10",
+        "expectedOutput": "[[], [1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [2], [2, 3], [2, 3, 4], [2, 3, 4, 5], [2, 3, 4, 5, 6], [2, 3, 4, 5, 6, 7], [2, 3, 4, 5, 6, 7, 8], [2, 3, 4, 5, 6, 7, 8, 9], [2, 3, 4, 5, 6, 7, 8, 9, 10], [3], [3, 4], [3, 4, 5], [3, 4, 5, 6], [3, 4, 5, 6, 7], [3, 4, 5, 6, 7, 8], [3, 4, 5, 6, 7, 8, 9], [3, 4, 5, 6, 7, 8, 9, 10], [4], [4, 5], [4, 5, 6], [4, 5, 6, 7], [4, 5, 6, 7, 8], [4, 5, 6, 7, 8, 9], [4, 5, 6, 7, 8, 9, 10], [5], [5, 6], [5, 6, 7], [5, 6, 7, 8], [5, 6, 7, 8, 9], [5, 6, 7, 8, 9, 10], [6], [6, 7], [6, 7, 8], [6, 7, 8, 9], [6, 7, 8, 9, 10], [7], [7, 8], [7, 8, 9], [7, 8, 9, 10], [8], [8, 9], [8, 9, 10], [9], [9, 10], [10]]",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "1\n1 1 0",
-        "expectedOutput": "YES",
+        "label": "uniform/edge case",
+        "input": "1\n10\n1 1 1 1 1 1 1 1 1 1",
+        "expectedOutput": "[[], [1], [1, 1], [1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "1\n1 1 0",
-        "expectedOutput": "YES",
+        "label": "tricky case",
+        "input": "1\n5\n1 2 3 4 5",
+        "expectedOutput": "[[], [1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 5], [1, 2, 4], [1, 2, 4, 5], [1, 2, 5], [1, 3], [1, 3, 4], [1, 3, 4, 5], [1, 3, 5], [1, 4], [1, 4, 5], [1, 5], [2], [2, 3], [2, 3, 4], [2, 3, 4, 5], [2, 3, 5], [2, 4], [2, 4, 5], [2, 5], [3], [3, 4], [3, 4, 5], [3, 5], [4], [4, 5], [5]]",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "Case 5",
-        "input": "1\n1 1 0",
-        "expectedOutput": "YES",
+        "input": "1\n1\n1",
+        "expectedOutput": "[[], [1]]",
         "weight": 2
       }
     ],
@@ -100,15 +114,27 @@
     ]
   },
   "solution": {
-    "approach": "For X = 0 the condition counts pairs of equal numbers (including i = j). If we group the N elements into groups of sizes c1, c2, \u2026, the number of required pairs is \u03a3 ci\u00b7(ci+1)/2. The minimum possible value is N (all ci = 1) and the maximum is N\u00b7(N+1)/2 (all elements equal). Hence for X = 0 the answer is YES iff N \u2264 K \u2264 N\u00b7(N+1)/2.\n\nFor X \u2260 0 we can use values that come in complementary pairs (v, v\u2295X). Let a be the total number of occurrences of the first element of a pair and b the total of the second. Each such pair contributes a\u00b7b to the answer, and elements that are not part of any complementary pair contribute nothing. The maximum possible number of XOR\u2011X pairs is obtained when all N elements belong to a single complementary pair, i.e. a + b = N and a\u00b7b is maximised. By the arithmetic\u2011geometric mean inequality the maximum is \u230aN\u00b2/4\u230b. Any value 0 \u2264 K \u2264 \u230aN\u00b2/4\u230b can be realised by using several independent complementary pairs (for example, K copies of a pair (1,1) use 2K elements, and any remaining elements are left unused). Therefore for X \u2260 0 the answer is YES iff K \u2264 \u230aN\u00b2/4\u230b.",
-    "timeComplexity": "O(1) per test case, O(T) overall.",
-    "spaceComplexity": "O(1) additional space.",
+    "approach": "The problem can be solved using a backtracking approach. First, sort the input array to handle duplicate elements. Then, use a recursive function to generate all unique subsets. In the recursive function, iterate over the array and for each element, add it to the current subset and recursively call the function with the next index. After the recursive call, remove the last added element to backtrack and explore other branches.",
+    "timeComplexity": "O(2^N) per test case, O(T * 2^N) total, where N is the size of the array.",
+    "spaceComplexity": "O(2^N) for storing the subsets, where N is the size of the array.",
     "code": {
-      "C": "#include <stdio.h>\n#include <math.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        long long N,K,X; scanf(\"%lld %lld %lld\",&N,&K,&X);\n        if(X==0){\n            long long minK=N;\n            long long maxK=N*(N+1)/2;\n            puts((K>=minK && K<=maxK)?\"YES\":\"NO\");\n        }else{\n            long long maxK=(N*N)/4; // floor division\n            puts((K<=maxK)?\"YES\":\"NO\");\n        }\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N,K,X; cin>>N>>K>>X;\n        if(X==0){\n            long long minK=N;\n            long long maxK=N*(N+1)/2;\n            cout<<(K>=minK && K<=maxK?\"YES\":\"NO\")<<'\\n';\n        }else{\n            long long maxK=(N*N)/4; // floor\n            cout<<(K<=maxK?\"YES\":\"NO\")<<'\\n';\n        }\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            long N = fs.nextLong();\n            long K = fs.nextLong();\n            long X = fs.nextLong();\n            if (X == 0) {\n                long minK = N;\n                long maxK = N * (N + 1) / 2;\n                sb.append((K >= minK && K <= maxK) ? \"YES\" : \"NO\").append('\\n');\n            } else {\n                long maxK = (N * N) / 4; // floor\n                sb.append(K <= maxK ? \"YES\" : \"NO\").append('\\n');\n            }\n        }\n        System.out.print(sb.toString());\n    }\n    static class FastScanner {\n        private final InputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream in) { this.in = in; }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        long nextLong() throws IOException { return Long.parseLong(next()); }\n        int nextInt() throws IOException { return Integer.parseInt(next()); }\n        String next() throws IOException {\n            StringBuilder sb = new StringBuilder();\n            int c;\n            while ((c = readByte()) != -1 && c <= ' ') {}\n            while (c != -1 && c > ' ') {\n                sb.append((char) c);\n                c = readByte();\n            }\n            return sb.toString();\n        }\n    }\n}",
-      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); K = int(next(it)); X = int(next(it))\n        if X == 0:\n            minK = N\n            maxK = N * (N + 1) // 2\n            out.append('YES' if minK <= K <= maxK else 'NO')\n        else:\n            maxK = (N * N) // 4\n            out.append('YES' if K <= maxK else 'NO')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; ++t) {\n  const N = BigInt(input[idx++]);\n  const K = BigInt(input[idx++]);\n  const X = BigInt(input[idx++]);\n  if (X === 0n) {\n    const minK = N;\n    const maxK = N * (N + 1n) / 2n;\n    out.push(K >= minK && K <= maxK ? 'YES' : 'NO');\n  } else {\n    const maxK = (N * N) / 4n; // floor division\n    out.push(K <= maxK ? 'YES' : 'NO');\n  }\n}\nconsole.log(out.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint cmp(const void *a, const void *b) { return *(int*)a - *(int*)b; }\n\nvoid backtrack(int *a, int n, int start, int *path, int pathLen,\n               int subsets[][11], int *subsetSizes, int *cnt) {\n    // store current subset\n    memcpy(subsets[*cnt], path, pathLen * sizeof(int));\n    subsetSizes[*cnt] = pathLen;\n    (*cnt)++;\n    for (int i = start; i < n; ++i) {\n        if (i > start && a[i] == a[i-1]) continue; // skip duplicates\n        path[pathLen] = a[i];\n        backtrack(a, n, i + 1, path, pathLen + 1, subsets, subsetSizes, cnt);\n    }\n}\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int n; scanf(\"%d\", &n);\n        int a[10];\n        for (int i = 0; i < n; ++i) scanf(\"%d\", &a[i]);\n        qsort(a, n, sizeof(int), cmp);\n        int subsets[1024][11]; // max 2^10 subsets, each up to 10 elements\n        int subsetSizes[1024];\n        int cnt = 0;\n        int path[10];\n        backtrack(a, n, 0, path, 0, subsets, subsetSizes, &cnt);\n        // print result\n        printf(\"[\");\n        for (int i = 0; i < cnt; ++i) {\n            printf(\"[\");\n            for (int j = 0; j < subsetSizes[i]; ++j) {\n                printf(\"%d\", subsets[i][j]);\n                if (j + 1 < subsetSizes[i]) printf(\", \");\n            }\n            printf(\"]\");\n            if (i + 1 < cnt) printf(\", \");\n        }\n        printf(\"]\");\n        if (T) printf(\"\\n\");\n    }\n    return 0;\n}\n",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid backtrack(const vector<int>& a, int start, vector<int>& path, vector<vector<int>>& res) {\n    res.push_back(path);\n    for (int i = start; i < (int)a.size(); ++i) {\n        if (i > start && a[i] == a[i-1]) continue; // skip duplicates\n        path.push_back(a[i]);\n        backtrack(a, i + 1, path, res);\n        path.pop_back();\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin >> T)) return 0;\n    while (T--) {\n        int n; cin >> n;\n        vector<int> a(n);\n        for (int &x : a) cin >> x;\n        sort(a.begin(), a.end());\n        vector<vector<int>> subsets;\n        vector<int> path;\n        backtrack(a, 0, path, subsets);\n        cout << \"[\";\n        for (size_t i = 0; i < subsets.size(); ++i) {\n            cout << \"[\";\n            for (size_t j = 0; j < subsets[i].size(); ++j) {\n                cout << subsets[i][j];\n                if (j + 1 < subsets[i].size()) cout << \", \";\n            }\n            cout << \"]\";\n            if (i + 1 < subsets.size()) cout << \", \";\n        }\n        cout << \"]\";\n        if (T) cout << '\\n';\n    }\n    return 0;\n}\n",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static void backtrack(int[] a, int start, List<Integer> path, List<List<Integer>> res) {\n        res.add(new ArrayList<>(path));\n        for (int i = start; i < a.length; i++) {\n            if (i > start && a[i] == a[i - 1]) continue; // skip duplicates\n            path.add(a[i]);\n            backtrack(a, i + 1, path, res);\n            path.remove(path.size() - 1);\n        }\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        for (int tc = 0; tc < T; tc++) {\n            int n = Integer.parseInt(br.readLine().trim());\n            st = new StringTokenizer(br.readLine());\n            int[] a = new int[n];\n            for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());\n            Arrays.sort(a);\n            List<List<Integer>> subsets = new ArrayList<>();\n            backtrack(a, 0, new ArrayList<>(), subsets);\n            out.append('[');\n            for (int i = 0; i < subsets.size(); i++) {\n                out.append('[');\n                List<Integer> sub = subsets.get(i);\n                for (int j = 0; j < sub.size(); j++) {\n                    out.append(sub.get(j));\n                    if (j + 1 < sub.size()) out.append(\", \");\n                }\n                out.append(']');\n                if (i + 1 < subsets.size()) out.append(\", \");\n            }\n            out.append(']');\n            if (tc + 1 < T) out.append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}\n",
+      "Python3": "import sys\n\ndef backtrack(arr, start, path, res):\n    res.append(path.copy())\n    for i in range(start, len(arr)):\n        if i > start and arr[i] == arr[i-1]:\n            continue\n        path.append(arr[i])\n        backtrack(arr, i+1, path, res)\n        path.pop()\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    outputs = []\n    for _ in range(T):\n        n = int(next(it))\n        arr = [int(next(it)) for _ in range(n)]\n        arr.sort()\n        subsets = []\n        backtrack(arr, 0, [], subsets)\n        # format\n        parts = []\n        for sub in subsets:\n            inner = ', '.join(str(x) for x in sub)\n            parts.append('[' + inner + ']')\n        outputs.append('[' + ', '.join(parts) + ']')\n    sys.stdout.write('\\n'.join(outputs))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet out = [];\nfunction backtrack(arr, start, path, res) {\n    res.push(path.slice());\n    for (let i = start; i < arr.length; i++) {\n        if (i > start && arr[i] === arr[i-1]) continue; // skip duplicates\n        path.push(arr[i]);\n        backtrack(arr, i + 1, path, res);\n        path.pop();\n    }\n}\nfor (let tc = 0; tc < T; tc++) {\n    const n = input[idx++];\n    const arr = input.slice(idx, idx + n);\n    idx += n;\n    arr.sort((a, b) => a - b);\n    const subsets = [];\n    backtrack(arr, 0, [], subsets);\n    const parts = subsets.map(sub => '[' + sub.join(', ') + ']');\n    out.push('[' + parts.join(', ') + ']');\n}\nconsole.log(out.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

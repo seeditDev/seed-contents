@@ -1,36 +1,46 @@
 {
   "questionId": "Q8948",
-  "title": "Find Middle of Linked List",
-  "slug": "middle-of-the-linked-list",
+  "title": "Reduce to 1",
+  "slug": "reduce-to-1",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Data Structures",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Number Theory",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Middle Node",
-      "Data Structures",
-      "Linked List"
+      "Parity",
+      "Divisibility",
+      "Exponentiation",
+      "Greedy"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Mathematics"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Given the head of a linked list of integers, determine the middle node of the linked list. However, if the linked list has an even number of nodes, return the second middle node.",
+    "problemStatement": "Arun has an integer NNN. His friend likes the number 111, so Arun wants to reduce NNN to 111.\n\nTo do so, he can perform the following move several times (possibly, zero):\n\n\nPick two integers XXX and YYY such that X+YX+YX+Y is even and XYX^YXY is a divisor of NNN. Then, replace NNN by NXY\\dfrac{N}{X^Y}XYN​\nNote that at each step, XYX^YXY only needs to be a divisor of the current value of NNN, and not necessarily a divisor of the integer Arun initially started with.\n\nFind the **minimum** number of moves Arun needs to reduce NNN to 111. If it is not possible to reduce NNN to 111 using the given operation, print −1-1−1 instead.\n\n\nInput Format\n\nThe first line of input will contain an integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nEach test case consists of a single line of input containing one integer NNN.\n\n\nOutput Format\nFor each test case, output on a new line the answer — the **minimum** number of moves needed to reduce NNN to 111, or −1-1−1 if it is not possible to do so.",
     "constraints": [
-      "1 <= Number of nodes in the linked list <= 10^5",
-      "1 <= Value of each node <= 10^9"
+      "1 ≤ T ≤ 10^5",
+      "1 ≤ N ≤ 10^18"
     ],
-    "inputFormat": "The input is the head of a linked list of integers.",
-    "outputFormat": "The output is the middle node of the linked list. If the linked list has an even number of nodes, return the second middle node.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N ≤ 10^18).",
+    "outputFormat": "For each test case output a single line containing the minimum number of moves required to reduce N to 1 using the described operation, or -1 if it is impossible.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "LL: 1  2  3  4  5",
-        "output": "3\n                \n**Explanation: **Node with value 3 is the middle node of this linked list.\n                                         \n**Example 2:**",
-        "explanation": ""
+        "input": "2\n25\n24",
+        "output": "1\n-1",
+        "explanation": "For N=25 (odd) we can choose X=25, Y=1 (25+1 even) and divide by 25 in one move. For N=24 = 2^3·3, the exponent of 2 is 3 (odd), so it is impossible to eliminate all factors of 2 using only even‑exponent powers of 2."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n1\n4\n12",
+        "output": "0\n1\n2",
+        "explanation": "N=1 needs no moves. N=4 = 2^2, v2=2 (even) and no odd part, so one move with X=2, Y=2 removes the whole number. N=12 = 2^2·3, v2 even, odd part 3>1, so two moves: first divide by 4 (X=2,Y=2) obtaining 3, then divide by 3 (X=3,Y=1)."
       }
     ]
   },
@@ -38,37 +48,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "LL: 1",
-        "expectedOutput": "1",
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "LL: 1 2 3 4 5 6 7 8 9",
-        "expectedOutput": "5",
+        "label": "maximum boundary",
+        "input": "1\n1000000000000000000",
+        "expectedOutput": "-1",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform case",
-        "input": "LL: 1 1 1 1 1",
+        "label": "odd large number",
+        "input": "1\n999999999999999989",
         "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case",
-        "input": "LL: 1 2",
+        "label": "even with even v2 and odd part",
+        "input": "1\n48",
         "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "LL: 10 20 30 40 50 60",
-        "expectedOutput": "30",
+        "label": "even power of 4 only",
+        "input": "1\n256",
+        "expectedOutput": "1",
         "weight": 2
       }
     ],
@@ -98,15 +108,27 @@
     ]
   },
   "solution": {
-    "approach": "Two Pointer Technique",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
+    "approach": "For a move we choose integers X and Y such that X+Y is even and X^Y divides the current N, then replace N by N / X^Y. Observe:\n- If N is odd, we can take X = N, Y = 1 (odd + 1 is even) and divide by N in one move.\n- If N is even, X must be even and Y must be even (otherwise X+Y would be odd). Hence X^Y is a power of 2 with an even exponent, i.e. 4^k.\n  Therefore only factors of the form 4^k can be removed from the even part of N.\n- Let v2 be the exponent of 2 in the prime factorisation of N (the number of trailing zero bits). The operation can only eliminate an even number of 2's at a time, so v2 must be even; otherwise reduction is impossible.\n- When v2 is even we can remove all 2's in a single move by choosing X = 2 and Y = v2 (2+v2 is even because v2 is even). After this step the remaining number is odd.\n- The odd part (if greater than 1) can be removed in one additional move using X = oddPart, Y = 1.\nThus:\n  * If N = 1 → answer 0.\n  * Else if N is odd → answer 1.\n  * Else (N even): compute v2 = exponent of 2 in N.\n    - If v2 is odd → answer -1.\n    - If v2 is even:\n        • If N / 2^{v2} == 1 → answer 1 (only the power of 4 was present).\n        • Otherwise → answer 2 (one move for the power of 4, one move for the odd remainder).",
+    "timeComplexity": "O(T) – each test case needs only a few arithmetic operations and a count of trailing zeros.",
+    "spaceComplexity": "O(1) – only a few variables are used per test case.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\n// Node class represents a node in a linked list\ntypedef struct Node {\n    int data;\n    struct Node* next;\n} Node;\n\n// Function to find the middle node of a linked list\nNode* findMiddle(Node* head) {\n    if (head == NULL || head->next == NULL) {\n        return head;\n    }\n\n    Node* temp = head;\n    int count = 0;\n\n    while (temp != NULL) {\n        count++;\n        temp = temp->next;\n    }\n\n    int mid = count / 2 + 1;\n    temp = head;\n\n    while (temp != NULL) {\n        mid = mid - 1;\n\n        if (mid == 0) {\n            break;\n        }\n        temp = temp->next;\n    }\n\n    return temp;\n}\n\nint main() {\n    Node* head = (Node*)malloc(sizeof(Node));\n    head->data = 1;\n    head->next = (Node*)malloc(sizeof(Node));\n    head->next->data = 2;\n    head->next->next = (Node*)malloc(sizeof(Node));\n    head->next->next->data = 3;\n    head->next->next->next = (Node*)malloc(sizeof(Node));\n    head->next->next->next->data = 4;\n    head->next->next->next->next = (Node*)malloc(sizeof(Node));\n    head->next->next->next->next->data = 5;\n    head->next->next->next->next->next = NULL;\n\n    Node* middleNode = findMiddle(head);\n\n    printf(\"The middle node value is: %d\\n\", middleNode->data);\n\n    return 0;\n}",
-      "C++": "#include <iostream>\n#include <bits/stdc++.h>\n\nusing namespace std;\n\n// Node class represents a node in a linked list\nclass Node {\npublic:\n    int data;  \n    Node* next;     \n\n    Node(int data1, Node* next1) {\n        data = data1;\n        next = next1;\n    }\n\n    Node(int data1) {\n        data = data1;\n        next = nullptr;\n    }\n};\n\n// Function to find the middle node of a linked list\nNode *findMiddle(Node *head) {\n    if (head == NULL || head->next == NULL) {\n        return head;\n    }\n\n    Node* temp = head;\n    int count = 0;\n\n    while (temp != NULL) {\n        count++;\n        temp = temp->next;\n    }\n\n    int mid = count / 2 + 1;\n    temp = head;\n\n    while (temp != NULL) {\n        mid = mid - 1;\n\n        if (mid == 0) {\n            break;\n        }\n        temp = temp->next;\n    }\n\n    return temp;\n}\n\nint main() {\n    Node* head = new Node(1);\n    head->next = new Node(2);\n    head->next->next = new Node(3);\n    head->next->next->next = new Node(4);\n    head->next->next->next->next = new Node(5);\n\n    Node* middleNode = findMiddle(head);\n\n    cout << \"The middle node value is: \" << middleNode->data << endl;\n\n    return 0;\n}",
-      "Java": "import java.util.*;\n\n// Node class represents a node in a linked list\nclass Node {\n    int data; \n    Node next;     \n\n    Node(int data, Node next) {\n        this.data = data;\n        this.next = next;\n    }\n\n    Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n}\n\npublic class FindMiddleOfLinkedList {\n    \n    // Function to find the middle node of a linked list\n    static Node findMiddle(Node head) {\n        if (head == null || head.next == null) {\n            return head;\n        }\n\n        Node temp = head;\n        int count = 0;\n\n        while (temp != null) {\n            count++;\n            temp = temp.next;\n        }\n\n        int mid = count / 2 + 1;\n        temp = head;\n\n        while (temp != null) {\n            mid = mid - 1;\n\n            if (mid == 0) {\n                break;\n            }\n            temp = temp.next;\n        }\n\n        return temp;\n    }\n\n    public static void main(String[] args) {\n        Node head = new Node(1);\n        head.next = new Node(2);\n        head.next.next = new Node(3);\n        head.next.next.next = new Node(4);\n        head.next.next.next.next = new Node(5);\n\n        Node middleNode = findMiddle(head);\n\n        System.out.println(\"The middle node value is: \" + middleNode.data);\n    }\n}",
-      "Python3": "# Node class represents a node in a linked list\nclass Node:\n    def __init__(self, data, next_node=None):\n        self.data = data       \n        self.next = next_node  \n\n# Function to find the middle node of a linked list\ndef find_middle(head):\n    if head is None or head.next is None:\n        return head\n\n    temp = head\n    count = 0\n\n    while temp is not None:\n        count += 1\n        temp = temp.next\n\n    mid = count // 2 + 1\n    temp = head\n\n    while temp is not None:\n        mid = mid -1\n\n        if mid == 0:\n           break\n        temp = temp.next\n\n    return temp\n\n# Creating a sample linked list: \nhead = Node(1)\nhead.next = Node(2)\nhead.next.next = Node(3)\nhead.next.next.next = Node(4)\nhead.next.next.next.next = Node(5)\n\n# Find the middle node\nmiddle_node = find_middle(head)\n\n# Display the value of the middle node\nprint(\"The middle node value is:\", middle_node.data)",
-      "JavaScript": "// Node class represents a node in a linked list\nclass Node {\n    constructor(data, next) {\n        this.data = data;   \n        this.next = next;    \n    }\n}\n\n// Function to find the middle node of a linked list\nfunction findMiddle(head) {\n    if (head === null || head.next === null) {\n        return head;\n    }\n\n    let temp = head;\n    let count = 0;\n\n    while (temp !== null) {\n        count++;\n        temp = temp.next;\n    }\n\n    const mid = Math.floor(count / 2) + 1;\n    temp = head;\n\n    while (temp !== null) {\n        mid - 1;\n\n        if (mid - 1 === 0) {\n            break;\n        }\n        temp = temp.next;\n    }\n\n    return temp;\n}\n\n// Creating a sample linked list: \nconst head = new Node(1);\nhead.next = new Node(2);\nhead.next.next = new Node(3);\nhead.next.next.next = new Node(4);\nhead.next.next.next.next = new Node(5);\n\n// Find the middle node\nconst middleNode = findMiddle(head);\n\n// Display the value of the middle node\nconsole.log(\"The middle node value is: \" + middleNode.data);"
+      "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic inline int countTrailingZeros(uint64_t n) {\n    int cnt = 0;\n    while ((n & 1ULL) == 0ULL) {\n        n >>= 1;\n        ++cnt;\n    }\n    return cnt;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        uint64_t N;\n        scanf(\"%llu\", &N);\n        if (N == 1) {\n            printf(\"0\\n\");\n            continue;\n        }\n        if (N & 1ULL) {\n            printf(\"1\\n\");\n            continue;\n        }\n        int v2 = countTrailingZeros(N);\n        if (v2 % 2 == 1) {\n            printf(\"-1\\n\");\n            continue;\n        }\n        uint64_t oddPart = N >> v2;\n        if (oddPart == 1ULL) {\n            printf(\"1\\n\");\n        } else {\n            printf(\"2\\n\");\n        }\n    }\n    return 0;\n}\n",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        unsigned long long N; cin>>N;\n        if(N==1){ cout<<0<<\"\\n\"; continue; }\n        if(N&1ULL){ cout<<1<<\"\\n\"; continue; }\n        int v2 = __builtin_ctzll(N);\n        if(v2%2==1){ cout<<-1<<\"\\n\"; continue; }\n        unsigned long long odd = N>>v2;\n        if(odd==1ULL) cout<<1<<\"\\n\"; else cout<<2<<\"\\n\";\n    }\n    return 0;\n}\n",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static int countTrailingZeros(long n) {\n        int cnt = 0;\n        while ((n & 1L) == 0) {\n            n >>= 1;\n            cnt++;\n        }\n        return cnt;\n    }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int t = 0; t < T; t++) {\n            long N = Long.parseLong(br.readLine().trim());\n            if (N == 1) {\n                sb.append(0).append('\\n');\n                continue;\n            }\n            if ((N & 1L) == 1L) {\n                sb.append(1).append('\\n');\n                continue;\n            }\n            int v2 = countTrailingZeros(N);\n            if ((v2 & 1) == 1) {\n                sb.append(-1).append('\\n');\n                continue;\n            }\n            long odd = N >> v2;\n            if (odd == 1L) sb.append(1).append('\\n');\n            else sb.append(2).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        if N == 1:\n            out.append('0')\n            continue\n        if N & 1:\n            out.append('1')\n            continue\n        # count trailing zeros\n        v2 = (N & -N).bit_length() - 1  # exponent of lowest set bit\n        if v2 % 2 == 1:\n            out.append('-1')\n            continue\n        odd = N >> v2\n        if odd == 1:\n            out.append('1')\n        else:\n            out.append('2')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  let N = BigInt(input[idx++]);\n  if (N === 1n) { out.push('0'); continue; }\n  if (N & 1n) { out.push('1'); continue; }\n  // count trailing zeros of N\n  let v2 = 0;\n  let temp = N;\n  while ((temp & 1n) === 0n) { temp >>= 1n; v2++; }\n  if (v2 % 2 === 1) { out.push('-1'); continue; }\n  const odd = N >> BigInt(v2);\n  if (odd === 1n) out.push('1'); else out.push('2');\n}\nconsole.log(out.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

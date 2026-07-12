@@ -1,67 +1,92 @@
 {
   "questionId": "Q8744",
-  "title": "Ninja's training",
-  "slug": "ninjastraining",
+  "title": "Critical points in a Linked List",
+  "slug": "critical-points-in-a-linked-list",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Data Structures",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Optimization",
-      "Dynamic Programming",
-      "Memoization"
+      "Linked List",
+      "Array Traversal",
+      "Two Pointers",
+      "Greedy"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Linked Lists"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": ".",
+    "problemStatement": "Given the head of a linked list, Find the number of critical points. (The starting and end are not considered critical points).\n\nLocal minima or maxima are called critical points.\n\nA Node is called a local minima if both next and previous elements are greater than the current element.\n\nA Node is called a local maxima if both next and previous elements are smaller than the current element.",
     "constraints": [
-      "1 <= n <= 10^5",
-      "1 <= points[i][j] <= 10^5"
+      "1 <= T <= 10",
+      "1 <= N <= 15",
+      "1 <= node value <= 10^9",
+      "The sum of N over all test cases does not exceed 10^5"
     ],
-    "inputFormat": "The first line contains an integer 'n' which denotes the number of days. The next 'n' lines contain three space-separated integers representing the points for each activity on that day.",
-    "outputFormat": "The maximum points the ninja can achieve.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of nodes in the linked list. The second line contains N space‑separated integers representing the node values in order.",
+    "outputFormat": "For each test case, output a single line containing the number of critical points (local minima or maxima) in the list. The first and last nodes are never counted as critical points.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "1\n8\n1 2 3 3 3 5 1 3",
+        "output": "2",
+        "explanation": "The node with value 1 at position 7 is a local minimum (neighbors 5 and 3). The node with value 5 at position 6 is a local maximum (neighbors 3 and 1). Hence there are 2 critical points."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n7\n1 2 3 2 1 3 2",
+        "output": "3",
+        "explanation": "Critical nodes are at positions 3 (value 3, a maximum), 5 (value 1, a minimum) and 6 (value 3, a maximum). Total = 3."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n5\n5 5 5 5 5",
+        "output": "0",
+        "explanation": "All values are equal, so no node is strictly greater or smaller than both neighbours. Hence 0 critical points."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "1\n10 20 30",
-        "expectedOutput": "30",
+        "label": "minimum boundary",
+        "input": "1\n1\n5",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "10\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000\n100000 100000 100000",
-        "expectedOutput": "1000000",
+        "label": "maximum boundary (15 elements alternating)",
+        "input": "1\n15\n1 3 1 3 1 3 1 3 1 3 1 3 1 3 1",
+        "expectedOutput": "13",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform case",
-        "input": "5\n10 10 10\n10 10 10\n10 10 10\n10 10 10\n10 10 10",
-        "expectedOutput": "30",
+        "label": "edge case with equal neighbours",
+        "input": "1\n4\n5 5 5 5",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case",
-        "input": "3\n1 2 3\n4 5 6\n7 8 9",
-        "expectedOutput": "18",
+        "label": "general case 1",
+        "input": "1\n6\n2 1 2 1 2 1",
+        "expectedOutput": "4",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed case",
-        "input": "6\n10 20 30\n40 50 60\n70 80 90\n100 110 120\n130 140 150\n160 170 180",
-        "expectedOutput": "450",
+        "label": "general case 2",
+        "input": "1\n7\n1 2 2 2 1 2 1",
+        "expectedOutput": "2",
         "weight": 2
       }
     ],
@@ -91,15 +116,27 @@
     ]
   },
   "solution": {
-    "approach": "Use dynamic programming to store the maximum points for each day and activity, and then calculate the maximum points for the next day based on the previous day's results.",
-    "timeComplexity": "O(n)",
-    "spaceComplexity": "O(n)",
+    "approach": "Even though the problem mentions a linked list, the values can be processed as an array because only neighbour relationships matter. For each test case we read the N values into an array. We then iterate from the second element to the second‑last element (indices 1 to N‑2). A position i is a critical point if arr[i] is strictly greater than both neighbours (local maximum) or strictly smaller than both neighbours (local minimum). We count such positions and output the count. The algorithm is O(N) time and O(1) extra space per test case.",
+    "timeComplexity": "O(N) per test case, where N is the length of the list.",
+    "spaceComplexity": "O(1) additional space (besides the input array).",
     "code": {
-      "C": "#include <stdio.h>\nint max(int a, int b) { return a > b ? a : b; }\nint ninjaTraining(int n, int points[][3]) {\n    int dp[n][3];\n    dp[0][0] = points[0][1];\n    dp[0][1] = points[0][0];\n    dp[0][2] = points[0][0];\n    for (int i = 1; i < n; i++) {\n        for (int j = 0; j < 3; j++) {\n            int max_val = 0;\n            for (int k = 0; k < 3; k++) {\n                if (k != j) {\n                    max_val = max(max_val, dp[i-1][k]);\n                }\n            }\n            dp[i][j] = max_val + points[i][j];\n        }\n    }\n    int max_val = 0;\n    for (int i = 0; i < 3; i++) {\n        max_val = max(max_val, dp[n-1][i]);\n    }\n    return max_val;\n}\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int points[n][3];\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < 3; j++) {\n            scanf(\"%d\", &points[i][j]);\n        }\n    }\n    printf(\"%d\\n\", ninjaTraining(n, points));\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint ninjaTraining(int n, vector<vector<int>> &points) {\n    vector<vector<int>> dp(n, vector<int>(3, 0));\n    dp[0][0] = max(points[0][1], points[0][2]);\n    dp[0][1] = max(points[0][0], points[0][2]);\n    dp[0][2] = max(points[0][0], points[0][1]);\n    for (int i = 1; i < n; i++) {\n        for (int j = 0; j < 3; j++) {\n            int max_val = 0;\n            for (int k = 0; k < 3; k++) {\n                if (k != j) {\n                    max_val = max(max_val, dp[i-1][k]);\n                }\n            }\n            dp[i][j] = max_val + points[i][j];\n        }\n    }\n    int max_val = 0;\n    for (int i = 0; i < 3; i++) {\n        max_val = max(max_val, dp[n-1][i]);\n    }\n    return max_val;\n}\nint main() {\n    int n;\n    cin >> n;\n    vector<vector<int>> points(n, vector<int>(3, 0));\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < 3; j++) {\n            cin >> points[i][j];\n        }\n    }\n    cout << ninjaTraining(n, points);\n    return 0;\n}",
-      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int[][] points = new int[n][3];\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < 3; j++) {\n                points[i][j] = scanner.nextInt();\n            }\n        }\n        System.out.println(ninjaTraining(n, points));\n    }\n    public static int ninjaTraining(int n, int[][] points) {\n        int[][] dp = new int[n][3];\n        dp[0][0] = Math.max(points[0][1], points[0][2]);\n        dp[0][1] = Math.max(points[0][0], points[0][2]);\n        dp[0][2] = Math.max(points[0][0], points[0][1]);\n        for (int i = 1; i < n; i++) {\n            for (int j = 0; j < 3; j++) {\n                int max_val = 0;\n                for (int k = 0; k < 3; k++) {\n                    if (k != j) {\n                        max_val = Math.max(max_val, dp[i-1][k]);\n                    }\n                }\n                dp[i][j] = max_val + points[i][j];\n            }\n        }\n        int max_val = 0;\n        for (int i = 0; i < 3; i++) {\n            max_val = Math.max(max_val, dp[n-1][i]);\n        }\n        return max_val;\n    }\n}",
-      "Python3": "def ninjaTraining(n, points):\n    dp = [[0]*3 for _ in range(n)]\n    dp[0][0] = max(points[0][1], points[0][2])\n    dp[0][1] = max(points[0][0], points[0][2])\n    dp[0][2] = max(points[0][0], points[0][1])\n    for i in range(1, n):\n        for j in range(3):\n            max_val = 0\n            for k in range(3):\n                if k != j:\n                    max_val = max(max_val, dp[i-1][k])\n            dp[i][j] = max_val + points[i][j]\n    max_val = 0\n    for i in range(3):\n        max_val = max(max_val, dp[n-1][i])\n    return max_val\n\nn = int(input())\npoints = [list(map(int, input().split())) for _ in range(n)]\nprint(ninjaTraining(n, points))",
-      "JavaScript": "function ninjaTraining(n, points) {\n    let dp = Array.from({length: n}, () => Array(3).fill(0));\n    dp[0][0] = Math.max(points[0][1], points[0][2]);\n    dp[0][1] = Math.max(points[0][0], points[0][2]);\n    dp[0][2] = Math.max(points[0][0], points[0][1]);\n    for (let i = 1; i < n; i++) {\n        for (let j = 0; j < 3; j++) {\n            let max_val = 0;\n            for (let k = 0; k < 3; k++) {\n                if (k !== j) {\n                    max_val = Math.max(max_val, dp[i-1][k]);\n                }\n            }\n            dp[i][j] = max_val + points[i][j];\n        }\n    }\n    let max_val = 0;\n    for (let i = 0; i < 3; i++) {\n        max_val = Math.max(max_val, dp[n-1][i]);\n    }\n    return max_val;\n}\n\nlet input = '';\nprocess.stdin.on('data', c => input += c);\nprocess.stdin.on('end', () => {\n    const {EOL} = require('os');\n    const lines = input.split(EOL);\n    let n = parseInt(lines[0]);\n    let points = lines.slice(1, n+1).map(line => line.split(' ').map(Number));\n    console.log(ninjaTraining(n, points));\n});"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        long long *a = (long long*)malloc(N * sizeof(long long));\n        for (int i = 0; i < N; ++i) scanf(\"%lld\", &a[i]);\n        int cnt = 0;\n        for (int i = 1; i < N - 1; ++i) {\n            if ((a[i] > a[i-1] && a[i] > a[i+1]) || (a[i] < a[i-1] && a[i] < a[i+1]))\n                ++cnt;\n        }\n        printf(\"%d\\n\", cnt);\n        free(a);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int N; cin>>N;\n        vector<long long> a(N);\n        for(int i=0;i<N;++i) cin>>a[i];\n        int cnt=0;\n        for(int i=1;i<N-1;++i){\n            if((a[i]>a[i-1] && a[i]>a[i+1]) || (a[i]<a[i-1] && a[i]<a[i+1]))\n                ++cnt;\n        }\n        cout<<cnt<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = fs.nextInt();\n            long[] a = new long[N];\n            for (int i = 0; i < N; i++) a[i] = fs.nextLong();\n            int cnt = 0;\n            for (int i = 1; i < N - 1; i++) {\n                if ((a[i] > a[i - 1] && a[i] > a[i + 1]) || (a[i] < a[i - 1] && a[i] < a[i + 1])) {\n                    cnt++;\n                }\n            }\n            sb.append(cnt).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n\n    // Fast scanner for competitive programming\n    static class FastScanner {\n        private final BufferedInputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream stream) { in = new BufferedInputStream(stream); }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        long nextLong() throws IOException { return Long.parseLong(next()); }\n        int nextInt() throws IOException { return Integer.parseInt(next()); }\n        String next() throws IOException {\n            StringBuilder sb = new StringBuilder();\n            int c;\n            while ((c = readByte()) != -1 && c <= ' ') {}\n            while (c != -1 && c > ' ') {\n                sb.append((char) c);\n                c = readByte();\n            }\n            return sb.toString();\n        }\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = list(map(int, sys.stdin.read().split()))\n    if not data:\n        return\n    t = data[0]\n    idx = 1\n    out_lines = []\n    for _ in range(t):\n        n = data[idx]\n        idx += 1\n        arr = data[idx:idx + n]\n        idx += n\n        cnt = 0\n        for i in range(1, n - 1):\n            if (arr[i] > arr[i - 1] and arr[i] > arr[i + 1]) or (arr[i] < arr[i - 1] and arr[i] < arr[i + 1]):\n                cnt += 1\n        out_lines.append(str(cnt))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst data = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = data[idx++];\nlet outputs = [];\nfor (let tc = 0; tc < T; tc++) {\n  const N = data[idx++];\n  const arr = data.slice(idx, idx + N);\n  idx += N;\n  let cnt = 0;\n  for (let i = 1; i < N - 1; i++) {\n    if ((arr[i] > arr[i - 1] && arr[i] > arr[i + 1]) || (arr[i] < arr[i - 1] && arr[i] < arr[i + 1])) {\n      cnt++;\n    }\n  }\n  outputs.push(cnt.toString());\n}\nconsole.log(outputs.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

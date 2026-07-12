@@ -1,35 +1,43 @@
 {
   "questionId": "Q7696",
-  "title": "String Split Challenge",
-  "slug": "string-split-challenge",
+  "title": "Egg-free DAG",
+  "slug": "egg-free-dag",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
   "metadata": {
-    "category": "Strings",
-    "difficulty": "Medium",
+    "category": "Arrays",
+    "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "competitive programming",
-      "Strings",
-      "strings"
+      "constructive algorithms",
+      "competitive programming"
     ],
     "companyTags": [],
     "topicTags": [
-      "Strings"
-    ]
+      "Constructive Algorithms"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given a string consisting of lowercase English alphabets. Your task is to determine if it's possible to split this string into three non-empty parts (substrings) where one of these parts is a substring of both remaining parts.\n\nFor example, in string \"abcabab\", we can split it into:\n\n\nFirst part: \"abc\"\nSecond part: \"ab\"\nThird part: \"abc\"\nHere \"ab\" is a substring of both \"abc\" and \"abc\".\n**Note:**\n\n\nAll three parts must be non-empty\nParts must be formed by continuous characters from the original string\nThe parts should use all characters of the original string in order\nThe order of splitting should maintain the original sequence of characters\n\nInput Format\n\nFirst line contains a single integer TTT (1\u2264T\u22641001 \\leq T \\leq 1001\u2264T\u2264100) - number of test cases\nEach of the next TTT lines contains:\n\nA string str (3\u2264\u2223str\u2223\u226410003 \\leq |str| \\leq 10003\u2264\u2223str\u2223\u22641000) consisting only of lowercase English alphabets\n\n\n\n\nOutput Format\n\nFor each test case, print \"YES\" if such a split is possible, \"NO\" otherwise",
-    "constraints": [],
-    "inputFormat": "",
-    "outputFormat": "",
+    "problemStatement": "Let's call a directed graph egg-free if it is acyclic and for any three pairwise distinct vertices xxx, yyy and zzz, if the graph contains edges x→yx \\rightarrow yx→y and x→zx \\rightarrow zx→z, then it also contains an edge y→zy \\rightarrow zy→z and/or an edge z→yz \\rightarrow yz→y.\n\nYou are given an undirected graph with NNN vertices (numbered 111 through NNN) and MMM edges (numbered 111 through MMM). Find a way to assign a direction to each of its edges such that the resulting directed graph is egg-free, or determine that it is impossible. If there are multiple solutions, you may find any one.",
+    "constraints": [
+      "1≤T≤51 \\le T \\le 51≤T≤5",
+      "1≤N,M≤200,0001 \\le N, M \\le 200,0001≤N,M≤200,000",
+      "1≤ui,vi≤N1 \\le u_i, v_i \\le N1≤ui​,vi​≤N for each valid iii",
+      "ui≠viu_i \\neq v_iui​=vi​ for each valid iii",
+      "each pair of vertices is connected by at most one edge",
+      "Subtasks**Subtask #1 (10 points):** N,M≤20N, M \\le 20N,M≤20",
+      "**Subtask #2 (20 points):** N,M≤200N, M \\le 200N,M≤200"
+    ],
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and MMM.\nMMM lines follow. For each valid iii, the iii-th of these lines contains two space-separated integers uiu_iui​ and viv_ivi​ denoting an edge between vertices uiu_iui​ and viv_ivi​.",
+    "outputFormat": "For each test case:\n\n\nIf it is impossible to assign a direction to each edge in such a way that the resulting graph is egg-free, print a single line containing the string `\"No solution\"` (without quotes).\nOtherwise, print a single line containing a string with length MMM. For each valid iii, the iii-th character of this string should be '^' if you want to direct the iii-th edge from uiu_iui​ to viv_ivi​, or 'v' if you want to direct it from viv_ivi​ to uiu_iui​.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\nabcabab\naaa\nabcd\naabaab",
-        "output": "YES\nYES\nNO\nYES",
-        "explanation": "Explanation:\nTest Case 1:\n\nString = \"abcabab\"\nCan be split as: \"abc\" + \"ab\" + \"abc\"\n\"ab\" is substring of both \"abc\"\n\nTest Case 2:\n\nString = \"aaa\"\nCan be split as: \"a\" + \"a\" + \"a\"\n\"a\" is substring of both \"a\"\n\nTest Case 3:\n\nString = \"abcd\"\nNo possible split exists where one part is substring of other two\n\nTest Case 4:\n\nString = \"aabaab\"\nCan be split as: \"aab\" + \"aa\" + \"b\"\n\"aa\" is substring of \"aab\""
+        "input": "2\n3 3\n1 2\n2 3\n3 1\n7 6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7",
+        "output": "^^v\n^^^^^^",
+        "explanation": ""
       }
     ]
   },
@@ -37,8 +45,8 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "4\nabcabab\naaa\nabcd\naabaab",
-        "expectedOutput": "YES\nYES\nNO\nYES",
+        "input": "2\n3 3\n1 2\n2 3\n3 1\n7 6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7",
+        "expectedOutput": "^^v\n^^^^^^",
         "weight": 100
       }
     ],
@@ -65,10 +73,20 @@
   },
   "solution": {
     "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nbool isSubstring(string str1, string str2) {\n    if(str1.length() > str2.length()) \n        return false;\n    \n    for(int i = 0; i <= str2.length() - str1.length(); i++) {\n        bool found = true;\n        for(int j = 0; j < str1.length(); j++) {\n            if(str2[i + j] != str1[j]) {\n                found = false;\n                break;\n            }\n        }\n        if(found) return true;\n    }\n    return false;\n}\n\nbool checkPossible(string str) {\n    int n = str.length();\n    \n    // Try all possible splits\n    for(int i = 1; i < n-1; i++) {\n        for(int j = i+1; j < n; j++) {\n            // Get three parts\n            string part1 = str.substr(0, i);\n            string part2 = str.substr(i, j-i);\n            string part3 = str.substr(j);\n            \n            // Skip if any part is empty\n            if(part1.empty() || part2.empty() || part3.empty()) \n                continue;\n                \n            // Check if any part is substring of other two\n            if(isSubstring(part1, part2) && isSubstring(part1, part3)) return true;\n            if(isSubstring(part2, part1) && isSubstring(part2, part3)) return true;\n            if(isSubstring(part3, part1) && isSubstring(part3, part2)) return true;\n        }\n    }\n    return false;\n}\n\nint main() {\n    int t;\n    cin >> t;\n    \n    while(t--) {\n        string str;\n        cin >> str;\n        \n        if(checkPossible(str))\n            cout << \"YES\" << endl;\n        else\n            cout << \"NO\" << endl;\n    }\n    \n    return 0;\n}"
-    }
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

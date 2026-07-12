@@ -1,67 +1,77 @@
 {
   "questionId": "Q8517",
-  "title": "Finding the Kth Prime",
-  "slug": "TDKPRIME",
+  "title": "Musical Chairs",
+  "slug": "musical-chairs",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math",
-    "difficulty": "$undefined",
-    "isPremium": false,
+    "category": "Math | Number Theory",
+    "difficulty": "Medium",
+    "isPremium": true,
     "tags": [
-      "Prime Numbers",
-      "Number Theory",
-      "Math"
+      "Divisor Count",
+      "Prime Factorisation",
+      "Square Root Iteration"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Mathematics"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Write a program for the coding challenge \"Finding the Kth Prime\". Refer to LeetCode description: https://www.spoj.com/problems/TDKPRIME/",
+    "problemStatement": "There are NNN friends who decided to play the game of musical chairs one day.\n\nInitially they decide a number KKK and with each passing round they remove exactly KKK chairs. Hence, in each round exactly KKK players are eliminated. The game stops when less than or exactly KKK players remain in the game.\n\nNow, Chef wants to figure out for how many possible values of KKK there will be exactly one winner in the game.\n\n\nInput Format\n\nThe first line contains TTT - the number of test cases. Then the test cases follow.\nThe first line of each test case contain NNN - the number of friends in the game.\n\n\nOutput Format\nFor each test case, output in a single line a integer that denotes the number of values of KKK for which there will be exactly one winner.",
     "constraints": [
-      "1 <= K <= 10^4",
-      "K is a positive integer"
+      "1 <= T <= 1000",
+      "2 <= N <= 10^9"
     ],
-    "inputFormat": "The input will contain an integer K.",
-    "outputFormat": "The output will be the Kth prime number.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (2 ≤ N ≤ 10^9) – the number of friends.",
+    "outputFormat": "For each test case output a single line containing the number of possible values of K for which exactly one winner remains.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n2\n3\n4",
+        "output": "1\n2\n2",
+        "explanation": "For N=2, N-1=1 has 1 divisor → 1 possible K (K=1).\\nFor N=3, N-1=2 has divisors {1,2} → 2 possible K (K=1,2).\\nFor N=4, N-1=3 has divisors {1,3} → 2 possible K (K=1,3)."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "1",
-        "expectedOutput": "2",
+        "label": "minimum boundary",
+        "input": "1\n2",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "10000",
-        "expectedOutput": "104729",
-        "weight": 2
-      },
-      {
-        "id": "tc_3",
-        "label": "uniform case",
-        "input": "5000",
-        "expectedOutput": "48611",
-        "weight": 2
-      },
-      {
-        "id": "tc_4",
-        "label": "tricky case",
-        "input": "1",
+        "label": "prime N",
+        "input": "1\n101",
         "expectedOutput": "2",
         "weight": 2
       },
       {
+        "id": "tc_3",
+        "label": "N is power of two",
+        "input": "1\n16",
+        "expectedOutput": "5",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "large N",
+        "input": "1\n1000000000",
+        "expectedOutput": "100",
+        "weight": 2
+      },
+      {
         "id": "tc_5",
-        "label": "mixed case",
-        "input": "100",
-        "expectedOutput": "541",
+        "label": "N-1 is perfect square",
+        "input": "1\n26",
+        "expectedOutput": "6",
         "weight": 2
       }
     ],
@@ -91,15 +101,27 @@
     ]
   },
   "solution": {
-    "approach": "Use the Sieve of Eratosthenes algorithm to generate prime numbers up to a certain limit, then find the Kth prime number.",
-    "timeComplexity": "O(n log log n)",
-    "spaceComplexity": "O(n)",
+    "approach": "For a given K (1 ≤ K ≤ N) the game ends with the remaining players equal to N % K if N % K != 0, otherwise K. Exactly one winner means the final remaining players equal 1. This happens for K = 1 (always) and for any K > 1 such that N % K = 1. The condition N % K = 1 is equivalent to K dividing N‑1. Hence the required K values are exactly the positive divisors of N‑1. Therefore the answer for each test case is the number of divisors of N‑1. To compute it we factorise N‑1 by trial division up to sqrt(N‑1) and use the formula product (exponent_i + 1).",
+    "timeComplexity": "O(T * sqrt(N)) – each test case iterates up to √(N‑1).",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
     "code": {
-      "C": "\n         #include <stdio.h>\n         #include <stdbool.h>\n\n         bool isPrime(int num) {\n            if (num <= 1) return false;\n            for (int i = 2; i * i <= num; i++) {\n               if (num % i == 0) return false;\n            }\n            return true;\n         }\n\n         int kthPrime(int k) {\n            int count = 0;\n            int num = 2;\n            while (true) {\n               if (isPrime(num)) {\n                  count++;\n                  if (count == k) return num;\n               }\n               num++;\n            }\n         }\n\n         int main() {\n            int k;\n            scanf(\"%d\", &k);\n            printf(\"%d\\n\", kthPrime(k));\n            return 0;\n         }\n      ",
-      "C++": "\n         #include <iostream>\n\n         bool isPrime(int num) {\n            if (num <= 1) return false;\n            for (int i = 2; i * i <= num; i++) {\n               if (num % i == 0) return false;\n            }\n            return true;\n         }\n\n         int kthPrime(int k) {\n            int count = 0;\n            int num = 2;\n            while (true) {\n               if (isPrime(num)) {\n                  count++;\n                  if (count == k) return num;\n               }\n               num++;\n            }\n         }\n\n         int main() {\n            int k;\n            std::cin >> k;\n            std::cout << kthPrime(k) << std::endl;\n            return 0;\n         }\n      ",
-      "Java": "\n         import java.util.Scanner;\n\n         public class Main {\n            public static boolean isPrime(int num) {\n               if (num <= 1) return false;\n               for (int i = 2; i * i <= num; i++) {\n                  if (num % i == 0) return false;\n               }\n               return true;\n            }\n\n            public static int kthPrime(int k) {\n               int count = 0;\n               int num = 2;\n               while (true) {\n                  if (isPrime(num)) {\n                     count++;\n                     if (count == k) return num;\n                  }\n                  num++;\n               }\n            }\n\n            public static void main(String[] args) {\n               Scanner scanner = new Scanner(System.in);\n               int k = scanner.nextInt();\n               System.out.println(kthPrime(k));\n            }\n         }\n      ",
-      "Python3": "\n         def is_prime(num):\n            if num <= 1:\n               return False\n            for i in range(2, int(num ** 0.5) + 1):\n               if num % i == 0:\n                  return False\n            return True\n\n         def kth_prime(k):\n            count = 0\n            num = 2\n            while True:\n               if is_prime(num):\n                  count += 1\n                  if count == k:\n                     return num\n               num += 1\n\n         k = int(input())\n         print(kth_prime(k))\n      ",
-      "JavaScript": "\n         function isPrime(num) {\n            if (num <= 1) return false;\n            for (let i = 2; i * i <= num; i++) {\n               if (num % i == 0) return false;\n            }\n            return true;\n         }\n\n         function kthPrime(k) {\n            let count = 0;\n            let num = 2;\n            while (true) {\n               if (isPrime(num)) {\n                  count++;\n                  if (count == k) return num;\n               }\n               num++;\n            }\n         }\n\n         const readline = require('readline').createInterface({\n            input: process.stdin,\n            output: process.stdout\n         });\n\n         readline.question('', (k) => {\n            console.log(kthPrime(parseInt(k)));\n            readline.close();\n         });\n      "
+      "C": "#include <stdio.h>\n#include <math.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        long long N; scanf(\"%lld\",&N);\n        long long x = N-1;\n        long long cnt = 0;\n        long long i;\n        for(i=1;i*i<=x;++i){\n            if(x%i==0){\n                if(i*i==x) cnt+=1; else cnt+=2;\n            }\n        }\n        printf(\"%lld\\n\",cnt);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N; cin>>N;\n        long long x = N-1;\n        long long cnt = 0;\n        for(long long i=1;i*i<=x;++i){\n            if(x%i==0){\n                cnt += (i*i==x) ? 1 : 2;\n            }\n        }\n        cout<<cnt<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for(int t=0;t<T;++t){\n            long N = Long.parseLong(br.readLine().trim());\n            long x = N-1;\n            long cnt = 0;\n            for(long i=1;i*i<=x;++i){\n                if(x%i==0){\n                    cnt += (i*i==x) ? 1 : 2;\n                }\n            }\n            sb.append(cnt).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys,math\n\ndef count_divisors(x):\n    cnt=0\n    i=1\n    while i*i<=x:\n        if x%i==0:\n            cnt+=1 if i*i==x else 2\n        i+=1\n    return cnt\n\ndef main():\n    data=sys.stdin.read().strip().split()\n    if not data: return\n    it=iter(data)\n    T=int(next(it))\n    out=[]\n    for _ in range(T):\n        N=int(next(it))\n        out.append(str(count_divisors(N-1)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor(let t=0; t<T; ++t){\n  const N = BigInt(input[idx++]);\n  const x = N - 1n;\n  let cnt = 0n;\n  for(let i=1n; i*i<=x; ++i){\n    if(x % i === 0n){\n      cnt += (i*i===x) ? 1n : 2n;\n    }\n  }\n  results.push(cnt.toString());\n}\nconsole.log(results.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

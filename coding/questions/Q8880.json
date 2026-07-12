@@ -1,44 +1,52 @@
 {
   "questionId": "Q8880",
-  "title": "Infix to Prefix Conversion",
-  "slug": "infixtoprefixconversion",
+  "title": "Digit Sum Parities",
+  "slug": "digit-sum-parities",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Algorithms",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "infix to prefix conversion",
-      "stacks",
-      "Algorithms",
-      "algorithms"
+      "Digit Sum",
+      "Parity",
+      "Greedy",
+      "Number Theory"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Mathematics"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Given an infix expression, Your task is to convert the given infix expression to a prefix expression.",
+    "problemStatement": "For a positive integer MMM, MoEngage defines digitSum(M)\\texttt{digitSum(M)}digitSum(M) as the sum of digits of the number MMM (when written in decimal).\n\nFor example, digitSum(1023)=1+0+2+3=6\\texttt{digitSum(1023)} = 1 + 0 + 2 + 3 = 6digitSum(1023)=1+0+2+3=6.\n\nGiven a positive integer NNN, find the **smallest** integer XXX **strictly greater** than NNN such that:\n\n\ndigitSum(N)\\texttt{digitSum(N)}digitSum(N) and digitSum(X)\\texttt{digitSum(X)}digitSum(X) have different parity, i.e. one of them is odd and the other is even.\n\nInput Format\n\nThe first line contains an integer TTT, the number of test cases. The description of the TTT test cases follow.\nEach test case consists of a single line of input with a single integer, the number NNN.\n\n\nOutput Format\n\nFor each test case, print in a single line, an integer, the answer to the problem.",
     "constraints": [
-      "1 <= length of infix expression <= 100",
-      "The infix expression contains only alphanumeric characters and operators (+, -, *, /, ^)",
-      "The infix expression is valid and follows the standard order of operations"
+      "1 ≤ T ≤ 1000",
+      "1 ≤ N < 10^9"
     ],
-    "inputFormat": "A string representing the infix expression",
-    "outputFormat": "A string representing the prefix expression",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N (1 ≤ N < 10^9).",
+    "outputFormat": "For each test case output a single line with the smallest integer X strictly greater than N such that digitSum(N) and digitSum(X) have opposite parity.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "x + y * z / w + u",
-        "output": "++x/*yzwu",
-        "explanation": "The infix expression \"x + y * z / w + u\" is converted to prefix form as \"++x/*yzwu\" by applying the rules of infix to prefix conversion.\n\n**Example 2:**"
+        "input": "3\\n123\\n19\\n509",
+        "output": "124\\n21\\n511",
+        "explanation": "For 123 the trailing 9 count is 0 (even) → answer 124.\\nFor 19 the trailing 9 count is 1 (odd) → answer 21.\\nFor 509 the trailing 9 count is 0 (even) → answer 511."
       },
       {
         "id": "sample_2",
-        "input": "a + b",
-        "output": "+ab",
-        "explanation": "The infix expression \"a + b\" is converted to prefix form as \"+ab\".\n        \n    \n\n\n**Disclaimer**: It's highly recommend trying to solve it before looking at the solution."
+        "input": "2\\n1\\n999",
+        "output": "2\\n1001",
+        "explanation": "N=1 has no trailing 9 → answer 2.\\nN=999 has three trailing 9's (odd) → answer 1001."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1299",
+        "output": "1300",
+        "explanation": "1299 ends with two 9's (even) → answer 1300."
       }
     ]
   },
@@ -46,37 +54,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "a",
-        "expectedOutput": "a",
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "a+b*c-d/e^f",
-        "expectedOutput": "+a*bc-^def",
+        "label": "maximum boundary",
+        "input": "1\\n999999999",
+        "expectedOutput": "1000000001",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "a+a+a",
-        "expectedOutput": "++aaa",
+        "label": "edge case",
+        "input": "1\\n10",
+        "expectedOutput": "11",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case / empty-like / negative if allowed",
-        "input": "(a+b)*(c-d)",
-        "expectedOutput": "*+ab-cd",
+        "label": "general case 1",
+        "input": "1\\n12345",
+        "expectedOutput": "12346",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "x+y*z/w+u",
-        "expectedOutput": "++x/*yzwu",
+        "label": "general case 2",
+        "input": "1\\n1299",
+        "expectedOutput": "1300",
         "weight": 2
       }
     ],
@@ -106,15 +114,27 @@
     ]
   },
   "solution": {
-    "approach": "Use a stack to convert the infix expression to postfix, then reverse the postfix expression to get the prefix expression",
-    "timeComplexity": "O(n)",
-    "spaceComplexity": "O(n)",
+    "approach": "Let s(N) be the sum of digits of N. When we increase N by 1, the digit sum changes by Δ = 1 - 9·k, where k is the number of trailing 9's in N. Modulo 2, Δ ≡ 1 - k (because 9 ≡ 1 (mod 2)). Therefore the parity of the digit sum flips exactly when k is even (including k = 0). Consequently, the answer is:\n- If the count of trailing 9's in N is even, X = N + 1.\n- Otherwise (k odd) X = N + 2.\nThe algorithm runs in O(number of trailing 9's) ≤ O(log10 N) per test case, which is effectively O(1).",
+    "timeComplexity": "O(T * log10 N) ≈ O(T), because at most a few digit checks are needed per test case.",
+    "spaceComplexity": "O(1) additional space.",
     "code": {
-      "C": "#include <stdio.h>\n#include <string.h>\n\n// Function to return precedence of operators\nint getPriority(char C) {\n    if (C == '^')  // Exponent operator has highest precedence\n        return 3;\n    else if (C == '*' || C == '/')  // Multiplication and division have higher precedence than addition\n        return 2;\n    else if (C == '+' || C == '-')  // Addition and subtraction have lowest precedence\n        return 1;\n    return 0;\n}\n\n// Function to convert infix expression to postfix expression\nchar* infixToPostfix(char* infix) {\n    int l = strlen(infix);\n    char* postfix = (char*)malloc((l + 1) * sizeof(char));\n    char* stack = (char*)malloc((l + 1) * sizeof(char));\n    int top = -1;\n\n    for (int i = 0; i < l; i++) {\n        char c = infix[i];\n\n        // If the scanned character is an operand, add it to output\n        if (isalnum(c)) {\n            postfix[i] = c;\n        }\n        // If the scanned character is \u2018(\u2019, push it to the stack\n        else if (c == '(') {\n            stack[++top] = c;\n        }\n        // If the scanned character is \u2018)\u2019, pop from stack until an \u2018(\u2018 is encountered\n        else if (c == ')') {\n            while (stack[top] != '(') {\n                postfix[i] = stack[top--];\n            }\n            top--;\n        }\n        // If an operator is found\n        else {\n            while (top != -1 && getPriority(c) <= getPriority(stack[top])) {\n                postfix[i] = stack[top--];\n            }\n            stack[++top] = c;\n        }\n    }\n\n    // Pop all remaining elements from the stack\n    while (top != -1) {\n        postfix[l] = stack[top--];\n        l++;\n    }\n    postfix[l] = '\\0';\n    return postfix;\n}\n\n// Function to convert infix expression to prefix expression\nchar* infixToPrefix(char* infix) {\n    int l = strlen(infix);\n    char* prefix = (char*)malloc((l + 1) * sizeof(char));\n\n    // Reverse the infix expression\n    for (int i = 0; i < l; i++) {\n        prefix[i] = infix[l - i - 1];\n    }\n\n    // Replace '(' with ')' and vice versa\n    for (int i = 0; i < l; i++) {\n        if (prefix[i] == '(') {\n            prefix[i] = ')';\n        } else if (prefix[i] == ')') {\n            prefix[i] = '(';\n        }\n    }\n\n    // Get the postfix of the modified string\n    char* postfix = infixToPostfix(prefix);\n\n    // Reverse the postfix to get the prefix\n    for (int i = 0; i < l; i++) {\n        prefix[i] = postfix[l - i - 1];\n    }\n    prefix[l] = '\\0';\n    return prefix;\n}\n\nint main() {\n    char exp[] = \"(p+q)*(c-d)\";  // Infix expression\n    printf(\"Infix expression: %s\\n\", exp);\n    printf(\"Prefix Expression: %s\\n\", infixToPrefix(exp));  // Output the prefix expression\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Function to check if a character is an operator\nbool isOperator(char c) {\n    return (!isalpha(c) && !isdigit(c));  // If the character is neither alphabetic nor numeric, it's an operator\n}\n\n// Function to return the precedence of operators\nint getPriority(char C) {\n    if (C == '-' || C == '+')  // Addition and subtraction have lowest precedence\n        return 1;\n    else if (C == '*' || C == '/')  // Multiplication and division have higher precedence\n        return 2;\n    else if (C == '^')  // Exponent operator has highest precedence\n        return 3;\n    return 0;\n}\n\n// Function to convert infix expression to postfix expression\nstring infixToPostfix(string infix) {\n    infix = '(' + infix + ')';  // Add parentheses to handle edge cases\n    int l = infix.size();\n    stack<char> char_stack;  // Stack to store operators\n    string output;  // String to store the resulting postfix expression\n\n    for (int i = 0; i < l; i++) {\n\n        // If the scanned character is an operand, add it to output\n        if (isalpha(infix[i]) || isdigit(infix[i]))\n            output += infix[i];\n\n        // If the scanned character is \u2018(\u2019, push it to the stack\n        else if (infix[i] == '(')\n            char_stack.push('(');\n\n        // If the scanned character is \u2018)\u2019, pop and output from the stack until an \u2018(\u2018 is encountered\n        else if (infix[i] == ')') {\n            while (char_stack.top() != '(') {\n                output += char_stack.top();\n                char_stack.pop();\n            }\n            char_stack.pop();  // Remove '(' from the stack\n        }\n\n        // If an operator is found\n        else {\n            if (isOperator(char_stack.top())) {\n                if (infix[i] == '^') {\n                    while (getPriority(infix[i]) <= getPriority(char_stack.top())) {\n                        output += char_stack.top();\n                        char_stack.pop();\n                    }\n                } else {\n                    while (getPriority(infix[i]) < getPriority(char_stack.top())) {\n                        output += char_stack.top();\n                        char_stack.pop();\n                    }\n                }\n                // Push current operator on stack\n                char_stack.push(infix[i]);\n            }\n        }\n    }\n    \n    // Pop all remaining elements from the stack\n    while (!char_stack.empty()) {\n        output += char_stack.top();\n        char_stack.pop();\n    }\n    return output;  // Return the postfix expression\n}\n\n// Function to convert infix expression to prefix expression\nstring infixToPrefix(string infix) {\n    int l = infix.size();\n\n    // Reverse the infix expression\n    reverse(infix.begin(), infix.end());\n\n    // Replace '(' with ')' and vice versa\n    for (int i = 0; i < l; i++) {\n        if (infix[i] == '(') {\n            infix[i] = ')';\n            i++;\n        } else if (infix[i] == ')') {\n            infix[i] = '(';\n            i++;\n        }\n    }\n\n    string prefix = infixToPostfix(infix);  // Convert the modified infix to postfix\n\n    // Reverse the postfix expression to get the prefix\n    reverse(prefix.begin(), prefix.end());\n\n    return prefix;  // Return the prefix expression\n}\n\nint main() {\n    string s = \"(p+q)*(c-d)\";  // Infix expression\n    cout << \"Infix expression: \" << s << endl;\n    cout << \"Prefix Expression: \" << infixToPrefix(s) << endl;  // Output the prefix expression\n    return 0;\n}",
-      "Java": "class Solution {\n\n    // Function to return precedence of operators\n    public static int getPriority(char C) {\n        if (C == '^')  // Exponent operator has highest precedence\n            return 3;\n        else if (C == '*' || C == '/')  // Multiplication and division have higher precedence than addition\n            return 2;\n        else if (C == '+' || C == '-')  // Addition and subtraction have lowest precedence\n            return 1;\n        return 0;\n    }\n\n    // Function to convert infix expression to postfix expression\n    public static String infixToPostfix(String infix) {\n        infix = '(' + infix + ')';  // Add parentheses to handle edge cases\n        int l = infix.length();\n        Stack<Character> stack = new Stack<>();  // Stack to store operators\n        StringBuilder result = new StringBuilder();  // StringBuilder to store the resulting postfix expression\n\n        for (int i = 0; i < l; i++) {\n            char c = infix.charAt(i);\n\n            // If the scanned character is an operand, add it to output\n            if (Character.isLetterOrDigit(c))\n                result.append(c);\n\n            // If the scanned character is \u2018(\u2019, push it to the stack\n            else if (c == '(')\n                stack.push('(');\n\n            // If the scanned character is \u2018)\u2019, pop and output from the stack until an \u2018(\u2018 is encountered\n            else if (c == ')') {\n                while (stack.peek() != '(') {\n                    result.append(stack.pop());\n                }\n                stack.pop();  // Remove '(' from the stack\n            }\n\n            // If an operator is found\n            else {\n                while (!stack.isEmpty() && getPriority(c) <= getPriority(stack.peek())) {\n                    result.append(stack.pop());\n                }\n                stack.push(c);  // Push current operator on stack\n            }\n        }\n\n        // Pop all remaining elements from the stack\n        while (!stack.isEmpty()) {\n            result.append(stack.pop());\n        }\n        return result.toString();  // Return the postfix expression\n    }\n\n    // Function to convert infix expression to prefix expression\n    public static String infixToPrefix(String infix) {\n        StringBuilder sb = new StringBuilder(infix);\n\n        // Reverse the infix expression\n        sb.reverse();\n\n        // Replace '(' with ')' and vice versa\n        for (int i = 0; i < sb.length(); i++) {\n            if (sb.charAt(i) == '(')\n                sb.setCharAt(i, ')');\n            else if (sb.charAt(i) == ')')\n                sb.setCharAt(i, '(');\n        }\n\n        // Get the postfix of the modified string\n        String prefix = infixToPostfix(sb.toString());\n\n        // Reverse the postfix to get the prefix\n        return new StringBuilder(prefix).reverse().toString();  // Return the prefix expression\n    }\n}\n\npublic class Main {\n\n    public static void main(String[] args) {\n        String exp = \"(p+q)*(c-d)\";  // Infix expression\n        System.out.println(\"Infix expression: \" + exp);\n        System.out.println(\"Prefix Expression: \" + Solution.infixToPrefix(exp));  // Output the prefix expression\n    }\n}",
-      "Python3": "# Function to return precedence of operators\ndef getPriority(C):\n    if C == '^':  # Exponent operator has highest precedence\n        return 3\n    elif C == '*' or C == '/':  # Multiplication and division have higher precedence than addition\n        return 2\n    elif C == '+' or C == '-':  # Addition and subtraction have lowest precedence\n        return 1\n    return 0\n\n# Function to convert infix expression to postfix expression\ndef infixToPostfix(infix):\n    infix = '(' + infix + ')'  # Add parentheses to handle edge cases\n    stack = []  # Stack to store operators\n    result = \"\"  # String to store the resulting postfix expression\n\n    for c in infix:\n        # If the scanned character is an operand, add it to output\n        if c.isalnum():\n            result += c\n\n        # If the scanned character is \u2018(\u2019, push it to the stack\n        elif c == '(':\n            stack.append('(')\n\n        # If the scanned character is \u2018)\u2019, pop from stack until an \u2018(\u2018 is encountered\n        elif c == ')':\n            while stack and stack[-1] != '(':\n                result += stack.pop()\n            stack.pop()  # Remove '(' from the stack\n\n        # If an operator is found\n        else:\n            while stack and getPriority(c) <= getPriority(stack[-1]):\n                result += stack.pop()\n            stack.append(c)  # Push current operator on stack\n\n    # Pop all remaining elements from the stack\n    while stack:\n        result += stack.pop()\n\n    return result  # Return the postfix expression\n\n# Function to convert infix expression to prefix expression\ndef infixToPrefix(infix):\n    infix = infix[::-1]  # Reverse the infix expression\n\n    # Replace '(' with ')' and vice versa\n    infix = infix.replace('(', 'temp').replace(')', '(').replace('temp', ')')\n\n    # Get the postfix of the modified string\n    prefix = infixToPostfix(infix)\n\n    # Reverse the postfix to get the prefix\n    return prefix[::-1]  # Return the prefix expression\n\n# Driver code\nif __name__ == \"__main__\":\n    exp = \"(p+q)*(c-d)\"  # Infix expression\n    print(f\"Infix expression: {exp}\")\n    print(f\"Prefix Expression: {infixToPrefix(exp)}\")  # Output the prefix expression",
-      "JavaScript": "// Function to return precedence of operators\nfunction getPriority(C) {\n    if (C === '^')  // Exponent operator has highest precedence\n        return 3;\n    else if (C === '*' || C === '/')  // Multiplication and division have higher precedence than addition\n        return 2;\n    else if (C === '+' || C === '-')  // Addition and subtraction have lowest precedence\n        return 1;\n    return 0;\n}\n\n// Function to convert infix expression to postfix expression\nfunction infixToPostfix(infix) {\n    infix = '(' + infix + ')';  // Add parentheses to handle edge cases\n    let stack = [];  // Stack to store operators\n    let result = \"\";  // String to hold the resulting postfix expression\n\n    for (let c of infix) {\n        // If the scanned character is an operand, add it to output\n        if (/[a-zA-Z0-9]/.test(c)) {\n            result += c;\n        }\n        // If the scanned character is \u2018(\u2019, push it to the stack\n        else if (c === '(') {\n            stack.push('(');\n        }\n        // If the scanned character is \u2018)\u2019, pop from stack until an \u2018(\u2018 is encountered\n        else if (c === ')') {\n            while (stack.length > 0 && stack[stack.length - 1] !== '(') {\n                result += stack.pop();\n            }\n            stack.pop();  // Remove '(' from the stack\n        }\n        // If an operator is found\n        else {\n            while (stack.length > 0 && getPriority(c) <= getPriority(stack[stack.length - 1])) {\n                result += stack.pop();\n            }\n            stack.push(c);  // Push current operator on stack\n        }\n    }\n\n    // Pop all remaining elements from the stack\n    while (stack.length > 0) {\n        result += stack.pop();\n    }\n\n    return result;  // Return the postfix expression\n}\n\n// Function to convert infix expression to prefix expression\nfunction infixToPrefix(infix) {\n    // Reverse the infix expression\n    infix = infix.split('').reverse().join('');\n\n    // Replace '(' with ')' and vice versa\n    infix = infix.replace(/\\(/g, 'temp').replace(/\\)/g, '(').replace(/temp/g, ')');\n\n    // Get the postfix of the modified string\n    let prefix = infixToPostfix(infix);\n\n    // Reverse the postfix to get the prefix\n    return prefix.split('').reverse().join('');  // Return the prefix expression\n}\n\n// Main function to handle input and output\nfunction main() {\n    let exp = \"(p+q)*(c-d)\";  // Infix expression\n    console.log(`Infix expression: ${exp}`);\n    console.log(`Prefix Expression: ${infixToPrefix(exp)}`);  // Output the prefix expression\n}\n\n// Call the main function\nmain();"
+      "C": "#include <stdio.h>\n#include <stdint.h>\n\nstatic int trailing_nines(int64_t n) {\n    int cnt = 0;\n    while (n % 10 == 9) {\n        cnt++;\n        n /= 10;\n    }\n    return cnt;\n}\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int64_t N;\n        scanf(\"%lld\", &N);\n        int k = trailing_nines(N);\n        int64_t ans = (k % 2 == 0) ? N + 1 : N + 2;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long N; cin>>N;\n        long long tmp=N; int cnt=0;\n        while(tmp%10==9){cnt++; tmp/=10;}\n        long long ans = (cnt%2==0) ? N+1 : N+2;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int t = 0; t < T; t++) {\n            long N = Long.parseLong(br.readLine().trim());\n            long tmp = N;\n            int cnt = 0;\n            while (tmp % 10 == 9) {\n                cnt++;\n                tmp /= 10;\n            }\n            long ans = (cnt % 2 == 0) ? N + 1 : N + 2;\n            out.append(ans).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        cnt = 0\n        tmp = N\n        while tmp % 10 == 9:\n            cnt += 1\n            tmp //= 10\n        ans = N + 1 if cnt % 2 == 0 else N + 2\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  let N = Number(input[idx++]);\n  let cnt = 0;\n  let tmp = N;\n  while (tmp % 10 === 9) {\n    cnt++;\n    tmp = Math.floor(tmp / 10);\n  }\n  const ans = (cnt % 2 === 0) ? N + 1 : N + 2;\n  results.push(String(ans));\n}\nconsole.log(results.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

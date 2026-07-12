@@ -1,45 +1,41 @@
 {
   "questionId": "Q5289",
-  "title": "Longest Spanning Substrings",
-  "slug": "longest-spanning-substrings",
+  "title": "Buying Land",
+  "slug": "buying-land",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings",
+    "category": "Arrays | Geometry | Sliding Window | Convolution | Prefix Sums",
     "difficulty": "Hard",
-    "isPremium": false,
+    "isPremium": true,
     "tags": [
-      "Kruskal",
-      "Union\u2011Find",
-      "Longest Common Substring",
-      "Strings",
-      "Suffix Automaton",
-      "Maximum Spanning Tree"
+      "2D Convolution",
+      "FFT",
+      "Prefix Sum",
+      "Sliding Window",
+      "Correlation"
     ],
     "companyTags": [],
     "topicTags": [
-      "Strings"
-    ]
+      "Divide & Conquer"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given NNN strings S1,S2,\u2026,SNS_1, S_2, \\ldots, S_NS1\u200b,S2\u200b,\u2026,SN\u200b. Consider a complete undirected graph with NNN vertices (numbered 111 through NNN), in which the weight of an edge between vertices uuu and vvv is equal to the length of the longest common substring of SuS_uSu\u200b and SvS_vSv\u200b.\n\nFind the maximum possible weight of a spanning tree of this graph.\n\n\nInput Format\n\nThe first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains a single integer NNN.\nNNN lines follow. For each valid iii, the iii-th of these lines contains a single string SiS_iSi\u200b.\n\n\nOutput Format\nFor each test case, print a single line containing one integer --- the maximum weight of a spanning tree.",
+    "problemStatement": "After recent success of cooking reality shows, Chef decided to borrow the idea and host his own \"Devil's Kitchen\" show. But his ambitions are even bigger. He plans to build a whole complex of hotels, gyms and other entertainment facilities along with one main restaurant where he'll host the show. But first of all, he needs to purhase some land to build on. The country is divided into a grid with R rows and C columns of smaller parcels. Chef wants to buy a rectangular piece of land H parcels high and W parcels wide. He also has a preferred layout in mind. The restaurant will be located at (i,j). For every parcel he defined its preferred height relative to the height of the restaurant parcel. For a particular piece of land, he computes height differences relative to the restaurant and compares them to the preferred layout. This comparison is done as a sum of squared differences over all H*W parcels. Given the map of the country, help him out by finding the K most suitable pieces of land.",
     "constraints": [
-      "1 \u2264 T \u2264 100",
-      "1 \u2264 N \u2264 1000",
-      "1 \u2264 |Si| \u2264 100 (the hidden test cases respect the limit of 100 characters per string)",
-      "The sum of lengths of all strings over all test cases does not exceed 5\u00b710^5."
+      "1 ≤ T ≤ 10",
+      "1 ≤ R, C ≤ 666",
+      "1 ≤ H ≤ (R+1)/2",
+      "1 ≤ W ≤ (C+1)/2",
+      "|height| ≤ 30",
+      "The restaurant cell inside the layout always contains 0",
+      "1 ≤ K ≤ 1000 and at least K placements exist"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N \u2013 the number of strings. Then N lines follow, each line containing a non\u2011empty string Si consisting of lowercase English letters.",
-    "outputFormat": "For each test case output a single line with one integer \u2013 the maximum possible total weight of a spanning tree of the complete graph defined in the statement.",
-    "sampleTestCases": [
-      {
-        "id": "sample_1",
-        "input": "3\n3\nbbcab\naa\naab\n3\nbbc\nbcaa\nabb\n3\naa\nacc\nabbca",
-        "output": "4\n4\n2",
-        "explanation": "Explanation:\nExample case 1: The strings S2,S3S_2, S_3S2\u200b,S3\u200b have a longest common substring with length 222, and the strings S1,S3S_1, S_3S1\u200b,S3\u200b have a longest common substring with length 222. The spanning tree which contains the edges (2,3)(2,3)(2,3) and (1,3)(1,3)(1,3) has the maximum weight 444."
-      }
-    ]
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n1. Two integers R and C (1 ≤ R, C ≤ 666) – dimensions of the country map.\n2. R lines follow, each with C integers – the heights of the parcels (|height| ≤ 30).\n3. Two integers H and W (1 ≤ H ≤ (R+1)/2, 1 ≤ W ≤ (C+1)/2) – dimensions of the preferred layout.\n4. H lines follow, each with W integers – the preferred height differences. The value at the restaurant position is always 0.\n5. Two integers i and j (1‑based, 1 ≤ i ≤ H, 1 ≤ j ≤ W) – the restaurant’s coordinates inside the layout.\n6. An integer K (1 ≤ K ≤ 1000) – the number of best positions to output. It is guaranteed that at least K different placements exist.\nAll numbers are separated by whitespace.",
+    "outputFormat": "For each test case output exactly K lines. Each line contains three integers BR, BC, S separated by a single space, where (BR,BC) is the 1‑based upper‑left corner of a feasible H×W rectangle and S is its score (the sum of squared differences). Lines must be ordered by increasing S; ties are broken by smaller BR, then smaller BC.",
+    "sampleTestCases": []
   },
   "testCases": {
     "hidden": [
@@ -105,12 +101,23 @@
     ]
   },
   "solution": {
-    "approach": "For every pair of strings (i, j) we need the length of their longest common substring (LCS).  The classic way to obtain LCS in linear time is to build a Suffix Automaton (SAM) for one string and then walk through the second string, keeping the length of the current match.  While walking we follow SAM transitions; if a transition does not exist we follow suffix links until it does or we reach the root.  The maximum length reached during the walk is the LCS length.\n\nAlgorithm per test case:\n1. Build a SAM for each string Si (O(|Si|) time, O(|Si|) memory).\n2. For every unordered pair (i, j) compute LCS(i, j) by traversing the SAM of the longer string with the characters of the shorter one (O(min(|Si|,|Sj|)) time).  Store the edge (i, j, weight).\n3. Run Kruskal\u2019s algorithm on the complete graph with these edges, sorting them in **decreasing** order of weight.  Using a Union\u2011Find (Disjoint Set Union) structure we add an edge if its ends belong to different components.  After adding N\u20111 edges we have a maximum\u2011weight spanning tree.\n4. The answer is the sum of the weights of the selected edges.\n\nCorrectness Sketch:\n* Lemma 1 \u2013 The weight of an edge is exactly the length of the longest common substring of its two endpoint strings.  This follows from the definition of the SAM walk.\n* Lemma 2 \u2013 Kruskal\u2019s algorithm, when edges are processed in non\u2011increasing order, yields a spanning tree of maximum total weight for any undirected weighted graph.\n* By Lemma\u202f1 the graph we construct has the correct edge weights.  Applying Lemma\u202f2 therefore gives a spanning tree whose total weight is maximal among all spanning trees of the original graph.  Hence the algorithm returns the required answer.\n\nComplexity Analysis:\n* Building all SAMs: \u03a3|Si| = L \u2192 O(L) time and O(L) memory.\n* Pairwise LCS computation: \u03a3_{i<j} O(min(|Si|,|Sj|)) \u2264 O(N\u00b7L).  With the given limits this fits easily.\n* Sorting the O(N\u00b2) edges: O(N\u00b2 log N) \u2264 about 10\u2076\u00b7log\u202f10\u00b3, well within limits.\n* Kruskal with DSU: O(N\u00b2 \u03b1(N)) \u2248 O(N\u00b2).\nOverall per test case: **Time\u202f=\u202fO(N\u00b7L + N\u00b2 log N)**, **Space\u202f=\u202fO(L + N\u00b2)** (the edge list dominates the extra space).\n\nThe implementation below follows exactly this plan and is provided in five popular languages.",
-    "timeComplexity": "O(N\u00b7L + N\u00b2 log N) per test case, where L = total length of all strings in the test case.",
-    "spaceComplexity": "O(L + N\u00b2) \u2013 SAMs use O(L) memory, the list of all edges uses O(N\u00b2).",
+    "approach": "For a placement with upper‑left corner (r,c) let b be the height of the restaurant cell (grid[r+i‑1][c+j‑1]). The score is\nS = Σ ( (a – b – p)² ) over all cells of the layout,\nwhere a is the height of the current parcel and p is the preferred difference.\nExpanding the square gives\nS = Σ a² + (H·W)·b² + Σ p² – 2·b·Σ a – 2·Σ (a·p) + 2·b·Σ p.\nAll terms except Σ (a·p) can be obtained in O(1) with 2‑D prefix sums of the grid, of the grid squares and with the constant sums of the layout (Σ p, Σ p²). The term Σ (a·p) is a 2‑D correlation between the grid and the layout. It can be computed for all placements at once using a 2‑D Fast Fourier Transform (FFT):\n1. Build matrix A of size R×C with the grid values.\n2. Build matrix B of size H×W with the layout values, reverse both dimensions (so correlation becomes convolution).\n3. Pad both matrices to the next power‑of‑two size (R+H, C+W) and run a 2‑D FFT on each.\n4. Multiply point‑wise, inverse‑FFT, and round to the nearest integer – the result at position (r+H‑1, c+W‑1) equals Σ a·p for the placement (r,c).\nAfter obtaining S for every feasible placement we keep the K smallest using a min‑heap or simply sort the list (the number of placements is at most (R‑H+1)*(C‑W+1) ≤ 110 k, easily sortable). Finally we output the K best placements respecting the required tie‑break order.\nThe overall complexity is O(N² log N) where N is the next power of two ≥ max(R+H, C+W) (≤ 2048). Memory consumption is O(N²).",
+    "timeComplexity": "O(N² log N) per test case, where N = next power of two ≥ max(R+H, C+W) (≤ 2048). Sorting the at most 110 k placements adds O(P log P) with P ≤ 110 k, negligible compared to the FFT.",
+    "spaceComplexity": "O(N²) for the padded matrices and FFT buffers (≤ 2048² ≈ 4 M complex numbers).",
     "code": {
-      "C": "// C solution (uses naive DP for LCS \u2013 acceptable for the given limits)\n#include <bits/stdc++.h>\nusing namespace std;\nint lcs_len(const string &a, const string &b){\n    int n=a.size(), m=b.size();\n    vector<int> dp(m+1,0), ndp(m+1,0);\n    int best=0;\n    for(int i=1;i<=n;i++){\n        for(int j=1;j<=m;j++){\n            if(a[i-1]==b[j-1]) ndp[j]=dp[j-1]+1;\n            else ndp[j]=0;\n            best=max(best, ndp[j]);\n        }\n        swap(dp, ndp);\n    }\n    return best;\n}\nstruct DSU{vector<int> p, r;DSU(int n):p(n),r(n,0){iota(p.begin(),p.end(),0);}int find(int x){return p[x]==x?x:p[x]=find(p[x]);}bool unite(int a,int b){a=find(a);b=find(b);if(a==b) return false; if(r[a]<r[b]) swap(a,b); p[b]=a; if(r[a]==r[b]) r[a]++; return true;}};\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0; while(T--){int N;cin>>N;vector<string> s(N);for(int i=0;i<N;i++)cin>>s[i];\n        struct Edge{int u,v,w;};\n        vector<Edge> edges; edges.reserve(N*(N-1)/2);\n        for(int i=0;i<N;i++) for(int j=i+1;j<N;j++) edges.push_back({i,j,lcs_len(s[i],s[j])});\n        sort(edges.begin(), edges.end(), [](const Edge&a,const Edge&b){return a.w>b.w;});\n        DSU dsu(N); long long ans=0; int taken=0;\n        for(const auto &e:edges){if(dsu.unite(e.u,e.v)){ans+=e.w; if(++taken==N-1) break;}}\n        cout<<ans<<\"\\n\";\n    }\n    return 0; }\n",
-      "C++": ""
+      "C": ""
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

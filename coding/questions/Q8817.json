@@ -1,69 +1,83 @@
 {
   "questionId": "Q8817",
-  "title": "Minimum multiplications to reach end",
-  "slug": "minimummultiplicationstoreachend",
+  "title": "Bath in Winters",
+  "slug": "bath-in-winters",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Multiplication",
-      "Graphs",
-      "BFS",
-      "Modulo"
+      "Integer Division",
+      "Simple Arithmetic"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Given start, end, and an array arr of n numbers. At each step, the start is multiplied by any number in the array and then a mod operation with 100000 is done to get the new start.\nYour task is to find the minimum steps in which the end can be achieved starting from the start. If it is not possible to reach the end, then return -1.",
+    "problemStatement": "A geyser has a capacity of XXX litres of water and a bucket has a capacity of YYY litres of water.\n\nOne person requires **exactly** 222 buckets of water to take a bath. Find the **maximum** number of people that can take bath using water from **one completely filled** geyser..\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains a single line of input, two integers X,YX, YX,Y.\n\n\nOutput Format\nFor each test case, output the **maximum** number of people that can take bath.",
     "constraints": [
-      "1 <= start, end <= 10^5",
-      "1 <= arr.length <= 10",
-      "1 <= arr[i] <= 10^5"
+      "1 <= T <= 1000",
+      "1 <= X <= 10^9",
+      "1 <= Y <= 10^9"
     ],
-    "inputFormat": "The input will contain three parameters: an array of integers, a start integer, and an end integer.",
-    "outputFormat": "The output will be the minimum number of multiplications required to reach the end integer from the start integer. If it's not possible to reach the end integer, the output will be -1.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and Y, where X is the capacity of the geyser in litres and Y is the capacity of one bucket in litres.",
+    "outputFormat": "For each test case output a single integer on its own line – the maximum number of people that can take a bath using water from one completely filled geyser.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "4\n10 6\n25 1\n100 10\n30 40",
+        "output": "0\n12\n5\n0",
+        "explanation": "Each person needs 2 buckets.\\nTest case 1: need = 2*6 = 12 > 10 → 0 people.\\nTest case 2: need = 2*1 = 2, 25/2 = 12 (integer part) → 12 people.\\nTest case 3: need = 2*10 = 20, 100/20 = 5 → 5 people.\\nTest case 4: need = 2*40 = 80 > 30 → 0 people."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\n7 3\n12345 67",
+        "output": "1\n92",
+        "explanation": "Test case 1: need = 2*3 = 6, 7/6 = 1.\\nTest case 2: need = 2*67 = 134, 12345/134 = 92."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "[[2], 1, 2]",
-        "expectedOutput": "1",
+        "label": "minimum boundary",
+        "input": "1\n1 1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "[[2, 3, 4, 5, 6, 7, 8, 9, 10], 1, 100000]",
-        "expectedOutput": "-1",
+        "label": "maximum boundary",
+        "input": "1\n1000000000 1",
+        "expectedOutput": "500000000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform case",
-        "input": "[[2, 2, 2], 2, 8]",
+        "label": "exact division edge",
+        "input": "1\n100 25",
         "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case",
-        "input": "[[1], 1, 1]",
-        "expectedOutput": "0",
+        "label": "general case 1",
+        "input": "1\n12345 67",
+        "expectedOutput": "92",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed case",
-        "input": "[[2, 3, 5], 3, 30]",
-        "expectedOutput": "2",
+        "label": "general case 2",
+        "input": "1\n7 3",
+        "expectedOutput": "1",
         "weight": 2
       }
     ],
@@ -93,15 +107,27 @@
     ]
   },
   "solution": {
-    "approach": "Use a breadth-first search (BFS) algorithm to explore all possible multiplications from the start integer.",
-    "timeComplexity": "O(n * m * mod)",
-    "spaceComplexity": "O(mod)",
+    "approach": "Each person needs exactly two buckets of water, i.e., 2 * Y litres. From a geyser containing X litres we can serve floor(X / (2*Y)) people. The computation is O(1) per test case.",
+    "timeComplexity": "O(T) – constant work for each test case.",
+    "spaceComplexity": "O(1) – only a few variables are used.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <limits.h>\n\nint minMultiplications(int* arr, int arrSize, int start, int end) {\n    int mod = 100000;\n    int* dist = (int*)malloc(mod * sizeof(int));\n    for (int i = 0; i < mod; i++) {\n        dist[i] = INT_MAX;\n    }\n    dist[start] = 0;\n    int queue[mod];\n    int front = 0, rear = 0;\n    queue[rear++] = start;\n    while (front < rear) {\n        int node = queue[front++];\n        for (int i = 0; i < arrSize; i++) {\n            int num = (arr[i] * node) % mod;\n            if (dist[num] > dist[node] + 1) {\n                dist[num] = dist[node] + 1;\n                if (num == end) {\n                    free(dist);\n                    return dist[num];\n                }\n                queue[rear++] = num;\n            }\n        }\n    }\n    free(dist);\n    return -1;\n}\n\nint main() {\n    int arr[] = {2, 3, 5};\n    int start = 3, end = 30;\n    printf(\"%d\\n\", minMultiplications(arr, 3, start, end));\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution\n{\npublic:\n    int minimumMultiplications(vector<int> &arr,\n                               int start, int end)\n    {\n        // Create a queue for storing the numbers as a result of multiplication\n        // of the numbers in the array and the start number.\n        queue<pair<int, int>> q;\n        q.push({start, 0});\n\n        // Create a dist array to store the no. of multiplications to reach\n        // a particular number from the start number.\n        vector<int> dist(100000, 1e9);\n        dist[start] = 0;\n        int mod = 100000;\n\n        // Multiply the start no. with each of numbers in the arr\n        // until we get the end no.\n        while (!q.empty())\n        {\n            int node = q.front().first;\n            int steps = q.front().second;\n            q.pop();\n\n            for (auto it : arr)\n            {\n                int num = (it * node) % mod;\n\n                // If the no. of multiplications are less than before\n                // in order to reach a number, we update the dist array.\n                if (steps + 1 < dist[num])\n                {\n                    dist[num] = steps + 1;\n\n                    // Whenever we reach the end number\n                    // return the calculated steps\n                    if (num == end)\n                        return steps + 1;\n                    q.push({num, steps + 1});\n                }\n            }\n        }\n        // If the end no. is unattainable.\n        return -1;\n    }\n};\n\nint main()\n{\n    // Driver Code.\n    int start = 3, end = 30;\n\n    vector<int> arr = {2, 5, 7};\n\n    Solution obj;\n\n    int ans = obj.minimumMultiplications(arr, start, end);\n\n    cout << ans;\n    cout << endl;\n\n    return 0;\n}",
-      "Java": "import java.util.*; \n\nclass Solution {\n    public int minimumMultiplications(int[] arr, int start, int end) {\n        // Queue to store pairs of (number, steps)\n        Queue<int[]> q = new LinkedList<>();\n        q.offer(new int[]{start, 0});\n\n        // Distance array to store minimum multiplications needed to reach a number\n        int[] dist = new int[100000];\n        Arrays.fill(dist, (int)1e9);\n        dist[start] = 0;\n        int mod = 100000;\n\n        // BFS traversal\n        while (!q.isEmpty()) {\n            int[] current = q.poll();\n            int node = current[0];\n            int steps = current[1];\n\n            // Try multiplying node with each element in arr\n            for (int factor : arr) {\n                int num = (factor * node) % mod;\n\n                // If this path gives a lesser number of multiplications, update and enqueue\n                if (steps + 1 < dist[num]) {\n                    dist[num] = steps + 1;\n\n                    // If we reached the target, return the steps\n                    if (num == end) return steps + 1;\n\n                    q.offer(new int[]{num, steps + 1});\n                }\n            }\n        }\n        // Return -1 if the end number is unreachable\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int start = 3, end = 30;\n        int[] arr = {2, 5, 7};\n\n        Solution obj = new Solution();\n        int ans = obj.minimumMultiplications(arr, start, end);\n\n        System.out.println(ans);\n    }\n}",
-      "Python3": "from collections import deque\n\nclass Solution:\n    def minimumMultiplications(self, arr, start, end):\n        \"\"\"\n        Finds the minimum number of multiplications to transform start into end\n        using elements from arr under modulo 100000.\n        \"\"\"\n        # Queue to store (number, steps) pairs for BFS\n        q = deque()\n        q.append((start, 0))\n\n        # Distance list initialized with infinity-like value\n        dist = [int(1e9)] * 100000\n        dist[start] = 0\n        mod = 100000\n\n        while q:\n            node, steps = q.popleft()\n\n            # Try multiplying node with each element in arr\n            for factor in arr:\n                num = (factor * node) % mod\n\n                # If this path is better (fewer steps), update and enqueue\n                if steps + 1 < dist[num]:\n                    dist[num] = steps + 1\n\n                    # If we reached the target, return the number of steps\n                    if num == end:\n                        return steps + 1\n                    \n                    q.append((num, steps + 1))\n\n        # Return -1 if unreachable\n        return -1\n\n\n# Driver code\nif __name__ == \"__main__\":\n    start, end = 3, 30\n    arr = [2, 5, 7]\n    obj = Solution()\n    ans = obj.minimumMultiplications(arr, start, end)\n    print(ans)",
-      "JavaScript": "class Solution {\n    minimumMultiplications(arr, start, end) {\n        /**\n         * Finds the minimum number of multiplications to transform start into end\n         * using elements from arr under modulo 100000.\n         */\n        const mod = 100000;\n\n        // Distance array to track minimum steps for each number\n        const dist = new Array(mod).fill(1e9);\n        dist[start] = 0;\n\n        // Queue for BFS: each element is [number, steps]\n        const queue = [[start, 0]];\n\n        while (queue.length > 0) {\n            const [node, steps] = queue.shift();\n\n            // Multiply node with each element in arr\n            for (let factor of arr) {\n                const num = (factor * node) % mod;\n\n                // If this path is better (fewer steps), update and enqueue\n                if (steps + 1 < dist[num]) {\n                    dist[num] = steps + 1;\n\n                    // If we reached the target, return steps\n                    if (num === end) return steps + 1;\n\n                    queue.push([num, steps + 1]);\n                }\n            }\n        }\n        // If unreachable, return -1\n        return -1;\n    }\n}\n\n// Driver code\nconst start = 3, end = 30;\nconst arr = [2, 5, 7];\nconst obj = new Solution();\nconst ans = obj.minimumMultiplications(arr, start, end);\nconsole.log(ans);"
+      "C": "#include <stdio.h>\n#include <inttypes.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int64_t X, Y; scanf(\"%\" PRId64 \" %\" PRId64, &X, &Y);\n        int64_t per = 2 * Y;\n        int64_t ans = (per==0)?0: X / per;\n        printf(\"%\" PRId64 \"\\n\", ans);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long X, Y; cin>>X>>Y;\n        long long per = 2LL * Y;\n        long long ans = (per==0)?0: X / per;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            long X = Long.parseLong(st.nextToken());\n            long Y = Long.parseLong(st.nextToken());\n            long per = 2L * Y;\n            long ans = per == 0 ? 0 : X / per;\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        X = int(next(it))\n        Y = int(next(it))\n        per = 2 * Y\n        ans = X // per if per != 0 else 0\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; ++t) {\n  const X = BigInt(input[idx++]);\n  const Y = BigInt(input[idx++]);\n  const per = 2n * Y;\n  const ans = per === 0n ? 0n : X / per;\n  out.push(ans.toString());\n}\nconsole.log(out.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

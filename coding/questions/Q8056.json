@@ -1,37 +1,42 @@
 {
   "questionId": "Q8056",
-  "title": "Maximum Exponent of 2",
-  "slug": "maximum-exponent-of-2",
+  "title": "Minimum Popping",
+  "slug": "minimum-popping",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-02",
   "metadata": {
-    "category": "Math",
-    "difficulty": "Medium",
+    "category": "Arrays",
+    "difficulty": "Hard",
     "isPremium": true,
     "tags": [
-      "mathematics & number theory",
-      "competitive programming",
-      "Math"
+      "two pointers & sliding window",
+      "competitive programming"
     ],
     "companyTags": [],
     "topicTags": [
-      "Mathematics & Number Theory"
-    ]
+      "Two Pointers & Sliding Window"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given a range of integers defined by aaa and bbb. Your task is to find the number within this range that has the highest power of 222 as a factor.\n\nIf two or more numbers in the range share the same maximum exponent of 222, you must return the smallest of these numbers.\n\n\nInput Format\nA single line containing two space separated integers, aaa and bbb, representing the start and end of the range.\n\n\n\nOutput Format\nA single integer that is the number in the range [a,b][a, b][a,b] with the maximum exponent of 222.",
+    "problemStatement": "You are given a double-ended queue QQQ. Initially, it contains elements Q1,Q2,…,QMQ_1, Q_2, \\ldots, Q_MQ1​,Q2​,…,QM​ in this order. Each of these elements is an integer between 111 and NNN (inclusive) and each integer between 111 and NNN (inclusive) occurs in the queue at least once.\n\nWe want to pop some (possibly zero) elements from the front of the queue and some (not necessarily the same number, possibly zero) elements from the back. Among all the popped elements, each integer between 111 and NNN (inclusive) should appear at least once. Find the smallest possible total number of elements we need to pop.",
     "constraints": [
-      "1\u2264a,b\u22641091 \\leq a, b \\leq 10^91\u2264a,b\u2264109"
+      "1≤T≤101 \\leq T \\leq 101≤T≤10",
+      "1≤N≤1051 \\leq N \\leq 10^51≤N≤105",
+      "N≤M≤2⋅105N \\leq M \\leq 2 \\cdot 10^5N≤M≤2⋅105",
+      "for each iii (1≤i≤N1 \\le i \\le N1≤i≤N), there is at least one element equal to iii in the queue",
+      "the sum of NNN over all test cases does not exceed 10510^5105",
+      "the sum of MMM over all test cases does not exceed 2⋅1052 \\cdot 10^52⋅105"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "The first line of the input contains a single integer TTT denoting the number of test cases. The description of TTT test cases follows.\nThe first line of each test case contains two space-separated integers NNN and MMM.\nThe second line contains MMM space-separated integers Q1,Q2,…,QMQ_1, Q_2, \\ldots, Q_MQ1​,Q2​,…,QM​.",
+    "outputFormat": "For each test case, print a single line containing one integer — the minimum number of elements we need to pop.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "7 12",
-        "output": "8",
-        "explanation": "Explanation:\nThe exponents of 2 for each number in the range are:\n\n7: 0\n8: 3 (since 8 = 232^323)\n9: 0\n10: 1 (since 10 = 21\u221752^1 * 521\u22175)\n11: 0\n12: 2 (since 12 = 22\u221732^2 * 322\u22173)\nThe maximum exponent is 333, which belongs to the number 888."
+        "input": "3\n2 2\n1 2\n2 3\n1 2 1\n3 6\n1 1 1 3 2 2",
+        "output": "2\n2\n4",
+        "explanation": "Explanation:\nExample case 1: Since N=MN = MN=M and all elements are pairwise distinct, we have to pop everything to get each value at least once.\nExample case 2: We can pop the first 222 or the last 222 elements.\nExample case 3: We can pop the first element and the last 333 elements, so the answer is 1+3=41 + 3 = 41+3=4."
       }
     ]
   },
@@ -39,8 +44,8 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "7 12",
-        "expectedOutput": "8",
+        "input": "3\n2 2\n1 2\n2 3\n1 2 1\n3 6\n1 1 1 3 2 2",
+        "expectedOutput": "2\n2\n4",
         "weight": 100
       }
     ],
@@ -67,13 +72,20 @@
   },
   "solution": {
     "approach": "",
-    "timeComplexity": "",
-    "spaceComplexity": "",
-    "code": {
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n\n    int max_exp_so_far = -1;\n    int result_num = a;\n\n    for (int i = a; i <= b; ++i) {\n        if (i == 0) continue;\n\n        int current_num = i;\n        int current_exp = 0;\n        \n        while (current_num % 2 == 0) {\n            current_exp++;\n            current_num /= 2;\n        }\n\n        if (current_exp > max_exp_so_far) {\n            max_exp_so_far = current_exp;\n            result_num = i;\n        }\n    }\n    cout << result_num << \"\\n\";\n    return 0;\n}",
-      "Python3": "a, b = map(int, input().split())\n\nmax_exp_so_far = -1\nresult_num = a\n\nfor i in range(a, b + 1):\n    if i == 0:\n        continue\n\n    current_num = i\n    current_exp = 0\n\n    while current_num % 2 == 0:\n        current_exp += 1\n        current_num //= 2\n\n    if current_exp > max_exp_so_far:\n        max_exp_so_far = current_exp\n        result_num = i\n\nprint(result_num)",
-      "C": "#include <stdio.h>\n\nint main() {\n    int a, b;\n    scanf(\"%d %d\", &a, &b);\n\n    int max_exp_so_far = -1;\n    int result_num = a;\n\n    for (int i = a; i <= b; i++) {\n        if (i == 0) continue;\n\n        int current_num = i;\n        int current_exp = 0;\n\n        while (current_num % 2 == 0) {\n            current_exp++;\n            current_num /= 2;\n        }\n\n        if (current_exp > max_exp_so_far) {\n            max_exp_so_far = current_exp;\n            result_num = i;\n        }\n    }\n    printf(\"%d\\n\", result_num);\n    return 0;\n}",
-      "Java": "import java.util.*;\nimport java.lang.*;\nimport java.io.*;\n\nclass Codechef {\n    public static void main (String[] args) throws java.lang.Exception {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n\n        int maxExpSoFar = -1;\n        int resultNum = a;\n\n        for (int i = a; i <= b; i++) {\n            if (i == 0) continue;\n\n            int currentNum = i;\n            int currentExp = 0;\n\n            while (currentNum % 2 == 0) {\n                currentExp++;\n                currentNum /= 2;\n            }\n\n            if (currentExp > maxExpSoFar) {\n                maxExpSoFar = currentExp;\n                resultNum = i;\n            }\n        }\n        System.out.println(resultNum);\n    }\n}"
-    }
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)",
+    "code": {}
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

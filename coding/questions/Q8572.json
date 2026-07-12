@@ -1,69 +1,89 @@
 {
   "questionId": "Q8572",
-  "title": "Cycle Free Flow",
-  "slug": "D",
+  "title": "Palindromes Not Allowed",
+  "slug": "palindromes-not-allowed",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
-    "difficulty": "$undefined",
-    "isPremium": false,
+    "category": "Strings",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Graphs",
-      "Ford-Fulkerson Algorithm",
-      "Maximum Flow",
-      "Edmonds-Karp Algorithm"
+      "String construction",
+      "Palindromes",
+      "Greedy"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Constructive Algorithms"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Write a program for the coding challenge \"Cycle Free Flow\". Refer to LeetCode description: https://codeforces.com/gym/102694/problem/D",
+    "problemStatement": "It is JJ's birthday and you decide to gift him a string SSS (consisting of English alphabet only) of length NNN. But you also know that JJ does not like palindromes so you decide that none of the substrings of SSS of length ≥2\\ge 2≥2 should be a palindrome.\n\nCan you find any suitable string which can be gifted to JJ?\n\nRecall that a string is called palindrome if it reads the same backwards and forwards, for e.g. noon\\texttt{noon}noon and level\\texttt{level}level are palindromic strings.\n\n\nInput Format\n\nThe first line contains TTT - the number of test cases. Then the test cases follow.\nThe first and only line of each test case contains an integer NNN - the length of the string SSS to be constructed.\n\n\nOutput Format\nFor each test case, output a string SSS of length NNN such that none of its substrings (of length ≥2\\ge 2≥2) is a palindrome.\n\n\nIf there are multiple strings which satisfy the condition, print any.",
     "constraints": [
-      "1 <= n <= 100",
-      "1 <= m <= 1000",
-      "1 <= u, v <= n"
+      "1 <= T <= 100",
+      "1 <= N <= 1000"
     ],
-    "inputFormat": "The first line contains an integer n, the number of nodes in the graph. The next line contains an integer m, the number of edges in the graph. Then m lines follow, each containing two integers u and v, representing an edge between nodes u and v.",
-    "outputFormat": "The output should be the maximum flow in the given flow network.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer N, the required length of the string.",
+    "outputFormat": "For each test case output a string of length N consisting of lowercase English letters such that no substring of length ≥ 2 is a palindrome. Print each string on its own line.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n2\n2\n4",
+        "output": "ab\nab\nabca",
+        "explanation": "For N=2 the constructed string is the first two characters of \"abc...\", i.e., \"ab\". No substring of length ≥2 is a palindrome. For N=4 the string is \"abca\"; its substrings of length 2 are \"ab\", \"bc\", \"ca\" (none palindrome), length 3 are \"abc\", \"bca\" (none palindrome), length 4 is \"abca\" (not palindrome)."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n1",
+        "output": "a",
+        "explanation": "A single character string trivially satisfies the condition because there is no substring of length ≥2."
+      },
+      {
+        "id": "sample_3",
+        "input": "2\n5\n6",
+        "output": "abcab\nabcabc",
+        "explanation": "N=5 → \"abcab\"; N=6 → \"abcabc\". Both strings avoid palindromic substrings of length ≥2."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "2\n1\n1 2",
-        "expectedOutput": "1",
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "a",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "10\n9\n1 2\n1 3\n1 4\n1 5\n1 6\n1 7\n1 8\n1 9\n1 10",
-        "expectedOutput": "9",
+        "label": "small even length",
+        "input": "1\n2",
+        "expectedOutput": "ab",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "5\n4\n1 2\n2 3\n3 4\n4 5",
-        "expectedOutput": "1",
+        "label": "odd length",
+        "input": "1\n7",
+        "expectedOutput": "abcabca",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case/empty-like",
-        "input": "1\n0",
-        "expectedOutput": "0",
+        "label": "medium length",
+        "input": "1\n10",
+        "expectedOutput": "abcabcabca",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "6\n8\n1 2\n1 3\n2 3\n2 4\n3 4\n3 5\n4 5\n4 6",
-        "expectedOutput": "2",
+        "label": "multiple test cases",
+        "input": "3\n3\n8\n12",
+        "expectedOutput": "abc\nabcabcab\nabcabcabcabc",
         "weight": 2
       }
     ],
@@ -93,15 +113,27 @@
     ]
   },
   "solution": {
-    "approach": "Use the Edmonds-Karp algorithm to find the maximum flow in the given flow network.",
-    "timeComplexity": "O(VE^2)",
-    "spaceComplexity": "O(V + E)",
+    "approach": "Use three distinct characters, e.g., 'a', 'b', 'c', and repeat them cyclically. The resulting infinite string \"abcabc...\" has no equal adjacent characters, so no palindrome of length 2 can appear. Any palindrome of length 3 would need the pattern x y x, which never occurs in the cyclic order. Any longer palindrome necessarily contains a palindrome of length 2 or 3 as a sub‑substring, therefore the constructed prefix of length N satisfies the requirement. For each test case we output the first N characters of this pattern.\n\nAlgorithm:\n1. Read T.\n2. For each test case read N.\n3. Build a string by appending the character \"abc\"[i % 3] for i = 0 … N‑1.\n4. Print the string.\nThe algorithm is O(N) per test case and uses O(1) additional memory.",
+    "timeComplexity": "O(N) per test case, total O(Σ N) over all test cases.",
+    "spaceComplexity": "O(N) for the output string of each test case (output itself), otherwise O(1) auxiliary.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MAX 100\nint n, m, u, v, graph[MAX][MAX], parent[MAX];\nint bfs(int s, int t) {\n    int visited[MAX] = {0};\n    int queue[MAX], front = 0, rear = 0;\n    queue[rear++] = s;\n    visited[s] = 1;\n    while (front < rear) {\n        int u = queue[front++];\n        for (int v = 0; v < n; v++) {\n            if (!visited[v] && graph[u][v] > 0) {\n                queue[rear++] = v;\n                visited[v] = 1;\n                parent[v] = u;\n                if (v == t) return 1;\n            }\n        }\n    }\n    return 0;\n}\nint fordFulkerson(int s, int t) {\n    int max_flow = 0;\n    while (bfs(s, t)) {\n        int path_flow = 100000;\n        int u = t;\n        while (u != s) {\n            int v = parent[u];\n            path_flow = (path_flow < graph[v][u]) ? path_flow : graph[v][u];\n            u = v;\n        }\n        max_flow += path_flow;\n        u = t;\n        while (u != s) {\n            int v = parent[u];\n            graph[v][u] -= path_flow;\n            graph[u][v] += path_flow;\n            u = v;\n        }\n    }\n    return max_flow;\n}\nint main() {\n    scanf(\"%d %d\", &n, &m);\n    for (int i = 0; i < m; i++) {\n        scanf(\"%d %d\", &u, &v);\n        graph[u-1][v-1] = 1;\n    }\n    printf(\"%d\\n\", fordFulkerson(0, n-1));\n    return 0;\n}",
-      "C++": "#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n#define MAX 100\nint n, m, u, v, graph[MAX][MAX], parent[MAX];\nbool bfs(int s, int t) {\n    bool visited[MAX] = {false};\n    queue<int> q;\n    q.push(s);\n    visited[s] = true;\n    while (!q.empty()) {\n        int u = q.front(); q.pop();\n        for (int v = 0; v < n; v++) {\n            if (!visited[v] && graph[u][v] > 0) {\n                q.push(v);\n                visited[v] = true;\n                parent[v] = u;\n                if (v == t) return true;\n            }\n        }\n    }\n    return false;\n}\nint fordFulkerson(int s, int t) {\n    int max_flow = 0;\n    while (bfs(s, t)) {\n        int path_flow = 100000;\n        int u = t;\n        while (u != s) {\n            int v = parent[u];\n            path_flow = min(path_flow, graph[v][u]);\n            u = v;\n        }\n        max_flow += path_flow;\n        u = t;\n        while (u != s) {\n            int v = parent[u];\n            graph[v][u] -= path_flow;\n            graph[u][v] += path_flow;\n            u = v;\n        }\n    }\n    return max_flow;\n}\nint main() {\n    cin >> n >> m;\n    for (int i = 0; i < m; i++) {\n        cin >> u >> v;\n        graph[u-1][v-1] = 1;\n    }\n    cout << fordFulkerson(0, n-1) << endl;\n    return 0;\n}",
-      "Java": "import java.util.Queue;\nimport java.util.LinkedList;\npublic class Main {\n    static final int MAX = 100;\n    static int n, m, u, v;\n    static int[][] graph = new int[MAX][MAX];\n    static int[] parent = new int[MAX];\n    public static boolean bfs(int s, int t) {\n        boolean[] visited = new boolean[MAX];\n        Queue<Integer> q = new LinkedList<>();\n        q.add(s);\n        visited[s] = true;\n        while (!q.isEmpty()) {\n            int u = q.poll();\n            for (int v = 0; v < n; v++) {\n                if (!visited[v] && graph[u][v] > 0) {\n                    q.add(v);\n                    visited[v] = true;\n                    parent[v] = u;\n                    if (v == t) return true;\n                }\n            }\n        }\n        return false;\n    }\n    public static int fordFulkerson(int s, int t) {\n        int max_flow = 0;\n        while (bfs(s, t)) {\n            int path_flow = 100000;\n            int u = t;\n            while (u != s) {\n                int v = parent[u];\n                path_flow = Math.min(path_flow, graph[v][u]);\n                u = v;\n            }\n            max_flow += path_flow;\n            u = t;\n            while (u != s) {\n                int v = parent[u];\n                graph[v][u] -= path_flow;\n                graph[u][v] += path_flow;\n                u = v;\n            }\n        }\n        return max_flow;\n    }\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        n = sc.nextInt();\n        m = sc.nextInt();\n        for (int i = 0; i < m; i++) {\n            u = sc.nextInt();\n            v = sc.nextInt();\n            graph[u-1][v-1] = 1;\n        }\n        System.out.println(fordFulkerson(0, n-1));\n    }\n}",
-      "Python3": "from collections import deque\nMAX = 100\nn, m, u, v = 0, 0, 0, 0\ngraph = [[0]*MAX for _ in range(MAX)]\nparent = [0]*MAX\ndef bfs(s, t):\n    visited = [False]*MAX\n    q = deque()\n    q.append(s)\n    visited[s] = True\n    while q:\n        u = q.popleft()\n        for v in range(n):\n            if not visited[v] and graph[u][v] > 0:\n                q.append(v)\n                visited[v] = True\n                parent[v] = u\n                if v == t:\n                    return True\n    return False\ndef fordFulkerson(s, t):\n    max_flow = 0\n    while bfs(s, t):\n        path_flow = 100000\n        u = t\n        while u != s:\n            v = parent[u]\n            path_flow = min(path_flow, graph[v][u])\n            u = v\n        max_flow += path_flow\n        u = t\n        while u != s:\n            v = parent[u]\n            graph[v][u] -= path_flow\n            graph[u][v] += path_flow\n            u = v\n    return max_flow\nn, m = map(int, input().split())\nfor _ in range(m):\n    u, v = map(int, input().split())\n    graph[u-1][v-1] = 1\nprint(fordFulkerson(0, n-1))",
-      "JavaScript": "const readline = require('readline');\nconst rl = readline.createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nlet input = [];\nrl.on('line', function(line) {\n    input.push(line);\n}).on('close', function() {\n    let idx = 0;\n    let n, m, u, v;\n    [n, m] = input[idx++].split(' ').map(x => parseInt(x));\n    let graph = Array(n).fill(0).map(() => Array(n).fill(0));\n    let parent = Array(n).fill(0);\n    for (let i = 0; i < m; i++) {\n        [u, v] = input[idx++].split(' ').map(x => parseInt(x));\n        graph[u-1][v-1] = 1;\n    }\n    function bfs(s, t) {\n        let visited = Array(n).fill(false);\n        let q = [];\n        q.push(s);\n        visited[s] = true;\n        while (q.length > 0) {\n            let u = q.shift();\n            for (let v = 0; v < n; v++) {\n                if (!visited[v] && graph[u][v] > 0) {\n                    q.push(v);\n                    visited[v] = true;\n                    parent[v] = u;\n                    if (v == t) return true;\n                }\n            }\n        }\n        return false;\n    }\n    function fordFulkerson(s, t) {\n        let max_flow = 0;\n        while (bfs(s, t)) {\n            let path_flow = 100000;\n            let u = t;\n            while (u != s) {\n                let v = parent[u];\n                path_flow = Math.min(path_flow, graph[v][u]);\n                u = v;\n            }\n            max_flow += path_flow;\n            u = t;\n            while (u != s) {\n                let v = parent[u];\n                graph[v][u] -= path_flow;\n                graph[u][v] += path_flow;\n                u = v;\n            }\n        }\n        return max_flow;\n    }\n    console.log(fordFulkerson(0, n-1));\n});"
+      "C": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    int T; \n    if (scanf(\"%d\", &T) != 1) return 0;\n    const char pattern[4] = \"abc\"; // null‑terminated\n    while (T--) {\n        int N; scanf(\"%d\", &N);\n        char *s = (char*)malloc(N + 1);\n        for (int i = 0; i < N; ++i) s[i] = pattern[i % 3];\n        s[N] = '\\0';\n        printf(\"%s\\n\", s);\n        free(s);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    const string pat = \"abc\";\n    while(T--) {\n        int N; cin>>N;\n        string ans; ans.reserve(N);\n        for(int i=0;i<N;++i) ans.push_back(pat[i%3]);\n        cout << ans << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder();\n        String pat = \"abc\";\n        for (int t = 0; t < T; ++t) {\n            int N = Integer.parseInt(br.readLine().trim());\n            StringBuilder sb = new StringBuilder(N);\n            for (int i = 0; i < N; ++i) sb.append(pat.charAt(i % 3));\n            out.append(sb).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    pat = \"abc\"\n    out_lines = []\n    for _ in range(T):\n        N = int(next(it))\n        out_lines.append(''.join(pat[i % 3] for i in range(N)))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nconst pat = 'abc';\nlet outputs = [];\nfor (let t = 0; t < T; ++t) {\n  const N = Number(input[idx++]);\n  let s = '';\n  for (let i = 0; i < N; ++i) s += pat[i % 3];\n  outputs.push(s);\n}\nconsole.log(outputs.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

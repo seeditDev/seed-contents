@@ -1,38 +1,50 @@
 {
   "questionId": "Q5752",
-  "title": "Get Lowest Free",
-  "slug": "get-lowest-free",
+  "title": "Rank of the Number",
+  "slug": "rank-of-the-number",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Math",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "difficulty": "Medium",
+    "isPremium": true,
     "tags": [
-      "Simple Arithmetic",
-      "Math",
-      "Greedy"
+      "Permutations",
+      "Factorial"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Combinatorics & Probability"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Chef goes to the supermarket to buy some items. Luckily there's a sale going on under which Chef gets the following offer:\n\n\nIf Chef buys 333 items then he gets the item (out of those 333 items) having the lowest price as free.\nFor e.g. if Chef bought 333 items with the cost 666, 222 and 444, then he would get the item with cost 222 as free. So he would only have to pay the cost of the other two items which will be 6+4=106 + 4 = 106+4=10.\n\nChef buys 333 items having prices AAA, BBB and CCC respectively. What is the amount of money Chef needs to pay?\n\n\nInput Format\n\nThe first line will contain an integer TTT - number of test cases. Then the test cases follow.\nThe first and only line of each test case contains three integers A,B,CA, B, CA,B,C - the prices of the items bought by Chef.\n\n\nOutput Format\nFor each test case, output the price paid by Chef.",
+    "problemStatement": "Read problems statements in Russian here The Head Chef has received his id from the Association of Byteland . He wants to know the numerical rank of his number among the numbers that can be formed by the exact same digits ( i.e. among numbers having same number of 0's , 1's ... 9's as his id ) .  Note that id's can start with 0 . Given a number, find the rank of the number .",
     "constraints": [
-      "1 <= T <= 1000",
-      "1 <= A, B, C <= 10^9"
+      "1 ≤ T ≤ 10000",
+      "1 ≤ number of digits in N ≤ 18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated integers A, B and C \u2013 the prices of the three items Chef buys.",
-    "outputFormat": "For each test case, output a single line containing the total amount Chef has to pay after getting the cheapest of the three items for free.",
+    "inputFormat": "The first line contains T, the number of test cases. Each test case contains a single integer N.",
+    "outputFormat": "For each test case, print the rank of the number.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n6 2 4\n3 3 3\n8 4 4",
-        "output": "10\n6\n12",
-        "explanation": "Test case 1: Prices are 6, 2 and 4. The cheapest is 2, so Chef pays 6+4 = 10.\\nTest case 2: All prices are equal (3). One of them becomes free, so Chef pays 3+3 = 6.\\nTest case 3: Prices are 8, 4 and 4. The cheapest price is 4, so Chef pays 8+4 = 12."
+        "input": "2\n276\n762",
+        "output": "2\n6",
+        "explanation": "The numbers that can be formed with one '2'; one '7' and one '6' in increasing order are: 267, 276, 627, 672, 726, 762. The rank for 276 is 2 and rank for 762 is 6."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n123",
+        "output": "1",
+        "explanation": "The only number that can be formed with one '1', one '2', and one '3' is 123 itself, so its rank is 1."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n321",
+        "output": "6",
+        "explanation": "The numbers that can be formed with one '3', one '2', and one '1' in increasing order are: 123, 132, 213, 231, 312, 321. The rank for 321 is 6."
       }
     ]
   },
@@ -41,36 +53,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1 1 1",
-        "expectedOutput": "2",
+        "input": "1\n0",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n1000000000 1000000000 1000000000",
-        "expectedOutput": "2000000000",
+        "input": "1\n123456789012345678",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case with two equal minima",
-        "input": "1\n5 5 10",
-        "expectedOutput": "15",
+        "label": "uniform/edge case",
+        "input": "1\n111",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case 1",
-        "input": "1\n7 2 9",
-        "expectedOutput": "16",
+        "label": "tricky case",
+        "input": "1\n9876543210",
+        "expectedOutput": "3628800",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case 2",
-        "input": "1\n100 50 75",
-        "expectedOutput": "175",
+        "label": "stress/general",
+        "input": "5\n123\n456\n789\n1011\n1213",
+        "expectedOutput": "1\n1\n1\n1\n1",
         "weight": 2
       }
     ],
@@ -100,15 +112,27 @@
     ]
   },
   "solution": {
-    "approach": "For each test case we need the sum of the three prices and subtract the smallest price, because that one becomes free. The smallest price can be obtained with the built\u2011in min function or by pairwise comparisons. The answer is therefore A + B + C - min(A, B, C). This runs in O(1) per test case.",
-    "timeComplexity": "O(T) \u2013 constant work for each of the T test cases.",
-    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
+    "approach": "The problem can be solved by calculating the rank of the number among all possible permutations of its digits. This can be done by iterating over each digit in the number and calculating the number of permutations that would come before it. The factorial of the remaining digits is used to calculate the number of permutations.",
+    "timeComplexity": "O(T * N) per test case, O(T * N) total. Precomputation is not required.",
+    "spaceComplexity": "O(N) — for storing the frequency of each digit.",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long A, B, C;\n        scanf(\"%lld %lld %lld\", &A, &B, &C);\n        long long mn = A;\n        if (B < mn) mn = B;\n        if (C < mn) mn = C;\n        long long ans = A + B + C - mn;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long A,B,C; cin>>A>>B>>C;\n        long long mn = min({A,B,C});\n        cout << (A+B+C - mn) << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            long A = Long.parseLong(st.nextToken());\n            long B = Long.parseLong(st.nextToken());\n            long C = Long.parseLong(st.nextToken());\n            long mn = Math.min(A, Math.min(B, C));\n            sb.append(A + B + C - mn).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        A = int(next(it)); B = int(next(it)); C = int(next(it))\n        ans = A + B + C - min(A, B, C)\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; ++t) {\n  const A = BigInt(input[idx++]);\n  const B = BigInt(input[idx++]);\n  const C = BigInt(input[idx++]);\n  const mn = A < B ? (A < C ? A : C) : (B < C ? B : C);\n  const ans = A + B + C - mn;\n  out.push(ans.toString());\n}\nconsole.log(out.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint compare(const void *a, const void *b) {\n    return *(char*)a - *(char*)b;\n}\n\nint factorial(int n) {\n    int result = 1;\n    for (int i = 2; i <= n; i++) {\n        result *= i;\n    }\n    return result;\n}\n\nint findRank(char *str) {\n    int len = strlen(str);\n    int rank = 1;\n    int *freq = (int*)calloc(10, sizeof(int));\n    for (int i = 0; i < len; i++) {\n        freq[str[i] - '0']++;\n    }\n    int *fact = (int*)malloc(len * sizeof(int));\n    fact[0] = 1;\n    for (int i = 1; i < len; i++) {\n        fact[i] = fact[i - 1] * i;\n    }\n    for (int i = 0; i < len - 1; i++) {\n        int count = 0;\n        for (int j = 0; j < str[i] - '0'; j++) {\n            if (freq[j] > 0) {\n                count += fact[len - i - 1] * freq[j];\n            }\n        }\n        rank += count;\n        freq[str[i] - '0']--;\n    }\n    free(fact);\n    free(freq);\n    return rank;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char str[19];\n        scanf(\"%s\", str);\n        printf(\"%d\\n\", findRank(str));\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <algorithm>\n#include <string>\nusing namespace std;\n\nint findRank(string str) {\n    int len = str.length();\n    int rank = 1;\n    int freq[10] = {0};\n    for (int i = 0; i < len; i++) {\n        freq[str[i] - '0']++;\n    }\n    int fact[18] = {1};\n    for (int i = 1; i < 18; i++) {\n        fact[i] = fact[i - 1] * i;\n    }\n    for (int i = 0; i < len - 1; i++) {\n        int count = 0;\n        for (int j = 0; j < str[i] - '0'; j++) {\n            if (freq[j] > 0) {\n                count += fact[len - i - 1] * freq[j];\n            }\n        }\n        rank += count;\n        freq[str[i] - '0']--;\n    }\n    return rank;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string str;\n        cin >> str;\n        cout << findRank(str) << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            String str = sc.next();\n            System.out.println(findRank(str));\n        }\n    }\n\n    public static int findRank(String str) {\n        int len = str.length();\n        int rank = 1;\n        int[] freq = new int[10];\n        for (int i = 0; i < len; i++) {\n            freq[str.charAt(i) - '0']++;\n        }\n        int[] fact = new int[18];\n        fact[0] = 1;\n        for (int i = 1; i < 18; i++) {\n            fact[i] = fact[i - 1] * i;\n        }\n        for (int i = 0; i < len - 1; i++) {\n            int count = 0;\n            for (int j = 0; j < str.charAt(i) - '0'; j++) {\n                if (freq[j] > 0) {\n                    count += fact[len - i - 1] * freq[j];\n                }\n            }\n            rank += count;\n            freq[str.charAt(i) - '0']--;\n        }\n        return rank;\n    }\n}",
+      "Python3": "import math\n\ndef findRank(s):\n    n = len(s)\n    rank = 1\n    freq = [0] * 10\n    for i in range(n):\n        freq[int(s[i])] += 1\n    fact = [math.factorial(i) for i in range(18)]\n    for i in range(n - 1):\n        count = 0\n        for j in range(int(s[i])):\n            if freq[j] > 0:\n                count += fact[n - i - 1] * freq[j]\n        rank += count\n        freq[int(s[i])] -= 1\n    return rank\n\nT = int(input())\nfor _ in range(T):\n    s = input()\n    print(findRank(s))",
+      "JavaScript": "const readline = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\n\nfunction findRank(s) {\n    let n = s.length;\n    let rank = 1;\n    let freq = new Array(10).fill(0);\n    for (let i = 0; i < n; i++) {\n        freq[s.charCodeAt(i) - '0'.charCodeAt(0)]++;\n    }\n    let fact = new Array(18).fill(1);\n    for (let i = 1; i < 18; i++) {\n        fact[i] = fact[i - 1] * i;\n    }\n    for (let i = 0; i < n - 1; i++) {\n        let count = 0;\n        for (let j = 0; j < s.charCodeAt(i) - '0'.charCodeAt(0); j++) {\n            if (freq[j] > 0) {\n                count += fact[n - i - 1] * freq[j];\n            }\n        }\n        rank += count;\n        freq[s.charCodeAt(i) - '0'.charCodeAt(0)]--;\n    }\n    return rank;\n}\n\nlet T = parseInt(readline[idx++]);\nwhile (T-- > 0) {\n    let s = readline[idx++];\n    console.log(findRank(s));\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

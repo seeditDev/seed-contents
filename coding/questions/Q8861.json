@@ -1,69 +1,82 @@
 {
   "questionId": "Q8861",
-  "title": "Combination Sum II",
-  "slug": "combination-sum-ii",
+  "title": "Volume Control",
+  "slug": "volume-control",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Recursion & Backtracking",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Array",
-      "Recursion & Backtracking",
-      "Combination Sum",
-      "Backtracking"
+      "Absolute Difference",
+      "Greedy"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Given a collection of candidate numbers (candidates) and a target number\n    (target), find all unique combinations in candidates where the candidate numbers sum to target. Each number in\n    candidates may only be used once in the combination..",
+    "problemStatement": "Chef is watching TV. The current volume of the TV is XXX. Pressing the `volume up` button of the TV remote increases the volume by 111 while pressing the `volume down` button decreases the volume by 111. Chef wants to change the volume from XXX to YYY. Find the minimum number of button presses required to do so.\n\n\nInput Format\n\nThe first line contains a single integer TTT - the number of test cases. Then the test cases follow.\nThe first and only line of each test case contains two integers XXX and YYY - the initial volume and final volume of the TV.\n\n\nOutput Format\nFor each test case, output the minimum number of times Chef has to press a button to change the volume from XXX to YYY.",
     "constraints": [
-      "1 <= candidates.length <= 100",
-      "1 <= candidates[i] <= 100",
-      "1 <= target <= 1000"
+      "1 <= T <= 100",
+      "1 <= X, Y <= 100"
     ],
-    "inputFormat": "The input consists of two parameters: candidates and target. The candidates parameter is an array of integers, and the target parameter is an integer.",
-    "outputFormat": "The output is a 2D array of integers, where each sub-array represents a unique combination of numbers that sum up to the target.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space‑separated integers X and Y — the initial and desired volume levels.",
+    "outputFormat": "For each test case, output a single integer on its own line: the minimum number of button presses required to change the volume from X to Y.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n50 54\n12 10",
+        "output": "4\n2",
+        "explanation": "Test case 1: |50‑54| = 4, so 4 presses of the volume‑up button are needed.\\nTest case 2: |12‑10| = 2, so 2 presses of the volume‑down button are needed."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n1 1\n100 1\n23 57",
+        "output": "0\n99\n34",
+        "explanation": "Case 1: already at desired volume, 0 presses.\\nCase 2: |100‑1| = 99 presses down.\\nCase 3: |23‑57| = 34 presses up."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "[[1], 1]",
-        "expectedOutput": "[[1]]",
+        "label": "minimum boundary",
+        "input": "1\n1 1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "[[100, 100, 100], 300]",
-        "expectedOutput": "[[100, 100, 100]]",
+        "label": "maximum boundary",
+        "input": "1\n100 1",
+        "expectedOutput": "99",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "[[5, 5, 5], 15]",
-        "expectedOutput": "[[5, 5, 5]]",
+        "label": "edge case reverse",
+        "input": "1\n1 100",
+        "expectedOutput": "99",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case/empty-like",
-        "input": "[[], 10]",
-        "expectedOutput": "[]",
+        "label": "general case 1",
+        "input": "1\n23 57",
+        "expectedOutput": "34",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "[[10, 1, 2, 7, 6, 1, 5], 8]",
-        "expectedOutput": "[[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]]",
+        "label": "general case 2",
+        "input": "1\n80 45",
+        "expectedOutput": "35",
         "weight": 2
       }
     ],
@@ -93,15 +106,27 @@
     ]
   },
   "solution": {
-    "approach": "Use backtracking to find all unique combinations of numbers that sum up to the target.",
-    "timeComplexity": "O(2^n)",
-    "spaceComplexity": "O(n)",
+    "approach": "Each press changes the volume by exactly 1 unit, either up or down. Therefore the optimal strategy is to press the appropriate button repeatedly until the target volume is reached. The required number of presses is simply the absolute difference between the initial and final volumes: answer = |X - Y|. This computation is O(1) per test case.",
+    "timeComplexity": "O(T) – constant work for each of the T test cases.",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid findCombination(int ind, int target, int* arr, int** ans, int* ansSize, int** ds, int* dsSize) {\n    if (target == 0) {\n        ans[*ansSize] = (int*)malloc((*dsSize) * sizeof(int));\n        for (int i = 0; i < *dsSize; i++) {\n            ans[*ansSize][i] = ds[0][i];\n        }\n        (*ansSize)++;\n        return;\n    }\n\n    for (int i = ind; i < 100; i++) {\n        if (i > ind && arr[i] == arr[i - 1]) continue;\n        if (arr[i] > target) break;\n        ds[0][*dsSize] = arr[i];\n        (*dsSize)++;\n        findCombination(i + 1, target - arr[i], arr, ans, ansSize, ds, dsSize);\n        (*dsSize)--;\n    }\n}\n\nint** combinationSum2(int* candidates, int candidatesSize, int target, int* returnSize) {\n    int** ans = (int**)malloc(100 * sizeof(int*));\n    int* ds = (int*)malloc(100 * sizeof(int));\n    int ansSize = 0;\n    int dsSize = 0;\n    findCombination(0, target, candidates, ans, &ansSize, &ds, &dsSize);\n    *returnSize = ansSize;\n    return ans;\n}",
-      "C++": "#include<bits/stdc++.h>\nusing namespace std;\n\n// Function to find all combinations of numbers that sum up to the target\nvoid findCombination(int ind, int target, vector<int>& arr, vector<vector<int>>& ans, vector<int>& ds) {\n    // Base case: If the target becomes 0, we found a valid combination\n    if (target == 0) {\n        ans.push_back(ds);  // Add the current combination to the result\n        return;\n    }\n\n    // Loop through the elements starting from index 'ind'\n    for (int i = ind; i < arr.size(); i++) {\n        // Skip duplicates to avoid repeating combinations\n        if (i > ind && arr[i] == arr[i - 1]) continue;\n\n        // If the current element is greater than the remaining target, break the loop\n        if (arr[i] > target) break;\n\n        // Include the current element in the combination\n        ds.push_back(arr[i]);\n\n        // Recur with the updated target and next index (i + 1 to avoid repetition)\n        findCombination(i + 1, target - arr[i], arr, ans, ds);\n\n        // Backtrack by removing the last added element\n        ds.pop_back();\n    }\n}\n\n// Function to calculate all unique combinations that sum up to the target\nvector<vector<int>> combinationSum2(vector<int>& candidates, int target) {\n    sort(candidates.begin(), candidates.end());  // Sort the candidates to handle duplicates\n    vector<vector<int>> ans;  // To store the final answer\n    vector<int> ds;  // To store the current combination\n    findCombination(0, target, candidates, ans, ds);  // Call the helper function\n    return ans;  // Return all valid combinations\n}\n",
-      "Java": "// Solution class for managing combinations\nimport java.util.*;\n\nclass Solution {\n\n    // Function to find all combinations of numbers that sum up to the target\n    public void findCombination(int ind, int target, int[] arr, List<List<Integer>> ans, List<Integer> ds) {\n        // Base case: If the target becomes 0, we found a valid combination\n        if (target == 0) {\n            ans.add(new ArrayList<>(ds));  // Add the current combination to the result\n            return;\n        }\n\n        // Loop through the elements starting from index 'ind'\n        for (int i = ind; i < arr.length; i++) {\n            // Skip duplicates to avoid repeating combinations\n            if (i > ind && arr[i] == arr[i - 1]) continue;\n\n            // If the current element is greater than the remaining target, break the loop\n            if (arr[i] > target) break;\n\n            // Include the current element in the combination\n            ds.add(arr[i]);\n\n            // Recur with the updated target and next index (i + 1 to avoid repetition)\n            findCombination(i + 1, target - arr[i], arr, ans, ds);\n\n            // Backtrack by removing the last added element\n            ds.remove(ds.size() - 1);\n        }\n    }\n\n    // Function to calculate all unique combinations that sum up to the target\n    public List<List<Integer>> combinationSum2(int[] candidates, int target) {\n        Arrays.sort(candidates);  // Sort the candidates to handle duplicates\n        List<List<Integer>> ans = new ArrayList<>();  // To store the final answer\n        List<Integer> ds = new ArrayList<>();  // To store the current combination\n        findCombination(0, target, candidates, ans, ds);  // Call the helper function\n        return ans;  // Return all valid combinations\n    }\n\n    public static void main(String[] args) {\n        Solution obj = new Solution();\n        int[] v = {10, 1, 2, 7, 6, 1, 5};  // Example input\n        int target = 8;  // Target sum\n\n        // Get all combinations that sum up to 8\n        List<List<Integer>> comb = obj.combinationSum2(v, target);\n\n        // Output the combinations\n        System.out.print(\"[ \");\n        for (List<Integer> combination : comb) {\n            System.out.print(\"[ \");\n            for (int num : combination) {\n                System.out.print(num + \" \");\n            }\n            System.out.print(\"]\");\n        }\n        System.out.println(\" ]\");\n    }\n}",
-      "Python3": "class Solution:\n\n    # Function to find all combinations of numbers that sum up to the target\n    def findCombination(self, ind, target, arr, ans, ds):\n        # Base case: If the target becomes 0, we found a valid combination\n        if target == 0:\n            ans.append(list(ds))  # Add the current combination to the result\n            return\n\n        # Loop through the elements starting from index 'ind'\n        for i in range(ind, len(arr)):\n            # Skip duplicates to avoid repeating combinations\n            if i > ind and arr[i] == arr[i - 1]:\n                continue\n\n            # If the current element is greater than the remaining target, break the loop\n            if arr[i] > target:\n                break\n\n            # Include the current element in the combination\n            ds.append(arr[i])\n\n            # Recur with the updated target and next index (i + 1 to avoid repetition)\n            self.findCombination(i + 1, target - arr[i], arr, ans, ds)\n\n            # Backtrack by removing the last added element\n            ds.pop()\n\n    # Function to calculate all unique combinations that sum up to the target\n    def combinationSum2(self, candidates, target):\n        candidates.sort()  # Sort the candidates to handle duplicates\n        ans = []  # To store the result\n        ds = []  # To store a current combination\n        self.findCombination(0, target, candidates, ans, ds)  # Start the recursive search\n        return ans  # Return all valid combinations\n\n# Driver code\nif __name__ == \"__main__\":\n    obj = Solution()\n    v = [10, 1, 2, 7, 6, 1, 5]  # Example input\n    target = 8  # Target sum\n\n    # Get all combinations that sum up to 8\n    comb = obj.combinationSum2(v, target)\n\n    # Output the combinations\n    print(\"[\", end=\" \")\n    for combination in comb:\n        print(\"[\", end=\" \")\n        print(\" \".join(map(str, combination)), end=\" \")\n        print(\"]\", end=\" \")\n    print(\"]\")",
-      "JavaScript": "class Solution {\n\n    // Function to find all combinations of numbers that sum up to the target\n    findCombination(ind, target, arr, ans, ds) {\n        // Base case: If the target becomes 0, we found a valid combination\n        if (target === 0) {\n            ans.push([...ds]);  // Add the current combination to the result\n            return;\n        }\n\n        // Loop through the elements starting from index 'ind'\n        for (let i = ind; i < arr.length; i++) {\n            // Skip duplicates to avoid repeating combinations\n            if (i > ind && arr[i] === arr[i - 1]) continue;\n\n            // If the current element is greater than the remaining target, break the loop\n            if (arr[i] > target) break;\n\n            // Include the current element in the combination\n            ds.push(arr[i]);\n\n            // Recur with the updated target and next index (i + 1 to avoid repetition)\n            this.findCombination(i + 1, target - arr[i], arr, ans, ds);\n\n            // Backtrack by removing the last added element\n            ds.pop();\n        }\n    }\n\n    // Function to calculate all unique combinations that sum up to the target\n    combinationSum2(candidates, target) {\n        candidates.sort();  // Sort the candidates to handle duplicates\n        const ans = [];  // To store the result\n        const ds = [];  // To store a current combination\n        this.findCombination(0, target, candidates, ans, ds);  // Start the recursive search\n        return ans;  // Return all valid combinations\n    }\n}\n\n// Driver code\nconst obj = new Solution();\nconst v = [10, 1, 2, 7, 6, 1, 5];  // Example input\nconst target = 8;  // Target sum\n\n// Get all combinations that sum up to 8\nconst comb = obj.combinationSum2(v, target);\n\n// Output the combinations\nconsole.log(\"[\", end=\" \");\ncomb.forEach(combination => {\n    process.stdout.write(\"[ \");\n    console.log(combination.join(\" \"), end=\" \");\n    console.log(\"]\", end=\" \");\n});\nconsole.log(\"]\");"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int X, Y; scanf(\"%d %d\", &X, &Y);\n        int ans = abs(X - Y);\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        int X, Y; cin >> X >> Y;\n        cout << abs(X - Y) << '\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            st = new StringTokenizer(br.readLine());\n            int X = Integer.parseInt(st.nextToken());\n            int Y = Integer.parseInt(st.nextToken());\n            sb.append(Math.abs(X - Y)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        x = int(data[idx]); y = int(data[idx+1]); idx += 2\n        out.append(str(abs(x - y)))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let i = 0; i < T; i++) {\n  const X = Number(input[idx++]);\n  const Y = Number(input[idx++]);\n  results.push(String(Math.abs(X - Y)));\n}\nconsole.log(results.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

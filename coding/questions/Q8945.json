@@ -1,68 +1,79 @@
 {
   "questionId": "Q8945",
-  "title": "Correct BST with two nodes swapped",
-  "slug": "recover-binary-search-tree",
+  "title": "Pseudo Sorted Array",
+  "slug": "pseudo-sorted-array",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Trees",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Sorting",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Tree Traversal",
-      "Trees",
-      "Swapped Nodes",
-      "Binary Search Tree"
+      "Greedy",
+      "Array",
+      "Two Pointers"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Write a program for the coding challenge \"Correct BST with two nodes swapped\". Refer to LeetCode description: https://leetcode.com/problems/recover-binary-search-tree/",
+    "problemStatement": "An array AAA of length NNN is said to be pseudo-sorted if it can be made non-decreasing after performing the following operation **at most once**.\n\n\nChoose an iii such that 1≤i≤N−11 \\le i \\leq N-11≤i≤N−1 and swap AiA_iAi​ and Ai+1A_{i+1}Ai+1​\nGiven an array AAA, determine if it is pseudo-sorted or not.\n\n\nInput Format\n\nThe first line contains a single integer TTT - the number of test cases. Then the test cases follow.\nThe first line of each test case contains an integer NNN - the size of the array AAA.\nThe second line of each test case contains NNN space-separated integers A1,A2,…,ANA_1, A_2, \\dots, A_NA1​,A2​,…,AN​ denoting the array AAA.\n\n\nOutput Format\nFor each testcase, output `YES` if the array AAA is pseudo-sorted, `NO` otherwise.\n\n\nYou may print each character of `YES` and `NO` in uppercase or lowercase (for example, `yes`, `yEs`, `Yes` will be considered identical).",
     "constraints": [
-      "The number of nodes in the tree is in the range [2, 100].",
-      "1 <= Node.val <= 100"
+      "1 <= T <= 1000",
+      "2 <= N <= 100000",
+      "1 <= Ai <= 10^9",
+      "Sum of N over all test cases does not exceed 2·10^5"
     ],
-    "inputFormat": "The input is the root of a binary search tree where two nodes are swapped.",
-    "outputFormat": "The output is the root of the recovered binary search tree.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the size of the array. The second line contains N space‑separated integers A1 … AN.",
+    "outputFormat": "For each test case output a single line containing YES if the array can be made non‑decreasing by at most one adjacent swap, otherwise NO.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\n5\n3 5 7 8 9\n4\n1 3 2 3\n3\n3 2 1",
+        "output": "YES\nYES\nNO",
+        "explanation": "Test case 1: already sorted. Test case 2: swapping positions 2 and 3 yields [1,2,3,3]. Test case 3: no single adjacent swap can sort the array."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "[2,1,3]",
-        "expectedOutput": "[2,3,1]",
+        "label": "minimum boundary",
+        "input": "1\n2\n1 1",
+        "expectedOutput": "YES",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "[100,99,98,97,96,95,94,93,92,91]",
-        "expectedOutput": "[100,91,92,93,94,95,96,97,98,99]",
+        "label": "maximum boundary",
+        "input": "1\n15\n1 2 3 5 4 6 7 8 9 10 11 12 13 14 15",
+        "expectedOutput": "YES",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "[5,3,6,2,4,null,null,1]",
-        "expectedOutput": "[5,3,6,2,4,null,null,1]",
+        "label": "edge case",
+        "input": "1\n3\n3 1 2",
+        "expectedOutput": "NO",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case / empty-like / negative if allowed",
-        "input": "[0,null,1]",
-        "expectedOutput": "[1,null,0]",
+        "label": "general case 1",
+        "input": "1\n5\n1 2 3 4 5",
+        "expectedOutput": "YES",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "[4,2,7,1,3,6,9]",
-        "expectedOutput": "[4,2,7,1,3,6,9]",
+        "label": "general case 2",
+        "input": "1\n5\n1 2 3 5 4",
+        "expectedOutput": "YES",
         "weight": 2
       }
     ],
@@ -92,15 +103,27 @@
     ]
   },
   "solution": {
-    "approach": "Inorder traversal to find the two swapped nodes and then swap them back.",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(N)",
+    "approach": "For each test case scan the array from left to right and locate the first index i where A[i] > A[i+1]. If no such index exists the array is already sorted → YES. Otherwise swap A[i] and A[i+1] in a temporary copy and check whether the whole array becomes non‑decreasing. The check can be done in O(N) by verifying that for every j, B[j] <= B[j+1]. If the check passes → YES, else → NO. The algorithm runs in linear time and uses O(1) extra space.",
+    "timeComplexity": "O(N) per test case, total O(sum N) ≤ 2·10^5",
+    "spaceComplexity": "O(1) besides the input array",
     "code": {
-      "C": "\n         #include <stdio.h>\n         #include <stdlib.h>\n\n         struct TreeNode {\n            int val;\n            struct TreeNode *left;\n            struct TreeNode *right;\n         };\n\n         void recoverTree(struct TreeNode* root) {\n            struct TreeNode* prev = NULL;\n            struct TreeNode* first = NULL;\n            struct TreeNode* second = NULL;\n\n            while (root) {\n               if (root->left == NULL) {\n                  if (prev && prev->val > root->val) {\n                     if (first == NULL) {\n                        first = prev;\n                     }\n                     second = root;\n                  }\n                  prev = root;\n                  root = root->right;\n               } else {\n                  struct TreeNode* pre = root->left;\n                  while (pre->right && pre->right != root) {\n                     pre = pre->right;\n                  }\n                  if (pre->right == NULL) {\n                     pre->right = root;\n                     root = root->left;\n                  } else {\n                     pre->right = NULL;\n                     if (prev && prev->val > root->val) {\n                        if (first == NULL) {\n                           first = prev;\n                        }\n                        second = root;\n                     }\n                     prev = root;\n                     root = root->right;\n                  }\n               }\n            }\n\n            if (first && second) {\n               int temp = first->val;\n               first->val = second->val;\n               second->val = temp;\n            }\n         }\n      ",
-      "C++": "\n         #include <iostream>\n         using namespace std;\n\n         struct TreeNode {\n            int val;\n            TreeNode *left;\n            TreeNode *right;\n            TreeNode(int x) : val(x), left(NULL), right(NULL) {}\n         };\n\n         void recoverTree(TreeNode* root) {\n            TreeNode* prev = NULL;\n            TreeNode* first = NULL;\n            TreeNode* second = NULL;\n\n            while (root) {\n               if (root->left == NULL) {\n                  if (prev && prev->val > root->val) {\n                     if (first == NULL) {\n                        first = prev;\n                     }\n                     second = root;\n                  }\n                  prev = root;\n                  root = root->right;\n               } else {\n                  TreeNode* pre = root->left;\n                  while (pre->right && pre->right != root) {\n                     pre = pre->right;\n                  }\n                  if (pre->right == NULL) {\n                     pre->right = root;\n                     root = root->left;\n                  } else {\n                     pre->right = NULL;\n                     if (prev && prev->val > root->val) {\n                        if (first == NULL) {\n                           first = prev;\n                        }\n                        second = root;\n                     }\n                     prev = root;\n                     root = root->right;\n                  }\n               }\n            }\n\n            if (first && second) {\n               swap(first->val, second->val);\n            }\n         }\n      ",
-      "Java": "\n         class Solution {\n            public void recoverTree(TreeNode root) {\n               TreeNode prev = null;\n               TreeNode first = null;\n               TreeNode second = null;\n\n               while (root != null) {\n                  if (root.left == null) {\n                     if (prev != null && prev.val > root.val) {\n                        if (first == null) {\n                           first = prev;\n                        }\n                        second = root;\n                     }\n                     prev = root;\n                     root = root.right;\n                  } else {\n                     TreeNode pre = root.left;\n                     while (pre.right != null && pre.right != root) {\n                        pre = pre.right;\n                     }\n                     if (pre.right == null) {\n                        pre.right = root;\n                        root = root.left;\n                     } else {\n                        pre.right = null;\n                        if (prev != null && prev.val > root.val) {\n                           if (first == null) {\n                              first = prev;\n                           }\n                           second = root;\n                        }\n                        prev = root;\n                        root = root.right;\n                     }\n                  }\n               }\n\n               if (first != null && second != null) {\n                  int temp = first.val;\n                  first.val = second.val;\n                  second.val = temp;\n               }\n            }\n         }\n      ",
-      "Python3": "\n         class Solution:\n            def recoverTree(self, root: TreeNode) -> None:\n               prev = None\n               first = None\n               second = None\n\n               while root:\n                  if not root.left:\n                     if prev and prev.val > root.val:\n                        if not first:\n                           first = prev\n                        second = root\n                     prev = root\n                     root = root.right\n                  else:\n                     pre = root.left\n                     while pre.right and pre.right != root:\n                        pre = pre.right\n                     if not pre.right:\n                        pre.right = root\n                        root = root.left\n                     else:\n                        pre.right = None\n                        if prev and prev.val > root.val:\n                           if not first:\n                              first = prev\n                           second = root\n                        prev = root\n                        root = root.right\n\n               if first and second:\n                  first.val, second.val = second.val, first.val\n      ",
-      "JavaScript": "\n         var recoverTree = function(root) {\n            let prev = null;\n            let first = null;\n            let second = null;\n\n            while (root) {\n               if (root.left === null) {\n                  if (prev && prev.val > root.val) {\n                     if (first === null) {\n                        first = prev;\n                     }\n                     second = root;\n                  }\n                  prev = root;\n                  root = root.right;\n               } else {\n                  let pre = root.left;\n                  while (pre.right && pre.right !== root) {\n                     pre = pre.right;\n                  }\n                  if (pre.right === null) {\n                     pre.right = root;\n                     root = root.left;\n                  } else {\n                     pre.right = null;\n                     if (prev && prev.val > root.val) {\n                        if (first === null) {\n                           first = prev;\n                        }\n                        second = root;\n                     }\n                     prev = root;\n                     root = root.right;\n                  }\n               }\n            }\n\n            if (first && second) {\n               let temp = first.val;\n               first.val = second.val;\n               second.val = temp;\n            }\n         };\n      "
+      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int N; scanf(\"%d\",&N); int *a=malloc(N*sizeof(int)); for(int i=0;i<N;i++) scanf(\"%d\",&a[i]); int idx=-1; for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){idx=i;break;} if(idx==-1){printf(\"YES\\n\"); free(a); continue;} // try swap\n int tmp=a[idx]; a[idx]=a[idx+1]; a[idx+1]=tmp; int ok=1; for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){ok=0;break;} printf(ok?\"YES\\n\":\"NO\\n\"); free(a);} return 0; }",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);\nint T; if(!(cin>>T)) return 0; while(T--){int N;cin>>N; vector<long long>a(N); for(int i=0;i<N;i++)cin>>a[i]; int idx=-1; for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){idx=i;break;}\n if(idx==-1){cout<<\"YES\\n\"; continue;}\n swap(a[idx],a[idx+1]); bool ok=true; for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){ok=false;break;}\n cout<<(ok?\"YES\":\"NO\")<<'\\n'; }\nreturn 0; }",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out=new StringBuilder();\n        int T=Integer.parseInt(br.readLine().trim());\n        while(T-- > 0){\n            int N=Integer.parseInt(br.readLine().trim());\n            long[] a=new long[N];\n            StringTokenizer st=new StringTokenizer(br.readLine());\n            for(int i=0;i<N;i++) a[i]=Long.parseLong(st.nextToken());\n            int idx=-1;\n            for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){idx=i;break;}\n            if(idx==-1){out.append(\"YES\\n\"); continue;}\n            long tmp=a[idx]; a[idx]=a[idx+1]; a[idx+1]=tmp;\n            boolean ok=true;\n            for(int i=0;i<N-1;i++) if(a[i]>a[i+1]){ok=false;break;}\n            out.append(ok?\"YES\":\"NO\").append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data=list(map(int,sys.stdin.read().split()))\n    it=iter(data)\n    T=next(it)\n    out=[]\n    for _ in range(T):\n        N=next(it)\n        a=[next(it) for _ in range(N)]\n        idx=-1\n        for i in range(N-1):\n            if a[i]>a[i+1]:\n                idx=i\n                break\n        if idx==-1:\n            out.append('YES')\n            continue\n        a[idx],a[idx+1]=a[idx+1],a[idx]\n        ok=all(a[i]<=a[i+1] for i in range(N-1))\n        out.append('YES' if ok else 'NO')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__=='__main__':\n    solve()\n",
+      "JavaScript": "const fs=require('fs');\nconst input=fs.readFileSync(0,'utf-8').trim().split(/\\s+/).map(Number);\nlet idx=0;\nconst T=input[idx++];\nlet out=[];\nfor(let t=0;t<T;t++){\n  const N=input[idx++];\n  const a=input.slice(idx, idx+N);\n  idx+=N;\n  let pos=-1;\n  for(let i=0;i<N-1;i++) if(a[i]>a[i+1]){pos=i;break;}\n  if(pos===-1){out.push('YES'); continue;}\n  [a[pos],a[pos+1]]=[a[pos+1],a[pos]];\n  let ok=true;\n  for(let i=0;i<N-1;i++) if(a[i]>a[i+1]){ok=false;break;}\n  out.push(ok?'YES':'NO');\n}\nconsole.log(out.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

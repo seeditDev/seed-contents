@@ -1,40 +1,53 @@
 {
   "questionId": "Q4903",
-  "title": "Fractions",
-  "slug": "fractions",
+  "title": "Arithmetic operation",
+  "slug": "arithmetic-operation",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Math",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Divisibility",
-      "Math",
-      "Chinese Remainder Theorem",
-      "Number Theory",
-      "Sieve of Eratosthenes"
+      "Arithmetic",
+      "Switch Statement",
+      "Integer Division"
     ],
     "companyTags": [],
     "topicTags": [
-      "Mathematics"
-    ]
+      "Control Flow"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "For positive integers aaa and bbb, we say that a fraction ab\\frac{a}{b}ba\u200b is good if it is equal to mm+1\\frac{m}{m+1}m+1m\u200b for some positive integer mmm.\n\nYou are given an integer NNN. Find the number of pairs of integers i,ji, ji,j such that 1\u2264i,j\u2264N1 \\le i, j \\le N1\u2264i,j\u2264N and the fraction ii+1\u22c5j+1j\\frac{i}{i+1} \\cdot \\frac{j+1}{j}i+1i\u200b\u22c5jj+1\u200b is good.",
+    "problemStatement": "Write a program that takes two numbers and an operator (+, -, *, /) as input. Use a **switch** statement to perform the corresponding arithmetic operation and print the result.",
     "constraints": [
-      "1 \u2264 T \u2264 10",
-      "1 \u2264 N \u2264 1,000,000"
+      "1 <= T <= 1000",
+      "1 <= num1, num2 <= 1000",
+      "op ∈ {'+', '-', '*', '/'}",
+      "Division by zero will not appear in the input"
     ],
-    "inputFormat": "The first line contains an integer T \u2013 the number of test cases. Each of the next T lines contains a single integer N (1 \u2264 N \u2264 1,000,000).",
-    "outputFormat": "For each test case output a single line with one integer \u2013 the number of ordered pairs (i, j) (1 \u2264 i, j \u2264 N) such that (i/(i+1))\u00b7((j+1)/j) equals m/(m+1) for some positive integer m.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two integers num1 and num2 (1 ≤ num1, num2 ≤ 1000) followed by a space and a character op which is one of '+', '-', '*', '/' .",
+    "outputFormat": "For each test case, output a single line containing the result of applying the operator op to num1 and num2. Division uses integer division (floor).",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5",
-        "output": "8",
-        "explanation": "Explanation:\nThe following eight pairs (i,j)(i, j)(i,j) give good fractions: (1,2)(1,2)(1,2), (1,3)(1,3)(1,3), (2,3)(2,3)(2,3), (2,4)(2,4)(2,4), (2,5)(2,5)(2,5), (3,4)(3,4)(3,4), (3,5)(3,5)(3,5) and (4,5)(4,5)(4,5)."
+        "input": "3\\n5 2 +\\n10 3 -\\n4 5 *",
+        "output": "7\\n7\\n20",
+        "explanation": "Three test cases are processed. 5+2=7, 10-3=7, 4*5=20."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\n8 2 /\\n9 4 /",
+        "output": "4\\n2",
+        "explanation": "Integer division is used. 8/2=4, 9/4=2 (floor)."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n3 5 -",
+        "output": "-2",
+        "explanation": "Subtraction can produce negative results: 3-5=-2."
       }
     ]
   },
@@ -42,37 +55,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "minimum boundary",
+        "input": "1\\n1 1 +",
+        "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "maximum boundary",
+        "input": "1\\n1000 1000 *",
+        "expectedOutput": "1000000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "edge case",
+        "input": "1\\n1 1000 -",
+        "expectedOutput": "-999",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 1",
+        "input": "1\\n7 3 /",
+        "expectedOutput": "2",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 2",
+        "input": "3\\n10 5 +\\n20 4 /\\n6 7 *",
+        "expectedOutput": "15\\n5\\n42",
         "weight": 2
       }
     ],
@@ -102,11 +115,27 @@
     ]
   },
   "solution": {
-    "approach": "For a pair (i, j) let A = i\u00b7(j+1) and B = (i+1)\u00b7j. The fraction A/B equals m/(m+1) iff m = A/(B\u2011A) is a positive integer. Since B\u2011A = j\u2011i, the condition becomes:\n  \u2022 j > i (otherwise m \u2264 0), and\n  \u2022 (j\u2011i) divides i\u00b7(j+1).\nDefine d = j\u2011i (1 \u2264 d \u2264 N\u20111) and write j = i + d. The condition turns into:\n  d | i\u00b7(i+d+1).\nBecause i\u00b7(i+d+1) \u2261 (i mod d)\u00b7((i+1) mod d) (mod d), let r = i mod d. The condition is\n  r\u00b7(r+1) \u2261 0 (mod d).\nSince r and r+1 are coprime, every prime power p^e dividing d must divide either r or r+1. Hence for each distinct prime power of d we have two independent choices:\n  \u2013 r \u2261 0 (mod p^e)  or  \u2013 r \u2261 -1 (mod p^e).\nBy the Chinese Remainder Theorem this yields exactly 2^{\u03c9(d)} residues r (\u03c9(d) = number of distinct prime factors of d) that satisfy the divisibility.\nFor each such residue r we count how many i (1 \u2264 i \u2264 N\u2011d) are congruent to r modulo d. The smallest i with residue r is:\n  first = d   if r = 0,\n  first = r   otherwise.\nIf first \u2264 N\u2011d, the number of valid i is 1 + floor((N\u2011d\u2011first)/d).\nSumming this over all residues for every d gives the answer.\nAlgorithm steps for each test case:\n1. Build an SPF (smallest prime factor) array up to N using a linear sieve \u2013 O(N).\n2. For each d from 1 to N\u20111:\n   a. Extract the distinct prime powers of d using the SPF array.\n   b. Generate all residues r that satisfy r\u00b7(r+1) \u2261 0 (mod d) by a recursive CRT combination of the two possibilities (0 or -1) for each prime power. The number of residues never exceeds 2^{\u03c9(d)} \u2264 128 for N \u2264 10^6.\n   c. For each residue compute the contribution of i as described and add to the total.\n3. Output the total.\nThe overall complexity is O(N log log N) for the sieve plus \u03a3_d 2^{\u03c9(d)} which is well below 2\u00b710^7 for N = 10^6, easily fitting into the time limit. Memory consumption is O(N) for the SPF array.",
-    "timeComplexity": "O(N log log N) per test case (dominated by the linear sieve and the small\u2011constant work per d).",
-    "spaceComplexity": "O(N) \u2013 the SPF array and a few auxiliary vectors.",
+    "approach": "Read the number of test cases T. For each test case read num1, num2 and the operator character. Use a switch (or equivalent) to select the appropriate arithmetic operation: addition, subtraction, multiplication, or integer division. Print the computed result. All operations are O(1), so the total time is O(T). Memory usage is O(1).",
+    "timeComplexity": "O(T) – each test case is processed in constant time.",
+    "spaceComplexity": "O(1) – only a few variables are stored.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <stdint.h>\n\n"
+      "C": "#include <stdio.h>\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        int num1, num2; char op;\n        scanf(\"%d %d %c\", &num1, &num2, &op);\n        switch (op) {\n            case '+': printf(\"%d\\n\", num1 + num2); break;\n            case '-': printf(\"%d\\n\", num1 - num2); break;\n            case '*': printf(\"%d\\n\", num1 * num2); break;\n            case '/': printf(\"%d\\n\", num1 / num2); break;\n            default:  printf(\"Error: Invalid operator\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if(!(cin >> T)) return 0;\n    while (T--) {\n        long long num1, num2; char op;\n        cin >> num1 >> num2 >> op;\n        switch (op) {\n            case '+': cout << num1 + num2 << '\\n'; break;\n            case '-': cout << num1 - num2 << '\\n'; break;\n            case '*': cout << num1 * num2 << '\\n'; break;\n            case '/': cout << num1 / num2 << '\\n'; break;\n            default:  cout << \"Error: Invalid operator\" << '\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long num1 = Long.parseLong(st.nextToken());\n            long num2 = Long.parseLong(st.nextToken());\n            char op = st.nextToken().charAt(0);\n            long res;\n            switch (op) {\n                case '+': res = num1 + num2; break;\n                case '-': res = num1 - num2; break;\n                case '*': res = num1 * num2; break;\n                case '/': res = num1 / num2; break;\n                default: sb.append(\"Error: Invalid operator\\n\"); continue;\n            }\n            sb.append(res).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    T = int(data[0])\n    out = []\n    for i in range(1, T + 1):\n        a, b, op = data[i].split()\n        num1 = int(a)\n        num2 = int(b)\n        if op == '+':\n            out.append(str(num1 + num2))\n        elif op == '-':\n            out.append(str(num1 - num2))\n        elif op == '*':\n            out.append(str(num1 * num2))\n        elif op == '/':\n            out.append(str(num1 // num2))\n        else:\n            out.append('Error: Invalid operator')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split(/\\n/);\nlet idx = 0;\nconst T = parseInt(lines[idx++]);\nlet output = [];\nfor (let t = 0; t < T; t++) {\n  const [a, b, op] = lines[idx++].trim().split(/\\s+/);\n  const num1 = parseInt(a, 10);\n  const num2 = parseInt(b, 10);\n  let res;\n  switch (op) {\n    case '+': res = num1 + num2; break;\n    case '-': res = num1 - num2; break;\n    case '*': res = num1 * num2; break;\n    case '/': res = Math.floor(num1 / num2); break;\n    default: res = 'Error: Invalid operator';\n  }\n  output.push(String(res));\n}\nconsole.log(output.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

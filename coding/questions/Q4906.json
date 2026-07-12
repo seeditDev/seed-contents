@@ -1,40 +1,50 @@
 {
   "questionId": "Q4906",
-  "title": "Interesting XOR!",
-  "slug": "interesting-xor",
+  "title": "Debug the code",
+  "slug": "debug-the-code",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Strings",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Bit Manipulation",
-      "XOR",
-      "Bitwise Operations",
-      "Product Maximization",
-      "Greedy"
+      "String",
+      "Indexing"
     ],
     "companyTags": [],
     "topicTags": [
-      "Bit Manipulation"
-    ]
+      "Strings in Java"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given an integer CCC. Let ddd be the smallest integer such that 2d2^d2d is strictly greater than CCC.\n\nConsider all pairs of non-negative integers (A,B)(A,B)(A,B) such that A,B&lt;2dA,B \\lt 2^dA,B&lt;2d and A\u2295B=CA \\oplus B = CA\u2295B=C (\u2295\\oplus\u2295 denotes the bitwise XOR operation). Find the maximum value of A\u22c5BA \\cdot BA\u22c5B over all these pairs.",
+    "problemStatement": "Rectify the errors in the program to correctly print the last character of the string.",
     "constraints": [
-      "1 \u2264 T \u2264 10^5",
-      "1 \u2264 C \u2264 10^9"
+      "1 <= T <= 100",
+      "1 <= |S| <= 1000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer C.",
-    "outputFormat": "For each test case output a single line containing the maximum possible product A\u00b7B such that 0 \u2264 A, B < 2^d, A xor B = C, where d is the smallest integer with 2^d > C.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a non‑empty string S (printable ASCII characters, no leading or trailing spaces).",
+    "outputFormat": "For each test case output a single character – the last character of the given string S – on its own line.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "2\n13\n10",
-        "output": "70\n91",
-        "explanation": "For C=13 (binary 1101), d=4, mask=2. Starting with A=B=2, assign bits 8,4,1 to keep numbers balanced \u2192 A=10, B=7, product=70. For C=10 (binary 1010), d=4, mask=5. Starting with A=B=5, assign bits 8 and 2 \u2192 A=13, B=7, product=91."
+        "input": "1\nCodeChef",
+        "output": "f",
+        "explanation": "The only test case string is \"CodeChef\"; its last character is 'f'."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\nhello\nA",
+        "output": "o\nA",
+        "explanation": "First string \"hello\" ends with 'o'. Second string \"A\" ends with 'A'."
+      },
+      {
+        "id": "sample_3",
+        "input": "3\nxyz\n12345\n!@#",
+        "output": "z\n5\n#",
+        "explanation": "Each line's last character is printed: 'z' from \"xyz\", '5' from \"12345\", and '#' from \"!@#\"."
       }
     ]
   },
@@ -42,37 +52,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "minimum boundary",
+        "input": "1\nZ",
+        "expectedOutput": "Z",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "maximum boundary",
+        "input": "1\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expectedOutput": "a",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "edge case",
+        "input": "1\n~!@#$%^&*()_+",
+        "expectedOutput": "+",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 1",
+        "input": "3\nHelloWorld\n123\nxyz",
+        "expectedOutput": "d\n3\nz",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "general case 2",
+        "input": "2\na b c\nXYZ",
+        "expectedOutput": "c\nZ",
         "weight": 2
       }
     ],
@@ -102,15 +112,27 @@
     ]
   },
   "solution": {
-    "approach": "For a given C, let d be the smallest integer with 2^d > C. All numbers are limited to d bits. For each bit position i (0\u2011based): if C_i = 0 then both A and B must have the same bit (0 or 1). To maximise the product we set these bits to 1 in both numbers, i.e., we start with A = B = mask where mask = ((1<<d)\u20111) xor C. For bits where C_i = 1 the two numbers must differ. The sum S = A + B is fixed: S = 2\u00b7mask + C. For a fixed sum, the product A\u00b7B is maximised when A and B are as close as possible. Therefore we distribute the set bits of C greedily from the most significant to the least significant, always giving the current bit to the smaller of the two numbers. This yields the pair (A, B) with minimal |A\u2011B| and thus maximal product. The algorithm runs in O(d) \u2264 O(30) per test case.\n\nSteps per test case:\n1. Find d by incrementing while (1<<d) \u2264 C.\n2. mask = ((1LL<<d)\u20111) ^ C.\n3. A = B = mask.\n4. For i from d\u20111 down to 0, if (C>>i)&1 is set:\n   - if A \u2264 B then A |= (1LL<<i) else B |= (1LL<<i).\n5. Output A * B.\n\nEdge cases: C = 0 \u2192 d = 0, only pair (0,0) \u2192 product 0. Power\u2011of\u2011two C works automatically.\nThe algorithm uses 64\u2011bit integers (or BigInt in JavaScript) to avoid overflow.",
-    "timeComplexity": "O(T \u00b7 d) where d \u2264 30 (\u2248 O(T)).",
-    "spaceComplexity": "O(1) additional space per test case.",
+    "approach": "For each test case we read the whole line representing the string. The last character is at index length‑1 (or using language‑specific helpers like back() or charAt()). We output that character. This is O(|S|) per test case for reading, and O(1) extra work to fetch the last character.",
+    "timeComplexity": "O(total number of characters in the input) – each character is read once.",
+    "spaceComplexity": "O(1) besides the input buffer used by the language runtime.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdint.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long C;\n        scanf(\"%lld\", &C);\n        int d = 0;\n        while ((1LL << d) <= C) ++d; // smallest d with 2^d > C\n        long long mask = ((1LL << d) - 1) ^ C;\n        long long A = mask, B = mask;\n        for (int i = d - 1; i >= 0; --i) {\n            if ((C >> i) & 1LL) {\n                if (A <= B) A |= (1LL << i);\n                else B |= (1LL << i);\n            }\n        }\n        printf(\"%lld\\n\", A * B);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long C; cin>>C;\n        int d=0; while((1LL<<d) <= C) ++d;\n        long long mask = ((1LL<<d)-1) ^ C;\n        long long A=mask, B=mask;\n        for(int i=d-1;i>=0;--i){\n            if((C>>i)&1LL){\n                if(A<=B) A|=(1LL<<i);\n                else B|=(1LL<<i);\n            }\n        }\n        cout << A*B << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int t = 0; t < T; t++) {\n            long C = Long.parseLong(br.readLine().trim());\n            int d = 0;\n            while ((1L << d) <= C) d++;\n            long mask = ((1L << d) - 1) ^ C;\n            long A = mask, B = mask;\n            for (int i = d - 1; i >= 0; i--) {\n                if (((C >> i) & 1L) == 1L) {\n                    if (A <= B) A |= (1L << i);\n                    else B |= (1L << i);\n                }\n            }\n            sb.append(A * B).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        C = int(next(it))\n        d = 0\n        while (1 << d) <= C:\n            d += 1\n        mask = ((1 << d) - 1) ^ C\n        A = B = mask\n        for i in range(d - 1, -1, -1):\n            if (C >> i) & 1:\n                if A <= B:\n                    A |= (1 << i)\n                else:\n                    B |= (1 << i)\n        out.append(str(A * B))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const C = BigInt(input[idx++]);\n  let d = 0n;\n  while ((1n << d) <= C) d++;\n  const mask = ((1n << d) - 1n) ^ C;\n  let A = mask, B = mask;\n  for (let i = Number(d) - 1; i >= 0; i--) {\n    const bit = (C >> BigInt(i)) & 1n;\n    if (bit === 1n) {\n      if (A <= B) A |= (1n << BigInt(i));\n      else B |= (1n << BigInt(i));\n    }\n  }\n  results.push((A * B).toString());\n}\nconsole.log(results.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <string.h>\nint main(){\n    int T;\n    if(scanf(\"%d\", &T)!=1) return 0;\n    int c=getchar(); // consume newline after T\n    char buf[1005];\n    while(T--){\n        if(!fgets(buf, sizeof(buf), stdin)) break;\n        size_t len=strlen(buf);\n        if(len>0 && buf[len-1]=='\\n') buf[--len]='\\0';\n        if(len>0) printf(\"%c\\n\", buf[len-1]);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    string line; getline(cin, line); // consume end‑of‑line after T\n    while(T--){\n        getline(cin, line);\n        if(!line.empty()) cout<<line.back()<<'\\n';\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for(int i=0;i<T;i++){\n            String s = br.readLine();\n            sb.append(s.charAt(s.length()-1)).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().splitlines()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    for i in range(1, t+1):\n        s = data[i]\n        out.append(s[-1])\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst T = parseInt(lines[idx++], 10);\nlet res = [];\nfor(let i=0;i<T;i++){\n  const s = lines[idx++];\n  res.push(s.charAt(s.length-1));\n}\nconsole.log(res.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

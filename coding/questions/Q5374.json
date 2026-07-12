@@ -1,41 +1,50 @@
 {
   "questionId": "Q5374",
-  "title": "Black and White Tree",
-  "slug": "black-and-white-tree",
+  "title": "Digit Rotation",
+  "slug": "digit-rotation",
   "version": 1,
-  "createdAt": "2026-07-02",
-  "updatedAt": "2026-07-02",
+  "createdAt": "2026-07-01",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Strings",
+    "difficulty": "Medium",
+    "isPremium": true,
     "tags": [
-      "competitive programming",
-      "dynamic programming",
-      "Dynamic Programming"
+      "Digit Rotation",
+      "String Manipulation"
     ],
     "companyTags": [],
     "topicTags": [
-      "Dynamic Programming"
-    ]
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You are given an undirected tree having NNN nodes. The color of each node is either Black or White.\n\nIn one step, you can choose a node uuu, toggle the color of the chosen node uuu, as well as toggle the colors of all the nodes vvv, such that {u,v}\\{u, v\\}{u,v} is an edge in the tree.\n\nCan you find out the minimum number of steps required to make the color of all the nodes black?\n\n**Note:** Since the input is large, prefer using fast input methods.\n\n\nInput Format\n\nThe first line of input contains a single integer TTT, denoting the number of test cases. The description of the TTT test cases follows.\nThe first line of each test case contains a single integer NNN.\nThe second line of each test case contains NNN space separated integers A1,A2,...,ANA_1, A_2,..., A_NA1\u200b,A2\u200b,...,AN\u200b. AiA_iAi\u200b = 0 represents that the initial color of the ithi^{th}ith node is black. AiA_iAi\u200b = 1 represents that the initial color of the ithi^{th}ith node is white.\nThe following N\u22121N-1N\u22121 lines contain two space-separated integers xxx and yyy, which denotes that there is an edge between nodes xxx and yyy.\n\n\nOutput Format\nFor each test case, output in a single line the minimum number of steps required to make the color of all the nodes black.\n\n\nOutput \u22121-1\u22121 if it is impossible to make the color of all the nodes black.",
+    "problemStatement": "For any positive integer, we define a digit rotation as either moving the first digit\nto the end of the number (left digit rotation), or the last digit to the front of the number (right digit rotation).\nFor example, the number 12345 could be left digit rotated to 23451, or right digit rotated to 51234.\nIf there are any leading zeros after digit rotation, they must be removed.\nSo 10203 could be left digit rotated to 2031, then left digit rotated again to 312.\nGiven an integer N, determine the largest integer that can result from performing a series of one or more\ndigit rotations on N.",
     "constraints": [
-      "1\u2264T\u22645\u22c51041 \\leq T \\leq 5 \\cdot 10^41\u2264T\u22645\u22c5104",
-      "1\u2264N\u22641051 \\leq N \\leq 10^51\u2264N\u2264105",
-      "0\u2264Ai\u226410 \\leq A_i \\leq 10\u2264Ai\u200b\u22641",
-      "1\u2264x,y\u2264N1 \\leq x, y \\leq N1\u2264x,y\u2264N",
-      "The sum of NNN over all test cases does not exceed 5\u22c51055 \\cdot 10^55\u22c5105"
+      "1 <= T <= 1000",
+      "1 <= N < 10^8"
     ],
-    "inputFormat": "",
-    "outputFormat": "",
+    "inputFormat": "First line contains T, the number of test cases. Each test case contains a single integer N.",
+    "outputFormat": "For each test case, print the largest integer that can result from performing a series of one or more digit rotations on N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n3\n0 0 0\n1 2\n1 3\n3\n1 1 1\n1 2\n1 3\n3\n0 1 0\n1 2\n1 3",
-        "output": "0\n1\n2",
-        "explanation": "Explanation:\nTest Case 111: All the nodes are already black, so we do not need to do anything.\nTest Case 222: All the nodes are white. If we choose node 111 in the first step, all the nodes will become black. Hence, only 111 step is required to make all the nodes black.\nTest Case 333: Choose node 333 in the first step. This will make all the nodes white. Choose node 111 in the second step. This will make all the nodes black."
+        "input": "6\n12345\n54321\n10901\n211011\n7\n90",
+        "output": "51234\n54321\n11090\n211011\n7\n90",
+        "explanation": "For each test case, we generate all possible rotations of the number and keep track of the maximum."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n123",
+        "output": "321",
+        "explanation": "The largest rotation of 123 is 321."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n9",
+        "output": "9",
+        "explanation": "The largest rotation of 9 is 9 itself."
       }
     ]
   },
@@ -43,20 +52,53 @@
     "hidden": [
       {
         "id": "tc_1",
-        "input": "3\n3\n0 0 0\n1 2\n1 3\n3\n1 1 1\n1 2\n1 3\n3\n0 1 0\n1 2\n1 3",
-        "expectedOutput": "0\n1\n2",
-        "weight": 100
+        "label": "minimum boundary",
+        "input": "1\n1",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_2",
+        "label": "maximum boundary",
+        "input": "1\n99999999",
+        "expectedOutput": "99999999",
+        "weight": 2
+      },
+      {
+        "id": "tc_3",
+        "label": "uniform/edge case",
+        "input": "1\n11111",
+        "expectedOutput": "11111",
+        "weight": 2
+      },
+      {
+        "id": "tc_4",
+        "label": "tricky case",
+        "input": "1\n10001",
+        "expectedOutput": "10001",
+        "weight": 2
+      },
+      {
+        "id": "tc_5",
+        "label": "stress/general",
+        "input": "5\n12345\n54321\n10901\n211011\n7",
+        "expectedOutput": "51234\n54321\n11090\n211011\n7",
+        "weight": 2
       }
     ],
-    "totalTestCases": 1,
-    "totalWeight": 100
+    "totalTestCases": 5,
+    "totalWeight": 10
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
     "testCaseWeights": [
-      100
+      2,
+      2,
+      2,
+      2,
+      2
     ],
-    "maxScore": 100
+    "maxScore": 10
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -70,9 +112,27 @@
     ]
   },
   "solution": {
-    "approach": "",
-    "timeComplexity": "O(N)",
-    "spaceComplexity": "O(1)",
-    "code": {}
+    "approach": "The key insight is to generate all possible rotations of the number and keep track of the maximum. This can be achieved by converting the number to a string, rotating the string, and then converting it back to an integer. The time complexity is O(T * N), where T is the number of test cases and N is the number of digits in the number.",
+    "timeComplexity": "O(T * N) per test case, O(T * N) total.",
+    "spaceComplexity": "O(N) — the dominant structure is the string representation of the number.",
+    "code": {
+      "C": "#include <stdio.h>\n#include <string.h>\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        char N[9];\n        scanf(\"%s\", N);\n        int max = 0;\n        for (int i = 0; i < strlen(N); i++) {\n            char rotated[9];\n            strcpy(rotated, N + i);\n            strcat(rotated, N);\n            rotated[strlen(N) + i] = '\\0';\n            int num = atoi(rotated + i);\n            if (num > max) max = num;\n        }\n        printf(\"%d\\n\", max);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(NULL);\n    int T;\n    cin >> T;\n    while (T--) {\n        string N;\n        cin >> N;\n        int max = 0;\n        for (int i = 0; i < N.length(); i++) {\n            string rotated = N.substr(i) + N.substr(0, i);\n            int num = stoi(rotated);\n            if (num > max) max = num;\n        }\n        cout << max << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            String N = sc.next();\n            int max = 0;\n            for (int i = 0; i < N.length(); i++) {\n                String rotated = N.substring(i) + N.substring(0, i);\n                int num = Integer.parseInt(rotated);\n                if (num > max) max = num;\n            }\n            System.out.println(max);\n        }\n    }\n}",
+      "Python3": "import sys\nfor _ in range(int(input())):\n    N = input().strip()\n    max_num = 0\n    for i in range(len(N)):\n        rotated = N[i:] + N[:i]\n        num = int(rotated.lstrip('0') or '0')\n        if num > max_num: max_num = num\n    print(max_num)",
+      "JavaScript": "const lines = require('fs').readFileSync(0, 'utf-8').trim().split('\\n');\nlet i = 0;\nconst T = parseInt(lines[i++]);\nfor (let j = 0; j < T; j++) {\n    const N = lines[i++].trim();\n    let max = 0;\n    for (let k = 0; k < N.length; k++) {\n        const rotated = N.slice(k) + N.slice(0, k);\n        const num = parseInt(rotated.replace(/^0+/, '') || '0');\n        if (num > max) max = num;\n    }\n    console.log(max);\n}"
+    }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

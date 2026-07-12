@@ -1,69 +1,88 @@
 {
   "questionId": "Q8770",
-  "title": "Best Time to Buy and Sell Stock with Cooldown",
-  "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+  "title": "Battery Low",
+  "slug": "battery-low",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Dynamic Programming",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Buy",
-      "Stocks",
-      "Sell",
-      "Cooldown",
-      "Dynamic Programming"
+      "Conditional",
+      "Simple Comparison"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "We are given an array Arr[] of length n. It represents the price of a stock on \u2018n\u2019 days. The following guidelines need to be followed:\n\n\n\n\nWe can buy and sell the stock any number of times.In order to sell the stock, we need to first buy it on the same or any previous day.We can\u2019t buy a stock again after buying it once. In other words, we first buy a stock and then sell it. After selling we can buy and sell again. But we can\u2019t sell before buying and can\u2019t buy before selling any previously bought stock.We can\u2019t buy a stock on the very next day of selling it. This is the <st",
+    "problemStatement": "Chef's phone shows a Battery Low notification if the battery level is 15%15 \\%15% or less.\n\nGiven that the battery level of Chef's phone is X%X \\%X%, determine whether it would show a Battery low notification.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains a single line of input, an integer XXX, denoting the battery level of the phone.\n\n\nOutput Format\nFor each test case, output in a single line Yes\\texttt{Yes}Yes, if the battery level is 15%15 \\%15% or below. Otherwise, print No\\text{No}No.\n\n\nYou may print each character of Yes\\texttt{Yes}Yes and No\\text{No}No in uppercase or lowercase (for example, YeS\\texttt{YeS}YeS, YES\\texttt{YES}YES, yes\\texttt{yes}yes will be considered identical).",
     "constraints": [
-      "1 <= n <= 10^5",
-      "1 <= Arr[i] <= 10^5"
+      "1 <= T <= 100",
+      "1 <= X <= 100"
     ],
-    "inputFormat": "An array of integers representing the stock prices for each day",
-    "outputFormat": "The maximum possible profit",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer X, the battery level (in percent).",
+    "outputFormat": "For each test case output a line containing \"Yes\" if X is less than or equal to 15, otherwise output \"No\". The case of letters does not matter.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\\n15\\n3\\n65",
+        "output": "Yes\\nYes\\nNo",
+        "explanation": "Battery levels 15 and 3 are ≤15 so the notification appears (Yes). Level 65 is >15 so output is No."
+      },
+      {
+        "id": "sample_2",
+        "input": "2\\n15\\n16",
+        "output": "Yes\\nNo",
+        "explanation": "First test case X=15 → Yes. Second test case X=16 → No."
+      },
+      {
+        "id": "sample_3",
+        "input": "4\\n1\\n14\\n15\\n100",
+        "output": "Yes\\nYes\\nYes\\nNo",
+        "explanation": "Values 1,14,15 are ≤15 → Yes. Value 100 >15 → No."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "[1]",
-        "expectedOutput": "0",
+        "label": "minimum boundary",
+        "input": "1\\n1",
+        "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "[100000, 1, 100000, 1, 100000, 1, 100000, 1, 100000]",
-        "expectedOutput": "499996",
+        "label": "maximum boundary",
+        "input": "1\\n100",
+        "expectedOutput": "No",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform",
-        "input": "[5, 5, 5, 5, 5]",
-        "expectedOutput": "0",
+        "label": "edge case",
+        "input": "1\\n15",
+        "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case",
-        "input": "[1, 2, 3, 0, 2]",
-        "expectedOutput": "3",
+        "label": "general case 1",
+        "input": "3\\n16\\n20\\n30",
+        "expectedOutput": "No\\nNo\\nNo",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "mixed case",
-        "input": "[7, 1, 5, 3, 6, 4]",
-        "expectedOutput": "7",
+        "label": "general case 2",
+        "input": "3\\n5\\n10\\n15",
+        "expectedOutput": "Yes\\nYes\\nYes",
         "weight": 2
       }
     ],
@@ -93,15 +112,27 @@
     ]
   },
   "solution": {
-    "approach": "Use dynamic programming to track the maximum profit at each day, considering whether we can buy or sell the stock",
-    "timeComplexity": "O(n)",
-    "spaceComplexity": "O(n)",
+    "approach": "Read the number of test cases. For each test case read X and compare it with the threshold 15. If X <= 15 print \"Yes\", else print \"No\". This is a direct O(1) check per test case.",
+    "timeComplexity": "O(T) – one constant‑time comparison for each of the T test cases.",
+    "spaceComplexity": "O(1) – only a few variables are used regardless of input size.",
     "code": {
-      "C": "#include <stdio.h>\nint maxProfit(int* prices, int pricesSize) {\n    if (pricesSize < 2) return 0;\n    int buy = -prices[0], sell = 0, cooldown = 0;\n    for (int i = 1; i < pricesSize; i++) {\n        int newBuy = max(buy, cooldown - prices[i]);\n        int newSell = max(sell, buy + prices[i]);\n        int newCooldown = max(cooldown, sell);\n        buy = newBuy;\n        sell = newSell;\n        cooldown = newCooldown;\n    }\n    return sell;\n}\n",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nclass Solution{\npublic:\n    int maxProfit(vector<int>& prices) {\n        if (prices.size() < 2) return 0;\n        int buy = -prices[0], sell = 0, cooldown = 0;\n        for (int i = 1; i < prices.size(); i++) {\n            int newBuy = max(buy, cooldown - prices[i]);\n            int newSell = max(sell, buy + prices[i]);\n            int newCooldown = max(cooldown, sell);\n            buy = newBuy;\n            sell = newSell;\n            cooldown = newCooldown;\n        }\n        return sell;\n    }\n};\n",
-      "Java": "public class Solution {\n    public int maxProfit(int[] prices) {\n        if (prices.length < 2) return 0;\n        int buy = -prices[0], sell = 0, cooldown = 0;\n        for (int i = 1; i < prices.length; i++) {\n            int newBuy = Math.max(buy, cooldown - prices[i]);\n            int newSell = Math.max(sell, buy + prices[i]);\n            int newCooldown = Math.max(cooldown, sell);\n            buy = newBuy;\n            sell = newSell;\n            cooldown = newCooldown;\n        }\n        return sell;\n    }\n}\n",
-      "Python3": "class Solution:\n    def maxProfit(self, prices: List[int]) -> int:\n        if len(prices) < 2: return 0\n        buy, sell, cooldown = -prices[0], 0, 0\n        for i in range(1, len(prices)):\n            newBuy = max(buy, cooldown - prices[i])\n            newSell = max(sell, buy + prices[i])\n            newCooldown = max(cooldown, sell)\n            buy, sell, cooldown = newBuy, newSell, newCooldown\n        return sell\n",
-      "JavaScript": "var maxProfit = function(prices) {\n    if (prices.length < 2) return 0;\n    let buy = -prices[0], sell = 0, cooldown = 0;\n    for (let i = 1; i < prices.length; i++) {\n        let newBuy = Math.max(buy, cooldown - prices[i]);\n        let newSell = Math.max(sell, buy + prices[i]);\n        let newCooldown = Math.max(cooldown, sell);\n        buy = newBuy;\n        sell = newSell;\n        cooldown = newCooldown;\n    }\n    return sell;\n};\n"
+      "C": "#include <stdio.h>\nint main(){int T; if(scanf(\"%d\",&T)!=1) return 0; while(T--){int X; scanf(\"%d\",&X); if(X<=15) printf(\"Yes\\n\"); else printf(\"No\\n\");} return 0;}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);cin.tie(nullptr);int T; if(!(cin>>T)) return 0; while(T--){int X;cin>>X;cout<<(X<=15?\"Yes\":\"No\"); if(T) cout<<'\\n';} return 0;}",
+      "Java": "import java.io.*;\npublic class Main{\n    public static void main(String[] args) throws Exception{\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for(int i=0;i<T;i++){\n            int X = Integer.parseInt(br.readLine().trim());\n            sb.append(X<=15?\"Yes\":\"No\");\n            if(i<T-1) sb.append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    for i in range(1, t+1):\n        x = int(data[i])\n        out.append('Yes' if x <= 15 else 'No')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == '__main__':\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = parseInt(input[idx++],10);\nlet out = [];\nfor(let i=0;i<T;i++){\n  const X = parseInt(input[idx++],10);\n  out.push(X <= 15 ? 'Yes' : 'No');\n}\nconsole.log(out.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

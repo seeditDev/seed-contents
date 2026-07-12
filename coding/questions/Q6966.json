@@ -1,40 +1,38 @@
 {
   "questionId": "Q6966",
-  "title": "Minimum XOR",
-  "slug": "minimum-xor",
+  "title": "Bob and Pallindromes",
+  "slug": "bob-and-pallindromes",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Bit Manipulation",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Bit Manipulation",
-      "XOR",
-      "Greedy"
+      "Probability",
+      "Modular Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Bit Manipulation"
-    ]
+      "Combinatorics & Probability"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "You have NNN integers - A1,A2,\u2026,ANA_1, A_2, \\ldots, A_NA1\u200b,A2\u200b,\u2026,AN\u200b.\n\nYou have to make the Bitwise XOR of all the elements as minimum as possible.\n\nYou are allowed to remove at most one element. Note that this means that you can also choose to not remove any element.\n\nWhat is the final minimum XOR that you can achieve after removing at most one element?\n\n**Note:** In most programming languages, the XOR of two variables x and y can be computed using x ^ y.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of two lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of elements.\nThe next line contains NNN space separated integers\n\n\n\n\nOutput Format\nFor each test case, output on a new line the final minimum XOR of the elements.",
+    "problemStatement": "Bob has a string ** (S)**, which is initially empty. In one operation, he can select a lowercase character (a-z) uniformly at random and appends it to S. He then evaluates whether S is a palindrome or not; if it is, he gets 1 point.\n\n\n\nGiven that Bob performs **N **operations in total, find the expected no. of points Bob gets.\n\n\nIt is guaranteed that the answer can always be represented as a rational number ab\\frac{a}{b}ba​. You must print this number modulo 1000000007. By this we mean that you must print, a×b−1a \\times b^{-1}a×b−1 modulo 1000000007 where b−1b^{-1}b−1 denotes the modulo inverse of bbb with respect to 1000000007.\n\n\n\n\nAlso observe that 1000000007 is a prime number.",
     "constraints": [
-      "1 <= T <= 10^5",
-      "1 <= N <= 3*10^5",
-      "1 <= Ai <= 10^5",
-      "Sum of N over all test cases <= 3*10^5"
+      "1 <= T <= 30",
+      "1 <= N <= 1000000000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case, the first line contains an integer N, the number of elements. The second line contains N space\u2011separated integers A1, A2, \u2026, AN.",
-    "outputFormat": "For each test case, output a single line containing the minimum possible XOR value after removing at most one element.",
+    "inputFormat": "The first line contains the number of test cases T. For each test case, the first line contains the number of operations N.",
+    "outputFormat": "For each test case, print the expected number of points Bob gets, modulo 1000000007.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\\n4\\n2 4 3 6\\n2\\n4 4\\n5\\n1 3 5 17 9",
-        "output": "0\\n0\\n14",
-        "explanation": "Testcase 1: total XOR = 2^4^3^6 = 3. Removing element 3 gives XOR 0, which is minimal.\\nTestcase 2: total XOR = 0, already minimal.\\nTestcase 3: total XOR = 1^3^5^17^9 = 31. Removing 17 yields 14, the smallest possible."
+        "input": "3\n2\n3\n4",
+        "output": "576923082\n153846156\n214497044",
+        "explanation": "For n = 2, the answer is 27/26 points. We have to print this number modulo 1000000007 which equals 27 * 26^(-1) % 1000000007 = 576923082."
       }
     ]
   },
@@ -43,36 +41,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1\\n5",
+        "input": "1\n1",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (15 elements)",
-        "input": "1\\n15\\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15",
-        "expectedOutput": "0",
+        "label": "maximum boundary",
+        "input": "1\n1000000000",
+        "expectedOutput": "384615384",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case \u2013 all equal",
-        "input": "1\\n4\\n7 7 7 7",
+        "label": "edge case",
+        "input": "1\n0",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\\n5\\n10 20 30 40 50",
-        "expectedOutput": "4",
+        "input": "1\n10",
+        "expectedOutput": "576923082",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\\n3\\n100000 99999 12345",
-        "expectedOutput": "15",
+        "input": "1\n100",
+        "expectedOutput": "384615384",
         "weight": 2
       }
     ],
@@ -102,15 +100,27 @@
     ]
   },
   "solution": {
-    "approach": "For a test case let X be the XOR of all N elements. If we remove element Ai, the XOR of the remaining elements becomes X ^ Ai (because X = (XOR of all) = (XOR without Ai) ^ Ai). We may also keep all elements, giving value X. Therefore the answer is min( X, min_{i=1..N} (X ^ Ai) ). Compute X in O(N), then scan the array once more to compute the minimum of X ^ Ai. The overall complexity is O(N) per test case and O(1) extra space.",
-    "timeComplexity": "O(N) per test case, O(total N) over all test cases.",
-    "spaceComplexity": "O(1) besides input storage.",
+    "approach": "To solve this problem, we can use the concept of probability. For each operation, the probability that the string is a palindrome is 1/26, since there are 26 possible characters and only one of them will make the string a palindrome. We can use the formula for the expected value of a random variable to calculate the expected number of points Bob gets. The expected value is the sum of the product of each possible outcome and its probability. In this case, the possible outcomes are 0 and 1, and their probabilities are (25/26) and (1/26) respectively. We can use modular arithmetic to calculate the expected value modulo 1000000007.",
+    "timeComplexity": "O(T) — the time complexity is linear with respect to the number of test cases, since we need to calculate the expected value for each test case.",
+    "spaceComplexity": "O(1) — the space complexity is constant, since we only need to store a few variables to calculate the expected value.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\", &N);\n        int x=0, val;\n        int *arr = (int*)malloc(N*sizeof(int));\n        for(int i=0;i<N;i++){\n            scanf(\"%d\", &val);\n            arr[i]=val;\n            x ^= val;\n        }\n        int ans = x;\n        for(int i=0;i<N;i++){\n            int cand = x ^ arr[i];\n            if(cand < ans) ans = cand;\n        }\n        printf(\"%d\\n\", ans);\n        free(arr);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N;\n        vector<int> a(N);\n        int x=0;\n        for(int i=0;i<N;i++){\n            cin>>a[i];\n            x ^= a[i];\n        }\n        int ans = x;\n        for(int v: a){\n            ans = min(ans, x ^ v);\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastScanner fs = new FastScanner(System.in);\n        int T = fs.nextInt();\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            int N = fs.nextInt();\n            int[] a = new int[N];\n            int x = 0;\n            for (int i = 0; i < N; i++) {\n                a[i] = fs.nextInt();\n                x ^= a[i];\n            }\n            int ans = x;\n            for (int v : a) {\n                ans = Math.min(ans, x ^ v);\n            }\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n    static class FastScanner {\n        private final BufferedInputStream in;\n        private final byte[] buffer = new byte[1 << 16];\n        private int ptr = 0, len = 0;\n        FastScanner(InputStream is) { in = new BufferedInputStream(is); }\n        private int readByte() throws IOException {\n            if (ptr >= len) {\n                len = in.read(buffer);\n                ptr = 0;\n                if (len <= 0) return -1;\n            }\n            return buffer[ptr++];\n        }\n        int nextInt() throws IOException {\n            int c, sign = 1, val = 0;\n            do { c = readByte(); } while (c <= ' ');\n            if (c == '-') { sign = -1; c = readByte(); }\n            while (c > ' ') {\n                val = val * 10 + (c - '0');\n                c = readByte();\n            }\n            return val * sign;\n        }\n    }\n}",
-      "Python3": "import sys\n\ndef solve():\n    data = list(map(int, sys.stdin.read().split()))\n    it = iter(data)\n    T = next(it)\n    out_lines = []\n    for _ in range(T):\n        N = next(it)\n        x = 0\n        arr = []\n        for _ in range(N):\n            v = next(it)\n            arr.append(v)\n            x ^= v\n        ans = x\n        for v in arr:\n            cand = x ^ v\n            if cand < ans:\n                ans = cand\n        out_lines.append(str(ans))\n    sys.stdout.write('\\n'.join(out_lines))\n\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\nlet idx = 0;\nconst T = input[idx++];\nlet outputs = [];\nfor (let t = 0; t < T; t++) {\n  const N = input[idx++];\n  let x = 0;\n  const arr = new Array(N);\n  for (let i = 0; i < N; i++) {\n    const v = input[idx++];\n    arr[i] = v;\n    x ^= v;\n  }\n  let ans = x;\n  for (let i = 0; i < N; i++) {\n    const cand = x ^ arr[i];\n    if (cand < ans) ans = cand;\n  }\n  outputs.push(String(ans));\n}\nconsole.log(outputs.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <stdint.h>\nint64_t mod_inverse(int64_t a, int64_t m) {\n    int64_t m0 = m;\n    int64_t y = 0, x = 1;\n    if (m == 1)\n        return 0;\n    while (a > 1) {\n        int64_t q = a / m;\n        int64_t t = m;\n        m = a % m, a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0)\n        x += m0;\n    return x;\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int64_t N;\n        scanf(\"%lld\", &N);\n        int64_t mod = 1000000007;\n        int64_t ans = (N * mod_inverse(26, mod)) % mod;\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <cstdint>\nint64_t mod_inverse(int64_t a, int64_t m) {\n    int64_t m0 = m;\n    int64_t y = 0, x = 1;\n    if (m == 1)\n        return 0;\n    while (a > 1) {\n        int64_t q = a / m;\n        int64_t t = m;\n        m = a % m, a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0)\n        x += m0;\n    return x;\n}\nint main() {\n    int T;\n    std::cin >> T;\n    while (T--) {\n        int64_t N;\n        std::cin >> N;\n        int64_t mod = 1000000007;\n        int64_t ans = (N * mod_inverse(26, mod)) % mod;\n        std::cout << ans << std::endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static long mod_inverse(long a, long m) {\n        long m0 = m;\n        long y = 0, x = 1;\n        if (m == 1)\n            return 0;\n        while (a > 1) {\n            long q = a / m;\n            long t = m;\n            m = a % m;\n            a = t;\n            t = y;\n            y = x - q * y;\n            x = t;\n        }\n        if (x < 0)\n            x += m0;\n        return x;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            long N = sc.nextLong();\n            long mod = 1000000007;\n            long ans = (N * mod_inverse(26, mod)) % mod;\n            System.out.println(ans);\n        }\n    }\n}",
+      "Python3": "def mod_inverse(a, m):\n    m0 = m\n    y = 0\n    x = 1\n    if m == 1:\n        return 0\n    while a > 1:\n        q = a // m\n        t = m\n        m = a % m\n        a = t\n        t = y\n        y = x - q * y\n        x = t\n    if x < 0:\n        x += m0\n    return x\nT = int(input())\nfor _ in range(T):\n    N = int(input())\n    mod = 1000000007\n    ans = (N * mod_inverse(26, mod)) % mod\n    print(ans)",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nfunction mod_inverse(a, m) {\n    let m0 = m;\n    let y = 0, x = 1;\n    if (m == 1)\n        return 0;\n    while (a > 1) {\n        let q = Math.floor(a / m);\n        let t = m;\n        m = a % m;\n        a = t;\n        t = y;\n        y = x - q * y;\n        x = t;\n    }\n    if (x < 0)\n        x += m0;\n    return x;\n}\nlet T = parseInt(lines[idx++]);\nwhile (T-- > 0) {\n    let N = BigInt(lines[idx++]);\n    let mod = BigInt(1000000007);\n    let ans = (N * BigInt(mod_inverse(26n, mod))) % mod;\n    console.log(ans.toString());\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

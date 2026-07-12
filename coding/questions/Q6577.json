@@ -1,41 +1,40 @@
 {
   "questionId": "Q6577",
-  "title": "Spreading Charges",
-  "slug": "spreading-charges",
+  "title": "Sum of distances",
+  "slug": "sum-of-distances",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Graph",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Simulation",
-      "Greedy",
-      "Strings",
-      "Two Pointers"
+      "Dynamic Programming",
+      "Shortest Path"
     ],
     "companyTags": [],
     "topicTags": [
-      "Ad-hoc & Implementation"
-    ]
+      "Dynamic Programming"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Chef has a string SSS of length NNN, consisting of `+, -,` and `0`, where `+` denotes a source of positive charge, `-` denotes a source of negative charge, and `0` denotes a neutral object.\n\nEach second, the charge sources emit their respective charge to their immediate neighbours. The charge emissions cannot affect other charge sources but can convert a neutral object into a charge source as following:\n\n\nIf an object was initially neutral, and had exactly one charged source as neighbour, it becomes a charged source as received by its neighbour.\nIf an object was initially neutral, and had no charged source as neighbour, it remains a neutral object.\nIf an object was initially neutral, and had both charged sources as neighbours, it becomes a charged source as received by its neighbours. Note that in case of neighbours with opposite charges, the object remains neutral.\nFor example, after one second, `+0+` becomes `+++`, `00-` becomes `0--`, `000` remains `000` and `+0-` remains `+0-`. Refer to samples for further explanation.\n\nFind out the number of neutral objects in the string after infinite time.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of multiple lines of input.\n\nThe first line of each test case contains an integer NNN \u2014 the number of objects.\nThe next line contains a string SSS of length NNN, consisting of `+, -,` and `0`, where `+` denotes a source of positive charge, `-` denotes a source of negative charge, and `0` denotes a neutral object.\n\n\n\n\nOutput Format\nFor each test case, output on a new line, the number of neutral objects in the string after infinite time.",
+    "problemStatement": "There is a **directed** acyclic graph with **N** vertices. The vertices are numbered from **1** to **N**.\n\n\n\tFor every **1 ≤ i ≤ N-1**, there is an edge from vertex **i** to vertex **i+1**, which has weight **ai**.\n\n\n\tFor every **1 ≤ i ≤ N-2**, there is an edge from vertex **i** to vertex **i+2**, which has weight **bi**.\n\n\n\tFor every **1 ≤ i ≤ N-3**, there is an edge from vertex **i** to vertex **i+3**, which has weight **ci**.\n\n\n\tThere are no other edges.\n\n\n\tFor each pair of vertices **s**,&nbsp;**t** where **s &lt; t**, let **d(s, t)** denote the length of the shortest path from **s** to **t**. Your task is to compute the sum of **d(s, t)** for every **1 ≤ s &lt; t ≤ N.**",
     "constraints": [
-      "1 <= T <= 2000",
-      "1 <= N <= 100000",
-      "The sum of N over all test cases does not exceed 200000",
-      "S contains only '+', '-', '0'"
+      "1 ≤ T ≤ 10^4",
+      "4 ≤ N ≤ 10^5",
+      "1 ≤ sum of N over all test cases ≤ 3*10^5",
+      "1 ≤ ai, bi, ci ≤ 10^4"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each test case consists of two lines. The first line contains an integer N, the length of the string. The second line contains a string S of length N, consisting only of characters '+', '-', and '0'.",
-    "outputFormat": "For each test case output a single line containing the number of neutral objects ('0') that remain after the process stabilises (i.e., after infinite time).",
+    "inputFormat": "The first line contains an integer T denoting the number of test cases. Each test case consists of four lines. The first line contains an integer N. The second line contains N-1 integers a1, a2, ..., aN-1. The third line contains N-2 integers b1, b2, ..., bN-2. The fourth line contains N-3 integers c1, c2, ..., cN-3.",
+    "outputFormat": "For each test case, output a single line containing an integer, denoting the sum of d(s, t) for every 1 ≤ s < t ≤ N.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n2\n00\n3\n-+0\n6\n00+-00\n8\n0-0+000-",
-        "output": "2\n0\n0\n2",
-        "explanation": "Test case 1: no charged source, both objects stay neutral \u2192 2.\nTest case 2: only a trailing neutral after a '+' becomes '+', no neutral left \u2192 0.\nTest case 3: all zeros are eventually converted by the surrounding charges \u2192 0.\nTest case 4: there are two zero blocks between opposite charges of odd length, each leaves one neutral \u2192 2."
+        "input": "2\n4\n1 1 1\n1 1\n1\n5\n1 2 3 4\n2 3 4\n3 4",
+        "output": "6\n31",
+        "explanation": "For the first test case, the distance between each pair of vertices is 1, so the sum of the distances is 6. For the second test case, the distances are calculated based on the given edge weights."
       }
     ]
   },
@@ -44,36 +43,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1\n0",
-        "expectedOutput": "1",
+        "input": "1\n4\n1 1 1\n1 1\n1",
+        "expectedOutput": "6",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "maximum boundary (no zeros)",
-        "input": "1\n15\n+++++-----+++++",
-        "expectedOutput": "0",
+        "label": "maximum boundary",
+        "input": "1\n100000\n1 1 1 1 1 1 1 1 1 1\n1 1 1 1 1 1 1 1 1\n1 1 1 1 1 1 1",
+        "expectedOutput": "4999950000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "opposite signs even distance",
-        "input": "1\n4\n+00-",
-        "expectedOutput": "0",
+        "label": "edge case",
+        "input": "1\n5\n1 2 3 4\n2 3 4\n3 4",
+        "expectedOutput": "31",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "opposite signs odd distance",
-        "input": "1\n3\n+0-",
-        "expectedOutput": "1",
+        "label": "general case 1",
+        "input": "1\n10\n1 2 3 4 5 6 7 8 9\n2 3 4 5 6 7 8\n3 4 5 6 7",
+        "expectedOutput": "330",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "single charge with leading and trailing zeros",
-        "input": "1\n7\n00+0000",
-        "expectedOutput": "0",
+        "label": "general case 2",
+        "input": "1\n15\n1 2 3 4 5 6 7 8 9 10 11 12 13 14\n2 3 4 5 6 7 8 9 10 11 12 13\n3 4 5 6 7 8 9 10 11 12",
+        "expectedOutput": "1240",
         "weight": 2
       }
     ],
@@ -103,15 +102,27 @@
     ]
   },
   "solution": {
-    "approach": "For each test case scan the string once and record the positions and signs of all charged sources ('+' or '-'). If there is no charged source, every character stays neutral, so answer = N. Otherwise, consider each maximal block of consecutive '0's:\n* Leading zeros (before the first charged source) and trailing zeros (after the last charged source) are always converted because they have exactly one charged neighbour.\n* For a block between two charged sources at positions L and R (L<R) with signs cL and cR, let d = R\u2011L\u20111 be the length of the block.\n    - If cL == cR, the whole block becomes that sign \u2192 contributes 0 neutral.\n    - If cL != cR, the two charges spread towards each other. After floor(d/2) seconds the left part is filled with cL and the right part with cR. If d is odd, one middle cell has opposite neighbours simultaneously and stays neutral forever. Hence the block contributes 1 neutral when d is odd, otherwise 0.\nSumming contributions of all blocks yields the answer. The scan is O(N) per test case and uses O(1) extra memory.\n",
-    "timeComplexity": "O(N) per test case, where N is the length of the string (overall O(total N) \u2264 2\u00b710^5).",
-    "spaceComplexity": "O(1) besides the input string.",
+    "approach": "To solve this problem, we can use dynamic programming to calculate the shortest distance between each pair of vertices. We start by initializing the distance array with the given edge weights. Then, we iterate over each vertex and update the distance array based on the shortest path from the current vertex to all other vertices. Finally, we calculate the sum of the shortest distances between all pairs of vertices.",
+    "timeComplexity": "O(T*N^2) — where T is the number of test cases and N is the number of vertices. The time complexity is dominated by the nested loops used to calculate the shortest distances between all pairs of vertices.",
+    "spaceComplexity": "O(N) — where N is the number of vertices. The space complexity is dominated by the distance array used to store the shortest distances between each pair of vertices.",
     "code": {
-      "C": "#include <stdio.h>\n#include <string.h>\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N; scanf(\"%d\",&N);\n        char s[100005]; scanf(\"%s\",s);\n        int first=-1,last=-1; // positions of first and last charge\n        for(int i=0;i<N;i++) if(s[i]!='0'){first=i; break;}\n        for(int i=N-1;i>=0;i--) if(s[i]!='0'){last=i; break;}\n        if(first==-1){ // no charge at all\n            printf(\"%d\\n\",N);\n            continue;\n        }\n        long long ans=0;\n        // process blocks between charges\n        int prev=first; char prevc=s[first];\n        for(int i=first+1;i<=last;i++){\n            if(s[i]!='0'){\n                int dist=i-prev-1;\n                if(dist>0){\n                    if(prevc!=s[i]){\n                        if(dist%2==1) ans+=1; // odd distance leaves one neutral\n                    }\n                    // same sign or even distance adds nothing\n                }\n                prev=i; prevc=s[i];\n            }\n        }\n        // leading and trailing zeros never add neutrals\n        printf(\"%lld\\n\",ans);\n    }\n    return 0;\n}\n",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        int N; cin>>N; string s; cin>>s;\n        int first=-1,last=-1;\n        for(int i=0;i<N;i++) if(s[i]!='0'){first=i; break;}\n        for(int i=N-1;i>=0;i--) if(s[i]!='0'){last=i; break;}\n        if(first==-1){\n            cout<<N<<\"\\n\";\n            continue;\n        }\n        long long ans=0;\n        int prev=first; char prevc=s[first];\n        for(int i=first+1;i<=last;i++){\n            if(s[i]!='0'){\n                int dist=i-prev-1;\n                if(dist>0 && prevc!=s[i] && (dist%2==1)) ans+=1;\n                prev=i; prevc=s[i];\n            }\n        }\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}\n",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder out = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int N = Integer.parseInt(br.readLine().trim());\n            String s = br.readLine().trim();\n            int first = -1, last = -1;\n            for (int i = 0; i < N; i++) if (s.charAt(i) != '0') { first = i; break; }\n            for (int i = N - 1; i >= 0; i--) if (s.charAt(i) != '0') { last = i; break; }\n            if (first == -1) {\n                out.append(N).append('\\n');\n                continue;\n            }\n            long ans = 0;\n            int prev = first; char prevc = s.charAt(first);\n            for (int i = first + 1; i <= last; i++) {\n                if (s.charAt(i) != '0') {\n                    int dist = i - prev - 1;\n                    if (dist > 0 && prevc != s.charAt(i) && (dist % 2 == 1)) ans++;\n                    prev = i; prevc = s.charAt(i);\n                }\n            }\n            out.append(ans).append('\\n');\n        }\n        System.out.print(out.toString());\n    }\n}\n",
-      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it))\n        s = next(it)\n        first = -1\n        last = -1\n        for i,ch in enumerate(s):\n            if ch!='0':\n                first=i\n                break\n        for i in range(N-1,-1,-1):\n            if s[i]!='0':\n                last=i\n                break\n        if first==-1:\n            out.append(str(N))\n            continue\n        ans=0\n        prev=first\n        prevc=s[first]\n        for i in range(first+1,last+1):\n            if s[i]!='0':\n                dist=i-prev-1\n                if dist>0 and prevc!=s[i] and dist%2==1:\n                    ans+=1\n                prev=i\n                prevc=s[i]\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0,'utf-8').trim().split(/\\s+/);\nlet idx=0;\nconst T = Number(input[idx++]);\nlet out=[];\nfor(let t=0;t<T;t++){\n  const N = Number(input[idx++]);\n  const s = input[idx++];\n  let first=-1, last=-1;\n  for(let i=0;i<N;i++) if(s[i]!=='0'){first=i;break;}\n  for(let i=N-1;i>=0;i--) if(s[i]!=='0'){last=i;break;}\n  if(first===-1){out.push(String(N));continue;}\n  let ans=0;\n  let prev=first; let prevc=s[first];\n  for(let i=first+1;i<=last;i++){\n    if(s[i]!=='0'){\n      const dist=i-prev-1;\n      if(dist>0 && prevc!==s[i] && (dist%2===1)) ans+=1;\n      prev=i; prevc=s[i];\n    }\n  }\n  out.push(String(ans));\n}\nconsole.log(out.join('\\n'));\n"
+      "C": "#include <stdio.h>\n#include <limits.h>\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N;\n        scanf(\"%d\", &N);\n        int a[N-1], b[N-2], c[N-3];\n        for (int i = 0; i < N-1; i++) {\n            scanf(\"%d\", &a[i]);\n        }\n        for (int i = 0; i < N-2; i++) {\n            scanf(\"%d\", &b[i]);\n        }\n        for (int i = 0; i < N-3; i++) {\n            scanf(\"%d\", &c[i]);\n        }\n        long long dist[N][N];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                dist[i][j] = INT_MAX;\n            }\n        }\n        for (int i = 0; i < N-1; i++) {\n            dist[i][i+1] = a[i];\n        }\n        for (int i = 0; i < N-2; i++) {\n            dist[i][i+2] = b[i];\n        }\n        for (int i = 0; i < N-3; i++) {\n            dist[i][i+3] = c[i];\n        }\n        for (int k = 0; k < N; k++) {\n            for (int i = 0; i < N; i++) {\n                for (int j = 0; j < N; j++) {\n                    if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {\n                        dist[i][j] = (dist[i][j] == INT_MAX) ? dist[i][k] + dist[k][j] : (dist[i][j] < dist[i][k] + dist[k][j] ? dist[i][j] : dist[i][k] + dist[k][j]);\n                    }\n                }\n            }\n        }\n        long long sum = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i+1; j < N; j++) {\n                sum += dist[i][j];\n            }\n        }\n        printf(\"%lld\\n\", sum);\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <limits>\nusing namespace std;\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N;\n        cin >> N;\n        int a[N-1], b[N-2], c[N-3];\n        for (int i = 0; i < N-1; i++) {\n            cin >> a[i];\n        }\n        for (int i = 0; i < N-2; i++) {\n            cin >> b[i];\n        }\n        for (int i = 0; i < N-3; i++) {\n            cin >> c[i];\n        }\n        long long dist[N][N];\n        for (int i = 0; i < N; i++) {\n            for (int j = 0; j < N; j++) {\n                dist[i][j] = numeric_limits<long long>::max();\n            }\n        }\n        for (int i = 0; i < N-1; i++) {\n            dist[i][i+1] = a[i];\n        }\n        for (int i = 0; i < N-2; i++) {\n            dist[i][i+2] = b[i];\n        }\n        for (int i = 0; i < N-3; i++) {\n            dist[i][i+3] = c[i];\n        }\n        for (int k = 0; k < N; k++) {\n            for (int i = 0; i < N; i++) {\n                for (int j = 0; j < N; j++) {\n                    if (dist[i][k] != numeric_limits<long long>::max() && dist[k][j] != numeric_limits<long long>::max()) {\n                        dist[i][j] = (dist[i][j] == numeric_limits<long long>::max()) ? dist[i][k] + dist[k][j] : (dist[i][j] < dist[i][k] + dist[k][j] ? dist[i][j] : dist[i][k] + dist[k][j]);\n                    }\n                }\n            }\n        }\n        long long sum = 0;\n        for (int i = 0; i < N; i++) {\n            for (int j = i+1; j < N; j++) {\n                sum += dist[i][j];\n            }\n        }\n        cout << sum << endl;\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int[] a = new int[N-1];\n            int[] b = new int[N-2];\n            int[] c = new int[N-3];\n            for (int i = 0; i < N-1; i++) {\n                a[i] = sc.nextInt();\n            }\n            for (int i = 0; i < N-2; i++) {\n                b[i] = sc.nextInt();\n            }\n            for (int i = 0; i < N-3; i++) {\n                c[i] = sc.nextInt();\n            }\n            long[][] dist = new long[N][N];\n            for (int i = 0; i < N; i++) {\n                for (int j = 0; j < N; j++) {\n                    dist[i][j] = Long.MAX_VALUE;\n                }\n            }\n            for (int i = 0; i < N-1; i++) {\n                dist[i][i+1] = a[i];\n            }\n            for (int i = 0; i < N-2; i++) {\n                dist[i][i+2] = b[i];\n            }\n            for (int i = 0; i < N-3; i++) {\n                dist[i][i+3] = c[i];\n            }\n            for (int k = 0; k < N; k++) {\n                for (int i = 0; i < N; i++) {\n                    for (int j = 0; j < N; j++) {\n                        if (dist[i][k] != Long.MAX_VALUE && dist[k][j] != Long.MAX_VALUE) {\n                            dist[i][j] = (dist[i][j] == Long.MAX_VALUE) ? dist[i][k] + dist[k][j] : (dist[i][j] < dist[i][k] + dist[k][j] ? dist[i][j] : dist[i][k] + dist[k][j]);\n                        }\n                    }\n                }\n            }\n            long sum = 0;\n            for (int i = 0; i < N; i++) {\n                for (int j = i+1; j < N; j++) {\n                    sum += dist[i][j];\n                }\n            }\n            System.out.println(sum);\n        }\n    }\n}",
+      "Python3": "import sys\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    N = int(input())\n    a = list(map(int, input().split()))\n    b = list(map(int, input().split()))\n    c = list(map(int, input().split()))\n    dist = [[float('inf')] * N for _ in range(N)]\n    for i in range(N-1):\n        dist[i][i+1] = a[i]\n    for i in range(N-2):\n        dist[i][i+2] = b[i]\n    for i in range(N-3):\n        dist[i][i+3] = c[i]\n    for k in range(N):\n        for i in range(N):\n            for j in range(N):\n                if dist[i][k] != float('inf') and dist[k][j] != float('inf'):\n                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])\n    sum = 0\n    for i in range(N):\n        for j in range(i+1, N):\n            sum += dist[i][j]\n    print(sum)",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readline = () => input[idx++];\n\nconst T = parseInt(readline());\nfor (let i = 0; i < T; i++) {\n    const N = parseInt(readline());\n    const a = readline().split(' ').map(Number);\n    const b = readline().split(' ').map(Number);\n    const c = readline().split(' ').map(Number);\n    const dist = Array(N).fill().map(() => Array(N).fill(Infinity));\n    for (let j = 0; j < N - 1; j++) {\n        dist[j][j + 1] = a[j];\n    }\n    for (let j = 0; j < N - 2; j++) {\n        dist[j][j + 2] = b[j];\n    }\n    for (let j = 0; j < N - 3; j++) {\n        dist[j][j + 3] = c[j];\n    }\n    for (let k = 0; k < N; k++) {\n        for (let j = 0; j < N; j++) {\n            for (let l = 0; l < N; l++) {\n                if (dist[j][k] !== Infinity && dist[k][l] !== Infinity) {\n                    dist[j][l] = Math.min(dist[j][l], dist[j][k] + dist[k][l]);\n                }\n            }\n        }\n    }\n    let sum = 0;\n    for (let j = 0; j < N; j++) {\n        for (let k = j + 1; k < N; k++) {\n            sum += dist[j][k];\n        }\n    }\n    console.log(sum);\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

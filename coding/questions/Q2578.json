@@ -1,51 +1,47 @@
 {
   "questionId": "Q2578",
-  "title": "Triangular Queries",
-  "slug": "triangular-queries",
+  "title": "Split With Minimum Sum",
+  "slug": "split-with-minimum-sum",
   "version": 1,
-  "createdAt": "2026-07-01",
-  "updatedAt": "2026-07-04",
+  "createdAt": "2026-07-10",
+  "updatedAt": "2026-07-10",
+  "QBCategory": "LCD",
   "metadata": {
-    "category": "Math",
-    "difficulty": "Hard",
+    "category": "Sorting",
+    "difficulty": "Easy",
     "isPremium": false,
     "tags": [
-      "2D BIT",
-      "Offline queries",
-      "Math",
-      "Sorting",
-      "Fenwick Tree",
-      "Coordinate compression"
+      "math",
+      "greedy",
+      "sorting"
     ],
     "companyTags": [],
     "topicTags": [
-      "Geometry"
-    ]
+      "math",
+      "greedy",
+      "sorting"
+    ],
+    "QBCategory": "LCD"
   },
   "content": {
-    "problemStatement": "You are given **N** lattice points **(Xi, Yi), i = 1, 2, ..., N** on a 2D Coordinate System.\nYou have to process **Q** queries, each query will be given as the form **\"x y d\"**.\nLet **ABC** be the triangle having vertices at **A(x+d, y)**, **B(x, y)** and **C(x, y+d)**.\nFor each query, you have to find how many of the given lattice points lie inside or on the boundary of the triangle **ABC**.",
+    "problemStatement": "Given a positive integer `num`, split it into two non-negative integers `num1` and `num2` such that:\n\n* The concatenation of `num1` and `num2` is a permutation of `num`.\n  + In other words, the sum of the number of occurrences of each digit in `num1` and `num2` is equal to the number of occurrences of that digit in `num`.\n* `num1` and `num2` can contain leading zeros.\n\nReturn *the **minimum** possible sum of* `num1` *and* `num2`.\n\n**Notes:**\n\n* It is guaranteed that `num` does not contain any leading zeros.\n* The order of occurrence of the digits in `num1` and `num2` may differ from the order of occurrence of `num`.\n\n**Example 1:**\n\n```\nInput: num = 4325\nOutput: 59\nExplanation: We can split 4325 so that num1 is 24 and num2 is 35, giving a sum of 59. We can prove that 59 is indeed the minimal possible sum.\n```\n\n**Example 2:**\n\n```\nInput: num = 687\nOutput: 75\nExplanation: We can split 687 so that num1 is 68 and num2 is 7, which would give an optimal sum of 75.\n```\n\n**Constraints:**\n\n* `10 <= num <= 10^10`",
     "constraints": [
-      "1 \u2264 T \u2264 5",
-      "1 \u2264 N \u2264 300000",
-      "1 \u2264 Q \u2264 200000",
-      "1 \u2264 Xi, Yi, x, y, d \u2264 300000",
-      "Sum of N over all test cases \u2264 300000",
-      "Sum of Q over all test cases \u2264 200000"
+      "10 <= num <= 10^10"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains two integers N and Q.\n- The next N lines each contain two integers Xi Yi, the coordinates of the i\u2011th lattice point.\n- The next Q lines each contain three integers x y d describing a query.\nAll coordinates satisfy 1 \u2264 Xi, Yi, x, y, d \u2264 300000.",
-    "outputFormat": "For each query, output a single line containing the number of given lattice points that lie inside or on the boundary of the triangle ABC defined by A(x+d, y), B(x, y) and C(x, y+d). The answers for the queries of all test cases are printed in the order they appear.",
+    "inputFormat": "Single line: JSON array of all arguments, e.g. [arg1, arg2, ...]",
+    "outputFormat": "Single line: JSON-serialised return value",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "5 3\n1 3\n1 5\n3 6\n4 4\n2 6\n1 5 3\n1 5 4\n1 1 1",
-        "output": "3\n3\n0",
-        "explanation": "For the first query, the points (1, 3), (1, 5), and (2, 6) lie inside or on the boundary of the triangle. For the second query, the points (1, 3), (1, 5), and (2, 6) lie inside or on the boundary of the triangle. For the third query, no points lie inside or on the boundary of the triangle."
+        "input": "[4325]",
+        "output": "59",
+        "explanation": "We can split 4325 so that num1 is 24 and num2 is 35, giving a sum of 59. We can prove that 59 is indeed the minimal possible sum."
       },
       {
         "id": "sample_2",
-        "input": "2 2\n1 5\n3 7\n2 5 6\n2 3 4",
-        "output": "1\n0",
-        "explanation": "For the first query, the point (1, 5) lies inside or on the boundary of the triangle. For the second query, no points lie inside or on the boundary of the triangle."
+        "input": "[687]",
+        "output": "75",
+        "explanation": "We can split 687 so that num1 is 68 and num2 is 7, which would give an optimal sum of 75."
       }
     ]
   },
@@ -53,42 +49,217 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "Minimum Boundary: Smallest allowed input (10)",
+        "input": "[10]",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "Minimum Boundary: Smallest two-digit distinct",
+        "input": "[12]",
+        "expectedOutput": "3",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "Maximum Boundary: Max constraint value",
+        "input": "[1000000000]",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "Maximum Boundary: Max constraint minus one",
+        "input": "[999999999]",
+        "expectedOutput": "109998",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "Duplicate Values: Heavy repetition of single digit",
+        "input": "[111111111]",
+        "expectedOutput": "12222",
+        "weight": 4
+      },
+      {
+        "id": "tc_6",
+        "label": "Duplicate Values: Mixed heavy repetition",
+        "input": "[222333444]",
+        "expectedOutput": "24678",
+        "weight": 4
+      },
+      {
+        "id": "tc_7",
+        "label": "Uniform Values: All digits identical (small)",
+        "input": "[5555]",
+        "expectedOutput": "110",
+        "weight": 4
+      },
+      {
+        "id": "tc_8",
+        "label": "Uniform Values: All digits identical (large)",
+        "input": "[777777777]",
+        "expectedOutput": "85554",
+        "weight": 4
+      },
+      {
+        "id": "tc_9",
+        "label": "Increasing: Strictly ascending digits",
+        "input": "[123456789]",
+        "expectedOutput": "16047",
+        "weight": 2
+      },
+      {
+        "id": "tc_10",
+        "label": "Decreasing: Strictly descending digits",
+        "input": "[987654321]",
+        "expectedOutput": "16047",
+        "weight": 2
+      },
+      {
+        "id": "tc_11",
+        "label": "Alternating: High-Low pattern",
+        "input": "[91919191]",
+        "expectedOutput": "2398",
+        "weight": 2
+      },
+      {
+        "id": "tc_12",
+        "label": "Random Small: Random 2-digit",
+        "input": "[47]",
+        "expectedOutput": "11",
+        "weight": 2
+      },
+      {
+        "id": "tc_13",
+        "label": "Random Small: Random 3-digit",
+        "input": "[382]",
+        "expectedOutput": "31",
+        "weight": 2
+      },
+      {
+        "id": "tc_14",
+        "label": "Random Small: Random 4-digit",
+        "input": "[5091]",
+        "expectedOutput": "24",
+        "weight": 2
+      },
+      {
+        "id": "tc_15",
+        "label": "Random Medium: Random 6-digit",
+        "input": "[184729]",
+        "expectedOutput": "427",
+        "weight": 2
+      },
+      {
+        "id": "tc_16",
+        "label": "Random Medium: Random 7-digit",
+        "input": "[5930281]",
+        "expectedOutput": "397",
+        "weight": 2
+      },
+      {
+        "id": "tc_17",
+        "label": "Random Medium: Random 8-digit",
+        "input": "[74629103]",
+        "expectedOutput": "1616",
+        "weight": 2
+      },
+      {
+        "id": "tc_18",
+        "label": "Random Large: Random 9-digit",
+        "input": "[827461935]",
+        "expectedOutput": "16047",
+        "weight": 2
+      },
+      {
+        "id": "tc_19",
+        "label": "Random Large: Random near-max 9-digit",
+        "input": "[918273645]",
+        "expectedOutput": "16047",
+        "weight": 2
+      },
+      {
+        "id": "tc_20",
+        "label": "Random Large: Random 10-digit",
+        "input": "[1029384756]",
+        "expectedOutput": "16047",
+        "weight": 2
+      },
+      {
+        "id": "tc_21",
+        "label": "Worst Case: Sorted digits forcing specific split",
+        "input": "[1122334455]",
+        "expectedOutput": "24690",
+        "weight": 2
+      },
+      {
+        "id": "tc_22",
+        "label": "Worst Case: Many zeros requiring careful placement",
+        "input": "[1000000001]",
+        "expectedOutput": "2",
+        "weight": 2
+      },
+      {
+        "id": "tc_23",
+        "label": "Worst Case: Alternating small/large to test greedy",
+        "input": "[191919191]",
+        "expectedOutput": "12398",
+        "weight": 2
+      },
+      {
+        "id": "tc_24",
+        "label": "Performance Stress: Max length all non-zero",
+        "input": "[1234567891]",
+        "expectedOutput": "26047",
+        "weight": 10
+      },
+      {
+        "id": "tc_25",
+        "label": "Performance Stress: Max length with zeros",
+        "input": "[1020304050]",
+        "expectedOutput": "159",
+        "weight": 10
+      },
+      {
+        "id": "tc_26",
+        "label": "Performance Stress: Max length uniform high",
+        "input": "[9999999991]",
+        "expectedOutput": "119998",
+        "weight": 10
+      },
+      {
+        "id": "tc_27",
+        "label": "Overflow / Precision: Sum near integer limit check",
+        "input": "[999999998]",
+        "expectedOutput": "99998",
+        "weight": 2
+      },
+      {
+        "id": "tc_28",
+        "label": "Overflow / Precision: Large number with many zeros",
+        "input": "[5000000005]",
+        "expectedOutput": "10",
+        "weight": 2
+      },
+      {
+        "id": "tc_29",
+        "label": "Tricky Corner Case: Only one non-zero digit",
+        "input": "[100000000]",
+        "expectedOutput": "1",
+        "weight": 2
+      },
+      {
+        "id": "tc_30",
+        "label": "Tricky Corner Case: Two non-zero digits far apart",
+        "input": "[900000001]",
+        "expectedOutput": "10",
         "weight": 2
       }
     ],
-    "totalTestCases": 5,
-    "totalWeight": 10
+    "totalTestCases": 30,
+    "totalWeight": 92
   },
   "scoring": {
     "defaultScoringType": "PARTIAL_SCORE",
@@ -97,9 +268,34 @@
       2,
       2,
       2,
+      4,
+      4,
+      4,
+      4,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      10,
+      10,
+      10,
+      2,
+      2,
+      2,
       2
     ],
-    "maxScore": 10
+    "maxScore": 92
   },
   "judging": {
     "timeLimitMs": 2000,
@@ -112,13 +308,25 @@
       "JavaScript"
     ]
   },
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <stdbool.h>\n\n// Helper JSON parser/tokenizer in C\ntypedef struct {\n    char* s;\n    int pos;\n    int len;\n} Tok;\n\nstatic void skipWS(Tok* t) {\n    while (t->pos < t->len && (t->s[t->pos] == ' ' || t->s[t->pos] == ',' || t->s[t->pos] == '\\t' || t->s[t->pos] == '\\n' || t->s[t->pos] == '\\r')) {\n        t->pos++;\n    }\n}\n\nstatic char* nextToken(Tok* t) {\n    skipWS(t);\n    if (t->pos >= t->len) return NULL;\n    int start = t->pos;\n    if (t->s[t->pos] == '[') {\n        int depth = 0;\n        while (t->pos < t->len) {\n            char c = t->s[t->pos++];\n            if (c == '[') depth++;\n            else if (c == ']') {\n                depth--;\n                if (depth == 0) break;\n            }\n        }\n        int token_len = t->pos - start;\n        char* token = (char*)malloc(token_len + 1);\n        strncpy(token, t->s + start, token_len);\n        token[token_len] = '\\0';\n        return token;\n    } else if (t->s[t->pos] == '\"') {\n        t->pos++;\n        while (t->pos < t->len && t->s[t->pos] != '\"') t->pos++;\n        t->pos++;\n        int token_len = t->pos - start;\n        char* token = (char*)malloc(token_len + 1);\n        strncpy(token, t->s + start, token_len);\n        token[token_len] = '\\0';\n        return token;\n    } else {\n        while (t->pos < t->len && t->s[t->pos] != ',' && t->s[t->pos] != ']' && t->s[t->pos] != '[') t->pos++;\n        int token_len = t->pos - start;\n        char* token = (char*)malloc(token_len + 1);\n        strncpy(token, t->s + start, token_len);\n        token[token_len] = '\\0';\n        int idx = token_len - 1;\n        while (idx >= 0 && token[idx] == ' ') {\n            token[idx] = '\\0';\n            idx--;\n        }\n        return token;\n    }\n}\n\nstatic int parse_int(Tok* t) {\n    char* tok = nextToken(t);\n    if (!tok) return 0;\n    int val = atoi(tok);\n    free(tok);\n    return val;\n}\n\nstatic bool parse_bool(Tok* t) {\n    char* tok = nextToken(t);\n    if (!tok) return false;\n    bool val = (strcmp(tok, \"true\") == 0);\n    free(tok);\n    return val;\n}\n\nstatic double parse_double(Tok* t) {\n    char* tok = nextToken(t);\n    if (!tok) return 0.0;\n    double val = atof(tok);\n    free(tok);\n    return val;\n}\n\nstatic char* parse_string(Tok* t) {\n    char* tok = nextToken(t);\n    if (!tok) return NULL;\n    if (tok[0] == '\"') {\n        int len = strlen(tok);\n        char* res = (char*)malloc(len - 1);\n        strncpy(res, tok + 1, len - 2);\n        res[len - 2] = '\\0';\n        free(tok);\n        return res;\n    }\n    return tok;\n}\n\nstatic int* parse_int_array(Tok* t, int* out_size) {\n    char* tok = nextToken(t);\n    if (!tok || strcmp(tok, \"[]\") == 0) {\n        if (tok) free(tok);\n        *out_size = 0;\n        return NULL;\n    }\n    int len = strlen(tok);\n    char* inner = (char*)malloc(len - 1);\n    strncpy(inner, tok + 1, len - 2);\n    inner[len - 2] = '\\0';\n    free(tok);\n\n    int size = 1;\n    for (int i = 0; inner[i]; i++) {\n        if (inner[i] == ',') size++;\n    }\n    int* arr = (int*)malloc(size * sizeof(int));\n    Tok t2 = { inner, 0, (int)strlen(inner) };\n    for (int i = 0; i < size; i++) {\n        arr[i] = parse_int(&t2);\n    }\n    free(inner);\n    *out_size = size;\n    return arr;\n}\n\nstatic int** parse_int_2d(Tok* t, int* out_rows, int** out_cols) {\n    char* tok = nextToken(t);\n    if (!tok || strcmp(tok, \"[]\") == 0) {\n        if (tok) free(tok);\n        *out_rows = 0;\n        *out_cols = NULL;\n        return NULL;\n    }\n    int len = strlen(tok);\n    char* inner = (char*)malloc(len - 1);\n    strncpy(inner, tok + 1, len - 2);\n    inner[len - 2] = '\\0';\n    free(tok);\n\n    int rows = 0;\n    int depth = 0;\n    for (int i = 0; inner[i]; i++) {\n        if (inner[i] == '[') {\n            if (depth == 0) rows++;\n            depth++;\n        } else if (inner[i] == ']') {\n            depth--;\n        }\n    }\n    int** mat = (int**)malloc(rows * sizeof(int*));\n    int* cols = (int*)malloc(rows * sizeof(int));\n\n    Tok t2 = { inner, 0, (int)strlen(inner) };\n    for (int i = 0; i < rows; i++) {\n        mat[i] = parse_int_array(&t2, &cols[i]);\n    }\n    free(inner);\n    *out_rows = rows;\n    *out_cols = cols;\n    return mat;\n}\n\n// ---------------------------------------------------------------------\n// YOUR SOLUTION  <- Write your code inside the function below\n// ---------------------------------------------------------------------\nint splitNum(int num) {\n    \n    return 0;\n}\n\n// ---------------------------------------------------------------------\n// DRIVER  (do not modify)\n// ---------------------------------------------------------------------\nint main() {\n    char line[1000000];\n    if (fgets(line, sizeof(line), stdin)) {\n        // Strip outer [ ]\n        int len = strlen(line);\n        while (len > 0 && (line[len - 1] == '\\n' || line[len - 1] == '\\r')) {\n            line[len - 1] = '\\0';\n            len--;\n        }\n        char* raw = (char*)malloc(len - 1);\n        strncpy(raw, line + 1, len - 2);\n        raw[len - 2] = '\\0';\n        Tok tok = { raw, 0, (int)strlen(raw) };\n        \n        int num = parse_int(&tok);\n        int result = splitNum(num);\n        printf(\"%d\\n\", result);\n        free(raw);\n    }\n    return 0;\n}",
+    "C++": "\n#include <bits/stdc++.h>\nusing namespace std;\n\nstruct Tok {\n    string s;\n    int pos = 0;\n    void skipWS() { while(pos<(int)s.size()&&(s[pos]==' '||s[pos]==','||s[pos]=='\\t')) pos++; }\n    string nextToken() {\n        skipWS();\n        if(pos>=(int)s.size()) return \"\";\n        if(s[pos]=='['){\n            int depth=0,st=pos;\n            while(pos<(int)s.size()){char c=s[pos++];if(c=='[')depth++;else if(c==']'){depth--;if(depth==0)break;}}\n            return s.substr(st,pos-st);\n        } else if(s[pos]=='\"'){\n            int st=pos++;\n            while(pos<(int)s.size()&&s[pos]!='\"')pos++;\n            return s.substr(st,++pos-st);\n        } else {\n            int st=pos;\n            while(pos<(int)s.size()&&s[pos]!=','&&s[pos]!=']'&&s[pos]!='[')pos++;\n            string t=s.substr(st,pos-st);\n            while(!t.empty()&&t.back()==' ')t.pop_back();\n            return t;\n        }\n    }\n};\nstring innerArr(const string& s){return s.substr(1,s.size()-2);}\nvector<string> splitTop(const string& s){\n    vector<string> parts; int depth=0,start=0;\n    for(int i=0;i<(int)s.size();i++){\n        if(s[i]=='['||s[i]=='{')depth++;\n        else if(s[i]==']'||s[i]=='}')depth--;\n        else if(s[i]==','&&depth==0){parts.push_back(s.substr(start,i-start));start=i+1;}\n    }\n    parts.push_back(s.substr(start)); return parts;\n}\nvector<int> readIntVec(Tok& tok){\n    string arr=tok.nextToken();\n    if(arr==\"[]\")return {};\n    auto parts=splitTop(innerArr(arr)); vector<int> v;\n    for(auto&p:parts)v.push_back(stoi(p)); return v;\n}\nvector<vector<int>> readInt2D(Tok& tok){\n    string arr=tok.nextToken();\n    if(arr==\"[]\")return {};\n    auto rows=splitTop(innerArr(arr)); vector<vector<int>> mat;\n    for(auto&r:rows){Tok t2;t2.s=\"[\"+innerArr(r)+\"]\";t2.pos=0;mat.push_back(readIntVec(t2));} return mat;\n}\nvector<string> readStrVec(Tok& tok){\n    string arr=tok.nextToken();\n    if(arr==\"[]\")return {};\n    auto parts=splitTop(innerArr(arr)); vector<string> v;\n    for(auto&p:parts){string tmp=p;if(!tmp.empty()&&tmp.front()=='\"')tmp=tmp.substr(1,tmp.size()-2);v.push_back(tmp);}return v;\n}\nvector<char> readCharVec(Tok& tok){\n    auto sv=readStrVec(tok); vector<char> v; for(auto&s:sv)v.push_back(s[0]); return v;\n}\nint readInt(Tok& tok){ return stoi(tok.nextToken()); }\nstring readStr(Tok& tok){ string s=tok.nextToken(); if(!s.empty()&&s.front()=='\"')s=s.substr(1,s.size()-2); return s; }\nbool readBool(Tok& tok){ return tok.nextToken()==\"true\"; }\ndouble readDouble(Tok& tok){ return stod(tok.nextToken()); }\n\n// ---------------------------------------------------------------------\n// YOUR SOLUTION  <- Write your code inside the function below\n// ---------------------------------------------------------------------\nclass Solution {\npublic:\n    int splitNum(int num) {\n        \n        return 0;\n    }\n};\n\n// ---------------------------------------------------------------------\n// DRIVER  (do not modify)\n// ---------------------------------------------------------------------\nint main() {\n    string line; getline(cin, line);\n    // Strip outer [ ]\n    Tok tok; tok.s = line.substr(1, line.size()-2); tok.pos = 0;\n    int num = readInt(tok);\n    auto result = Solution().splitNum(num);\n    cout << result << endl;\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\n// -\n// ---------------------------------------------------------------------\n// YOUR SOLUTION  <- Write your code inside the function below\n// ---------------------------------------------------------------------\n// -\nclass Solution {\n    public int splitNum(int num) {\n        \n        return 0;\n    }\n}\n\n// ---------------------------------------------------------------------\n// DRIVER  (do not modify)\n// ---------------------------------------------------------------------\npublic class Main {\n\n    static java.util.ArrayDeque<String> tokenize(String s) {\n        java.util.ArrayDeque<String> q = new java.util.ArrayDeque<>();\n        int i = 0, n = s.length();\n        while (i < n) {\n            char c = s.charAt(i);\n            if (c == '[' || c == ']' || c == ',') { i++; continue; }\n            if (c == '\"') {\n                int j = s.indexOf('\"', i+1); q.add(s.substring(i, j+1)); i = j+1;\n            } else if (c != ' ') {\n                int j = i;\n                while (j < n && s.charAt(j) != ',' && s.charAt(j) != ']' && s.charAt(j) != '[') j++;\n                String tok = s.substring(i, j).trim();\n                if (!tok.isEmpty()) q.add(tok);\n                i = j;\n            } else { i++; }\n        }\n        return q;\n    }\n    static String[] readArrayRaw(String s) {\n        s = s.trim();\n        if (s.equals(\"[]\")) return new String[0];\n        s = s.substring(1, s.length()-1);\n        java.util.List<String> parts = new java.util.ArrayList<>();\n        int depth=0, start=0;\n        for (int i=0; i<s.length(); i++) {\n            char c=s.charAt(i);\n            if (c=='[') depth++; else if (c==']') depth--;\n            else if (c==',' && depth==0) { parts.add(s.substring(start,i).trim()); start=i+1; }\n        }\n        parts.add(s.substring(start).trim());\n        return parts.toArray(new String[0]);\n    }\n    static int[] toIntArray(String s) {\n        String[] parts = readArrayRaw(s);\n        int[] arr = new int[parts.length];\n        for (int i=0; i<parts.length; i++) arr[i] = Integer.parseInt(parts[i].trim());\n        return arr;\n    }\n    static int[][] toInt2D(String s) {\n        String[] rows = readArrayRaw(s);\n        int[][] mat = new int[rows.length][];\n        for (int i=0; i<rows.length; i++) mat[i] = toIntArray(rows[i]);\n        return mat;\n    }\n    static String[] toStringArray(String s) {\n        String[] parts = readArrayRaw(s);\n        for (int i=0; i<parts.length; i++) parts[i] = parts[i].trim().replaceAll(\"^\\\"|\\\"$\",\"\");\n        return parts;\n    }\n    static char[] toCharArray(String s) {\n        String[] parts = readArrayRaw(s);\n        char[] arr = new char[parts.length];\n        for (int i=0; i<parts.length; i++) arr[i] = parts[i].trim().replaceAll(\"^\\\"|\\\"$\",\"\").charAt(0);\n        return arr;\n    }\n    // Reads next top-level token from outer JSON array\n    static int _pos;\n    static String _raw;\n    static String nextToken() {\n        while (_pos < _raw.length() && (_raw.charAt(_pos)==',' || _raw.charAt(_pos)==' ')) _pos++;\n        if (_pos >= _raw.length()) return \"null\";\n        char c = _raw.charAt(_pos);\n        if (c == '[') {\n            int depth=0, start=_pos;\n            while (_pos < _raw.length()) {\n                char x=_raw.charAt(_pos); if(x=='[') depth++; else if(x==']') { depth--; if(depth==0){_pos++;break;} } _pos++;\n            }\n            return _raw.substring(start, _pos);\n        } else if (c == '\"') {\n            int start=_pos++;\n            while (_pos < _raw.length() && _raw.charAt(_pos) != '\"') _pos++;\n            _pos++;\n            return _raw.substring(start, _pos);\n        } else {\n            int start=_pos;\n            while (_pos < _raw.length() && _raw.charAt(_pos) != ',' && _raw.charAt(_pos) != ']') _pos++;\n            return _raw.substring(start, _pos).trim();\n        }\n    }\n    public static void main(String[] a) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine().trim();\n        // Strip outer [ ]\n        _raw = line.substring(1, line.length()-1);\n        _pos = 0;\n        int num = Integer.parseInt(nextToken());\n        int result = new Solution().splitNum(num);\n        System.out.println(result);\n    }\n}",
+    "Python3": "import sys, json\nfrom typing import List\n\n#  HELPER CLASSES  (do not modify)\n\n# ----------------------------------------------------------------------\n#  YOUR SOLUTION  <- Write your code inside the method below\n# ----------------------------------------------------------------------\nclass Solution:\n    def splitNum(self, num: int) -> int:\n        pass\n\n#  DRIVER  (do not modify)\nif __name__ == '__main__':\n    _args = json.loads(sys.stdin.readline())\n    _num = _args[0]\n    _result = Solution().splitNum(_num)\n\n    print(json.dumps(_result))",
+    "JavaScript": "'use strict';\nconst readline = require('readline');\n\n// ---------------------------------------------------------------------\n// YOUR SOLUTION  <- Write your code inside the function below\n// ---------------------------------------------------------------------\n/**\n * @param {number} num\n * @return {number}\n */\nvar splitNum = function(num) {\n    \n    return 0;\n};\n\n// ---------------------------------------------------------------------\n// DRIVER  (do not modify)\n// ---------------------------------------------------------------------\nconst rl = readline.createInterface({ input: process.stdin });\nrl.on('line', line => {\n    const _args = JSON.parse(line.trim());\n    const _result = splitNum(_args[0]);\n    console.log(JSON.stringify(_result));\n    rl.close();\n});"
+  },
   "solution": {
-    "approach": "For a point P(px,py) to be inside the right\u2011isosceles triangle with right angle at B(x,y) we need:\n    x \u2264 px \u2264 x+d,\n    y \u2264 py \u2264 y+d,\n    (px\u2011x) + (py\u2011y) \u2264 d   (i.e. px+py \u2264 x+y+d).\nDefine s = px+py. The three conditions become a rectangle query on (px,py) together with a bound on s.\nWe process all points sorted by s and all queries sorted by limit L = x+y+d.\nWhile scanning increasing s we insert points whose s \u2264 current L into a 2\u2011dimensional Fenwick tree that supports \"add a point\" and \"count points inside a rectangle\". When a query is reached, the tree already contains exactly the points satisfying the sum condition, so a rectangle query on [x, x+d] \u00d7 [y, y+d] yields the answer.\nThe 2\u2011D Fenwick tree is built offline: for each distinct x\u2011coordinate we store a sorted list of y\u2011coordinates that ever appear in that column (both from points and from query rectangle borders). After compression we have a BIT of size \u2264 N+Q for each x\u2011node. Both insertion and rectangle query run in O(log\u00b2 MAX) time.\nOverall complexity: O((N+Q) log\u00b2 MAX) time and O((N+Q) log MAX) memory, which easily fits the limits.\nEdge cases such as d = 0 (degenerate triangle) are naturally handled because the rectangle becomes a single point and the sum condition forces px+py = x+y.",
-    "timeComplexity": "O((N + Q) \u00b7 log\u00b2 300000)",
-    "spaceComplexity": "O((N + Q) \u00b7 log 300000)",
     "code": {
-      "C": "// --------------- C solution (offline 2\u2011D Fenwick) ---------------\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {int x, y, s;} Point;\ntypedef struct {int x, y, d, id; long long limit; int ans;} Query;\n\n// ---------- simple dynamic array ----------\ntypedef struct {int *a; int sz, cap;} IntVec;\nvoid iv_init(IntVec *v){v->a=NULL;v->sz=0;v->cap=0;}\nvoid iv_push(IntVec *v,int val){if(v->sz==v->cap){v->cap=v->cap?v->cap*2:4;v->a=realloc(v->a,v->cap*sizeof(int));}v->a[v->sz++]=val;}\nint cmp_int(const void *a,const void *b){return *(int*)a-*(int*)b;}\n\n// ---------- Fenwick tree of vectors ----------\nint MAXX = 300000 + 5;\nIntVec ft[MAXX];\nint Nglobal;\n\nvoid ft_add_point(int x,int y){for(int i=x;i<=Nglobal;i+=i&-i){iv_push(&ft[i], y);} }\n\nint ft_query(int x,int y){int res=0;for(int i=x;i>0;i-=i&-i){int *arr=ft[i].a;int lo=0,hi=ft[i].sz;while(lo<hi){int mid=(lo+hi)/2; if(arr[mid]<=y) lo=mid+1; else hi=mid;}res+=lo;}return res;}\n\nint rect_query(int x1,int y1,int x2,int y2){ // inclusive\n    if(x1> x2 || y1> y2) return 0;\n    return ft_query(x2,y2)-ft_query(x1-1,y2)-ft_query(x2,y1-1)+ft_query(x1-1,y1-1);\n}\n\nint cmp_point(const void *a,const void *b){return ((Point*)a)->s-((Point*)b)->s;}\nint cmp_query(const void *a,const void *b){long long da=((Query*)a)->limit, db=((Query*)b)->limit; return da<db?-1:da>db?1:0;}\n\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        int N,Q; scanf(\"%d %d\",&N,&Q);\n        Point *pts = (Point*)malloc(N*sizeof(Point));\n        for(int i=0;i<N;i++){\n            int xi,yi; scanf(\"%d %d\",&xi,&yi);\n            pts[i].x=xi; pts[i].y=yi; pts[i].s=xi+yi;\n        }\n        Query *qs = (Query*)malloc(Q*sizeof(Query));\n        for(int i=0;i<Q;i++){\n            int x,y,d; scanf(\"%d %d %d\",&x,&y,&d);\n            qs[i].x=x; qs[i].y=y; qs[i].d=d; qs[i].id=i; qs[i].limit = (long long)x + y + d;\n        }\n        // coordinate compression for x (Fenwick size)\n        int maxX=0; for(int i=0;i<N;i++) if(pts[i].x>maxX) maxX=pts[i].x; for(int i=0;i<Q;i++) if(qs[i].x+qs[i].d>maxX) maxX=qs[i].x+qs[i].d; Nglobal = maxX+2;\n        // clear ft vectors\n        for(int i=0;i<=Nglobal;i++){free(ft[i].a); ft[i].a=NULL; ft[i].sz=ft[i].cap=0;}\n        // collect y values for each ft node (offline building)\n        // first pass: add all points that will ever be inserted (all points)\n        for(int i=0;i<N;i++) ft_add_point(pts[i].x, pts[i].y);\n        // second pass: also add rectangle borders from queries (x2 and y2) to guarantee they exist in vectors\n        for(int i=0;i<Q;i++){\n            int x2 = qs[i].x + qs[i].d;\n            int y2 = qs[i].y + qs[i].d;\n            ft_add_point(x2, y2);\n        }\n        // sort and deduplicate each vector, then replace with BIT array (initially zero)\n        for(int i=1;i<=Nglobal;i++) if(ft[i].sz){ qsort(ft[i].a, ft[i].sz, sizeof(int), cmp_int); int w=0; for(int j=0;j<ft[i].sz;j++) if(j==0||ft[i].a[j]!=ft[i].a[j-1]) ft[i].a[w++]=ft[i].a[j]; ft[i].sz=w; ft[i].a = realloc(ft[i].a, (w+2)*sizeof(int)); }\n        // sort points and queries by sum limit\n        qsort(pts,N,sizeof(Point),cmp_point);\n        qsort(qs,Q,sizeof(Query),cmp_query);\n        // BIT for counts (same structure as ft but stores int counts)\n        // we reuse ft vectors as index maps; we need a parallel array of counts per node\n        int **bit = (int**)malloc((Nglobal+1)*sizeof(int*));\n        for(int i=1;i<=Nglobal;i++) if(ft[i].sz) bit[i]=(int*)calloc(ft[i].sz+1,sizeof(int)); else bit[i]=NULL;\n        // helper to update a point in 2\u2011D BIT\n        void update2D(int x,int y,int delta){ for(int i=x;i<=Nglobal;i+=i&-i){ int *arr=ft[i].a; int lo=0,hi=ft[i].sz; while(lo<hi){int mid=(lo+hi)/2; if(arr[mid]<=y) lo=mid+1; else hi=mid;} int pos=lo; for(int j=pos;j<=ft[i].sz;j+=j&-j) bit[i][j]+=delta; } };\n        // helper to query prefix\n        int query2D(int x,int y){ int res=0; for(int i=x;i>0;i-=i&-i){ int *arr=ft[i].a; int lo=0,hi=ft[i].sz; while(lo<hi){int mid=(lo+hi)/2; if(arr[mid]<=y) lo=mid+1; else hi=mid;} int pos=lo; for(int j=pos;j>0;j-=j&-j) res+=bit[i][j]; } return res; };\n        // process\n        int pIdx=0;\n        for(int qi=0; qi<Q; ++qi){\n            while(pIdx<N && pts[pIdx].s <= qs[qi].limit){\n                update2D(pts[pIdx].x, pts[pIdx].y, 1);\n                ++pIdx;\n            }\n            int x1 = qs[qi].x;\n            int y1 = qs[qi].y;\n            int x2 = qs[qi].x + qs[qi].d;\n            int y2 = qs[qi].y + qs[qi].d;\n            int ans = query2D(x2, y2) - query2D(x1-1, y2) - query2D(x2, y1-1) + query2D(x1-1, y1-1);\n            qs[qi].ans = ans;\n        }\n        // restore original order and output\n        int *out = (int*)malloc(Q*sizeof(int));\n        for(int i=0;i<Q;i++) out[qs[i].id]=qs[i].ans;\n        for(int i=0;i<Q;i++) printf(\"%d\\n\", out[i]);\n        // free\n        free(pts); free(qs); free(out);\n        for(int i=1;i<=Nglobal;i++) free(bit[i]); free(bit);\n    }\n    return 0;\n}\n",
-      "C++": ""
+      "Python3": "class Solution(object):\n    def splitNum(self, num):\n        \"\"\"\n        :type num: int\n        :rtype: int\n        \"\"\"\n        num1, num2 = 0, 0\n        for i, num in enumerate(sorted(list(str(num)))):\n            if i % 2 == 0:\n                num1 = num1 * 10 + int(num)\n            else:\n                num2 = num2 * 10 + int(num)\n        return num1 + num2"
     }
+  },
+  "_internal": {
+    "methodName": "splitNum",
+    "params": [
+      {
+        "name": "num",
+        "type": "integer"
+      }
+    ]
   }
 }

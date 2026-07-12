@@ -1,69 +1,91 @@
 {
   "questionId": "Q8823",
-  "title": "Disjoint Set ",
-  "slug": "disjointset",
+  "title": "Chef and Water Bottles",
+  "slug": "chef-and-water-bottles",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Graphs",
-    "difficulty": "Hard",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Graphs",
-      "Union Find",
-      "Disjoint Set"
+      "Greedy",
+      "Integer Division",
+      "Min Function"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Greedy Algorithms"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "In this article, we will discuss the **Disjoint Set** data structure which is a very important topic in the entire graph series. Let\u2019s first understand **why we need a Disjoint Set data structure using the below question:**\n\n\n\n\n\n**Question: **Given two components of an undirected graph\n\n\n\n\n\n\n\n\n\nThe question is whether node 1 and node 5 are in the same com",
+    "problemStatement": "Chef has NNN empty bottles where each bottle has a capacity of XXX litres.\n\nThere is a water tank in Chefland having KKK litres of water. Chef wants to fill the empty bottles using the water in the tank.\n\nAssuming that Chef does not spill any water while filling the bottles, find out the **maximum** number of bottles Chef can fill completely.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains of a single line of input, three integers N,X,N, X,N,X, and KKK.\n\n\nOutput Format\nFor each test case, output in a single line answer, the **maximum** number of bottles Chef can fill completely.",
     "constraints": [
       "1 <= T <= 100",
-      "1 <= N <= 10^5",
-      "1 <= M <= 10^5",
-      "1 <= u, v, x, y <= N"
+      "1 <= N <= 100000",
+      "1 <= X <= 100000",
+      "0 <= K <= 100000"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Then for each test case, the first line contains two integers N and M, the number of nodes and edges in the graph. Then M lines follow, each containing two integers u and v, the nodes connected by an edge. The last line of each test case contains two integers x and y, the nodes to check if they are in the same connected component.",
-    "outputFormat": "For each test case, print 'Yes' if the nodes x and y are in the same connected component, otherwise print 'No'.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space‑separated integers N, X and K — the number of bottles, the capacity of each bottle (in litres) and the amount of water in the tank (in litres) respectively.",
+    "outputFormat": "For each test case output a single line containing the maximum number of bottles that can be filled completely.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "3\\n5 2 8\\n10 5 4\\n3 1 4",
+        "output": "4\\n0\\n3",
+        "explanation": "Test case 1: floor(8/2)=4, min(5,4)=4.\\nTest case 2: floor(4/5)=0, min(10,0)=0.\\nTest case 3: floor(4/1)=4, min(3,4)=3."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\\n7 3 20",
+        "output": "6",
+        "explanation": "floor(20/3)=6, min(7,6)=6."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\\n1 100 99",
+        "output": "0",
+        "explanation": "floor(99/100)=0, min(1,0)=0."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
-        "input": "1\n2 1\n1 2\n1 2",
-        "expectedOutput": "Yes",
+        "label": "minimum boundary",
+        "input": "1\\n1 1 0",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "1\n10 9\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n7 8\n8 9\n9 10\n1 10",
-        "expectedOutput": "Yes",
+        "label": "maximum boundary",
+        "input": "1\\n100000 1 100000",
+        "expectedOutput": "100000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "1\n5 4\n1 2\n2 3\n3 4\n4 5\n1 5",
-        "expectedOutput": "Yes",
+        "label": "edge case",
+        "input": "1\\n100 50 49",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case / empty-like / negative if allowed",
-        "input": "1\n5 0\n1 1",
-        "expectedOutput": "No",
+        "label": "general case 1",
+        "input": "1\\n500 7 1234",
+        "expectedOutput": "176",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "1\n7 6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7\n3 7",
-        "expectedOutput": "Yes",
+        "label": "general case 2",
+        "input": "1\\n250 20 5000",
+        "expectedOutput": "250",
         "weight": 2
       }
     ],
@@ -93,15 +115,27 @@
     ]
   },
   "solution": {
-    "approach": "Use a disjoint set data structure to keep track of the connected components in the graph.",
-    "timeComplexity": "O(T * (M + Q) * alpha(N))",
-    "spaceComplexity": "O(N)",
+    "approach": "For each test case we can fill at most floor(K / X) bottles because each bottle needs X litres. However we cannot exceed the available bottles N. Therefore the answer is min(N, K / X). The computation is O(1) per test case.",
+    "timeComplexity": "O(T) – constant work for each of the T test cases.",
+    "spaceComplexity": "O(1) – only a few variables are used.",
     "code": {
-      "C": "#include <stdio.h>\nint parent[100005];\nint rank[100005];\n\nint find(int x) {\n    if (parent[x] != x) {\n        parent[x] = find(parent[x]);\n    }\n    return parent[x];\n}\n\nvoid unionSet(int x, int y) {\n    int rootX = find(x);\n    int rootY = find(y);\n    if (rootX != rootY) {\n        if (rank[rootX] > rank[rootY]) {\n            parent[rootY] = rootX;\n        } else if (rank[rootX] < rank[rootY]) {\n            parent[rootX] = rootY;\n        } else {\n            parent[rootY] = rootX;\n            rank[rootX]++;\n        }\n    }\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, M;\n        scanf(\"%d %d\", &N, &M);\n        for (int i = 1; i <= N; i++) {\n            parent[i] = i;\n            rank[i] = 0;\n        }\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            scanf(\"%d %d\", &u, &v);\n            unionSet(u, v);\n        }\n        int x, y;\n        scanf(\"%d %d\", &x, &y);\n        if (find(x) == find(y)) {\n            printf(\"Yes\\n\");\n        } else {\n            printf(\"No\\n\");\n        }\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nclass DisjointSet {\n    vector<int> rank, parent;\npublic:\n    DisjointSet(int n) {\n        rank.resize(n + 1, 0);\n        parent.resize(n + 1);\n        for (int i = 0; i <= n; i++) {\n            parent[i] = i;\n        }\n    }\n\n    int findUPar(int node) {\n        if (node == parent[node])\n            return node;\n        return parent[node] = findUPar(parent[node]);\n    }\n\n    void unionByRank(int u, int v) {\n        int ulp_u = findUPar(u);\n        int ulp_v = findUPar(v);\n        if (ulp_u == ulp_v) return;\n        if (rank[ulp_u] < rank[ulp_v]) {\n            parent[ulp_u] = ulp_v;\n        }\n        else if (rank[ulp_v] < rank[ulp_u]) {\n            parent[ulp_v] = ulp_u;\n        }\n        else {\n            parent[ulp_v] = ulp_u;\n            rank[ulp_u]++;\n        }\n    }\n};\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, M;\n        cin >> N >> M;\n        DisjointSet ds(N);\n        for (int i = 0; i < M; i++) {\n            int u, v;\n            cin >> u >> v;\n            ds.unionByRank(u, v);\n        }\n        int x, y;\n        cin >> x >> y;\n        if (ds.findUPar(x) == ds.findUPar(y)) {\n            cout << \"Yes\" << endl;\n        } else {\n            cout << \"No\" << endl;\n        }\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\nclass DisjointSet {\n    List<Integer> rank = new ArrayList<>();\n    List<Integer> parent = new ArrayList<>();\n    public DisjointSet(int n) {\n        for (int i = 0; i <= n; i++) {\n            rank.add(0);\n            parent.add(i);\n        }\n    }\n\n    public int findUPar(int node) {\n        if (node == parent.get(node)) {\n            return node;\n        }\n        int ulp = findUPar(parent.get(node));\n        parent.set(node, ulp);\n        return parent.get(node);\n    }\n\n    public void unionByRank(int u, int v) {\n        int ulp_u = findUPar(u);\n        int ulp_v = findUPar(v);\n        if (ulp_u == ulp_v) return;\n        if (rank.get(ulp_u) < rank.get(ulp_v)) {\n            parent.set(ulp_u, ulp_v);\n        } else if (rank.get(ulp_v) < rank.get(ulp_u)) {\n            parent.set(ulp_v, ulp_u);\n        } else {\n            parent.set(ulp_v, ulp_u);\n            int rankU = rank.get(ulp_u);\n            rank.set(ulp_u, rankU + 1);\n        }\n    }\n}\n\nclass Main {\n    public static void main (String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            int N = sc.nextInt();\n            int M = sc.nextInt();\n            DisjointSet ds = new DisjointSet(N);\n            for (int i = 0; i < M; i++) {\n                int u = sc.nextInt();\n                int v = sc.nextInt();\n                ds.unionByRank(u, v);\n            }\n            int x = sc.nextInt();\n            int y = sc.nextInt();\n            if (ds.findUPar(x) == ds.findUPar(y)) {\n                System.out.println(\"Yes\");\n            } else {\n                System.out.println(\"No\");\n            }\n        }\n    }\n}",
-      "Python3": "class DisjointSet:\n    def __init__(self, n):\n        self.rank = [0] * (n + 1)\n        self.parent = list(range(n + 1))\n\n    def findUPar(self, node):\n        if node == self.parent[node]:\n            return node\n        ulp = self.findUPar(self.parent[node])\n        self.parent[node] = ulp\n        return self.parent[node]\n\n    def unionByRank(self, u, v):\n        ulp_u = self.findUPar(u)\n        ulp_v = self.findUPar(v)\n        if ulp_u == ulp_v:\n            return\n        if self.rank[ulp_u] < self.rank[ulp_v]:\n            self.parent[ulp_u] = ulp_v\n        elif self.rank[ulp_v] < self.rank[ulp_u]:\n            self.parent[ulp_v] = ulp_u\n        else:\n            self.parent[ulp_v] = ulp_u\n            self.rank[ulp_u] += 1\n\nT = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    ds = DisjointSet(N)\n    for _ in range(M):\n        u, v = map(int, input().split())\n        ds.unionByRank(u, v)\n    x, y = map(int, input().split())\n    if ds.findUPar(x) == ds.findUPar(y):\n        print('Yes')\n    else:\n        print('No')",
-      "JavaScript": "class DisjointSet {\n    constructor(n) {\n        this.rank = new Array(n + 1).fill(0);\n        this.parent = new Array(n + 1);\n        for (let i = 0; i <= n; i++) {\n            this.parent[i] = i;\n        }\n    }\n\n    findUPar(node) {\n        if (node === this.parent[node]) {\n            return node;\n        }\n        let ulp = this.findUPar(this.parent[node]);\n        this.parent[node] = ulp;\n        return this.parent[node];\n    }\n\n    unionByRank(u, v) {\n        let ulp_u = this.findUPar(u);\n        let ulp_v = this.findUPar(v);\n        if (ulp_u === ulp_v) return;\n        if (this.rank[ulp_u] < this.rank[ulp_v]) {\n            this.parent[ulp_u] = ulp_v;\n        } else if (this.rank[ulp_v] < this.rank[ulp_u]) {\n            this.parent[ulp_v] = ulp_u;\n        } else {\n            this.parent[ulp_v] = ulp_u;\n            this.rank[ulp_u]++;\n        }\n    }\n}\n\nlet input = '';\nprocess.stdin.on('data', c => input += c);\nprocess.stdin.on('end', () => {\n    const {EOL} = require('os');\n    const lines = input.split(EOL);\n    let T = parseInt(lines[0]);\n    let i = 1;\n    while (T-- > 0) {\n        let [N, M] = lines[i++].split(' ').map(x => parseInt(x));\n        let ds = new DisjointSet(N);\n        for (let j = 0; j < M; j++) {\n            let [u, v] = lines[i++].split(' ').map(x => parseInt(x));\n            ds.unionByRank(u, v);\n        }\n        let [x, y] = lines[i++].split(' ').map(x => parseInt(x));\n        if (ds.findUPar(x) === ds.findUPar(y)) {\n            console.log('Yes');\n        } else {\n            console.log('No');\n        }\n    }\n});"
+      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\", &T)!=1) return 0;\n    while(T--){\n        long long N, X, K; scanf(\"%lld %lld %lld\", &N, &X, &K);\n        long long can = K / X;\n        if(can > N) can = N;\n        printf(\"%lld\\n\", can);\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long N,X,K; cin>>N>>X>>K;\n        long long ans = K / X;\n        if(ans > N) ans = N;\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for(int t=0; t<T; t++){\n            st = new StringTokenizer(br.readLine());\n            long N = Long.parseLong(st.nextToken());\n            long X = Long.parseLong(st.nextToken());\n            long K = Long.parseLong(st.nextToken());\n            long ans = K / X;\n            if(ans > N) ans = N;\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); X = int(next(it)); K = int(next(it))\n        ans = K // X\n        if ans > N:\n            ans = N\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor(let t = 0; t < T; t++){\n  const N = BigInt(input[idx++]);\n  const X = BigInt(input[idx++]);\n  const K = BigInt(input[idx++]);\n  let ans = K / X;\n  if(ans > N) ans = N;\n  results.push(ans.toString());\n}\nconsole.log(results.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

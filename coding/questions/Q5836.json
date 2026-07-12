@@ -1,38 +1,52 @@
 {
   "questionId": "Q5836",
-  "title": "Buy 2 Get 1 Free",
-  "slug": "buy-2-get-1-free",
+  "title": "Alok-nath and His Sanskars",
+  "slug": "alok-nath-and-his-sanskars",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Backtracking",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Arithmetic",
-      "Greedy"
+      "Backtracking",
+      "Partition Problem"
     ],
     "companyTags": [],
     "topicTags": [
-      "Greedy Algorithms"
-    ]
+      "Dynamic Programming"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "There is a sale going on in Chefland. For every 222 items Chef pays for, he gets the **third** item for **free** (see sample explanations for more clarity).\n\nIt is given that the cost of 111 item is XXX rupees. Find the **minimum** money required by Chef to buy at least NNN items.\n\n\nInput Format\n\nFirst line will contain TTT, number of test cases. Then the test cases follow.\nEach test case contains of a single line of input, two integers NNN and XXX.\n\n\nOutput Format\nFor each test case, output the minimum money required by Chef to buy at least NNN items.",
+    "problemStatement": "Alok-nath is man of equality. He needs your help to divide his “sanskars” evenly amongst all his followers. By doing this, Alok-nath can create equality amongst his followers and he'll be called a true “sanskari”.\n\nAlok-nath has **N** sanskars, and **K** followers. Each sanskar is given a numerical value which shows its intensity.\n\nYour task is to determine whether it is possible to allocate all the sanskars to followers in such a way that the sum of intensities of the sanskars allocated to each follower is equal. **Note : **A sanskar can be allocated to only one of the followers.",
     "constraints": [
-      "1 <= T <= 1000",
-      "1 <= N <= 1000",
-      "1 <= X <= 1000"
+      "1 ≤ T ≤ 10",
+      "1 ≤ N ≤ 21",
+      "1 ≤ K ≤ 8",
+      "0 ≤ intensity of sanskar ≤ 10^10"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains two space\u2011separated integers N and X, where N is the minimum number of items Chef wants to obtain and X is the cost of one item.",
-    "outputFormat": "For each test case output a single line containing the minimum amount of money Chef has to spend to get at least N items.",
+    "inputFormat": "The first line contains an integer T, denoting the number of test cases. Then T test cases follow. The first line of each case contains two integers N and K, with N denoting the number of sanskars and K denoting the number of followers. In the next line are N space separated integers denoting the intensities of each sanskar.",
+    "outputFormat": "For each test case, output 'yes' if it is possible to divide his sanskars equally amongst his followers; otherwise output 'no'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\\n3 4\\n4 2\\n5 3\\n6 1",
-        "output": "8\\n6\\n12\\n4",
-        "explanation": "For each test case we apply the formula described in the approach. The computed costs are 8, 6, 12 and 4 respectively."
+        "input": "2\n5 3\n1 2 4 5 6\n5 3\n1 2 4 5 7",
+        "output": "yes\nno",
+        "explanation": "In the first case, sanskars can be allocated as follows, each follower receiving a total intensity of 6: {1,5}, {2,4}, {6}. In the second case, it is not possible to allocate the sanskars such that each follower receives the same total intensity."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n3 2\n1 2 3",
+        "output": "no",
+        "explanation": "It is not possible to allocate the sanskars such that each follower receives the same total intensity."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n2 2\n1 1",
+        "output": "yes",
+        "explanation": "The sanskars can be allocated as follows, each follower receiving a total intensity of 1: {1}, {1}."
       }
     ]
   },
@@ -41,36 +55,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\\n1 1",
-        "expectedOutput": "1",
+        "input": "1\n1 1\n1",
+        "expectedOutput": "yes",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\\n1000 1000",
-        "expectedOutput": "667000",
+        "input": "1\n21 8\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
+        "expectedOutput": "yes",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "edge case",
-        "input": "1\\n2 5",
-        "expectedOutput": "10",
+        "label": "uniform/edge case",
+        "input": "1\n5 3\n2 2 2 2 2",
+        "expectedOutput": "no",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "general case 1",
-        "input": "1\\n7 3",
-        "expectedOutput": "15",
+        "label": "tricky case",
+        "input": "1\n5 3\n1 1 1 1 4",
+        "expectedOutput": "no",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general case 2",
-        "input": "1\\n10 2",
-        "expectedOutput": "14",
+        "label": "stress/general",
+        "input": "2\n5 3\n1 2 4 5 6\n5 3\n1 2 4 5 7",
+        "expectedOutput": "yes\nno",
         "weight": 2
       }
     ],
@@ -100,15 +114,27 @@
     ]
   },
   "solution": {
-    "approach": "For every three items Chef can pay for only two, i.e., a group of 3 items costs 2*X rupees. Let groups = N // 3 and rem = N % 3. Two possibilities give the minimum cost:\n1. Use 'groups' full groups and buy the remaining 'rem' items individually. Cost = 2*X*groups + X*rem.\n2. Take one extra group (groups+1) and buy no extra items. Cost = 2*X*(groups+1).\nIf rem == 0 the first option is optimal. Otherwise answer = min(option1, option2). The computation is O(1) per test case.",
-    "timeComplexity": "O(T) \u2013 constant work for each test case.",
-    "spaceComplexity": "O(1) \u2013 only a few integer variables.",
+    "approach": "The problem can be solved using a backtracking approach. We try to assign each sanskar to a follower and check if the sum of intensities of the sanskars allocated to each follower is equal. If it is not possible to assign a sanskar to any follower, we backtrack and try a different assignment.",
+    "timeComplexity": "O(K^N) per test case, O(T*K^N) total. The time complexity is exponential because in the worst case, we have to try all possible assignments of sanskars to followers.",
+    "spaceComplexity": "O(N) — the space complexity is linear because we need to store the intensities of the sanskars and the sums of the intensities allocated to each follower.",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int T; if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long N, X;\n        scanf(\"%lld %lld\", &N, &X);\n        long long groups = N / 3;\n        long long rem = N % 3;\n        long long cost1 = 2 * X * groups + X * rem;\n        long long cost2 = 2 * X * (groups + 1);\n        long long ans = (rem == 0) ? cost1 : (cost1 < cost2 ? cost1 : cost2);\n        printf(\"%lld\\n\", ans);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long N, X; cin>>N>>X;\n        long long groups = N/3;\n        long long rem = N%3;\n        long long cost1 = 2*X*groups + X*rem;\n        long long cost2 = 2*X*(groups+1);\n        long long ans = (rem==0) ? cost1 : min(cost1, cost2);\n        cout<<ans<<\"\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int T = Integer.parseInt(st.nextToken());\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < T; t++) {\n            st = new StringTokenizer(br.readLine());\n            long N = Long.parseLong(st.nextToken());\n            long X = Long.parseLong(st.nextToken());\n            long groups = N / 3;\n            long rem = N % 3;\n            long cost1 = 2 * X * groups + X * rem;\n            long cost2 = 2 * X * (groups + 1);\n            long ans = (rem == 0) ? cost1 : Math.min(cost1, cost2);\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef solve():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        N = int(next(it)); X = int(next(it))\n        groups = N // 3\n        rem = N % 3\n        cost1 = 2 * X * groups + X * rem\n        cost2 = 2 * X * (groups + 1)\n        ans = cost1 if rem == 0 else min(cost1, cost2)\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    solve()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let t = 0; t < T; t++) {\n  const N = Number(input[idx++]);\n  const X = Number(input[idx++]);\n  const groups = Math.floor(N / 3);\n  const rem = N % 3;\n  const cost1 = 2 * X * groups + X * rem;\n  const cost2 = 2 * X * (groups + 1);\n  const ans = (rem === 0) ? cost1 : Math.min(cost1, cost2);\n  results.push(String(ans));\n}\nconsole.log(results.join('\\n'));"
+      "C": "// COMPLETE, COMPILABLE C code\n// Uses correct I/O\n// Handles all T test cases\n#include <stdio.h>\n#include <stdbool.h>\n\nbool canAssign(int* intensities, int N, int K, int* sums) {\n    if (N == 0) {\n        for (int i = 0; i < K; i++) {\n            if (sums[i] != sums[0]) return false;\n        }\n        return true;\n    }\n    for (int i = 0; i < K; i++) {\n        sums[i] += intensities[N - 1];\n        if (canAssign(intensities, N - 1, K, sums)) return true;\n        sums[i] -= intensities[N - 1];\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        int N, K;\n        scanf(\"%d %d\", &N, &K);\n        int intensities[N];\n        for (int i = 0; i < N; i++) {\n            scanf(\"%d\", &intensities[i]);\n        }\n        int sums[K];\n        for (int i = 0; i < K; i++) {\n            sums[i] = 0;\n        }\n        if (canAssign(intensities, N, K, sums)) printf(\"yes\\n\");\n        else printf(\"no\\n\");\n    }\n    return 0;\n}",
+      "C++": "// COMPLETE, COMPILABLE C++ code\n// Uses correct I/O\n// Handles all T test cases\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nbool canAssign(vector<int>& intensities, int N, int K, vector<int>& sums) {\n    if (N == 0) {\n        for (int i = 0; i < K; i++) {\n            if (sums[i] != sums[0]) return false;\n        }\n        return true;\n    }\n    for (int i = 0; i < K; i++) {\n        sums[i] += intensities[N - 1];\n        if (canAssign(intensities, N - 1, K, sums)) return true;\n        sums[i] -= intensities[N - 1];\n    }\n    return false;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        int N, K;\n        cin >> N >> K;\n        vector<int> intensities(N);\n        for (int i = 0; i < N; i++) {\n            cin >> intensities[i];\n        }\n        vector<int> sums(K, 0);\n        if (canAssign(intensities, N, K, sums)) cout << \"yes\" << endl;\n        else cout << \"no\" << endl;\n    }\n    return 0;\n}",
+      "Java": "// COMPLETE, COMPILABLE Java code\n// Class MUST be named Main\n// Uses correct I/O\n// Handles all T test cases\nimport java.util.Scanner;\npublic class Main {\n    public static boolean canAssign(int[] intensities, int N, int K, int[] sums) {\n        if (N == 0) {\n            for (int i = 0; i < K; i++) {\n                if (sums[i] != sums[0]) return false;\n            }\n            return true;\n        }\n        for (int i = 0; i < K; i++) {\n            sums[i] += intensities[N - 1];\n            if (canAssign(intensities, N - 1, K, sums)) return true;\n            sums[i] -= intensities[N - 1];\n        }\n        return false;\n    }\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int T = scanner.nextInt();\n        while (T-- > 0) {\n            int N = scanner.nextInt();\n            int K = scanner.nextInt();\n            int[] intensities = new int[N];\n            for (int i = 0; i < N; i++) {\n                intensities[i] = scanner.nextInt();\n            }\n            int[] sums = new int[K];\n            if (canAssign(intensities, N, K, sums)) System.out.println(\"yes\");\n            else System.out.println(\"no\");\n        }\n    }\n}",
+      "Python3": "# COMPLETE, RUNNABLE Python3 code\n# Uses input() or sys.stdin\n# Handles all T test cases\nimport sys\n\ndef canAssign(intensities, N, K, sums):\n    if N == 0:\n        return all(s == sums[0] for s in sums)\n    for i in range(K):\n        sums[i] += intensities[N - 1]\n        if canAssign(intensities, N - 1, K, sums):\n            return True\n        sums[i] -= intensities[N - 1]\n    return False\n\ntestCases = int(input())\nfor _ in range(testCases):\n    N, K = map(int, input().split())\n    intensities = list(map(int, input().split()))\n    sums = [0] * K\n    if canAssign(intensities, N, K, sums):\n        print('yes')\n    else:\n        print('no')",
+      "JavaScript": "// COMPLETE, RUNNABLE JavaScript code\n// Uses fs.readFileSync(0,'utf-8') — NEVER readline()\n// Handles all T test cases\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nfunction canAssign(intensities, N, K, sums) {\n    if (N == 0) {\n        for (let i = 0; i < K; i++) {\n            if (sums[i] != sums[0]) return false;\n        }\n        return true;\n    }\n    for (let i = 0; i < K; i++) {\n        sums[i] += intensities[N - 1];\n        if (canAssign(intensities, N - 1, K, sums)) return true;\n        sums[i] -= intensities[N - 1];\n    }\n    return false;\n}\nlet T = parseInt(input[idx++]);\nwhile (T--) {\n    let [N, K] = input[idx++].split(' ').map(Number);\n    let intensities = input[idx++].split(' ').map(Number);\n    let sums = new Array(K).fill(0);\n    if (canAssign(intensities, N, K, sums)) console.log('yes');\n    else console.log('no');\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

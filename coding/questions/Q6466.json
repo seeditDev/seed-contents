@@ -1,52 +1,44 @@
 {
   "questionId": "Q6466",
-  "title": "Scalene Triangle",
-  "slug": "scalene-triangle",
+  "title": "Sherlock Counts Ways",
+  "slug": "sherlock-counts-ways",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Math",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "category": "Dynamic Programming",
+    "difficulty": "Hard",
+    "isPremium": true,
     "tags": [
-      "Simple Comparison",
-      "Scalene",
-      "Math",
-      "Triangle"
+      "Combinatorics",
+      "Modular Arithmetic"
     ],
     "companyTags": [],
     "topicTags": [
-      "Implementation & Simulation"
-    ]
+      "Mathematics"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Given A,B,A, B,A,B, and CCC as the sides of a triangle, find whether the triangle is scalene.\n\nNote:\n\n\nA triangle is said to be scalene if all three sides of the triangle are **distinct**.\nIt is guaranteed that the sides represent a valid triangle.\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of three space-separated integers A,B,A, B,A,B, and CCC \u2014 the length of the three sides of the triangle.\n\n\nOutput Format\nFor each test case, output on a new line, `YES`, if the triangle is scalene, and `NO` otherwise.\n\n\nYou may print each character of the string in uppercase or lowercase. For example, `YES`, `yes`, `Yes`, and `yEs` are all considered identical.",
+    "problemStatement": "Watson gives an array of colored balls to Sherlock. All balls are identical in shape and size and hence, two balls with same color are indistinguishable. He gives to Sherlock an integer **K** and wants Sherlock to choose a bundle of **K** balls from the array. Sherlock is intrigued by the problem and starts wondering in how many different ways he can choose **K** such balls. Two ways are different if for any color **c**, there are different count of balls with color **c** in two chosen bundles.",
     "constraints": [
-      "1 \u2264 T \u2264 1000",
-      "1 \u2264 A, B, C \u2264 10^9",
-      "A, B, C satisfy the triangle inequality (A + B > C, A + C > B, B + C > A)."
+      "1 <= K <= N <= 2*10^5",
+      "1 <= Ai <= 2*10^5"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains three space\u2011separated integers A, B and C \u2014 the lengths of the sides of a triangle.",
-    "outputFormat": "For each test case output a single line containing \"YES\" if the triangle is scalene (all three sides are pairwise different) or \"NO\" otherwise.",
+    "inputFormat": "The first line contains two integers N and K, where N is the number of balls and K is the number of balls to choose. The second line contains N integers, each representing the color of a ball.",
+    "outputFormat": "The number of different ways to choose K balls, modulo 13313.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n2 3 4\n1 2 2\n2 2 2\n3 5 6",
-        "output": "YES\nNO\nNO\nYES",
-        "explanation": "Test case 1: sides 2,3,4 are all different \u2192 YES.\\nTest case 2: sides 1,2,2 have two equal sides \u2192 NO.\\nTest case 3: sides 2,2,2 are all equal \u2192 NO.\\nTest case 4: sides 3,5,6 are all different \u2192 YES."
+        "input": "4 2\n3 2 2 3",
+        "output": "3",
+        "explanation": "The possible ways to choose 2 balls are: [2, 2], [3, 3], [2, 3]."
       },
       {
         "id": "sample_2",
-        "input": "2\n5 5 6\n7 8 9",
-        "output": "NO\nYES",
-        "explanation": "First triangle has two equal sides (5,5,6) \u2192 NOT scalene. Second triangle 7,8,9 has all distinct sides \u2192 scalene."
-      },
-      {
-        "id": "sample_3",
-        "input": "1\n10 10 10",
-        "output": "NO",
-        "explanation": "All three sides are equal, so the triangle is not scalene."
+        "input": "5 1\n2 2 2 2 2",
+        "output": "1",
+        "explanation": "The only way to choose 1 ball is: [2]."
       }
     ]
   },
@@ -55,36 +47,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1 1 1",
-        "expectedOutput": "NO",
+        "input": "1 1\n1",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n1000000000 999999999 999999998",
-        "expectedOutput": "YES",
+        "input": "200000 200000\n1 1 1 1 1 1 1 1 1 1",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "edge case",
-        "input": "1\n5 5 9",
-        "expectedOutput": "NO",
+        "input": "5 3\n1 1 1 1 1",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\n3 4 5",
-        "expectedOutput": "YES",
+        "input": "10 5\n1 2 3 4 5 1 2 3 4 5",
+        "expectedOutput": "126",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\n2 3 4",
-        "expectedOutput": "YES",
+        "input": "15 10\n1 2 3 4 5 1 2 3 4 5 1 2 3 4 5",
+        "expectedOutput": "3003",
         "weight": 2
       }
     ],
@@ -114,15 +106,27 @@
     ]
   },
   "solution": {
-    "approach": "For each test case read the three side lengths. A triangle is scalene iff the three values are all distinct, i.e., A != B, B != C and A != C. Because the input is guaranteed to form a valid triangle, no further checks are needed. Output \"YES\" when the condition holds, otherwise \"NO\".",
-    "timeComplexity": "O(T) \u2013 constant work per test case.",
-    "spaceComplexity": "O(1) \u2013 only a few integer variables are used.",
+    "approach": "We can use a dynamic programming approach to solve this problem. We will create a 2D array, dp, where dp[i][j] represents the number of ways to choose j balls from the first i colors. We will iterate over each color and for each color, we will iterate over the number of balls to choose. For each state, we will calculate the number of ways to choose the balls by considering two cases: choosing a ball of the current color or not choosing a ball of the current color.",
+    "timeComplexity": "O(N*K*max(Ai)) — where N is the number of balls, K is the number of balls to choose, and max(Ai) is the maximum number of balls of a color.",
+    "spaceComplexity": "O(N*K) — where N is the number of balls and K is the number of balls to choose.",
     "code": {
-      "C": "#include <stdio.h>\nint main(){\n    int T; if(scanf(\"%d\",&T)!=1) return 0;\n    while(T--){\n        long long a,b,c; scanf(\"%lld %lld %lld\",&a,&b,&c);\n        if(a!=b && b!=c && a!=c) printf(\"YES\\n\");\n        else printf(\"NO\\n\");\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--){\n        long long a,b,c; cin>>a>>b>>c;\n        if(a!=b && b!=c && a!=c) cout<<\"YES\\n\";\n        else cout<<\"NO\\n\";\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st;\n        int T = Integer.parseInt(br.readLine().trim());\n        StringBuilder sb = new StringBuilder();\n        while (T-- > 0) {\n            st = new StringTokenizer(br.readLine());\n            long a = Long.parseLong(st.nextToken());\n            long b = Long.parseLong(st.nextToken());\n            long c = Long.parseLong(st.nextToken());\n            if (a != b && b != c && a != c) sb.append(\"YES\\n\");\n            else sb.append(\"NO\\n\");\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "#!/usr/bin/env python3\nimport sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        a = int(next(it)); b = int(next(it)); c = int(next(it))\n        out.append(\"YES\" if a!=b and b!=c and a!=c else \"NO\")\n    sys.stdout.write(\"\\n\".join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  const a = Number(input[idx++]);\n  const b = Number(input[idx++]);\n  const c = Number(input[idx++]);\n  out.push(a !== b && b !== c && a !== c ? 'YES' : 'NO');\n}\nconsole.log(out.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <stdlib.h>\n#define MOD 13313\nint main() {\n    int N, K;\n    scanf(\"%d %d\", &N, &K);\n    int* colors = (int*)malloc(N * sizeof(int));\n    for (int i = 0; i < N; i++) {\n        scanf(\"%d\", &colors[i]);\n    }\n    int* count = (int*)calloc(200001, sizeof(int));\n    for (int i = 0; i < N; i++) {\n        count[colors[i]]++;\n    }\n    int** dp = (int**)malloc((200001) * sizeof(int*));\n    for (int i = 0; i <= 200000; i++) {\n        dp[i] = (int*)malloc((K + 1) * sizeof(int));\n    }\n    for (int i = 0; i <= 200000; i++) {\n        dp[i][0] = 1;\n    }\n    for (int i = 1; i <= 200000; i++) {\n        for (int j = 1; j <= K; j++) {\n            for (int k = 0; k <= count[i] && k <= j; k++) {\n                dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % MOD;\n            }\n        }\n    }\n    printf(\"%d\\n\", dp[200000][K]);\n    return 0;\n}",
+      "C++": "#include <iostream>\n#include <vector>\n#define MOD 13313\nusing namespace std;\nint main() {\n    int N, K;\n    cin >> N >> K;\n    vector<int> colors(N);\n    for (int i = 0; i < N; i++) {\n        cin >> colors[i];\n    }\n    vector<int> count(200001, 0);\n    for (int i = 0; i < N; i++) {\n        count[colors[i]]++;\n    }\n    vector<vector<int>> dp(200001, vector<int>(K + 1, 0));\n    for (int i = 0; i <= 200000; i++) {\n        dp[i][0] = 1;\n    }\n    for (int i = 1; i <= 200000; i++) {\n        for (int j = 1; j <= K; j++) {\n            for (int k = 0; k <= count[i] && k <= j; k++) {\n                dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % MOD;\n            }\n        }\n    }\n    cout << dp[200000][K] << endl;\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int K = sc.nextInt();\n        int[] colors = new int[N];\n        for (int i = 0; i < N; i++) {\n            colors[i] = sc.nextInt();\n        }\n        int[] count = new int[200001];\n        for (int i = 0; i < N; i++) {\n            count[colors[i]]++;\n        }\n        int[][] dp = new int[200001][K + 1];\n        for (int i = 0; i <= 200000; i++) {\n            dp[i][0] = 1;\n        }\n        for (int i = 1; i <= 200000; i++) {\n            for (int j = 1; j <= K; j++) {\n                for (int k = 0; k <= count[i] && k <= j; k++) {\n                    dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % 13313;\n                }\n            }\n        }\n        System.out.println(dp[200000][K]);\n    }\n}",
+      "Python3": "import sys\nMOD = 13313\nN, K = map(int, sys.stdin.readline().split())\ncolors = list(map(int, sys.stdin.readline().split()))\ncount = [0] * 200001\nfor i in range(N):\n    count[colors[i]] += 1\ndp = [[0] * (K + 1) for _ in range(200001)]\nfor i in range(200001):\n    dp[i][0] = 1\nfor i in range(1, 200001):\n    for j in range(1, K + 1):\n        for k in range(min(count[i], j) + 1):\n            dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % MOD\nprint(dp[200000][K])",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nconst readline = () => input[idx++];\nconst MOD = 13313;\nconst [N, K] = readline().split(' ').map(Number);\nconst colors = readline().split(' ').map(Number);\nconst count = new Array(200001).fill(0);\nfor (let i = 0; i < N; i++) {\n    count[colors[i]]++;\n}\nconst dp = new Array(200001).fill(0).map(() => new Array(K + 1).fill(0));\nfor (let i = 0; i <= 200000; i++) {\n    dp[i][0] = 1;\n}\nfor (let i = 1; i <= 200000; i++) {\n    for (let j = 1; j <= K; j++) {\n        for (let k = 0; k <= count[i] && k <= j; k++) {\n            dp[i][j] = (dp[i][j] + dp[i - 1][j - k]) % MOD;\n        }\n    }\n}\nconsole.log(dp[200000][K]);"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

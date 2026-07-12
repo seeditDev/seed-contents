@@ -1,43 +1,57 @@
 {
   "questionId": "Q4919",
-  "title": "Team Name",
-  "slug": "team-name",
+  "title": "Arithmetic Operations",
+  "slug": "arithmetic-operations",
   "version": 1,
-  "createdAt": "2026-07-02",
+  "createdAt": "2026-07-01",
   "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Strings",
-    "difficulty": "Medium",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Combinatorics",
-      "Strings",
-      "Hashing",
-      "String Manipulation",
-      "Counting Pairs"
+      "Arithmetic",
+      "Conditional Statements"
     ],
     "companyTags": [],
     "topicTags": [
-      "Data Structures"
-    ]
+      "Control Flow"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "\u0421hef has assembled a football team! Now he needs to choose a name for his team. There are NNN words in English that Chef considers funny. These words are s1,s2,\u2026,sNs_1, s_2, \\dots, s_Ns1\u200b,s2\u200b,\u2026,sN\u200b.\n\nChef thinks that a good team name should consist of two words such that they are not funny, but if we swap the first letters in them, the resulting words are funny. Note that under the given constraints, this means that a word is a non-empty string containing only lowercase English letters.\n\nCan you tell Chef how many good team names there are?",
+    "problemStatement": "Write a menu driven program to perform simple arithmetic operations based on the user's choice. The user will indicate the operation to be performed using the signs e.g. + for addition etc.\n\n\nInput Format\nIn first line take the operator as input.\n\nIn second line take two integer numbers as input.\n\n\nYou should take input for operators among these (+, -, *, /, %).",
     "constraints": [
-      "1 <= T <= 100",
-      "2 <= N <= 2*10^4",
-      "2 <= |si| <= 20",
-      "All si consist of lowercase English letters and are pairwise distinct",
-      "Sum of N over all test cases does not exceed 2*10^4"
+      "1 ≤ T ≤ 1000",
+      "−10^9 ≤ a, b ≤ 10^9",
+      "Operator is a single printable character"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case: the first line contains an integer N, the number of funny words. The second line contains N distinct non\u2011empty lowercase strings s1 s2 \u2026 sN.",
-    "outputFormat": "For each test case output a single line with one integer \u2013 the number of ordered good team names.",
+    "inputFormat": "The first line contains an integer T, the number of test cases. For each test case:\n- The first line contains a single character representing the operator (one of '+', '-', '*', '/', '%').\n- The second line contains two space‑separated integers a and b.",
+    "outputFormat": "For each test case output a single line:\n- If the operator is valid and the operation can be performed, print the result (integer division for '/').\n- If the operator is '/' or '%' and b is 0, print \"Error: Division by zero is not allowed.\".\n- If the operator is not one of the allowed symbols, print \"Invalid operator! Please use one of the following: +, -, *, /, %\".",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "3\n2\nsuf mas\n3\ngood game guys\n4\nhell bell best test",
-        "output": "2\n0\n2",
-        "explanation": "Explanation:\nExample case 1: The good team names are (\"muf\", \"sas\") and (\"sas\", \"muf\").\nExample case 2: There are no good team names because all funny words start with 'g'.\nExample case 3: The good team names are (\"hest\", \"tell\") and (\"tell\", \"hest\")."
+        "input": "1\n+\n1 2",
+        "output": "3",
+        "explanation": "One test case. Operator '+' adds 1 and 2, producing 3."
+      },
+      {
+        "id": "sample_2",
+        "input": "1\n-\n9 4",
+        "output": "5",
+        "explanation": "Operator '-' subtracts 4 from 9, yielding 5."
+      },
+      {
+        "id": "sample_3",
+        "input": "1\n^\n10 2",
+        "output": "Invalid operator! Please use one of the following: +, -, *, /, %",
+        "explanation": "'^' is not a supported operator, so the program prints the invalid‑operator message."
+      },
+      {
+        "id": "sample_4",
+        "input": "1\n/\n10 0",
+        "output": "Error: Division by zero is not allowed.",
+        "explanation": "Division by zero is attempted; the program detects this and prints the required error message."
       }
     ]
   },
@@ -45,37 +59,37 @@
     "hidden": [
       {
         "id": "tc_1",
-        "label": "Case 1",
-        "input": "",
-        "expectedOutput": "",
+        "label": "minimum boundary",
+        "input": "1\n+\n0 0",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "Case 2",
-        "input": "",
-        "expectedOutput": "",
+        "label": "maximum boundary",
+        "input": "1\n*\n1000000000 1000000000",
+        "expectedOutput": "1000000000000000000",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "Case 3",
-        "input": "",
-        "expectedOutput": "",
+        "label": "division with negative dividend",
+        "input": "1\n/\n-8 2",
+        "expectedOutput": "-4",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "Case 4",
-        "input": "",
-        "expectedOutput": "",
+        "label": "modulo operation",
+        "input": "1\n%\n10 3",
+        "expectedOutput": "1",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "Case 5",
-        "input": "",
-        "expectedOutput": "",
+        "label": "subtraction with large negative result",
+        "input": "1\n-\n-1000000000 1000000000",
+        "expectedOutput": "-2000000000",
         "weight": 2
       }
     ],
@@ -105,11 +119,27 @@
     ]
   },
   "solution": {
-    "approach": "For each first letter (a..z) store the set of suffixes (the word without its first character). For two different letters i and j let:\n  cnt_i_not_j = number of suffixes that appear with first letter i but NOT with first letter j.\n  cnt_j_not_i = number of suffixes that appear with first letter j but NOT with first letter i.\nAny funny word s from group i and any funny word t from group j such that suffix(s) \u2209 group j and suffix(t) \u2209 group i produce a good team name (the original words are the swapped versions, which are not funny, while after swapping they become s and t, which are funny). The number of ordered good names contributed by the unordered pair {i,j} is cnt_i_not_j * cnt_j_not_i * 2 (the factor 2 accounts for the two possible orders of the two original words). Summing this over all 26\u00b725/2 unordered letter pairs gives the answer.\nImplementation steps:\n1. Create an array vector<unordered_set<string>> suffix[26] (or equivalent in other languages) and fill it.\n2. For each unordered pair of letters (i,j) compute:\n   a = number of elements in suffix[i] that are not in suffix[j]\n   b = number of elements in suffix[j] that are not in suffix[i]\n   ans += a * b * 2.\n3. Output ans.\nComplexities: building the sets is O(N) average. For each of the 325 unordered letter pairs we iterate over the smaller set to count missing elements, giving O(26^2 * average_set_size) \u2264 O(N\u00b726). Overall time O(N\u00b726) \u2248 O(N). Memory O(N) for storing all suffixes.",
-    "timeComplexity": "O(N + 26^2 * average_set_size) \u2248 O(N) per test case",
-    "spaceComplexity": "O(N) to store all suffixes",
+    "approach": "For each test case read the operator and the two integers. Use a simple switch/if‑else chain to select the operation. For '+' '-' '*' just compute a+b, a-b, a*b. For '/' and '%' first check if b is zero; if so output the required error message, otherwise perform integer division (truncating toward zero) or modulo. If the operator does not match any of the five allowed symbols, output the invalid‑operator message. All operations fit in 64‑bit signed integers.",
+    "timeComplexity": "O(T) – each test case is processed in constant time.",
+    "spaceComplexity": "O(1) – only a few variables are stored regardless of T.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAXN 20000\n#define MAXLEN 21\n#define ALPH 26\n\n"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        char op;\n        long long a, b;\n        scanf(\" %c\", &op);\n        scanf(\"%lld %lld\", &a, &b);\n        switch (op) {\n            case '+':\n                printf(\"%lld\\n\", a + b);\n                break;\n            case '-':\n                printf(\"%lld\\n\", a - b);\n                break;\n            case '*':\n                printf(\"%lld\\n\", a * b);\n                break;\n            case '/':\n                if (b == 0) {\n                    printf(\"Error: Division by zero is not allowed.\\n\");\n                } else {\n                    printf(\"%lld\\n\", a / b);\n                }\n                break;\n            case '%':\n                if (b == 0) {\n                    printf(\"Error: Division by zero is not allowed.\\n\");\n                } else {\n                    printf(\"%lld\\n\", a % b);\n                }\n                break;\n            default:\n                printf(\"Invalid operator! Please use one of the following: +, -, *, /, %\\n\");\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        char op;\n        long long a, b;\n        cin >> op >> a >> b;\n        switch (op) {\n            case '+': cout << a + b << '\\n'; break;\n            case '-': cout << a - b << '\\n'; break;\n            case '*': cout << a * b << '\\n'; break;\n            case '/':\n                if (b == 0) cout << \"Error: Division by zero is not allowed.\" << '\\n';\n                else cout << a / b << '\\n';\n                break;\n            case '%':\n                if (b == 0) cout << \"Error: Division by zero is not allowed.\" << '\\n';\n                else cout << a % b << '\\n';\n                break;\n            default:\n                cout << \"Invalid operator! Please use one of the following: +, -, *, /, %\" << '\\n';\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String line = br.readLine();\n        if (line == null || line.isEmpty()) return;\n        int T = Integer.parseInt(line.trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < T; i++) {\n            char op = br.readLine().trim().charAt(0);\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            long a = Long.parseLong(st.nextToken());\n            long b = Long.parseLong(st.nextToken());\n            switch (op) {\n                case '+': sb.append(a + b).append('\\n'); break;\n                case '-': sb.append(a - b).append('\\n'); break;\n                case '*': sb.append(a * b).append('\\n'); break;\n                case '/':\n                    if (b == 0) sb.append(\"Error: Division by zero is not allowed.\").append('\\n');\n                    else sb.append(a / b).append('\\n');\n                    break;\n                case '%':\n                    if (b == 0) sb.append(\"Error: Division by zero is not allowed.\").append('\\n');\n                    else sb.append(a % b).append('\\n');\n                    break;\n                default:\n                    sb.append(\"Invalid operator! Please use one of the following: +, -, *, /, %\").append('\\n');\n            }\n        }\n        System.out.print(sb.toString());\n    }\n}",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().splitlines()\n    if not data:\n        return\n    T = int(data[0].strip())\n    out = []\n    idx = 1\n    for _ in range(T):\n        op = data[idx].strip()\n        idx += 1\n        a_str, b_str = data[idx].split()\n        idx += 1\n        a = int(a_str)\n        b = int(b_str)\n        if op == '+':\n            out.append(str(a + b))\n        elif op == '-':\n            out.append(str(a - b))\n        elif op == '*':\n            out.append(str(a * b))\n        elif op == '/':\n            if b == 0:\n                out.append('Error: Division by zero is not allowed.')\n            else:\n                out.append(str(int(a / b)))  # truncates toward zero\n        elif op == '%':\n            if b == 0:\n                out.append('Error: Division by zero is not allowed.')\n            else:\n                out.append(str(a % b))\n        else:\n            out.append('Invalid operator! Please use one of the following: +, -, *, /, %')\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
+      "JavaScript": "const fs = require('fs');\nconst lines = fs.readFileSync(0, 'utf-8').trim().split(/\\n/);\nlet idx = 0;\nconst T = parseInt(lines[idx].trim(), 10);\nidx++;\nlet output = [];\nfor (let t = 0; t < T; t++) {\n  const op = lines[idx].trim();\n  idx++;\n  const [aStr, bStr] = lines[idx].trim().split(/\\s+/);\n  idx++;\n  const a = BigInt(aStr);\n  const b = BigInt(bStr);\n  if (op === '+') {\n    output.push((a + b).toString());\n  } else if (op === '-') {\n    output.push((a - b).toString());\n  } else if (op === '*') {\n    output.push((a * b).toString());\n  } else if (op === '/') {\n    if (b === 0n) {\n      output.push('Error: Division by zero is not allowed.');\n    } else {\n      output.push((a / b).toString()); // truncates toward zero for BigInt\n    }\n  } else if (op === '%') {\n    if (b === 0n) {\n      output.push('Error: Division by zero is not allowed.');\n    } else {\n      output.push((a % b).toString());\n    }\n  } else {\n    output.push('Invalid operator! Please use one of the following: +, -, *, /, %');\n  }\n}\nconsole.log(output.join('\\n'));"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

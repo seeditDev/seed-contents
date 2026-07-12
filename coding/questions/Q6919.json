@@ -1,51 +1,39 @@
 {
   "questionId": "Q6919",
-  "title": "Selling Insurance",
-  "slug": "selling-insurance",
+  "title": "Split Sums",
+  "slug": "split-sums",
   "version": 1,
   "createdAt": "2026-07-02",
   "updatedAt": "2026-07-04",
   "metadata": {
     "category": "Math",
-    "difficulty": "Easy",
-    "isPremium": false,
+    "difficulty": "Medium",
+    "isPremium": true,
     "tags": [
-      "Simple Math",
-      "Integer Arithmetic",
-      "Ceiling Function",
-      "Math"
+      "Number Theory",
+      "GCD"
     ],
     "companyTags": [],
     "topicTags": [
       "Mathematics"
-    ]
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Chef has started a new job as an insurance agent.\n\nEach insurance costs XXX dollars and Chef gets a 20%20 \\%20% commission on selling each insurance.\n\nFind the **minimum** number of insurances Chef needs to sell to earn **at least** 100100100 dollars.\n\n\nInput Format\n\nThe first line of input will contain a single integer TTT, denoting the number of test cases.\nEach test case consists of a single integer XXX, the cost of an insurance.\n\n\nOutput Format\nFor each test case, output on a new line, the **minimum** number of insurances Chef needs to sell to earn **at least** 100100100 dollars.",
+    "problemStatement": "&nbsp;\n\nA and B are brothers and like playing with marbles.Their mother buys them **N** marbles to play with.The preciousness of each marble is a natural number from 1 to **N** and no two marbles have same preciousness.\n\nSince A and B are good at maths they want to divide all those **N** marbles among them in such a way that sum of the preciousness of all marbles that A receives and sum of the preciousness of all marbles that B receives after distribution are co-primes i.e the gcd(greatest common divisor) of their sum is 1.\n\nAlso the absolute value of difference between the sum of the preciousness of marbles of A and B should be exactly **M**.\n\nHelp A and B in finding whether such a distribution of **N** marbles between them is possible or not.\n\nFormally, you have to tell whether you can distribute first **N** natural numbers in two sets such that the absolute difference of the sum of numbers in the two sets is equal to **M** and the gcd of their sum is 1.\n\n\nNote that one of the set can be empty and greatest common divisor of **0** and **k** is **k**",
     "constraints": [
-      "1 <= T <= 100",
-      "1 <= X <= 100"
+      "1 <= T <= 20",
+      "1 <= N <= 1,000,000,000",
+      "0 <= M <= 10^18"
     ],
-    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer X, the cost (in dollars) of one insurance policy.",
-    "outputFormat": "For each test case, output on a separate line the minimum number of insurances Chef must sell to earn at least 100 dollars commission.",
+    "inputFormat": "The first line of the input contains an integer T denoting the number of test cases. The first line of each test case contains two integers N and M denoting the number of marbles and the absolute difference of sum respectively.",
+    "outputFormat": "For each test case, output a single line. Print 'Yes' if there exist a valid distribution of marbles between A and B else print 'No'.",
     "sampleTestCases": [
       {
         "id": "sample_1",
-        "input": "4\n20\n80\n1\n5",
-        "output": "25\n7\n500\n100",
-        "explanation": "For each X we compute ceil(500/X):\\nX=20 => 500/20=25 \u2192 25\\nX=80 => 500/80=6.25 \u2192 7\\nX=1 => 500/1=500 \u2192 500\\nX=5 => 500/5=100 \u2192 100"
-      },
-      {
-        "id": "sample_2",
-        "input": "3\n99\n37\n7",
-        "output": "6\n14\n72",
-        "explanation": "X=99: 500/99\u22485.05 \u2192 6.\\nX=37: 500/37\u224813.51 \u2192 14.\\nX=7: 500/7\u224871.43 \u2192 72."
-      },
-      {
-        "id": "sample_3",
-        "input": "2\n100\n2",
-        "output": "5\n250",
-        "explanation": "X=100: 500/100=5 \u2192 5.\\nX=2: 500/2=250 \u2192 250."
+        "input": "2\n5 7\n1 2",
+        "output": "Yes\nNo",
+        "explanation": "For the first test case, we can distribute the marbles as {1, 3, 5} and {2, 4} which gives a sum of 9 and 6 respectively. The absolute difference is 3 which is coprime with 9 and 6. For the second test case, it is not possible to distribute the marbles in such a way that the sum of the preciousness of the marbles of A and B are coprime."
       }
     ]
   },
@@ -54,36 +42,36 @@
       {
         "id": "tc_1",
         "label": "minimum boundary",
-        "input": "1\n1",
-        "expectedOutput": "500",
+        "input": "1\n1 0",
+        "expectedOutput": "No",
         "weight": 2
       },
       {
         "id": "tc_2",
         "label": "maximum boundary",
-        "input": "1\n100",
-        "expectedOutput": "5",
+        "input": "1\n1000000000 0",
+        "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_3",
         "label": "edge case",
-        "input": "1\n99",
-        "expectedOutput": "6",
+        "input": "1\n2 1",
+        "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_4",
         "label": "general case 1",
-        "input": "1\n37",
-        "expectedOutput": "14",
+        "input": "1\n5 3",
+        "expectedOutput": "Yes",
         "weight": 2
       },
       {
         "id": "tc_5",
         "label": "general case 2",
-        "input": "1\n7",
-        "expectedOutput": "72",
+        "input": "1\n10 5",
+        "expectedOutput": "Yes",
         "weight": 2
       }
     ],
@@ -113,15 +101,27 @@
     ]
   },
   "solution": {
-    "approach": "For each test case, the commission earned per insurance is 20% of X, i.e., X/5 dollars. To reach at least 100 dollars we need n * (X/5) >= 100 => n >= 500 / X. The smallest integer n satisfying this is the ceiling of 500/X. Using integer arithmetic, n = (500 + X - 1) / X.",
-    "timeComplexity": "O(T) \u2013 constant work per test case.",
-    "spaceComplexity": "O(1) \u2013 only a few variables are used.",
+    "approach": "To solve this problem, we can use the concept of the sum of the first N natural numbers, which is given by the formula N*(N+1)/2. We can then check if the absolute difference between this sum and M is coprime with the sum. If it is, then we can distribute the marbles in such a way that the sum of the preciousness of the marbles of A and B are coprime.",
+    "timeComplexity": "O(T) — per test case is O(1), total is O(T)",
+    "spaceComplexity": "O(1) — constant space",
     "code": {
-      "C": "#include <stdio.h>\n\nint main() {\n    int T, X;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        scanf(\"%d\", &X);\n        int ans = (500 + X - 1) / X; // ceiling of 500/X\n        printf(\"%d\\n\", ans);\n    }\n    return 0;\n}",
-      "C++": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T, X;\n    if (!(cin >> T)) return 0;\n    while (T--) {\n        cin >> X;\n        int ans = (500 + X - 1) / X; // ceiling of 500/X\n        cout << ans << '\\n';\n    }\n    return 0;\n}",
-      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int i = 0; i < T; i++) {\n            int X = Integer.parseInt(br.readLine().trim());\n            int ans = (500 + X - 1) / X; // ceiling of 500/X\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}",
-      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    t = int(data[0])\n    out = []\n    idx = 1\n    for _ in range(t):\n        x = int(data[idx]); idx += 1\n        ans = (500 + x - 1) // x  # ceiling of 500/x\n        out.append(str(ans))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()",
-      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet results = [];\nfor (let i = 0; i < T; i++) {\n  const X = Number(input[idx++]);\n  const ans = Math.floor((500 + X - 1) / X); // ceiling of 500/X using integer arithmetic\n  results.push(String(ans));\n}\nconsole.log(results.join('\\n'));"
+      "C": "#include <stdio.h>\n#include <math.h>\nint gcd(int a, int b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\nint main() {\n    int T;\n    scanf(\"%d\", &T);\n    while (T--) {\n        long long N, M;\n        scanf(\"%lld %lld\", &N, &M);\n        long long sum = N * (N + 1) / 2;\n        if (M == 0) {\n            if (sum % 2 == 0) {\n                printf(\"Yes\\n\");\n            } else {\n                printf(\"No\\n\");\n            }\n        } else if (sum < M) {\n            printf(\"No\\n\");\n        } else {\n            long long diff = sum - M;\n            if (gcd(diff, sum) == 1 || gcd(sum, sum - M) == 1) {\n                printf(\"Yes\\n\");\n            } else {\n                printf(\"No\\n\");\n            }\n        }\n    }\n    return 0;\n}",
+      "C++": "#include <iostream>\nusing namespace std;\nlong long gcd(long long a, long long b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        long long N, M;\n        cin >> N >> M;\n        long long sum = N * (N + 1) / 2;\n        if (M == 0) {\n            if (sum % 2 == 0) {\n                cout << \"Yes\" << endl;\n            } else {\n                cout << \"No\" << endl;\n            }\n        } else if (sum < M) {\n            cout << \"No\" << endl;\n        } else {\n            long long diff = sum - M;\n            if (gcd(diff, sum) == 1 || gcd(sum, sum - M) == 1) {\n                cout << \"Yes\" << endl;\n            } else {\n                cout << \"No\" << endl;\n            }\n        }\n    }\n    return 0;\n}",
+      "Java": "import java.util.Scanner;\npublic class Main {\n    public static long gcd(long a, long b) {\n        if (b == 0)\n            return a;\n        return gcd(b, a % b);\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            long N = sc.nextLong();\n            long M = sc.nextLong();\n            long sum = N * (N + 1) / 2;\n            if (M == 0) {\n                if (sum % 2 == 0) {\n                    System.out.println(\"Yes\");\n                } else {\n                    System.out.println(\"No\");\n                }\n            } else if (sum < M) {\n                System.out.println(\"No\");\n            } else {\n                long diff = sum - M;\n                if (gcd(diff, sum) == 1 || gcd(sum, sum - M) == 1) {\n                    System.out.println(\"Yes\");\n                } else {\n                    System.out.println(\"No\");\n                }\n            }\n        }\n    }\n}",
+      "Python3": "import math\n\ndef gcd(a, b):\n    if b == 0:\n        return a\n    return gcd(b, a % b)\nT = int(input())\nfor _ in range(T):\n    N, M = map(int, input().split())\n    sum = N * (N + 1) // 2\n    if M == 0:\n        if sum % 2 == 0:\n            print('Yes')\n        else:\n            print('No')\n    elif sum < M:\n        print('No')\n    else:\n        diff = sum - M\n        if gcd(diff, sum) == 1 or gcd(sum, sum - M) == 1:\n            print('Yes')\n        else:\n            print('No')",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nlet idx = 0;\nfunction gcd(a, b) {\n    if (b == 0)\n        return a;\n    return gcd(b, a % b);\n}\nlet T = parseInt(input[idx++]);\nwhile (T-- > 0) {\n    let [N, M] = input[idx++].split(' ').map(x => parseInt(x));\n    let sum = N * (N + 1) / 2;\n    if (M == 0) {\n        if (sum % 2 == 0) {\n            console.log('Yes');\n        } else {\n            console.log('No');\n        }\n    } else if (sum < M) {\n        console.log('No');\n    } else {\n        let diff = sum - M;\n        if (gcd(diff, sum) == 1 || gcd(sum, sum - M) == 1) {\n            console.log('Yes');\n        } else {\n            console.log('No');\n        }\n    }\n}"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }

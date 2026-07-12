@@ -1,66 +1,83 @@
 {
   "questionId": "Q8581",
-  "title": "The-Lorax",
-  "slug": "F",
+  "title": "An Interesting Sequence",
+  "slug": "an-interesting-sequence",
   "version": 1,
-  "createdAt": "2026-07-05",
-  "updatedAt": "2026-07-05",
+  "createdAt": "2026-07-02",
+  "updatedAt": "2026-07-04",
   "metadata": {
-    "category": "Greedy",
-    "difficulty": "$undefined",
-    "isPremium": false,
+    "category": "Math",
+    "difficulty": "Easy",
+    "isPremium": true,
     "tags": [
-      "Tree",
-      "Greedy"
+      "Number Theory",
+      "Exponent of 2",
+      "Bit Manipulation"
     ],
     "companyTags": [],
-    "topicTags": []
+    "topicTags": [
+      "Ad-hoc & Implementation"
+    ],
+    "QBCategory": "CCD"
   },
   "content": {
-    "problemStatement": "Write a program for the coding challenge \"The-Lorax\". Refer to LeetCode description: https://codeforces.com/gym/102694/problem/F",
+    "problemStatement": "You are given an integer KKK.\n\nConsider an integer sequence A=[A1,A2,…,AN]A = [A_1, A_2, \\ldots, A_N]A=[A1​,A2​,…,AN​].\n\nDefine another sequence SSS of length NNN, such that Si=A1+A2+…+AiS_i = A_1 + A_2 + \\ldots + A_iSi​=A1​+A2​+…+Ai​ for each 1≤i≤N1 \\leq i \\leq N1≤i≤N.\n\nAAA is said to be interesting if Ai+Si=KA_i + S_i = KAi​+Si​=K for every 1≤i≤N1 \\leq i \\leq N1≤i≤N.\n\nFind the **maximum** length of an interesting sequence. If there are no interesting sequences, print 000.\n\n\nInput Format\n\nThe first line of input contains an integer TTT, denoting the number of test cases. The description of TTT test cases follows.\nEach test case consists of a single line of input, which contains a single integer KKK.\n\n\nOutput Format\n\nFor each test case, print a new line containing one integer — the **maximum** length of an interesting sequence for a given value of KKK.",
     "constraints": [
-      "1 <= n <= 10^5",
-      "1 <= height of each tree <= 10^9"
+      "1 ≤ T ≤ 5000",
+      "1 ≤ K ≤ 10^9"
     ],
-    "inputFormat": "The first line contains an integer n, which is the number of trees. The second line contains n integers, representing the heights of the trees.",
-    "outputFormat": "The output should be the maximum number of trees that can be cut down.",
-    "sampleTestCases": []
+    "inputFormat": "The first line contains an integer T, the number of test cases. Each of the next T lines contains a single integer K (1 ≤ K ≤ 10^9).",
+    "outputFormat": "For each test case output a single line containing the maximum possible length of an interesting sequence for the given K. If no such sequence exists, output 0.",
+    "sampleTestCases": [
+      {
+        "id": "sample_1",
+        "input": "2\n8\n4",
+        "output": "3\n2",
+        "explanation": "8 = 2^3, so the longest interesting sequence has length 3 (A = [4,2,1]). 4 = 2^2, so the longest length is 2 (A = [2,1])."
+      },
+      {
+        "id": "sample_2",
+        "input": "3\n6\n7\n1",
+        "output": "1\n0\n0",
+        "explanation": "6 = 2·3 → v₂(6)=1, sequence length 1 (A=[3]). 7 is odd → no sequence, answer 0. 1 is odd → answer 0."
+      }
+    ]
   },
   "testCases": {
     "hidden": [
       {
         "id": "tc_1",
-        "label": "min boundary",
+        "label": "minimum boundary",
         "input": "1\n1",
-        "expectedOutput": "1",
+        "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_2",
-        "label": "max boundary",
-        "input": "10\n1 2 3 4 5 6 7 8 9 10",
-        "expectedOutput": "5",
+        "label": "maximum boundary",
+        "input": "1\n1073741824",
+        "expectedOutput": "30",
         "weight": 2
       },
       {
         "id": "tc_3",
-        "label": "uniform/edge cases",
-        "input": "5\n5 5 5 5 5",
+        "label": "edge case - odd number",
+        "input": "1\n999999937",
         "expectedOutput": "0",
         "weight": 2
       },
       {
         "id": "tc_4",
-        "label": "tricky case / empty-like / negative if allowed",
-        "input": "0",
-        "expectedOutput": "0",
+        "label": "general case 1",
+        "input": "1\n48",
+        "expectedOutput": "4",
         "weight": 2
       },
       {
         "id": "tc_5",
-        "label": "general mixed case",
-        "input": "7\n3 1 4 1 5 9 2",
-        "expectedOutput": "3",
+        "label": "general case 2",
+        "input": "2\n1024\n123456",
+        "expectedOutput": "10\n6",
         "weight": 2
       }
     ],
@@ -90,15 +107,27 @@
     ]
   },
   "solution": {
-    "approach": "Sort the heights of the trees and then cut down the trees with the smallest heights first.",
-    "timeComplexity": "O(n log n)",
-    "spaceComplexity": "O(n)",
+    "approach": "From the definition we have for each i: A_i + S_i = K where S_i = A_1 + … + A_i.  Since S_i = S_{i-1} + A_i, the condition becomes 2·A_i + S_{i-1} = K.  Starting with S_0 = 0 we can compute A_1 = K/2, A_2 = K/4, …, A_i = K/2^i.  Therefore A_i is an integer iff 2^i divides K.  The longest possible sequence length is the largest i such that 2^i | K, i.e. the exponent of 2 in the prime factorisation of K (v₂(K)).  If K is odd, v₂(K)=0 and no sequence exists.  The answer for each test case is simply the number of trailing zero bits of K.",
+    "timeComplexity": "O(T·log K) – each division by 2 reduces K, at most 30 iterations for K ≤ 10^9.",
+    "spaceComplexity": "O(1) – only a few integer variables are used.",
     "code": {
-      "C": "#include <stdio.h>\n#include <stdlib.h>\nint compare(const void *a, const void *b) {\n    return (*(int*)a - *(int*)b);\n}\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n    qsort(arr, n, sizeof(int), compare);\n    int mid = n / 2;\n    int count = 0;\n    for (int i = 0; i < mid; i++) {\n        if (arr[i] < arr[mid]) {\n            count++;\n        }\n    }\n    printf(\"%d\\n\", count);\n    return 0;\n}",
-      "C++": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    int arr[n];\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n    sort(arr, arr + n);\n    int mid = n / 2;\n    int count = 0;\n    for (int i = 0; i < mid; i++) {\n        if (arr[i] < arr[mid]) {\n            count++;\n        }\n    }\n    cout << count << endl;\n    return 0;\n}",
-      "Java": "import java.util.Arrays;\nimport java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int n = scanner.nextInt();\n        int[] arr = new int[n];\n        for (int i = 0; i < n; i++) {\n            arr[i] = scanner.nextInt();\n        }\n        Arrays.sort(arr);\n        int mid = n / 2;\n        int count = 0;\n        for (int i = 0; i < mid; i++) {\n            if (arr[i] < arr[mid]) {\n                count++;\n            }\n        }\n        System.out.println(count);\n    }\n}",
-      "Python3": "import sys\nn = int(input())\narr = list(map(int, input().split()))\narr.sort()\nmid = n // 2\ncount = 0\nfor i in range(mid):\n    if arr[i] < arr[mid]:\n        count += 1\nprint(count)",
-      "JavaScript": "const readline = require('readline').createInterface({\n    input: process.stdin,\n    output: process.stdout\n});\nlet i = 0;\nlet n;\nlet arr;\nreadline.on('line', line => {\n    if (i === 0) {\n        n = parseInt(line);\n    } else {\n        arr = line.split(' ').map(num => parseInt(num));\n        arr.sort((a, b) => a - b);\n        let mid = Math.floor(n / 2);\n        let count = 0;\n        for (let j = 0; j < mid; j++) {\n            if (arr[j] < arr[mid]) {\n                count++;\n            }\n        }\n        console.log(count);\n        readline.close();\n    }\n    i++;\n});"
+      "C": "#include <stdio.h>\n\nint main() {\n    int T;\n    if (scanf(\"%d\", &T) != 1) return 0;\n    while (T--) {\n        long long K;\n        scanf(\"%lld\", &K);\n        int cnt = 0;\n        while ((K & 1LL) == 0) { // K is even\n            cnt++;\n            K >>= 1; // divide by 2\n        }\n        printf(\"%d\\n\", cnt);\n    }\n    return 0;\n}\n",
+      "C++": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int T; if(!(cin>>T)) return 0;\n    while(T--) {\n        long long K; cin>>K;\n        int cnt = 0;\n        while((K & 1LL) == 0) { cnt++; K >>= 1; }\n        cout << cnt << '\\n';\n    }\n    return 0;\n}\n",
+      "Java": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        for (int t = 0; t < T; t++) {\n            long K = Long.parseLong(br.readLine().trim());\n            int cnt = 0;\n            while ((K & 1L) == 0) {\n                cnt++;\n                K >>= 1;\n            }\n            sb.append(cnt).append('\\n');\n        }\n        System.out.print(sb.toString());\n    }\n}\n",
+      "Python3": "import sys\n\ndef main():\n    data = sys.stdin.read().strip().split()\n    if not data:\n        return\n    it = iter(data)\n    T = int(next(it))\n    out = []\n    for _ in range(T):\n        K = int(next(it))\n        cnt = 0\n        while K % 2 == 0:\n            cnt += 1\n            K //= 2\n        out.append(str(cnt))\n    sys.stdout.write('\\n'.join(out))\n\nif __name__ == \"__main__\":\n    main()\n",
+      "JavaScript": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);\nlet idx = 0;\nconst T = Number(input[idx++]);\nlet out = [];\nfor (let t = 0; t < T; t++) {\n  let K = BigInt(input[idx++]); // K fits in Number but use BigInt for safety\n  let cnt = 0;\n  while ((K & 1n) === 0n) {\n    cnt++;\n    K >>= 1n;\n  }\n  out.push(String(cnt));\n}\nconsole.log(out.join('\\n'));\n"
     }
+  },
+  "QBCategory": "CCD",
+  "boilerPlates": {
+    "C": "#include <stdio.h>\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "C++": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // your code goes here\n    return 0;\n}",
+    "Java": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        // your code goes here\n    }\n}",
+    "Python3": "# your code goes here\n",
+    "JavaScript": "// your code goes here\n"
+  },
+  "_internal": {
+    "methodName": "",
+    "params": []
   }
 }
